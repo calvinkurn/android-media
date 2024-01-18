@@ -10,8 +10,8 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.FeedBrowseViewModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -79,7 +79,7 @@ class FeedBrowseViewModelTest {
 
         backgroundScope.launch { viewModel.uiState.collect() }
 
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
 
         val value = viewModel.uiState.value
         value.assertType<FeedBrowseUiState.Success> {
@@ -122,7 +122,7 @@ class FeedBrowseViewModelTest {
 
         val viewModel = FeedBrowseViewModel(mockRepo)
         backgroundScope.launch { viewModel.uiState.collect() }
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -137,7 +137,7 @@ class FeedBrowseViewModelTest {
             )
         }
 
-        viewModel.onIntent(FeedBrowseIntent.SelectChipWidget(channelMenuSlotModel.slotId, widgetMenus[1]))
+        viewModel.onAction(FeedBrowseAction.SelectChipWidget(channelMenuSlotModel.slotId, widgetMenus[1]))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -166,7 +166,7 @@ class FeedBrowseViewModelTest {
         val viewModel = FeedBrowseViewModel(mockRepo)
         backgroundScope.launch { viewModel.uiState.collect() }
 
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -181,7 +181,7 @@ class FeedBrowseViewModelTest {
         coEvery { mockRepo.getWidgetRecommendation(bannerSlotModel.identifier) } returns WidgetRecommendationModel.Banners(
             listOf(modelGen.bannerModel.elementAt(1))
         )
-        viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(bannerSlotModel.slotId, WidgetMenuModel.Empty))
+        viewModel.onAction(FeedBrowseAction.FetchCardsWidget(bannerSlotModel.slotId, WidgetMenuModel.Empty))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertNotEqualTo(
                 listOf(
@@ -215,7 +215,7 @@ class FeedBrowseViewModelTest {
         val viewModel = FeedBrowseViewModel(mockRepo)
         backgroundScope.launch { viewModel.uiState.collect() }
 
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -230,7 +230,7 @@ class FeedBrowseViewModelTest {
         coEvery { mockRepo.getWidgetRecommendation(authorSlotModel.identifier) } returns WidgetRecommendationModel.Authors(
             listOf(modelGen.authorModel.elementAt(1))
         )
-        viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(authorSlotModel.slotId, WidgetMenuModel.Empty))
+        viewModel.onAction(FeedBrowseAction.FetchCardsWidget(authorSlotModel.slotId, WidgetMenuModel.Empty))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertNotEqualTo(
                 listOf(
@@ -272,7 +272,7 @@ class FeedBrowseViewModelTest {
         val viewModel = FeedBrowseViewModel(mockRepo)
         backgroundScope.launch { viewModel.uiState.collect() }
 
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -287,7 +287,7 @@ class FeedBrowseViewModelTest {
             )
         }
 
-        viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(channelWithMenuSlotModel.slotId, menusModel[1]))
+        viewModel.onAction(FeedBrowseAction.FetchCardsWidget(channelWithMenuSlotModel.slotId, menusModel[1]))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertNotEqualTo(
                 listOf(

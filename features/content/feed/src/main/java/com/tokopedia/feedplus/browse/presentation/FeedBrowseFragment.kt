@@ -30,7 +30,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHo
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
@@ -113,7 +113,7 @@ internal class FeedBrowseFragment @Inject constructor(
                 widgetModel.slotInfo,
                 chipPosition
             )
-            viewModel.onIntent(FeedBrowseIntent.SelectChipWidget(widgetModel.slotInfo.id, chip))
+            viewModel.onAction(FeedBrowseAction.SelectChipWidget(widgetModel.slotInfo.id, chip))
         }
 
         override fun onChipSelected(
@@ -121,7 +121,7 @@ internal class FeedBrowseFragment @Inject constructor(
             widgetModel: FeedBrowseItemListModel.Chips.Item,
             chip: WidgetMenuModel
         ) {
-            viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(widgetModel.slotInfo.id, chip))
+            viewModel.onAction(FeedBrowseAction.FetchCardsWidget(widgetModel.slotInfo.id, chip))
         }
     }
 
@@ -131,7 +131,7 @@ internal class FeedBrowseFragment @Inject constructor(
             slotId: String,
             menu: WidgetMenuModel
         ) {
-            viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(slotId, menu))
+            viewModel.onAction(FeedBrowseAction.FetchCardsWidget(slotId, menu))
         }
 
         override fun onRefresh(
@@ -139,7 +139,7 @@ internal class FeedBrowseFragment @Inject constructor(
             slotId: String,
             menu: WidgetMenuModel
         ) {
-            viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(slotId, menu))
+            viewModel.onAction(FeedBrowseAction.FetchCardsWidget(slotId, menu))
         }
 
         override fun onCardImpressed(
@@ -249,7 +249,7 @@ internal class FeedBrowseFragment @Inject constructor(
         observeUiState()
 
         if (savedInstanceState == null) {
-            viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+            viewModel.onAction(FeedBrowseAction.LoadInitialPage)
             tracker.openScreenBrowseFeedPage()
         }
     }
@@ -334,7 +334,7 @@ internal class FeedBrowseFragment @Inject constructor(
             if (errorType == GlobalError.MAINTENANCE) {
                 onBackPressedCallback.handleOnBackPressed()
             } else {
-                viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+                viewModel.onAction(FeedBrowseAction.LoadInitialPage)
             }
         }
         binding.feedBrowseError.setType(errorType)
