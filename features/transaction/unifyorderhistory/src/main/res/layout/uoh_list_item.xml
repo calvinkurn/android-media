@@ -119,7 +119,7 @@
                 android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                tools:text="Kartu Nama Standar " />
+                tools:text="Kartu Nama Standar" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_uoh_product_desc"
