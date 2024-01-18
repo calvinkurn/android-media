@@ -672,9 +672,6 @@ class UniversalInboxFragment @Inject constructor(
         // Notify the first banner below static menu
         adapter.updateFirstTopAdsBanner(categoriesList[Int.ZERO])
     }
-
-    override fun onTdnVerticalBannerResponse(data: ArrayList<TopAdsImageViewModel>) {}
-
     private fun setTopAdsBannerExperimentPosition() {
         if (!topAdsBannerInProductCards.isNullOrEmpty()) {
             val topAdsBannerInCardsPosition =

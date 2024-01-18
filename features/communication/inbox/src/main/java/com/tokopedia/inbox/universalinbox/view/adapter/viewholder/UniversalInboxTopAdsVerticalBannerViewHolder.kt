@@ -8,14 +8,14 @@ import com.tokopedia.inbox.databinding.UniversalInboxTopadsVerticalBannerItemBin
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.EIGHT_DP
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsVerticalBannerUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
+import com.tokopedia.topads.sdk.listener.TdnVerticalBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class UniversalInboxTopAdsVerticalBannerViewHolder constructor(
     itemView: View,
     private val topAdsClickListener: TopAdsImageViewClickListener
-) : AbstractViewHolder<UniversalInboxTopAdsVerticalBannerUiModel>(itemView), TdnBannerResponseListener {
+) : AbstractViewHolder<UniversalInboxTopAdsVerticalBannerUiModel>(itemView), TdnVerticalBannerResponseListener {
 
     private val binding: UniversalInboxTopadsVerticalBannerItemBinding? by viewBinding()
 
@@ -48,8 +48,6 @@ class UniversalInboxTopAdsVerticalBannerViewHolder constructor(
         const val ADS_COUNT = 1
         const val DIMEN_ID = 17
     }
-
-    override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {}
 
     override fun onTdnVerticalBannerResponse(data: ArrayList<TopAdsImageViewModel>) {
         if (data.isNotEmpty()) {

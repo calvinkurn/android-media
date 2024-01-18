@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
+import com.tokopedia.topads.sdk.listener.TdnVerticalBannerResponseListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -37,7 +37,7 @@ class TdnVerticalView : BaseCustomView {
 
     private val tdnBanner: ImageView by lazy { findViewById(R.id.tdnVerticalBanner) }
     private val tdnShimmer: LoaderUnify by lazy { findViewById(R.id.tdnVerticalShimmer) }
-    private var tdnBannerResponseListener: TdnBannerResponseListener? = null
+    private var tdnVerticalBannerResponseListener: TdnVerticalBannerResponseListener? = null
 
     @JvmField
     @Inject
@@ -73,8 +73,8 @@ class TdnVerticalView : BaseCustomView {
 
     }
 
-    fun setTdnResponseListener(listener: TdnBannerResponseListener) {
-        tdnBannerResponseListener = listener
+    fun setTdnResponseListener(listener: TdnVerticalBannerResponseListener) {
+        tdnVerticalBannerResponseListener = listener
     }
 
     fun getTdnData(
@@ -102,7 +102,7 @@ class TdnVerticalView : BaseCustomView {
         topAdsImageViewViewModel?.get()?.getResponse()?.observe(context as LifecycleOwner) {
             when (it) {
                 is Success -> {
-                    tdnBannerResponseListener?.onTdnVerticalBannerResponse(it.data)
+                    tdnVerticalBannerResponseListener?.onTdnVerticalBannerResponse(it.data)
                     Timber.d("Response received successfully")
                 }
 
