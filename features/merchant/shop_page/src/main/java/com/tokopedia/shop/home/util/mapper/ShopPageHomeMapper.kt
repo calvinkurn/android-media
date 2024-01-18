@@ -399,7 +399,6 @@ object ShopPageHomeMapper {
         widgetResponse: ShopLayoutWidget.Widget,
         isMyOwnProduct: Boolean,
         isLoggedIn: Boolean,
-        isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
         shopId: String,
         widgetLayout: ShopPageWidgetUiModel?,
@@ -462,38 +461,18 @@ object ShopPageHomeMapper {
                 }
             }
             WidgetTypeEnum.CAMPAIGN.value.lowercase() -> {
-                if (isThematicWidgetShown) {
-                    when (widgetResponse.name) {
-                        WidgetNameEnum.ETALASE_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-                        WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse, isEnableDirectPurchase, widgetLayout, isOverrideTheme, colorSchema)
-                        WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value -> mapToNewProductLaunchCampaignUiModel(
-                            widgetResponse,
-                            isLoggedIn,
-                            widgetLayout,
-                            isOverrideTheme,
-                            colorSchema
-                        )
-                        else -> null
-                    }
-                } else {
-                    when (widgetResponse.name) {
-                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(
-                            widgetResponse,
-                            isEnableDirectPurchase,
-                            widgetLayout,
-                            isOverrideTheme,
-                            colorSchema
-                        )
-                        WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value -> mapToNewProductLaunchCampaignUiModel(
-                            widgetResponse,
-                            isLoggedIn,
-                            widgetLayout,
-                            isOverrideTheme,
-                            colorSchema
-                        )
-                        else -> null
-                    }
+                when (widgetResponse.name) {
+                    WidgetNameEnum.ETALASE_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                    WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                    FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse, isEnableDirectPurchase, widgetLayout, isOverrideTheme, colorSchema)
+                    WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value -> mapToNewProductLaunchCampaignUiModel(
+                        widgetResponse,
+                        isLoggedIn,
+                        widgetLayout,
+                        isOverrideTheme,
+                        colorSchema
+                    )
+                    else -> null
                 }
             }
             WidgetTypeEnum.DYNAMIC.value.lowercase() -> mapCarouselPlayWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
@@ -1218,7 +1197,6 @@ object ShopPageHomeMapper {
         responseWidgetData: List<ShopLayoutWidget.Widget>,
         myShop: Boolean,
         isLoggedIn: Boolean,
-        isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
         shopId: String,
         listWidgetLayout: List<ShopPageWidgetUiModel>,
@@ -1227,7 +1205,7 @@ object ShopPageHomeMapper {
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(WidgetTypeEnum.DYNAMIC.value, ignoreCase = true) || it.name == WidgetNameEnum.VOUCHER_STATIC.value || it.type.equals(WidgetTypeEnum.CARD.value, ignoreCase = true) }.onEach {
-                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase, shopId, listWidgetLayout.firstOrNull { widgetLayout -> it.widgetID == widgetLayout.widgetId }, isOverrideTheme, colorSchema)) {
+                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isEnableDirectPurchase, shopId, listWidgetLayout.firstOrNull { widgetLayout -> it.widgetID == widgetLayout.widgetId }, isOverrideTheme, colorSchema)) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetUiModel.let { model ->
                             model.widgetMasterId = it.widgetMasterID
@@ -1289,7 +1267,6 @@ object ShopPageHomeMapper {
         listWidgetLayout: List<ShopPageWidgetUiModel>,
         myShop: Boolean,
         isLoggedIn: Boolean,
-        isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
         shopId: String,
         isOverrideTheme: Boolean,
@@ -1312,7 +1289,6 @@ object ShopPageHomeMapper {
                     ),
                     myShop,
                     isLoggedIn,
-                    isThematicWidgetShown,
                     isEnableDirectPurchase,
                     shopId,
                     it,

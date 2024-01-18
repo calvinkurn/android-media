@@ -23,7 +23,6 @@ import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -40,7 +39,7 @@ internal class ReimagineGridViewStrategy(
     private val renderer = ProductCardRenderer(productCardView, Grid)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
-    private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
+    private val imageView by lazyView<ImageView?>(R.id.productCardImage)
     private val videoIdentifier by lazyView<ImageView?>(R.id.productCardVideoIdentifier)
     private val threeDots by lazyView<ImageView?>(R.id.productCardThreeDots)
     private val video: VideoPlayerController by lazyThreadSafetyNone {

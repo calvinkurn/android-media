@@ -151,6 +151,7 @@ data class ProductCardModel(
                 videoUrl = productCardModel.customVideoURL,
                 hasThreeDots = productCardModel.hasThreeDots,
                 stockInfo = StockInfo.from(productCardModel),
+                isInBackground = productCardModel.isInBackground,
             )
 
         private fun shopBadge(productCardModel: ProductCardModel) =

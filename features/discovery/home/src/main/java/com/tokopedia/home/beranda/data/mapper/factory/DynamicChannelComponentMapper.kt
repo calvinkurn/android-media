@@ -240,6 +240,14 @@ object DynamicChannelComponentMapper {
             minOrder = minOrder,
             price = price,
             imageUrl = imageUrl,
+            imageList = imageList.map {
+                ChannelGridImage(
+                    type = it.type,
+                    imageUrl = it.imageUrl,
+                    leftPadding = it.leftPadding,
+                    rightPadding = it.rightPadding,
+                )
+            },
             name = name,
             applink = applink,
             url = url,

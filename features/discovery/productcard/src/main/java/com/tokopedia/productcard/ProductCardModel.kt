@@ -88,6 +88,7 @@ data class ProductCardModel (
         val cardType: Int = CardUnify2.TYPE_SHADOW,
         val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
         val forceLightModeColor: Boolean = false,
+        val isInBackground: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
