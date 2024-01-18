@@ -1,19 +1,18 @@
 package com.tokopedia.iris.data.db.mapper
 
+import android.content.Context
 import android.os.Build
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
+import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.iris.data.db.table.PerformanceTracking
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.util.*
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.Exception
 import java.util.*
 
 /**
@@ -22,6 +21,7 @@ import java.util.*
 class TrackingMapper {
 
     fun transformSingleEvent(
+        context: Context,
         track: String,
         sessionId: String,
         userId: String,
@@ -33,7 +33,7 @@ class TrackingMapper {
         val row = JSONObject()
         val event = JSONArray()
 
-        event.put(reformatEvent(track, sessionId, cache))
+        event.put(reformatEvent(track, sessionId, cache, context))
 
         row.put(DEVICE_ID, deviceId)
         row.put(USER_ID, userId)
@@ -156,6 +156,7 @@ class TrackingMapper {
 
     companion object {
 
+        const val ANDROID = "android"
         const val DEVICE_ID = "device_id"
         const val USER_ID = "user_id"
         const val EVENT_DATA = "event_data"
@@ -173,8 +174,17 @@ class TrackingMapper {
         const val ANDROID_PREV_VERSION_SUFFIX = "before"
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val KEY_NEW_VISIT = "newVisit"
+        const val KEY_BROWSER_NAME = "browser_name"
+        const val KEY_BROWSER_VERSION_NAME = "browser_version_name"
+        const val KEY_OPERATING_SYSTEM_NAME = "operating_system_name"
+        const val KEY_OPERATING_SYSTEM_VERSION_NAME = "operating_system_version_name"
+        const val KEY_MOBILE_DEVICE_BRANDING_NAME = "mobile_device_branding_name"
+        const val KEY_MOBILE_DEVICE_MODEL_NAME = "mobile_device_model_name"
+        const val KEY_MOBILE_DEVICE_INFO_NAME = "mobile_device_info_name"
+        const val KEY_DEVICE_LANGUAGE_NAME = "device_language_name"
+        const val KEY_SCREEN_RESOLUTION_NAME = "screen_resolution_name"
 
-        fun reformatEvent(event: String, sessionId: String, cache: Cache): JSONObject {
+        fun reformatEvent(event: String, sessionId: String, cache: Cache, context: Context): JSONObject {
             return try {
                 val valueEvent = if (GlobalConfig.isSellerApp()) {
                     VALUE_EVENT_SELLERAPP
@@ -182,8 +192,22 @@ class TrackingMapper {
                     VALUE_EVENT_MAINAPP
                 }
                 val item = JSONObject(event)
+
                 if (item.has(KEY_EVENT)) {
                     val eventName = item.get(KEY_EVENT)
+
+                    if (eventName == EVENT_OPEN_SCREEN) {
+                        item.put(KEY_BROWSER_NAME, "")
+                        item.put(KEY_BROWSER_VERSION_NAME, "")
+                        item.put(KEY_OPERATING_SYSTEM_NAME, ANDROID)
+                        item.put(KEY_OPERATING_SYSTEM_VERSION_NAME, Build.VERSION.RELEASE)
+                        item.put(KEY_MOBILE_DEVICE_BRANDING_NAME, Build.BRAND)
+                        item.put(KEY_MOBILE_DEVICE_MODEL_NAME, Build.MODEL)
+                        item.put(KEY_MOBILE_DEVICE_INFO_NAME, Build.DEVICE)
+                        item.put(KEY_DEVICE_LANGUAGE_NAME, Locale.getDefault().toString())
+                        item.put(KEY_SCREEN_RESOLUTION_NAME, DevicePerformanceInfo.getDeviceDpi(context))
+                    }
+
                     if (!cache.hasVisit() && eventName == EVENT_OPEN_SCREEN) {
                         item.put(KEY_NEW_VISIT, "1")
                         cache.setVisit()
