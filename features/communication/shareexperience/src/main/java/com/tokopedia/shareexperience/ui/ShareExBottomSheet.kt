@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
+import com.tokopedia.shareexperience.domain.ShareExConstants.DefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
@@ -36,6 +37,7 @@ import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -193,7 +195,7 @@ class ShareExBottomSheet :
                             }
                         }
                         ShareExChannelEnum.OTHERS -> {
-                            // Show intent chooser
+                            openIntentChooser(it)
                         }
                         else -> {
                             it.intent?.let { intent ->
@@ -301,6 +303,11 @@ class ShareExBottomSheet :
             Timber.d(throwable)
             false
         }
+    }
+
+    private fun openIntentChooser(intentUiState: ShareExChannelIntentUiState) {
+        val intentChooser = Intent.createChooser(intentUiState.intent, DEFAULT_TITLE)
+        navigateWithIntent(intentChooser)
     }
 
     override fun onDestroyView() {

@@ -495,10 +495,10 @@ class ShareExViewModel @Inject constructor(
         val intent = Intent().apply {
             action = channelItemModel.actionIntent
             type = channelItemModel.mimeType.textType
-            setPackage(channelItemModel.packageName)
-            if (messageWithUrl.isNotBlank()) {
-                putExtra(Intent.EXTRA_TEXT, messageWithUrl)
+            if (channelItemModel.packageName.isNotBlank()) {
+                setPackage(channelItemModel.packageName)
             }
+            putExtra(Intent.EXTRA_TEXT, messageWithUrl)
             if (imageUri != null) {
                 when (channelItemModel.mimeType) {
                     ShareExMimeTypeEnum.IMAGE -> {

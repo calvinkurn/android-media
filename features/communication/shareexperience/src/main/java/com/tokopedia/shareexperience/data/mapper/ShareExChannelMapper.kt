@@ -212,7 +212,7 @@ class ShareExChannelMapper @Inject constructor(
                 channelEnum = ShareExChannelEnum.OTHERS,
                 title = resourceProvider.getOthersChannelTitle(),
                 icon = IconUnify.MENU_KEBAB_HORIZONTAL,
-                mimeType = ShareExMimeTypeEnum.NOTHING
+                mimeType = ShareExMimeTypeEnum.TEXT
             )
         )
 
