@@ -24,6 +24,7 @@ data class OngoingCampaignUiModel(
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return newData is OngoingCampaignUiModel &&
             shouldShowCampaign == newData.shouldShowCampaign &&
+            shouldShowTradeIn == newData.shouldShowTradeIn &&
             data?.hashCode() == newData.data?.hashCode()
     }
 

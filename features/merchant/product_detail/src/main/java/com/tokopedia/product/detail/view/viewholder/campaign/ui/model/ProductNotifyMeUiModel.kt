@@ -35,13 +35,13 @@ data class ProductNotifyMeUiModel(
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
-        val bundle = Bundle()
-        return if (newData is ProductNotifyMeUiModel) {
-            if (data.notifyMe != newData.data.notifyMe) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
-                bundle
-            } else {
-                null
+        if (newData !is ProductNotifyMeUiModel) return null
+        if (this !== newData) return null
+        val isNotifyMeChanged = newData.data.notifyMe != data.notifyMe
+
+        return if (isNotifyMeChanged) {
+            Bundle().apply {
+                putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
             }
         } else {
             null
