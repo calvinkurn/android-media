@@ -2,6 +2,7 @@ package com.tokopedia.mvcwidget.views.benefit
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.Color
@@ -27,8 +28,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.databinding.PromoBenefitBottomsheetBinding
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -99,23 +102,42 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                         topSection.background = drawable
                         benefitBackground.loadImage(model.bgImgUrl)
                         model.estimatePrice.run {
-                            layoutBenefit.tvEstimate.setAttribute(text, textColor, textFormat)
-                            layoutBenefit.tvEstimateTitle.setAttribute(title, titleColor, titleFormat)
+                            model.estimatePrice.run {
+                                layoutBenefit.tvEstimate.setAttribute(
+                                    text,
+                                    requireContext().getUnifyColorFromHex(textColor),
+                                    textFormat
+                                )
+                                layoutBenefit.tvEstimateTitle.setAttribute(
+                                    title,
+                                    requireContext().getUnifyColorFromHex(titleColor),
+                                    titleFormat
+                                )
+                            }
                         }
                         model.basePrice.run {
-                            layoutBenefit.tvBasePrice.setAttribute(text, textColor, textFormat)
-                            layoutBenefit.tvBasePriceTitle.setAttribute(title, titleColor, titleFormat)
+                            layoutBenefit.tvBasePrice.setAttribute(
+                                text,
+                                requireContext().getUnifyColorFromHex(textColor),
+                                textFormat
+                            )
+                            layoutBenefit.tvBasePriceTitle.setAttribute(
+                                title,
+                                requireContext().getUnifyColorFromHex(titleColor),
+                                titleFormat
+                            )
                         }
 
                         usablePromoAdapter.submitList(model.usablePromo)
 //                        infoAdapter.submitList(model.promoInfo)
 
                         tvTnc.text = MethodChecker.fromHtml(model.tnc.html)
-//                        tvTnc.setTextColor(Color.parseColor(model.tnc.color))
+                        tvTnc.setTextColor(
+                            requireContext().getUnifyColorFromHex(model.tnc.color)
+                        )
                     }
                 }
             }
-
             rvInfo.run {
                 adapter = infoAdapter
             }
@@ -149,11 +171,17 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
     }
 }
 
-internal fun TextView.setAttribute(text: String, color: String, typeFace: String) {
+internal fun TextView.setAttribute(text: String, color: Int, typeFace: String) {
     this.text = text
-//    setTextColor(Color.parseColor(color))
+    setTextColor(color)
     typeface = when (typeFace) {
         "bold" -> Typeface.DEFAULT_BOLD
         else -> Typeface.DEFAULT
     }
+}
+
+internal fun Context.getUnifyColorFromHex(hex: String): Int {
+    return runCatching {
+        stringToUnifyColor(this, hex).unifyColor!!
+    }.getOrElse { Color.parseColor(hex) }
 }

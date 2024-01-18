@@ -29,3 +29,12 @@ data class BenefitTnc(
     val html: String = "",
     val color: String = "#6D7588"
 ) : Parcelable
+
+@Parcelize
+data class UsablePromoModel(
+    val icon: String,
+    val text: String,
+    val value: String,
+    val textFormat: String = "normal",
+    val valueFormat: String = "normal",
+) : Parcelable

@@ -18,6 +18,7 @@ enum class PdpComponent(val id: String) {
 enum class Style(val id: String) {
     BgColor("background_color"),
     BgImage("background_image"),
+    Icon("icon_url"),
     Title("text_title_value"),
     TitleColor("text_title_color"),
     TitleFormat("text_title_format"),
@@ -52,24 +53,32 @@ internal fun PromoCatalogResponse.toUiModel(): BenefitUiModel {
     val estimatePriceComponent = components.componentOf(PdpComponent.FinalPrice)
     val basePriceComponent = components.componentOf(PdpComponent.NetPrice)
     val tncComponent = components.componentOf(PdpComponent.TnC)
+    val cashback = components.componentOf(PdpComponent.Cashback).let {
+        UsablePromoModel(
+            it.attributeOf(Style.Icon),
+            it.attributeOf(Style.Title),
+            it.attributeOf(Style.Text),
+            it.attributeOf(Style.TitleFormat),
+            it.attributeOf(Style.TextFormat)
+        )
+    }
+    val discount = components.componentOf(PdpComponent.Discount).let {
+        UsablePromoModel(
+            it.attributeOf(Style.Icon),
+            it.attributeOf(Style.Title),
+            it.attributeOf(Style.Text),
+            it.attributeOf(Style.TitleFormat),
+            it.attributeOf(Style.TextFormat)
+        )
+    }
+    val listPromo = listOf(cashback, discount)
 
     return BenefitUiModel(
         headerComponent.attributeOf(Style.BgImage),
         headerComponent.attributeOf(Style.BgColor),
         estimatePriceComponent.toTextModel(),
         basePriceComponent.toTextModel(),
-        listOf(
-            UsablePromoModel(
-                "https://images.tokopedia.net/img/retention/gopaycoins/gopay.png",
-                "Cashback GoPay Coins",
-                "Rp300,000"
-            ),
-            UsablePromoModel(
-                "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
-                "Diskon",
-                "Rp200,000"
-            )
-        ),
+        listPromo,
         listOf(
             "Nominal promo bisa berubah dikarenakan waktu pembelian, ketersediaan produk, periode promosi, ketentuan promo.",
             "Harga akhir akan ditampilkan di halaman “Pengiriman / Checkout”. Perhatikan sebelum mengkonfirmasi pesanan."

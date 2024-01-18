@@ -1,13 +1,11 @@
 package com.tokopedia.mvcwidget.views.benefit
 
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.mvcwidget.databinding.LayoutItemUsablePromoBinding
-import kotlinx.parcelize.Parcelize
 
 class UsablePromoAdapter :
     ListAdapter<UsablePromoModel, UsablePromoAdapter.ItemViewHolder>(DiffUtilCallback()) {
@@ -48,10 +46,3 @@ class UsablePromoAdapter :
         }
     }
 }
-
-@Parcelize
-data class UsablePromoModel(
-    val icon: String,
-    val text: String,
-    val value: String
-) : Parcelable
