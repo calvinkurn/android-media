@@ -24,8 +24,8 @@ data class KetupatReferralEventTimeStamp(
     data class GameReferralStamp(
 
         @SerializedName("resultStatus") var resultStatus: ResultStatus?,
-        @SerializedName("currentStampCount") var currentStampCount: Int?,
-        @SerializedName("maxStampCount") var maxStampCount: Int?,
+        @SerializedName("currentStampCount") var currentStampCount: Int,
+        @SerializedName("maxStampCount") var maxStampCount: Int,
         @SerializedName("stampLevelData") var stampLevelData: ArrayList<StampLevelData>
 
     )

@@ -12,8 +12,8 @@ class KetupatReferralEventTimeStampUseCase @Inject constructor(
     companion object{
         private const val EVENT_SLUG = "eventSlug"
         const val REFERRAL_EVENT_TIME_STAMP_DATA = """
-            query Gamification_gameReferralStamp(${'$'}slug: String!) {
-              gameReferralStamp(eventSlug: ${'$'}slug) {
+            query Gamification_gameReferralStamp(${'$'}eventSlug: String!) {
+              gameReferralStamp(eventSlug: ${'$'}eventSlug) {
                 resultStatus {
                   code
                   message
@@ -26,7 +26,7 @@ class KetupatReferralEventTimeStampUseCase @Inject constructor(
                   TotalStampNeeded
                 }
               }
-              gameReferralEventContent(eventSlug:${'$'}slug){
+              gameReferralEventContent(eventSlug:${'$'}eventSlug){
                 resultStatus{
                   code
                   message
@@ -40,10 +40,10 @@ class KetupatReferralEventTimeStampUseCase @Inject constructor(
         """
     }
     private fun createRequestParams(slug: String): HashMap<String, Any> {
-        val request = HashMap<String, Any>()
-        request[EVENT_SLUG] = slug
         val input = HashMap<String, Any>()
-        input[EVENT_SLUG] = request
+        input[EVENT_SLUG] = slug
+//        val input = HashMap<String, Any>()
+//        input[EVENT_SLUG] = request
         return input
     }
 

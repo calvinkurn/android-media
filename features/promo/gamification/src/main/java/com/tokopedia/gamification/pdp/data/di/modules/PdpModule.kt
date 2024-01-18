@@ -8,6 +8,8 @@ import com.tokopedia.gamification.pdp.domain.usecase.GamingRecommendationProduct
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponSlugUseCase
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponUseCase
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatLandingUseCase
+import com.tokopedia.gamification.pdp.domain.usecase.KetupatReferralEventTimeStampUseCase
+import com.tokopedia.gamification.pdp.domain.usecase.KetupatReferralUserRegistrationUseCase
 import com.tokopedia.gamification.pdp.repository.GamificationRepository
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,6 +24,16 @@ import dagger.Provides
 
 @Module(includes = [TopAdsWishlistModule::class,ActivityContextModule::class])
 class PdpModule {
+
+    @GamificationPdpScope
+    @Provides
+    fun provideKetupatReferralUserRegistrationUseCase(gamificationRepository: GamificationRepository): KetupatReferralUserRegistrationUseCase {
+        return KetupatReferralUserRegistrationUseCase(gamificationRepository)
+    }
+
+    fun provideKetupatReferralEventTimeStampUseCase(gamificationRepository: GamificationRepository): KetupatReferralEventTimeStampUseCase {
+        return KetupatReferralEventTimeStampUseCase(gamificationRepository)
+    }
 
     @GamificationPdpScope
     @Provides

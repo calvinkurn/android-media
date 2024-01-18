@@ -2,9 +2,12 @@ package com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
+import com.tokopedia.gamification.pdp.data.model.KetupatReferralEventTimeStamp
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFactory
 
-class KetupatReferralBannerVHModel(val referral: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem) :
+class KetupatReferralBannerVHModel(val referral: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem,
+    val timeData: KetupatReferralEventTimeStamp
+) :
     Visitable<KetupatLandingTypeFactory> {
     override fun type(typeFactory: KetupatLandingTypeFactory): Int {
         return typeFactory.type(this)

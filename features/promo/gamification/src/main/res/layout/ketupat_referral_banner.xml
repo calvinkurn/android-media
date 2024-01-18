@@ -70,6 +70,7 @@
                 android:elevation="2dp">
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/referral_bar_text_1"
                     android:visibility="invisible"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
@@ -79,6 +80,7 @@
                     android:background="@drawable/gami_referral_progress_indicator" />
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/referral_bar_text_2"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:gravity="center"
@@ -87,6 +89,7 @@
                     android:background="@drawable/gami_referral_progress_indicator" />
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/referral_bar_text_3"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_weight="1"
@@ -96,6 +99,7 @@
                     android:background="@drawable/gami_referral_progress_indicator" />
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/referral_bar_text_4"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:gravity="center"
