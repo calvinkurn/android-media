@@ -576,6 +576,7 @@ class OtherMenuFragment :
         observeToggleTopadsCount()
         observeIsShowTageCentralizePromo()
         observeIsTopAdsShopUsed()
+        observeTopAdsAutoAdsStatus()
     }
 
     private fun observeShopBadge() {
@@ -758,6 +759,12 @@ class OtherMenuFragment :
         viewModel.isTopAdsShopUsed.observe(viewLifecycleOwner) {
             viewHolder?.setTopAdsShop(it)
             setTrackerTopAdsMenu()
+        }
+    }
+
+    private fun observeTopAdsAutoAdsStatus(){
+        viewModel.topadsAutoAdsData.observe(viewLifecycleOwner){
+            viewHolder?.setTopAdsAutoPsStatus(it.status)
         }
     }
 
