@@ -2,6 +2,10 @@ package com.tokopedia.topads.dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -20,6 +24,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -35,6 +40,7 @@ import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
+import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
@@ -423,6 +429,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         appBarLayout2?.gone()
         view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view_autops)?.let {
             it.show()
+            it.findViewById<Typography>(R.id.article_link)?.let {
+                it.movementMethod = LinkMovementMethod.getInstance()
+                it.text = getClickableString()
+            }
             it.findViewById<ImageUnify>(topadsdashboardR.id.image)?.urlSrc = TopAdsDashboardConstant.IKLAN_PRODUK_AUTO_PS_EMPTY_VIEW_IMG_URL
             it.findViewById<UnifyButton>(topadsdashboardR.id.create_product_ads_cta)?.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS)
@@ -431,6 +441,34 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
                 RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
             }
         }
+    }
+
+    private fun getClickableString(): SpannableString {
+        val text = getString(R.string.topads_auto_ps_iklan_produk_empty_view_desc)
+        val ss = SpannableString(text)
+        val cs = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                RouteManager.route(
+                    context,
+                    ApplinkConstInternalGlobal.WEBVIEW,
+                    TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_ARTICLE_LINK
+                )
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = false
+                context?.let {
+                    ds.color = ContextCompat.getColor(
+                        it,
+                        unifyprinciplesR.color.Unify_GN500
+                    )
+                }
+                ds.isFakeBoldText = true
+            }
+        }
+
+        ss.setSpan(cs, text.length - 12, text.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return ss
     }
 
     private fun setNoAdsView() {

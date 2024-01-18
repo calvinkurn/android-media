@@ -54,7 +54,7 @@ class TopAdsAutoPsTypeSelectionFragment: BaseDaggerFragment() {
             setOnClickListener {
                 val intent = RouteManager.getIntent(
                     context,
-                    ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER
+                    ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS
                 )
                 startActivityForResult(intent, TopAdsDashboardConstant.AUTO_ADS_DISABLED)
             }

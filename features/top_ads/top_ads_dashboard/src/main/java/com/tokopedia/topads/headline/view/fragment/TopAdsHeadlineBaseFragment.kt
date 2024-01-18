@@ -2,14 +2,20 @@ package com.tokopedia.topads.headline.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -51,6 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Pika on 16/10/20.
@@ -436,6 +443,10 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         hariIni?.gone()
         view?.findViewById<CardUnify>(R.id.empty_view_autops)?.let {
             it.show()
+            it.findViewById<Typography>(R.id.article_link)?.let {
+                it.movementMethod = LinkMovementMethod.getInstance()
+                it.text = getClickableString()
+            }
             it.findViewById<ImageUnify>(R.id.empty_image)?.urlSrc = TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL
             it.findViewById<UnifyButton>(R.id.create_shopads_cta)?.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
@@ -444,6 +455,34 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
             }
         }
+    }
+
+    private fun getClickableString(): SpannableString {
+        val text = getString(R.string.topads_auto_ps_iklan_toko_empty_view_desc)
+        val ss = SpannableString(text)
+        val cs = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                RouteManager.route(
+                    context,
+                    ApplinkConstInternalGlobal.WEBVIEW,
+                    TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_ARTICLE_LINK
+                )
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = false
+                context?.let {
+                    ds.color = ContextCompat.getColor(
+                        it,
+                        unifyprinciplesR.color.Unify_GN500
+                    )
+                }
+                ds.isFakeBoldText = true
+            }
+        }
+
+        ss.setSpan(cs, text.length - 12, text.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return ss
     }
 
     override fun setDeletedGroupCount(size: Int) {
