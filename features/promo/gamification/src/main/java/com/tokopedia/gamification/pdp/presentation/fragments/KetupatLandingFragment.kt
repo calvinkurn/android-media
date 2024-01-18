@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -19,6 +20,8 @@ import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapte
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.KetupatLandingViewModel
 import com.tokopedia.gamification.utils.KetupatSharingComponent
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.infinite.main.InfiniteRecommendationManager
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -72,15 +75,25 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 //        }, 1000)
 
         val ketupatRV = view.findViewById<RecyclerView>(R.id.ketupat_rv)
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
 
         adapter.setVisitables(ArrayList())
 
         ketupatRV?.layoutManager = layoutManager
-        ketupatRV?.adapter = adapter
+        val concatAdapter = ConcatAdapter(adapter)
+        ketupatRV.adapter = concatAdapter
+        val infiniteRecommendationManager = context?.let { InfiniteRecommendationManager(it) }
+        infiniteRecommendationManager?.adapter?.let {
+            concatAdapter.addAdapter(it)
+        }
+        val requestParam = GetRecommendationRequestParam()
+        infiniteRecommendationManager?.requestParam = requestParam
+        infiniteRecommendationManager?.fetchRecommendation()
 
         ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024")
-        ketupatLandingViewModel?.getProductRecommendation()
+    }
+
+    private fun setupRecommendationList() {
     }
 
     // Call from the function where we get the landing page data
