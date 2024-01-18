@@ -111,7 +111,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 //                        infoAdapter.submitList(model.promoInfo)
 
                         tvTnc.text = MethodChecker.fromHtml(model.tnc.html)
-                        tvTnc.setTextColor(Color.parseColor(model.tnc.color))
+//                        tvTnc.setTextColor(Color.parseColor(model.tnc.color))
                     }
                 }
             }
@@ -151,7 +151,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
 internal fun TextView.setAttribute(text: String, color: String, typeFace: String) {
     this.text = text
-    setTextColor(Color.parseColor(color))
+//    setTextColor(Color.parseColor(color))
     typeface = when (typeFace) {
         "bold" -> Typeface.DEFAULT_BOLD
         else -> Typeface.DEFAULT
