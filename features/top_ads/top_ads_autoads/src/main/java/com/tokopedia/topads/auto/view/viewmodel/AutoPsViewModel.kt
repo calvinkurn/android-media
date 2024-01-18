@@ -21,7 +21,9 @@ import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.response.TopadsGetBudgetRecommendationResponse
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.model.GetVariantByIdResponse
 import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
+import com.tokopedia.topads.common.domain.usecase.GetVariantByIdUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetAutoAdsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
@@ -45,6 +47,7 @@ class AutoPsViewModel @Inject constructor(
     private val getBudgetRecommendationUseCase: TopadsGetBudgetRecommendationUseCase,
     private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     private val topAdsGetAutoAdsUseCase: TopAdsGetAutoAdsUseCase,
+    private val getVariantByIdUseCase: GetVariantByIdUseCase,
 ) : BaseViewModel(dispatcher.main), CoroutineScope {
 
     private var lowClickDivider = Int.ONE
@@ -62,6 +65,9 @@ class AutoPsViewModel @Inject constructor(
     private val _topAdsGetAutoAds: MutableLiveData<AutoAdsResponse.TopAdsGetAutoAds> =
         MutableLiveData()
     val topAdsGetAutoAds: LiveData<AutoAdsResponse.TopAdsGetAutoAds> = _topAdsGetAutoAds
+    private val _shopVariant = MutableLiveData<List<GetVariantByIdResponse.GetVariantById.ExperimentVariant>>()
+    val shopVariant: LiveData<List<GetVariantByIdResponse.GetVariantById.ExperimentVariant>>
+        get() = _shopVariant
 
 
     fun loadData() {
@@ -74,6 +80,15 @@ class AutoPsViewModel @Inject constructor(
             statisticEstimatorJob.await()
             getAutoAds()
         }, {})
+    }
+
+    fun getVariantById() {
+        launchCatchError(dispatcher.io, {
+            val data = getVariantByIdUseCase()
+            _shopVariant.postValue(data.getVariantById.shopIdVariants)
+        }, {
+            _shopVariant.postValue(listOf())
+        })
     }
 
     private fun getStatisticsEstimator() {
