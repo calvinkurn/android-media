@@ -10,7 +10,7 @@ import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExHorizontalSpac
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 
-class ShareExChipRecyclerView : RecyclerView, ShareExChipsListener {
+class ShareExChipRecyclerView : RecyclerView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -23,25 +23,22 @@ class ShareExChipRecyclerView : RecyclerView, ShareExChipsListener {
     private val horizontalSpacingItemDecoration = ShareExHorizontalSpacingItemDecoration(
         4.dpToPx(context.resources.displayMetrics)
     )
-    private val chipsAdapter = ShareExChipsAdapter(this)
+    private var chipsAdapter: ShareExChipsAdapter? = null
 
     init {
         setHasFixedSize(true)
         layoutManager = linearLayoutManager
-        adapter = chipsAdapter
         isNestedScrollingEnabled = false
         itemAnimator = null
         addItemDecoration(horizontalSpacingItemDecoration)
     }
 
     fun updateData(newList: List<ShareExChipUiModel>) {
-        chipsAdapter.updateData(newList)
+        chipsAdapter?.updateData(newList)
     }
 
-    override fun onClickChip(position: Int) {
-        val newList = chipsAdapter.currentList.mapIndexed { index, item ->
-            item.copy(isSelected = index == position)
-        }
-        updateData(newList)
+    fun setChipsListener(listener: ShareExChipsListener) {
+        chipsAdapter = ShareExChipsAdapter(listener)
+        adapter = chipsAdapter
     }
 }

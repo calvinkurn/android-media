@@ -5,15 +5,15 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.databinding.ShareexperienceShareLinkItemBinding
+import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
 import com.tokopedia.utils.htmltags.HtmlUtil
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExLinkShareViewHolder(
     itemView: View
-): AbstractViewHolder<ShareExLinkShareUiModel>(itemView) {
+) : AbstractViewHolder<ShareExLinkShareUiModel>(itemView) {
 
     private val binding: ShareexperienceShareLinkItemBinding? by viewBinding()
 

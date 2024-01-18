@@ -7,9 +7,10 @@ import com.tokopedia.shareexperience.databinding.ShareexperienceChannelItemBindi
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.ui.adapter.diffutil.ShareExChannelItemCallback
 import com.tokopedia.shareexperience.ui.adapter.viewholder.channel.ShareExChannelViewHolder
+import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 
 abstract class ShareExBaseChannelAdapter(
-    //TODO: Listener
+    private val channelListener: ShareExChannelListener
 ): ListAdapter<ShareExChannelItemModel, ShareExChannelViewHolder>(ShareExChannelItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareExChannelViewHolder {
@@ -18,7 +19,8 @@ abstract class ShareExBaseChannelAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ).root
+            ).root,
+            channelListener
         )
     }
 

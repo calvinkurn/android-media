@@ -16,8 +16,22 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_communication"
+                    android:pathPattern="@string/path_share_experience"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
     </application>
+
+    <queries>
+        <package android:name="com.whatsapp" />
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.instagram.android" />
+        <package android:name="jp.naver.line.android" />
+        <package android:name="com.twitter.android" />
+        <package android:name="org.telegram.messenger" />
+    </queries>
 
 </manifest>

@@ -4,34 +4,56 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
+import com.tokopedia.shareexperience.data.di.ShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
+import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
 import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExBottomSheetSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactoryImpl
+import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
+import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
+import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
+import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
+import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ShareExBottomSheet: BottomSheetUnify() {
+class ShareExBottomSheet :
+    BottomSheetUnify(),
+    ShareExChipsListener,
+    ShareExImageGeneratorListener,
+    ShareExAffiliateRegistrationListener,
+    ShareExChannelListener,
+    ShareExErrorListener {
 
     @Inject
-    lateinit var viewModel: ShareExViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: ShareExViewModel by activityViewModels { viewModelFactory }
 
     private var viewBinding by autoClearedNullable<ShareexperienceBottomSheetBinding>()
     private val adapter by lazy {
         ShareExBottomSheetAdapter(
-            ShareExTypeFactoryImpl()
+            ShareExTypeFactoryImpl(
+                chipsListener = this,
+                imageGeneratorListener = this,
+                affiliateRegistrationListener = this,
+                channelListener = this,
+                errorListener = this
+            )
         )
     }
 
@@ -48,6 +70,7 @@ class ShareExBottomSheet: BottomSheetUnify() {
         viewBinding = ShareexperienceBottomSheetBinding.inflate(inflater)
         setChild(viewBinding?.root)
         clearContentPadding = true
+        overlayClickDismiss = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,24 +78,16 @@ class ShareExBottomSheet: BottomSheetUnify() {
         initInjector()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun initInjector() {
-        DaggerShareExComponent
-            .builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+        (activity as HasComponent<ShareExComponent>).component.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTitle()
         initializeRecyclerView()
         initObservers()
-        viewModel.processAction(ShareExBottomSheetAction.InitializePage)
-    }
-
-    private fun setTitle() {
-        bottomSheetTitle.text = "Bagikan ke teman kamu" //TODO: change to data from BE
+        viewModel.processAction(ShareExAction.InitializePage)
     }
 
     private fun initializeRecyclerView() {
@@ -96,20 +111,64 @@ class ShareExBottomSheet: BottomSheetUnify() {
                 launch {
                     observeBottomSheetUiState()
                 }
+                launch {
+                    observeNavigationUiState()
+                }
             }
         }
-        viewModel.setupViewModelObserver()
     }
 
     private suspend fun observeBottomSheetUiState() {
         viewModel.bottomSheetUiState.collectLatest {
+            setBottomSheetTitle(it.title)
             it.uiModelList?.let { newList ->
                 setBottomSheetData(newList = newList)
             }
         }
     }
 
+    private fun setBottomSheetTitle(title: String) {
+        bottomSheetTitle.text = title
+    }
+
     private fun setBottomSheetData(newList: List<Visitable<in ShareExTypeFactory>>) {
         adapter.updateItems(newList)
+    }
+
+    private suspend fun observeNavigationUiState() {
+        viewModel.navigationUiState.collectLatest {
+            if (it.appLink.isNotBlank()) {
+                context?.let { ctx ->
+                    val intent = RouteManager.getIntent(ctx, it.appLink)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
+    override fun onClickChip(position: Int) {
+        viewModel.processAction(ShareExAction.UpdateShareBody(position))
+    }
+
+    override fun onImageChanged(imageUrl: String) {
+        if (imageUrl.isNotBlank()) {
+            viewModel.processAction(ShareExAction.UpdateShareImage(imageUrl))
+        }
+    }
+
+    override fun onAffiliateRegistrationCardClicked(appLink: String) {
+        if (appLink.isNotBlank()) {
+            viewModel.processAction(ShareExAction.NavigateToPage(appLink))
+        }
+    }
+
+    override fun onChannelClicked(element: ShareExChannelItemModel) {
+        // TODO
+    }
+
+    override fun onErrorActionClicked() {
+        if (activity is ShareExLoadingActivity) {
+            (activity as? ShareExLoadingActivity)?.refreshPage()
+        }
     }
 }

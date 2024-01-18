@@ -10,8 +10,8 @@ import com.tokopedia.shareexperience.ui.listener.ShareExCarouselImageListener
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
 
 class ShareExImageCarouselAdapter(
-    private val listener: ShareExCarouselImageListener
-): ListAdapter<ShareExImageUiModel, ShareExImageViewHolder>(
+    private val carouselImageListener: ShareExCarouselImageListener
+) : ListAdapter<ShareExImageUiModel, ShareExImageViewHolder>(
     ShareExImageCarouselItemCallback()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareExImageViewHolder {
@@ -20,7 +20,7 @@ class ShareExImageCarouselAdapter(
             parent,
             false
         )
-        return ShareExImageViewHolder(binding.root, listener)
+        return ShareExImageViewHolder(binding.root, carouselImageListener)
     }
 
     override fun getItemCount(): Int = currentList.size

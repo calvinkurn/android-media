@@ -6,16 +6,28 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.databinding.ShareexperienceRegisterAffiliateCardItemBinding
+import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExAffiliateRegistrationViewHolder(
-    itemView: View
+    itemView: View,
+    affiliateRegistrationListener: ShareExAffiliateRegistrationListener
 ): AbstractViewHolder<ShareExAffiliateRegistrationUiModel>(itemView) {
 
     private val binding: ShareexperienceRegisterAffiliateCardItemBinding? by viewBinding()
+    private var element: ShareExAffiliateRegistrationUiModel? = null
+
+    init {
+        binding?.root?.setOnClickListener {
+            affiliateRegistrationListener.onAffiliateRegistrationCardClicked(
+                element?.applink ?: ""
+            )
+        }
+    }
 
     override fun bind(element: ShareExAffiliateRegistrationUiModel) {
+        this.element = element
         binding?.shareexIvRegisterAffiliateIcon?.loadImage(element.icon)
         binding?.shareexTvRegisterAffiliateTitle?.text = element.title
         binding?.shareexTvRegisterAffiliateDesc?.text = element.description

@@ -11,14 +11,14 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExChipViewHolder(
     itemView: View,
-    private val listener: ShareExChipsListener
+    private val chipsListener: ShareExChipsListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val binding: ShareexperienceChipItemBinding? by viewBinding()
 
     init {
         binding?.shareexChip?.setOnClickListener {
-            listener.onClickChip(bindingAdapterPosition)
+            chipsListener.onClickChip(bindingAdapterPosition)
         }
     }
 

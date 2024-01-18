@@ -10,7 +10,7 @@ import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 
 class ShareExChipsAdapter(
-    private val listener: ShareExChipsListener
+    private val chipsListener: ShareExChipsListener
 ) : ListAdapter<ShareExChipUiModel, ShareExChipViewHolder>(
     ShareExChipsItemCallback()
 ) {
@@ -20,7 +20,7 @@ class ShareExChipsAdapter(
             parent,
             false
         )
-        return ShareExChipViewHolder(binding.root, listener)
+        return ShareExChipViewHolder(binding.root, chipsListener)
     }
 
     override fun getItemCount(): Int = currentList.size
