@@ -8,7 +8,6 @@ import com.tokopedia.content.product.preview.view.listener.ProductPreviewListene
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentImageViewHolder
-import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentLoadingViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentVideoViewHolder
 
 class ProductContentAdapter(
@@ -19,7 +18,7 @@ class ProductContentAdapter(
         return when (viewType) {
             TYPE_IMAGE -> ProductContentImageViewHolder.create(parent, listener)
             TYPE_VIDEO -> ProductContentVideoViewHolder.create(parent, listener)
-            else -> ProductContentLoadingViewHolder.create(parent)
+            else -> super.createViewHolder(parent, viewType)
         }
     }
 
@@ -27,7 +26,6 @@ class ProductContentAdapter(
         when (holder.itemViewType) {
             TYPE_IMAGE -> (holder as ProductContentImageViewHolder).bind(getItem(position))
             TYPE_VIDEO -> (holder as ProductContentVideoViewHolder).bind(getItem(position))
-            else -> (holder as ProductContentLoadingViewHolder).bind()
         }
     }
 
@@ -35,7 +33,7 @@ class ProductContentAdapter(
         return when (getItem(position).type) {
             MediaType.Image -> TYPE_IMAGE
             MediaType.Video -> TYPE_VIDEO
-            MediaType.Unknown -> TYPE_UNKNOWN
+            else -> error("Item ${getItem(position).type} is not supported")
         }
     }
 
@@ -60,6 +58,5 @@ class ProductContentAdapter(
     companion object {
         private const val TYPE_IMAGE = 0
         private const val TYPE_VIDEO = 1
-        private const val TYPE_UNKNOWN = 2
     }
 }
