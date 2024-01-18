@@ -133,8 +133,15 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
             setButtonSubmit()
             setButtonCancel()
         } else {
+            sendImpressionNonSubsidyBottomSheetTracker()
             showDescriptionSection()
         }
+    }
+
+    private fun sendImpressionNonSubsidyBottomSheetTracker() {
+        tracker.sendImpressionNonSubsidyBottomSheetEvent(
+            data.listProductDetailData.map { it.productId },
+        )
     }
 
     private fun observeDoOptOutSubsidyResultLiveData() {
