@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.view.customview.chatroom
+package com.tokopedia.chatbot.chatbot2.view.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
@@ -16,6 +16,8 @@ import com.tokopedia.chatbot.databinding.BottomsheetChatbotBigReplyBoxBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var isSendButtonActivated: Boolean = false
     private var labelText = ""
@@ -24,6 +26,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var messageText: String = ""
     private var isSendButtonClicked: Boolean = false
     private var isError: Boolean = false
+    private var currentSlowModeDurationInSecond: Int = 0
 
     private var _viewBinding: BottomsheetChatbotBigReplyBoxBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -50,11 +53,15 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         bindClickListeners()
         setUpEditText()
         getBindingView().chatText.icon1.showWithCondition(shouldShowAddAttachmentButton)
-        changeSendButtonIcon(isEnabled = true)
         if (isError) {
             setWordLengthError()
         }
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        startSlowMode()
     }
 
     private fun setUpEditText() {
@@ -63,7 +70,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             minLine = MINIMUM_NUMBER_OF_LINES
             maxLine = MAXIMUM_NUMBER_OF_LINES
             labelText.text = this@BigReplyBoxBottomSheet.labelText
-            context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            context?.resources?.getColor(unifyprinciplesR.color.Unify_NN950)
                 ?.let { labelText.setTextColor(it) }
             setPlaceholder(hintText)
             if (messageText.isNotEmpty()) {
@@ -72,7 +79,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             editText.setHintTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    unifyprinciplesR.color.Unify_NN400
                 )
             )
             val message = String.format(
@@ -93,11 +100,14 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private fun bindClickListeners() {
         getBindingView().sendButton.setOnClickListener {
             if (isSendButtonActivated) {
-                isSendButtonClicked = true
-                replyBoxClickListener?.getMessageContentFromBottomSheet(
-                    getBindingView().chatText.editText.text?.toString() ?: ""
-                )
-                dismissAllowingStateLoss()
+                getBindingView().chatText.isInputError = false
+                if (!getBindingView().sendButton.isSlowModeRunning) {
+                    isSendButtonClicked = true
+                    replyBoxClickListener?.getMessageContentFromBottomSheet(
+                        getBindingView().chatText.editText.text?.toString().orEmpty()
+                    )
+                    dismissAllowingStateLoss()
+                }
             } else {
                 setWordLengthError()
             }
@@ -109,7 +119,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         }
 
         setOnDismissListener {
-            val text = getBindingView().chatText.editText.text?.toString() ?: ""
+            val text = getBindingView().chatText.editText.text?.toString().orEmpty()
             hideKeyboard()
             if (isSendButtonClicked) {
                 return@setOnDismissListener
@@ -131,7 +141,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     }
 
     private fun getWordCount(): Int {
-        val words = getBindingView().chatText.editText.text?.toString()?.trim() ?: ""
+        val words = getBindingView().chatText.editText.text?.toString()?.trim().orEmpty()
         return words.split("\\s+".toRegex()).size
     }
 
@@ -144,7 +154,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 if (getWordCount() >= MINIMUM_NUMBER_OF_WORDS) {
                     enableSendButton()
                 }
-                context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                context?.resources?.getColor(unifyprinciplesR.color.Unify_NN950)
                     ?.let { _viewBinding?.chatText?.labelText?.setTextColor(it) }
             }
 
@@ -164,14 +174,6 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     override fun enableSendButton() {
         isSendButtonActivated = true
-    }
-
-    private fun changeSendButtonIcon(isEnabled: Boolean) {
-        if (isEnabled) {
-            getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send)
-        } else {
-            getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
-        }
     }
 
     private fun setWordLengthWarning(wordCount: Int) {
@@ -214,7 +216,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             )
             setMessage(message)
             isInputError = true
-            context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+            context?.resources?.getColor(unifyprinciplesR.color.Unify_RN500)
                 ?.let { labelText.setTextColor(it) }
         }
     }
@@ -226,6 +228,23 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     fun setErrorStatus(errorStatus: Boolean) {
         this.isError = errorStatus
+    }
+
+    fun initSlowModeButton(currentSlowModeDurationInSecond: Int) {
+        this.currentSlowModeDurationInSecond = currentSlowModeDurationInSecond
+    }
+
+    fun resetSlowModeButton() {
+        this.currentSlowModeDurationInSecond = 0
+    }
+
+    private fun startSlowMode() {
+        if (currentSlowModeDurationInSecond > 0) {
+            getBindingView().sendButton.let {
+                it.isSlowModeEnabled = true
+                it.startSlowDown(currentSlowModeDurationInSecond)
+            }
+        }
     }
 
     companion object {
