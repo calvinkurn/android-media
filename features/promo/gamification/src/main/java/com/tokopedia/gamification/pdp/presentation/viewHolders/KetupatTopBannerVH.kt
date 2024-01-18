@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.getDayDiffFromToday
-import com.tokopedia.utils.date.toString
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
@@ -40,20 +39,24 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
         element?.scratchCard?.let {
 //            val diff = parseData(it.startTime, TIMER_DATE_FORMAT)?.getDayDiffFromToday
             val diff = getDateDiffFromToday(it.startTime)
-            if (diff != null) {
-                if (diff in 2..7) {
-                    itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).show()
-                    itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).apply {
-                        text = "$diff Days"
-                        show()
+            if (diff != null && diff > 0) {
+                itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).show()
+                val date = when {
+                    diff > 7 -> {
+                        formatDate("yyyy-MM-dd hh:mm:ss Z", "dd-MMM-yyyy", it.startTime + "00")
                     }
-                } else {
-                    val date = formatDate("yyyy-MM-dd hh:mm:ss Z", "hh", it.startTime + "00")
-                    itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).show()
-                    itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).apply {
-                        text = date
-                        show()
+
+                    diff in 2..7 -> {
+                        "$diff Days"
                     }
+
+                    else -> {
+                        formatDate("yyyy-MM-dd hh:mm:ss Z", "hh", it.startTime + "00")
+                    }
+                }
+                itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).apply {
+                    text = date
+                    show()
                 }
             }
         }
@@ -64,7 +67,12 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
             val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.ENGLISH)
             formatter.isLenient = false
             formatter.timeZone = TimeZone.getTimeZone("UTC")
-            return formatter.parse(date + "00")?.getDayDiffFromToday()?.absoluteValue
+            val diff = formatter.parse(date + "00")?.getDayDiffFromToday()
+            return if (diff == null || diff > 0) {
+                -1
+            } else {
+                diff.absoluteValue
+            }
         } catch (e: ParseException) {
             Timber.e(e)
         }
