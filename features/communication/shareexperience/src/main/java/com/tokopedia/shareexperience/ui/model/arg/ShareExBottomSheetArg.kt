@@ -13,6 +13,7 @@ data class ShareExBottomSheetArg(
     val identifier: String,
     val pageTypeEnum: ShareExPageTypeEnum,
     val defaultUrl: String,
+    val trackerArg: ShareExTrackerArg,
 
     /**
      * Based on response
@@ -23,5 +24,5 @@ data class ShareExBottomSheetArg(
     /**
      * Optional
      */
-    val selectedChip: String = "",
+    val selectedChip: String = ""
 ): Parcelable

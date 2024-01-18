@@ -20,4 +20,5 @@
     <!-- Toaster -->
     <string name="shareex_action_copy_link">Salin Link</string>
     <string name="shareex_success_copy_link">Link berhasil disalin!</string>
+    <string name="shareex_fail_generate_affiliate_link">Link Affiliate gagal disalin, kamu bisa salin link biasa untuk bagikan produk.</string>
 </resources>

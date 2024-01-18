@@ -1,9 +1,6 @@
 package com.tokopedia.shareexperience.ui
 
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -19,7 +16,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.domain.ShareExConstants.DefaultValue.DEFAULT_TITLE
@@ -38,8 +34,8 @@ import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
+import com.tokopedia.shareexperience.ui.util.copyTextToClipboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -175,21 +171,21 @@ class ShareExBottomSheet :
             viewBinding?.shareexLayoutLoading?.showWithCondition(it.isLoading)
             /**
              * If loading, then do nothing
-             * If error, show toaster or do nothing
+             * If error and affiliate, continue until success and dismiss bottom sheet, show toaster, and user manually copy
+             * If error and not affiliate, skip then act like success
              * If channel copy link, copy text & show toaster
              * If channel others, show native chooser
              * If show toaster is true and error message not null/empty, show toaster
              */
-            if (!it.isLoading) {
-                if (it.error != null) {
-                    if (it.error.message?.contains("affiliate", ignoreCase = true) == true) {
-                        showFailGenerateAffiliateLinkToaster(it.message, it.error.message.toString())
-                    }
+            if (!it.isLoading && it.error == null) {
+                if (it.isAffiliateError) {
+                    dismiss()
+                    listener?.onFailGenerateAffiliateLink(it.message)
                 } else {
                     when (it.channelEnum) {
                         ShareExChannelEnum.COPY_LINK -> {
-                            val isSuccessCopy = copyTextToClipboard(it.message)
-                            if (isSuccessCopy) {
+                            val isSuccessCopy = context?.copyTextToClipboard(it.message)
+                            if (isSuccessCopy == true) {
                                 dismiss()
                                 listener?.onSuccessCopyLink()
                             }
@@ -200,7 +196,7 @@ class ShareExBottomSheet :
                         else -> {
                             it.intent?.let { intent ->
                                 if (intent.type == ShareExMimeTypeEnum.IMAGE.textType) {
-                                    copyTextToClipboard(it.message)
+                                    context?.copyTextToClipboard(it.message)
                                 }
                                 navigateWithIntent(intent)
                                 dismiss()
@@ -208,52 +204,6 @@ class ShareExBottomSheet :
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private fun showToaster(
-        text: String,
-        type: Int,
-        duration: Int,
-        actionText: String = "",
-        clickListener: View.OnClickListener? = null
-    ) {
-        view?.let {
-            if (actionText.isNotBlank() && clickListener != null) {
-                Toaster.build(
-                    view = it.rootView,
-                    text = text,
-                    duration = duration,
-                    type = type,
-                    actionText = actionText,
-                    clickListener = clickListener
-                ).show()
-            } else {
-                Toaster.build(
-                    view = it.rootView,
-                    text = text,
-                    duration = duration,
-                    type = type
-                ).show()
-            }
-        }
-    }
-
-    private fun showFailGenerateAffiliateLinkToaster(
-        message: String,
-        toasterMessage: String
-    ) {
-        showToaster(
-            toasterMessage,
-            Toaster.TYPE_ERROR,
-            Toaster.LENGTH_LONG,
-            getString(R.string.shareex_action_copy_link)
-        ) {
-            val isSuccessCopy = copyTextToClipboard(message)
-            if (isSuccessCopy) {
-                dismiss()
-                listener?.onSuccessCopyLink()
             }
         }
     }
@@ -290,18 +240,6 @@ class ShareExBottomSheet :
             startActivity(intent)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
-        }
-    }
-
-    private fun copyTextToClipboard(text: String): Boolean {
-        return try {
-            val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
-            val clip = ClipData.newPlainText(getString(R.string.shareex_action_copy_link), text)
-            clipboard?.setPrimaryClip(clip)
-            true
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            false
         }
     }
 

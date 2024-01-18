@@ -16,9 +16,9 @@ import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.Sh
 import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchLinkPropertiesRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchUniversalObjectRequest
-import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetShortLinkUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetAffiliateLinkUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetBranchLinkUseCase
+import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetShortLinkUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -32,7 +32,9 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ShareExGetShortLinkUseCase {
 
-    override suspend fun getShortLink(params: ShareExShortLinkRequest): Flow<ShareExResult<String>> {
+    override suspend fun getShortLink(
+        params: ShareExShortLinkRequest
+    ): Flow<Pair<ShareExShortLinkFallbackPriorityEnum, ShareExResult<String>>> {
         return channelFlow {
             var successReceived = false
             // Loop for every fallback
@@ -41,14 +43,14 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
                     when (it) {
                         is ShareExResult.Success -> {
                             successReceived = true
-                            send(ShareExResult.Success(it.data))
+                            send(Pair(fallbackPriorityEnum, ShareExResult.Success(it.data)))
                             return@collectLatest // break the collect after get result
                         }
                         is ShareExResult.Error -> {
-                            send(ShareExResult.Error(it.throwable)) // emit the error then proceed to next fallback
+                            send(Pair(fallbackPriorityEnum, ShareExResult.Error(it.throwable))) // emit the error then proceed to next fallback
                         }
                         ShareExResult.Loading -> {
-                            send(ShareExResult.Loading)
+                            send(Pair(fallbackPriorityEnum, ShareExResult.Loading))
                         }
                     }
                 }

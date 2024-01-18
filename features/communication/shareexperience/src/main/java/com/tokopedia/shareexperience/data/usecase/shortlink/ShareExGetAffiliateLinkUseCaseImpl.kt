@@ -7,14 +7,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.affiliate.generatelink.ShareExGenerateAffiliateLinkWrapperResponseDto
 import com.tokopedia.shareexperience.data.query.ShareExGetAffiliateLinkQuery
 import com.tokopedia.shareexperience.domain.ShareExResult
+import com.tokopedia.shareexperience.domain.asFlowResult
 import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkPropertiesWrapperRequest
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetAffiliateLinkUseCase
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class ShareExGetAffiliateLinkUseCaseImpl @Inject constructor(
@@ -35,13 +33,7 @@ class ShareExGetAffiliateLinkUseCaseImpl @Inject constructor(
             val result = getGeneratedLink(response)
             emit(result)
         }
-            .map<String, ShareExResult<String>> {
-                ShareExResult.Success(it)
-            }
-            .onStart { emit(ShareExResult.Loading) }
-            .catch {
-                emit(ShareExResult.Error(Throwable(ERROR_MESSAGE_AFFILIATE)))
-            }
+            .asFlowResult()
             .flowOn(dispatchers.io)
     }
 
@@ -63,7 +55,6 @@ class ShareExGetAffiliateLinkUseCaseImpl @Inject constructor(
     }
 
     companion object {
-        private const val ERROR_MESSAGE_AFFILIATE = "Link Affiliate gagal disalin, kamu bisa salin link biasa untuk bagikan produk."
         private const val ERROR_ALL_URLS_EMPTY = "Short & Regular URLs are empty"
         private const val ERROR_DATA_EMPTY = "Data is empty"
     }

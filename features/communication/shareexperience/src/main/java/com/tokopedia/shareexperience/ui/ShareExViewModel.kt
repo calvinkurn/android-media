@@ -304,12 +304,13 @@ class ShareExViewModel @Inject constructor(
         defaultUrl: String,
         throwable: Throwable?
     ) {
-        updateShortLinkUiState(
+        updateIntentUiState(
             intent = getAppIntent(channelItemModel, defaultUrl, null),
             message = defaultUrl,
             channelEnum = channelItemModel.channelEnum,
             isLoading = false,
-            error = throwable
+            error = throwable,
+            isAffiliateError = false
         )
     }
 
@@ -378,48 +379,81 @@ class ShareExViewModel @Inject constructor(
         shortLinkRequest: ShareExShortLinkRequest,
         channelItemModel: ShareExChannelItemModel
     ) {
-        generateShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest {
-            when (it) {
+        generateShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest { (apiType, result) ->
+            when (result) {
                 is ShareExResult.Success -> {
-                    downloadImageAndShare(shortLinkRequest, channelItemModel, it.data)
+                    downloadImageAndShare(apiType, shortLinkRequest, channelItemModel, result.data)
                 }
                 is ShareExResult.Error -> {
-                    updateShortLinkUiState(
-                        intent = null,
-                        message = "",
-                        channelEnum = shortLinkRequest.channelEnum,
-                        isLoading = false,
-                        error = it.throwable
-                    )
+                    if (apiType == ShareExShortLinkFallbackPriorityEnum.AFFILIATE) {
+                        updateIntentUiState(
+                            intent = null,
+                            message = "",
+                            channelEnum = shortLinkRequest.channelEnum,
+                            isLoading = false,
+                            error = result.throwable,
+                            isAffiliateError = true
+                        )
+                    } else {
+                        updateIntentUiState(
+                            intent = null,
+                            message = "",
+                            channelEnum = shortLinkRequest.channelEnum,
+                            isLoading = false,
+                            error = result.throwable
+                            // do not update affiliate error
+                        )
+                    }
                 }
-                ShareExResult.Loading -> {
-                    updateShortLinkUiState(
-                        intent = null,
-                        message = "",
-                        channelEnum = channelItemModel.channelEnum,
-                        isLoading = true,
-                        error = null
-                    )
-                }
+                ShareExResult.Loading -> setLoadingIntentUiState(channelItemModel.channelEnum)
             }
         }
     }
 
-    private fun updateShortLinkUiState(
+    private fun resetIntentUiState() {
+
+    }
+
+    private fun setLoadingIntentUiState(channelEnum: ShareExChannelEnum?) {
+        updateIntentUiState(
+            intent = null,
+            message = "",
+            channelEnum = channelEnum,
+            isLoading = true,
+            error = null,
+            isAffiliateError = false
+        )
+    }
+
+    private fun updateIntentUiState(
         intent: Intent?,
         message: String,
         channelEnum: ShareExChannelEnum?,
         isLoading: Boolean,
-        error: Throwable?
+        error: Throwable?,
+        isAffiliateError: Boolean? = null
     ) {
-        _channelIntentUiState.update {
-            it.copy(
-                intent = intent,
-                message = message,
-                channelEnum = channelEnum,
-                isLoading = isLoading,
-                error = error
-            )
+        if (isAffiliateError != null) {
+            _channelIntentUiState.update {
+                it.copy(
+                    intent = intent,
+                    message = message,
+                    channelEnum = channelEnum,
+                    isLoading = isLoading,
+                    error = error,
+                    isAffiliateError = isAffiliateError
+                )
+            }
+        } else {
+            _channelIntentUiState.update {
+                it.copy(
+                    intent = intent,
+                    message = message,
+                    channelEnum = channelEnum,
+                    isLoading = isLoading,
+                    error = error
+                )
+            }
         }
     }
 
@@ -450,15 +484,7 @@ class ShareExViewModel @Inject constructor(
                             emit(_imageGeneratorUiState.value.selectedImageUrl)
                         }
                     }
-                    ShareExResult.Loading -> {
-                        updateShortLinkUiState(
-                            intent = null,
-                            message = "",
-                            channelEnum = null,
-                            isLoading = true,
-                            error = null
-                        )
-                    }
+                    ShareExResult.Loading -> setLoadingIntentUiState(null)
                 }
                 flowResult
             }
@@ -515,6 +541,7 @@ class ShareExViewModel @Inject constructor(
     }
 
     private suspend fun downloadImageAndShare(
+        apiTypeEnum: ShareExShortLinkFallbackPriorityEnum,
         shortLinkRequest: ShareExShortLinkRequest,
         channelItemModel: ShareExChannelItemModel,
         shortLink: String
@@ -525,21 +552,23 @@ class ShareExViewModel @Inject constructor(
         getDownloadedImageUseCase.downloadImage(imageUrl).collectLatest {
             when (it) {
                 is ShareExResult.Success -> {
-                    updateShortLinkUiState(
+                    updateIntentUiState(
                         intent = getAppIntent(channelItemModel, messageWithUrl, it.data),
                         message = messageWithUrl,
                         channelEnum = channelItemModel.channelEnum,
                         isLoading = false,
                         error = null
+                        // do not update affiliate error flag
                     )
                 }
                 is ShareExResult.Error -> {
-                    updateShortLinkUiState(
+                    updateIntentUiState(
                         intent = getAppIntent(channelItemModel, messageWithUrl, null),
                         message = messageWithUrl,
                         channelEnum = channelItemModel.channelEnum,
                         isLoading = false,
                         error = it.throwable
+                        // do not update affiliate error flag
                     )
                 }
                 ShareExResult.Loading -> Unit
