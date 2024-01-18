@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 
 data class GetRecommendationRequestParam(
     val pageNumber: Int = 1,
@@ -64,6 +65,16 @@ data class GetRecommendationRequestParam(
         return requestMap
     }
 
+    fun setProductCardReimagineVersion() {
+        val version = if (ProductCardExperiment.isReimagine()) {
+            CARD_REIMAGINE_VERSION
+        } else {
+            CARD_REVERT_VERSION
+        }
+
+        productCardVersion = version
+    }
+
     companion object {
         private const val PAGE_NUMBER = "pageNumber"
         private const val PAGE_NAME = "pageName"
@@ -78,5 +89,8 @@ data class GetRecommendationRequestParam(
         private const val SHOP_IDS = "shopIDs"
         private const val PRODUCT_CARD_VERSION = "productCardVersion"
         private const val CRITERIA_THEMATIC_IDS = "criteriaThematicIDs"
+
+        private const val CARD_REIMAGINE_VERSION = 5
+        private const val CARD_REVERT_VERSION = 0
     }
 }

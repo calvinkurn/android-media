@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
 import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQuery
@@ -12,8 +11,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
@@ -36,7 +33,7 @@ open class GetRecommendationUseCase @Inject constructor(
         val userSession = UserSession(context)
 
         inputParameter.userId = userSession.userId.toIntOrNull() ?: 0
-        inputParameter.productCardVersion = if (ProductCardExperiment.isReimagine()) 5 else 0
+        inputParameter.setProductCardReimagineVersion()
 
         val queryParam = ChooseAddressUtils
             .getLocalizingAddressData(context)
