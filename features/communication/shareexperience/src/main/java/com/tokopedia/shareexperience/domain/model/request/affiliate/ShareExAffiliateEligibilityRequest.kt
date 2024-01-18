@@ -1,7 +1,6 @@
 package com.tokopedia.shareexperience.domain.model.request.affiliate
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.linker.utils.AffiliateLinkType
 
 data class ShareExAffiliateEligibilityRequest(
     @SerializedName("PageType")
@@ -14,8 +13,5 @@ data class ShareExAffiliateEligibilityRequest(
     val shop: ShareExAffiliateShopRequest? = null,
 
     @SerializedName("PageDetail")
-    val pageDetail: ShareExAffiliatePageDetailRequest? = null,
-
-    @Transient
-    val affiliateLinkType: AffiliateLinkType? = null
+    val pageDetail: ShareExAffiliatePageDetailRequest? = null
 )

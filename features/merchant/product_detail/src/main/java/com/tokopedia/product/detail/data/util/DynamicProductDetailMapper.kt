@@ -110,6 +110,10 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateEligibilityRequest
+import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateProductRequest
+import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateShopRequest
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel

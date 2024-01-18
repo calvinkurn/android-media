@@ -1,13 +1,14 @@
 package com.tokopedia.shareexperience.domain.model.property
 
-import com.tokopedia.shareexperience.domain.model.ShareExImageGeneratorModel
+import android.os.Parcelable
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
-import com.tokopedia.shareexperience.domain.model.property.linkproperties.ShareExLinkProperties
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ShareExPropertyModel(
-    val title: String = "",
     val listImage: List<String> = listOf(),
+    val title: String = "",
     val affiliate: ShareExAffiliateModel = ShareExAffiliateModel(),
     val linkProperties: ShareExLinkProperties = ShareExLinkProperties(),
-    val imageGenerator: ShareExImageGeneratorModel? = null
-)
+    val imageGenerator: ShareExImageGeneratorPropertyModel? = null
+): Parcelable

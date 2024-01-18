@@ -16,4 +16,9 @@
     <string name="shareex_channel_sms_title">SMS</string>
     <string name="shareex_channel_email_title">E-mail</string>
     <string name="shareex_channel_others_title">Lainnya</string>
+
+    <!-- Toaster -->
+    <string name="shareex_action_copy_link">Salin Link</string>
+    <string name="shareex_success_copy_link">Link berhasil disalin!</string>
+    <string name="shareex_fail_generate_affiliate_link">Link Affiliate gagal disalin, kamu bisa salin link biasa untuk bagikan produk.</string>
 </resources>

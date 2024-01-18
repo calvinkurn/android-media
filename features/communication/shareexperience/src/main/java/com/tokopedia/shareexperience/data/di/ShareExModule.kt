@@ -7,6 +7,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.ShareExResourceProviderImpl
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -27,5 +29,13 @@ object ShareExModule {
         @ApplicationContext context: Context
     ): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideUserSession(
+        @ApplicationContext context: Context
+    ): UserSessionInterface {
+        return UserSession(context)
     }
 }

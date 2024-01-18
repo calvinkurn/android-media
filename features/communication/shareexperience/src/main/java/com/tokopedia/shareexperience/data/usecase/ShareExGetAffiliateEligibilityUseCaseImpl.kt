@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateLinkWrapperResponseDto
-import com.tokopedia.shareexperience.data.repository.ShareExGetAffiliateEligibilityQuery
+import com.tokopedia.shareexperience.data.query.ShareExGetAffiliateEligibilityQuery
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.asFlowResult
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel

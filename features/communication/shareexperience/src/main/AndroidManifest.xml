@@ -5,24 +5,24 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application>
-        <activity
-            android:name=".ui.ShareExLoadingActivity"
-            android:screenOrientation="portrait"
+        <!-- Branch init -->
+        <meta-data
+            android:name="io.branch.sdk.BranchKey"
+            android:value="@string/branch_sdk_key_ma" />
+        <meta-data
+            android:name="io.branch.sdk.BranchKey.test"
+            android:value="@string/BRANCH_SDK_KEY_TEST" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.tokopedia.tkpd.fileprovider"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.ShareExLoading"
-            android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
+            android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths" />
+    </provider>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_communication"
-                    android:pathPattern="@string/path_share_experience"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
     </application>
 
     <queries>

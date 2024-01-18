@@ -11,8 +11,5 @@ interface ShareExGetSharePropertiesUseCase {
     suspend fun getData(params: ShareExProductBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>>
     suspend fun getData(params: ShareExShopBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>>
     suspend fun getData(params: ShareExDiscoveryBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>>
-    fun getDefaultData(
-        defaultUrl: String,
-        defaultImageUrl: String
-    ): Flow<ShareExResult<ShareExBottomSheetModel>>
+    fun getDefaultData(): Flow<ShareExResult<ShareExBottomSheetModel>>
 }

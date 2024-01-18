@@ -5,14 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Telephony.Sms.getDefaultSmsPackage
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.shareexperience.data.util.ShareExMimeTypeEnum
-import com.tokopedia.shareexperience.data.util.ShareExRemoteConfigKey
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.toArray
-import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.ShareExConstants
+import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
 import org.json.JSONArray
@@ -31,10 +32,10 @@ class ShareExChannelMapper @Inject constructor(
         socialMediaChannelList = socialMediaChannelList.sortedWith(
             compareBy(
                 // First Criterion to mark the non-existent greater than existed value (order asc)
-                { orderingArray.indexOf(it.idEnum.id) == -1 },
+                { orderingArray.indexOf(it.channelEnum.appName) == -1 },
                 // Second Criterion give value of each item
-                { orderingArray.indexOf(it.idEnum.id) },
-                // Thrid Criterion sort by title in alphabetical order
+                { orderingArray.indexOf(it.channelEnum.appName) },
+                // Third Criterion sort by title in alphabetical order
                 { it.title }
             )
         )
@@ -77,7 +78,10 @@ class ShareExChannelMapper @Inject constructor(
     private fun getSocialMediaOrderingArray(): Array<String> {
         return try {
             val socialMediaOrdering =
-                remoteConfig.getString(ShareExRemoteConfigKey.SOCIAL_MEDIA_ORDERING, "")
+                remoteConfig.getString(
+                    ShareExConstants.RemoteConfigKey.SOCIAL_MEDIA_ORDERING,
+                    ""
+                )
             JSONArray(socialMediaOrdering).toArray()
         } catch (throwable: Throwable) {
             Timber.d(throwable)
@@ -89,25 +93,25 @@ class ShareExChannelMapper @Inject constructor(
         val socialMediaChannelList = arrayListOf<ShareExChannelItemModel>()
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.WHATSAPP,
+                channelEnum = ShareExChannelEnum.WHATSAPP,
                 title = resourceProvider.getWhatsappChannelTitle(),
                 icon = IconUnify.WHATSAPP,
-                mimeType = ShareExMimeTypeEnum.IMAGE,
+                mimeType = ShareExMimeTypeEnum.TEXT,
                 packageName = "com.whatsapp"
             )
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.FB_FEED,
+                channelEnum = ShareExChannelEnum.FB_FEED,
                 title = resourceProvider.getFacebookFeedChannelTitle(),
                 icon = IconUnify.FACEBOOK,
-                mimeType = ShareExMimeTypeEnum.TEXT,
+                mimeType = ShareExMimeTypeEnum.ALL,
                 packageName = "com.facebook.katana"
             )
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.FB_STORY,
+                channelEnum = ShareExChannelEnum.FB_STORY,
                 title = resourceProvider.getFacebookStoryChannelTitle(),
                 icon = IconUnify.FACEBOOK_STORY,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -117,7 +121,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.IG_FEED,
+                channelEnum = ShareExChannelEnum.IG_FEED,
                 title = resourceProvider.getInstagramFeedChannelTitle(),
                 icon = IconUnify.INSTAGRAM,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -127,7 +131,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.IG_STORY,
+                channelEnum = ShareExChannelEnum.IG_STORY,
                 title = resourceProvider.getInstagramStoryChannelTitle(),
                 icon = IconUnify.INSTAGRAM_STORY,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -137,17 +141,16 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.IG_DM,
+                channelEnum = ShareExChannelEnum.IG_DM,
                 title = resourceProvider.getInstagramDirectMessageChannelTitle(),
                 icon = IconUnify.INSTAGRAM_DM,
                 mimeType = ShareExMimeTypeEnum.TEXT,
-                packageName = "com.instagram.android",
-                actionIntent = "com.instagram.share.ADD_TO_FEED"
+                packageName = "com.instagram.android"
             )
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.LINE,
+                channelEnum = ShareExChannelEnum.LINE,
                 title = resourceProvider.getLineChannelTitle(),
                 icon = IconUnify.LINE,
                 mimeType = ShareExMimeTypeEnum.TEXT,
@@ -156,7 +159,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.X_TWITTER,
+                channelEnum = ShareExChannelEnum.X_TWITTER,
                 title = resourceProvider.getXTwitterChannelTitle(),
                 icon = IconUnify.TWITTER,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -165,7 +168,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.TELEGRAM,
+                channelEnum = ShareExChannelEnum.TELEGRAM,
                 title = resourceProvider.getTelegramChannelTitle(),
                 icon = IconUnify.TELEGRAM,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -175,10 +178,12 @@ class ShareExChannelMapper @Inject constructor(
         return socialMediaChannelList
     }
 
+    @SuppressLint("PII Data Exposure")
     fun generateDefaultChannel(): ShareExChannelModel {
         val generalChannelList = arrayListOf<ShareExChannelItemModel>()
         generalChannelList.add(
             ShareExChannelItemModel(
+                channelEnum = ShareExChannelEnum.COPY_LINK,
                 title = resourceProvider.getCopyLinkChannelTitle(),
                 icon = IconUnify.LINK,
                 mimeType = ShareExMimeTypeEnum.NOTHING
@@ -186,23 +191,28 @@ class ShareExChannelMapper @Inject constructor(
         )
         generalChannelList.add(
             ShareExChannelItemModel(
+                channelEnum = ShareExChannelEnum.SMS,
                 title = resourceProvider.getSMSChannelTitle(),
                 icon = IconUnify.CHAT,
-                mimeType = ShareExMimeTypeEnum.TEXT
+                mimeType = ShareExMimeTypeEnum.ALL,
+                packageName = getDefaultSmsPackage(context)
             )
         )
         generalChannelList.add(
             ShareExChannelItemModel(
+                channelEnum = ShareExChannelEnum.EMAIL,
                 title = resourceProvider.getEmailChannelTitle(),
                 icon = IconUnify.MESSAGE,
-                mimeType = ShareExMimeTypeEnum.IMAGE
+                mimeType = ShareExMimeTypeEnum.ALL,
+                packageName = "com.google.android.gm"
             )
         )
         generalChannelList.add(
             ShareExChannelItemModel(
+                channelEnum = ShareExChannelEnum.OTHERS,
                 title = resourceProvider.getOthersChannelTitle(),
                 icon = IconUnify.MENU_KEBAB_HORIZONTAL,
-                mimeType = ShareExMimeTypeEnum.NOTHING
+                mimeType = ShareExMimeTypeEnum.TEXT
             )
         )
 
@@ -218,7 +228,7 @@ class ShareExChannelMapper @Inject constructor(
         actionIntent: String
     ): Intent {
         return Intent(actionIntent).apply {
-            setType(type.nameType)
+            setType(type.textType)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             setPackage(packageName)
         }

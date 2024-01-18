@@ -3,6 +3,7 @@ package com.tokopedia.shareexperience.ui.util
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
+import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExErrorUiModel
@@ -16,11 +17,10 @@ import com.tokopedia.shareexperience.ui.model.chip.ShareExChipsUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
 
-fun ShareExBottomSheetModel.map(
+fun ShareExBottomSheetModel.getSelectedChipPosition(
     selectedIdChip: String
-): List<Visitable<in ShareExTypeFactory>> {
-    val position = this.body.listChip.findIndexIgnoreCase(selectedIdChip).coerceAtLeast(0)
-    return map(position = position)
+): Int {
+    return this.bottomSheetPage.listChip.findIndexIgnoreCase(selectedIdChip).coerceAtLeast(0)
 }
 
 fun ShareExBottomSheetModel.map(
@@ -29,12 +29,15 @@ fun ShareExBottomSheetModel.map(
     val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
 
     // Subtitle UI
-    val subtitleUiModel = ShareExSubtitleUiModel(this.subtitle)
-    result.add(subtitleUiModel)
+    if (this.subtitle.isNotBlank()) {
+        val subtitleUiModel = ShareExSubtitleUiModel(this.subtitle)
+        result.add(subtitleUiModel)
+    }
 
     // Chip UI
+    // List chip and List Share Property always have same size
     val listChipUiModel = arrayListOf<ShareExChipUiModel>()
-    this.body.listChip.forEach {
+    this.bottomSheetPage.listChip.forEach {
         val chipUiModel = ShareExChipUiModel(it)
         listChipUiModel.add(chipUiModel)
     }
@@ -47,12 +50,12 @@ fun ShareExBottomSheetModel.map(
     }
 
     // Only add when property is not null
-    this.body.listShareProperty.getOrNull(position)?.let { shareExPropertyModel ->
+    this.bottomSheetPage.listShareProperty.getOrNull(position)?.let { shareExPropertyModel ->
         // Image Carousel UI
         val listImageUiModel = shareExPropertyModel.listImage.mapIndexed { index, imageUrl ->
             ShareExImageUiModel(imageUrl = imageUrl, isSelected = index == 0)
         }
-        if (listImageUiModel.isNotEmpty()) {
+        if (listImageUiModel.size > 1) {
             val imageCarouselUiModel = ShareExImageCarouselUiModel(listImageUiModel)
             result.add(imageCarouselUiModel)
         }
@@ -60,11 +63,11 @@ fun ShareExBottomSheetModel.map(
         // Link Share Card UI
         val linkShareUiModel = ShareExLinkShareUiModel(
             shareExPropertyModel.title,
-            shareExPropertyModel.affiliate.commission,
+            shareExPropertyModel.affiliate.eligibility.message,
             "tokopedia.link",
             listImageUiModel.firstOrNull()?.imageUrl.toString(),
-            shareExPropertyModel.affiliate.label,
-            shareExPropertyModel.affiliate.expiredDate
+            shareExPropertyModel.affiliate.eligibility.label,
+            shareExPropertyModel.affiliate.eligibility.expiredDate
         )
         result.add(linkShareUiModel)
 
@@ -77,22 +80,18 @@ fun ShareExBottomSheetModel.map(
             shareExPropertyModel.affiliate.registration.hasEnoughData()
         ) {
             val affiliateRegistrationUiModel = ShareExAffiliateRegistrationUiModel(
-                shareExPropertyModel.affiliate.registration.icon,
-                shareExPropertyModel.affiliate.registration.title,
-                shareExPropertyModel.affiliate.registration.description,
-                shareExPropertyModel.affiliate.registration.label,
-                shareExPropertyModel.affiliate.registration.appLink
+                shareExPropertyModel.affiliate.registration
             )
             result.add(affiliateRegistrationUiModel)
         }
     }
 
     // Channel Ui
-    val socialChannelUiModel = ShareExSocialChannelUiModel(this.body.socialChannel)
+    val socialChannelUiModel = ShareExSocialChannelUiModel(this.bottomSheetPage.socialChannel)
     if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
         result.add(socialChannelUiModel)
     }
-    val commonChannelUiModel = ShareExCommonChannelUiModel(this.body.commonChannel)
+    val commonChannelUiModel = ShareExCommonChannelUiModel(this.bottomSheetPage.commonChannel)
     if (commonChannelUiModel.commonChannel.listChannel.isNotEmpty()) {
         result.add(commonChannelUiModel)
     }
@@ -115,35 +114,32 @@ fun ShareExBottomSheetModel.mapError(
         listOf(ShareExErrorUiModel(throwable))
     } else {
         val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
-
-        // Only add when property is not null
-        this.body.listShareProperty.firstOrNull()?.let { shareExPropertyModel ->
-            // Link Share Card UI
-            val linkShareUiModel = ShareExLinkShareUiModel(
-                shareExPropertyModel.title,
-                shareExPropertyModel.affiliate.commission,
-                "tokopedia.link",
-                shareExPropertyModel.listImage.firstOrNull() ?: "",
-                shareExPropertyModel.affiliate.label,
-                shareExPropertyModel.affiliate.expiredDate
-            )
-            result.add(linkShareUiModel)
-        }
-
-        // Separator Ui
-        val separator = ShareExSeparatorUiModel()
-        result.add(separator)
-
         // Channel Ui
-        val socialChannelUiModel = ShareExSocialChannelUiModel(this.body.socialChannel)
+        val socialChannelUiModel = ShareExSocialChannelUiModel(this.bottomSheetPage.socialChannel)
         if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
             result.add(socialChannelUiModel)
         }
-        val commonChannelUiModel = ShareExCommonChannelUiModel(this.body.commonChannel)
+        val commonChannelUiModel = ShareExCommonChannelUiModel(this.bottomSheetPage.commonChannel)
         if (commonChannelUiModel.commonChannel.listChannel.isNotEmpty()) {
             result.add(commonChannelUiModel)
         }
 
         result
     }
+}
+
+fun ShareExBottomSheetModel.getImageGeneratorProperty(imageUrl: String): ShareExImageGeneratorPropertyModel? {
+    return this.bottomSheetPage.listShareProperty
+        .firstOrNull { it.listImage.findIndexIgnoreCase(imageUrl) >= 0 }
+        ?.imageGenerator
+}
+
+fun ShareExBottomSheetModel.getImageGeneratorProperty(
+    chipPosition: Int
+): ShareExImageGeneratorPropertyModel? {
+    return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.imageGenerator
+}
+
+fun ShareExBottomSheetModel.getSelectedImageUrl(chipPosition: Int, imagePosition: Int): String {
+    return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.listImage?.getOrNull(imagePosition) ?: ""
 }
