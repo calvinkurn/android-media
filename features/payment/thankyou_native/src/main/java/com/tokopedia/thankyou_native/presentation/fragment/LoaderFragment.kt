@@ -21,6 +21,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.thankyou_native.R
@@ -194,6 +196,7 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun showLoaderView() {
+        loaderAnimation.showWithCondition(IS_V2)
         if (IS_V2) return
 
         tvWaitForMinute.visible()

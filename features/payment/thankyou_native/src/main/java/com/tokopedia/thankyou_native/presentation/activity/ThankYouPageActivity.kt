@@ -2,6 +2,11 @@ package com.tokopedia.thankyou_native.presentation.activity
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -52,7 +57,7 @@ private const val GLOBAL_NAV_HINT = "Cari di Tokopedia"
 private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 private const val KEY_ROLLENCE_SHARE = "share_thankyoupage"
 private const val VALUE_MERCHANT_TOKOPEDIA = "tokopedia"
-const val IS_V2 = true
+const val IS_V2 = false
 
 class ThankYouPageActivity :
     BaseSimpleActivity(),
@@ -120,6 +125,14 @@ class ThankYouPageActivity :
     }
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
+        if (!IS_V2) {
+            findViewById<FrameLayout>(R.id.thank_parent_view).layoutParams.height = 0
+            findViewById<FrameLayout>(R.id.thank_parent_view).updateLayoutParams<ConstraintLayout.LayoutParams> {
+                topToBottom = findViewById<View>(R.id.toolbarBackground).id
+                bottomToBottom = ConstraintSet.PARENT_ID
+            }
+            findViewById<View>(R.id.toolbarBackground).show()
+        }
         this.thanksPageData = thanksPageData
         val fragmentByPaymentMode = getGetFragmentByPaymentMode(thanksPageData)
         fragmentByPaymentMode?.let {
