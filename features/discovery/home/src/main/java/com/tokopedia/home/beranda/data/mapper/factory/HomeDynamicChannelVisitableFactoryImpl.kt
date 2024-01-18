@@ -21,6 +21,7 @@ import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
@@ -219,6 +220,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPECIAL_SHOP_FLASH_SALE -> {
                     createShopFlashSale(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_3_AUTO -> {
+                    createLego3Auto(channel, position)
                 }
             }
         }
@@ -797,6 +801,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingLego3AutoComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return Lego3AutoModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache,
+        )
+    }
+
     private fun createMissionWidgetChannel(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int,
@@ -994,6 +1012,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if(!isCache) {
             visitableList.add(ShopFlashSaleMapper.mapShopFlashSaleWidgetDataModel(channel, verticalPosition))
         }
+    }
+
+    private fun createLego3Auto(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(mappingLego3AutoComponent(channel, isCache, verticalPosition))
     }
 
     override fun build(): List<Visitable<*>> = visitableList

@@ -144,6 +144,8 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
+import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetViewHolder
@@ -446,6 +448,10 @@ class HomeAdapterFactory(
         return SpecialReleaseRevampViewHolder.LAYOUT
     }
 
+    override fun type(lego3AutoModel: Lego3AutoModel): Int {
+        return Lego3AutoViewHolder.LAYOUT
+    }
+
     override fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int {
         return ShopFlashSaleWidgetViewHolder.LAYOUT
     }
@@ -624,6 +630,7 @@ class HomeAdapterFactory(
                 )
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
+            Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
