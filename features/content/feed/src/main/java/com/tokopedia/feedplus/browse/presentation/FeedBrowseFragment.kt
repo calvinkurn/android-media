@@ -43,7 +43,6 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.InterruptedIOException
@@ -59,7 +58,6 @@ import com.tokopedia.content.common.R as contentcommonR
 internal class FeedBrowseFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
     private val impressionManager: FeedBrowseImpressionManager,
-    private val trackingQueue: TrackingQueue,
     private val router: Router,
     trackerFactory: FeedBrowseTrackerImpl.Factory
 ) : TkpdBaseV4Fragment() {
@@ -256,11 +254,6 @@ internal class FeedBrowseFragment @Inject constructor(
 
     override fun getScreenName(): String {
         return ""
-    }
-
-    override fun onPause() {
-        super.onPause()
-        trackingQueue.sendAll()
     }
 
     override fun onDestroyView() {
