@@ -70,7 +70,7 @@ object CatalogTrackerConstant {
     const val EVENT_CLICK_CHANGE_COMPARISON_DETAIL = "click change catalog"
     const val EVENT_IMPRESSION_VIDEO_WIDGET = "impression video widget"
     const val EVENT_IMPRESSION_VIDEO_BANNER_WIDGET = "video banner impression"
-    const val EVENT_IMPRESSION_COLUMN_INFO_WIDGET = "impression specification"
+    const val EVENT_IMPRESSION_COLUMN_INFO_WIDGET = "impress specification"
     const val EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET = "specification banner impression"
     const val EVENT_CLICK_CLOSE_ON_IMAGE_REVIEW = "click close on image review"
     const val EVENT_CLICK_ON_IMAGE_REVIEW_BS = "click image on list review"

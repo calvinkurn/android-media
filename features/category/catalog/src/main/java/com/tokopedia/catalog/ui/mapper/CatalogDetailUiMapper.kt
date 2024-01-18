@@ -210,7 +210,7 @@ class CatalogDetailUiMapper @Inject constructor(
         val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
         val bgColor = remoteModel.globalStyle?.bgColor
         return apply {
-            idWidget = layout.type + layout.name
+            idWidget = layout.type + "_" + layout.name + "_" + UUID.randomUUID()
             widgetType = layout.type
             widgetName = layout.name
             widgetBackgroundColor = "#$bgColor".stringHexColorParseToInt()

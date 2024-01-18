@@ -1009,16 +1009,29 @@ class CatalogDetailPageFragment :
         val catalogDetail = viewModel.catalogDetailDataModel.value as? Success<CatalogDetailUiModel>
         val catalogTitle = catalogDetail?.data?.navigationProperties?.title.orEmpty()
         val list = arrayListOf<HashMap<String, String>>()
-        columnedInfoUiModel.widgetContent.rowData.forEachIndexed { index, _ ->
-            val promotions = hashMapOf<String, String>()
-            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
-            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.inc().toString()
-            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
-            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
-            list.add(promotions)
+        if (columnedInfoUiModel.widgetContent.rowData.isNotEmpty()) {
+            columnedInfoUiModel.widgetContent.rowData.forEachIndexed { index, _ ->
+                val promotions = hashMapOf<String, String>()
+                promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
+                promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.inc().toString()
+                promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+                promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
+                list.add(promotions)
+            }
+        } else {
+            columnedInfoUiModel.widgetContentThreeColumn.forEachIndexed { index, _ ->
+                columnedInfoUiModel.widgetContentThreeColumn[index].rowData.forEachIndexed { subindex, pair ->
+                    val promotions = hashMapOf<String, String>()
+                    promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
+                    promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = "${index.inc()}.${subindex.inc()}"
+                    promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+                    promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = pair.second
+                    list.add(promotions)
+                }
+            }
         }
 
-        sendOnTimeImpression(TRACKER_ID_IMPRESSION_COLUMN_INFO) {
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_COLUMN_INFO + columnedInfoUiModel.idWidget) {
             CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
                 event = EVENT_VIEW_ITEM,
                 action = EVENT_IMPRESSION_COLUMN_INFO_WIDGET,
