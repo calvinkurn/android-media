@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.Exception
+import java.lang.Thread.State
 import javax.inject.Inject
 
 class PromoBenefitViewModel @Inject constructor(
@@ -18,13 +19,17 @@ class PromoBenefitViewModel @Inject constructor(
     private val _state: MutableStateFlow<BenefitUiModel> = MutableStateFlow(BenefitUiModel())
     val state: StateFlow<BenefitUiModel> = _state
 
+    private val _error: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val error: StateFlow<Boolean> = _error
+
     fun setId(metaData: String) {
         viewModelScope.launch {
             try {
                 val result = getPromoBenefit(metaData)
+                _error.value = false
                 _state.value = result.toUiModel()
             } catch (e: Exception) {
-                Timber.e(e)
+                _error.value = true
             }
         }
     }

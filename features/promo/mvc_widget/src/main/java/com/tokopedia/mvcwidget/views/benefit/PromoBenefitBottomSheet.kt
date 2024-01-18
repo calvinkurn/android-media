@@ -25,6 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.databinding.PromoBenefitBottomsheetBinding
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
@@ -86,54 +87,62 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                    viewModel.state.collect { model ->
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            drawable?.colorFilter = BlendModeColorFilter(
-                                Color.parseColor(model.bgColor),
-                                BlendMode.SRC_ATOP
-                            )
-                        } else {
-                            drawable?.setColorFilter(
-                                Color.parseColor(model.bgColor),
-                                PorterDuff.Mode.SRC_ATOP
-                            )
-                        }
-                        topSection.background = drawable
-                        benefitBackground.loadImage(model.bgImgUrl)
-                        model.estimatePrice.run {
+                    launch {
+                        viewModel.state.collect { model ->
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                drawable?.colorFilter = BlendModeColorFilter(
+                                    Color.parseColor(model.bgColor),
+                                    BlendMode.SRC_ATOP
+                                )
+                            } else {
+                                drawable?.setColorFilter(
+                                    Color.parseColor(model.bgColor),
+                                    PorterDuff.Mode.SRC_ATOP
+                                )
+                            }
+                            topSection.background = drawable
+                            benefitBackground.loadImage(model.bgImgUrl)
                             model.estimatePrice.run {
-                                layoutBenefit.tvEstimate.setAttribute(
+                                model.estimatePrice.run {
+                                    layoutBenefit.tvEstimate.setAttribute(
+                                        text,
+                                        requireContext().getUnifyColorFromHex(textColor),
+                                        textFormat
+                                    )
+                                    layoutBenefit.tvEstimateTitle.setAttribute(
+                                        title,
+                                        requireContext().getUnifyColorFromHex(titleColor),
+                                        titleFormat
+                                    )
+                                }
+                            }
+                            model.basePrice.run {
+                                layoutBenefit.tvBasePrice.setAttribute(
                                     text,
                                     requireContext().getUnifyColorFromHex(textColor),
                                     textFormat
                                 )
-                                layoutBenefit.tvEstimateTitle.setAttribute(
+                                layoutBenefit.tvBasePriceTitle.setAttribute(
                                     title,
                                     requireContext().getUnifyColorFromHex(titleColor),
                                     titleFormat
                                 )
                             }
-                        }
-                        model.basePrice.run {
-                            layoutBenefit.tvBasePrice.setAttribute(
-                                text,
-                                requireContext().getUnifyColorFromHex(textColor),
-                                textFormat
-                            )
-                            layoutBenefit.tvBasePriceTitle.setAttribute(
-                                title,
-                                requireContext().getUnifyColorFromHex(titleColor),
-                                titleFormat
-                            )
-                        }
 
-                        usablePromoAdapter.submitList(model.usablePromo)
+                            usablePromoAdapter.submitList(model.usablePromo)
 //                        infoAdapter.submitList(model.promoInfo)
 
-                        tvTnc.text = MethodChecker.fromHtml(model.tnc.html)
-                        tvTnc.setTextColor(
-                            requireContext().getUnifyColorFromHex(model.tnc.color)
-                        )
+                            tvTnc.text = MethodChecker.fromHtml(model.tnc.html)
+                            tvTnc.setTextColor(
+                                requireContext().getUnifyColorFromHex(model.tnc.color)
+                            )
+                        }
+                    }
+                    launch {
+                        viewModel.error.collect {
+                            globalError.isVisible = it
+                            layoutBenefit.root.isVisible = !it
+                        }
                     }
                 }
             }
@@ -157,6 +166,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                 rvInfo.isVisible = infoStateIsShown
                 tvTnc.isVisible = infoStateIsShown
             }
+            globalError.errorAction.gone()
         }
     }
 
