@@ -1,0 +1,64 @@
+package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
+
+import android.view.View
+import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.inbox.R
+import com.tokopedia.inbox.databinding.UniversalInboxTopadsVerticalBannerItemBinding
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.EIGHT_DP
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsVerticalBannerUiModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.utils.view.binding.viewBinding
+
+class UniversalInboxTopAdsVerticalBannerViewHolder constructor(
+    itemView: View,
+    private val topAdsClickListener: TopAdsImageViewClickListener
+) : AbstractViewHolder<UniversalInboxTopAdsVerticalBannerUiModel>(itemView), TdnBannerResponseListener {
+
+    private val binding: UniversalInboxTopadsVerticalBannerItemBinding? by viewBinding()
+
+    override fun bind(uiModel: UniversalInboxTopAdsVerticalBannerUiModel) {
+        bindListener()
+        bindTopAds()
+    }
+
+    private fun bindTopAds() {
+        binding?.inboxVerticalTopadsBanner?.getTdnData(
+            SOURCE,
+            ADS_COUNT,
+            dimenId = DIMEN_ID
+        )
+    }
+
+    private fun bindListener() {
+        binding?.inboxVerticalTopadsBanner?.setTdnResponseListener(this)
+    }
+
+    private fun onTdnBannerClicked(bannerData: TopAdsImageViewModel) {
+        topAdsClickListener.onTopAdsImageViewClicked(bannerData.applink)
+    }
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.universal_inbox_topads_vertical_banner_item
+
+        const val SOURCE = "28"
+        const val ADS_COUNT = 1
+        const val DIMEN_ID = 17
+    }
+
+    override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {}
+
+    override fun onTdnVerticalBannerResponse(data: ArrayList<TopAdsImageViewModel>) {
+        if (data.isNotEmpty()) {
+            binding?.inboxVerticalTopadsBanner?.renderTdnBanner(data, EIGHT_DP, ::onTdnBannerClicked)
+        }
+
+    }
+
+    override fun onError(t: Throwable) {
+
+    }
+}

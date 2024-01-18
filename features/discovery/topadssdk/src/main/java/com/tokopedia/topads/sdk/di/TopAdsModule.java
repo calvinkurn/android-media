@@ -10,8 +10,11 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase;
 import com.tokopedia.topads.sdk.repository.TopAdsRepository;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession;
+import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import java.lang.ref.WeakReference;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,5 +49,12 @@ public class TopAdsModule {
     @Provides
     GraphqlRepository provideGraphqlRepository(){
         return  GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @TopAdsScope
+    @Provides
+    WeakReference<TopAdsImageViewViewModel> provideTopAdsImageViewViewModel(TopAdsImageViewUseCase topAdsImageViewUseCase){
+        TopAdsImageViewViewModel tvm = new TopAdsImageViewViewModel(topAdsImageViewUseCase);
+        return  new WeakReference(tvm);
     }
 }

@@ -28,6 +28,7 @@ import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxNavigationU
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxProductRecommendationUiState
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsVerticalBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaErrorUiModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
@@ -319,8 +320,8 @@ class UniversalInboxViewModel @Inject constructor(
             is Result.Success -> {
                 val productRecommendation = result.data.recommendationItemList.mapIndexed { index, item ->
                     // Add the first top ads at the 9th position (index 8), then every 9th position thereafter (change the hardcoded index for another position)
-                    if (index == 8 || (index > 8 && (index - 8) % 9 == 0)) {
-                        UniversalInboxTopAdsBannerUiModel()
+                    if (index % 20 == 7) {
+                        UniversalInboxTopAdsVerticalBannerUiModel()
                     } else {
                         UniversalInboxRecommendationUiModel(item)
                     }
