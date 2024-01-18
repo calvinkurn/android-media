@@ -204,6 +204,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -1180,7 +1181,7 @@ class ChatbotFragment2 :
             bigReplyBox?.hide()
             smallReplyBox?.apply {
                 if (bigReplyBox?.sendButton?.isSlowModeRunning == true) {
-                    sendButton?.startSlowDown(bigReplyBox?.sendButton?.currentSlowModeDurationInSecond ?: 0)
+                    sendButton?.startSlowDown(bigReplyBox?.sendButton?.currentSlowModeDurationInSecond.orZero())
                 }
                 show()
             }
@@ -1188,7 +1189,7 @@ class ChatbotFragment2 :
             smallReplyBox?.hide()
             bigReplyBox?.apply {
                 if (smallReplyBox?.sendButton?.isSlowModeRunning == true) {
-                    sendButton?.startSlowDown(smallReplyBox?.sendButton?.currentSlowModeDurationInSecond ?: 0)
+                    sendButton?.startSlowDown(smallReplyBox?.sendButton?.currentSlowModeDurationInSecond.orZero())
                 }
                 show()
             }
@@ -1697,7 +1698,7 @@ class ChatbotFragment2 :
             messageID = messageId
             caseID = data.getStringExtra(ChatBotCsatActivity.CASE_ID) ?: ""
             caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID) ?: ""
-            rating = data.extras?.getLong(EMOJI_STATE) ?: 0
+            rating = data.extras?.getLong(EMOJI_STATE).orZero()
             reasonCode = data.getStringExtra(SELECTED_ITEMS) ?: ""
         }
         viewModel.submitChatCsat(messageId, input)
@@ -1731,7 +1732,7 @@ class ChatbotFragment2 :
         input.livechatSessionId = csatAttributes?.livechatSessionId
         input.reason = getFilters(data, reasonList)
         input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
-        input.score = data?.extras?.getLong(EMOJI_STATE) ?: 0
+        input.score = data?.extras?.getLong(EMOJI_STATE).orZero()
         input.timestamp = data?.getStringExtra(TIME_STAMP)
         input.triggerRuleType = csatAttributes?.triggerRuleType
 
@@ -2839,7 +2840,7 @@ class ChatbotFragment2 :
             clearContentPadding = true
             if (bigReplyBox?.sendButton?.isSlowModeRunning == true) {
                 initSlowModeButton(
-                    bigReplyBox?.sendButton?.currentSlowModeDurationInSecond ?: 0
+                    bigReplyBox?.sendButton?.currentSlowModeDurationInSecond.orZero()
                 )
             } else {
                 resetSlowModeButton()
