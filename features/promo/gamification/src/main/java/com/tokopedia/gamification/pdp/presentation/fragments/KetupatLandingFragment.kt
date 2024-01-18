@@ -93,9 +93,6 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024")
     }
 
-    private fun setupRecommendationList() {
-    }
-
     // Call from the function where we get the landing page data
     fun setSharingHeaderIconAndListener(
         view: View,
