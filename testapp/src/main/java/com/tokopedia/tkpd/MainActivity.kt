@@ -16,8 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.mvcwidget.usecases.GetPromoBenefitBottomSheetUseCase
-import com.tokopedia.mvcwidget.usecases.metaDataSample
 import com.tokopedia.mvcwidget.views.benefit.PromoBenefitBottomSheet
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSession
