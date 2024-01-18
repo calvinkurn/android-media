@@ -68,7 +68,7 @@ class BCABalanceViewModel @Inject constructor(
                                 mapParamLogErrorNetworkFlazz(
                                         dataBalance.cardNo,
                                         messageLogNR(
-                                            "PENDING_BALANCE_GEN_2",
+                                            TAG_PROCESS_PENDING_BALANCE_GEN_2,
                                             separateResponseCodeFromCardData(
                                                 dataBalance.strLogRsp
                                             )
@@ -85,7 +85,7 @@ class BCABalanceViewModel @Inject constructor(
                                 mapParamLogErrorNetworkFlazz(
                                     setConfigResult.cardNo,
                                     messageLogNR(
-                                        "PENDING_BALANCE_GEN_2",
+                                        TAG_PROCESS_PENDING_BALANCE_GEN_2,
                                         separateResponseCodeFromCardData(
                                             setConfigResult.strLogRsp
                                         )
@@ -102,7 +102,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 "",
                                 messageLogNR(
-                                    "PENDING_BALANCE_GEN_2",
+                                    TAG_PROCESS_PENDING_BALANCE_GEN_2,
                                     e.message ?: ""
                                 ), 0
                             )
@@ -116,7 +116,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         setConfigResult.cardNo,
                         messageLogNR(
-                            "PENDING_BALANCE_GEN_2",
+                            TAG_PROCESS_PENDING_BALANCE_GEN_2,
                             ERROR_MESSAGE_ISODEP
                         ), 0
                     )
@@ -146,7 +146,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 "",
                                 messageLogNR(
-                                    "PENDING_BALANCE_GEN_1",
+                                    TAG_PROCESS_PENDING_BALANCE_GEN_1,
                                     e.message ?: ""
                                 ), 0
                             )
@@ -160,7 +160,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         "",
                         messageLogNR(
-                            "PENDING_BALANCE_GEN_1",
+                            TAG_PROCESS_PENDING_BALANCE_GEN_1,
                             ERROR_MESSAGE_ISODEP
                         ), 0
                     )
@@ -229,7 +229,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            "PENDING_BALANCE_PROCESS",
+                            TAG_PROCESS_PENDING_BALANCE,
                             it.message ?: ""
                         ), lastBalance
                     )
@@ -283,8 +283,8 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            "TRANSACTION_ID_PROCESS",
-                            "TRANSACTION_ID_EMPTY"
+                            TAG_PROCESS_TRANSACTION_ID,
+                            ERROR_TRANSACTION_ID_EMPTY
                         ), lastBalance
                     )
                 ))
@@ -308,7 +308,7 @@ class BCABalanceViewModel @Inject constructor(
                 mapParamLogErrorNetworkFlazz(
                     cardNumber,
                     messageLogNR(
-                        "TRANSACTION_ID_PROCESS",
+                        TAG_PROCESS_TRANSACTION_ID,
                         it.message ?: ""
                     ), lastBalance
                 )
@@ -348,7 +348,7 @@ class BCABalanceViewModel @Inject constructor(
                                 mapParamLogErrorNetworkFlazz(
                                     cardNumber,
                                     messageLogNR(
-                                        "PROCESS_SDK_SESSION_1",
+                                        TAG_PROCESS_SDK_SESSION_1,
                                         separateResponseCodeFromCardData(
                                             bcaSession1.strLogRsp
                                         )
@@ -365,7 +365,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    "PROCESS_SDK_SESSION_1",
+                                    TAG_PROCESS_SDK_SESSION_1,
                                     e.message ?: ""
                                 ),
                                 lastBalance
@@ -380,7 +380,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            "PROCESS_SDK_SESSION_1",
+                            TAG_PROCESS_SDK_SESSION_1,
                             ERROR_MESSAGE_ISODEP
                         ),
                         lastBalance
@@ -430,8 +430,8 @@ class BCABalanceViewModel @Inject constructor(
                         mapParamLogErrorNetworkFlazz(
                             cardNumber,
                             messageLogNR(
-                                "PROCESS_SESSION_KEY",
-                                "PROCESS_SESSION_CARD_DATA_EMPTY"
+                                TAG_PROCESS_SESSION_KEY,
+                                ERROR_SESSION_CARD_DATA_EMPTY
                             ),
                             lastBalance
                         )
@@ -457,7 +457,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            "PROCESS_SESSION_KEY",
+                            TAG_PROCESS_SESSION_KEY,
                             it.message ?: ""
                         ),
                         lastBalance
@@ -498,7 +498,7 @@ class BCABalanceViewModel @Inject constructor(
                                 mapParamLogErrorNetworkFlazz(
                                     cardNumber,
                                     messageLogNR(
-                                        "PROCESS_SDK_SESSION_2",
+                                        TAG_PROCESS_SDK_SESSION_2,
                                         separateResponseCodeFromCardData(
                                             bcaSession2.strLogRsp
                                         )
@@ -516,7 +516,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    "PROCESS_SDK_SESSION_2",
+                                    TAG_PROCESS_SDK_SESSION_2,
                                     e.message ?: ""
                                 ),
                                 lastBalance
@@ -531,7 +531,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                      cardNumber,
                         messageLogNR(
-                            "PROCESS_SDK_SESSION_2",
+                            TAG_PROCESS_SDK_SESSION_2,
                             ERROR_MESSAGE_ISODEP
                         ),
                         lastBalance
@@ -587,7 +587,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    "PROCESS_SDK_TOP_UP_1",
+                                    TAG_PROCESS_SDK_TOP_UP_1,
                                     separateResponseCodeFromCardData(
                                         topUp1.strLogRsp
                                     )
@@ -604,7 +604,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    "PROCESS_SDK_TOP_UP_1",
+                                    TAG_PROCESS_SDK_TOP_UP_1,
                                     e.message ?: ""
                                 ),
                                 lastBalance
@@ -619,7 +619,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            "PROCESS_SDK_TOP_UP_1",
+                            TAG_PROCESS_SDK_TOP_UP_1,
                             ERROR_MESSAGE_ISODEP
                         ),
                         lastBalance
@@ -698,7 +698,7 @@ class BCABalanceViewModel @Inject constructor(
                         mapParamLogErrorNetworkFlazz(
                             cardNumber,
                             messageLogNR(
-                                "PROCESS_BETWEEN_TOP_UP",
+                                TAG_PROCESS_BETWEEN_TOP_UP,
                                 ERROR_BETWEEN_TOP_UP
                             ),
                             lastBalance
@@ -792,7 +792,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    "PROCESS_SDK_TOP_UP_2",
+                                    TAG_PROCESS_SDK_TOP_UP_2,
                                 e.message ?: ""
                                 ),
                                 lastBalance
@@ -807,7 +807,7 @@ class BCABalanceViewModel @Inject constructor(
                 mapParamLogErrorNetworkFlazz(
                     cardNumber,
                     messageLogNR(
-                        "PROCESS_SDK_TOP_UP_2",
+                        TAG_PROCESS_SDK_TOP_UP_2,
                         ERROR_MESSAGE_ISODEP
                     ),
                     lastBalance
@@ -860,7 +860,7 @@ class BCABalanceViewModel @Inject constructor(
                 mapParamLogErrorNetworkFlazz(
                     cardNumber,
                     messageLogNR(
-                    "PROCESS_ACK",
+                        TAG_PROCESS_ACK,
                         it.message ?: ""
                     ),
                     updatedBalance
@@ -912,8 +912,8 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    "PROCESS_SDK_REVERSAL",
-                                        separateResponseCodeFromCardData(reversal.strLogRsp)
+                                    TAG_PROCESS_SDK_REVERSAL,
+                                    separateResponseCodeFromCardData(reversal.strLogRsp)
                                 ),
                                 lastBalance
                             )
@@ -927,7 +927,7 @@ class BCABalanceViewModel @Inject constructor(
                         mapParamLogErrorNetworkFlazz(
                             cardNumber,
                             messageLogNR(
-                                "PROCESS_SDK_REVERSAL",
+                                TAG_PROCESS_SDK_REVERSAL,
                                 e.message ?: ""
                             ),
                             lastBalance
@@ -941,8 +941,8 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            "PROCESS_SDK_REVERSAL",
-                                ERROR_MESSAGE_ISODEP
+                            TAG_PROCESS_SDK_REVERSAL,
+                            ERROR_MESSAGE_ISODEP
                         ),
                         lastBalance
                     )
@@ -1012,7 +1012,7 @@ class BCABalanceViewModel @Inject constructor(
                 mapParamLogErrorNetworkFlazz(
                     cardNumber,
                     messageLogNR(
-                        "PROCESS_REVERSAL",
+                        TAG_PROCESS_REVERSAL,
                         it.message ?: ""
                     ), lastBalance
                 )
@@ -1053,7 +1053,7 @@ class BCABalanceViewModel @Inject constructor(
                         mapParamLogErrorNetworkFlazz(
                             cardNumber,
                             messageLogNR(
-                            "PROCESS_SDK_BCALASTBCATOPUP",
+                                TAG_PROCESS_SDK_BCALASTBCATOP_UP,
                                 e.message ?: ""
                             ), lastBalance
                         ),
@@ -1066,8 +1066,8 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            "PROCESS_SDK_BCALASTBCATOPUP",
-                                ERROR_MESSAGE_ISODEP
+                            TAG_PROCESS_SDK_BCALASTBCATOP_UP,
+                            ERROR_MESSAGE_ISODEP
                         ), lastBalance
                     )
                 )
@@ -1136,5 +1136,21 @@ class BCABalanceViewModel @Inject constructor(
         private const val RC_8303 = "8303"
         private const val ERROR_MESSAGE_ISODEP = "ISODep Connection Issue"
         private const val ERROR_BETWEEN_TOP_UP = "Done between top up not supposed to be happend"
+        private const val TAG_PROCESS_SDK_BCALASTBCATOP_UP = "PROCESS_SDK_BCALASTBCATOPUP"
+        private const val TAG_PROCESS_SDK_REVERSAL = "PROCESS_SDK_REVERSAL"
+        private const val TAG_PROCESS_REVERSAL = "PROCESS_REVERSAL"
+        private const val TAG_PROCESS_ACK = "PROCESS_ACK"
+        private const val TAG_PROCESS_SDK_TOP_UP_2 = "PROCESS_SDK_TOP_UP_2"
+        private const val TAG_PROCESS_BETWEEN_TOP_UP = "PROCESS_BETWEEN_TOP_UP"
+        private const val TAG_PROCESS_SDK_TOP_UP_1 = "PROCESS_SDK_TOP_UP_1"
+        private const val TAG_PROCESS_SDK_SESSION_2 = "PROCESS_SDK_SESSION_2"
+        private const val TAG_PROCESS_SESSION_KEY = "PROCESS_SESSION_KEY"
+        private const val ERROR_SESSION_CARD_DATA_EMPTY = "PROCESS_SESSION_CARD_DATA_EMPTY"
+        private const val TAG_PROCESS_SDK_SESSION_1 = "PROCESS_SDK_SESSION_1"
+        private const val TAG_PROCESS_TRANSACTION_ID = "PROCESS_TRANSACTION_ID"
+        private const val ERROR_TRANSACTION_ID_EMPTY = "TRANSACTION_ID_EMPTY"
+        private const val TAG_PROCESS_PENDING_BALANCE = "PROCESS_PENDING_BALANCE"
+        private const val TAG_PROCESS_PENDING_BALANCE_GEN_1 = "PROCESS_PENDING_BALANCE_GEN_1"
+        private const val TAG_PROCESS_PENDING_BALANCE_GEN_2 = "PROCESS_PENDING_BALANCE_GEN_2"
     }
 }
