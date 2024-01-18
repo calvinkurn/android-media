@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
@@ -69,9 +68,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var powerMerchantTracking: PowerMerchantTracking
 
     @Inject
     lateinit var shopSettingsInfoViewModel: ShopSettingsInfoViewModel
