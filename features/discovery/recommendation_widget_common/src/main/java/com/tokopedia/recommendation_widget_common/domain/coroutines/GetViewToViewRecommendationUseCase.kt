@@ -5,7 +5,6 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
 import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQuery
@@ -37,7 +36,7 @@ class GetViewToViewRecommendationUseCase @Inject constructor(
     }
 
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
-        inputParameter.productCardVersion = if (ProductCardExperiment.isReimagine()) 5 else 0
+        inputParameter.setProductCardReimagineVersion()
 
         val queryParam = context?.let {
             ChooseAddressUtils
