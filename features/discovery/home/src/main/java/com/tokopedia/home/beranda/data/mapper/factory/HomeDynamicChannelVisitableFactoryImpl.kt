@@ -31,7 +31,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.home_component.R as home_componentR
 
 class HomeDynamicChannelVisitableFactoryImpl(
     val userSessionInterface: UserSessionInterface?,
@@ -110,7 +109,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createRecommendationListCarouselComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-                    val borderStyle = channel.styleParamMap.parseBorderStyle()
+                    val borderStyle = channel.styleParam.parseBorderStyle()
                     if (borderStyle == BORDER_STYLE_PADDING) {
                         createMixLeftPaddingComponent(channel, position, isCache)
                     } else {
@@ -399,7 +398,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     pageName = channel.pageName,
                     widgetParam = channel.widgetParam,
                     dividerType = channel.dividerType,
-                    dividerSize = channel.styleParamMap.parseDividerSize(),
+                    dividerSize = channel.styleParam.parseDividerSize(),
                     channelHeader = ChannelHeader(
                         channel.header.id,
                         channel.header.name,
@@ -843,8 +842,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     verticalPosition
                 ),
                 isCache,
-                dimenMarginTop = home_componentR.dimen.home_banner_default_margin_vertical_design,
-                dimenMarginBottom = home_componentR.dimen.home_banner_default_margin_vertical_design,
+                dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
+                dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
                 cardInteraction = true
             )
         )

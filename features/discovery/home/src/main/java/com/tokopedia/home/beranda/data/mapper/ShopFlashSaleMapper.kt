@@ -34,7 +34,7 @@ object ShopFlashSaleMapper {
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int,
     ): ShopFlashSaleWidgetDataModel {
-        val timer = if(channel.styleParamMap.isHideTimer()) {
+        val timer = if(channel.styleParam.isHideTimer()) {
             null
         } else {
             ShopFlashSaleTimerDataModel(isLoading = true)

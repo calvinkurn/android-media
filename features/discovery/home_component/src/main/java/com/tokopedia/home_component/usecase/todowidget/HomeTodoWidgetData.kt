@@ -3,6 +3,11 @@ package com.tokopedia.home_component.usecase.todowidget
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.home_component.model.AtfContent
+import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
+import com.tokopedia.home_component_header.model.ChannelHeader
 
 /**
  * Created by frenzel

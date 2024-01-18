@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.helper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
-import com.tokopedia.home_component.util.ChannelStyleUtil.parseStyleParamAsMap
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -21,7 +20,7 @@ object HomeChannelWidgetUtil {
         dividerBottom: DividerUnify?,
         useBottomPadding: Boolean = false
     ) {
-        val dividerSize = channelModel?.styleParamMap?.parseDividerSize()?.toPx()
+        val dividerSize = channelModel?.styleParam?.parseDividerSize()?.toPx()
             ?: DEFAULT_DIVIDER_HEIGHT.toPx()
         dividerTop?.layoutParams?.height = dividerSize
         dividerBottom?.layoutParams?.height = dividerSize
