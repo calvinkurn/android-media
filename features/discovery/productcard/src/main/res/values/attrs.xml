@@ -11,5 +11,6 @@
             <enum name="list" value="3" />
             <enum name="listCarousel" value="4" />
         </attr>
+        <attr name="useCompatPadding" format="boolean" />
     </declare-styleable>
 </resources>
