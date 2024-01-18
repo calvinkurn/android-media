@@ -43,6 +43,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 class DiscountedProductManageFragment : BaseDaggerFragment() {
@@ -264,6 +265,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         RouteManager.route(
             context,
             String.format(
+                Locale.getDefault(),
                 "%s?url=%s",
                 ApplinkConst.WEBVIEW,
                 UrlConstant.SELLER_NON_ELIGIBLE_EDU_URL
