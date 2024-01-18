@@ -42,7 +42,7 @@ class CategoryInspirationViewModelTest {
     }
 
     @Test
-    fun `test load initial data`() = runTestUnconfined {
+    fun `when load initial data, should return title and slots`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
         val viewModel = CategoryInspirationViewModel(mockSource, mockRepo)
         val menus = modelGen.widgetMenuModel.take(2).toList()
@@ -65,7 +65,7 @@ class CategoryInspirationViewModelTest {
     }
 
     @Test
-    fun `test load data for menu`() = runTestUnconfined {
+    fun `when load data for certain menus, should return data for that specific menu`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
         val viewModel = CategoryInspirationViewModel(mockSource, mockRepo)
         val menus = modelGen.widgetMenuModel.take(2).toList()
@@ -107,7 +107,7 @@ class CategoryInspirationViewModelTest {
     }
 
     @Test
-    fun `test load more data`() = runTestUnconfined {
+    fun `when request load data for next page, should return data if there's still next page`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
         val viewModel = CategoryInspirationViewModel(mockSource, mockRepo)
         val menus = modelGen.widgetMenuModel.take(2).toList()
@@ -156,7 +156,7 @@ class CategoryInspirationViewModelTest {
     }
 
     @Test
-    fun `test select menu`() = runTestUnconfined {
+    fun `when select menu, should select that and only that menu`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
         val viewModel = CategoryInspirationViewModel(mockSource, mockRepo)
         val menus = modelGen.widgetMenuModel.take(2).toList()
