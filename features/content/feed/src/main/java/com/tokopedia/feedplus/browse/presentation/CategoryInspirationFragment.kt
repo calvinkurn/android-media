@@ -201,6 +201,7 @@ internal class CategoryInspirationFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvCategoryInspiration.removeOnScrollListener(loadMoreListener)
         _binding = null
     }
 
