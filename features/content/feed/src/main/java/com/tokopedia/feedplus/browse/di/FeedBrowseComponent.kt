@@ -3,8 +3,9 @@ package com.tokopedia.feedplus.browse.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.content.common.di.ContentFragmentFactoryModule
-import com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity
 import com.tokopedia.feedplus.browse.presentation.CategoryInspirationActivity
+import com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity
+import com.tokopedia.stories.internal.di.StoriesSeenStorageModule
 import dagger.Component
 
 /**
@@ -16,7 +17,8 @@ import dagger.Component
         FeedBrowseModule::class,
         FeedBrowseViewModelModule::class,
         FeedBrowseBindModule::class,
-        ContentFragmentFactoryModule::class
+        ContentFragmentFactoryModule::class,
+        StoriesSeenStorageModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )

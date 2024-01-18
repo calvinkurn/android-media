@@ -176,9 +176,10 @@ class FeedBrowseMapper @Inject constructor() {
                     thumbnailUrl = it.image,
                     hasUnseenStory = it.isUnseenStoryExist,
                     appLink = it.appLink,
+                    lastUpdatedAt = System.currentTimeMillis()
                 )
             },
-            nextCursor = response.data.meta.nextCursor,
+            nextCursor = response.data.meta.nextCursor
         )
     }
 

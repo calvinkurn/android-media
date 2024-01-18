@@ -40,6 +40,7 @@ internal class HorizontalStoriesViewHolder private constructor(
         binding.rvStories.adapter = adapter
         binding.rvStories.setRecycledViewPool(pool)
         binding.rvStories.setHasFixedSize(true)
+        binding.rvStories.itemAnimator = null
         binding.rvStories.addItemDecoration(
             HorizontalStoriesItemDecoration(binding.rvStories.resources)
         )

@@ -22,4 +22,10 @@ internal interface FeedBrowseRepository {
     suspend fun getWidgetRecommendation(identifier: String): WidgetRecommendationModel
 
     suspend fun getStoryGroups(source: String, cursor: String = ""): StoryGroupsModel
+
+    suspend fun getUpdatedSeenStoriesStatus(
+        shopId: String,
+        currentHasSeenAll: Boolean,
+        lastUpdated: Long
+    ): Boolean
 }

@@ -68,6 +68,9 @@ internal class FeedBrowseViewModel @Inject constructor(
             is FeedBrowseIntent.SelectChipWidget -> {
                 handleSelectChip(action.model, action.slotId)
             }
+            FeedBrowseIntent.UpdateStoriesStatus -> {
+                handleUpdateStoriesStatus()
+            }
         }
     }
 
@@ -114,6 +117,31 @@ internal class FeedBrowseViewModel @Inject constructor(
                     selectedMenuId = chip.id,
                     menus = it.menus + (chip to FeedBrowseChannelListState.initLoading())
                 )
+            }
+        }
+    }
+
+    private fun handleUpdateStoriesStatus() {
+        viewModelScope.launch {
+            val storiesSlots = getSlotsByInstance<FeedBrowseSlotUiModel.StoryGroups>()
+            storiesSlots.forEach { slot ->
+                if (slot.model !is FeedBrowseSlotUiModel.StoryGroups) return@forEach
+                val newStories = slot.model.storyList.map { story ->
+                    val hasSeenAllStories = repository.getUpdatedSeenStoriesStatus(
+                        story.id,
+                        !story.hasUnseenStory,
+                        story.lastUpdatedAt
+                    )
+                    story.copy(
+                        hasUnseenStory = if (hasSeenAllStories) false else story.hasUnseenStory,
+                        lastUpdatedAt = System.currentTimeMillis()
+                    )
+                }
+
+                updateWidget<FeedBrowseSlotUiModel.StoryGroups>(
+                    slot.model.slotId,
+                    slot.result
+                ) { it.copy(storyList = newStories) }
             }
         }
     }
@@ -228,7 +256,7 @@ internal class FeedBrowseViewModel @Inject constructor(
             updateWidget<FeedBrowseSlotUiModel.StoryGroups>(slotId, ResultState.Success) {
                 it.copy(
                     storyList = mappedResult.storyList,
-                    nextCursor = mappedResult.nextCursor,
+                    nextCursor = mappedResult.nextCursor
                 )
             }
         } catch (err: Throwable) {
@@ -246,5 +274,10 @@ internal class FeedBrowseViewModel @Inject constructor(
             if (widget.model !is T) return@update it
             it + (slotId to FeedBrowseStatefulModel(state, onUpdate(widget.model)))
         }
+    }
+
+    private inline fun <reified T : FeedBrowseSlotUiModel> getSlotsByInstance(): List<FeedBrowseStatefulModel> {
+        val widgets = _widgets.value
+        return widgets.values.filter { it.model is T }
     }
 }

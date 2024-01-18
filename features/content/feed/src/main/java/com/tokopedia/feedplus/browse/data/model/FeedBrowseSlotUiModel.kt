@@ -49,7 +49,7 @@ internal sealed interface FeedBrowseSlotUiModel {
         override val title: String,
         val storyList: List<StoryNodeModel>,
         val nextCursor: String,
-        val source: String,
+        val source: String
     ) : FeedBrowseSlotUiModel
 }
 
@@ -107,4 +107,5 @@ internal data class StoryNodeModel(
     val thumbnailUrl: String,
     val hasUnseenStory: Boolean,
     val appLink: String,
+    val lastUpdatedAt: Long
 )

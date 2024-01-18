@@ -280,6 +280,11 @@ internal class FeedBrowseFragment @Inject constructor(
         return ""
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onIntent(FeedBrowseIntent.UpdateStoriesStatus)
+    }
+
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()

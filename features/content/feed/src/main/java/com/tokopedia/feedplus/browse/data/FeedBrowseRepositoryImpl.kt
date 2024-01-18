@@ -14,6 +14,7 @@ import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.domain.usecase.GetContentWidgetRecommendationUseCase
 import com.tokopedia.kotlin.extensions.view.isEven
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
+import com.tokopedia.stories.internal.storage.StoriesSeenStorage
 import com.tokopedia.stories.internal.usecase.StoriesGroupsUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -29,6 +30,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     private val playWidgetSlotUseCase: GetPlayWidgetSlotUseCase,
     private val getContentWidgetRecommendationUseCase: GetContentWidgetRecommendationUseCase,
     private val storiesGroupsUseCase: StoriesGroupsUseCase,
+    private val storiesSeenStorage: StoriesSeenStorage,
     private val mapper: FeedBrowseMapper,
     private val connectionUtil: PlayWidgetConnectionUtil,
     private val dispatchers: CoroutineDispatchers
@@ -152,10 +154,23 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                     name = "Story $it",
                     thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/tPxBYm/2023/8/1/0fc7d4e1-c812-4bbf-8e73-45ccb3661c84.jpg",
                     hasUnseenStory = it.isEven(),
-                    appLink = "tokopedia://stories/shop/16511314"
+                    appLink = "tokopedia://stories/shop/16511314",
+                    lastUpdatedAt = System.currentTimeMillis()
                 )
             },
             nextCursor = ""
+        )
+    }
+
+    override suspend fun getUpdatedSeenStoriesStatus(
+        shopId: String,
+        currentHasSeenAll: Boolean,
+        lastUpdated: Long
+    ): Boolean = withContext(dispatchers.io) {
+        storiesSeenStorage.hasSeenAllAuthorStories(
+            key = StoriesSeenStorage.Author.Shop(shopId),
+            currentHasSeenAll = currentHasSeenAll,
+            laterThanMillis = lastUpdated
         )
     }
 

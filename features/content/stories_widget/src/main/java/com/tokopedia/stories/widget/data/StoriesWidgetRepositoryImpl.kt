@@ -40,10 +40,12 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
 
     override suspend fun getUpdatedSeenStatus(
         shopId: String,
+        currentHasSeenAll: Boolean,
         lastUpdated: TimeMillis
     ): Boolean = withContext(dispatchers.io) {
         return@withContext storiesSeenStorage.hasSeenAllAuthorStories(
             StoriesSeenStorage.Author.Shop(shopId),
+            currentHasSeenAll,
             lastUpdated.time
         )
     }
