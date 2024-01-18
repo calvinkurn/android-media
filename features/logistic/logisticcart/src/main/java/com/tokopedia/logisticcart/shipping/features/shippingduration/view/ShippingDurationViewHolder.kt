@@ -13,11 +13,11 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.Companion.ERROR_PINPOINT_NEEDED
 import com.tokopedia.logisticcart.databinding.ItemDurationBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.utils.ShippingViewUtils
-import com.tokopedia.logisticcart.utils.ShippingViewUtils.errorPinpoint
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -42,32 +42,106 @@ class ShippingDurationViewHolder(
         isDisableOrderPrioritas: Boolean
     ) {
         binding.run {
-            if (shippingDurationUiModel.isShowShippingInformation && shippingDurationUiModel.etaErrorCode == 1) {
-                tvShippingInformation.visibility = View.VISIBLE
-            } else {
-                tvShippingInformation.visibility = View.GONE
-            }
+            renderShippingInfo(shippingDurationUiModel)
+            renderErrorMessage(shippingDurationUiModel)
+            renderTextColor(shippingDurationUiModel)
+            renderServiceSubtitle(shippingDurationUiModel)
+            renderOrderPriority(shippingDurationUiModel, isDisableOrderPrioritas)
+            renderMvc(shippingDurationUiModel)
+            renderServiceName(shippingDurationUiModel)
+            renderCodLabel(shippingDurationUiModel)
+            renderEta(shippingDurationUiModel)
+            renderDynamicPrice(shippingDurationUiModel)
+            renderCheck(shippingDurationUiModel)
+            setShowCase(shippingDurationUiModel)
+            setClickListener(shippingDurationUiModel, shippingDurationAdapterListener)
+        }
+    }
 
-            // error message
-            if (shippingDurationUiModel.errorMessage?.isNotEmpty() == true) {
-                val error = shippingDurationUiModel.serviceData.error
-                tvError.text = ShippingViewUtils.constructErrorUi(binding.root.context, error.errorMessage, error.errorId)
-                tvError.visibility = View.VISIBLE
+    private fun ItemDurationBinding.renderServiceName(shippingDurationUiModel: ShippingDurationUiModel) {
+        shippingDurationUiModel.serviceData.run {
+            if (texts.errorCode == 0) {
+                val title: String =
+                    if (rangePrice.minPrice == rangePrice.maxPrice) {
+                        "$serviceName (${
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            rangePrice.minPrice,
+                            false
+                        ).removeDecimalSuffix()
+                        })"
+                    } else {
+                        val rangePrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            rangePrice.minPrice,
+                            false
+                        ).removeDecimalSuffix() + " - " +
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                rangePrice.maxPrice,
+                                false
+                            ).removeDecimalSuffix()
+                        "$serviceName ($rangePrice)"
+                    }
+                if (title.isNotEmpty()) {
+                    tvDurationOrPrice.visible()
+                    setTextAndContentDescription(
+                        tvDurationOrPrice,
+                        title,
+                        tvDurationOrPrice.context.getString(logisticcartR.string.content_desc_tv_duration)
+                    )
+                } else {
+                    tvDurationOrPrice.gone()
+                }
             } else {
-                tvError.visibility = View.GONE
+                if (serviceName.isNotEmpty()) {
+                    setTextAndContentDescription(
+                        tvDurationOrPrice,
+                        serviceName,
+                        tvDurationOrPrice.context.getString(logisticcartR.string.content_desc_tv_duration)
+                    )
+                    tvDurationOrPrice.visible()
+                } else {
+                    tvDurationOrPrice.gone()
+                }
             }
+        }
+    }
 
-            // set view enabled / disabled
-            if (shippingDurationUiModel.disabled) {
+    private fun ItemDurationBinding.renderShippingInfo(shippingDurationUiModel: ShippingDurationUiModel) {
+        shippingDurationUiModel.run {
+            if (isShowShippingInformation && etaErrorCode == 1) {
+                tvShippingInformation.visible()
+            } else {
+                tvShippingInformation.gone()
+            }
+        }
+    }
+
+    private fun ItemDurationBinding.renderErrorMessage(shippingDurationUiModel: ShippingDurationUiModel) {
+        shippingDurationUiModel.run {
+            if (errorMessage?.isNotEmpty() == true) {
+                val error = serviceData.error
+                tvError.text = ShippingViewUtils.constructErrorUi(
+                    binding.root.context,
+                    error.errorMessage,
+                    error.errorId
+                )
+                tvError.visible()
+            } else {
+                tvError.gone()
+            }
+        }
+    }
+
+    private fun ItemDurationBinding.renderTextColor(
+        shippingDurationUiModel: ShippingDurationUiModel
+    ) {
+        shippingDurationUiModel.run {
+            if (disabled) {
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
                         tvDurationOrPrice.context,
                         unifyprinciplesR.color.Unify_N700_44
                     )
                 )
-                tvPriceOrDuration.visibility = View.GONE
-                tvTextDesc.visibility = View.GONE
-                tvOrderPrioritas.visibility = View.GONE
             } else {
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
@@ -75,148 +149,158 @@ class ShippingDurationViewHolder(
                         unifyprinciplesR.color.Unify_N700_96
                     )
                 )
-                tvPriceOrDuration.visibility = View.VISIBLE
-                if (shippingDurationUiModel.serviceData.texts.textServiceDesc.isNotEmpty()) {
-                    tvTextDesc.text = shippingDurationUiModel.serviceData.texts.textServiceDesc
-                    tvTextDesc.visibility = View.VISIBLE
-                } else {
-                    tvTextDesc.visibility = View.GONE
-                }
-                if (!isDisableOrderPrioritas && shippingDurationUiModel.serviceData.orderPriority.now) {
-                    val orderPrioritasTxt =
-                        itemView.context.getString(logisticcartR.string.order_prioritas)
-                    val orderPrioritasLabel = SpannableString(orderPrioritasTxt)
-                    orderPrioritasLabel.setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        16,
-                        orderPrioritasTxt.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    tvOrderPrioritas.text =
-                        MethodChecker.fromHtml(shippingDurationUiModel.serviceData.orderPriority.staticMessage.durationMessage)
-                    tvOrderPrioritas.visibility = View.VISIBLE
-                } else {
-                    tvOrderPrioritas.visibility = View.GONE
-                }
             }
+        }
+    }
 
-            /*MVC*/
-            if (shippingDurationUiModel.merchantVoucherModel.isMvc == 1) {
-                flContainer.visibility = View.VISIBLE
-                flContainer.foreground =
-                    ContextCompat.getDrawable(
-                        flContainer.context,
-                        logisticcartR.drawable.fg_enabled_item
-                    )
-                ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
-                tvMvcText.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
-                tvMvcError.visibility = View.GONE
-            } else if (shippingDurationUiModel.merchantVoucherModel.isMvc == -1) {
-                flContainer.visibility = View.VISIBLE
-                flContainer.foreground =
-                    ContextCompat.getDrawable(
-                        flContainer.context,
-                        logisticcartR.drawable.fg_disabled_item
-                    )
-                ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
-                tvMvcText.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
-                tvMvcError.visibility = View.VISIBLE
-                tvMvcError.text = shippingDurationUiModel.merchantVoucherModel.mvcErrorMessage
+    private fun ItemDurationBinding.renderCodLabel(shippingDurationUiModel: ShippingDurationUiModel) {
+        shippingDurationUiModel.run {
+            if (isCodAvailable) {
+                lblCodAvailableEta.text = codText
+                lblCodAvailableEta.visible()
             } else {
-                flContainer.visibility = View.GONE
-                tvMvcError.visibility = View.GONE
+                lblCodAvailableEta.gone()
             }
+        }
+    }
 
-            /*ETA*/
-            if (shippingDurationUiModel.serviceData.texts.errorCode == 0) {
-                val shipperNameEta: String =
-                    if (shippingDurationUiModel.serviceData.rangePrice.minPrice == shippingDurationUiModel.serviceData.rangePrice.maxPrice) {
-                        shippingDurationUiModel.serviceData.serviceName + " " + "(" +
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                shippingDurationUiModel.serviceData.rangePrice.minPrice,
-                                false
-                            ).removeDecimalSuffix() + ")"
-                    } else {
-                        val rangePrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            shippingDurationUiModel.serviceData.rangePrice.minPrice,
-                            false
-                        ).removeDecimalSuffix() + " - " +
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                shippingDurationUiModel.serviceData.rangePrice.maxPrice,
-                                false
-                            ).removeDecimalSuffix()
-                        shippingDurationUiModel.serviceData.serviceName + " " + "(" + rangePrice + ")"
-                    }
-                if (shippingDurationUiModel.serviceData.texts.textEtaSummarize.isNotEmpty()) {
-                    tvPriceOrDuration.text =
-                        shippingDurationUiModel.serviceData.texts.textEtaSummarize
-                } else {
-                    tvPriceOrDuration.setText(logisticcartR.string.estimasi_tidak_tersedia)
-                }
-                setTextAndContentDescription(
-                    tvDurationOrPrice,
-                    shipperNameEta,
-                    tvDurationOrPrice.context.getString(logisticcartR.string.content_desc_tv_duration)
+    private fun ItemDurationBinding.renderServiceSubtitle(shippingDurationUiModel: ShippingDurationUiModel) {
+        shippingDurationUiModel.run {
+            if (!shippingDurationUiModel.disabled && shippingDurationUiModel.serviceData.texts.textServiceDesc.isNotEmpty()) {
+                tvTextDesc.text = shippingDurationUiModel.serviceData.texts.textServiceDesc
+                tvTextDesc.visible()
+            } else {
+                tvTextDesc.gone()
+            }
+        }
+    }
+
+    private fun ItemDurationBinding.renderOrderPriority(
+        shippingDurationUiModel: ShippingDurationUiModel,
+        isDisableOrderPrioritas: Boolean
+    ) {
+        shippingDurationUiModel.run {
+            if (!disabled && !isDisableOrderPrioritas && serviceData.orderPriority.now) {
+                val orderPrioritasTxt =
+                    root.context.getString(logisticcartR.string.order_prioritas)
+                val orderPrioritasLabel = SpannableString(orderPrioritasTxt)
+                orderPrioritasLabel.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    16,
+                    orderPrioritasTxt.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                lblCodAvailableEta.text = shippingDurationUiModel.codText
-                lblCodAvailableEta.visibility =
-                    if (shippingDurationUiModel.isCodAvailable) View.VISIBLE else View.GONE
+                tvOrderPrioritas.text =
+                    MethodChecker.fromHtml(shippingDurationUiModel.serviceData.orderPriority.staticMessage.durationMessage)
+                tvOrderPrioritas.visible()
             } else {
-                setTextAndContentDescription(
-                    tvDurationOrPrice,
-                    shippingDurationUiModel.serviceData.serviceName,
-                    tvDurationOrPrice.context.getString(logisticcartR.string.content_desc_tv_duration)
-                )
-                if (!shippingDurationUiModel.serviceData.error.errorId.errorPinpoint) {
-                    tvPriceOrDuration.text = shippingDurationUiModel.serviceData.texts.textRangePrice
-                } else {
-                    tvPriceOrDuration.gone()
-                }
-                lblCodAvailableEta.text = shippingDurationUiModel.codText
-                lblCodAvailableEta.visibility =
-                    if (shippingDurationUiModel.isCodAvailable) View.VISIBLE else View.GONE
+                tvOrderPrioritas.gone()
             }
+        }
+    }
 
-            /*Dynamic Price*/
-            if (shippingDurationUiModel.dynamicPriceModel.textLabel.isEmpty()) {
-                lblDynamicPricing.visibility = View.GONE
-            } else {
-                lblDynamicPricing.visibility = View.VISIBLE
-                lblDynamicPricing.text = shippingDurationUiModel.dynamicPriceModel.textLabel
-            }
-            imgCheck.visibility =
-                if (shippingDurationUiModel.isSelected) View.VISIBLE else View.GONE
-            if (shippingDurationUiModel.isShowShowCase) setShowCase()
-            itemView.setOnClickListener {
-                if (!shippingDurationUiModel.disabled) {
-                    shippingDurationUiModel.isSelected = !shippingDurationUiModel.isSelected
-                    shippingDurationAdapterListener?.onShippingDurationChoosen(
-                        shippingDurationUiModel.shippingCourierViewModelList,
-                        cartPosition,
-                        shippingDurationUiModel.serviceData,
-                        shippingDurationUiModel
-                    )
+    private fun ItemDurationBinding.renderMvc(shippingDurationUiModel: ShippingDurationUiModel) {
+        shippingDurationUiModel.merchantVoucherModel.run {
+            when (isMvc) {
+                1 -> {
+                    flContainer.visible()
+                    flContainer.foreground =
+                        ContextCompat.getDrawable(
+                            flContainer.context,
+                            logisticcartR.drawable.fg_enabled_item
+                        )
+                    ImageHandler.LoadImage(imgMvc, mvcLogo)
+                    tvMvcText.text = mvcTitle
+                    tvMvcError.gone()
+                }
+
+                -1 -> {
+                    flContainer.visible()
+                    flContainer.foreground =
+                        ContextCompat.getDrawable(
+                            flContainer.context,
+                            logisticcartR.drawable.fg_disabled_item
+                        )
+                    ImageHandler.LoadImage(imgMvc, mvcLogo)
+                    tvMvcText.text = mvcTitle
+                    tvMvcError.visible()
+                    tvMvcError.text = mvcErrorMessage
+                }
+
+                else -> {
+                    flContainer.gone()
+                    tvMvcError.gone()
                 }
             }
         }
     }
 
-    private fun setShowCase() {
-        val label =
-            itemView.context.getString(logisticcartR.string.label_title_showcase_shipping_duration)
-        val text =
-            itemView.context.getString(logisticcartR.string.label_body_showcase_shipping_duration)
-        val coachMarkItem = CoachMark2Item(
-            binding.layoutShippingDuration,
-            label,
-            text,
-            CoachMark2.POSITION_TOP
-        )
-        val list = ArrayList<CoachMark2Item>().apply {
-            add(coachMarkItem)
+    private fun ItemDurationBinding.renderCheck(shippingDurationUiModel: ShippingDurationUiModel) {
+        imgCheck.visibility =
+            if (shippingDurationUiModel.isSelected) View.VISIBLE else View.GONE
+    }
+
+    private fun ItemDurationBinding.setClickListener(
+        shippingDurationUiModel: ShippingDurationUiModel,
+        listener: ShippingDurationAdapterListener?
+    ) {
+        root.setOnClickListener {
+            if (!shippingDurationUiModel.disabled) {
+                shippingDurationUiModel.isSelected = !shippingDurationUiModel.isSelected
+                listener?.onShippingDurationChoosen(
+                    shippingDurationUiModel.shippingCourierViewModelList,
+                    cartPosition,
+                    shippingDurationUiModel.serviceData,
+                    shippingDurationUiModel
+                )
+            }
         }
-        showCaseCoachmark = CoachMark2(binding.root.context)
-        showCaseCoachmark?.showCoachMark(list, null)
+    }
+
+    private fun ItemDurationBinding.renderEta(shippingDurationUiModel: ShippingDurationUiModel) {
+        shippingDurationUiModel.run {
+            if (!disabled) {
+                if (serviceData.texts.textEtaSummarize.isNotEmpty() && serviceData.texts.errorCode == 0) {
+                    tvPriceOrDuration.text = serviceData.texts.textEtaSummarize
+                } else {
+                    tvPriceOrDuration.setText(logisticcartR.string.estimasi_tidak_tersedia)
+                }
+                tvPriceOrDuration.visible()
+            } else {
+                tvPriceOrDuration.gone()
+            }
+        }
+    }
+
+    private fun ItemDurationBinding.renderDynamicPrice(shippingDurationUiModel: ShippingDurationUiModel) {
+        shippingDurationUiModel.dynamicPriceModel.run {
+            if (textLabel.isEmpty()) {
+                lblDynamicPricing.gone()
+            } else {
+                lblDynamicPricing.visible()
+                lblDynamicPricing.text = textLabel
+            }
+        }
+    }
+
+    private fun setShowCase(shippingDurationUiModel: ShippingDurationUiModel) {
+        if (shippingDurationUiModel.isShowShowCase) {
+            val label =
+                itemView.context.getString(logisticcartR.string.label_title_showcase_shipping_duration)
+            val text =
+                itemView.context.getString(logisticcartR.string.label_body_showcase_shipping_duration)
+            val coachMarkItem = CoachMark2Item(
+                binding.layoutShippingDuration,
+                label,
+                text,
+                CoachMark2.POSITION_TOP
+            )
+            val list = ArrayList<CoachMark2Item>().apply {
+                add(coachMarkItem)
+            }
+            showCaseCoachmark = CoachMark2(binding.root.context)
+            showCaseCoachmark?.showCoachMark(list, null)
+        }
     }
 
     private val ShippingDurationUiModel.disabled: Boolean
