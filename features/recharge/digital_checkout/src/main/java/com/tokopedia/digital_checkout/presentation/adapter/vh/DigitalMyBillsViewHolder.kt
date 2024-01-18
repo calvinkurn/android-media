@@ -27,8 +27,10 @@ class DigitalMyBillsViewHolder(
             if (subscription.info.title.isNotEmpty()) {
                 widgetMyBills.setTitle(subscription.info.title)
                 widgetMyBills.showTitle()
+                widgetMyBills.showSeparator()
             } else {
                 widgetMyBills.hideTitle()
+                widgetMyBills.hideSeparator()
             }
             if (subscription.optIn) {
                 widgetMyBills.setDescription(subscription.info.checkedSubtitle)

@@ -50,6 +50,14 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(
         binding.tvCheckoutMyBillsHeaderTitle.hide()
     }
 
+    fun showSeparator() {
+        binding.separator.show()
+    }
+
+    fun hideSeparator() {
+        binding.separator.hide()
+    }
+
     fun setDescription(description: String) {
         binding.tvCheckoutMyBillsDescription.shouldShowWithAction(description.isNotEmpty()){
             binding.tvCheckoutMyBillsDescription.text = MethodChecker.fromHtml(description)
