@@ -630,7 +630,7 @@ class ChatbotFragment2 :
         }
 
         val startTime = SendableUiModel.generateStartTime()
-        val msg = smallReplyBox?.getMessage() ?: ""
+        val msg = smallReplyBox?.getMessage().orEmpty()
         val quickReplyUiModel = QuickReplyUiModel(msg, msg, msg)
 
         viewModel.sendQuickReplyInvoice(
@@ -1279,8 +1279,8 @@ class ChatbotFragment2 :
     ) {
         getBindingView().chatbotTicker.let {
             it.tickerTitle = tickerData.items?.get(0)?.title
-            it.setHtmlDescription(tickerData.items?.get(0)?.text ?: "")
-            it.tickerType = getTickerType(tickerData.type ?: "")
+            it.setHtmlDescription(tickerData.items?.get(0)?.text.orEmpty())
+            it.tickerType = getTickerType(tickerData.type.orEmpty())
             it.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     navigateToWebView(linkUrl.toString())
@@ -1301,8 +1301,8 @@ class ChatbotFragment2 :
             mockData.add(
                 com.tokopedia.unifycomponents.ticker.TickerData(
                     it?.title,
-                    it?.text ?: "",
-                    getTickerType(tickerData.type ?: "")
+                    it?.text.orEmpty(),
+                    getTickerType(tickerData.type.orEmpty())
                 )
             )
         }
@@ -1696,10 +1696,10 @@ class ChatbotFragment2 :
         val input = ChipSubmitChatCsatInput()
         with(input) {
             messageID = messageId
-            caseID = data.getStringExtra(ChatBotCsatActivity.CASE_ID) ?: ""
-            caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID) ?: ""
+            caseID = data.getStringExtra(ChatBotCsatActivity.CASE_ID).orEmpty()
+            caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID).orEmpty()
             rating = data.extras?.getLong(EMOJI_STATE).orZero()
-            reasonCode = data.getStringExtra(SELECTED_ITEMS) ?: ""
+            reasonCode = data.getStringExtra(SELECTED_ITEMS).orEmpty()
         }
         viewModel.submitChatCsat(messageId, input)
     }
@@ -1731,7 +1731,7 @@ class ChatbotFragment2 :
         input.chatbotSessionId = csatAttributes?.chatbotSessionId
         input.livechatSessionId = csatAttributes?.livechatSessionId
         input.reason = getFilters(data, reasonList)
-        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
+        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT).orEmpty()
         input.score = data?.extras?.getLong(EMOJI_STATE).orZero()
         input.timestamp = data?.getStringExtra(TIME_STAMP)
         input.triggerRuleType = csatAttributes?.triggerRuleType
@@ -1951,7 +1951,7 @@ class ChatbotFragment2 :
 
     override fun onSendButtonClicked() {
         chatbotAnalytics.get().eventClick(ACTION_REPLY_BUTTON_CLICKED)
-        val sendMessage = smallReplyBox?.getMessage() ?: ""
+        val sendMessage = smallReplyBox?.getMessage().orEmpty()
         val startTime = SendableUiModel.generateStartTime()
 
         sendTextMessage(

@@ -104,7 +104,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 if (!getBindingView().sendButton.isSlowModeRunning) {
                     isSendButtonClicked = true
                     replyBoxClickListener?.getMessageContentFromBottomSheet(
-                        getBindingView().chatText.editText.text?.toString() ?: ""
+                        getBindingView().chatText.editText.text?.toString().orEmpty()
                     )
                     dismissAllowingStateLoss()
                 }
@@ -119,7 +119,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         }
 
         setOnDismissListener {
-            val text = getBindingView().chatText.editText.text?.toString() ?: ""
+            val text = getBindingView().chatText.editText.text?.toString().orEmpty()
             hideKeyboard()
             if (isSendButtonClicked) {
                 return@setOnDismissListener
@@ -141,7 +141,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     }
 
     private fun getWordCount(): Int {
-        val words = getBindingView().chatText.editText.text?.toString()?.trim() ?: ""
+        val words = getBindingView().chatText.editText.text?.toString()?.trim().orEmpty()
         return words.split("\\s+".toRegex()).size
     }
 

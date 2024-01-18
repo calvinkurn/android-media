@@ -105,7 +105,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     }
 
     fun getMessage(): String {
-        return commentEditText?.editText?.text.toString() ?: ""
+        return commentEditText?.editText?.text.toString().orEmpty()
     }
 
     private fun getTextWatcherForMessage(): TextWatcher {
