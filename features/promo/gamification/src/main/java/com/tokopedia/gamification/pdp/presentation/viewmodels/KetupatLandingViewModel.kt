@@ -42,7 +42,6 @@ class KetupatLandingViewModel @Inject constructor(
         MutableLiveData<ArrayList<Visitable<KetupatLandingTypeFactory>>>()
     var data: KetupatLandingPageData? = null
 
-
     fun getGamificationLandingPageData(slug: String = "") {
         launchCatchError(
             block = {
@@ -62,14 +61,12 @@ class KetupatLandingViewModel @Inject constructor(
                 convertDataToVisitable(landingPageData.value?.gamiGetScratchCardLandingPage).let { visitable ->
                     ketaupatLandingDataList.value = visitable
                 }
-
             },
             onError = {
                 it.printStackTrace()
                 errorMessage.value = it
             }
         )
-
     }
     fun getProductRecommendation() {
         launchCatchError(
@@ -154,9 +151,7 @@ class KetupatLandingViewModel @Inject constructor(
         tempList.add(
             KetupatProductRecommItemVHmodel(
                 RecommendationWidgetModel(
-                    metadata = RecommendationWidgetMetadata(
-                        pageName = "inbox_post-purchase"
-                    ),
+                    metadata = RecommendationWidgetMetadata(),
                     trackingModel = RecommendationWidgetTrackingModel()
                 )
             )

@@ -35,7 +35,7 @@ class KetupatCrackBannerVH(itemView: View) : AbstractViewHolder<KetupatCrackBann
                 this.setOnClickListener {
                     RouteManager.route(
                         context,
-                        crackData?.cta?.find { it?.type == "crack" }?.appLink
+                        crackData?.cta?.find { it?.type == "redirection" }?.appLink
                     )
                 }
             }
@@ -56,8 +56,6 @@ class KetupatCrackBannerVH(itemView: View) : AbstractViewHolder<KetupatCrackBann
                     it
                 )
             }
-
         }
     }
-
 }
