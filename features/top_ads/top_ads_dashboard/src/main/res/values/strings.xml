@@ -110,6 +110,8 @@
     <string name="label_credit_history">Riwayat Kredit</string>
     <string name="label_topads_automatic_topup">Tambah Kredit Otomatis</string>
     <string name="topads_active">Aktif</string>
+    <string name="topads_not_delivered">Tidak Tampil</string>
+    <string name="topads_in_progress">Dalam Proses</string>
     <string name="label_credit_addition">Total Penambahan</string>
     <string name="label_credit_used">Total Terpakai</string>
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
@@ -663,13 +665,12 @@
     <string name="topads_auto_ps_iklan_toko_empty_view_title">🚀 Tingkatkan kunjungan lewat Iklan Toko!</string>
     <string name="topads_auto_ps_iklan_toko_empty_view_desc">Iklan toko akan muncul di tempat strategis yang meningkatkan probabilitas toko dan produkmu dilihat pembeli. Baca Artikel</string>
     <string name="topads_auto_ps_iklan_toko_empty_view_list_title">Iklan Toko juga akan membuat tokomu:</string>
-    <string name="topads_auto_ps_iklan_toko_empty_view_list_item1">Tampil dengan tampilan dan posisi yang lebih eksklusif</string>
-    <string name="topads_auto_ps_iklan_toko_empty_view_list_item2">Berpotensi meningkatkan kunjungan tokomu</string>
-    <string name="topads_auto_ps_iklan_toko_empty_view_list_item3">Biaya iklan diatur sesuai kebutuhan tokomu</string>
     <string name="topads_auto_ps_iklan_produk_empty_view_title">🚀 Maksimalkan penjualan lewat Iklan Produk!</string>
     <string name="topads_auto_ps_iklan_produk_empty_view_desc">Iklan Produk meningkatkan potensi produk diklik dan muncul paling atas di halaman pencarian &amp; rekomendasi. Baca Artikel</string>
     <string name="topads_auto_ps_iklan_produk_empty_view_list_title">Dengan Iklan Produk, kamu bisa:</string>
-    <string name="topads_auto_ps_iklan_produk_empty_view_list_item1">Pilih produk yang ingin diiklankan secara spesifik</string>
-    <string name="topads_auto_ps_iklan_produk_empty_view_list_item2">Atur biaya iklan sesuai kebutuhan produk</string>
-    <string name="topads_auto_ps_iklan_produk_empty_view_list_item3">Performa Iklan tiap produk dapat dipantau dengan mudah</string>
+    <string name="topads_beranda_model_autops_subtitle_format">%s • Anggaran Harian Rp%s</string>
+    <string name="topads_see_the_benefits">Lihat Keuntungannya</string>
+    <string name="topads_doesnt_have_product_advertisements_yet">Belum memiliki Iklan Produk.</string>
+    <string name="topads_doesnt_have_shop_advertisements_yet">Belum memiliki Iklan Toko.</string>
+    <string name="topads_product_advertised_count"><![CDATA[<b>%d</b> Grup Iklan Aktif]]></string>
 </resources>

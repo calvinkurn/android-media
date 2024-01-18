@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -143,6 +144,8 @@ class TopAdsDashboardActivity :
     private var redirectToTab = 0
     private var redirectToTabInsight = 0
     private var autoPsData : AutoAdsResponse.TopAdsGetAutoAds.Data? = null
+    private var activeProductCount: Int = Int.ZERO
+    private var activeHeadlineCount: Int = Int.ZERO
     private var isAutoPsWhitelisted: Boolean = false
 
     companion object {
@@ -165,6 +168,7 @@ class TopAdsDashboardActivity :
         topAdsDashboardPresenter.getVariantById()
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
         topAdsDashboardPresenter.getAutoAdsStatus(resources, ::setAutoAds)
+        topAdsDashboardPresenter.getDashboardGroups(String.EMPTY, Int.ONE)
         setContentView(R.layout.topads_dash_activity_base_layout)
 
         initView()
@@ -177,6 +181,9 @@ class TopAdsDashboardActivity :
                     it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
                         it.variant == TopAdsCommonConstant.AUTOPS_VARIANT }
                     .isNotEmpty()
+        }
+        topAdsDashboardPresenter.dashboardGroups.observe(this) { data ->
+            activeProductCount = data.getTopadsDashboardGroups.data.size
         }
 
         topAdsDashboardPresenter.isShopWhiteListed.observe(this) {
@@ -283,7 +290,7 @@ class TopAdsDashboardActivity :
                 if(isAutoPsWhitelisted){
                     val sheet = TopadsBerandaCreationBottomSheet()
                     sheet.overlayClickDismiss = false
-                    sheet.show(supportFragmentManager,autoPsData)
+                    sheet.show(supportFragmentManager,autoPsData, activeProductCount, activeHeadlineCount)
                 } else {
                     navigateToAdTypeSelection()
                 }
@@ -698,6 +705,10 @@ class TopAdsDashboardActivity :
             else -> ""
         }
         multiActionBtn?.isEnabled = count > 0
+    }
+
+    fun setActiveHeadlineCount(count: Int){
+        activeHeadlineCount = count
     }
 
     private fun showBottomSheet() {

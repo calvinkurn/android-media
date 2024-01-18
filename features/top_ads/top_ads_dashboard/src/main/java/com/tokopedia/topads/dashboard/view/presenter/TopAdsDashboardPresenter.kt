@@ -35,9 +35,9 @@ import com.tokopedia.topads.dashboard.data.raw.BUDGET_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.PRODUCT_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.SHOP_AD_INFO
 import com.tokopedia.topads.dashboard.domain.interactor.*
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightCountUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetDashboardGroupsV3UseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.headline.data.ShopAdInfo
@@ -84,6 +84,7 @@ class TopAdsDashboardPresenter @Inject constructor(
     private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
     private val getVariantByIdUseCase: GetVariantByIdUseCase,
+    private val topAdsGetDashboardGroupsV3UseCase: TopAdsGetDashboardGroupsV3UseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
 ) : BaseDaggerPresenter<TopAdsDashboardView>(), CoroutineScope {
@@ -96,6 +97,10 @@ class TopAdsDashboardPresenter @Inject constructor(
     private val _shopVariant = MutableLiveData<List<GetVariantByIdResponse.GetVariantById.ExperimentVariant>>()
     val shopVariant: LiveData<List<GetVariantByIdResponse.GetVariantById.ExperimentVariant>>
         get() = _shopVariant
+
+    private val _dashboardGroups = MutableLiveData<DashGroupListResponse>()
+    val dashboardGroups: LiveData< DashGroupListResponse>
+        get() = _dashboardGroups
 
     private var _groupAdsInsight: MutableLiveData<TopAdsListAllInsightState<GroupInsightCountUiModel>> = MutableLiveData()
     val groupAdsInsight: LiveData<TopAdsListAllInsightState<GroupInsightCountUiModel>> = _groupAdsInsight
@@ -121,7 +126,6 @@ class TopAdsDashboardPresenter @Inject constructor(
             it.printStackTrace()
         })
     }
-
 
     fun getStatistic(
         startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int,
@@ -345,6 +349,13 @@ class TopAdsDashboardPresenter @Inject constructor(
         }, {
             _shopVariant.postValue(listOf())
         })
+    }
+
+    fun getDashboardGroups(search: String, groupType: Int){
+        launchCatchError(dispatchers.io, {
+            val data = topAdsGetDashboardGroupsV3UseCase(search, groupType)
+            _dashboardGroups.postValue(data)
+        }, {})
     }
 
     @GqlQuery("ProductRecommend", PRODUCT_RECOMMENDATION)

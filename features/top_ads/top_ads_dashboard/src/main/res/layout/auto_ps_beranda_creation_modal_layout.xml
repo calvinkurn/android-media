@@ -18,7 +18,7 @@
 
     <include
         android:id="@+id/create_product"
-        layout="@layout/beranda_creation_modal_item_layout"
+        layout="@layout/beranda_creation_modal_produk_item_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,7 +35,7 @@
 
     <include
         android:id="@+id/create_shop_ad"
-        layout="@layout/beranda_creation_modal_item_layout"
+        layout="@layout/beranda_creation_modal_shop_item_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/separator"

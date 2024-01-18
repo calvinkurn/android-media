@@ -18,13 +18,15 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/desc"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cta"
         app:typographyType="display_3"
         android:textColor="@color/Unify_NN600"
-        tools:text="Aktif • Anggaran Harian Rp50.000"/>
+        tools:text="Aktif • Anggaran Harian Rp50.000"
+        android:layout_marginEnd="16dp"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/cta"
@@ -33,7 +35,7 @@
         android:text="@string/topads_auto_ps_edit_ads"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"
-        app:unifyButtonSize="medium"
+        app:unifyButtonSize="small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
