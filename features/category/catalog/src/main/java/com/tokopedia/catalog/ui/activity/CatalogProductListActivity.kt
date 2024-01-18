@@ -2,6 +2,7 @@ package com.tokopedia.catalog.ui.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -91,5 +92,13 @@ class CatalogProductListActivity : BaseSimpleActivity() {
                 )
                 .commit()
         }
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        val newOverride = Configuration(newBase?.resources?.configuration)
+        newOverride.fontScale = 1.0f
+        applyOverrideConfiguration(newOverride)
+
+        super.attachBaseContext(newBase)
     }
 }
