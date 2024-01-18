@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -21,11 +20,9 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.base.BaseSimpleListFragment
-import com.tokopedia.catalog.databinding.FragmentCatalogProductListBinding
 import com.tokopedia.catalog.databinding.FragmentCatalogProductListImprovementBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.domain.model.CatalogProductItem
-import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapter
 import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapterFactoryImpl
 import com.tokopedia.catalog.ui.adapter.CatalogProductListDiffer
 import com.tokopedia.catalog.ui.adapter.CatalogProductListImprovementAdapter
@@ -46,7 +43,6 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -69,8 +65,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import com.tokopedia.abstraction.R as abstractionR
-import com.tokopedia.catalog.R as catalogR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CatalogProductListImprovementFragment :
