@@ -113,7 +113,6 @@ constructor(
         params.putString(PAGE_NAME, pageName)
         params.putString(PRODUCT_IDS, productIdsString)
         params.putString(QUERY_PARAM, newQueryParam)
-        params.putInt(PARAM_CARD_REIMAGINE, getProductCardReimagineVersion())
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         return params
     }
