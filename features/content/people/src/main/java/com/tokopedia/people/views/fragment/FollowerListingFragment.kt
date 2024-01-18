@@ -34,6 +34,7 @@ import com.tokopedia.people.views.adapter.ProfileFollowersAdapter
 import com.tokopedia.people.views.adapter.listener.UserFollowListener
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
 import com.tokopedia.people.views.uimodel.PeopleUiModel
+import com.tokopedia.shop.common.util.ShopPageActivityResult
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
@@ -52,8 +53,6 @@ class FollowerListingFragment @Inject constructor(
     private var globalError: LocalLoad? = null
     private var isLoggedIn: Boolean = false
     private var isSwipeRefresh: Boolean? = null
-    private var userProfileClickedPosition = -1
-    private var shopPageClickedPosition = -1
 
     private val viewModel: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[FollowerFollowingViewModel::class.java]
@@ -77,16 +76,16 @@ class FollowerListingFragment @Inject constructor(
         if (result.resultCode != RESULT_OK) return@registerForActivityResult
         val intent = result.data ?: return@registerForActivityResult
         val isFollow = UserProfileActivityResult.isFollow(intent)
-        mAdapter.updateFollowUnfollow(userProfileClickedPosition, isFollow)
-        userProfileClickedPosition = -1
+        val userId = UserProfileActivityResult.getUserId(intent)
+        mAdapter.updateFollowUnfollowUser(userId, isFollow)
     }
 
     private val onItemShopClickedResult = registerForActivityResult(StartActivityForResult()) { result ->
         if (result.resultCode != RESULT_OK) return@registerForActivityResult
         val intent = result.data ?: return@registerForActivityResult
-        val isFollow = UserProfileActivityResult.isFollow(intent)
-        mAdapter.updateFollowUnfollow(shopPageClickedPosition, isFollow)
-        shopPageClickedPosition = -1
+        val isFollow = ShopPageActivityResult.isFollow(intent)
+        val shopId = ShopPageActivityResult.getShopId(intent)
+        mAdapter.updateFollowUnfollowShop(shopId, isFollow)
     }
 
     override fun onCreateView(
@@ -293,7 +292,6 @@ class FollowerListingFragment @Inject constructor(
     }
 
     override fun onItemUserClicked(model: PeopleUiModel.UserUiModel, position: Int) {
-        userProfileClickedPosition = position
         userProfileTracker.clickUserFollowers(model.id, model.isMySelf)
         val intent = router.getIntent(
             requireContext(),
@@ -303,7 +301,6 @@ class FollowerListingFragment @Inject constructor(
     }
 
     override fun onItemShopClicked(model: PeopleUiModel.ShopUiModel, position: Int) {
-        shopPageClickedPosition = position
         userProfileTracker.clickUserFollowers(model.id, false)
         router.route(requireContext(), model.appLink)
         val intent = router.getIntent(
