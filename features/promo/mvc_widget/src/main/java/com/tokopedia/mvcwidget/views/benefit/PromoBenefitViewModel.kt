@@ -7,6 +7,8 @@ import com.tokopedia.mvcwidget.usecases.GetPromoBenefitBottomSheetUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 class PromoBenefitViewModel @Inject constructor(
@@ -16,10 +18,14 @@ class PromoBenefitViewModel @Inject constructor(
     private val _state: MutableStateFlow<BenefitUiModel> = MutableStateFlow(BenefitUiModel())
     val state: StateFlow<BenefitUiModel> = _state
 
-    fun setId(id: String) {
+    fun setId(metaData: String) {
         viewModelScope.launch {
-            val result = getPromoBenefit(id)
-            _state.value = result.toUiModel()
+            try {
+                val result = getPromoBenefit(metaData)
+                _state.value = result.toUiModel()
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 }

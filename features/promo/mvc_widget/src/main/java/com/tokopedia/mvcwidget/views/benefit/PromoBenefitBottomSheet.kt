@@ -31,7 +31,6 @@ import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -59,8 +58,8 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
             .baseAppComponent(baseAppComponent)
             .build()
             .inject(this)
-        val id = arguments?.getString(ARG_BOTTOM_SHEET) ?: "-1"
-        viewModel.setId(id)
+        val meta = arguments?.getString(ARG_BOTTOM_SHEET) ?: "-1"
+        viewModel.setId(meta)
     }
 
     override fun onCreateView(

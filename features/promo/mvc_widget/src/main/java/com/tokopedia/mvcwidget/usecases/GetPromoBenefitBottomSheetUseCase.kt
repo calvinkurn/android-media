@@ -3,6 +3,7 @@ package com.tokopedia.mvcwidget.usecases
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mvcwidget.data.entity.PromoCatalogResponse
@@ -16,9 +17,9 @@ class GetPromoBenefitBottomSheetUseCase @Inject constructor(
 
     override suspend fun execute(params: String): PromoCatalogResponse {
         val param = mapOf("metaData" to params)
-        delay(1000)
-        return Gson().fromJson(responseSampleJson, PromoCatalogResponse::class.java)
-//        return repository.request(graphqlQuery(), param)
+        delay(500)
+//        return Gson().fromJson(responseSampleJson, PromoCatalogResponse::class.java)
+        return repository.request(graphqlQuery(), param)
     }
 
     override fun graphqlQuery(): String = """
@@ -231,45 +232,8 @@ class GetPromoBenefitBottomSheetUseCase @Inject constructor(
   }
     """.trimIndent()
 
-    private val metaDataSample = """
-        {
-          "request_list": [
-            {
-              "product_id": 1000,
-              "is_low_benefit": false,
-              "additional_data": [
-                {
-                  "field": "background_color",
-                  "value": "#FFF5F6"
-                },
-                {
-                  "field": "background_image",
-                  "value": "https://images.tokopedia.net/img/bs_background_regular.png"
-                },
-                {
-                  "field": "nett_price",
-                  "value": "9000000"
-                },
-                {
-                  "field": "price",
-                  "value": "9500000"
-                },
-                {
-                  "field": "benefit_cashback",
-                  "value": "300000"
-                },
-                {
-                  "field": "benefit_cashback_currency",
-                  "value": "GoPay Coins"
-                },
-                {
-                  "field": "benefit_discount",
-                  "value": "200000"
-                }
-              ]
-            }
-          ]
-        }
-    """.trimIndent()
-
 }
+
+val metaDataSample = """
+        {"request_list":[{"product_id":1,"is_low_benefit":false,"additional_data":[{"field":"background_color","value":"#FFF5F6"},{"field":"background_image","value":"https://images.tokopedia.net/img/bs_background_regular.png"},{"field":"nett_price","value":"9000000"},{"field":"price","value":"9500000"},{"field":"benefit_cashback","value":"300000"},{"field":"benefit_cashback_currency","value":"GoPay Coins"},{"field":"benefit_discount","value":"200000"}]}]}
+    """.trimIndent()

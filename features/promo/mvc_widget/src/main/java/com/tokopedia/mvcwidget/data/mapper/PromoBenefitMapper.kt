@@ -28,23 +28,23 @@ enum class Style(val id: String) {
     TextHtml("text_html"),
 }
 
-private fun List<PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component.Attribute>.toTextModel() =
-    BenefitText(
-        attributeOf(Style.Title),
-        attributeOf(Style.TitleColor),
-        attributeOf(Style.TitleFormat),
-        attributeOf(Style.Text),
-        attributeOf(Style.TextColor),
-        attributeOf(Style.TextFormat),
-    )
+private typealias Attribute = PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component.Attribute
+private typealias Component = PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component
 
-private fun List<PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component.Attribute>.attributeOf(
-    style: Style
-) = first { it.type == style.id }.value
+private fun List<Attribute>.toTextModel() = BenefitText(
+    attributeOf(Style.Title),
+    attributeOf(Style.TitleColor),
+    attributeOf(Style.TitleFormat),
+    attributeOf(Style.Text),
+    attributeOf(Style.TextColor),
+    attributeOf(Style.TextFormat),
+)
 
-private fun List<PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component>.componentOf(
-    component: PdpComponent
-) = first { it.componentType == component.id }.attributeList
+private fun List<Attribute>.attributeOf(style: Style) =
+    runCatching { first { it.type == style.id }.value }.getOrDefault("")
+
+private fun List<Component>.componentOf(component: PdpComponent) =
+    runCatching { first { it.componentType == component.id }.attributeList }.getOrDefault(emptyList())
 
 internal fun PromoCatalogResponse.toUiModel(): BenefitUiModel {
     val components =
