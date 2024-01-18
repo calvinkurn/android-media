@@ -37,6 +37,10 @@ data class PromoCodesResponse(
     val promoCodeType: String = "",
 )
 
+fun List<PromoCodesResponse>.mapIntoListPromoIdsString() = this.map {
+    it.promoId
+}
+
 fun List<PromoCodesResponse>.mapIntoPromoExternalAutoApply() = this.map {
     PromoExternalAutoApply(
         code = it.promoCode,

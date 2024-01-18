@@ -16,6 +16,8 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirIma
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
+import com.tokopedia.product.detail.common.data.model.pdplayout.PromoCodesResponse
+import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoListPromoIdsString
 import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoPriceUiModel
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
@@ -284,6 +286,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         dataP1.data.price.slashPriceFmt
                     )
                     this.normalPromoUiModel = dataP1.data.price
+                    this.promoIdsString =
+                        dataP1.data.promoPrice.promoCodes.mapIntoListPromoIdsString()
                 }
             }
 
@@ -750,10 +754,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     /**
      * Use this only when update variant, because no need to update tradein when variant changed
      */
-    fun updateNotifyMeAndContent(
+    fun updateNotifyMeContentPromoPrice(
         productId: String,
         upcomingData: Map<String, ProductUpcomingData>?,
-        freeOngkirImgUrl: String
+        freeOngkirImgUrl: String,
+        promoCodes:List<PromoCodesResponse>
     ) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
@@ -786,6 +791,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     boIconUrl = freeOngkirImgUrl
                 )
                 normalPriceBoUrl = freeOngkirImgUrl
+                promoIdsString = promoCodes.mapIntoListPromoIdsString()
             }
         }
     }

@@ -13,7 +13,8 @@ data class ProductPriceUiModel(
     var priceComponentType: Int = 0,
     var promoPriceData: PromoPriceUiModel? = null,
     var normalPromoUiModel: Price? = null,
-    var normalPriceBoUrl: String = ""
+    var normalPriceBoUrl: String = "",
+    var promoIdsString: List<String> = listOf()
 ) : DynamicPdpDataModel {
     override fun type(): String = type
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
@@ -22,7 +23,14 @@ data class ProductPriceUiModel(
 
     override fun name(): String = name
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return false
+        return if (newData is ProductPriceUiModel) {
+            priceComponentType != newData.priceComponentType ||
+                normalPromoUiModel != newData.normalPromoUiModel ||
+                normalPriceBoUrl != newData.normalPriceBoUrl ||
+                promoIdsString != newData.promoIdsString
+        } else {
+            false
+        }
     }
 
     override fun newInstance(): DynamicPdpDataModel = copy()

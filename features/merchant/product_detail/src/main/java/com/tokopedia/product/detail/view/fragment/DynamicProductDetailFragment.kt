@@ -2731,10 +2731,11 @@ open class DynamicProductDetailFragment :
             promoPriceStyle = viewModel.p2Data.value?.promoPriceStyle
         )
 
-        pdpUiUpdater?.updateNotifyMeAndContent(
-            selectedChild?.productId.toString(),
-            viewModel.p2Data.value?.upcomingCampaigns,
-            boeData.imageURL
+        pdpUiUpdater?.updateNotifyMeContentPromoPrice(
+            productId = selectedChild?.productId.toString(),
+            upcomingData = viewModel.p2Data.value?.upcomingCampaigns,
+            freeOngkirImgUrl = boeData.imageURL,
+            promoCodes = updatedDynamicProductInfo?.data?.promoPrice?.promoCodes ?: listOf()
         )
         val selectedTicker = viewModel.p2Data.value?.getTickerByProductId(productId ?: "")
         pdpUiUpdater?.updateTicker(selectedTicker)
