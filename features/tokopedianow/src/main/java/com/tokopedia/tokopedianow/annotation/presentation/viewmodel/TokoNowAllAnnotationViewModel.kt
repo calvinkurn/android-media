@@ -52,6 +52,11 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
             )
 
             layout.addAnnotations(response)
+
+            if (response.isNeededToLoadMore()) {
+                layout.addLoadMore()
+            }
+
             _firstPage.postValue(Success(layout))
             _headerTitle.postValue(Success(response.annotationHeader.title))
 
@@ -83,6 +88,11 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
                         needToLoadMoreData = if (response.annotationList.isNotEmpty()) {
                             layout.removeLoadMore()
                             layout.addAnnotations(response)
+
+                            if (response.isNeededToLoadMore()) {
+                                layout.addLoadMore()
+                            }
+
                             _loadMore.postValue(layout)
 
                             needToLoadMoreData.copy(
@@ -101,10 +111,6 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
                         layout.removeLoadMore()
                         _loadMore.postValue(layout)
                     }
-                }
-                needToLoadMoreData.isNeededToLoadMore -> {
-                    layout.addLoadMore()
-                    _loadMore.value = layout
                 }
                 else -> {
                     _isOnScrollNotNeeded.value = Unit
