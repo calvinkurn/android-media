@@ -3,7 +3,6 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextUtils
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -12,13 +11,18 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.Companion.ERROR_PINPOINT_NEEDED
 import com.tokopedia.logisticcart.databinding.ItemDurationBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
+import com.tokopedia.logisticcart.utils.ShippingViewUtils
+import com.tokopedia.logisticcart.utils.ShippingViewUtils.errorPinpoint
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.logisticcart.R as logisticcartR
-import com.tokopedia.unifyprinciples.R as RUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -44,26 +48,33 @@ class ShippingDurationViewHolder(
                 tvShippingInformation.visibility = View.GONE
             }
 
-            if (!TextUtils.isEmpty(shippingDurationUiModel.errorMessage)) {
+            // error message
+            if (shippingDurationUiModel.errorMessage?.isNotEmpty() == true) {
+                val error = shippingDurationUiModel.serviceData.error
+                tvError.text = ShippingViewUtils.constructErrorUi(binding.root.context, error.errorMessage, error.errorId)
+                tvError.visibility = View.VISIBLE
+            } else {
+                tvError.visibility = View.GONE
+            }
+
+            // set view enabled / disabled
+            if (shippingDurationUiModel.disabled) {
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
                         tvDurationOrPrice.context,
-                        RUnify.color.Unify_N700_44
+                        unifyprinciplesR.color.Unify_N700_44
                     )
                 )
                 tvPriceOrDuration.visibility = View.GONE
                 tvTextDesc.visibility = View.GONE
                 tvOrderPrioritas.visibility = View.GONE
-                tvError.text = shippingDurationUiModel.errorMessage
-                tvError.visibility = View.VISIBLE
             } else {
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
                         tvDurationOrPrice.context,
-                        RUnify.color.Unify_N700_96
+                        unifyprinciplesR.color.Unify_N700_96
                     )
                 )
-                tvError.visibility = View.GONE
                 tvPriceOrDuration.visibility = View.VISIBLE
                 if (shippingDurationUiModel.serviceData.texts.textServiceDesc.isNotEmpty()) {
                     tvTextDesc.text = shippingDurationUiModel.serviceData.texts.textServiceDesc
@@ -72,7 +83,8 @@ class ShippingDurationViewHolder(
                     tvTextDesc.visibility = View.GONE
                 }
                 if (!isDisableOrderPrioritas && shippingDurationUiModel.serviceData.orderPriority.now) {
-                    val orderPrioritasTxt = itemView.context.getString(logisticcartR.string.order_prioritas)
+                    val orderPrioritasTxt =
+                        itemView.context.getString(logisticcartR.string.order_prioritas)
                     val orderPrioritasLabel = SpannableString(orderPrioritasTxt)
                     orderPrioritasLabel.setSpan(
                         StyleSpan(Typeface.BOLD),
@@ -92,14 +104,20 @@ class ShippingDurationViewHolder(
             if (shippingDurationUiModel.merchantVoucherModel.isMvc == 1) {
                 flContainer.visibility = View.VISIBLE
                 flContainer.foreground =
-                    ContextCompat.getDrawable(flContainer.context, logisticcartR.drawable.fg_enabled_item)
+                    ContextCompat.getDrawable(
+                        flContainer.context,
+                        logisticcartR.drawable.fg_enabled_item
+                    )
                 ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
                 tvMvcText.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
                 tvMvcError.visibility = View.GONE
             } else if (shippingDurationUiModel.merchantVoucherModel.isMvc == -1) {
                 flContainer.visibility = View.VISIBLE
                 flContainer.foreground =
-                    ContextCompat.getDrawable(flContainer.context, logisticcartR.drawable.fg_disabled_item)
+                    ContextCompat.getDrawable(
+                        flContainer.context,
+                        logisticcartR.drawable.fg_disabled_item
+                    )
                 ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
                 tvMvcText.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
                 tvMvcError.visibility = View.VISIBLE
@@ -149,7 +167,11 @@ class ShippingDurationViewHolder(
                     shippingDurationUiModel.serviceData.serviceName,
                     tvDurationOrPrice.context.getString(logisticcartR.string.content_desc_tv_duration)
                 )
-                tvPriceOrDuration.text = shippingDurationUiModel.serviceData.texts.textRangePrice
+                if (!shippingDurationUiModel.serviceData.error.errorId.errorPinpoint) {
+                    tvPriceOrDuration.text = shippingDurationUiModel.serviceData.texts.textRangePrice
+                } else {
+                    tvPriceOrDuration.gone()
+                }
                 lblCodAvailableEta.text = shippingDurationUiModel.codText
                 lblCodAvailableEta.visibility =
                     if (shippingDurationUiModel.isCodAvailable) View.VISIBLE else View.GONE
@@ -166,7 +188,7 @@ class ShippingDurationViewHolder(
                 if (shippingDurationUiModel.isSelected) View.VISIBLE else View.GONE
             if (shippingDurationUiModel.isShowShowCase) setShowCase()
             itemView.setOnClickListener {
-                if (shippingDurationUiModel.errorMessage.isNullOrEmpty()) {
+                if (!shippingDurationUiModel.disabled) {
                     shippingDurationUiModel.isSelected = !shippingDurationUiModel.isSelected
                     shippingDurationAdapterListener?.onShippingDurationChoosen(
                         shippingDurationUiModel.shippingCourierViewModelList,
@@ -180,8 +202,10 @@ class ShippingDurationViewHolder(
     }
 
     private fun setShowCase() {
-        val label = itemView.context.getString(logisticcartR.string.label_title_showcase_shipping_duration)
-        val text = itemView.context.getString(logisticcartR.string.label_body_showcase_shipping_duration)
+        val label =
+            itemView.context.getString(logisticcartR.string.label_title_showcase_shipping_duration)
+        val text =
+            itemView.context.getString(logisticcartR.string.label_body_showcase_shipping_duration)
         val coachMarkItem = CoachMark2Item(
             binding.layoutShippingDuration,
             label,
@@ -194,6 +218,11 @@ class ShippingDurationViewHolder(
         showCaseCoachmark = CoachMark2(binding.root.context)
         showCaseCoachmark?.showCoachMark(list, null)
     }
+
+    private val ShippingDurationUiModel.disabled: Boolean
+        get() {
+            return serviceData.error.errorId.toIntOrZero() != 0 && serviceData.error.errorId != ERROR_PINPOINT_NEEDED
+        }
 
     companion object {
         val ITEM_VIEW_SHIPMENT_DURATION = 5
