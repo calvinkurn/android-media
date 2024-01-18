@@ -12,6 +12,7 @@ import com.tokopedia.content.product.preview.view.components.player.ProductPrevi
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewPlayerControl
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -35,6 +36,10 @@ class ProductContentVideoViewHolder(
                 onNotSelected()
             }
         })
+        binding.root.setOnClickListener {
+            val state = !mVideoPlayer?.exoPlayer?.playWhenReady.orFalse()
+            mVideoPlayer?.exoPlayer?.playWhenReady = state
+        }
     }
 
     fun bind(content: ContentUiModel) {
