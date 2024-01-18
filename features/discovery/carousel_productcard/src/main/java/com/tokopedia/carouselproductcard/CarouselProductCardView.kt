@@ -267,29 +267,21 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>, isGrid: Boolean): Int =
         if (isGrid)
-            if (isReimagine) productCardGridReimagineMaxHeight(productCardModelList)
-            else productCardGridMaxHeight(productCardModelList)
+            productCardModelList.getMaxHeightForGridView(
+                context,
+                Dispatchers.Default,
+                productCardGridCarouselWidth(),
+                isReimagine,
+            )
         else
-            productCardModelList.getMaxHeightForListView(context, Dispatchers.Default)
+            productCardModelList.getMaxHeightForListView(
+                context,
+                Dispatchers.Default,
+                isReimagine,
+            )
 
-    private suspend fun productCardGridReimagineMaxHeight(productCardModelList: List<ProductCardModel>): Int =
-        productCardModelList
-            .map(ProductCardModelReimagine.Companion::from)
-            .getMaxHeightForGridCarouselView(context)
-
-    private suspend fun productCardGridMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth =
-            context
-                ?.resources
-                ?.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)
-                ?: 0
-
-        return productCardModelList.getMaxHeightForGridView(
-            context,
-            Dispatchers.Default,
-            productCardWidth
-        )
-    }
+    private fun productCardGridCarouselWidth() =
+        context.resources.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)
 
     private fun submitList(
             productCardModelList: List<ProductCardModel>,

@@ -47,9 +47,6 @@ private fun benefitWithOffers(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel, reimagineProductOffers),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -71,7 +68,6 @@ private fun benefitWithOffers(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Product Offers")
@@ -102,9 +98,6 @@ private fun ribbon(type: String): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -125,7 +118,6 @@ private fun ribbon(type: String): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
 
         R.id.productCardRibbon to isDisplayed(),
         R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
@@ -155,9 +147,6 @@ private fun video(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         videoUrl = productVideoUrl,
     )
 
@@ -177,7 +166,6 @@ private fun video(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardVideoIdentifier to isDisplayed(),
     )
 
@@ -204,9 +192,6 @@ private fun threeDots(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         videoUrl = productVideoUrl,
         hasThreeDots = true,
     )
@@ -227,7 +212,6 @@ private fun threeDots(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardVideoIdentifier to isDisplayed(),
         R.id.productCardThreeDots to isDisplayed(),
     )
@@ -260,9 +244,6 @@ private fun overlay(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -282,7 +263,6 @@ private fun overlay(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Label Overlay")

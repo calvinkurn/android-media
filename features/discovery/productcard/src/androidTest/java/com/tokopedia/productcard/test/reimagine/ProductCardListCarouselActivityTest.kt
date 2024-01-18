@@ -4,14 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.reimagine.ProductCardListCarouselView
-import com.tokopedia.productcard.reimagine.ProductCardListView
 import com.tokopedia.productcard.reimagine.ProductCardModel
+import com.tokopedia.productcard.reimagine.productCardListCarouselHeight
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.test.R as productcardtestR
 
@@ -67,16 +69,23 @@ class ProductCardListCarouselActivityTest: AppCompatActivity() {
         private val testDescription: TextView? by lazy {
             itemView.findViewById(productcardtestR.id.productCardReimagineTestDescription)
         }
+        private val productCardContainerCalculator: FrameLayout? by lazy {
+            itemView.findViewById(productcardtestR.id.productCardContainerHeightCalculator)
+        }
         private val productCardView: ProductCardListCarouselView? by lazy {
             itemView.findViewById(productcardtestR.id.productCardReimagineListCarouselView)
         }
 
-        init {
-            itemView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-        }
-
         fun bind(productCardModel: ProductCardModel, description: String) {
-            testDescription?.text = "$bindingAdapterPosition $description"
+            val productCardListCarouselHeight =
+                productCardListCarouselHeight(itemView.context, productCardModel)
+            productCardContainerCalculator?.layoutParams?.apply {
+                height = productCardListCarouselHeight
+            }
+
+            testDescription?.text =
+                "$bindingAdapterPosition $description" +
+                "\nHeight: $productCardListCarouselHeight px; ${productCardListCarouselHeight.toDp()} dp"
 
             productCardView?.run {
                 setProductModel(productCardModel)

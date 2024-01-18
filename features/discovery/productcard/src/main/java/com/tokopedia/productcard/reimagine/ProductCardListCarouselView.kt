@@ -2,36 +2,23 @@ package com.tokopedia.productcard.reimagine
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.core.view.marginStart
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.R
-import com.tokopedia.productcard.reimagine.ProductCardType.GridCarousel
-import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.productcard.experiments.ReimagineListCarouselViewStrategy
 
 class ProductCardListCarouselView: ConstraintLayout {
-    private val renderer = ProductCardRenderer(this, ProductCardType.ListCarousel)
-    private val stockInfo = ProductCardStockInfo(this)
-
-    private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
-    private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
-    private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
+    private val strategy = ReimagineListCarouselViewStrategy(this)
 
     val additionalMarginStart: Int
-        get() = cardContainer?.marginStart ?: 0
+        get() = strategy.additionalMarginStart()
 
     constructor(context: Context) : super(context) {
-        init()
+        strategy.init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(attrs)
+        strategy.init(context, attrs)
     }
 
     constructor(
@@ -39,47 +26,25 @@ class ProductCardListCarouselView: ConstraintLayout {
         attrs: AttributeSet?,
         defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr) {
-        init(attrs)
-    }
-
-    private fun init(attrs: AttributeSet? = null) {
-        View.inflate(context, R.layout.product_card_reimagine_list_carousel_layout, this)
-
-        cardContainer?.run {
-            layoutParams = layoutParams?.apply { height = MATCH_PARENT }
-            elevation = 0f
-
-            setCardUnifyBackgroundColor(
-                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
-            )
-        }
+        strategy.init(context, attrs, defStyleAttr)
     }
 
     fun setProductModel(productCardModel: ProductCardModel) {
-        renderer.setProductModel(productCardModel)
-
-        renderAddToCart(productCardModel)
-        stockInfo.render(productCardModel)
-    }
-
-    private fun renderAddToCart(productCardModel: ProductCardModel) {
-        val cardConstraintLayout = cardConstraintLayout ?: return
-
-        showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
-            AddToCartButton(cardConstraintLayout)
-        }
+        strategy.setProductModel(productCardModel)
     }
 
     fun addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
-        imageView?.addOnImpressionListener(holder, onView)
+        strategy.setImageProductViewHintListener(holder, object : ViewHintListener {
+            override fun onViewHint() { onView() }
+        })
     }
 
     fun setAddToCartOnClickListener(onClickListener: OnClickListener) {
-        findViewById<View?>(R.id.productCardAddToCart)?.setOnClickListener(onClickListener)
+        strategy.setAddToCartOnClickListener(onClickListener)
     }
 
     override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
-        cardContainer?.setOnClickListener(l)
+        strategy.setOnClickListener(l)
     }
 }

@@ -8,6 +8,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.reimagine.LABEL_OVERLAY_1
+import com.tokopedia.productcard.reimagine.LABEL_OVERLAY_2
+import com.tokopedia.productcard.reimagine.LABEL_OVERLAY_3
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.reimagine.lazyView
@@ -21,6 +24,11 @@ internal class LabelOverlay(view: View) {
     private val labelOverlay1 by view.lazyView<ImageView>(R.id.productCardOverlay1)
     private val labelOverlay2 by view.lazyView<ImageView>(R.id.productCardOverlay2)
     private val labelOverlay3 by view.lazyView<ImageView>(R.id.productCardOverlay3)
+    private val widthMap = mapOf(
+        LABEL_OVERLAY_1 to 48.toPx(),
+        LABEL_OVERLAY_2 to 48.toPx(),
+        LABEL_OVERLAY_3 to 32.toPx(),
+    )
 
     fun render(productCardModel: ProductCardModel) {
         val labelOverlayViewList = listOf(labelOverlay1, labelOverlay2, labelOverlay3)
@@ -45,7 +53,7 @@ internal class LabelOverlay(view: View) {
 
         val imageView = imageViewList.next() ?: return
         val labelGroup = labelGroupList.next()
-        val widthPx = labelGroup.width().toPx()
+        val widthPx = widthMap[labelGroup.position] ?: 0
 
         renderImage(imageView, labelGroup.imageUrl, widthPx, hasStockInfo, marginStartPx)
 

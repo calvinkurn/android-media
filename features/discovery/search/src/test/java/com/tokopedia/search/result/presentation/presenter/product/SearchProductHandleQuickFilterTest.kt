@@ -445,7 +445,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     fun `Search Product initialize quick filter reimagine`() {
         val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
 
-        every { reimagineRollence.search2Component() } returns Search2Component.QF_VAR
+        every { reimagineRollence.search2Component() } returns Search2Component.PRODUCT_CARD_SRE_2024
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
@@ -472,7 +472,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     fun `Drop down quick filter reimagine hasChevron is true`() {
         val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
 
-        every { reimagineRollence.search2Component() } returns Search2Component.QF_VAR
+        every { reimagineRollence.search2Component() } returns Search2Component.PRODUCT_CARD_SRE_2024
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
