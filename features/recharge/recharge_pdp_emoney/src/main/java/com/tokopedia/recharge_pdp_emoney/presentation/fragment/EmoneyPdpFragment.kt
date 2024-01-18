@@ -343,6 +343,7 @@ open class EmoneyPdpFragment :
                 }
                 binding.emoneyFullPageLoadingLayout.hide()
                 binding.emoneyBuyWidget.onBuyButtonLoading(false)
+                binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(false)
             }
         )
 
@@ -355,6 +356,7 @@ open class EmoneyPdpFragment :
             }
             binding.emoneyFullPageLoadingLayout.hide()
             binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(false)
+            binding.emoneyBuyWidget.onBuyButtonLoading(false)
         }
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
@@ -888,6 +890,7 @@ open class EmoneyPdpFragment :
 
     override fun onClickNextBuyButton() {
         binding.emoneyBuyWidget.onBuyButtonLoading(true)
+        binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(true)
         proceedAddToCart(
             emoneyPdpViewModel.generateCheckoutPassData(
                 (requireActivity() as EmoneyPdpActivity).promoCode,
@@ -899,6 +902,7 @@ open class EmoneyPdpFragment :
 
     override fun onClickMultiCheckoutButton() {
         binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(true)
+        binding.emoneyBuyWidget.onBuyButtonLoading(true)
         addToCartViewModel.setAtcMultiCheckoutParam()
         proceedAddToCart(
             emoneyPdpViewModel.generateCheckoutPassData(
