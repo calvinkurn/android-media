@@ -50,7 +50,7 @@ class CategoryInspirationViewModelTest {
         backgroundScope.launch { viewModel.uiState.collect() }
 
         coEvery { mockRepo.getCategoryInspirationTitle(mockSource) } returns mockTitle
-        coEvery { mockRepo.getWidgetContentSlot(any()) } returns ContentSlotModel.TabMenus(menu = menus)
+        coEvery { mockRepo.getWidgetContentSlot(any()) } returns ContentSlotModel.TabMenus(menus = menus)
         viewModel.onAction(CategoryInspirationAction.Init)
 
         viewModel.uiState.value.title.assertEqualTo(mockTitle)
@@ -81,7 +81,7 @@ class CategoryInspirationViewModelTest {
             mockRepo.getWidgetContentSlot(
                 WidgetMenuModel.Empty.copy(group = mockSource).toRequest("")
             )
-        } returns ContentSlotModel.TabMenus(menu = menus)
+        } returns ContentSlotModel.TabMenus(menus = menus)
         coEvery { mockRepo.getWidgetContentSlot(menus[0].toRequest("")) } returns menuResponse
 
         viewModel.onAction(CategoryInspirationAction.Init)
@@ -128,7 +128,7 @@ class CategoryInspirationViewModelTest {
             mockRepo.getWidgetContentSlot(
                 WidgetMenuModel.Empty.copy(group = mockSource).toRequest("")
             )
-        } returns ContentSlotModel.TabMenus(menu = menus)
+        } returns ContentSlotModel.TabMenus(menus = menus)
         coEvery { mockRepo.getWidgetContentSlot(menus[0].toRequest("")) } returns menuResponsePage1
         coEvery { mockRepo.getWidgetContentSlot(menus[0].toRequest("page_2")) } returns menuResponsePage2
 
@@ -167,7 +167,7 @@ class CategoryInspirationViewModelTest {
             mockRepo.getWidgetContentSlot(
                 WidgetMenuModel.Empty.copy(group = mockSource).toRequest("")
             )
-        } returns ContentSlotModel.TabMenus(menu = menus)
+        } returns ContentSlotModel.TabMenus(menus = menus)
 
         viewModel.onAction(CategoryInspirationAction.Init)
 

@@ -146,8 +146,8 @@ internal class FeedBrowseViewModel @Inject constructor(
                 is ContentSlotModel.TabMenus -> {
                     updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                         it.copy(
-                            menus = response.menu.associateWith { FeedBrowseChannelListState.initLoading() },
-                            selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
+                            menus = response.menus.associateWith { FeedBrowseChannelListState.initLoading() },
+                            selectedMenuId = response.menus.firstOrNull()?.id.orEmpty()
                         )
                     }
                 }

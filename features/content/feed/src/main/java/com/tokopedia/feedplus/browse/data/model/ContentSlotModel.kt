@@ -9,7 +9,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 internal sealed interface ContentSlotModel {
 
     data class TabMenus(
-        val menu: List<WidgetMenuModel>
+        val menus: List<WidgetMenuModel>
     ) : ContentSlotModel
 
     data class ChannelBlock(
