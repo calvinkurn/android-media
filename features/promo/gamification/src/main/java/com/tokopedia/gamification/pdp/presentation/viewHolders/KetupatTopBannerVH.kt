@@ -5,18 +5,21 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.relativeDate
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDate
-import com.tokopedia.recommendation_widget_common.extension.mappingMiniCartDataToRecommendation
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.getDayDiffFromToday
-import com.tokopedia.utils.date.removeTime
 import com.tokopedia.utils.date.toString
+import timber.log.Timber
+import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.*
+import kotlin.math.absoluteValue
 import com.tokopedia.gamification.R as gamificationR
 
 class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVHModel>(itemView) {
@@ -27,17 +30,6 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
         var LAYOUT = gamificationR.layout.ketupat_top_banner
 
         const val TIMER_DATE_FORMAT = "yyyy-MM-dd"
-
-        fun parseData(date: String?, timerFormat: String = TIMER_DATE_FORMAT): Date? {
-            return date?.let {
-                try {
-                    SimpleDateFormat(timerFormat, Locale.getDefault())
-                        .parse(date)
-                } catch (parseException: ParseException) {
-                    null
-                }
-            }
-        }
     }
 
     override fun bind(element: KetupatTopBannerVHModel?) {
@@ -49,21 +41,62 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
                 ?.setImageUrl(header.assets.find { it?.key == "BACKGROUND_IMAGE" }?.value.toString())
         }
         element?.scratchCard?.let {
-            val diff = parseData(it.startTime, TIMER_DATE_FORMAT)?.getDayDiffFromToday()
+//            val diff = parseData(it.startTime, TIMER_DATE_FORMAT)?.getDayDiffFromToday
+            val diff = getDateDiffFromToday()
             if (diff != null) {
-                if (diff < 0) {
-                    itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).hide()
-                    itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).hide()
-                }
-                if (diff <= 7) {
-                    itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).text =
-                        "$diff Days"
+                if (diff in 2..7) {
+                    itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).show()
+                    itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).apply {
+                        text = "$diff Days"
+                        show()
+                    }
                 } else {
-                    val date = parseData(it.startTime, TIMER_DATE_FORMAT)?.time?.toDate().toString()
-                    itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).text =
-                        date.subSequence(0,11)
+                    val date = formatDate("yyyy-MM-dd hh:mm:ss Z", "hh", it.startTime+"00")
+                    itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).show()
+                    itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).apply {
+                        text = date
+                        show()
+                    }
                 }
             }
+        }
+    }
+
+    private fun getDateDiffFromToday(date: String? = "2024-01-16 11:22:10 +07"): Long? {
+        try {
+            val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.ENGLISH)
+            formatter.isLenient = false
+            formatter.timeZone = TimeZone.getTimeZone("UTC")
+            return formatter.parse(date+"00")?.getDayDiffFromToday()?.absoluteValue
+        } catch (e: ParseException) {
+            Timber.e(e)
+        }
+
+
+        return -1
+    }
+
+    private fun formatDate(
+        currentFormat: String,
+        newFormat: String,
+        dateString: String
+    ): String {
+        return try {
+            val fromFormat: DateFormat = SimpleDateFormat(currentFormat, Locale.ENGLISH)
+            fromFormat.isLenient = false
+            fromFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val toFormat: DateFormat = SimpleDateFormat(newFormat, Locale.ENGLISH)
+            toFormat.isLenient = false
+            toFormat.timeZone = TimeZone.getDefault()
+
+            val date = fromFormat.parse(dateString)
+            date?.let { toFormat.format(it) } ?: String.EMPTY
+        } catch (e: ParseException) {
+            Timber.e(e, "cannot be parsed")
+            dateString
+        } catch (e: IllegalArgumentException) {
+            Timber.e(e, "Pattern is invalid")
+            dateString
         }
     }
 
