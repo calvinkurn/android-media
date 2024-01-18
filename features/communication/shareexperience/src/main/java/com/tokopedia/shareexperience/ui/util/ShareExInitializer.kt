@@ -11,6 +11,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shareexperience.R
+import com.tokopedia.shareexperience.data.analytic.ShareExAnalytics
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
@@ -34,7 +35,7 @@ import javax.inject.Inject
  */
 class ShareExInitializer(
     activity: FragmentActivity
-): DefaultLifecycleObserver, ShareExBottomSheetListener {
+) : DefaultLifecycleObserver, ShareExBottomSheetListener {
 
     private val weakActivity = WeakReference(activity)
     private var dialog: ShareExLoadingDialog? = null
@@ -51,6 +52,9 @@ class ShareExInitializer(
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
+
+    @Inject
+    lateinit var analytics: ShareExAnalytics
 
     private fun addObserver(activity: FragmentActivity) {
         activity.lifecycle.addObserver(this)
@@ -88,7 +92,6 @@ class ShareExInitializer(
                 arg.onError(throwable)
             }
         }
-
     }
 
     private suspend fun observeAffiliateEligibility(
@@ -117,6 +120,11 @@ class ShareExInitializer(
     ) {
         this.bottomSheetArg = bottomSheetArg
         showLoadingDialog()
+        analytics.trackActionClickIconShare(
+            id = bottomSheetArg.identifier,
+            pageTypeEnum = bottomSheetArg.pageTypeEnum,
+            label = bottomSheetArg.trackerArg.labelActionClickShareIcon
+        )
     }
 
     private fun showLoadingDialog() {

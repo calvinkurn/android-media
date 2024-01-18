@@ -17,6 +17,6 @@ data class ShareExTrackerArg(
     /**
      * Affiliate trackers
      */
-    val labelImpressionAffiliateTicker: String = "",
-    val labelActionClickAffiliate: String = ""
-): Parcelable
+    val labelImpressionAffiliateRegistration: String = "",
+    val labelActionClickAffiliateRegistration: String = ""
+) : Parcelable

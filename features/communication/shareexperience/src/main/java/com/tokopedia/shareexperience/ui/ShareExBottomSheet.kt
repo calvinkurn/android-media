@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.shareexperience.data.analytic.ShareExAnalytics
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.domain.ShareExConstants.DefaultValue.DEFAULT_TITLE
@@ -52,6 +53,9 @@ class ShareExBottomSheet :
 
     @Inject
     lateinit var viewModel: ShareExViewModel
+
+    @Inject
+    lateinit var analytics: ShareExAnalytics
 
     private var viewBinding by autoClearedNullable<ShareexperienceBottomSheetBinding>()
     private val adapter by lazy {
@@ -113,10 +117,26 @@ class ShareExBottomSheet :
 
     @SuppressLint("DeprecatedMethod")
     private fun setupBottomSheetModel() {
-        viewModel.bottomSheetArgs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val args = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY, ShareExBottomSheetArg::class.java)
         } else {
             arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY)
+        }
+        args?.let {
+            viewModel.bottomSheetArgs = args
+            analytics.trackImpressionBottomSheet(
+                id = it.identifier,
+                pageTypeEnum = it.pageTypeEnum,
+                label = args.trackerArg.labelImpressionBottomSheet
+            )
+            setCloseClickListener { _ ->
+                analytics.trackActionClickClose(
+                    id = it.identifier,
+                    pageTypeEnum = it.pageTypeEnum,
+                    label = it.trackerArg.labelActionCloseIcon
+                )
+                dismiss()
+            }
         }
     }
 
@@ -216,7 +236,24 @@ class ShareExBottomSheet :
         viewModel.processAction(ShareExAction.UpdateShareImage(imageUrl))
     }
 
+    override fun onImpressionAffiliateRegistrationCard() {
+        viewModel.bottomSheetArgs?.let {
+            analytics.trackImpressionTickerAffiliate(
+                id = it.identifier,
+                pageTypeEnum = it.pageTypeEnum,
+                label = it.trackerArg.labelImpressionAffiliateRegistration
+            )
+        }
+    }
+
     override fun onAffiliateRegistrationCardClicked(appLink: String) {
+        viewModel.bottomSheetArgs?.let {
+            analytics.trackActionClickAffiliateRegistration(
+                id = it.identifier,
+                pageTypeEnum = it.pageTypeEnum,
+                label = it.trackerArg.labelActionClickAffiliateRegistration
+            )
+        }
         navigateToPage(appLink)
     }
 
