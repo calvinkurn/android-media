@@ -17,16 +17,11 @@ import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFa
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponSlugVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatProductRecommItemVHmodel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatRedirectionBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import kotlinx.coroutines.async
 import org.json.JSONObject
 import javax.inject.Inject
@@ -49,7 +44,6 @@ class KetupatLandingViewModel @Inject constructor(
     private val referralTimeData = MutableLiveData<KetupatReferralEventTimeStamp>()
     var data: KetupatLandingPageData? = null
     var eventSlug = ""
-
     fun getGamificationLandingPageData(slug: String = "") {
         launchCatchError(
             block = {
@@ -90,19 +84,6 @@ class KetupatLandingViewModel @Inject constructor(
         )
     }
 
-    fun getProductRecommendation() {
-        launchCatchError(
-            block = {
-                val requestParam = GetRecommendationRequestParam()
-                getRecommendationUseCase.getData(requestParam)
-            },
-            onError = {
-                it.printStackTrace()
-                errorMessage.value = it
-            }
-        )
-    }
-
     private fun convertDataToVisitable(data: KetupatLandingPageData.GamiGetScratchCardLandingPage?): ArrayList<Visitable<KetupatLandingTypeFactory>>? {
         val tempList: ArrayList<Visitable<KetupatLandingTypeFactory>> = ArrayList()
         var header: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
@@ -112,7 +93,6 @@ class KetupatLandingViewModel @Inject constructor(
         var benefitCouponSlug: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? =
             null
         var banner: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
-
         data?.sections?.forEach {
             when (it?.type) {
                 "header" -> {
@@ -169,14 +149,6 @@ class KetupatLandingViewModel @Inject constructor(
         if (banner != null) {
             tempList.add(KetupatRedirectionBannerVHModel(banner!!))
         }
-        tempList.add(
-            KetupatProductRecommItemVHmodel(
-                RecommendationWidgetModel(
-                    metadata = RecommendationWidgetMetadata(),
-                    trackingModel = RecommendationWidgetTrackingModel()
-                )
-            )
-        )
         return tempList
     }
 
