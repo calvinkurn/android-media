@@ -744,7 +744,7 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val editAddressResult =
-                logisticProcessor.editAddressPinpoint(latitude, longitude, recipientAddressModel)
+                logisticCartProcessor.editAddressPinpoint(latitude, longitude, recipientAddressModel)
             pageState.value = CheckoutPageState.Normal
             if (editAddressResult.isSuccess) {
                 loadSAF(
