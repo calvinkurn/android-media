@@ -40,7 +40,7 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
 
     private val jobMap = mutableMapOf<String, Job>()
 
-    val uiState get() = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     fun onAction(action: CategoryInspirationAction) {
         when (action) {
