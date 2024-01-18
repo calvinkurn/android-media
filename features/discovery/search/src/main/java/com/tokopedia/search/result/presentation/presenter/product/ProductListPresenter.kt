@@ -369,7 +369,6 @@ class ProductListPresenter @Inject constructor(
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
 
-        paginationImpl.totalData = productDataView.totalData
     }
 
     private fun createProductDataView(

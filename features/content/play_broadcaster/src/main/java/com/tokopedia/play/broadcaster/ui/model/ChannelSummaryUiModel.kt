@@ -10,10 +10,9 @@ data class ChannelSummaryUiModel(
     val coverUrl: String,
     val date: String,
     val duration: String,
-    val isEligiblePostVideo: Boolean,
     val author: ContentAccountUiModel,
 ) {
     companion object {
-        fun empty() = ChannelSummaryUiModel("", "","", "", false, ContentAccountUiModel.Empty)
+        fun empty() = ChannelSummaryUiModel("", "","", "", ContentAccountUiModel.Empty)
     }
 }
