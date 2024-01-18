@@ -25,10 +25,10 @@ data class GetTargetedTickerParam(
         val contents: List<Content> = listOf()
     ) {
         data class Content(
-            @SerializedName("key")
+            @SerializedName("Key")
             val key: String = "",
 
-            @SerializedName("value")
+            @SerializedName("Value")
             val value: String = ""
         )
     }
