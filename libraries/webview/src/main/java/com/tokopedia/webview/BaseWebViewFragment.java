@@ -206,18 +206,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onResume() {
         super.onResume();
 
-        if (getContext() != null) {
-            smsBroadcastReceiver.register(getContext(), otpCode -> {
-                String url = webView.getUrl();
 
-                if (url != null && url.contains("/paylater/acquisition/otp-verification")) {
-                    String newUrl = Uri.parse(url).buildUpon()
-                            .appendQueryParameter("otpCode", otpCode).build().toString();
-
-                    webView.loadUrl(newUrl);
-                }
-            });
-        }
     }
 
     @Override
@@ -795,9 +784,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             }
 
-            if (getContext() != null && url.contains("/paylater/acquisition/otp-verification") && !url.contains("otpCode")) {
+            if (getContext() != null && url.contains("/paylater") && !url.contains("otpCode")) {
                 Toast.makeText(getContext(), "Start listening SMS", Toast.LENGTH_SHORT).show();
+
                 smsRetriever.startSmsRetriever();
+
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "registered", Toast.LENGTH_SHORT).show();
+                    smsBroadcastReceiver.register(getContext(), otpCode -> {
+                        String currentUrl = webView.getUrl();
+
+                        if (currentUrl != null && currentUrl.contains("/paylater")) {
+                            String newUrl = Uri.parse(url).buildUpon()
+                                    .appendQueryParameter("otpCode", otpCode).build().toString();
+
+                            webView.loadUrl(newUrl);
+                        }
+                    });
+                }
             }
         }
 

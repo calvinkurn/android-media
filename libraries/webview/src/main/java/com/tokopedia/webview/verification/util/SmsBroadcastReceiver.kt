@@ -30,6 +30,7 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
 
+        Toast.makeText(context, "SMS received", Toast.LENGTH_SHORT).show()
         if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
             val extras = intent.extras
             val status = extras?.get(SmsRetriever.EXTRA_STATUS) as? Status
