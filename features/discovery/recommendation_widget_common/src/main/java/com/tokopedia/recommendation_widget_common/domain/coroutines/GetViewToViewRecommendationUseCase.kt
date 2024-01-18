@@ -36,8 +36,6 @@ class GetViewToViewRecommendationUseCase @Inject constructor(
     }
 
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
-        inputParameter.setProductCardReimagineVersion()
-
         val queryParam = context?.let {
             ChooseAddressUtils
                 .getLocalizingAddressData(it)
