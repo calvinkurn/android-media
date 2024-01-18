@@ -442,16 +442,23 @@ fun RecommendationItem.mapToChannelGrid(index: Int) = ChannelGrid(
             title = label.title,
             position = label.position,
             type = label.type,
-            url = label.imageUrl
+            url = label.imageUrl,
+            styles = label.styles.map {
+                LabelGroup.Style(
+                    key = it.key,
+                    value = it.value
+                )
+            }
         )
     },
     rating = rating,
     ratingFloat = ratingAverage,
     countReview = countReview,
     recommendationType = recommendationType,
-    badges = badgesUrl.map { badge ->
+    badges = badges.map {
         ChannelGridBadges(
-            imageUrl = badge
+            title = it.title,
+            imageUrl = it.imageUrl
         )
     },
     categoryBreadcrumbs = categoryBreadcrumbs,
