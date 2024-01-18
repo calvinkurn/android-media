@@ -184,7 +184,7 @@ internal fun ImageView.imageRounded(url: String?, radius: Float, cornerType: Cor
     if (cornerType == null || cornerType == CornerType.ALL) {
         this.loadImageRounded(url, radius)
     } else {
-        this.loadImageRounded(url,radius.roundToInt(), cornerType)
+        this.loadImageRounded(url, radius.roundToInt(), cornerType)
     }
 }
 
@@ -193,9 +193,7 @@ internal fun ImageView.loadImageRounded(
     roundingRadius: Int,
     cornerType: CornerType
 ){
-    val transformation = MultiTransformation(
-        RoundedCornersTransformation(roundingRadius, cornerType)
-    )
+    val transformation = RoundedCornersTransformation(roundingRadius, cornerType)
     Glide.with(context)
         .load(url)
         .transform(CenterCrop(), transformation)

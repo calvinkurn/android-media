@@ -1,7 +1,9 @@
 package com.tokopedia.productcard.test.reimagine
 
 import com.tokopedia.productcard.reimagine.LABEL_NETT_PRICE
-import com.tokopedia.productcard.reimagine.LABEL_OVERLAY_
+import com.tokopedia.productcard.reimagine.LABEL_OVERLAY_1
+import com.tokopedia.productcard.reimagine.LABEL_OVERLAY_2
+import com.tokopedia.productcard.reimagine.LABEL_OVERLAY_3
 import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_BLOCK
 import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_OVERLAY
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_ASSIGNED_VALUE
@@ -45,28 +47,19 @@ internal fun labelGroupAssignedValue() = LabelGroup(
     )
 )
 
-internal fun labelGroupOverlay1(width: Int) = LabelGroup(
-    position = LABEL_OVERLAY_ + "1",
+internal fun labelGroupOverlay1() = LabelGroup(
+    position = LABEL_OVERLAY_1,
     imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/d95215c1-0213-4a49-9241-6eb668e38eb5.png",
-    styles = listOf(
-        LabelGroup.Style(LabelGroupStyle.WIDTH, width.toString()),
-    ),
 )
 
-internal fun labelGroupOverlay2(width: Int) = LabelGroup(
-    position = LABEL_OVERLAY_ + "2",
-    imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/116496e7-df32-4c13-a485-9b9607cfdd02.png",
-    styles = listOf(
-        LabelGroup.Style(LabelGroupStyle.WIDTH, width.toString()),
-    ),
+internal fun labelGroupOverlay2() = LabelGroup(
+    position = LABEL_OVERLAY_2,
+    imageUrl = "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/overlay-bo20k.png",
 )
 
-internal fun labelGroupOverlay3(width: Int) = LabelGroup(
-    position = LABEL_OVERLAY_ + "3",
+internal fun labelGroupOverlay3() = LabelGroup(
+    position = LABEL_OVERLAY_3,
     imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/0e95ea9c-358c-4739-8a03-6fd188b83cd8.png",
-    styles = listOf(
-        LabelGroup.Style(LabelGroupStyle.WIDTH, width.toString()),
-    ),
 )
 
 internal fun labelGroupNettPrice() = LabelGroup(

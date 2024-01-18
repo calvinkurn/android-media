@@ -31,7 +31,6 @@ import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.T
 import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 internal class ProductCardRenderer(
@@ -42,7 +41,7 @@ internal class ProductCardRenderer(
     private val context = view.context
 
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
-    private val imageView by view.lazyView<ImageUnify?>(R.id.productCardImage)
+    private val imageView by view.lazyView<ImageView?>(R.id.productCardImage)
     private val labelOverlay = LabelOverlay(view)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val labelPreventiveOverlay by view.lazyView<Typography?>(R.id.productCardLabelPreventiveOverlay)
@@ -92,7 +91,7 @@ internal class ProductCardRenderer(
         imageView?.apply {
             if (productCardModel.isSafeProduct) 
                 loadImage(ContextCompat.getDrawable(context, overlayProductImageSafe(cornerType)))
-            else 
+            else
                 loadImage(productCardModel, cornerType)
 
             setColorFilter(
@@ -118,7 +117,7 @@ internal class ProductCardRenderer(
         imageRounded(
             productCardModel.imageUrl,
             context.resources.getDimensionPixelSize(
-                R.dimen.product_card_reimagine_carousel_image_radius
+                R.dimen.product_card_reimagine_image_radius
             ).toFloat(),
             cornerType
         )

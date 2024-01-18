@@ -60,7 +60,6 @@ class GridProductItemViewHolder(
             labelGroupList = labelGroupList(element),
             rating = element.ratingString,
             shopBadge = shopBadge(element),
-            freeShipping = freeShipping(element),
             videoUrl = element.customVideoURL,
             hasThreeDots = true,
             isSafeProduct = element.isImageBlurred
@@ -88,11 +87,6 @@ class GridProductItemViewHolder(
             title = shopBadge?.title ?: ""
         )
     }
-
-    private fun freeShipping(element: ProductItemDataView) =
-        ProductCardModel.FreeShipping(
-            imageUrl = element.freeOngkirDataView.imageUrl,
-        )
 
     override fun onViewRecycled() {
         binding?.searchProductCardGridReimagine?.recycle()

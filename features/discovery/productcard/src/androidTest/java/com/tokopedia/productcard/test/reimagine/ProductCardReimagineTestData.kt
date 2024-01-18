@@ -2,8 +2,6 @@ package com.tokopedia.productcard.test.reimagine
 
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.productcard.reimagine.ProductCardModel
@@ -22,9 +20,6 @@ typealias ProductCardReimagineMatcher =
     Triple<ProductCardModel, Map<Int, Matcher<View?>>, String>
 
 internal val productCardReimagineTestData = listOf(
-    testtest(),
-
-
     imageNamePrice(),
     ads(),
     discountSlashedPrice(),
@@ -42,58 +37,8 @@ internal val productCardReimagineTestData = listOf(
     nettPrice(),
     preventiveOverlay(),
     preventiveBlock(),
+    overlay(),
 )
-
-private fun testtest(): ProductCardReimagineMatcher {
-
-    val productCardModel = ProductCardModel(
-        name = "DPP CB=SP 1",
-        imageUrl = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/21/3741a374-6181-4743-a2cf-07a1402b3eba.jpg",
-        shopBadge = ShopBadge(title = "Pacman Shop", imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"),
-        price = "Rp1.000.000",
-        labelGroupList = listOf(
-            LabelGroup(
-                position = "nett_price",
-                title = "Rp9.000.000",
-                imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/36c06351-769f-4cae-941f-9b9586a43acf.png",
-                styles = Gson().fromJson(
-                    """
-                        [
-                            {
-                              "key": "background-color",
-                              "value": "#F0F3F7"
-                            },
-                            {
-                              "key": "background-opacity",
-                              "value": "1"
-                            },
-                            {
-                              "key": "outline-color",
-                              "value": "#FFB2C2"
-                            },
-                            {
-                              "key": "text-color",
-                              "value": "#212121"
-                            }
-                       ]
-                    """.trimIndent(),
-                    object : TypeToken<List<LabelGroup.Style>>() {}.type
-                )
-            ),
-            LabelGroup(
-                position = "overlay_2",
-                title = "Bebas Ongkir",
-                imageUrl = "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/overlay-bo20k.png",
-            ),
-            LabelGroup(
-                position = "ri_product_offer",
-                title = "+2 produk lain, diskon 10%",
-            ),
-
-        ),
-    )
-    return Triple(productCardModel, mapOf(), "Testing")
-}
 
 private fun imageNamePrice(): ProductCardReimagineMatcher {
     val model = ProductCardModel(
@@ -685,4 +630,55 @@ private fun preventiveBlock(): ProductCardReimagineMatcher {
     )
 
     return Triple(model, matcher, "Preventive block")
+}
+
+private fun overlay(): ProductCardReimagineMatcher {
+    val reimagineProductOffers = labelGroupProductOffers()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY,
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name paling panjang",
+    )
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        labelGroupList = listOf(
+            reimagineProductOffers,
+            reimagineCredibilityLabel,
+            labelGroupOverlay1(),
+            labelGroupOverlay2(),
+            labelGroupOverlay3(),
+        ),
+        rating = "4.5",
+        shopBadge = shopBadge,
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardOverlay1 to isDisplayed(),
+        R.id.productCardOverlay2 to isDisplayed(),
+        R.id.productCardOverlay3 to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardLabelOffer to isDisplayedWithText(reimagineProductOffers.title),
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+    )
+
+    return Triple(model, matcher, "Label Overlay")
 }
