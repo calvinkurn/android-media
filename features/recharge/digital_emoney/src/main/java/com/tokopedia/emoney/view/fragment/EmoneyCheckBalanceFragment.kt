@@ -500,6 +500,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         map.put(CARD_NUMBER_KEY, param.log.cardNumber)
         map.put(RC_KEY, param.log.rc)
         map.put(LOG_TYPE, BCA_FLAZZ_ERROR_LOGGER)
+        map.put(LAST_BALANCE, param.log.lastBalance.toString())
         ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
     }
 
@@ -627,6 +628,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         private const val ISSUER_KEY = "issuer_id"
         private const val CARD_NUMBER_KEY = "card_number"
         private const val RC_KEY = "rc"
+        private const val LAST_BALANCE = "last_balance"
         private const val BCA_FLAZZ_ERROR_LOGGER = "BCA_FLAZZ_ERROR_LOGGER"
         private const val TAPCASH_ERROR_LOGGER = "TAPCASH_ERROR_LOGGER"
         private const val TAPCASH_NETWORK_ERROR_LOGGER = "TAPCASH_NETWORK_ERROR_LOGGER"
