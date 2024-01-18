@@ -66,7 +66,8 @@ data class GetRecommendationRequestParam(
     }
 
     fun setProductCardReimagineVersion() {
-        val version = if (ProductCardExperiment.isReimagine()) {
+        val shouldReimagineEnabled = ProductCardExperiment.isReimagine()
+        val version = if (shouldReimagineEnabled && !isTokonow) {
             CARD_REIMAGINE_VERSION
         } else {
             CARD_REVERT_VERSION
