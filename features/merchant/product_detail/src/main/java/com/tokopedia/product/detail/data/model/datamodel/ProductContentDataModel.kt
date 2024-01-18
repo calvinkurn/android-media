@@ -23,7 +23,7 @@ data class ProductContentDataModel(
 
     // Ribbon Data
     var isNpl: Boolean = false,
-    var shouldShowShareWidget: Boolean = false,
+    var shouldShowShareWidget: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         { false },
@@ -57,7 +57,6 @@ data class ProductContentDataModel(
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
-
         return if (newData is ProductContentDataModel) {
             if (data?.hashCode() != newData.data?.hashCode() || isNpl != newData.isNpl) {
                 // Update the whole component
@@ -66,7 +65,8 @@ data class ProductContentDataModel(
 
             val bundle = Bundle()
             if (freeOngkirImgUrl != newData.freeOngkirImgUrl ||
-                shouldShowShareWidget != newData.shouldShowShareWidget) {
+                shouldShowShareWidget != newData.shouldShowShareWidget
+            ) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_BOE_SHARE)
                 return bundle
             }
@@ -85,12 +85,16 @@ data class ProductContentDataModel(
         return data == null
     }
 
-    companion object{
+    companion object {
         const val PAYLOAD_WISHLIST = 1
         const val PAYLOAD_BOE_SHARE = 421321
     }
 }
 
+/**
+ * Render Priority
+ * https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2465759286/PDP+Campaign+Component#3.-Render-Priority
+ */
 data class ProductContentMainData(
     var campaign: CampaignModular = CampaignModular(),
     var thematicCampaign: ThematicCampaign = ThematicCampaign(),
@@ -105,18 +109,9 @@ data class ProductContentMainData(
     val hasCampaign
         get() = campaign.campaignIdentifier != CampaignRibbon.NO_CAMPAIGN
 
-    /**
-     * Render priority => ongoing > mega thematic > upcoming > regular thematic
-     * return true if campaign is mega thematic and ongoing(id=1,2,3,4 or 7)
-     */
-    val shouldOngoingRenderPriority
-        get() = run {
-            val id = campaign.campaignIdentifier
+    val hasThematicCampaign
+        get() = campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN
 
-            if (id == CampaignRibbon.THEMATIC_CAMPAIGN) {
-                thematicCampaign.isMegaType
-            } else {
-                hasCampaign
-            }
-        }
+    val hasOngoingCampaign
+        get() = hasCampaign && !hasThematicCampaign
 }
