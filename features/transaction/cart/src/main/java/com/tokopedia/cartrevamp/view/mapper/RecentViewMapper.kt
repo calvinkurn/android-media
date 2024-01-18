@@ -33,11 +33,11 @@ class RecentViewMapper @Inject constructor() {
         cartRecentViewItemHolderData.clickUrl = recentView.clickUrl
         cartRecentViewItemHolderData.trackerImageUrl = recentView.trackerImageUrl
 
-        if (recentView.badgesUrl.isNotEmpty()) {
-            cartRecentViewItemHolderData.badgesUrl = recentView.badgesUrl
-            if (recentView.badgesUrl[0].equals("Official Store", ignoreCase = true)) {
+        if (recentView.badges.isNotEmpty()) {
+            cartRecentViewItemHolderData.badgesUrl = recentView.badges.map { it.imageUrl }
+            if (recentView.badges[0].imageUrl.equals("Official Store", ignoreCase = true)) {
                 cartRecentViewItemHolderData.shopType = "official_store"
-            } else if (recentView.badgesUrl[0].equals("Power Badge", ignoreCase = true)) {
+            } else if (recentView.badges[0].imageUrl.equals("Power Badge", ignoreCase = true)) {
                 cartRecentViewItemHolderData.shopType = "power_badge"
             }
         }
