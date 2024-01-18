@@ -21,7 +21,7 @@ data class GamiScratchCardPreEvaluate(
     val scratchCard: ScratchCard = ScratchCard(),
     @SerializedName("popUpContent")
     @Expose
-    val popUpContent: PopUpContent = PopUpContent(),
+    val popUpContent: PopUpContent? = PopUpContent(),
 )
 
 data class ResultStatus(

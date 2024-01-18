@@ -10,6 +10,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.domain.data.GamiScratchCardPreEvaluate
+import com.tokopedia.notifications.domain.data.PopUpContent
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -32,18 +33,20 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         val userSession = createUserSession(activity)
         if (userSession.isLoggedIn) {
             AnimationPopupGqlGetData().getAnimationScratchPopupData({
-                showLottiePopup(activity, getSlugData(it))
+                it.popUpContent?.let { popup ->
+                    showLottiePopup(activity, getSlugData(it), popup)
+                }
             }, {})
         }
     }
 
-    open fun showLottiePopup(activity: Activity, slug: String?) {
+    open fun showLottiePopup(activity: Activity, slug: String?, popUpContent: PopUpContent) {
         try {
             val currentActivity: WeakReference<Activity> =
                 WeakReference(activity)
             val ketupatAnimationPopup = KetupatAnimationPopup(activity.applicationContext, null, activity)
             val weakActivity = currentActivity.get() ?: return
-            ketupatAnimationPopup.loadLottieAnimation(slug)
+            ketupatAnimationPopup.loadLottieAnimation(slug, popUpContent)
             val root = weakActivity.window
                 .decorView
                 .findViewById<View>(android.R.id.content)
@@ -52,7 +55,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         } catch (e: Exception) {
             ServerLogger.log(
                 Priority.P2,
-                "CM_VALIDATION",
+                "CM_INAPP_ANIMATION_POPUP",
                 mapOf(
                     "type" to "exception",
                     "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),

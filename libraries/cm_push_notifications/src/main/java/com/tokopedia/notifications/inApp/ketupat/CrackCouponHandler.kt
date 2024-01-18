@@ -14,7 +14,11 @@ import com.tokopedia.notifications.R
 import com.tokopedia.unifycomponents.ImageUnify
 
 
-class CrackCouponHandler(val binding: LayoutInappAnimationBinding, val layoutInflater: LayoutInflater) {
+class CrackCouponHandler(
+    val binding: LayoutInappAnimationBinding,
+    private val layoutInflater: LayoutInflater,
+    private val animationPopupGtmTracker: AnimationPopupGtmTracker
+) {
 
     private var numberOfCoupons = 0
     private var numberOfRetry = 0
@@ -39,7 +43,7 @@ class CrackCouponHandler(val binding: LayoutInappAnimationBinding, val layoutInf
             numberOfCoupons = it
         }
         createCoupons(numberOfCoupons, gamiScratchCardCrack)
-//        loadCoupons(numberOfCoupons, gamiScratchCardCrack)
+        createShareButton(gamiScratchCardCrack)
     }
 
     private fun handleCouponError(slug: String?) {
@@ -49,9 +53,11 @@ class CrackCouponHandler(val binding: LayoutInappAnimationBinding, val layoutInf
                 numberOfRetry += 1
                 getCouponData(slug)
                 hideCouponErrorState()
+                animationPopupGtmTracker.sendErrorRetryButtonEvent()
                 binding.loaderAnimation.visible()
             } else {
                 binding.btnErrorState.gone()
+                animationPopupGtmTracker.sendErrorUnRetryableImpressionEvent()
             }
         }
     }
@@ -63,6 +69,7 @@ class CrackCouponHandler(val binding: LayoutInappAnimationBinding, val layoutInf
             btnErrorState.visible()
         }
         setCloseButtonMargin(362)
+        animationPopupGtmTracker.sendErrorImpressionEvent()
     }
 
     private fun hidePopupAnimationAndCoupons() {
@@ -86,6 +93,12 @@ class CrackCouponHandler(val binding: LayoutInappAnimationBinding, val layoutInf
                 couponImage.loadImage(getCouponURl(i, it))
                 binding.couponContainer.addView(coupon)
             }
+        }
+    }
+
+    private fun createShareButton(gamiScratchCardCrack: GamiScratchCardCrack) {
+        gamiScratchCardCrack.cta?.let {
+            binding.ivButtonShare.loadImage(it.imageURL)
         }
     }
 
