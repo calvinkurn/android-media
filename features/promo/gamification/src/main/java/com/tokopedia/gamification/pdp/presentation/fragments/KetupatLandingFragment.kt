@@ -46,6 +46,10 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         ketupatLandingViewModel?.getAffiliateDataItems()?.observe(this) {
             adapter.addMoreData(it)
         }
+
+        ketupatLandingViewModel?.getLandingPageData()?.observe(this) {
+            view?.let { view -> setSharingHeaderIconAndListener(view, it) }
+        }
     }
 
     override fun setViewModel(viewModel: BaseViewModel) {
@@ -79,9 +83,12 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         ketupatLandingViewModel?.getProductRecommendation()
     }
 
-    //Call from the function where we get the landing page data
-    fun setSharingHeaderIconAndListener(view: View, ketupatLandingPageData: KetupatLandingPageData){
-        if(ketupatLandingPageData.gamiGetScratchCardLandingPage.appBar?.shared != null) {
+    // Call from the function where we get the landing page data
+    fun setSharingHeaderIconAndListener(
+        view: View,
+        ketupatLandingPageData: KetupatLandingPageData
+    ) {
+        if (ketupatLandingPageData.gamiGetScratchCardLandingPage.appBar?.shared != null) {
             val userSession = UserSession(context)
             val toolBar = view.findViewById<NavToolbar>(R.id.ketupat_navToolbar)
             toolBar.setIcon(
@@ -89,7 +96,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                     .addIcon(
                         IconList.ID_SHARE,
                         onClick = {
-                            //Open share bottom sheet
+                            // Open share bottom sheet
                             val sharingComponent = KetupatSharingComponent(view)
                             sharingComponent.show(
                                 childFragmentManager,
