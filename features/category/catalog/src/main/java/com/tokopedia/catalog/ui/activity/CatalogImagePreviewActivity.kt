@@ -72,7 +72,7 @@ class CatalogImagePreviewActivity : BaseSimpleActivity() {
         CatalogReimagineDetailAnalytics.sendEventPG(
             action = EVENT_CLICK_CLOSE_ON_IMAGE_REVIEW,
             category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE,
-            labels = "${reviewUiModel?.catalogName} $catalogId - feedback_id:${reviewUiModel?.reviewId}",
+            labels = "${reviewUiModel?.catalogName} - $catalogId - feedback_id:${reviewUiModel?.reviewId}",
             trackerId = TRACKER_ID_CLICK_CLOSE_ON_IMAGE_REVIEW
         )
         super.onDestroy()

@@ -267,7 +267,7 @@ class CatalogDetailPageFragment :
         CatalogReimagineDetailAnalytics.sendEventPG(
             action = if (isFromBottomsheet) EVENT_CLICK_ON_IMAGE_REVIEW_BS else EVENT_CLICK_ON_IMAGE_REVIEW,
             category = EVENT_CATEGORY_CATALOG_PAGE,
-            labels = "${carouselItem.catalogName} $catalogId - feedback_id:${carouselItem.reviewId}",
+            labels = "${carouselItem.catalogName} - $catalogId - feedback_id:${carouselItem.reviewId}",
             trackerId = if (isFromBottomsheet) TRACKER_ID_CLICK_ON_IMAGE_REVIEW_BS else TRACKER_ID_CLICK_ON_IMAGE_REVIEW
         )
     }
@@ -343,7 +343,7 @@ class CatalogDetailPageFragment :
         CatalogReimagineDetailAnalytics.sendEventPG(
             action = EVENT_CLICK_ON_SELENGKAPNYA_REVIEW,
             category = EVENT_CATEGORY_CATALOG_PAGE,
-            labels = "${carouselItem.catalogName} $catalogId - feedback_id:${carouselItem.reviewId}",
+            labels = "${carouselItem.catalogName} - $catalogId - feedback_id:${carouselItem.reviewId}",
             trackerId = TRACKER_ID_CLICK_ON_SELENGKAPNYA_REVIEW
         )
     }
@@ -357,12 +357,12 @@ class CatalogDetailPageFragment :
 
     override fun onBuyerReviewImpression(buyerReviewUiModel: BuyerReviewUiModel) {
         viewModel.emitScrollEvent(buyerReviewUiModel.widgetName)
-        sendOnTimeImpression("30117") {
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_REVIEW_WIDGET) {
             CatalogReimagineDetailAnalytics.sendEventPG(
                 event = EVENT_VIEW_PG_IRIS,
                 action = EVENT_IMPRESSION_REVIEW_WIDGET,
                 category = EVENT_CATEGORY_CATALOG_PAGE,
-                labels = "$catalogId - ${buyerReviewUiModel.items.firstOrNull()?.catalogName.orEmpty()}",
+                labels = "${buyerReviewUiModel.items.firstOrNull()?.catalogName.orEmpty()} - $catalogId",
                 trackerId = TRACKER_ID_IMPRESSION_REVIEW_WIDGET
             )
         }
