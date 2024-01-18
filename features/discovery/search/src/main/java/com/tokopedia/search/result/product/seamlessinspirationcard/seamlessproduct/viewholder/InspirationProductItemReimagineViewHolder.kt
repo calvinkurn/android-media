@@ -53,7 +53,6 @@ class InspirationProductItemReimagineViewHolder(
             labelGroupList = labelGroupList(element),
             rating = element.ratingAverage,
             shopBadge = shopBadge(element),
-            freeShipping = freeShipping(element),
             hasThreeDots = true,
         )
 
@@ -79,11 +78,6 @@ class InspirationProductItemReimagineViewHolder(
             title = shopBadge?.title ?: ""
         )
     }
-
-    private fun freeShipping(element: InspirationProductItemDataView) =
-        ProductCardModel.FreeShipping(
-            imageUrl = element.freeOngkirDataView.imageUrl,
-        )
 
     override fun onViewRecycled() {
         binding?.searchInspirationSeamlessProductCardReimagine?.recycle()

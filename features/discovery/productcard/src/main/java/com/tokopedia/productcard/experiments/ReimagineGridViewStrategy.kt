@@ -58,6 +58,7 @@ internal class ReimagineGridViewStrategy(
 
         cardContainer?.run {
             elevation = 0f
+            radius = 0f
 
             setCardUnifyBackgroundColor(
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)

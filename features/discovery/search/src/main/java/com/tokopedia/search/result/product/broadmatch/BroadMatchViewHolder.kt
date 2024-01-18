@@ -146,9 +146,6 @@ class BroadMatchViewHolder(
                         imageUrl = shopBadge?.imageUrl ?: "",
                         title = shopBadge?.title ?: "",
                     ),
-                    freeShipping = FreeShippingReimagine(
-                        imageUrl = item.freeOngkirDataView.imageUrl,
-                    ),
                     stockInfo = StockInfo(
                         percentage = item.stockBarDataView.percentageValue,
                         label = item.stockBarDataView.value,

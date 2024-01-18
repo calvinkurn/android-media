@@ -56,6 +56,7 @@ internal class ReimagineGridCarouselViewStrategy(
         cardContainer?.run {
             layoutParams = layoutParams?.apply { height = MATCH_PARENT }
             elevation = 0f
+            radius = 0f
 
             setCardUnifyBackgroundColor(
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)

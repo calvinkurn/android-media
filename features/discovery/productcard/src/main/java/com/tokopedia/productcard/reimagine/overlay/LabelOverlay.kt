@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.reimagine.overlay
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.ViewGroup.MarginLayoutParams
@@ -21,6 +22,7 @@ import com.tokopedia.unifycomponents.toPx
 
 internal class LabelOverlay(view: View) {
 
+    private val context: Context? = view.context
     private val labelOverlay1 by view.lazyView<ImageView>(R.id.productCardOverlay1)
     private val labelOverlay2 by view.lazyView<ImageView>(R.id.productCardOverlay2)
     private val labelOverlay3 by view.lazyView<ImageView>(R.id.productCardOverlay3)
@@ -86,7 +88,13 @@ internal class LabelOverlay(view: View) {
         imageUrl: String
     ) {
         if (marginStartPx == Int.ZERO && !hasStockInfo)
-            imageView.imageRounded(imageUrl, 8.toPx().toFloat(), BOTTOM_LEFT)
+            imageView.imageRounded(
+                url = imageUrl,
+                radius = context?.resources?.getDimensionPixelSize(
+                    R.dimen.product_card_reimagine_image_radius
+                )?.toFloat() ?: 0f,
+                cornerType = BOTTOM_LEFT,
+            )
         else
             imageView.loadImage(imageUrl)
     }

@@ -10,7 +10,7 @@
         android:id="@+id/productCardCardUnifyContainer"
         android:layout_width="@dimen/product_card_reimagine_grid_carousel_width"
         android:layout_height="match_parent"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="@dimen/product_card_reimagine_image_radius"
         app:cardPreventCornerOverlap="false"
         app:cardBackgroundColor="@color/Unify_NN0"
         app:card_type="clear"
@@ -44,7 +44,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/productCardGuidelineOutlineCard"
                 tools:visibility="visible" />
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <ImageView
                 android:id="@+id/productCardImage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
