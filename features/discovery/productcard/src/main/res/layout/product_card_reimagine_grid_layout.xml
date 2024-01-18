@@ -69,6 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:adjustViewBounds="true"
+                android:scaleType="fitStart"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
@@ -78,6 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:adjustViewBounds="true"
+                android:scaleType="fitStart"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
@@ -87,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:adjustViewBounds="true"
+                android:scaleType="fitStart"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
@@ -378,19 +381,6 @@
                     tools:text="Shop Name" />
 
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/productCardFreeShipping"
-                android:contentDescription="@string/content_desc_imageFreeOngkirPromo"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/product_card_reimagine_bebas_ongkir_height"
-                android:layout_marginTop="@dimen/product_card_reimagine_bebas_ongkir_margin_top"
-                android:adjustViewBounds="true"
-                android:gravity="center"
-                android:scaleType="fitStart"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/productCardShopSection"
-                tools:layout_width="67dp" />
 
             <ImageView
                 android:id="@+id/productCardThreeDots"

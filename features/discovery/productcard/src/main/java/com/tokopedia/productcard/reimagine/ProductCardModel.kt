@@ -14,7 +14,6 @@ data class ProductCardModel(
     val labelGroupList: List<LabelGroupReimagine> = listOf(),
     val rating: String = "",
     val shopBadge: ShopBadge = ShopBadge(),
-    val freeShipping: FreeShipping = FreeShipping(),
     val hasAddToCart: Boolean = false,
     val videoUrl: String = "",
     val hasThreeDots: Boolean = false,
@@ -63,16 +62,6 @@ data class ProductCardModel(
     fun showPrice() = price.isNotBlank() && labelNettPrice() == null
 
     private fun labelGroup(position: String) = labelGroupList.find { it.position == position }
-
-    data class FreeShipping(val imageUrl: String = "") {
-
-        companion object {
-            internal fun from(freeShipping: ProductCardModel.FreeOngkir): FreeShipping =
-                FreeShipping(
-                    if (freeShipping.isActive) freeShipping.imageUrl else ""
-                )
-        }
-    }
 
     data class LabelGroup(
         val position: String = "",
@@ -158,7 +147,6 @@ data class ProductCardModel(
                 labelGroupList = productCardModel.labelGroupList.map(LabelGroupReimagine::from),
                 rating = productCardModel.ratingString,
                 shopBadge = shopBadge(productCardModel),
-                freeShipping = FreeShipping.from(productCardModel.freeOngkir),
                 hasAddToCart = productCardModel.hasAddToCartButton,
                 videoUrl = productCardModel.customVideoURL,
                 hasThreeDots = productCardModel.hasThreeDots,

@@ -48,9 +48,6 @@ private fun atc(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         hasAddToCart = true,
     )
 
@@ -70,7 +67,6 @@ private fun atc(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardAddToCart to isDisplayed(),
     )
 
@@ -104,9 +100,6 @@ private fun stockInfoTersedia(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         stockInfo = stockInfo
     )
 
@@ -126,7 +119,6 @@ private fun stockInfoTersedia(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
         R.id.productCardStockInfoBar to isDisplayed(),
@@ -162,9 +154,6 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         stockInfo = stockInfo
     )
 
@@ -184,7 +173,6 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
         R.id.productCardStockInfoBar to isDisplayed(),
@@ -218,9 +206,6 @@ private fun ribbon(type: String): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -241,7 +226,6 @@ private fun ribbon(type: String): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
 
         R.id.productCardRibbon to isDisplayed(),
         R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
@@ -272,9 +256,6 @@ private fun benefitPriorityOverOffers(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel, reimagineProductOffers),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -293,7 +274,6 @@ private fun benefitPriorityOverOffers(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Benefit prioritized over BMSM")
@@ -324,9 +304,6 @@ private fun overlay(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -346,7 +323,6 @@ private fun overlay(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Label Overlay")
@@ -381,9 +357,6 @@ private fun overlayWithStockInfo(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         stockInfo = stockInfo,
     )
 
@@ -404,7 +377,6 @@ private fun overlayWithStockInfo(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
         R.id.productCardStockInfoBar to isDisplayed(),

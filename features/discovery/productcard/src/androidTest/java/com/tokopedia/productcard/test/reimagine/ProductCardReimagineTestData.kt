@@ -2,15 +2,15 @@ package com.tokopedia.productcard.test.reimagine
 
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.reimagine.ProductCardModel.ShopBadge
-import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
-import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.isDisplayedContainingText
+import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
@@ -22,6 +22,9 @@ typealias ProductCardReimagineMatcher =
     Triple<ProductCardModel, Map<Int, Matcher<View?>>, String>
 
 internal val productCardReimagineTestData = listOf(
+    testtest(),
+
+
     imageNamePrice(),
     ads(),
     discountSlashedPrice(),
@@ -40,6 +43,57 @@ internal val productCardReimagineTestData = listOf(
     preventiveOverlay(),
     preventiveBlock(),
 )
+
+private fun testtest(): ProductCardReimagineMatcher {
+
+    val productCardModel = ProductCardModel(
+        name = "DPP CB=SP 1",
+        imageUrl = "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/21/3741a374-6181-4743-a2cf-07a1402b3eba.jpg",
+        shopBadge = ShopBadge(title = "Pacman Shop", imageUrl = "https://images.tokopedia.net/img/official_store_badge.png"),
+        price = "Rp1.000.000",
+        labelGroupList = listOf(
+            LabelGroup(
+                position = "nett_price",
+                title = "Rp9.000.000",
+                imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/36c06351-769f-4cae-941f-9b9586a43acf.png",
+                styles = Gson().fromJson(
+                    """
+                        [
+                            {
+                              "key": "background-color",
+                              "value": "#F0F3F7"
+                            },
+                            {
+                              "key": "background-opacity",
+                              "value": "1"
+                            },
+                            {
+                              "key": "outline-color",
+                              "value": "#FFB2C2"
+                            },
+                            {
+                              "key": "text-color",
+                              "value": "#212121"
+                            }
+                       ]
+                    """.trimIndent(),
+                    object : TypeToken<List<LabelGroup.Style>>() {}.type
+                )
+            ),
+            LabelGroup(
+                position = "overlay_2",
+                title = "Bebas Ongkir",
+                imageUrl = "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/overlay-bo20k.png",
+            ),
+            LabelGroup(
+                position = "ri_product_offer",
+                title = "+2 produk lain, diskon 10%",
+            ),
+
+        ),
+    )
+    return Triple(productCardModel, mapOf(), "Testing")
+}
 
 private fun imageNamePrice(): ProductCardReimagineMatcher {
     val model = ProductCardModel(
@@ -392,9 +446,6 @@ private fun bebasOngkir(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -415,7 +466,6 @@ private fun bebasOngkir(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Free shipping (Bebas ongkir)")
@@ -446,9 +496,6 @@ private fun labelAssignedValue(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -469,7 +516,6 @@ private fun labelAssignedValue(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Label Assigned Value")
@@ -495,9 +541,6 @@ private fun productOffers(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineCredibilityLabel, reimagineProductOffers),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -515,7 +558,6 @@ private fun productOffers(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Product Offers")
@@ -537,12 +579,9 @@ private fun nettPrice(): ProductCardReimagineMatcher {
         name = longProductName,
         price = "Rp79.000",
         slashedPrice = "Rp100.000",
-        labelGroupList = listOf(reimagineCredibilityLabel, nettPriceLabel,),
+        labelGroupList = listOf(reimagineCredibilityLabel, nettPriceLabel),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -559,7 +598,6 @@ private fun nettPrice(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Nett Price")
@@ -585,9 +623,6 @@ private fun preventiveOverlay(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineCredibilityLabel, reimaginePreventiveOverlayLabel),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -605,7 +640,6 @@ private fun preventiveOverlay(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Preventive overlay")
@@ -631,9 +665,6 @@ private fun preventiveBlock(): ProductCardReimagineMatcher {
         labelGroupList = listOf(reimagineCredibilityLabel, reimaginePreventiveBlockLabel),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -651,7 +682,6 @@ private fun preventiveBlock(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
     )
 
     return Triple(model, matcher, "Preventive block")

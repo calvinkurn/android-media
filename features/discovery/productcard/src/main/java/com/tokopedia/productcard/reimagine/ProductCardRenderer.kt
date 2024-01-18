@@ -59,7 +59,6 @@ internal class ProductCardRenderer(
     private val offerLabel by view.lazyView<Typography?>(R.id.productCardLabelOffer)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
-    private val freeShippingImage by view.lazyView<ImageView?>(R.id.productCardFreeShipping)
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
 
@@ -83,7 +82,6 @@ internal class ProductCardRenderer(
         renderLabelProductOffer(productCardModel)
         renderCredibilitySection(productCardModel)
         renderShopSection(productCardModel)
-        renderFreeShipping(productCardModel)
         renderRibbon(productCardModel)
         renderSafeContent(productCardModel)
     }
@@ -325,13 +323,6 @@ internal class ProductCardRenderer(
             }
 
             view.findViewById<Typography?>(R.id.productCardShopNameLocation)?.text = shopBadge.title
-        }
-    }
-
-    private fun renderFreeShipping(productCardModel: ProductCardModel) {
-        val freeShippingImageUrl = productCardModel.freeShipping.imageUrl
-        freeShippingImage?.shouldShowWithAction(freeShippingImageUrl.isNotEmpty()) {
-            it.loadIcon(freeShippingImageUrl)
         }
     }
 

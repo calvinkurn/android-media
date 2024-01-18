@@ -195,8 +195,6 @@
     <dimen name="product_card_reimagine_credibility_height">16dp</dimen>
     <dimen name="product_card_reimagine_shop_section_margin_top">4dp</dimen>
     <dimen name="product_card_reimagine_shop_section_height">16dp</dimen>
-    <dimen name="product_card_reimagine_bebas_ongkir_margin_top">4dp</dimen>
-    <dimen name="product_card_reimagine_bebas_ongkir_height">20dp</dimen>
     <dimen name="product_card_reimagine_label_preventive_thematic_height">18dp</dimen>
     <dimen name="product_card_reimagine_stock_bar_background_height">32dp</dimen>
     <dimen name="product_card_reimagine_label_height">18dp</dimen>

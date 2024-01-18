@@ -444,18 +444,6 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/productCardFreeShipping"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/product_card_reimagine_bebas_ongkir_height"
-                android:layout_marginTop="@dimen/product_card_reimagine_bebas_ongkir_margin_top"
-                android:adjustViewBounds="true"
-                android:gravity="center"
-                android:scaleType="fitStart"
-                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
-                app:layout_constraintTop_toBottomOf="@id/productCardShopSection"
-                tools:layout_width="67dp" />
-
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/productCardSafeGroup"
                 android:layout_width="0dp"

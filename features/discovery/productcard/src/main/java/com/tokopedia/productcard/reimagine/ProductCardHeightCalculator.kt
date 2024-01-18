@@ -41,7 +41,6 @@ internal fun productCardGridCarouselHeight(
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
-        freeShippingHeight(context, productCardModel),
     )
 
     val productCardHeight = productCardComponentHeightList.sum()
@@ -98,7 +97,6 @@ internal fun productCardListCarouselHeight(
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
-        freeShippingHeight(context, productCardModel),
     )
 
     val productCardComponentHeight = productCardComponentHeightList.sum()
@@ -220,16 +218,6 @@ private fun shopSectionHeight(
         context.getPixel(productcardR.dimen.product_card_reimagine_shop_section_margin_top)
             .plus(context.getPixel(productcardR.dimen.product_card_reimagine_shop_section_height))
     else 0
-
-private fun freeShippingHeight(
-    context: Context?,
-    productCardModel: ProductCardModel
-): Int {
-    return if (productCardModel.freeShipping.imageUrl.isNotEmpty())
-        context.getPixel(productcardR.dimen.product_card_reimagine_bebas_ongkir_margin_top)
-            .plus(context.getPixel(productcardR.dimen.product_card_reimagine_bebas_ongkir_height))
-    else 0
-}
 
 private fun Context?.getPixel(@DimenRes id: Int): Int =
     this?.resources?.getDimensionPixelSize(id) ?: 0
