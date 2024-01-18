@@ -90,6 +90,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
 import com.tokopedia.common_digital.R as common_digitalR
@@ -1142,6 +1143,7 @@ open class EmoneyPdpFragment :
             newRupiah = newRupiah?.replace(" ", "")
             newRupiah.toIntSafely()
         } catch (e: Exception) {
+            Timber.d(e)
             0
         }
     }
