@@ -30,10 +30,9 @@ open class GetSingleRecommendationUseCase @Inject constructor(
             .toQueryParam(inputParameter.queryParam)
 
         graphqlUseCase.setTypeClass(SingleProductRecommendationEntity::class.java)
-        inputParameter.setProductCardReimagineVersion()
         graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
         graphqlUseCase.setGraphqlQuery(ProductRecommendationSingleQuery())
-        
+
         return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.toRecommendationWidget()
     }
 }

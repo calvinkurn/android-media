@@ -31,9 +31,7 @@ open class GetRecommendationUseCase @Inject constructor(
 
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
         val userSession = UserSession(context)
-
         inputParameter.userId = userSession.userId.toIntOrNull() ?: 0
-        inputParameter.setProductCardReimagineVersion()
 
         val queryParam = ChooseAddressUtils
             .getLocalizingAddressData(context)
