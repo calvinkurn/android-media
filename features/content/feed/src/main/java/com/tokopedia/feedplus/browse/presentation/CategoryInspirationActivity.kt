@@ -21,10 +21,10 @@ class CategoryInspirationActivity : BaseActivity() {
     private lateinit var binding: ActivityFragmentOnlyBinding
 
     private val sourceType: String
-        get() = intent?.data?.getQueryParameter(QUERY_SOURCE_TYPE) ?: "Source type paramater not found"
+        get() = intent?.data?.getQueryParameter(QUERY_SOURCE_TYPE).orEmpty()
 
     private val entryPoint: String
-        get() = intent?.data?.getQueryParameter(QUERY_ENTRYPOINT) ?: "Entrypoint parameter not found"
+        get() = intent?.data?.getQueryParameter(QUERY_ENTRYPOINT).orEmpty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
