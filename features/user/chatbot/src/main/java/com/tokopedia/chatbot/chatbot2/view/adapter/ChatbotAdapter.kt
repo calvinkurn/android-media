@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.chatbot2.view.adapter
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -171,11 +172,11 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl) :
 
     override fun removeTyping() {
         val index = visitables.indexOf(typingModel)
-        if (index != -1) {
+        if (index != RecyclerView.NO_POSITION) {
             this.visitables.removeAt(index)
             notifyItemRemoved(index)
             val prevIndex = index - 1
-            if (prevIndex < visitables.size) {
+            if (prevIndex != RecyclerView.NO_POSITION) {
                 notifyItemChanged(prevIndex)
             }
         }
