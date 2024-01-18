@@ -3,6 +3,7 @@ package com.tokopedia.shareexperience.ui.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.databinding.ShareexperienceRegisterAffiliateCardItemBinding
@@ -12,8 +13,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExAffiliateRegistrationViewHolder(
     itemView: View,
-    affiliateRegistrationListener: ShareExAffiliateRegistrationListener
-): AbstractViewHolder<ShareExAffiliateRegistrationUiModel>(itemView) {
+    private val affiliateRegistrationListener: ShareExAffiliateRegistrationListener
+) : AbstractViewHolder<ShareExAffiliateRegistrationUiModel>(itemView) {
 
     private val binding: ShareexperienceRegisterAffiliateCardItemBinding? by viewBinding()
     private var element: ShareExAffiliateRegistrationUiModel? = null
@@ -32,6 +33,13 @@ class ShareExAffiliateRegistrationViewHolder(
         binding?.shareexTvRegisterAffiliateTitle?.text = element.affiliateRegistrationModel.title
         binding?.shareexTvRegisterAffiliateDesc?.text = element.affiliateRegistrationModel.description
         binding?.shareexLabelRegisterAffiliate?.text = element.affiliateRegistrationModel.label
+        impressTracker(element)
+    }
+
+    private fun impressTracker(element: ShareExAffiliateRegistrationUiModel) {
+        binding?.root?.addOnImpressionListener(element.impressHolder) {
+            affiliateRegistrationListener.onImpressionAffiliateRegistrationCard()
+        }
     }
 
     companion object {
