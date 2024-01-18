@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_CHANNEL
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_SOURCE
-import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_TOGGLE_ON
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_REQUEST_TYPE
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.GET_AUTO_ADS_SOURCE
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.STATISTICS_ESTIMATION_TYPE

@@ -10,21 +10,6 @@
         android:layout_height="match_parent"
         android:background="@color/Unify_YN50">
 
-        <com.tokopedia.header.HeaderUnify
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            app:elevation="4dp"
-            android:elevation="4dp"
-            android:theme="?toolbarTheme"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="?titleTextAppearance"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
         <View
             android:id="@+id/container_green"
             android:layout_width="match_parent"

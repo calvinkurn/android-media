@@ -30,6 +30,8 @@ object TopAdsCommonConstant {
     const val ERROR_INVALID_ITEM_ID = "INVALID_ITEM_ID"
     const val ERROR_INVALID_KEYWORD = "INVALID_KEYWORD_TAG"
     const val EROOR_GROUP_NAME_EXIST = "GRUP_NAME_ALREADY_EXIST"
+    const val AUTOPS_EXPERIMENT = "autoads_auto_ps"
+    const val AUTOPS_VARIANT = "auto_ps_v1"
 
     /*keyword specific*/
     const val BROAD_TYPE = "Luas"

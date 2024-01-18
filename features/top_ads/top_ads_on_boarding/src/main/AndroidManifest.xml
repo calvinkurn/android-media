@@ -8,6 +8,7 @@
     <activity
         android:name=".view.activity.TopAdsOnBoardingActivity"
         android:screenOrientation="portrait"
+        android:label="@string/topads_onboarding_title"
         android:theme="@style/Theme.White"
         android:windowSoftInputMode="adjustPan"
         android:exported="false">
@@ -16,21 +17,6 @@
 
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
-
-        </intent-filter>
-    </activity>
-    <activity
-        android:name=".view.activity.AutoPsOnboardingActivity"
-        android:exported="false"
-        android:label="@string/topads_onboarding_title"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.WhiteUnify">
-        <intent-filter>
-            <action android:name="com.tokopedia.internal.VIEW" />
-
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-
             <data
                 android:host="@string/host_topads"
                 android:path="@string/path_topads_on_boarding"
