@@ -92,5 +92,4 @@ class CatalogProductListActivity : BaseSimpleActivity() {
                 .commit()
         }
     }
-
 }
