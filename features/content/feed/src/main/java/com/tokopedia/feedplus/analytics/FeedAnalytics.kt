@@ -205,8 +205,9 @@ class FeedAnalytics @AssistedInject constructor(
                 "41570",
                 pageSource = pageSource
             ).toMutableMap()
-        trackerDataMap[KEY_IS_LOGGED_IN_STATUS] = userSession.isLoggedIn
-        trackerDataMap[KEY_SCREEN_NAME] = UNIFIED_FEED_WATCH_VIDEO_POST.format(trackerData.activityId)
+        trackerDataMap[KEY_IS_LOGGED_IN_STATUS] = userSession.isLoggedIn.toString()
+        trackerDataMap[KEY_SCREEN_NAME] =
+            UNIFIED_FEED_WATCH_VIDEO_POST.format(trackerData.activityId)
 
         sendEventTracker(trackerDataMap)
     }
@@ -429,7 +430,10 @@ class FeedAnalytics @AssistedInject constructor(
                     ArrayList(
                         productList.mapIndexed { index, feedCardProductModel ->
                             Bundle().apply {
-                                putString(EnhanceEcommerce.KEY_DIMENSION40, EnhanceEcommerce.ITEM_LIST_PRODUCT_LABEL)
+                                putString(
+                                    EnhanceEcommerce.KEY_DIMENSION40,
+                                    EnhanceEcommerce.ITEM_LIST_PRODUCT_LABEL
+                                )
                                 putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
                                 putString(
                                     EnhanceEcommerce.KEY_ITEM_BRAND,
@@ -472,7 +476,10 @@ class FeedAnalytics @AssistedInject constructor(
                     ArrayList(
                         productList.mapIndexed { index, feedCardProductModel ->
                             Bundle().apply {
-                                putString(EnhanceEcommerce.KEY_DIMENSION40, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
+                                putString(
+                                    EnhanceEcommerce.KEY_DIMENSION40,
+                                    EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET
+                                )
                                 putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
                                 putString(
                                     EnhanceEcommerce.KEY_ITEM_BRAND,
@@ -547,7 +554,10 @@ class FeedAnalytics @AssistedInject constructor(
                     EnhanceEcommerce.KEY_ITEMS,
                     arrayListOf(
                         Bundle().apply {
-                            putString(EnhanceEcommerce.KEY_DIMENSION40, EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET)
+                            putString(
+                                EnhanceEcommerce.KEY_DIMENSION40,
+                                EnhanceEcommerce.ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET
+                            )
                             putString(EnhanceEcommerce.KEY_INDEX, "${index + 1}")
                             putString(
                                 EnhanceEcommerce.KEY_ITEM_BRAND,
@@ -792,7 +802,7 @@ class FeedAnalytics @AssistedInject constructor(
             trackerData.type,
             trackerData.mediaType
         )
-        } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${entrySource.entryPoint}"
+        } - ${trackerData.contentScore.ifBlank { "0" }} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${entrySource.entryPoint}"
 
     private fun getProductTrackerBundle(
         shopName: String,
