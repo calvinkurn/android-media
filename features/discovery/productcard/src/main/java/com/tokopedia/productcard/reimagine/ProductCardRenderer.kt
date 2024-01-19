@@ -336,7 +336,7 @@ internal class ProductCardRenderer(
 
         cardContainer?.layoutParams = cardContainer?.layoutParams?.apply {
             val marginLayoutParams = this as? ViewGroup.MarginLayoutParams
-            marginLayoutParams?.marginStart = (marginLayoutParams?.marginStart ?: 0) + marginStart
+            marginLayoutParams?.marginStart = marginStart
         }
     }
 
