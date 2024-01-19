@@ -692,6 +692,8 @@ class BCABalanceViewModel @Inject constructor(
                     cardType,
                     bcaFlazzData
                 )
+            } else if(result.status == BCAFlazzStatus.DONE.status){
+                errorCardMessageMutable.postValue(MessageErrorException(result.attributes.message))
             } else {
                 errorCardMessageMutable.postValue(Pair(
                         MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),

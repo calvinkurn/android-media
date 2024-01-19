@@ -10,7 +10,7 @@ import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderStatusCode
-import com.tokopedia.buyerorderdetail.common.extension.combine
+import com.tokopedia.buyerorderdetail.common.extension.combineThrottling
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
@@ -74,10 +74,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -102,7 +100,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
     companion object {
         private const val FLOW_TIMEOUT_MILLIS = 5000L
         private const val DELAY_FINISH_ORDER_RESULT = 2000L
-        private const val PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME = 300L
     }
 
     private var getBuyerOrderDetailDataJob: Job? = null
@@ -140,7 +137,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val productListUiState = combine(
         buyerOrderDetailDataRequestState,
         singleAtcRequestStates,
-        productListCollapsed.debounce(PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME),
+        productListCollapsed,
         ::mapProductListUiState
     ).toStateFlow(ProductListUiState.Loading)
     private val shipmentInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
@@ -165,7 +162,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val _oneTimeMethod = MutableStateFlow(OrderOneTimeEventUiState())
     val oneTimeMethodState: StateFlow<OrderOneTimeEventUiState> = _oneTimeMethod
 
-    val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
+    val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combineThrottling(
         actionButtonsUiState,
         orderStatusUiState,
         paymentInfoUiState,

@@ -124,14 +124,15 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.DynamicSt
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.VideoUploadListener
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.BigReplyBoxBottomSheet
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.BigReplyBoxBottomSheet.Companion.MINIMUM_NUMBER_OF_WORDS
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotMediaRetryBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotRejectReasonsBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotReplyBottomSheetAdapter
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.listener.ChatbotRejectReasonsChipListener
-import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
-import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet
-import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet.Companion.MINIMUM_NUMBER_OF_WORDS
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.replybox.BigReplyBox
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.replybox.SmallReplyBox
 import com.tokopedia.chatbot.chatbot2.view.customview.floatinginvoice.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.chatbot2.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotContract
@@ -189,7 +190,6 @@ import com.tokopedia.chatbot.util.logNewRelicMessageIdError
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.PAGE_SOURCE
-import com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
@@ -206,6 +206,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -349,7 +350,9 @@ class ChatbotFragment2 :
     private var reasonsBottomSheet: ChatbotRejectReasonsBottomSheet? = null
     private var rejectReasonsText: String = ""
 
-    val selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
+    val selectedList =
+        mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
+
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
         private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
@@ -413,15 +416,19 @@ class ChatbotFragment2 :
             getBindingView().chatbotViewHelpRate.btnInactive1.id -> {
                 onClickEmoji(RATING_ONE)
             }
+
             getBindingView().chatbotViewHelpRate.btnInactive2.id -> {
                 onClickEmoji(RATING_TWO)
             }
+
             getBindingView().chatbotViewHelpRate.btnInactive3.id -> {
                 onClickEmoji(RATING_THREE)
             }
+
             getBindingView().chatbotViewHelpRate.btnInactive4.id -> {
                 onClickEmoji(RATING_FOUR)
             }
+
             getBindingView().chatbotViewHelpRate.btnInactive5.id -> {
                 onClickEmoji(RATING_FIVE)
             }
@@ -519,6 +526,7 @@ class ChatbotFragment2 :
         bigReplyBox?.replyBoxClickListener = this
         bigReplyBox?.sendButtonListener = this
     }
+
     private fun initSmoothScroller() {
         smoothScroll = SmoothScroller(context)
     }
@@ -627,7 +635,7 @@ class ChatbotFragment2 :
         }
 
         val startTime = SendableUiModel.generateStartTime()
-        val msg = smallReplyBox?.getMessage() ?: ""
+        val msg = smallReplyBox?.getMessage().orEmpty()
         val quickReplyUiModel = QuickReplyUiModel(msg, msg, msg)
 
         viewModel.sendQuickReplyInvoice(
@@ -702,13 +710,13 @@ class ChatbotFragment2 :
 
         smallReplyBox = getBindingView().smallReplyBox
         bigReplyBox = getBindingView().bigReplyBox
-        guideline = smallReplyBox?.getGuidelineForReplyBubble()
+        guideline = smallReplyBox?.guideline
         smallReplyBox?.replyBoxClickListener = this
 
-        replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
+        replyBubbleContainer = smallReplyBox?.replyBubbleContainer
 
         setUpBigReplyBoxListeners()
-        replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
+        replyBubbleContainer = smallReplyBox?.replyBubbleContainer
         replyBubbleOnBoardingHasBeenShow = replyBubbleOnBoarding.hasBeenShown()
         videoUploadOnBoardingHasBeenShow = videoUploadOnBoarding.hasBeenShown()
         setUpFloatingInvoiceListeners()
@@ -730,7 +738,8 @@ class ChatbotFragment2 :
         startObservingViewModels()
 
         pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
-        val isChatbotActive = getParamBoolean(ChatbotActivity.IS_CHATBOT_ACTIVE, arguments, savedInstanceState, true)
+        val isChatbotActive =
+            getParamBoolean(ChatbotActivity.IS_CHATBOT_ACTIVE, arguments, savedInstanceState, true)
         checkIsChatbotServerActive(isChatbotActive)
         handlingForMessageIdValidity(messageId)
         viewModel.setPageSourceValue(pageSource)
@@ -797,6 +806,7 @@ class ChatbotFragment2 :
                 is TopBotNewSessionState.SuccessTopBotNewSession -> {
                     handleTopBotNewSessionSuccess(it.data)
                 }
+
                 is TopBotNewSessionState.HandleFailureNewSession -> {
                     handleTopBotNewSessionFailure()
                 }
@@ -808,6 +818,7 @@ class ChatbotFragment2 :
                 is CheckUploadSecureState.SuccessCheckUploadSecure -> {
                     handleCheckUploadSecureSuccess()
                 }
+
                 is CheckUploadSecureState.HandleFailureCheckUploadSecure -> {
                     // Using same error method as we have same logic
                     handleTopBotNewSessionFailure()
@@ -820,6 +831,7 @@ class ChatbotFragment2 :
                 is GetTickerDataState.SuccessTickerData -> {
                     onSuccessGetTickerData(it.data)
                 }
+
                 is GetTickerDataState.HandleTickerDataFailure -> {
                     onError(it.error)
                 }
@@ -831,6 +843,7 @@ class ChatbotFragment2 :
                 is ChatbotSubmitCsatRatingState.SuccessChatbotSubmtiCsatRating -> {
                     onSuccessSubmitCsatRating(it.data)
                 }
+
                 is ChatbotSubmitCsatRatingState.HandleFailureChatbotSubmitCsatRating -> {
                     onError(it.error)
                 }
@@ -842,6 +855,7 @@ class ChatbotFragment2 :
                 is ChatbotSubmitChatCsatState.HandleChatbotSubmitChatCsatSuccess -> {
                     onSuccessSubmitChatCsat(it.message)
                 }
+
                 is ChatbotSubmitChatCsatState.FailureChatbotSubmitChatCsat -> {
                     onError(it.error)
                 }
@@ -874,6 +888,7 @@ class ChatbotFragment2 :
                 is ChatbotSendChatRatingState.HandleSuccessChatbotSendChatRating -> {
                     onSuccessSendRating(it.data)
                 }
+
                 is ChatbotSendChatRatingState.HandleErrorSendChatRating -> {
                     onError(it.throwable)
                 }
@@ -889,6 +904,7 @@ class ChatbotFragment2 :
                         onSuccessGetExistingChatFirstTime(it.chatReplies, it.chatroomViewModel)
                     }
                 }
+
                 is ChatDataState.HandleFailureChatData -> {
                     onError(it.throwable)
                 }
@@ -900,6 +916,7 @@ class ChatbotFragment2 :
                 is ChatDataState.SuccessChatDataState -> {
                     onSuccessGetTopChatData(it.chatReplies, it.chatroomViewModel)
                 }
+
                 is ChatDataState.HandleFailureChatData -> {
                     onErrorGetTopChat()
                 }
@@ -911,6 +928,7 @@ class ChatbotFragment2 :
                 is ChatDataState.SuccessChatDataState -> {
                     onSuccessGetBottomChatData(it.chatReplies, it.chatroomViewModel)
                 }
+
                 is ChatDataState.HandleFailureChatData -> {
                     onErrorGetBottomChat()
                 }
@@ -968,9 +986,18 @@ class ChatbotFragment2 :
 
         viewModel.socketReceiveMessageEvent.observe(viewLifecycleOwner) {
             when (it) {
-                is ChatbotSocketReceiveEvent.StartTypingEvent -> { onReceiveStartTypingEvent() }
-                is ChatbotSocketReceiveEvent.EndTypingEvent -> { onReceiveStopTypingEvent() }
-                is ChatbotSocketReceiveEvent.ReadEvent -> { onReceiveReadEvent() }
+                is ChatbotSocketReceiveEvent.StartTypingEvent -> {
+                    onReceiveStartTypingEvent()
+                }
+
+                is ChatbotSocketReceiveEvent.EndTypingEvent -> {
+                    onReceiveStopTypingEvent()
+                }
+
+                is ChatbotSocketReceiveEvent.ReadEvent -> {
+                    onReceiveReadEvent()
+                }
+
                 is ChatbotSocketReceiveEvent.ReplyMessageEvent -> {
                     onReceiveMessageEvent(it.visitable)
                 }
@@ -1030,6 +1057,16 @@ class ChatbotFragment2 :
             }
         }
 
+        viewModel.dynamicAttachmentSlowMode.observe(viewLifecycleOwner) {
+            setupSlowModeSendButton(it.isUsingSlowMode, it.slowModeDurationInSeconds)
+        }
+
+        viewModel.sendWebsocketMessageEvent.observe(viewLifecycleOwner) {
+            if (it) {
+                slowDownSendButton()
+            }
+        }
+
         viewModel.applink.observe(viewLifecycleOwner) { applink ->
             context?.let { context ->
                 RouteManager.route(context, applink)
@@ -1039,13 +1076,13 @@ class ChatbotFragment2 :
 
     private fun handleAddAttachmentButtonViewState(toShow: Boolean) {
         showAddAttachmentMenu = toShow
-        getBindingView().smallReplyBox.getAddAttachmentMenu()?.showWithCondition(
+        getBindingView().smallReplyBox.addAttachmentMenu?.showWithCondition(
             showAddAttachmentMenu
         )
         bigReplyBox?.handleAddAttachmentButton(toShow)
         bigReplyBoxBottomSheet?.hideAddAttachmentButton(toShow)
         if (showAddAttachmentMenu) {
-            getBindingView().smallReplyBox.getMessageView()?.apply {
+            getBindingView().smallReplyBox.commentEditText?.editText?.apply {
                 if (!isConnectedToAgent) {
                     setImageUploadDataInReplyBox()
                 } else {
@@ -1090,9 +1127,8 @@ class ChatbotFragment2 :
         topBotResponse: TopBotNewSessionResponse.TopBotGetNewSession
     ) {
         val isNewSession = topBotResponse.isNewSession
-        val isTypingBlocked = topBotResponse.isTypingBlocked
         handleNewSession(isNewSession)
-        handleReplyBox(!isTypingBlocked)
+        handleReplyBox(topBotResponse)
     }
 
     private fun handleTopBotNewSessionFailure() {
@@ -1147,11 +1183,39 @@ class ChatbotFragment2 :
     private fun handleReplyBox(toShowSmallReplyBox: Boolean) {
         if (toShowSmallReplyBox) {
             getBindingView().addCommentArea.show()
-            smallReplyBox?.show()
             bigReplyBox?.hide()
+            smallReplyBox?.apply {
+                if (bigReplyBox?.sendButton?.isSlowModeRunning == true) {
+                    sendButton?.startSlowDown(bigReplyBox?.sendButton?.currentSlowModeDurationInSecond.orZero())
+                }
+                show()
+            }
         } else {
             smallReplyBox?.hide()
-            bigReplyBox?.show()
+            bigReplyBox?.apply {
+                if (smallReplyBox?.sendButton?.isSlowModeRunning == true) {
+                    sendButton?.startSlowDown(smallReplyBox?.sendButton?.currentSlowModeDurationInSecond.orZero())
+                }
+                show()
+            }
+        }
+    }
+
+    private fun handleReplyBox(topBotResponse: TopBotNewSessionResponse.TopBotGetNewSession) {
+        val isTypingBlocked = topBotResponse.isTypingBlocked
+        handleReplyBox(!isTypingBlocked)
+
+        setupSlowModeSendButton(topBotResponse.isSlowMode, topBotResponse.slowModeDurationInSeconds)
+    }
+
+    private fun setupSlowModeSendButton(isSlowMode: Boolean, slowModeDurationInSeconds: Int) {
+        smallReplyBox?.sendButton?.apply {
+            isSlowModeEnabled = isSlowMode
+            initialSlowModeDurationInSecond = slowModeDurationInSeconds
+        }
+        bigReplyBox?.sendButton?.apply {
+            isSlowModeEnabled = isSlowMode
+            initialSlowModeDurationInSecond = slowModeDurationInSeconds
         }
     }
 
@@ -1220,8 +1284,8 @@ class ChatbotFragment2 :
     ) {
         getBindingView().chatbotTicker.let {
             it.tickerTitle = tickerData.items?.get(0)?.title
-            it.setHtmlDescription(tickerData.items?.get(0)?.text ?: "")
-            it.tickerType = getTickerType(tickerData.type ?: "")
+            it.setHtmlDescription(tickerData.items?.get(0)?.text.orEmpty())
+            it.tickerType = getTickerType(tickerData.type.orEmpty())
             it.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     navigateToWebView(linkUrl.toString())
@@ -1242,8 +1306,8 @@ class ChatbotFragment2 :
             mockData.add(
                 com.tokopedia.unifycomponents.ticker.TickerData(
                     it?.title,
-                    it?.text ?: "",
-                    getTickerType(tickerData.type ?: "")
+                    it?.text.orEmpty(),
+                    getTickerType(tickerData.type.orEmpty())
                 )
             )
         }
@@ -1501,9 +1565,11 @@ class ChatbotFragment2 :
             is ChatActionSelectionBubbleUiModel -> getViewState()?.onReceiveQuickReplyEventWithActionButton(
                 visitable
             )
+
             is ChatRatingUiModel -> getViewState()?.onReceiveQuickReplyEventWithChatRating(
                 visitable
             )
+
             else -> super.onReceiveMessageEvent(visitable)
         }
     }
@@ -1670,10 +1736,10 @@ class ChatbotFragment2 :
         val input = ChipSubmitChatCsatInput()
         with(input) {
             messageID = messageId
-            caseID = data.getStringExtra(ChatBotCsatActivity.CASE_ID) ?: ""
-            caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID) ?: ""
-            rating = data.extras?.getLong(EMOJI_STATE) ?: 0
-            reasonCode = data.getStringExtra(SELECTED_ITEMS) ?: ""
+            caseID = data.getStringExtra(ChatBotCsatActivity.CASE_ID).orEmpty()
+            caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID).orEmpty()
+            rating = data.extras?.getLong(EMOJI_STATE).orZero()
+            reasonCode = data.getStringExtra(SELECTED_ITEMS).orEmpty()
         }
         viewModel.submitChatCsat(messageId, input)
     }
@@ -1705,8 +1771,8 @@ class ChatbotFragment2 :
         input.chatbotSessionId = csatAttributes?.chatbotSessionId
         input.livechatSessionId = csatAttributes?.livechatSessionId
         input.reason = getFilters(data, reasonList)
-        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
-        input.score = data?.extras?.getLong(EMOJI_STATE) ?: 0
+        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT).orEmpty()
+        input.score = data?.extras?.getLong(EMOJI_STATE).orZero()
         input.timestamp = data?.getStringExtra(TIME_STAMP)
         input.triggerRuleType = csatAttributes?.triggerRuleType
 
@@ -1837,7 +1903,7 @@ class ChatbotFragment2 :
                 )
             }
         }
-        getBindingView().smallReplyBox.getMessageView()?.apply {
+        getBindingView().smallReplyBox.commentEditText?.editText?.apply {
             setDefaultDataInReplyBox()
         }
     }
@@ -1905,16 +1971,19 @@ class ChatbotFragment2 :
     }
 
     override fun prepareListener() {
-        smallReplyBox?.getSmallReplyBoxSendButton()?.setOnClickListener {
+        smallReplyBox?.sendButton?.setOnClickListener {
             if (isSendButtonActivated) {
                 if (isFloatingSendButton) {
                     onSendFloatingInvoiceClicked()
                 } else {
-                    onSendButtonClicked()
+                    if (smallReplyBox?.sendButton?.isSlowModeRunning == false) {
+                        onSendButtonClicked()
+                    }
                 }
             } else {
                 getBindingView().footer.showToaster(
-                    context?.resources?.getString(R.string.chatbot_float_invoice_input_length_zero).toBlankOrString()
+                    context?.resources?.getString(R.string.chatbot_float_invoice_input_length_zero)
+                        .toBlankOrString()
                 )
             }
         }
@@ -1922,7 +1991,7 @@ class ChatbotFragment2 :
 
     override fun onSendButtonClicked() {
         chatbotAnalytics.get().eventClick(ACTION_REPLY_BUTTON_CLICKED)
-        val sendMessage = smallReplyBox?.getMessage() ?: ""
+        val sendMessage = smallReplyBox?.getMessage().orEmpty()
         val startTime = SendableUiModel.generateStartTime()
 
         sendTextMessage(
@@ -1975,6 +2044,14 @@ class ChatbotFragment2 :
                 )
                 getViewState()?.scrollToBottom()
             }
+        }
+    }
+
+    private fun slowDownSendButton() {
+        if (smallReplyBox?.isVisible == true) {
+            smallReplyBox?.sendButton?.startSlowDown()
+        } else if (bigReplyBox?.isVisible == true) {
+            bigReplyBox?.sendButton?.startSlowDown()
         }
     }
 
@@ -2248,7 +2325,8 @@ class ChatbotFragment2 :
             mediaRetryBottomSheet?.dismiss()
         }
         getBindingView().footer.showToaster(
-            context?.resources?.getString(R.string.chatbot_your_picture_has_been_deleted).toBlankOrString()
+            context?.resources?.getString(R.string.chatbot_your_picture_has_been_deleted)
+                .toBlankOrString()
         )
     }
 
@@ -2279,7 +2357,8 @@ class ChatbotFragment2 :
             mediaRetryBottomSheet?.dismiss()
         }
         getBindingView().footer.showToaster(
-            context?.resources?.getString(R.string.chatbot_your_video_has_been_deleted).toBlankOrString()
+            context?.resources?.getString(R.string.chatbot_your_video_has_been_deleted)
+                .toBlankOrString()
         )
     }
 
@@ -2359,6 +2438,7 @@ class ChatbotFragment2 :
             is ChatbotReplyOptionsUiModel.Reply -> {
                 sendReplyToSpecificChat(messageUiModel)
             }
+
             is ChatbotReplyOptionsUiModel.CopyToClipboard -> {
                 copyToClipBoard(messageBubble)
             }
@@ -2767,12 +2847,12 @@ class ChatbotFragment2 :
 
     override fun disableSendButton() {
         isSendButtonActivated = false
-        smallReplyBox?.sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+        smallReplyBox?.sendButton?.disableSendButton()
     }
 
     override fun enableSendButton() {
         isSendButtonActivated = true
-        smallReplyBox?.sendButton?.setImageResource(R.drawable.ic_chatbot_send)
+        smallReplyBox?.sendButton?.enableSendButton()
     }
 
     override fun isInvoiceRemoved(isRemoved: Boolean) {
@@ -2784,22 +2864,30 @@ class ChatbotFragment2 :
         attachmentMenuRecyclerView?.toggle()
         createAttachmentMenus()
     }
+
     override fun goToBigReplyBoxBottomSheet(isError: Boolean) {
-        activity?.let {
-            if (bigReplyBoxBottomSheet == null) {
-                bigReplyBoxBottomSheet = BigReplyBoxBottomSheet
-                    .newInstance(
-                        replyBoxBottomSheetPlaceHolder,
-                        replyBoxBottomSheetTitle,
-                        showAddAttachmentMenu,
-                        ""
-                    )
-            }
-            bigReplyBoxBottomSheet?.setErrorStatus(isError)
-            BigReplyBoxBottomSheet.replyBoxClickListener = this
-            bigReplyBoxBottomSheet?.clearContentPadding = true
-            bigReplyBoxBottomSheet?.show(childFragmentManager, "")
+        if (bigReplyBoxBottomSheet == null) {
+            bigReplyBoxBottomSheet = BigReplyBoxBottomSheet.newInstance(
+                replyBoxBottomSheetPlaceHolder,
+                replyBoxBottomSheetTitle,
+                showAddAttachmentMenu,
+                ""
+            )
         }
+        BigReplyBoxBottomSheet.replyBoxClickListener = this
+        bigReplyBoxBottomSheet?.apply {
+            setErrorStatus(isError)
+            clearContentPadding = true
+            if (bigReplyBox?.sendButton?.isSlowModeRunning == true) {
+                initSlowModeButton(
+                    bigReplyBox?.sendButton?.currentSlowModeDurationInSecond.orZero()
+                )
+            } else {
+                resetSlowModeButton()
+            }
+        }
+
+        bigReplyBoxBottomSheet?.show(childFragmentManager, "")
     }
 
     override fun getMessageContentFromBottomSheet(msg: String) {
@@ -2821,12 +2909,12 @@ class ChatbotFragment2 :
         enableSendButton()
     }
 
-    override fun dismissBigReplyBoxBottomSheet(msg: String, wordLength: Int) {
-        if (msg.isEmpty()) {
+    override fun dismissBigReplyBoxBottomSheet(message: String, wordLength: Int) {
+        if (message.isEmpty()) {
             bigReplyBox?.setText(bigReplyBoxPlaceHolder)
             return
         }
-        bigReplyBox?.setText(msg)
+        bigReplyBox?.setText(message)
         if (wordLength >= MINIMUM_NUMBER_OF_WORDS) {
             bigReplyBox?.enableSendButton()
             enableSendButton()
@@ -2835,12 +2923,15 @@ class ChatbotFragment2 :
         }
         hideKeyboard()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
         videoUploadOnBoarding.flush()
         replyBubbleOnBoarding.flush()
         coachmarkHandler.removeCallbacksAndMessages(null)
+        smallReplyBox?.sendButton?.cancelSlowDown()
+        bigReplyBox?.sendButton?.cancelSlowDown()
     }
 
     override fun onClickMessageReply(messageUiModel: MessageUiModel) {
@@ -2918,12 +3009,13 @@ class ChatbotFragment2 :
     }
 
     private fun setReplayBubbleCoachMarkListener() {
-        replyBubbleOnBoarding.onboardingDismissListener = object : com.tokopedia.chatbot.chatbot2.view.util.OnboardingReplayDismissListener {
-            override fun dismissReplyBubbleOnBoarding() {
-                isReplyCoachMarkShowing = false
-                checkVideoUploadOnboardingStatus()
+        replyBubbleOnBoarding.onboardingDismissListener =
+            object : com.tokopedia.chatbot.chatbot2.view.util.OnboardingReplayDismissListener {
+                override fun dismissReplyBubbleOnBoarding() {
+                    isReplyCoachMarkShowing = false
+                    checkVideoUploadOnboardingStatus()
+                }
             }
-        }
     }
 
     private fun setHandlingViewHelperReplayCoachMark() {

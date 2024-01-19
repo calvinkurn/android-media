@@ -351,3 +351,4 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 -dontwarn org.slf4j.impl.StaticMDCBinder
 -dontwarn com.gojek.onekyc.R$drawable
+-dontwarn sun.nio.ch.DirectBuffer
