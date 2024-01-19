@@ -89,7 +89,7 @@ class BCABalanceViewModel @Inject constructor(
                                         separateResponseCodeFromCardData(
                                             setConfigResult.strLogRsp
                                         )
-                                    ), 0
+                                    ), EMPTY_LAST_BALANCE
                                 )
                             )
                         )
@@ -104,7 +104,7 @@ class BCABalanceViewModel @Inject constructor(
                                 messageLogNR(
                                     TAG_PROCESS_PENDING_BALANCE_GEN_2,
                                     e.message
-                                ), 0
+                                ), EMPTY_LAST_BALANCE
                             )
                         )
                     )
@@ -118,7 +118,7 @@ class BCABalanceViewModel @Inject constructor(
                         messageLogNR(
                             TAG_PROCESS_PENDING_BALANCE_GEN_2,
                             ERROR_MESSAGE_ISODEP
-                        ), 0
+                        ), EMPTY_LAST_BALANCE
                     )
                 )
             )
@@ -148,7 +148,7 @@ class BCABalanceViewModel @Inject constructor(
                                 messageLogNR(
                                     TAG_PROCESS_PENDING_BALANCE_GEN_1,
                                     e.message
-                                ), 0
+                                ), EMPTY_LAST_BALANCE
                             )
                         )
                     )
@@ -162,7 +162,7 @@ class BCABalanceViewModel @Inject constructor(
                         messageLogNR(
                             TAG_PROCESS_PENDING_BALANCE_GEN_1,
                             ERROR_MESSAGE_ISODEP
-                        ), 0
+                        ), EMPTY_LAST_BALANCE
                     )
                 )
             )
@@ -1135,8 +1135,8 @@ class BCABalanceViewModel @Inject constructor(
         private const val SUCCESS_PREFIX = "0000"
         private const val PREFIX_SIZE = 4
         private const val RC_8303 = "8303"
+        private const val EMPTY_LAST_BALANCE = 0
         const val ERROR_MESSAGE_ISODEP = "ISODep Connection Issue"
-        const val ERROR_BETWEEN_TOP_UP = "Done between top up not supposed to be happend"
         const val TAG_PROCESS_SDK_BCALASTBCATOP_UP = "PROCESS_SDK_BCALASTBCATOPUP"
         const val TAG_PROCESS_SDK_REVERSAL = "PROCESS_SDK_REVERSAL"
         const val TAG_PROCESS_REVERSAL = "PROCESS_REVERSAL"
