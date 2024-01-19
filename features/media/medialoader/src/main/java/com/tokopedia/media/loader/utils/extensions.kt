@@ -8,6 +8,7 @@ import android.os.Looper
 import android.widget.ImageView
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.module.GlideRequest
+import java.util.Locale
 
 private val handler by lazy(LazyThreadSafetyMode.NONE) {
     Looper.myLooper()?.let {
@@ -44,6 +45,7 @@ internal fun <T> GlideRequest<T>.loadLookup(context: Context, resId: Int): Glide
         .appendPath(resources.getResourceTypeName(resId))
         .appendPath(
             String.format(
+                Locale.US,
                 "%s:%s",
                 resources.getResourcePackageName(resId),
                 resources.getResourceEntryName(resId)

@@ -197,7 +197,12 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                         val pIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, PendingIntent.FLAG_MUTABLE)
                         } else {
-                            PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0)
+                            PendingIntent.getActivity(
+                                this@ImagePreviewActivity,
+                                0,
+                                intent,
+                                PendingIntent.FLAG_IMMUTABLE
+                            )
                         }
 
                         notificationBuilder.setContentText(getString(R.string.download_success))
