@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.BadgeView
+        <com.tokopedia.discovery_component.widgets.automatecoupon.BadgeView
             android:id="@+id/remainingBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView
+        <com.tokopedia.discovery_component.widgets.automatecoupon.CouponCardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="120dp"
@@ -187,6 +187,6 @@
                     app:unifyButtonVariant="ghost" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView>
+        </com.tokopedia.discovery_component.widgets.automatecoupon.CouponCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

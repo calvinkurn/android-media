@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon
+package com.tokopedia.discovery_component.widgets.automatecoupon
 
 import android.content.Context
 import android.graphics.Color
@@ -6,9 +6,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.discovery_component.R
+import com.tokopedia.discovery_component.databinding.AutomateCouponGridLayoutBinding
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.databinding.AutomateCouponGridLayoutBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,13 +16,11 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifyprinciples.Typography
 
 class AutomateCouponGridView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr), IAutomateCouponView {
 
-    private var binding = AutomateCouponGridLayoutBinding
-        .inflate(LayoutInflater.from(context), this)
+    private var binding =
+        AutomateCouponGridLayoutBinding.inflate(LayoutInflater.from(context), this)
 
     override fun setModel(couponModel: AutomateCouponModel) {
         (couponModel as? AutomateCouponModel.Grid)?.let { model ->

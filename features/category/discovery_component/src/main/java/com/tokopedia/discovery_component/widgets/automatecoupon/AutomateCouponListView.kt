@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon
+package com.tokopedia.discovery_component.widgets.automatecoupon
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -6,8 +6,8 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.discovery_component.databinding.AutomateCouponListLayoutBinding
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.discovery2.databinding.AutomateCouponListLayoutBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
