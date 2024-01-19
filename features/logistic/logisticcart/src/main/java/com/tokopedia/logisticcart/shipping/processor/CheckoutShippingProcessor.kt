@@ -17,7 +17,6 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesCoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -89,8 +88,6 @@ class CheckoutShippingProcessor @Inject constructor(
 
     suspend fun getRates(
         ratesParam: RatesParam,
-        // todo ini beda gak sama value yang di ratesParam ?
-        shopShipments: List<ShopShipment>,
         selectedServiceId: Int,
         selectedSpId: Int,
         boPromoCode: String,
@@ -105,7 +102,7 @@ class CheckoutShippingProcessor @Inject constructor(
                 var shippingRecommendationData = ratesUseCase(ratesParam)
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
-                    shopShipments,
+                    ratesParam.shopShipments,
                     selectedSpId,
                     selectedServiceId
                 )
@@ -130,10 +127,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                                 throw MessageErrorException(
                                                     shippingCourierUiModel.productData.error.errorMessage
                                                 )
-//                                                return@withContext RatesResult(
-//                                                    courier = null,
-//                                                    couriers = listOf(),
-//                                                    ratesError =
                                             } else {
                                                 val courierItemData =
                                                     generateCourierItemData(
@@ -174,13 +167,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                             throw MessageErrorException(
                                                 shippingCourierUiModel.productData.error.errorMessage
                                             )
-//                                            return@withContext RatesResult(
-//                                                courier = null,
-//                                                couriers = listOf(),
-//                                                ratesError = MessageErrorException(
-//                                                    shippingCourierUiModel.productData.error.errorMessage
-//                                                )
-//                                            )
                                         } else {
                                             val courierItemData = generateCourierItemData(
                                                 false,
@@ -193,21 +179,7 @@ class CheckoutShippingProcessor @Inject constructor(
                                             )
                                             if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
-//                                                CheckoutLogger.logOnErrorLoadCourierNew(
-//                                                    MessageErrorException("rates ui hidden but no promo"),
-//                                                    orderModel,
-//                                                    isOneClickShipment,
-//                                                    isTradeIn,
-//                                                    isTradeInByDropOff,
-//                                                    boPromoCode
-//                                                )
-//                                                return@withContext null
                                                 throw MessageErrorException("rates ui hidden but no promo")
-//                                                return@withContext RatesResult(
-//                                                    courier = null,
-//                                                    couriers = listOf(),
-//                                                    ratesError = MessageErrorException("rates ui hidden but no promo")
-//                                                )
                                             }
                                             val shouldValidatePromo =
                                                 courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
@@ -260,11 +232,6 @@ class CheckoutShippingProcessor @Inject constructor(
                     errorReason = "rates empty data"
                 }
                 throw MessageErrorException(errorReason)
-//                return@withContext RatesResult(
-//                    courier = null,
-//                    couriers = listOf(),
-//                    ratesError = MessageErrorException(errorReason)
-//                )
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext RatesResult(
@@ -365,7 +332,6 @@ class CheckoutShippingProcessor @Inject constructor(
     suspend fun getRatesWithScheduleDelivery(
         ratesParam: RatesParam,
         schellyParam: ScheduleDeliveryParam,
-        shopShipments: List<ShopShipment>,
         selectedServiceId: Int,
         selectedSpId: Int,
         boPromoCode: String,
@@ -379,7 +345,7 @@ class CheckoutShippingProcessor @Inject constructor(
                     ratesWithScheduleUseCase(ratesParam to schellyParam)
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
-                    shopShipments,
+                    ratesParam.shopShipments,
                     selectedSpId,
                     0
                 )
@@ -400,13 +366,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                                 throw MessageErrorException(
                                                     shippingCourierUiModel.productData.error.errorMessage
                                                 )
-//                                                return@withContext RatesResult(
-//                                                    courier = null,
-//                                                    couriers = listOf(),
-//                                                    ratesError = MessageErrorException(
-//                                                        shippingCourierUiModel.productData.error.errorMessage
-//                                                    )
-//                                                )
                                             } else {
                                                 val courierItemData =
                                                     generateCourierItemDataWithScheduleDelivery(
@@ -440,13 +399,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
                                         if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-//                                            return@withContext RatesResult(
-//                                                courier = null,
-//                                                couriers = listOf(),
-//                                                ratesError = MessageErrorException(
-//                                                    shippingCourierUiModel.productData.error.errorMessage
-//                                                )
-//                                            )
                                             throw MessageErrorException(
                                                 shippingCourierUiModel.productData.error.errorMessage
                                             )
@@ -464,11 +416,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                                 )
                                             if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
-//                                                return@withContext RatesResult(
-//                                                    courier = null,
-//                                                    couriers = listOf(),
-//                                                    ratesError = MessageErrorException("rates ui hidden but no promo")
-//                                                )
                                                 throw MessageErrorException("rates ui hidden but no promo")
                                             }
                                             val shouldValidatePromo =
@@ -524,11 +471,6 @@ class CheckoutShippingProcessor @Inject constructor(
                     errorReason = "rates empty data"
                 }
                 throw MessageErrorException(errorReason)
-//                return@withContext RatesResult(
-//                    courier = null,
-//                    couriers = listOf(),
-//                    ratesError = MessageErrorException(errorReason)
-//                )
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext RatesResult(
@@ -565,11 +507,6 @@ class CheckoutShippingProcessor @Inject constructor(
                 } else {
                     val errorReason = "schelly is not selected"
                     throw MessageErrorException(errorReason)
-//                    return@withContext RatesResult(
-//                        courier = null,
-//                        couriers = listOf(),
-//                        ratesError = MessageErrorException(errorReason)
-//                    )
                 }
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -586,7 +523,6 @@ class CheckoutShippingProcessor @Inject constructor(
         isForceReloadRates: Boolean,
         shipperId: Int,
         spId: Int,
-//        orderModel: CheckoutOrderModel,
         shippingCourierUiModel: ShippingCourierUiModel,
         shippingRecommendationData: ShippingRecommendationData,
         logisticPromo: LogisticPromoUiModel? = null,
@@ -657,8 +593,6 @@ class CheckoutShippingProcessor @Inject constructor(
 
     suspend fun getRatesWithBoCode(
         ratesParam: RatesParam,
-        // todo ini beda gak sama value yang di ratesParam ?
-        shopShipments: List<ShopShipment>,
         selectedServiceId: Int,
         selectedSpId: Int,
         isTradeInDropOff: Boolean,
@@ -673,7 +607,7 @@ class CheckoutShippingProcessor @Inject constructor(
                 }
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
-                    shopShipments,
+                    ratesParam.shopShipments,
                     selectedSpId,
                     selectedServiceId
                 )

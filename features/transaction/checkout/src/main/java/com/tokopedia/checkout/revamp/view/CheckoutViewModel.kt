@@ -1184,7 +1184,6 @@ class CheckoutViewModel @Inject constructor(
         val result = logisticCartProcessor.getRatesWithScheduleDelivery(
             ratesParam,
             schellyParam,
-            order.shopShipmentList,
             order.shippingId,
             order.spId,
             order.boCode,
@@ -1316,7 +1315,6 @@ class CheckoutViewModel @Inject constructor(
                 false,
                 listData.value.promo()!!
             ),
-            order.shopShipmentList,
             order.shippingId,
             order.spId,
             order.boCode,
@@ -2519,7 +2517,6 @@ class CheckoutViewModel @Inject constructor(
                     false,
                     checkoutItems.promo()!!
                 ),
-                order.shopShipmentList,
                 voucher.shippingId,
                 voucher.spId,
                 isTradeInByDropOff,
