@@ -115,6 +115,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
     implementation projectOrAar(rootProject.ext.features.storiesWidget)
+    implementation projectOrAar(rootProject.ext.features.shareexperience)
+
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.rxAndroid

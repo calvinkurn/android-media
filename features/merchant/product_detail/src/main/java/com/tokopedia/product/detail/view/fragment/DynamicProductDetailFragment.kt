@@ -169,7 +169,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
@@ -194,6 +193,8 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generat
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateImageGeneratorData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generatePersonalizedData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateShareExBottomSheetArg
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateShareExInitializerArg
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.zeroIfEmpty
 import com.tokopedia.product.detail.data.util.DynamicProductDetailSwipeTrackingState
@@ -310,6 +311,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
@@ -377,6 +379,8 @@ open class DynamicProductDetailFragment :
         private const val TOOLBAR_TRANSITION_START = 10
         private const val TOOLBAR_TRANSITION_RANGES = 50
         private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
+
+        private const val ROLLENCE_SHARE_EX = "shareex_an"
 
         fun newInstance(
             productId: String? = null,
@@ -544,6 +548,9 @@ open class DynamicProductDetailFragment :
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
     private var isAffiliateShareIcon = false
+
+    // Share Experience
+    private var shareExInitializer: ShareExInitializer? = null
 
     // View
     private lateinit var actionButtonView: PartialButtonActionView
@@ -3063,7 +3070,7 @@ open class DynamicProductDetailFragment :
 
             mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
 
-            checkAffiliateEligibility(p2Data.shopInfo)
+            handleShareInitialization(p2Data.shopInfo)
 
             if (p2Data.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
                 DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(
@@ -3083,6 +3090,36 @@ open class DynamicProductDetailFragment :
         viewModel.resultAffiliate.observe(viewLifecycleOwner) {
             if (it is Success && it.data.eligibleCommission?.isEligible.orFalse()) {
                 updateToolbarShareAffiliate()
+            }
+        }
+    }
+
+    private fun handleShareInitialization(shopInfo: ShopInfo) {
+        if (isUsingShareEx()) {
+            initializeShareEx(shopInfo)
+        } else {
+            checkAffiliateEligibility(shopInfo)
+        }
+    }
+
+    private fun initializeShareEx(shopInfo: ShopInfo) {
+        activity?.let { activity ->
+            viewModel.getDynamicProductInfoP1?.let { dataP1 ->
+                shareExInitializer = ShareExInitializer(activity)
+                if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+                    shareExInitializer?.additionalCheck(
+                        generateShareExInitializerArg(
+                            dataP1,
+                            shopInfo,
+                            viewModel.variantData,
+                            onSuccess = {
+                                if (it.isEligibleAffiliate) {
+                                    updateToolbarShareAffiliate()
+                                }
+                            }
+                        )
+                    )
+                }
             }
         }
     }
@@ -4092,8 +4129,29 @@ open class DynamicProductDetailFragment :
                 bundleId = "0",
                 isAffiliateShareIcon = isAffiliateShareIcon
             )
-            shareProduct(productInfo)
+            handleShareProduct(productInfo)
         }
+    }
+
+    private fun handleShareProduct(
+        dynamicProductInfoP1: DynamicProductInfoP1
+    ) {
+        if (isUsingShareEx()) {
+            openShareExBottomSheet(dynamicProductInfoP1)
+        } else {
+            shareProduct(dynamicProductInfoP1)
+        }
+    }
+
+    private fun openShareExBottomSheet(
+        dynamicProductInfoP1: DynamicProductInfoP1
+    ) {
+        shareExInitializer?.openShareBottomSheet(
+            generateShareExBottomSheetArg(
+                productId = dynamicProductInfoP1.basic.productID,
+                productUrl = dynamicProductInfoP1.basic.url
+            )
+        )
     }
 
     private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null, path: String? = null) {
@@ -6315,5 +6373,16 @@ open class DynamicProductDetailFragment :
             component = component,
             trackingQueue = trackingQueue
         )
+    }
+
+    /**
+     * This function only for transition period
+     * from old share to share 2.0
+     */
+    private fun isUsingShareEx(): Boolean {
+//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+//            ROLLENCE_SHARE_EX, ""
+//        ) == ROLLENCE_SHARE_EX
+        return true
     }
 }

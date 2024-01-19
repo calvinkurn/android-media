@@ -16,13 +16,14 @@ data class ShareExBottomSheetArg(
     val trackerArg: ShareExTrackerArg,
 
     /**
-     * Based on response
-     */
-    val bottomSheetModel: ShareExBottomSheetModel? = null,
-    val throwable: Throwable? = null,
-
-    /**
      * Optional
      */
-    val selectedChip: String = ""
-): Parcelable
+    val selectedChip: String = "",
+
+    /**
+     * Based on response
+     * Do not fill this
+     */
+    val bottomSheetModel: ShareExBottomSheetModel? = null,
+    val throwable: Throwable? = null
+) : Parcelable
