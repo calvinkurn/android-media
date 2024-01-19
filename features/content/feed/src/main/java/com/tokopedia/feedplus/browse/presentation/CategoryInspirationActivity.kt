@@ -14,6 +14,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * Created by kenny.hadisaputra on 20/09/23
  */
+@Suppress("LateinitUsage")
 class CategoryInspirationActivity : BaseActivity() {
 
     @Inject lateinit var fragmentFactory: FragmentFactory
