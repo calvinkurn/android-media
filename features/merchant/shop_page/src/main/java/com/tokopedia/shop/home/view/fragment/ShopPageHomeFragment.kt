@@ -3522,8 +3522,10 @@ open class ShopPageHomeFragment :
             ShopUtil.getActualPositionFromIndex(adapterPosition),
             model.widgetMasterId,
             model.isFestivity,
-            model.productList[adapterPosition].isFulfillment,
-            model.productList[adapterPosition].warehouseId
+            // TODO: Make sure these lines below are correct based on Data team
+            isFulfillment = model.productList.getOrNull(adapterPosition)?.isFulfillment,
+            warehouseId = model.productList.getOrNull(adapterPosition)?.warehouseId
+            // ======== //
         )
     }
 
@@ -5668,6 +5670,6 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override val parentPool: RecyclerView.RecycledViewPool
-        get() = viewBinding?.recyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool()
+    override val parentPool: RecyclerView.RecycledViewPool?
+        get() = null
 }

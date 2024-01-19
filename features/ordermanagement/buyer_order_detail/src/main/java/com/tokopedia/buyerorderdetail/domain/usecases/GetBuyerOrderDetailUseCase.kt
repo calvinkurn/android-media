@@ -87,6 +87,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   badge_url
                 }
                 shipment {
+                  title
                   shipping_name
                   shipping_product_name
                   shipping_display_name
