@@ -69,6 +69,9 @@ class GetSlashPriceProductListUseCase @Inject constructor(
                     max
                     max_formatted
                   }
+                  rule {
+                    able_to_opt_out
+                  }
                   subsidy_info {
                     cta_program_link
                     subsidy_type

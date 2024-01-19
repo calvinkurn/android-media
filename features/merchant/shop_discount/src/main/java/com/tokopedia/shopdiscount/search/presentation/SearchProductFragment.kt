@@ -721,7 +721,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     }
 
     private fun displayMoreMenuBottomSheet(product: Product) {
-        val bottomSheet = MoreMenuBottomSheet()
+        val bottomSheet = MoreMenuBottomSheet.newInstance(product.productRule)
         bottomSheet.setOnDeleteMenuClicked {
             if (product.isSubsidy) {
                 getListProductSubsidy(

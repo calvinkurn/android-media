@@ -158,7 +158,7 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
 
     private fun setProductSubsidyData() {
         subsidyProductAdapter.setListProductSubsidy(ShopDiscountProductSubsidyMapper.map(
-            data.getListProductDetailSubsidyData()
+            data.getListProductAbleToOptOutData()
         ))
     }
 

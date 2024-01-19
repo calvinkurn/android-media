@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.ShopDiscountProductDetailTypeFactoryImpl
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProductRuleUiModel
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoUiModel
 import kotlinx.parcelize.Parcelize
 
@@ -32,6 +33,7 @@ data class ShopDiscountProductDetailUiModel(
         val parentId: String = "",
         val isSubsidy: Boolean = false,
         val subsidyStatusText: String = "",
+        val productRule: ShopDiscountProductRuleUiModel = ShopDiscountProductRuleUiModel(),
         val subsidyInfo: ShopDiscountSubsidyInfoUiModel = ShopDiscountSubsidyInfoUiModel(),
         val eventId: String = ""
     ) : Visitable<ShopDiscountProductDetailTypeFactoryImpl>, Parcelable {

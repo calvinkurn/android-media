@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.common.entity.ProductType
 import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListResponse
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProductRuleUiModel
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoUiModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE
@@ -54,6 +55,9 @@ class ProductMapper @Inject constructor() {
                 maxOrder = product.maxOrder.toIntOrZero(),
                 isSubsidy = product.joinSubsidy,
                 subsidyStatusText = product.subsidyStatusText,
+                productRule = ShopDiscountProductRuleUiModel(
+                    isAbleToOptOut = product.rule.isAbleToOptOut
+                ),
                 subsidyInfo = ShopDiscountSubsidyInfoUiModel(
                     ctaProgramLink = product.subsidyInfo.ctaProgramLink,
                     subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(product.subsidyInfo.subsidyType),

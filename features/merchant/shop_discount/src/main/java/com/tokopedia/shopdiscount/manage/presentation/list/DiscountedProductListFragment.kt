@@ -528,7 +528,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     }
 
     private fun displayMoreMenuBottomSheet(product: Product) {
-        val bottomSheet = MoreMenuBottomSheet()
+        val bottomSheet = MoreMenuBottomSheet.newInstance(product.productRule)
         bottomSheet.setOnDeleteMenuClicked {
             onDeleteOptionClicked(product)
         }

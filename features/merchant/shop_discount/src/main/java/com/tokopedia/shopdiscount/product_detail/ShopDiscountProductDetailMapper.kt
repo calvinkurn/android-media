@@ -11,6 +11,7 @@ import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProd
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailDeleteUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProductRuleUiModel
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoUiModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.extension.parseTo
@@ -98,6 +99,9 @@ object ShopDiscountProductDetailMapper {
                 parentId = it.parentId,
                 isSubsidy = it.joinSubsidy,
                 subsidyStatusText = it.subsidyStatusText,
+                productRule = ShopDiscountProductRuleUiModel(
+                    isAbleToOptOut = it.rule.isAbleToOptOut
+                ),
                 subsidyInfo = ShopDiscountSubsidyInfoUiModel(
                     ctaProgramLink = it.subsidyInfo.ctaProgramLink,
                     subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(it.subsidyInfo.subsidyType),

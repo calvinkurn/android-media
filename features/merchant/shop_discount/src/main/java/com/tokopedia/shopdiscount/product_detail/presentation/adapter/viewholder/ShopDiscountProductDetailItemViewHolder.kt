@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.media.loader.loadImage
@@ -63,10 +64,21 @@ open class ShopDiscountProductDetailItemViewHolder(
             imgDeleteProduct.setOnClickListener {
                 listener.onClickDeleteProduct(uiModel)
             }
-            icOptOutSubsidy.setOnClickListener {
-                listener.onClickOptOutSubsidy(uiModel)
-            }
+            configIconOptOutSubsidy(uiModel)
             setSubsidyInfoSectionData(this, uiModel)
+        }
+    }
+
+    private fun configIconOptOutSubsidy(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
+        viewBinding?.icOptOutSubsidy?.apply {
+            if (uiModel.productRule.isAbleToOptOut) {
+                show()
+                setOnClickListener {
+                    listener.onClickOptOutSubsidy(uiModel)
+                }
+            } else {
+                hide()
+            }
         }
     }
 

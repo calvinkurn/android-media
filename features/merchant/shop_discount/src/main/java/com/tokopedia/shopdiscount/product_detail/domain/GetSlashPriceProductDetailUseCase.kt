@@ -79,6 +79,9 @@ class GetSlashPriceProductDetailUseCase @Inject constructor(
                   is_variant
                   is_expand
                   parent_id
+                  rule {
+                    able_to_opt_out
+                  }
                   subsidy_info {
                     cta_program_link
                     subsidy_type

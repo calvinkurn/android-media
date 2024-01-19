@@ -53,9 +53,9 @@ data class ShopDiscountManageProductSubsidyUiModel(
         }
     }
 
-    fun getListProductDetailSubsidyData(): List<ShopDiscountProductDetailUiModel.ProductDetailData> {
+    fun getListProductAbleToOptOutData(): List<ShopDiscountProductDetailUiModel.ProductDetailData> {
         return listProductDetailData.filter {
-            it.isSubsidy
+            it.productRule.isAbleToOptOut
         }
     }
 

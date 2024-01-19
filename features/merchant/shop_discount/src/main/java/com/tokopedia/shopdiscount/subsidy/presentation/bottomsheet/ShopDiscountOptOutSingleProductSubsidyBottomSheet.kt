@@ -112,7 +112,7 @@ class ShopDiscountOptOutSingleProductSubsidyBottomSheet : BottomSheetUnify() {
     }
 
     private fun addCurrentProductDetailDataToOptOutList() {
-        data.getListProductDetailSubsidyData().firstOrNull()?.let {
+        data.getListProductAbleToOptOutData().firstOrNull()?.let {
             data.addSelectedProductToOptOut(it)
         }
     }

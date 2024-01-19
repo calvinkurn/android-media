@@ -253,7 +253,7 @@ class DiscountedProductListViewModel @Inject constructor(
                 entrySource = entrySource
             )
             if (mode == ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY) {
-                listProductDetailUiModel.filter { it.isSubsidy }.map {
+                listProductDetailUiModel.filter { it.productRule.isAbleToOptOut }.map {
                     mappedUiModel.addSelectedProductToOptOut(it)
                 }
             }
