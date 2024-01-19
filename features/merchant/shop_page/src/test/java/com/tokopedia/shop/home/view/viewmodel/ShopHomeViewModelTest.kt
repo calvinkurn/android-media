@@ -1540,15 +1540,14 @@ class ShopHomeViewModelTest {
             mockkObject(ShopPageHomeMapper)
             every {
                 ShopPageHomeMapper.mapToListShopHomeWidget(
-                    any(),
-                    any(),
-                    any(),
-                    false,
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
+                    responseWidgetData = any(),
+                    myShop = any(),
+                    isLoggedIn = any(),
+                    isEnableDirectPurchase = any(),
+                    shopId =any(),
+                    listWidgetLayout =any(),
+                    isOverrideTheme =any(),
+                    colorSchema = any()
                 )
             } returns listOf(
                 ShopHomeCarousellProductUiModel(widgetId = "1")
@@ -1606,15 +1605,14 @@ class ShopHomeViewModelTest {
             mockkObject(ShopPageHomeMapper)
             every {
                 ShopPageHomeMapper.mapToListShopHomeWidget(
-                    any(),
-                    any(),
-                    any(),
-                    false,
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
+                    responseWidgetData = any(),
+                    myShop = any(),
+                    isLoggedIn = any(),
+                    isEnableDirectPurchase = any(),
+                    shopId = any(),
+                    listWidgetLayout = any(),
+                    isOverrideTheme = any(),
+                    colorSchema = any()
                 )
             } returns listOf(
                 resultWidget
