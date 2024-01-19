@@ -307,6 +307,7 @@ class ShareExViewModel @Inject constructor(
         updateIntentUiState(
             intent = getAppIntent(channelItemModel, defaultUrl, null),
             message = defaultUrl,
+            shortLink = defaultUrl,
             channelEnum = channelItemModel.channelEnum,
             isLoading = false,
             error = throwable,
@@ -389,6 +390,7 @@ class ShareExViewModel @Inject constructor(
                         updateIntentUiState(
                             intent = null,
                             message = "",
+                            shortLink = "",
                             channelEnum = shortLinkRequest.channelEnum,
                             isLoading = false,
                             error = result.throwable,
@@ -398,6 +400,7 @@ class ShareExViewModel @Inject constructor(
                         updateIntentUiState(
                             intent = null,
                             message = "",
+                            shortLink = "",
                             channelEnum = shortLinkRequest.channelEnum,
                             isLoading = false,
                             error = result.throwable
@@ -411,13 +414,13 @@ class ShareExViewModel @Inject constructor(
     }
 
     private fun resetIntentUiState() {
-
     }
 
     private fun setLoadingIntentUiState(channelEnum: ShareExChannelEnum?) {
         updateIntentUiState(
             intent = null,
             message = "",
+            shortLink = "",
             channelEnum = channelEnum,
             isLoading = true,
             error = null,
@@ -428,6 +431,7 @@ class ShareExViewModel @Inject constructor(
     private fun updateIntentUiState(
         intent: Intent?,
         message: String,
+        shortLink: String,
         channelEnum: ShareExChannelEnum?,
         isLoading: Boolean,
         error: Throwable?,
@@ -438,6 +442,7 @@ class ShareExViewModel @Inject constructor(
                 it.copy(
                     intent = intent,
                     message = message,
+                    shortLink = shortLink,
                     channelEnum = channelEnum,
                     isLoading = isLoading,
                     error = error,
@@ -449,6 +454,7 @@ class ShareExViewModel @Inject constructor(
                 it.copy(
                     intent = intent,
                     message = message,
+                    shortLink = shortLink,
                     channelEnum = channelEnum,
                     isLoading = isLoading,
                     error = error
@@ -555,6 +561,7 @@ class ShareExViewModel @Inject constructor(
                     updateIntentUiState(
                         intent = getAppIntent(channelItemModel, messageWithUrl, it.data),
                         message = messageWithUrl,
+                        shortLink = shortLink,
                         channelEnum = channelItemModel.channelEnum,
                         isLoading = false,
                         error = null
@@ -565,6 +572,7 @@ class ShareExViewModel @Inject constructor(
                     updateIntentUiState(
                         intent = getAppIntent(channelItemModel, messageWithUrl, null),
                         message = messageWithUrl,
+                        shortLink = shortLink,
                         channelEnum = channelItemModel.channelEnum,
                         isLoading = false,
                         error = it.throwable

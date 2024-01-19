@@ -6,6 +6,7 @@ import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 data class ShareExChannelIntentUiState(
     val intent: Intent? = null,
     val message: String = "",
+    val shortLink: String = "",
     val channelEnum: ShareExChannelEnum? = null,
     val isLoading: Boolean = false,
     val error: Throwable? = null,

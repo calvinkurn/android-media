@@ -205,7 +205,7 @@ class ShareExInitializer(
             val contentView: View? = it.findViewById(android.R.id.content)
             contentView?.let { view ->
                 showToaster(
-                    view = contentView,
+                    view = view,
                     text = it.getString(R.string.shareex_success_copy_link),
                     duration = Toaster.LENGTH_SHORT,
                     type = Toaster.TYPE_NORMAL
@@ -219,7 +219,7 @@ class ShareExInitializer(
         showLoadingDialog()
     }
 
-    override fun onFailGenerateAffiliateLink(shareMessage: String) {
+    override fun onFailGenerateAffiliateLink(shortLink: String) {
         weakActivity.get()?.let {
             val contentView: View? = it.findViewById(android.R.id.content)
             contentView?.let { view ->
@@ -230,7 +230,7 @@ class ShareExInitializer(
                     type = Toaster.TYPE_ERROR,
                     actionText = it.getString(R.string.shareex_action_copy_link),
                     clickListener = {
-                        val isSuccessCopy = it.context.copyTextToClipboard(shareMessage)
+                        val isSuccessCopy = view.context.copyTextToClipboard(shortLink)
                         if (isSuccessCopy) {
                             onSuccessCopyLink()
                         }

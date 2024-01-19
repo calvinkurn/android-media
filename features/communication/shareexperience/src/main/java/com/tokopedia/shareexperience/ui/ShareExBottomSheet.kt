@@ -200,11 +200,11 @@ class ShareExBottomSheet :
             if (!it.isLoading && it.error == null) {
                 if (it.isAffiliateError) {
                     dismiss()
-                    listener?.onFailGenerateAffiliateLink(it.message)
+                    listener?.onFailGenerateAffiliateLink(it.shortLink)
                 } else {
                     when (it.channelEnum) {
                         ShareExChannelEnum.COPY_LINK -> {
-                            val isSuccessCopy = context?.copyTextToClipboard(it.message)
+                            val isSuccessCopy = context?.copyTextToClipboard(it.shortLink)
                             if (isSuccessCopy == true) {
                                 dismiss()
                                 listener?.onSuccessCopyLink()

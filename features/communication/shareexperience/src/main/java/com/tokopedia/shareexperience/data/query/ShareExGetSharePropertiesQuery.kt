@@ -16,6 +16,7 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
               title
               subtitle
               properties {
+                chipTitle
                 shareBody {
                   title
                   thumbnailUrls
@@ -31,27 +32,27 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
                   eligible
                   commission
                 }
+                imageGeneratorPayload {
+                  args {
+                    key
+                    value
+                  }
+                  sourceId
+                }
+                generateLinkProperties {
+                  message
+                  ogTitle
+                  ogDescription
+                  ogType
+                  ogImageUrl
+                  ogVideo
+                  desktopUrl
+                  androidUrl
+                  iosUrl
+                  iosDeeplinkPath
+                  canonicalUrl
+                }
               }
-            }
-            imageGeneratorPayload {
-              args {
-                key
-                value
-              }
-              sourceId
-            }
-            generateLinkProperties {
-              message
-              ogTitle
-              ogDescription
-              ogType
-              ogImageUrl
-              ogVideo
-              desktopUrl
-              androidUrl
-              iosUrl
-              iosDeeplinkPath
-              canonicalUrl
             }
           }
         }
