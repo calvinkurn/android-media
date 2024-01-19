@@ -19,11 +19,11 @@ import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.ProofModel
-import com.tokopedia.logisticorder.uimodel.TargetedTickerParamModel
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import javax.inject.Inject
 
 class TrackingPageMapperNew @Inject constructor() {

@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
-import com.tokopedia.logisticorder.uimodel.TickerUnificationTargets
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
 import com.tokopedia.logisticorder.uimodel.TrackingPageState
 import com.tokopedia.logisticorder.usecase.GetTrackingUseCase
@@ -13,7 +12,6 @@ import com.tokopedia.logisticorder.usecase.SetRetryAvailabilityUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryBookingUseCase
 import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper
-import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
@@ -115,7 +113,7 @@ class TrackingPageComposeViewModel @Inject constructor(
                 ) {
                     retryAvailability(orderId)
                 }
-                getTickerData(uiModel.page.tickerUnificationTargets)
+                getTickerData(uiModel.page.targetedTickerParam)
             },
             onError = { e ->
                 _uiState.update {
@@ -126,13 +124,20 @@ class TrackingPageComposeViewModel @Inject constructor(
         )
     }
 
-    private fun getTickerData(tickerUnificationTargets: List<TickerUnificationTargets>) {
+    private fun getTickerData(tickerUnificationTargets: TargetedTickerParamModel) {
         launchCatchError(block = {
-            val param = TargetedTickerParamModel(
-                page = TargetedTickerPage.TRACKING_PAGE,
-                targets = tickerUnificationTargets.map {
-                    TargetedTickerParamModel.Target(it.type, it.values)
+            val template = TargetedTickerParamModel.Template().copy(
+                contents = tickerUnificationTargets.template.contents.map {
+                    TargetedTickerParamModel.Template.Content(it.key, it.value)
                 }
+            )
+            val target = tickerUnificationTargets.target.map {
+                TargetedTickerParamModel.Target(it.type, it.values)
+            }
+            val param = TargetedTickerParamModel(
+                page = tickerUnificationTargets.page,
+                target = target,
+                template = template
             )
             val response = targetedTickerUseCase(param)
             val model =
