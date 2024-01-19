@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -112,6 +114,10 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         ProfileInfoAdapter(ProfileInfoListTypeFactory(this, this))
     }
 
+    private val startProfileManagementForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
+        getProfileInfo()
+    }
+
     private val editPhotoListener = object : View.OnClickListener {
         override fun onClick(v: View?) {
             val ctx = v?.context ?: return
@@ -199,7 +205,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     private fun goToProfileManagement() {
         val intent = RouteManager.getIntent(requireActivity(), ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT)
-        startActivity(intent)
+        startProfileManagementForResult.launch(intent)
     }
 
     private fun isProfileManagementM1Activated(): Boolean {

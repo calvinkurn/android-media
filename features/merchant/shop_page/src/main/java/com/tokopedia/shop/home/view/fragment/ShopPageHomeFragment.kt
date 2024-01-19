@@ -95,7 +95,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -356,7 +355,6 @@ open class ShopPageHomeFragment :
     var shopName: String = ""
     var shopAttribution: String = ""
     var shopRef: String = ""
-    var isThematicWidgetShown: Boolean = false
     var isEnableDirectPurchase: Boolean = false
     private var productListName: String = ""
     private var sortId
@@ -496,7 +494,6 @@ open class ShopPageHomeFragment :
             StaggeredGridLayoutManager.VERTICAL
         )
         setupPlayWidgetAnalyticListener()
-        isThematicWidgetShown = getRemoteConfigEnableThematicWidgetShop()
     }
 
     private fun isShopHomeTabSelected(): Boolean {
@@ -1773,14 +1770,13 @@ open class ShopPageHomeFragment :
             shopId
         )
         val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
-            listWidgetLayout,
-            isOwner,
-            isLogin,
-            isThematicWidgetShown,
-            isEnableDirectPurchase,
-            shopId,
-            isOverrideTheme(),
-            getShopPageColorSchema()
+            listWidgetLayout = listWidgetLayout,
+            myShop = isOwner,
+            isLoggedIn = isLogin,
+            isEnableDirectPurchase = isEnableDirectPurchase,
+            shopId = shopId,
+            isOverrideTheme = isOverrideTheme(),
+            colorSchema = getShopPageColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -2038,13 +2034,12 @@ open class ShopPageHomeFragment :
             val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
                 ?: LocalCacheModel()
             viewModel?.getWidgetContentData(
-                listWidgetLayoutToLoad.toList(),
-                shopId,
-                widgetUserAddressLocalData,
-                isThematicWidgetShown,
-                isEnableDirectPurchase,
-                isOverrideTheme(),
-                getShopPageColorSchema()
+                listWidgetLayout = listWidgetLayoutToLoad.toList(),
+                shopId = shopId,
+                widgetUserAddressLocalData = widgetUserAddressLocalData,
+                isEnableDirectPurchase = isEnableDirectPurchase,
+                isOverrideTheme = isOverrideTheme(),
+                colorSchema = getShopPageColorSchema()
             )
         }
     }
@@ -5021,10 +5016,6 @@ open class ShopPageHomeFragment :
                 shopHomeAdapter?.removeWidget(this)
             }
         }
-    }
-
-    private fun getRemoteConfigEnableThematicWidgetShop(): Boolean {
-        return remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_THEMATIC_WIDGET_SHOP, false) ?: false
     }
 
     override fun onDisplayBannerTimerClicked(

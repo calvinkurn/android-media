@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.helper.InvoiceStatusLabelHelper
 import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,12 +18,13 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Hendri on 27/03/18.
  */
 
-class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel>(itemView) {
+class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachInvoiceSentUiModel>(itemView) {
 
     private val container: RelativeLayout? = itemView.findViewById(R.id.rl_container)
     private val clContainer: ConstraintLayout? = itemView.findViewById(R.id.cl_chat_bubble)
@@ -38,11 +40,11 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<com.tok
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
         clContainer,
         R.color.chatbot_dms_left_message_bg,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
+        unifyprinciplesR.dimen.spacing_lvl3,
+        unifyprinciplesR.dimen.spacing_lvl3,
+        unifyprinciplesR.dimen.spacing_lvl3,
+        unifyprinciplesR.dimen.spacing_lvl3,
+        unifyprinciplesR.color.Unify_NN950_20,
         R.dimen.dp_chatbot_2,
         R.dimen.dp_chatbot_1,
         Gravity.CENTER,
@@ -50,13 +52,28 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<com.tok
         R.dimen.dp_chatbot_3
     )
 
-    override fun bind(element: com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel) {
+    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
+        clContainer,
+        R.color.chatbot_dms_left_message_bg,
+        unifyprinciplesR.dimen.spacing_lvl3,
+        unifyprinciplesR.dimen.spacing_lvl3,
+        unifyprinciplesR.dimen.spacing_lvl3,
+        unifyprinciplesR.dimen.spacing_lvl3,
+        unifyprinciplesR.color.Unify_NN950_20,
+        R.dimen.dp_chatbot_2,
+        R.dimen.dp_chatbot_1,
+        Gravity.CENTER,
+        unifyprinciplesR.color.Unify_NN0,
+        R.dimen.dp_chatbot_3
+    )
+
+    override fun bind(element: AttachInvoiceSentUiModel) {
         alignLayout(element)
         bindViewWithModel(element)
-        bindBackground()
+        bindBackground(element)
     }
 
-    private fun bindViewWithModel(invoice: com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel) {
+    private fun bindViewWithModel(invoice: AttachInvoiceSentUiModel) {
         thumbnail?.loadImageRounded(invoice.imageUrl, radiusInvoice)
         setStatus(invoice)
         invoiceName?.text = invoice.message
@@ -65,7 +82,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<com.tok
         invoiceDate?.text = invoice.createTime
     }
 
-    private fun setStatus(invoice: com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel) {
+    private fun setStatus(invoice: AttachInvoiceSentUiModel) {
         if (invoice.status.isNotEmpty()) {
             val labelType: Int = if (invoice.color.isEmpty()) {
                 InvoiceStatusLabelHelper.getLabelTypeWithStatusId(invoice.statusId)
@@ -90,12 +107,20 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<com.tok
         }
     }
 
-    private fun bindBackground() {
-        clContainer?.background = bgSender
+    private fun bindBackground(element: AttachInvoiceSentUiModel) {
+        if (element.isSender) {
+            clContainer?.background = bgSender
+        } else {
+            clContainer?.background = bgOpposite
+        }
     }
 
-    private fun alignLayout(uiModel: com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel) {
-        alignBubble(Gravity.END)
+    private fun alignLayout(element: AttachInvoiceSentUiModel) {
+        if (element.isSender) {
+            alignBubble(Gravity.END)
+        } else {
+            alignBubble(Gravity.START)
+        }
     }
 
     private fun alignBubble(gravity: Int) {
