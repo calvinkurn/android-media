@@ -35,6 +35,7 @@ object TrackerConstant {
         const val CLICK_CLOSE_BOTTOM_SHEET_VARIANT = "click close bottomsheet variant"
         const val CLICK_CLOSE_BOTTOM_SHEET_PARENT = "click close bottomsheet parent"
         const val IMPRESSION_OPT_OUT = "impression opt out"
+        const val CLICK_EDU_ARTICLE_QUOTA = "click edu article kuota"
     }
 
     object EventCategory{
@@ -72,5 +73,6 @@ object TrackerConstant {
         const val TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_PARENT = "49528"
         const val TRACKER_ID_CLICK_EDU_ARTICLE_PRODUCT_LIST_TICKER = "49531"
         const val TRACKER_ID_IMPRESSION_SUBSIDY_OPT_OUT_REASON_BOTTOM_SHEET = "49539"
+        const val TRACKER_ID_CLICK_EDU_ARTICLE_SELLER_INFO_BOTTOM_SHEET_TICKER = "49615"
     }
 }

@@ -27,6 +27,7 @@ import com.tokopedia.shopdiscount.info.presentation.viewmodel.ShopDiscountSeller
 import com.tokopedia.shopdiscount.info.presentation.widget.ShopDiscountSellerInfoSectionView
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -45,6 +46,8 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var tracker: ShopDiscountTracker
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy {
         viewModelProvider.get(
@@ -104,6 +107,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             val tickerAdapter = TickerPagerAdapter(activity ?: return, remoteTickers)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    sendClickEduArticleSellerInfoBottomSheetTracker()
                     routeToUrl(linkUrl.toString())
                 }
             })
@@ -111,6 +115,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             tickerInfo?.addPagerView(tickerAdapter, remoteTickers)
             tickerInfo?.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    sendClickEduArticleSellerInfoBottomSheetTracker()
                     routeToUrl(linkUrl.toString())
                 }
 
@@ -118,6 +123,11 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
                 }
             })
         }
+    }
+
+    private fun sendClickEduArticleSellerInfoBottomSheetTracker() {
+        tracker.sendClickEduArticleSellerInfoBottomSheetEvent()
+
     }
 
     private fun redirectLink(linkUrl: CharSequence) {
