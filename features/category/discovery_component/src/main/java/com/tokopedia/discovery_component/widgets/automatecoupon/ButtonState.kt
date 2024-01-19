@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon
+package com.tokopedia.discovery_component.widgets.automatecoupon
 
 sealed class ButtonState(
     open val text: String,

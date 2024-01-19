@@ -1,10 +1,10 @@
-package com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon
+package com.tokopedia.discovery_component.widgets.automatecoupon
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.discovery2.databinding.BadgeLayoutBinding
+import com.tokopedia.discovery_component.databinding.BadgeLayoutBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 

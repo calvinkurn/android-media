@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon
+package com.tokopedia.discovery_component.widgets.automatecoupon
 
 import android.content.Context
 import android.graphics.Canvas

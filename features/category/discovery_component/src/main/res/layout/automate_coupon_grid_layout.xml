@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.BadgeView
+        <com.tokopedia.discovery_component.widgets.automatecoupon.BadgeView
             android:id="@+id/remainingBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView
+        <com.tokopedia.discovery_component.widgets.automatecoupon.CouponCardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="170dp"
@@ -48,7 +48,7 @@
                     android:id="@+id/shopLogoBorder"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
-                    android:background="@drawable/shop_card_shop_border_image"
+                    android:background="@drawable/icon_border"
                     app:layout_constraintBottom_toBottomOf="@id/imgShopLogo"
                     app:layout_constraintEnd_toEndOf="@id/imgShopLogo"
                     app:layout_constraintStart_toStartOf="@id/imgShopLogo"
@@ -61,7 +61,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/shop_card_shop_border_image"
+                    android:background="@drawable/icon_border"
                     android:gravity="center"
                     android:scaleType="fitXY"
                     app:layout_constraintDimensionRatio="H,1:1"
@@ -149,6 +149,6 @@
                     app:unifyButtonVariant="ghost" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView>
+        </com.tokopedia.discovery_component.widgets.automatecoupon.CouponCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>
