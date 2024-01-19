@@ -8,7 +8,6 @@ import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
-import androidx.core.view.updateLayoutParams
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -57,11 +56,9 @@ internal class ReimagineGridViewStrategy(
     private fun init(attrs: AttributeSet? = null) {
         View.inflate(context, R.layout.product_card_reimagine_grid_layout, productCardView)
 
-        cardContainer?.run {
-            updateLayoutParams {
-                CompatPaddingUtils(context,this, attrs).updateMargin()
-            }
+        CompatPaddingUtils(context, productCardView.layoutParams, attrs).updateMargin()
 
+        cardContainer?.run {
             elevation = 0f
             radius = 0f
 

@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.experiments.GridViewStrategy
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.productcard.utils.getPixel
+import com.tokopedia.productcard.R as productcardR
 
 internal class CompatPaddingUtils(
     private val context: Context?,
@@ -18,7 +18,9 @@ internal class CompatPaddingUtils(
         if (layoutParams !is MarginLayoutParams || !useCompatPadding()) return
 
         layoutParams.run {
-            val additionalMarginPx = ADDITIONAL_MARGIN_DP.toPx()
+            val additionalMarginPx = context.getPixel(
+                productcardR.dimen.product_card_reimagine_use_compat_padding_size
+            )
             marginStart += additionalMarginPx
             leftMargin += additionalMarginPx
 

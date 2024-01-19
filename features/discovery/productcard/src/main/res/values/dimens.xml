@@ -175,6 +175,7 @@
     <dimen name="product_card_reimagine_list_carousel_width">300dp</dimen>
     <dimen name="product_card_reimagine_carousel_padding_bottom">6dp</dimen>
     <dimen name="product_card_reimagine_list_carousel_image_size">100dp</dimen>
+    <dimen name="product_card_reimagine_use_compat_padding_size">4dp</dimen>
 
     <dimen name="product_card_reimagine_image_radius">4dp</dimen>
     <dimen name="product_card_reimagine_name_image_margin_top">6dp</dimen>

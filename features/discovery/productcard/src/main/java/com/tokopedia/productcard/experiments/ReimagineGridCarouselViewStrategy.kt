@@ -53,12 +53,10 @@ internal class ReimagineGridCarouselViewStrategy(
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
         View.inflate(context, R.layout.product_card_reimagine_grid_carousel_layout, productCardView)
 
-        cardContainer?.run {
-            updateLayoutParams {
-                height = MATCH_PARENT
+        CompatPaddingUtils(context, productCardView.layoutParams, attrs).updateMargin()
 
-                CompatPaddingUtils(context,this, attrs).updateMargin()
-            }
+        cardContainer?.run {
+            updateLayoutParams { height = MATCH_PARENT }
             elevation = 0f
             radius = 0f
 

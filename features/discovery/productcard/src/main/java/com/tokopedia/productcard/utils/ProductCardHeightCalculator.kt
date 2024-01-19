@@ -20,11 +20,15 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(
     coroutineDispatcher: CoroutineDispatcher,
     productImageWidth: Int,
     isReimagine: Boolean = false,
+    useCompatPadding: Boolean = false,
 ): Int {
     if (this == null || context == null) return 0
 
     return if (isReimagine && ProductCardExperiment.isReimagine())
-        map(ProductCardModelReimagine::from).getMaxHeightForGridCarouselView(context)
+        map(ProductCardModelReimagine::from).getMaxHeightForGridCarouselView(
+            context = context,
+            useCompatPadding = useCompatPadding,
+        )
     else
         nonReimagineGridViewHeight(context, coroutineDispatcher, productImageWidth)
 }
@@ -110,11 +114,15 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(
     context: Context?,
     coroutineDispatcher: CoroutineDispatcher,
     isReimagine: Boolean = false,
+    useCompatPadding: Boolean = false,
 ): Int {
     if (this == null || context == null) return 0
 
     return if (isReimagine && ProductCardExperiment.isReimagine())
-        map(ProductCardModelReimagine::from).getMaxHeightForListCarouselView(context)
+        map(ProductCardModelReimagine::from).getMaxHeightForListCarouselView(
+            context = context,
+            useCompatPadding = useCompatPadding,
+        )
     else
         nonReimagineListViewHeight(context, coroutineDispatcher)
 }
