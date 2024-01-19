@@ -9,6 +9,8 @@ import kotlin.math.atan2
 
 open class MyGestureListener {
 
+    private var percentageDx = 0.0f
+    private var percentageDy = 0.0f
 
     fun getDirection(x1: Float, y1: Float?, x2: Float, y2: Float): Direction {
         val angle: Double = getAngle(x1, y1, x2, y2)
@@ -25,11 +27,10 @@ open class MyGestureListener {
     }
 
     fun getSlicePercent(x1: Float, y1: Float?, x2: Float, y2: Float, maxX: Int, maxY: Int, direction: Direction): Boolean {
-        val dx = abs(x1 - x2).toInt()
         var dy = 0
         var isSliced = false
         y1?.let {
-            dy = abs(y1 - y2).toInt()
+            dy = abs(it - y2).toInt()
             isSliced = isSlicedInRange(x1, y1, x2, y2, maxX, maxY, direction)
         }
         return isSliced
@@ -55,8 +56,8 @@ open class MyGestureListener {
 
         val dy = abs(y2 - y1)
         val dx = abs(x1 - x2)
-        val percentageDy = (dy.div(maxY)).times(100)
-        val percentageDx = (dx.div(maxX)).times(100)
+        percentageDy = (dy.div(maxY)).times(100)
+        percentageDx = (dx.div(maxX)).times(100)
         val isInRange = slicedInRange(percentageX1, percentageY1, percentageX2, percentageY2, direction)
         Log.d("Percentage->", "x1 = $percentageX1, y1 = $percentageY1, x2 = $percentageX2, y2 = $percentageY2")
         Log.d("Percentage->>>", "dx = $percentageDx, dy = $percentageDy")
@@ -69,6 +70,10 @@ open class MyGestureListener {
             else isInRange
         }
         return false
+    }
+
+    fun getGesturePercent(): Pair<Float, Float> {
+        return Pair(percentageDx, percentageDy)
     }
 
     private fun isHorizontalCut(direction: Direction, percentageY1: Float, percentageY2: Float): Boolean {

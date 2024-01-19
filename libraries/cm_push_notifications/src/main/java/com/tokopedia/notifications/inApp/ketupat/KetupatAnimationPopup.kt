@@ -5,18 +5,19 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Point
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.RenderMode
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.notifications.R
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.databinding.LayoutInappAnimationBinding
 import com.tokopedia.notifications.domain.data.PopUpContent
 import kotlinx.android.synthetic.main.layout_inapp_animation.view.*
@@ -29,23 +30,35 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private val binding =
        LayoutInappAnimationBinding.inflate(layoutInflater, this, true)
     private var eventSlicingStart: MotionEvent? = null
+    private var myGestureListener = MyGestureListener()
     private var eventSlicingEnd: MotionEvent? = null
     private val animationPopupGtmTracker = AnimationPopupGtmTracker()
-    private var crackCouponHandler = CrackCouponHandler(binding, layoutInflater, animationPopupGtmTracker)
-    private var soundURL = ""
-    private var isCouponCracked = false
+    private var crackCouponHandler = CrackCouponHandler(binding, layoutInflater, animationPopupGtmTracker, activity)
+    private var slug: String? = ""
 
     open fun loadLottieAnimation(slug: String?, popUpContent: PopUpContent) {
+        try {
 //        loadAnimationFromURl(popUpContent)
-         handleLottieSlice()
-         binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
-         binding.lottieViewPopup.setMinFrame("Tutorial")
-         binding.lottieViewPopup.setMaxFrame(119)
-         onCloseClick(binding.root)
-         onParentContainerClick(binding.root)
-         onButtonShareClick(binding.root)
-         crackCouponHandler.getCouponData(slug)
-        animationPopupGtmTracker.sendPopupImpressionEvent()
+            this.slug = slug
+            handleLottieSlice()
+            binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
+            binding.lottieViewPopup.setMinFrame("Tutorial")
+            binding.lottieViewPopup.setMaxFrame(119)
+            onCloseClick(binding.root)
+            onParentContainerClick(binding.root)
+            onButtonShareClick(binding.root)
+            animationPopupGtmTracker.sendPopupImpressionEvent()
+        } catch (e: Exception) {
+            ServerLogger.log(
+                Priority.P2,
+                "KETUPAT_ANIMATION_POPUP",
+                mapOf(
+                    "type" to "exception",
+                    "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                    "data" to ""
+                )
+            )
+        }
     }
 
     private fun loadAnimationFromURl(popUpContent: PopUpContent) {
@@ -54,7 +67,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
             animationPopupGtmTracker.sendPopupImpressionEvent()
         }
         popUpContent.assets?.get(1)?.let {
-            soundURL = it.value.toString()
+            crackCouponHandler.url = it.value.toString()
         }
     }
 
@@ -82,68 +95,22 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private fun getDirection() {
         eventSlicingStart?.let {
             eventSlicingEnd?.let { it1 ->
-                val direction = MyGestureListener().getDirection(it.x, it.y, it1.x, it1.y)
+                val direction = myGestureListener.getDirection(it.x, it.y, it1.x, it1.y)
                 val mdisp = activity.windowManager.defaultDisplay
                 val mdispSize = Point()
                 mdisp.getSize(mdispSize)
-                val isSliced = MyGestureListener().getSlicePercent(it.x, it.y, it1.x, it1.y, mdispSize.x, mdispSize.y, direction)
-                if (isSliced && !isCouponCracked) {
-                    playAnimationInDirection(direction)
+                val isSliced = myGestureListener.getSlicePercent(it.x, it.y, it1.x, it1.y, mdispSize.x, mdispSize.y, direction)
+                if (isSliced && !crackCouponHandler.isCouponCracked()) {
+                    crackCouponHandler.getCouponData(slug, direction)
+                    binding.loaderCoupon.visible()
                 }
             }
             animationPopupGtmTracker.sendPopupInteractionEvent()
         }
     }
 
-    private fun playAnimationInDirection(direction: MyGestureListener.Direction) {
-        when(direction) {
-            MyGestureListener.Direction.up_right -> {
-                binding.lottieViewPopup.setMaxFrame(569)
-                binding.lottieViewPopup.setMinFrame(420)
-            }
-            MyGestureListener.Direction.up_left -> {
-                binding.lottieViewPopup.setMaxFrame(269)
-                binding.lottieViewPopup.setMinFrame(120)
-            }
-            MyGestureListener.Direction.down_left -> {
-                binding.lottieViewPopup.setMaxFrame(269)
-                binding.lottieViewPopup.setMinFrame(120)
-            }
-            MyGestureListener.Direction.down_right -> {
-                binding.lottieViewPopup.setMaxFrame(569)
-                binding.lottieViewPopup.setMinFrame(420)
-            }
-            MyGestureListener.Direction.horizontol -> {
-                binding.lottieViewPopup.setMaxFrame(419)
-                binding.lottieViewPopup.setMinFrame(270)
-            }
-            MyGestureListener.Direction.vertical -> {
-                binding.lottieViewPopup.setMaxFrame(719)
-                binding.lottieViewPopup.setMinFrame(570)
-            }
-            else -> {
-                binding.lottieViewPopup.setMaxFrame(269)
-                binding.lottieViewPopup.setMinFrame(120)
-            }
-        }
-        playPrizeSound(activity.applicationContext, soundURL)
-        binding.lottieViewPopup.loop(false)
-        couponAnimation()
-        couponButtonAnimation()
-        isCouponCracked = true
-    }
-
-    private fun playPrizeSound(context: Context?, url: String) {
-        var rewardSoundManager: AudioManager? = null
-        context?.let {
-            if (rewardSoundManager == null) {
-                rewardSoundManager = AudioFactory.createAudio(it)
-            }
-            rewardSoundManager?.playAudio(R.raw.gf_giftbox_prize)
-        }
-    }
-
     private fun onCloseClick(view: View) {
+        binding.icClose.visible()
         val onClickListener = OnClickListener { _: View? ->
             (view.parent as ViewGroup).removeView(view)
             animationPopupGtmTracker.sendPopupCloseEvent()
@@ -152,9 +119,12 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     }
 
     private fun onParentContainerClick(view: View) {
+        val (percentageDx, percentageDy) = myGestureListener.getGesturePercent()
         val onClickListener = OnClickListener { _: View? ->
-            (view.parent as ViewGroup).removeView(view)
-            animationPopupGtmTracker.sendPopupCloseEvent()
+            if (percentageDx < 8 || percentageDy < 8) {
+                (view.parent as ViewGroup).removeView(view)
+                animationPopupGtmTracker.sendPopupCloseEvent()
+            }
         }
         binding.parentContainer.setOnClickListener(onClickListener)
     }
@@ -165,22 +135,6 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
             animationPopupGtmTracker.sendCtaButtonClickEvent()
         }
         binding.ivButtonShare.setOnClickListener(onClickListener)
-    }
-
-    private fun couponAnimation() {
-        binding.couponContainer.visible()
-        val layout = binding.couponContainer
-        val anim: Animation = AnimationUtils.loadAnimation(activity, R.anim.coupon_scale)
-        layout.startAnimation(anim)
-        animationPopupGtmTracker.sendCouponImpressionEvent()
-    }
-
-    private fun couponButtonAnimation() {
-        binding.ivButtonShare.visible()
-        val layout = binding.ivButtonShare
-        val anim: Animation = AnimationUtils.loadAnimation(activity, R.anim.button_translate)
-        layout.startAnimation(anim)
-        animationPopupGtmTracker.sendCtaButtonImpressionEvent()
     }
 
 }

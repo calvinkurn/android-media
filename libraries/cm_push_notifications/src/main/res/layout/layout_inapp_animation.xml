@@ -40,8 +40,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/lottie_container">
-
     </LinearLayout>
+
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivButtonShare"
         android:layout_width="wrap_content"
@@ -50,16 +51,16 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coupon_container"
-        app:srcCompat="@drawable/buttonshare" />
+        app:layout_constraintTop_toBottomOf="@+id/coupon_container" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_close"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginEnd="44dp"
+        android:translationY="42dp"
         android:background="@drawable/ellipse"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:padding="2dp"
         app:icon_name="CLOSE"
         app:layout_constraintBottom_toTopOf="@id/lottie_container"
@@ -70,6 +71,17 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderCoupon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="invisible"
+        app:loader_type="circular_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
