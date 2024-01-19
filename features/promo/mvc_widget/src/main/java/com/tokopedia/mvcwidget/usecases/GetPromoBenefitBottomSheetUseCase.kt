@@ -1,13 +1,11 @@
 package com.tokopedia.mvcwidget.usecases
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mvcwidget.data.entity.PromoCatalogResponse
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class GetPromoBenefitBottomSheetUseCase @Inject constructor(
@@ -17,8 +15,6 @@ class GetPromoBenefitBottomSheetUseCase @Inject constructor(
 
     override suspend fun execute(params: String): PromoCatalogResponse {
         val param = mapOf("metaData" to params)
-        delay(500)
-//        return Gson().fromJson(responseSampleJson, PromoCatalogResponse::class.java)
         return repository.request(graphqlQuery(), param)
     }
 
