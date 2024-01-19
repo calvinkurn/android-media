@@ -13,6 +13,7 @@
         android:layout_marginEnd="1dp"
         app:reimagine="true"
         app:reimagine_template="grid"
+        app:useCompatPadding="true"
         />
 
     <com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsView
