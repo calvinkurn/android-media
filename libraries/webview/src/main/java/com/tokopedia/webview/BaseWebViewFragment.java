@@ -736,6 +736,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     class MyWebViewClient extends WebViewClient {
+        private Boolean isSmsRegistered = false;
         @Override
         public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
             super.doUpdateVisitedHistory(view, url, isReload);
@@ -787,10 +788,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (getContext() != null && url.contains("/paylater") && !url.contains("otpCode")) {
                 Toast.makeText(getContext(), "Start listening SMS", Toast.LENGTH_SHORT).show();
 
-                smsRetriever.startSmsRetriever();
 
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), "registered", Toast.LENGTH_SHORT).show();
+                if (getContext() != null && !isSmsRegistered) {
+                    smsRetriever.startSmsRetriever();
+                    isSmsRegistered = true;
                     smsBroadcastReceiver.register(getContext(), otpCode -> {
                         String currentUrl = webView.getUrl();
 

@@ -8,14 +8,13 @@ import android.widget.Toast
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
-import com.tokopedia.kotlin.extensions.view.orZero
-import javax.inject.Inject
 
-class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
+class SmsBroadcastReceiver: BroadcastReceiver() {
 
     private lateinit var listener: ReceiveSMSListener
 
     fun register(context: Context, listener: ReceiveSMSListener) {
+        Toast.makeText(context, "registered", Toast.LENGTH_SHORT).show()
         this.listener = listener
         val filter = IntentFilter()
         filter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION)
