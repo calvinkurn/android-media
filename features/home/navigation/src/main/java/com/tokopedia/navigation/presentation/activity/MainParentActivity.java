@@ -1,21 +1,22 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
+import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_PARAM_TRUE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,8 +33,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -41,7 +40,6 @@ import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
@@ -70,6 +68,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
@@ -123,13 +122,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import rx.android.BuildConfig;
 
 /**
@@ -332,6 +328,7 @@ public class MainParentActivity extends BaseActivity implements
     private void initDownloadManagerDialog() {
         if (appDownloadManagerHelper == null) {
             appDownloadManagerHelper = new AppDownloadManagerHelper(new WeakReference(this));
+            setDownloadManagerParameter();
         }
     }
 
@@ -567,6 +564,7 @@ public class MainParentActivity extends BaseActivity implements
         checkAgeVerificationExtra(intent);
 
         setIntent(intent);
+        setDownloadManagerParameter();
         showSelectedPage();
         handleAppLinkBottomNavigation(false);
     }
@@ -849,6 +847,22 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    private void setDownloadManagerParameter() {
+        if (appDownloadManagerHelper != null) {
+            appDownloadManagerHelper.setIsTriggeredViaApplink(checkApplinkShowDownloadManager());
+        }
+    }
+
+
+    private boolean checkApplinkShowDownloadManager() {
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            String paramValue = uri.getQueryParameter(DOWNLOAD_MANAGER_APPLINK_PARAM);
+            return paramValue != null && paramValue.equalsIgnoreCase(DOWNLOAD_MANAGER_PARAM_TRUE);
+        }
+        return false;
+    }
+
     private void reloadPage(int position, boolean isJustLoggedIn) {
         boolean isPositionFeed = position == FEED_MENU;
         Intent intent = getIntent()
@@ -926,13 +940,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        if (bottomNavigation != null) {
-            if (notification.getHaveNewFeed()) {
-                Intent intent = new Intent(BROADCAST_FEED);
-                intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-            }
-        }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }
