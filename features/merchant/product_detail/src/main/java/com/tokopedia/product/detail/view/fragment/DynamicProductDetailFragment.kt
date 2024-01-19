@@ -877,6 +877,7 @@ open class DynamicProductDetailFragment :
         assignDeviceId()
         loadData()
         registerCallback(mediator = this)
+        initializeShareEx()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -3070,7 +3071,7 @@ open class DynamicProductDetailFragment :
 
             mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
 
-            handleShareInitialization(p2Data.shopInfo)
+            handleShareAdditionalCheck(p2Data.shopInfo)
 
             if (p2Data.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
                 DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(
@@ -3094,32 +3095,29 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun handleShareInitialization(shopInfo: ShopInfo) {
+    private fun handleShareAdditionalCheck(shopInfo: ShopInfo) {
         if (isUsingShareEx()) {
-            initializeShareEx(shopInfo)
+            additionalCheckShareEx(shopInfo)
         } else {
             checkAffiliateEligibility(shopInfo)
         }
     }
 
-    private fun initializeShareEx(shopInfo: ShopInfo) {
-        activity?.let { activity ->
-            viewModel.getDynamicProductInfoP1?.let { dataP1 ->
-                shareExInitializer = ShareExInitializer(activity)
-                if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
-                    shareExInitializer?.additionalCheck(
-                        generateShareExInitializerArg(
-                            dataP1,
-                            shopInfo,
-                            viewModel.variantData,
-                            onSuccess = {
-                                if (it.isEligibleAffiliate) {
-                                    updateToolbarShareAffiliate()
-                                }
+    private fun additionalCheckShareEx(shopInfo: ShopInfo) {
+        viewModel.getDynamicProductInfoP1?.let { dataP1 ->
+            if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+                shareExInitializer?.additionalCheck(
+                    generateShareExInitializerArg(
+                        dataP1,
+                        shopInfo,
+                        viewModel.variantData,
+                        onSuccess = {
+                            if (it.isEligibleAffiliate) {
+                                updateToolbarShareAffiliate()
                             }
-                        )
+                        }
                     )
-                }
+                )
             }
         }
     }
@@ -6373,6 +6371,14 @@ open class DynamicProductDetailFragment :
             component = component,
             trackingQueue = trackingQueue
         )
+    }
+
+    private fun initializeShareEx() {
+        if (isUsingShareEx()) {
+            activity?.let { activity ->
+                shareExInitializer = ShareExInitializer(activity)
+            }
+        }
     }
 
     /**
