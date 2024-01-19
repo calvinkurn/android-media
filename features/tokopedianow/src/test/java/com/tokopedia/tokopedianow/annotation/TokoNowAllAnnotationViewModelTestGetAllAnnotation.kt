@@ -6,7 +6,8 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.annotation.domain.mapper.AllAnnotationMapper.mapToAnnotationUiModels
 import com.tokopedia.tokopedianow.data.AllAnnotationDataFactory.createFirstPageData
 import com.tokopedia.tokopedianow.data.AllAnnotationDataFactory.createFirstPageLoadMoreData
-import com.tokopedia.tokopedianow.data.AllAnnotationDataFactory.createSecondPageLoadMoreData
+import com.tokopedia.tokopedianow.data.AllAnnotationDataFactory.createSecondPageHasLoadMoreData
+import com.tokopedia.tokopedianow.data.AllAnnotationDataFactory.createSecondPageNoLoadMoreData
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
@@ -109,7 +110,7 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
         viewModel.loadMore(
             categoryId = categoryId,
             annotationType = annotationType,
-            isAtTheBottomOfThePage = true
+            isLastVisibleLoadingMore = true
         )
 
         viewModel
@@ -118,38 +119,10 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
     }
 
     @Test
-    fun `when hitting all annotation query to load more should add load more ui model to the layout`() {
+    fun `when hitting all annotation query to load more then should add first and second page data with next page is true`() {
         val pageLastId = String.EMPTY
         val firstPageData = createFirstPageLoadMoreData()
-
-        stubGetAllAnnotation(
-            pageLastId = pageLastId,
-            response = firstPageData
-        )
-
-        viewModel.getFirstPage(
-            categoryId = categoryId,
-            annotationType = annotationType
-        )
-
-        verifyGetAllAnnotation(
-            pageLastId = pageLastId
-        )
-
-        viewModel.loadMore(
-            categoryId = categoryId,
-            annotationType = annotationType,
-            isAtTheBottomOfThePage = true
-        )
-
-        Assert.assertTrue(viewModel.loadMore.value?.last() is LoadingMoreModel)
-    }
-
-    @Test
-    fun `when hitting all annotation query to load more then should add first and second page data`() {
-        val pageLastId = String.EMPTY
-        val firstPageData = createFirstPageLoadMoreData()
-        val secondPageData = createSecondPageLoadMoreData()
+        val secondPageData = createSecondPageHasLoadMoreData()
         val expectedLayout = mutableListOf<Visitable<*>>()
 
         expectedLayout.addAll(firstPageData.mapToAnnotationUiModels() + secondPageData.mapToAnnotationUiModels())
@@ -181,18 +154,80 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
             response = secondPageData
         )
 
-        // add load more ui model
         viewModel.loadMore(
             categoryId = categoryId,
             annotationType = annotationType,
-            isAtTheBottomOfThePage = true
+            isLastVisibleLoadingMore = true
         )
 
-        // add more annotation data
+        verifyGetAllAnnotation(
+            pageLastId = firstPageData.pagination.pageLastID
+        )
+
+        Assert.assertTrue(viewModel.loadMore.value?.last() is LoadingMoreModel)
+    }
+
+    @Test
+    fun `when hitting all annotation query to load more but not yet getting first page should do nothing`() {
+        val firstPageData = createFirstPageLoadMoreData()
+        val secondPageData = createSecondPageHasLoadMoreData()
+
+        stubGetAllAnnotation(
+            pageLastId = firstPageData.pagination.pageLastID,
+            response = secondPageData
+        )
+
         viewModel.loadMore(
             categoryId = categoryId,
             annotationType = annotationType,
-            isAtTheBottomOfThePage = true
+            isLastVisibleLoadingMore = true
+        )
+
+        viewModel
+            .loadMore
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when hitting all annotation query to load more then should add first and second page data`() {
+        val pageLastId = String.EMPTY
+        val firstPageData = createFirstPageLoadMoreData()
+        val secondPageData = createSecondPageNoLoadMoreData()
+        val expectedLayout = mutableListOf<Visitable<*>>()
+
+        expectedLayout.addAll(firstPageData.mapToAnnotationUiModels() + secondPageData.mapToAnnotationUiModels())
+
+        /**
+         * get first page
+         */
+
+        stubGetAllAnnotation(
+            pageLastId = pageLastId,
+            response = firstPageData
+        )
+
+        viewModel.getFirstPage(
+            categoryId = categoryId,
+            annotationType = annotationType
+        )
+
+        verifyGetAllAnnotation(
+            pageLastId = pageLastId
+        )
+
+        /**
+         * load more
+         */
+
+        stubGetAllAnnotation(
+            pageLastId = firstPageData.pagination.pageLastID,
+            response = secondPageData
+        )
+
+        viewModel.loadMore(
+            categoryId = categoryId,
+            annotationType = annotationType,
+            isLastVisibleLoadingMore = true
         )
 
         verifyGetAllAnnotation(
@@ -208,7 +243,7 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
     fun `when hitting all annotation query to load more but annotation list is empty then should get the same data as before`() {
         val pageLastId = String.EMPTY
         val firstPageData = createFirstPageLoadMoreData()
-        val secondPageData = createSecondPageLoadMoreData(listOf())
+        val secondPageData = createSecondPageNoLoadMoreData(listOf())
         val expectedLayout = firstPageData.mapToAnnotationUiModels()
 
         /**
@@ -238,18 +273,10 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
             response = secondPageData
         )
 
-        // add load more ui model
         viewModel.loadMore(
             categoryId = categoryId,
             annotationType = annotationType,
-            isAtTheBottomOfThePage = true
-        )
-
-        // add more annotation data
-        viewModel.loadMore(
-            categoryId = categoryId,
-            annotationType = annotationType,
-            isAtTheBottomOfThePage = true
+            isLastVisibleLoadingMore = true
         )
 
         verifyGetAllAnnotation(
@@ -295,18 +322,10 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
             throwable = throwable
         )
 
-        // add load more ui model
         viewModel.loadMore(
             categoryId = categoryId,
             annotationType = annotationType,
-            isAtTheBottomOfThePage = true
-        )
-
-        // add more annotation data
-        viewModel.loadMore(
-            categoryId = categoryId,
-            annotationType = annotationType,
-            isAtTheBottomOfThePage = true
+            isLastVisibleLoadingMore = true
         )
 
         verifyGetAllAnnotation(
@@ -348,7 +367,7 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
         viewModel.loadMore(
             categoryId = categoryId,
             annotationType = annotationType,
-            isAtTheBottomOfThePage = false
+            isLastVisibleLoadingMore = false
         )
 
         viewModel
