@@ -2336,7 +2336,7 @@ open class SomListFragment :
                     .orEmpty(),
                 buttonText = context?.resources?.getString(R.string.btn_cek_peluang_non_topads)
                     .orEmpty(),
-                buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
+                buttonAppLink = ApplinkConst.SellerApp.TOPADS_CREATE_ADS,
                 showButton = true
             )
         } else if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
