@@ -34,6 +34,15 @@ class AutomateCouponGridView @JvmOverloads constructor(
         }
     }
 
+    override fun setState(state: ButtonState) {
+        binding.btnAction.text = state.text
+
+        when (state) {
+            ButtonState.OutOfStock -> disableActionButton()
+            else -> onClicked(state.action)
+        }
+    }
+
     //region private methods
     private fun renderDetails(model: AutomateCouponModel.Grid) {
         with(binding) {
@@ -79,6 +88,19 @@ class AutomateCouponGridView @JvmOverloads constructor(
 
     private fun renderBadge(badgeText: String?) {
         binding.remainingBadge.render(badgeText)
+    }
+
+    private fun disableActionButton() {
+        binding.btnAction.apply {
+            isInverse = false
+            isEnabled = false
+        }
+    }
+
+    private fun onClicked(action: () -> Unit) {
+        binding.btnAction.setOnClickListener {
+            action.invoke()
+        }
     }
 
     private fun Typography.render(dynamicColorText: DynamicColorText) {
