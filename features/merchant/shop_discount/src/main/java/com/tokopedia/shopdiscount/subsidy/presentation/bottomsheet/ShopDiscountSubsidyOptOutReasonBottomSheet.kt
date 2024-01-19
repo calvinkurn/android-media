@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -331,8 +333,40 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
     }
 
     private fun setDescriptionSection() {
-        textDescription?.movementMethod = LinkMovementMethod.getInstance()
-        textDescription?.text = getDescriptionText()
+        textDescription?.apply {
+            if (data.selectedProductToOptOut.isEmpty()) {
+                text = getString(R.string.sd_subsidy_opt_out_bottom_sheet_desc_no_product)
+            }else{
+                val htmlDescription = HtmlLinkHelper(
+                    context,
+                    getString(
+                        R.string.sd_subsidy_opt_out_bottom_sheet_desc_with_product,
+                        data.getCtaLink()
+                    )
+                )
+                movementMethod = LinkMovementMethod.getInstance()
+                text = htmlDescription.spannedString
+                htmlDescription.urlList.firstOrNull()?.setOnClickListener {
+                    sendClickEduArticleTracker()
+                    redirectToWebView(htmlDescription.urlList.firstOrNull()?.linkUrl.orEmpty())
+                }
+            }
+        }
+    }
+
+    private fun sendClickEduArticleTracker() {
+        tracker.sendClickEduArticleOptOutReasonBottomSheetEvent(data.entrySource.value)
+    }
+
+    private fun redirectToWebView(linkUrl: CharSequence) {
+        RouteManager.route(
+            context,
+            String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                linkUrl.toString()
+            )
+        )
     }
 
     private fun getDescriptionText(): CharSequence {
