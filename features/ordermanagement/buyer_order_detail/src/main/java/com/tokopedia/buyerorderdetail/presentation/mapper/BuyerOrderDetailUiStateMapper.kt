@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.mapper
 
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.EpharmacyInfoUiState
@@ -12,9 +13,9 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
+import org.json.JSONObject
 
 object BuyerOrderDetailUiStateMapper {
-    @Suppress("NAME_SHADOWING")
     fun map(
         actionButtonsUiState: ActionButtonsUiState,
         orderStatusUiState: OrderStatusUiState,
@@ -87,13 +88,56 @@ object BuyerOrderDetailUiStateMapper {
         } else if (productListUiState is ProductListUiState.Error) {
             BuyerOrderDetailUiState.Error(productListUiState.throwable)
         } else if (shipmentInfoUiState is ShipmentInfoUiState.Error) {
-            BuyerOrderDetailUiState.Error(shipmentInfoUiState.throwable) }
-        else if (epharmacyInfoUiState is EpharmacyInfoUiState.Error) {
+            BuyerOrderDetailUiState.Error(shipmentInfoUiState.throwable)
+        } else if (epharmacyInfoUiState is EpharmacyInfoUiState.Error) {
             BuyerOrderDetailUiState.Error(epharmacyInfoUiState.throwable)
         } else if (pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.Error) {
             BuyerOrderDetailUiState.Error(pgRecommendationWidgetUiState.throwable)
         } else {
             BuyerOrderDetailUiState.FullscreenLoading
+        }.logBreadcrumb(
+            actionButtonsUiState,
+            orderStatusUiState,
+            paymentInfoUiState,
+            productListUiState,
+            shipmentInfoUiState,
+            pgRecommendationWidgetUiState,
+            orderResolutionTicketStatusUiState,
+            orderInsuranceUiState,
+            epharmacyInfoUiState,
+            scpRewardsMedalTouchPointWidgetUiState,
+            savingsWidgetUiState
+        )
+    }
+
+    private fun BuyerOrderDetailUiState.logBreadcrumb(
+        actionButtonsUiState: ActionButtonsUiState,
+        orderStatusUiState: OrderStatusUiState,
+        paymentInfoUiState: PaymentInfoUiState,
+        productListUiState: ProductListUiState,
+        shipmentInfoUiState: ShipmentInfoUiState,
+        pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
+        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
+        orderInsuranceUiState: OrderInsuranceUiState,
+        epharmacyInfoUiState: EpharmacyInfoUiState,
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
+        savingsWidgetUiState: SavingsWidgetUiState
+    ) = also {
+        runCatching {
+            val json = JSONObject()
+            json.put("Button", actionButtonsUiState::class.java.simpleName)
+            json.put("Status", orderStatusUiState::class.java.simpleName)
+            json.put("Payment", paymentInfoUiState::class.java.simpleName)
+            json.put("Product", productListUiState::class.java.simpleName)
+            json.put("Shipment", shipmentInfoUiState::class.java.simpleName)
+            json.put("Recom", pgRecommendationWidgetUiState::class.java.simpleName)
+            json.put("Reso", orderResolutionTicketStatusUiState::class.java.simpleName)
+            json.put("Insurance", orderInsuranceUiState::class.java.simpleName)
+            json.put("Epharm", epharmacyInfoUiState::class.java.simpleName)
+            json.put("SCP", scpRewardsMedalTouchPointWidgetUiState::class.java.simpleName)
+            json.put("Saving", savingsWidgetUiState::class.java.simpleName)
+            json.put("Result", this::class.java.simpleName)
+            EmbraceMonitoring.logBreadcrumb(json.toString())
         }
     }
 }
