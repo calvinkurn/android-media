@@ -190,7 +190,7 @@ internal class FeedBrowseFragment @Inject constructor(
             item: AuthorWidgetModel,
             authorWidgetPosition: Int
         ) {
-            tracker.clickChannelCard(item, widgetModel.slotInfo, authorWidgetPosition)
+            tracker.clickAuthorChannelCard(item, widgetModel.slotInfo, authorWidgetPosition)
             router.route(context, item.contentAppLink)
         }
 
@@ -212,6 +212,7 @@ internal class FeedBrowseFragment @Inject constructor(
             item: StoryNodeModel,
             storyWidgetPosition: Int
         ) {
+            tracker.viewStoryWidget(item, widgetModel.slotInfo, storyWidgetPosition)
         }
 
         override fun onClicked(
@@ -220,6 +221,7 @@ internal class FeedBrowseFragment @Inject constructor(
             item: StoryNodeModel,
             storyWidgetPosition: Int
         ) {
+            tracker.clickStoryWidget(item, widgetModel.slotInfo, storyWidgetPosition)
             router.route(context, item.appLink)
         }
     }

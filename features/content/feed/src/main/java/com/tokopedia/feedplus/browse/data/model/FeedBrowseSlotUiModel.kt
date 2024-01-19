@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.browse.data.model
 
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
@@ -104,6 +105,7 @@ internal data class AuthorWidgetModel(
 internal data class StoryNodeModel(
     val id: String,
     val name: String,
+    val authorType: AuthorType,
     val thumbnailUrl: String,
     val hasUnseenStory: Boolean,
     val appLink: String,

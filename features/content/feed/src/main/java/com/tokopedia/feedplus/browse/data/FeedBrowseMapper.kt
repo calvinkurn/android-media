@@ -16,6 +16,7 @@ import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXHomeEntity
 import com.tokopedia.feedplus.data.GetContentWidgetRecommendationResponse
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayGridType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
@@ -176,7 +177,8 @@ class FeedBrowseMapper @Inject constructor() {
                     thumbnailUrl = it.image,
                     hasUnseenStory = it.isUnseenStoryExist,
                     appLink = it.appLink,
-                    lastUpdatedAt = System.currentTimeMillis()
+                    lastUpdatedAt = System.currentTimeMillis(),
+                    authorType = AuthorType.Shop
                 )
             },
             nextCursor = response.data.meta.nextCursor

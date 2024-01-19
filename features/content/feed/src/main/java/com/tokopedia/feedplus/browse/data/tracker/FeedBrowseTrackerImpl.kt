@@ -8,8 +8,10 @@ import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
+import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.play.widget.analytic.const.toTrackingType
 import com.tokopedia.play.widget.analytic.const.trackerMultiFields
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -282,7 +284,7 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
         )
     }
 
-    override fun clickChannelCard(
+    override fun clickAuthorChannelCard(
         item: AuthorWidgetModel,
         slotInfo: SlotInfo,
         widgetPositionInList: Int
@@ -377,6 +379,58 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
         )
     }
 
+    override fun viewStoryWidget(
+        item: StoryNodeModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
+    ) = impressionManager.impress(slotInfo.id, item) {
+        val widgetPosition = slotInfo.position + 1
+        val storiesPosition = widgetPositionInList + 1
+
+        sendEnhanceEcommerceEvent(
+            eventName = Event.viewItem,
+            eventAction = "view - stories entry point",
+            eventLabel = trackerMultiFields(
+                prefix,
+                item.id,
+                storiesPosition
+            ),
+            trackerId = "45746",
+            enhanceEcommerce = Key.promotions to Bundle().apply {
+                putString(Key.creativeName, widgetPosition.toString())
+                putString(Key.creativeSlot, storiesPosition.toString())
+                putString(Key.itemId, "${item.id} - ${item.authorType.trackerValue}")
+                putString(Key.itemName, "/ - $prefix - $widgetPosition - stories")
+            }
+        )
+    }
+
+    override fun clickStoryWidget(
+        item: StoryNodeModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
+    ) {
+        val widgetPosition = slotInfo.position + 1
+        val storiesPosition = widgetPositionInList + 1
+
+        sendEnhanceEcommerceEvent(
+            eventName = Event.viewItem,
+            eventAction = "click - stories entry point",
+            eventLabel = trackerMultiFields(
+                prefix,
+                item.id,
+                storiesPosition
+            ),
+            trackerId = "45747",
+            enhanceEcommerce = Key.promotions to Bundle().apply {
+                putString(Key.creativeName, widgetPosition.toString())
+                putString(Key.creativeSlot, storiesPosition.toString())
+                putString(Key.itemId, "${item.id} - ${item.authorType.trackerValue}")
+                putString(Key.itemName, "/ - $prefix - $widgetPosition - stories")
+            }
+        )
+    }
+
     private fun sendEnhanceEcommerceEvent(
         eventName: String,
         eventAction: String,
@@ -403,6 +457,12 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
                 putString(Key.userId, userSession.userId)
             }
         )
+    }
+
+    private val AuthorType.trackerValue get() = when (this) {
+        AuthorType.User -> "user"
+        AuthorType.Shop -> "shop"
+        else -> ""
     }
 
     companion object {

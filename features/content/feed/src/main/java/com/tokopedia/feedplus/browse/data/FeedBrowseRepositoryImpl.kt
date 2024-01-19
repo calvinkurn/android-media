@@ -12,6 +12,7 @@ import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.domain.usecase.GetContentWidgetRecommendationUseCase
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.kotlin.extensions.view.isEven
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.stories.internal.storage.StoriesSeenStorage
@@ -155,7 +156,8 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                     thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/tPxBYm/2023/8/1/0fc7d4e1-c812-4bbf-8e73-45ccb3661c84.jpg",
                     hasUnseenStory = it.isEven(),
                     appLink = "tokopedia://stories/shop/16511314",
-                    lastUpdatedAt = System.currentTimeMillis()
+                    lastUpdatedAt = System.currentTimeMillis(),
+                    authorType = AuthorType.Shop
                 )
             },
             nextCursor = ""
