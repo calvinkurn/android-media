@@ -113,5 +113,5 @@ data class ProductContentMainData(
         get() = hasCampaign && campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN
 
     val hasOngoingCampaign
-        get() = !hasThematicCampaign
+        get() = hasCampaign && campaign.campaignIdentifier != CampaignRibbon.THEMATIC_CAMPAIGN
 }

@@ -32,7 +32,7 @@ data class OngoingCampaignUiModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         if (newData !is OngoingCampaignUiModel) return null
-        val showTradeInChanged = shouldShowTradeIn != newData.shouldShowCampaign
+        val showTradeInChanged = shouldShowTradeIn != newData.shouldShowTradeIn
 
         return if (showTradeInChanged) {
             Bundle().apply {

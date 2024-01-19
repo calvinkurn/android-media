@@ -298,6 +298,24 @@ class CampaignRibbon @JvmOverloads constructor(
             campaignRibbonCompose.hide()
         }
     }
+
+    private fun switchUiComposeToLegacy() {
+        _rootBinding?.apply {
+            showCampaignType1(show = true)
+            showCampaignType2(show = true)
+            showCampaignType3(show = true)
+            campaignRibbonCompose.hide()
+        }
+    }
+
+    private fun switchUiLegacyToCompose() {
+        _rootBinding?.apply {
+            campaignRibbonCompose.show()
+            showCampaignType1(show = false)
+            showCampaignType2(show = false)
+            showCampaignType3(show = false)
+        }
+    }
     // endregion ongoing campaign legacy
 
     /**
@@ -509,6 +527,8 @@ class CampaignRibbon @JvmOverloads constructor(
      * Ongoing Campaign Compose
      */
     private fun renderOngoingCampaign(data: CampaignModular, stockWording: String) {
+        switchUiLegacyToCompose()
+
         val onGoingCampaign = OngoingCampaignComposeUiModel(
             logoUrl = data.campaignLogo,
             title = data.campaignTypeName,
@@ -531,8 +551,10 @@ class CampaignRibbon @JvmOverloads constructor(
      */
     private fun renderThematicCampaign(data: ThematicCampaign) {
         if (thematicComposeActive) {
+            switchUiLegacyToCompose()
             renderThematicCampaignCompose(thematic = data)
         } else {
+            switchUiComposeToLegacy()
             renderThematicCampaignRibbon(thematic = data)
         }
     }
@@ -561,8 +583,10 @@ class CampaignRibbon @JvmOverloads constructor(
      */
     private fun renderUpComingCampaignRibbon(upComing: UpcomingCampaignUiModel) {
         if (upcomingComposeActive) {
+            switchUiLegacyToCompose()
             renderUpcomingCampaignCompose(data = upComing)
         } else {
+            switchUiComposeToLegacy()
             renderUpcomingCampaignView(upComing)
         }
     }
@@ -605,8 +629,10 @@ class CampaignRibbon @JvmOverloads constructor(
      */
     fun updateRemindMeButton(upComingData: UpcomingCampaignUiModel) {
         if (upcomingComposeActive) {
+            switchUiLegacyToCompose()
             renderUpcomingCampaignCompose(data = upComingData)
         } else {
+            switchUiComposeToLegacy()
             updateRemindMeButtonView(upComingData)
         }
     }
