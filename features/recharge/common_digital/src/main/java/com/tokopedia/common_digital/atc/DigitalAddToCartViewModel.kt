@@ -69,7 +69,9 @@ class DigitalAddToCartViewModel @Inject constructor(
                         }
                         if (it.atcError != null) {
                             resetAtcMultiCheckoutParam()
-                            _errorAtc.postValue(it.atcError)
+                            it.atcError?.let { atcError ->
+                                _errorAtc.postValue(atcError)
+                            }
                         } else {
                             if (atcMultiCheckoutParam.isNotEmpty()) {
                                 resetAtcMultiCheckoutParam()
