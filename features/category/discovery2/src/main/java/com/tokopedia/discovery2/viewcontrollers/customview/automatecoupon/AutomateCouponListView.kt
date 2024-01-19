@@ -78,12 +78,12 @@ class AutomateCouponListView @JvmOverloads constructor(
     }
 
     private fun TimeLimit.showExpiredInfo() {
-        when (availableFormat) {
-            TimeLimit.AvailableFormat.TIMER -> {
+        when (this) {
+            is TimeLimit.Timer -> {
                 endDate?.showTimer()
             }
 
-            TimeLimit.AvailableFormat.TEXT -> {
+            is TimeLimit.Text -> {
                 showTimeLimit(endText)
             }
         }
