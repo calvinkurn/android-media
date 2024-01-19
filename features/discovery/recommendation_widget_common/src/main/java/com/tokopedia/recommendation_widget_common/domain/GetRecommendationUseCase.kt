@@ -5,7 +5,9 @@ import android.text.TextUtils
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -79,6 +81,7 @@ constructor(
         params.putString(PAGE_NAME, pageName)
         params.putString(PRODUCT_IDS, productIdsString)
         params.putString(QUERY_PARAM, newQueryParam)
+        params.putInt(PARAM_CARD_REIMAGINE, getProductCardReimagineVersion())
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         return params
     }
@@ -125,6 +128,14 @@ constructor(
         return params
     }
 
+    private fun getProductCardReimagineVersion(): Int {
+        return if (ProductCardExperiment.isReimagine()) {
+            CARD_REIMAGINE_VERSION
+        } else {
+            CARD_REVERT_VERSION
+        }
+    }
+
     companion object {
         const val USER_ID = "userID"
         const val X_SOURCE = "xSource"
@@ -140,5 +151,9 @@ constructor(
         const val OS = "os"
         const val CATEGORY_IDS = "categoryIDs"
         private const val PARAM_TOKONOW = "tokoNow"
+        private const val PARAM_CARD_REIMAGINE = "productCardVersion"
+
+        private const val CARD_REIMAGINE_VERSION = 5
+        private const val CARD_REVERT_VERSION = 0
     }
 }
