@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -19,6 +20,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.AddToCartButton
+import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
 import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType.GridCarousel
@@ -54,7 +56,11 @@ internal class ReimagineGridCarouselViewStrategy(
         View.inflate(context, R.layout.product_card_reimagine_grid_carousel_layout, productCardView)
 
         cardContainer?.run {
-            layoutParams = layoutParams?.apply { height = MATCH_PARENT }
+            updateLayoutParams {
+                height = MATCH_PARENT
+
+                CompatPaddingUtils(context,this, attrs).updateMargin()
+            }
             elevation = 0f
             radius = 0f
 
