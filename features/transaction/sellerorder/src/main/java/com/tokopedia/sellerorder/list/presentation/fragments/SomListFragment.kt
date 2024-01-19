@@ -29,7 +29,6 @@ import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PARAM_SEARCH
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
@@ -2336,7 +2335,7 @@ open class SomListFragment :
                     .orEmpty(),
                 buttonText = context?.resources?.getString(R.string.btn_cek_peluang_non_topads)
                     .orEmpty(),
-                buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
+                buttonAppLink = ApplinkConst.SellerApp.TOPADS_CREATE_ADS,
                 showButton = true
             )
         } else if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
