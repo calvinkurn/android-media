@@ -1540,21 +1540,21 @@ class ShopHomeViewModelTest {
             mockkObject(ShopPageHomeMapper)
             every {
                 ShopPageHomeMapper.mapToListShopHomeWidget(
-                    any(),
-                    any(),
-                    any(),
-                    false,
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
+                    responseWidgetData =any(),
+                    myShop =any(),
+                    isLoggedIn =any(),
+                    isEnableDirectPurchase = any(),
+                    shopId =any(),
+                    listWidgetLayout =any(),
+                    isOverrideTheme =any(),
+                    colorSchema = any()
+                    )
                 )
             } returns listOf(
                 ShopHomeCarousellProductUiModel(widgetId = "1")
             )
             viewModel.getWidgetContentData(
-                listOf(
+                listWidgetLayout = listOf(
                     ShopPageWidgetUiModel(
                         widgetId = "1"
                     ),
@@ -1562,12 +1562,11 @@ class ShopHomeViewModelTest {
                         widgetId = "2"
                     )
                 ),
-                mockShopId,
-                addressWidgetData,
-                false,
-                mockIsDirectPurchaseTrue,
-                false,
-                mockShopPageColorSchema
+                shopId = mockShopId,
+                widgetUserAddressLocalData = addressWidgetData,
+                isEnableDirectPurchase = mockIsDirectPurchaseTrue,
+                isOverrideTheme = false,
+                colorSchema = mockShopPageColorSchema
             )
             assert(shopHomeWidgetContentData.await() is Success)
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.isNotEmpty() == true)
@@ -1607,34 +1606,33 @@ class ShopHomeViewModelTest {
             mockkObject(ShopPageHomeMapper)
             every {
                 ShopPageHomeMapper.mapToListShopHomeWidget(
-                    any(),
-                    any(),
-                    any(),
-                    false,
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
+                    responseWidgetData =any(),
+                    myShop =any(),
+                    isLoggedIn =any(),
+                    isEnableDirectPurchase = any(),
+                    shopId =any(),
+                    listWidgetLayout =any(),
+                    isOverrideTheme =any(),
+                    colorSchema = any()
+                    )
                 )
             } returns listOf(
                 resultWidget
             )
 
             viewModel.getWidgetContentData(
-                listOf(
+                listWidgetLayout = listOf(
                     ShopPageWidgetUiModel(
                         widgetId = widgetId,
                         widgetType = widgetType,
                         widgetName = widgetName
                     )
                 ),
-                mockShopId,
-                addressWidgetData,
-                false,
-                mockIsDirectPurchaseTrue,
-                false,
-                mockShopPageColorSchema
+                shopId = mockShopId,
+                widgetUserAddressLocalData = addressWidgetData,
+                isEnableDirectPurchase = mockIsDirectPurchaseTrue,
+                isOverrideTheme = false,
+                colorSchema = mockShopPageColorSchema
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == resultWidget)
         }
@@ -1653,34 +1651,33 @@ class ShopHomeViewModelTest {
             mockkObject(ShopPageHomeMapper)
             every {
                 ShopPageHomeMapper.mapToListShopHomeWidget(
-                    any(),
-                    any(),
-                    any(),
-                    false,
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
+                    responseWidgetData =any(),
+                    myShop =any(),
+                    isLoggedIn =any(),
+                    isEnableDirectPurchase = any(),
+                    shopId =any(),
+                    listWidgetLayout =any(),
+                    isOverrideTheme =any(),
+                    colorSchema = any()
+                    )
                 )
             } returns listOf(
                 ProductCardUiModel()
             )
 
             viewModel.getWidgetContentData(
-                listOf(
+                listWidgetLayout = listOf(
                     ShopPageWidgetUiModel(
                         widgetId = "2",
                         widgetType = WidgetTypeEnum.CAMPAIGN.value,
                         widgetName = WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value
                     )
                 ),
-                mockShopId,
-                addressWidgetData,
-                false,
-                mockIsDirectPurchaseTrue,
-                false,
-                mockShopPageColorSchema
+                shopId = mockShopId,
+                widgetUserAddressLocalData = addressWidgetData,
+                isEnableDirectPurchase = mockIsDirectPurchaseTrue,
+                isOverrideTheme = false,
+                colorSchema = mockShopPageColorSchema
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == null)
         }
@@ -1699,13 +1696,12 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } throws Exception()
             viewModel.getWidgetContentData(
-                listOf(ShopPageWidgetUiModel()),
-                mockShopId,
-                addressWidgetData,
-                false,
-                mockIsDirectPurchaseTrue,
-                false,
-                mockShopPageColorSchema
+                listWidgetLayout = listOf(ShopPageWidgetUiModel()),
+                shopId = mockShopId,
+                widgetUserAddressLocalData = addressWidgetData,
+                isEnableDirectPurchase = mockIsDirectPurchaseTrue,
+                isOverrideTheme = false,
+                colorSchema = mockShopPageColorSchema
             )
             assert(shopHomeWidgetContentData.await() is Fail)
             assert(shopHomeWidgetContentDataError.await().isNotEmpty())

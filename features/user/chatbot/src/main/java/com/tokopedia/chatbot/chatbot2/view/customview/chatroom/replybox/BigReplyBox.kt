@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.view.customview.chatroom
+package com.tokopedia.chatbot.chatbot2.view.customview.chatroom.replybox
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.SlowModeSendButton
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -16,10 +17,11 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
 
     private var replyBox: CardUnify? = null
     private var addAttachmentMenu: ImageView? = null
-    private var sendButton: ImageView? = null
     private var parentLayout: ConstraintLayout? = null
     private var isSendButtonEnabled: Boolean = true
     private var replyBoxText: com.tokopedia.unifyprinciples.Typography? = null
+    var sendButton: SlowModeSendButton? = null
+        private set
 
     var sendButtonListener: ChatbotSendButtonListener? = null
     var replyBoxClickListener: ReplyBoxClickListener? = null
@@ -69,7 +71,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
 
     fun enableSendButton() {
         sendButtonListener?.enableSendButton()
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send)
+        sendButton?.enableSendButton()
         isSendButtonEnabled = true
     }
 
@@ -86,6 +88,6 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
     }
 
     companion object {
-        val LAYOUT = R.layout.customview_chatbot_big_reply_box
+        val LAYOUT = R.layout.customview_chatbot_big_reply_box_2
     }
 }
