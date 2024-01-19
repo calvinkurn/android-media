@@ -212,8 +212,8 @@
 
                 <ImageView
                     android:id='@+id/productCardNettPriceIcon'
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:layout_marginStart="4dp"
                     android:layout_alignParentStart="true"
                     android:layout_alignTop="@id/productCardNettPrice"
@@ -384,6 +384,13 @@
                     tools:text="Shop Name" />
 
             </LinearLayout>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/productCardBarrierFooter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="productCardMediaAnchor,productCardShopSection"
+                app:barrierDirection="bottom" />
 
             <ImageView
                 android:id="@+id/productCardThreeDots"

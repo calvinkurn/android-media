@@ -3,6 +3,7 @@
     <declare-styleable name="ProductCardView">
         <attr name="fixedHeight" format="boolean" />
         <attr name="useViewStub" format="boolean" />
+        <attr name="forceWidth" format="dimension" />
 
         <attr name="reimagine" format="boolean" />
         <attr name="reimagine_template">

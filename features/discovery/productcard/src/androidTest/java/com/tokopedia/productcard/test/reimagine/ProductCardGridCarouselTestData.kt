@@ -18,7 +18,6 @@ import org.hamcrest.Matcher
 
 internal val productCardReimagineCarouselGridTestData =
     productCardReimagineTestData + listOf(
-        atc(),
         stockInfoTersedia(),
         stockInfoSegeraHabis(),
         ribbon(RED),
@@ -31,51 +30,6 @@ internal val productCardReimagineCarouselGridTestData =
         itemInBackground(),
         itemInBackgroundHasRibbonAndSlashedPriceInline(),
     )
-
-private fun atc(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = labelGroupBenefit()
-    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_CREDIBILITY,
-        title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
-    )
-    val shopBadge = ProductCardModel.ShopBadge(
-        imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name paling panjang",
-    )
-    val model = ProductCardModel(
-        imageUrl = productImageUrl,
-        name = longProductName,
-        price = "Rp79.000",
-        slashedPrice = "Rp100.000",
-        discountPercentage = 10,
-        labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel),
-        rating = "4.5",
-        shopBadge = shopBadge,
-        hasAddToCart = true,
-    )
-
-    val matcher = mapOf<Int, Matcher<View?>>(
-        R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
-        R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayed(),
-        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
-        R.id.productCardCredibility to isDisplayed(),
-        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
-        R.id.productCardRatingIcon to isDisplayed(),
-        R.id.productCardRating to isDisplayedWithText(model.rating),
-        R.id.productCardRatingDots to isDisplayed(),
-        R.id.productCardShopSection to isDisplayed(),
-        R.id.productCardShopBadge to isDisplayed(),
-        R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardAddToCart to isDisplayed(),
-    )
-
-    return Triple(model, matcher, "ATC")
-}
 
 private fun stockInfoTersedia(): ProductCardReimagineMatcher {
     val stockInfo = ProductCardModel.StockInfo(

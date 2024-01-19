@@ -19,13 +19,11 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.reimagine.AddToCartButton
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
 import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType.GridCarousel
 import com.tokopedia.productcard.reimagine.lazyView
-import com.tokopedia.productcard.reimagine.showView
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -55,12 +53,10 @@ internal class ReimagineGridCarouselViewStrategy(
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
         View.inflate(context, R.layout.product_card_reimagine_grid_carousel_layout, productCardView)
 
-        cardContainer?.run {
-            updateLayoutParams {
-                height = MATCH_PARENT
+        CompatPaddingUtils(context, productCardView.layoutParams, attrs).updateMargin()
 
-                CompatPaddingUtils(context,this, attrs).updateMargin()
-            }
+        cardContainer?.run {
+            updateLayoutParams { height = MATCH_PARENT }
             elevation = 0f
             radius = 0f
 
@@ -77,20 +73,11 @@ internal class ReimagineGridCarouselViewStrategy(
     fun setProductModel(productCardModel: ProductCardModelReimagine) {
         renderer.setProductModel(productCardModel)
 
-        renderAddToCart(productCardModel)
         stockInfo.render(productCardModel)
 
         renderGuidelineContent(productCardModel)
         setContainerProductHeightCard(productCardModel)
         renderOutlineProductCard(productCardModel)
-    }
-
-    private fun renderAddToCart(productCardModel: ProductCardModelReimagine) {
-        val cardConstraintLayout = cardConstraintLayout ?: return
-
-        productCardView.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
-            AddToCartButton(cardConstraintLayout)
-        }
     }
 
     private fun renderGuidelineContent(productCardModel: ProductCardModelReimagine) {
@@ -126,12 +113,7 @@ internal class ReimagineGridCarouselViewStrategy(
         val isInBackground = productCardModel.isInBackground
         val marginBottom = if (isInBackground) 0 else dimensMarginBottom
 
-        cardConstraintLayout?.run {
-            setPadding(0,0,0, marginBottom)
-            layoutParams = layoutParams?.apply {
-                height = if (isInBackground) MATCH_PARENT else WRAP_CONTENT
-            }
-        }
+        cardConstraintLayout?.setPadding(0,0,0, marginBottom)
     }
 
     override fun recycle() { }

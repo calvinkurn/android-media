@@ -1,23 +1,23 @@
 package com.tokopedia.productcard.test.reimagine
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.productCardGridCarouselHeight
-import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.productcard.test.R as productcardtestR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -83,6 +83,7 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         fun bind(productCardModel: ProductCardModel, description: String) {
             val productCardGridCarouselHeight =
                 productCardGridCarouselHeight(itemView.context, productCardModel)
+                    .plus(compatPaddingTopBottomMargin(true, itemView.context))
 
             productCardContainerCalculator?.layoutParams?.apply {
                 height = productCardGridCarouselHeight
@@ -94,20 +95,17 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
                 "$bindingAdapterPosition $description, " +
                 "\nHeight: $productCardGridCarouselHeight px; ${productCardGridCarouselHeight.toDp()} dp"
 
-            productCardView?.findViewById<CardUnify2?>(
-                productcardR.id.productCardCardUnifyContainer
-            )?.run {
-                layoutParams = layoutParams?.apply { height = WRAP_CONTENT }
-            }
-
             productCardView?.run {
-                layoutParams = layoutParams?.apply { height = WRAP_CONTENT }
-
                 setProductModel(productCardModel)
                 setOnClickListener { toast("Click") }
                 setAddToCartOnClickListener { toast("Click ATC") }
             }
         }
+
+        private fun compatPaddingTopBottomMargin(useCompatPadding: Boolean, context: Context?) =
+            if (useCompatPadding)
+                2 * context.getPixel(R.dimen.product_card_reimagine_use_compat_padding_size)
+            else 0
 
         private fun toast(message: String) {
             val toastMessage = "Position $bindingAdapterPosition, $message"

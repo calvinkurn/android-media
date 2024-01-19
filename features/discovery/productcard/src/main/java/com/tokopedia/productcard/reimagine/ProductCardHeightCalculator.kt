@@ -1,7 +1,8 @@
 package com.tokopedia.productcard.reimagine
 
 import android.content.Context
-import androidx.annotation.DimenRes
+import com.tokopedia.productcard.utils.getPixel
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,15 +13,20 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridCarouselView(
     context: Context?,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
     productImageWidth: Int = context.getPixel(productcardR.dimen.product_card_reimagine_grid_carousel_width),
+    useCompatPadding: Boolean = false,
 ): Int {
-    if (this == null || context == null) return 0
+    if (this == null || context == null || this.isEmpty()) return 0
 
     return withContext(coroutineDispatcher) {
-        val maxHeight = maxOfOrNull { productCardModel ->
-            productCardGridCarouselHeight(context, productCardModel, productImageWidth)
-        }?.toInt() ?: 0
+        val compatPaddingTopBottomMargin = compatPaddingTopBottomMargin(useCompatPadding, context)
+        val maxHeight = maxOf { productCardGridCarouselHeight(context, it, productImageWidth) }.toInt()
+            .plus(compatPaddingTopBottomMargin)
 
-        Timber.d("Product Card Grid Max Height: %s", maxHeight.toString())
+        Timber.d(
+            "Product Card Grid Max Height: %s; useCompatPadding: %s",
+            maxHeight.toString(),
+            useCompatPadding.toString(),
+        )
 
         maxHeight
     }
@@ -41,6 +47,7 @@ internal fun productCardGridCarouselHeight(
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
+        addToCartHeight(context, productCardModel),
     )
 
     val productCardHeight = productCardComponentHeightList.sum()
@@ -65,18 +72,30 @@ private fun gridCarouselNameHeight(context: Context?, productCardModel: ProductC
         .plus(labelAssignedValueAdditionalHeight(context, productCardModel))
 }
 
+private fun compatPaddingTopBottomMargin(useCompatPadding: Boolean, context: Context?) =
+    if (useCompatPadding)
+        2 * context.getPixel(productcardR.dimen.product_card_reimagine_use_compat_padding_size)
+    else 0
+
 suspend fun List<ProductCardModel>?.getMaxHeightForListCarouselView(
     context: Context?,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
+    useCompatPadding: Boolean = false,
 ): Int {
-    if (this == null || context == null) return 0
+    if (this == null || context == null || this.isEmpty()) return 0
 
     return withContext(coroutineDispatcher) {
-        val maxHeight = maxOfOrNull { productCardModel ->
-            productCardListCarouselHeight(context, productCardModel)
-        }?.toInt() ?: 0
+        val compatPaddingTopBottomMargin = compatPaddingTopBottomMargin(useCompatPadding, context)
 
-        Timber.d("Product Card List Max Height: %s", maxHeight.toString())
+        val maxHeight =
+            maxOf { productCardListCarouselHeight(context, it) }.toInt()
+                .plus(compatPaddingTopBottomMargin)
+
+        Timber.d(
+            "Product Card List Max Height: %s; useCompatPadding: %s",
+            maxHeight.toString(),
+            useCompatPadding.toString(),
+        )
 
         maxHeight
     }
@@ -97,6 +116,7 @@ internal fun productCardListCarouselHeight(
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
+        addToCartHeight(context, productCardModel),
     )
 
     val productCardComponentHeight = productCardComponentHeightList.sum()
@@ -134,6 +154,7 @@ private fun priceSectionHeight(context: Context?, productCardModel: ProductCardM
         context.getPixel(productcardR.dimen.product_card_reimagine_price_margin_top)
             .plus(priceHeight(context, productCardModel))
             .plus(nettPriceHeight(context, productCardModel))
+            .plus(1.toPx()) // Unknown missing 1px
 
     val discountSectionHeight =
         if (productCardModel.hasRibbon())
@@ -210,14 +231,14 @@ private fun credibilitySectionHeight(
     else 0
 }
 
-private fun shopSectionHeight(
-    context: Context?,
-    productCardModel: ProductCardModel
-): Int =
+private fun shopSectionHeight(context: Context?, productCardModel: ProductCardModel): Int =
     if (productCardModel.shopBadge.hasTitle())
         context.getPixel(productcardR.dimen.product_card_reimagine_shop_section_margin_top)
             .plus(context.getPixel(productcardR.dimen.product_card_reimagine_shop_section_height))
     else 0
 
-private fun Context?.getPixel(@DimenRes id: Int): Int =
-    this?.resources?.getDimensionPixelSize(id) ?: 0
+private fun addToCartHeight(context: Context?, productCardModel: ProductCardModel): Int =
+    if (productCardModel.hasAddToCart)
+        context.getPixel(productcardR.dimen.product_card_reimagine_button_atc_margin_top)
+            .plus(context.getPixel(productcardR.dimen.product_card_reimagine_button_atc_height))
+    else 0

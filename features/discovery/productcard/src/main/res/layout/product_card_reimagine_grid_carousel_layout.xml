@@ -22,7 +22,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id='@+id/productCardConstraintLayout'
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingBottom="@dimen/product_card_reimagine_carousel_padding_bottom">
 
             <androidx.constraintlayout.widget.Guideline
@@ -81,7 +81,7 @@
             <ImageView
                 android:id="@+id/productCardOverlay3"
                 android:layout_width="wrap_content"
-                android:layout_height="16dp"
+                android:layout_height="20dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardImage"
@@ -90,7 +90,7 @@
             <ImageView
                 android:id="@+id/productCardOverlay2"
                 android:layout_width="wrap_content"
-                android:layout_height="16dp"
+                android:layout_height="20dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardImage"
@@ -99,7 +99,7 @@
             <ImageView
                 android:id="@+id/productCardOverlay1"
                 android:layout_width="wrap_content"
-                android:layout_height="16dp"
+                android:layout_height="20dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardImage"
@@ -243,8 +243,8 @@
 
                 <ImageView
                     android:id='@+id/productCardNettPriceIcon'
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:layout_marginStart="4dp"
                     android:layout_alignParentStart="true"
                     android:layout_alignTop="@id/productCardNettPrice"

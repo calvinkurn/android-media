@@ -786,3 +786,6 @@ fun Label.forceLightGreen() {
 
     setBackgroundDrawable(drawable)
 }
+
+internal fun Context?.getPixel(@DimenRes id: Int): Int =
+    this?.resources?.getDimensionPixelSize(id) ?: 0

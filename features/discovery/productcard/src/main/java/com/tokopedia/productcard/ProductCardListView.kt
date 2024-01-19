@@ -26,12 +26,12 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         productCardStrategy = ProductCardStrategyFactory.listStrategy(this, attrs)
-        productCardStrategy.init(context)
+        productCardStrategy.init(context, attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         productCardStrategy = ProductCardStrategyFactory.listStrategy(this, attrs)
-        productCardStrategy.init(context)
+        productCardStrategy.init(context, attrs, defStyleAttr)
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {

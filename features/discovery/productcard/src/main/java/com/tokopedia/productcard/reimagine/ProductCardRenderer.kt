@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -41,6 +42,7 @@ internal class ProductCardRenderer(
     private val context = view.context
 
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
+    private val cardConstraintLayout by view.lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by view.lazyView<ImageView?>(R.id.productCardImage)
     private val labelOverlay = LabelOverlay(view)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
@@ -83,6 +85,7 @@ internal class ProductCardRenderer(
         renderShopSection(productCardModel)
         renderRibbon(productCardModel)
         renderSafeContent(productCardModel)
+        renderAddToCart(productCardModel)
     }
 
     private fun renderImage(productCardModel: ProductCardModel) {
@@ -336,12 +339,20 @@ internal class ProductCardRenderer(
 
         cardContainer?.layoutParams = cardContainer?.layoutParams?.apply {
             val marginLayoutParams = this as? ViewGroup.MarginLayoutParams
-            marginLayoutParams?.marginStart = (marginLayoutParams?.marginStart ?: 0) + marginStart
+            marginLayoutParams?.marginStart = marginStart
         }
     }
 
     private fun renderSafeContent(productCardModel: ProductCardModel) {
         safeGroup?.showWithCondition(productCardModel.isSafeProduct)
+    }
+
+    private fun renderAddToCart(productCardModel: ProductCardModel) {
+        val cardConstraintLayout = cardConstraintLayout ?: return
+
+        view.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
+            AddToCartButton(cardConstraintLayout, type.bottomViewId())
+        }
     }
 
     companion object {
