@@ -2,9 +2,9 @@ package com.tokopedia.content.product.preview.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -16,7 +16,7 @@ import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import javax.inject.Inject
-import com.tokopedia.content.product.preview.R as contentproductpreviewR
+
 
 class ProductPreviewActivity : BaseActivity() {
 
@@ -33,13 +33,8 @@ class ProductPreviewActivity : BaseActivity() {
         initFragmentFactory()
         super.onCreate(savedInstanceState)
         getData()
+        setStatusBar()
         setupViews()
-    }
-
-    override fun getTheme(): Resources.Theme {
-        val theme = super.getTheme()
-        theme.applyStyle(contentproductpreviewR.style.ProductPreview_Theme, true)
-        return theme
     }
 
     private fun inject() {
@@ -57,6 +52,13 @@ class ProductPreviewActivity : BaseActivity() {
             intent.extras?.getParcelable(PRODUCT_DATA)
         }
         productVideoLastDuration = intent.extras?.getLong(PRODUCT_LAST_VIDEO_DURATION, 0L)
+    }
+
+    private fun setStatusBar() {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
     }
 
     private fun setupViews() {

@@ -4,7 +4,8 @@
     <application>
         <activity
             android:name=".view.activity.ProductPreviewActivity"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/ProductPreview.Theme">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
