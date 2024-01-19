@@ -169,7 +169,6 @@
 /features/recharge/recharge_component                   @tokopedia/android-minionoscar-dev
 /features/recharge/recharge_credit_card                 @tokopedia/android-minionoscar-dev
 /features/recharge/recharge_general                     @tokopedia/android-minionoscar-dev
-/features/recharge/rechargeocr                          @tokopedia/android-minionoscar-dev
 /features/recharge/voucher_game                         @tokopedia/android-minionoscar-dev
 /features/recharge/recharge_pdp_emoney                  @tokopedia/android-minionoscar-dev
 /features/recharge/digital_product_detail               @tokopedia/android-minionoscar-dev
