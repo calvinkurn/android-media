@@ -56,7 +56,7 @@ internal class ReimagineGridViewStrategy(
     private fun init(attrs: AttributeSet? = null) {
         View.inflate(context, R.layout.product_card_reimagine_grid_layout, productCardView)
 
-        CompatPaddingUtils(context, productCardView.layoutParams, attrs).updateMargin()
+        CompatPaddingUtils(context, productCardView, attrs).updateMargin()
 
         cardContainer?.run {
             elevation = 0f

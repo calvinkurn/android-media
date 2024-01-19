@@ -43,7 +43,7 @@ internal class ReimagineListCarouselViewStrategy(
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
         View.inflate(context, R.layout.product_card_reimagine_list_carousel_layout, productCardView)
 
-        CompatPaddingUtils(context, productCardView.layoutParams, attrs).updateMargin()
+        CompatPaddingUtils(context, productCardView, attrs).updateMargin()
 
         cardContainer?.run {
             updateLayoutParams { height = MATCH_PARENT }
