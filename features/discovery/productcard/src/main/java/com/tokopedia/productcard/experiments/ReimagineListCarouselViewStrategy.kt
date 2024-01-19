@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.annotation.IdRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
 import androidx.core.view.updateLayoutParams
@@ -15,13 +15,11 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.reimagine.AddToCartButton
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
 import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.lazyView
-import com.tokopedia.productcard.reimagine.showView
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.productcard.reimagine.ProductCardModel.Companion as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -38,7 +36,6 @@ internal class ReimagineListCarouselViewStrategy(
     private val stockInfo = ProductCardStockInfo(productCardView)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
-    private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageView?>(R.id.productCardImage)
 
     override fun additionalMarginStart() = cardContainer?.marginStart ?: 0
@@ -48,7 +45,7 @@ internal class ReimagineListCarouselViewStrategy(
 
         cardContainer?.run {
             updateLayoutParams {
-                height = ViewGroup.LayoutParams.MATCH_PARENT
+                height = MATCH_PARENT
 
                 CompatPaddingUtils(context,this, attrs).updateMargin()
             }
@@ -69,16 +66,7 @@ internal class ReimagineListCarouselViewStrategy(
     fun setProductModel(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
         renderer.setProductModel(productCardModel)
 
-        renderAddToCart(productCardModel)
         stockInfo.render(productCardModel)
-    }
-
-    private fun renderAddToCart(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
-        val cardConstraintLayout = cardConstraintLayout ?: return
-
-        productCardView.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
-            AddToCartButton(cardConstraintLayout)
-        }
     }
 
     override fun recycle() { }

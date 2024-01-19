@@ -385,6 +385,13 @@
 
             </LinearLayout>
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/productCardBarrierFooter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="productCardMediaAnchor,productCardShopSection"
+                app:barrierDirection="bottom" />
+
             <ImageView
                 android:id="@+id/productCardThreeDots"
                 android:contentDescription="@string/content_desc_imageThreeDots"

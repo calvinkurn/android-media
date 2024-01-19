@@ -60,7 +60,7 @@
             <ImageView
                 android:id="@+id/productCardOverlay3"
                 android:layout_width="wrap_content"
-                android:layout_height="16dp"
+                android:layout_height="20dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardImage"
@@ -69,7 +69,7 @@
             <ImageView
                 android:id="@+id/productCardOverlay2"
                 android:layout_width="wrap_content"
-                android:layout_height="16dp"
+                android:layout_height="20dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardImage"
@@ -78,7 +78,7 @@
             <ImageView
                 android:id="@+id/productCardOverlay1"
                 android:layout_width="wrap_content"
-                android:layout_height="16dp"
+                android:layout_height="20dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardImage"
@@ -431,6 +431,13 @@
                     tools:text="Shop Name" />
 
             </LinearLayout>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/productCardBarrierFooter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="productCardImage,productCardStockInfoBackground,productCardShopSection"
+                app:barrierDirection="bottom" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

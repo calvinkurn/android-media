@@ -173,12 +173,12 @@
     <!-- Reimagine dimens -->
     <dimen name="product_card_reimagine_grid_carousel_width">132dp</dimen>
     <dimen name="product_card_reimagine_list_carousel_width">300dp</dimen>
-    <dimen name="product_card_reimagine_carousel_padding_bottom">8dp</dimen>
+    <dimen name="product_card_reimagine_carousel_padding_bottom">6dp</dimen>
     <dimen name="product_card_reimagine_list_carousel_image_size">100dp</dimen>
 
     <dimen name="product_card_reimagine_image_radius">4dp</dimen>
     <dimen name="product_card_reimagine_name_image_margin_top">6dp</dimen>
-    <dimen name="product_card_reimagine_name_1_line_height">18dp</dimen>
+    <dimen name="product_card_reimagine_name_1_line_height">21dp</dimen>
     <dimen name="product_card_reimagine_name_2_line_height">38dp</dimen>
     <dimen name="product_card_reimagine_label_assigned_value_additional_height">4dp</dimen>
     <dimen name="product_card_reimagine_price_margin_top">4dp</dimen>
@@ -201,5 +201,7 @@
     <dimen name="product_card_reimagine_nett_price_height">20dp</dimen>
     <dimen name="product_card_reimagine_safe_product_overlay_image_radius">8dp</dimen>
     <dimen name="product_card_reimagine_content_guideline_pading_in_background">8dp</dimen>
+    <dimen name="product_card_reimagine_button_atc_height">28dp</dimen>
+    <dimen name="product_card_reimagine_button_atc_margin_top">4dp</dimen>
 
 </resources>

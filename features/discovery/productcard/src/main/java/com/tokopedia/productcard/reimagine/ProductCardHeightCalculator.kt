@@ -1,7 +1,8 @@
 package com.tokopedia.productcard.reimagine
 
 import android.content.Context
-import androidx.annotation.DimenRes
+import com.tokopedia.productcard.utils.getPixel
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -41,6 +42,7 @@ internal fun productCardGridCarouselHeight(
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
+        addToCartHeight(context, productCardModel),
     )
 
     val productCardHeight = productCardComponentHeightList.sum()
@@ -97,6 +99,7 @@ internal fun productCardListCarouselHeight(
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
+        addToCartHeight(context, productCardModel),
     )
 
     val productCardComponentHeight = productCardComponentHeightList.sum()
@@ -134,6 +137,7 @@ private fun priceSectionHeight(context: Context?, productCardModel: ProductCardM
         context.getPixel(productcardR.dimen.product_card_reimagine_price_margin_top)
             .plus(priceHeight(context, productCardModel))
             .plus(nettPriceHeight(context, productCardModel))
+            .plus(1.toPx()) // Unknown missing 1px
 
     val discountSectionHeight =
         if (productCardModel.hasRibbon())
@@ -210,14 +214,14 @@ private fun credibilitySectionHeight(
     else 0
 }
 
-private fun shopSectionHeight(
-    context: Context?,
-    productCardModel: ProductCardModel
-): Int =
+private fun shopSectionHeight(context: Context?, productCardModel: ProductCardModel): Int =
     if (productCardModel.shopBadge.hasTitle())
         context.getPixel(productcardR.dimen.product_card_reimagine_shop_section_margin_top)
             .plus(context.getPixel(productcardR.dimen.product_card_reimagine_shop_section_height))
     else 0
 
-private fun Context?.getPixel(@DimenRes id: Int): Int =
-    this?.resources?.getDimensionPixelSize(id) ?: 0
+private fun addToCartHeight(context: Context?, productCardModel: ProductCardModel): Int =
+    if (productCardModel.hasAddToCart)
+        context.getPixel(productcardR.dimen.product_card_reimagine_button_atc_margin_top)
+            .plus(context.getPixel(productcardR.dimen.product_card_reimagine_button_atc_height))
+    else 0
