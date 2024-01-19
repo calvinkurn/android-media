@@ -693,20 +693,19 @@ class BCABalanceViewModel @Inject constructor(
                     bcaFlazzData
                 )
             } else if(result.status == BCAFlazzStatus.DONE.status){
-                errorCardMessageMutable.postValue(MessageErrorException(result.attributes.message))
-            } else {
                 errorCardMessageMutable.postValue(Pair(
-                        MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
-                        mapParamLogErrorNetworkFlazz(
+                    MessageErrorException(result.attributes.message),
+                    mapParamLogErrorNetworkFlazz(
                             cardNumber,
                             messageLogNR(
                                 TAG_PROCESS_BETWEEN_TOP_UP,
-                                ERROR_BETWEEN_TOP_UP
+                                result.attributes.message
                             ),
                             lastBalance
                         )
                     )
                 )
+            } else {
                 bcaInquiryMutable.postValue(
                     BCAFlazzResponseMapper.bcaMapper(
                         cardNumber,
@@ -1136,23 +1135,23 @@ class BCABalanceViewModel @Inject constructor(
         private const val SUCCESS_PREFIX = "0000"
         private const val PREFIX_SIZE = 4
         private const val RC_8303 = "8303"
-        private const val ERROR_MESSAGE_ISODEP = "ISODep Connection Issue"
-        private const val ERROR_BETWEEN_TOP_UP = "Done between top up not supposed to be happend"
-        private const val TAG_PROCESS_SDK_BCALASTBCATOP_UP = "PROCESS_SDK_BCALASTBCATOPUP"
-        private const val TAG_PROCESS_SDK_REVERSAL = "PROCESS_SDK_REVERSAL"
-        private const val TAG_PROCESS_REVERSAL = "PROCESS_REVERSAL"
-        private const val TAG_PROCESS_ACK = "PROCESS_ACK"
-        private const val TAG_PROCESS_SDK_TOP_UP_2 = "PROCESS_SDK_TOP_UP_2"
-        private const val TAG_PROCESS_BETWEEN_TOP_UP = "PROCESS_BETWEEN_TOP_UP"
-        private const val TAG_PROCESS_SDK_TOP_UP_1 = "PROCESS_SDK_TOP_UP_1"
-        private const val TAG_PROCESS_SDK_SESSION_2 = "PROCESS_SDK_SESSION_2"
-        private const val TAG_PROCESS_SESSION_KEY = "PROCESS_SESSION_KEY"
-        private const val ERROR_SESSION_CARD_DATA_EMPTY = "PROCESS_SESSION_CARD_DATA_EMPTY"
-        private const val TAG_PROCESS_SDK_SESSION_1 = "PROCESS_SDK_SESSION_1"
-        private const val TAG_PROCESS_TRANSACTION_ID = "PROCESS_TRANSACTION_ID"
-        private const val ERROR_TRANSACTION_ID_EMPTY = "TRANSACTION_ID_EMPTY"
-        private const val TAG_PROCESS_PENDING_BALANCE = "PROCESS_PENDING_BALANCE"
-        private const val TAG_PROCESS_PENDING_BALANCE_GEN_1 = "PROCESS_PENDING_BALANCE_GEN_1"
-        private const val TAG_PROCESS_PENDING_BALANCE_GEN_2 = "PROCESS_PENDING_BALANCE_GEN_2"
+        const val ERROR_MESSAGE_ISODEP = "ISODep Connection Issue"
+        const val ERROR_BETWEEN_TOP_UP = "Done between top up not supposed to be happend"
+        const val TAG_PROCESS_SDK_BCALASTBCATOP_UP = "PROCESS_SDK_BCALASTBCATOPUP"
+        const val TAG_PROCESS_SDK_REVERSAL = "PROCESS_SDK_REVERSAL"
+        const val TAG_PROCESS_REVERSAL = "PROCESS_REVERSAL"
+        const val TAG_PROCESS_ACK = "PROCESS_ACK"
+        const val TAG_PROCESS_SDK_TOP_UP_2 = "PROCESS_SDK_TOP_UP_2"
+        const val TAG_PROCESS_BETWEEN_TOP_UP = "PROCESS_BETWEEN_TOP_UP"
+        const val TAG_PROCESS_SDK_TOP_UP_1 = "PROCESS_SDK_TOP_UP_1"
+        const val TAG_PROCESS_SDK_SESSION_2 = "PROCESS_SDK_SESSION_2"
+        const val TAG_PROCESS_SESSION_KEY = "PROCESS_SESSION_KEY"
+        const val ERROR_SESSION_CARD_DATA_EMPTY = "PROCESS_SESSION_CARD_DATA_EMPTY"
+        const val TAG_PROCESS_SDK_SESSION_1 = "PROCESS_SDK_SESSION_1"
+        const val TAG_PROCESS_TRANSACTION_ID = "PROCESS_TRANSACTION_ID"
+        const val ERROR_TRANSACTION_ID_EMPTY = "TRANSACTION_ID_EMPTY"
+        const val TAG_PROCESS_PENDING_BALANCE = "PROCESS_PENDING_BALANCE"
+        const val TAG_PROCESS_PENDING_BALANCE_GEN_1 = "PROCESS_PENDING_BALANCE_GEN_1"
+        const val TAG_PROCESS_PENDING_BALANCE_GEN_2 = "PROCESS_PENDING_BALANCE_GEN_2"
     }
 }
