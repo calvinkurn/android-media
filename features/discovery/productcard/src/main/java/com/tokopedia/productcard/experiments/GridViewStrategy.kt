@@ -11,7 +11,8 @@ import android.widget.ImageView
 import android.widget.Space
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayout.*
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+import androidx.constraintlayout.widget.ConstraintLayout.inflate
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -20,6 +21,10 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardCartExtension
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.R
+import com.tokopedia.productcard.renderProductCardContent
+import com.tokopedia.productcard.renderProductCardFooter
+import com.tokopedia.productcard.renderProductCardRibbon
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea
@@ -43,10 +48,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.video_widget.VideoPlayerView
 import kotlin.LazyThreadSafetyMode.NONE
-import com.tokopedia.productcard.R
-import com.tokopedia.productcard.renderProductCardContent
-import com.tokopedia.productcard.renderProductCardFooter
-import com.tokopedia.productcard.renderProductCardRibbon
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class GridViewStrategy(
@@ -205,11 +206,13 @@ internal class GridViewStrategy(
     private val buttonAddToCart: UnifyButton? by lazy(NONE) {
         findViewById(R.id.buttonAddToCart)
     }
+    private var forceWidthPx: Int = 0
 
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
-        productCardView.layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-
         initAttributes(attrs)
+
+        val width = if (forceWidthPx > 0) forceWidthPx else MATCH_PARENT
+        productCardView.layoutParams = LayoutParams(width, WRAP_CONTENT)
 
         View.inflate(context, R.layout.product_card_grid_layout, productCardView)
 
@@ -226,6 +229,7 @@ internal class GridViewStrategy(
 
         try {
             isUsingViewStub = typedArray.getBoolean(R.styleable.ProductCardView_useViewStub, false)
+            forceWidthPx = typedArray.getDimensionPixelSize(R.styleable.ProductCardView_forceWidth, 0)
         } finally {
             typedArray.recycle()
         }

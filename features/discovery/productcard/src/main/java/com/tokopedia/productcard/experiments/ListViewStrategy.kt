@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.Space
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -206,11 +207,13 @@ internal class ListViewStrategy(
     private val textViewFulfillment: Typography? by lazy(NONE) {
         findViewById(R.id.textViewFulfillment)
     }
+    private var forceWidthPx: Int = 0
 
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
-        productCardView.layoutParams = ConstraintLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-
         initAttributes(attrs)
+
+        val width = if (forceWidthPx > 0) forceWidthPx else MATCH_PARENT
+        productCardView.layoutParams = LayoutParams(width, WRAP_CONTENT)
 
         View.inflate(context, R.layout.product_card_list_layout, productCardView)
 
@@ -227,13 +230,14 @@ internal class ListViewStrategy(
 
         try {
             isUsingViewStub = typedArray.getBoolean(R.styleable.ProductCardView_useViewStub, false)
+            forceWidthPx = typedArray.getDimensionPixelSize(R.styleable.ProductCardView_forceWidth, 0)
         } finally {
             typedArray.recycle()
         }
     }
 
     private fun createFooterView(): View = inflateFooterView().apply {
-        layoutParams = ConstraintLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
     }
 
     private fun inflateFooterView(): View =
