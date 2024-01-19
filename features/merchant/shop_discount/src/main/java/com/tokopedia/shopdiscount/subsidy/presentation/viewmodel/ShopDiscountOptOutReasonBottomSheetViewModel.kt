@@ -6,21 +6,24 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shopdiscount.subsidy.domain.DoOptOutSubsidyUseCase
-import com.tokopedia.shopdiscount.subsidy.domain.GetOptOutReasonListUseCase
+import com.tokopedia.shopdiscount.subsidy.domain.SubsidyEngineGetSellerOutReasonListUseCase
 import com.tokopedia.shopdiscount.subsidy.model.mapper.ShopDiscountOptOutReasonUiModelMapper
+import com.tokopedia.shopdiscount.subsidy.model.mapper.SubsidyEngineGetSellerOutReasonListRequestMapper
 import com.tokopedia.shopdiscount.subsidy.model.response.DoOptOutResponse
-import com.tokopedia.shopdiscount.subsidy.model.response.OptOutReasonListResponse
+import com.tokopedia.shopdiscount.subsidy.model.response.SubsidyEngineGetSellerOutReasonListResponse
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountOptOutReasonUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class ShopDiscountOptOutReasonBottomSheetViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
-    private val getOptOutReasonListUseCase: GetOptOutReasonListUseCase,
-    private val doOptOutSubsidyUseCase: DoOptOutSubsidyUseCase
+    private val subsidyEngineGetSellerOutReasonListUseCase: SubsidyEngineGetSellerOutReasonListUseCase,
+    private val doOptOutSubsidyUseCase: DoOptOutSubsidyUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProvider.main) {
 
     val listOptOutReasonLiveData: LiveData<Result<List<ShopDiscountOptOutReasonUiModel>>>
@@ -41,16 +44,13 @@ class ShopDiscountOptOutReasonBottomSheetViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getOptOutReasonListResponse(): OptOutReasonListResponse {
-        //TODO need to change this one later
-        delay(1000)
-//        return getOptOutReasonListUseCase.executeOnBackground()
-        return OptOutReasonListResponse(listOptOutReason = listOf(
-            "Reason 1",
-            "Reason 2",
-            "Reason 3",
-            "Reason 4",
-        ))
+    private suspend fun getOptOutReasonListResponse(): SubsidyEngineGetSellerOutReasonListResponse {
+        subsidyEngineGetSellerOutReasonListUseCase.setParams(
+            SubsidyEngineGetSellerOutReasonListRequestMapper.map(
+                userId = userSession.userId
+            )
+        )
+        return subsidyEngineGetSellerOutReasonListUseCase.executeOnBackground()
     }
 
     fun doOptOutProductSubsidy(listEventId: List<String>, selectedReason: String) {
