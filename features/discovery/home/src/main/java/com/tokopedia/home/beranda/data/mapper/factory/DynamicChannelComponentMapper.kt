@@ -383,7 +383,10 @@ object DynamicChannelComponentMapper {
                 title = label.title,
                 position = label.position,
                 type = label.type,
-                url = label.imageUrl
+                url = label.imageUrl,
+                styles = label.styles.map {
+                    LabelGroup.Style(it.key, it.value)
+                }
             )
         },
         rating = rating,
