@@ -33,6 +33,15 @@ class AutomateCouponListView @JvmOverloads constructor(
         }
     }
 
+    override fun setState(state: ButtonState) {
+        binding.btnAction.text = state.text
+
+        when (state) {
+            ButtonState.OutOfStock -> disableActionButton()
+            else -> onClicked(state.action)
+        }
+    }
+
     //region private methods
     private fun renderDetails(model: AutomateCouponModel.List) {
         with(binding) {
@@ -109,6 +118,19 @@ class AutomateCouponListView @JvmOverloads constructor(
         binding.tvTimeLimit.show()
 
         binding.timerCoupon.hide()
+    }
+
+    private fun disableActionButton() {
+        binding.btnAction.apply {
+            isInverse = false
+            isEnabled = false
+        }
+    }
+
+    private fun onClicked(action: () -> Unit) {
+        binding.btnAction.setOnClickListener {
+            action.invoke()
+        }
     }
 
     private fun Typography.render(dynamicColorText: DynamicColorText) {
