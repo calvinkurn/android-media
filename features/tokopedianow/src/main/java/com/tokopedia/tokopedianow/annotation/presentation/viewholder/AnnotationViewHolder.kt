@@ -5,8 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowAllAnnotationBinding
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.AnnotationUiModel
@@ -27,9 +25,7 @@ class AnnotationViewHolder(
     override fun bind(data: AnnotationUiModel) {
         binding?.apply {
             tpAnnotationTitle.text = data.name
-
-            iuAnnotationImage.clearImage()
-            iuAnnotationImage.loadImage(data.imageUrl)
+            iuAnnotationImage.setImageUrl(data.imageUrl)
 
             root.setOnClickListener {
                 directToAnotherPage(data.appLink)
