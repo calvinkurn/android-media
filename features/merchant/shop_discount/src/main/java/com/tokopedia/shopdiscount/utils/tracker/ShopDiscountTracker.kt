@@ -9,6 +9,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_SAVE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CREATE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EDIT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_CLOSE_BOTTOM_SHEET
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_CLOSE_BOTTOM_SHEET_PARENT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_CLOSE_BOTTOM_SHEET_VARIANT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_CTA
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_CTA_OPT_OUT_PARENT
@@ -37,6 +38,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_SET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_SELLER
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_OPT_OUT_REASON
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_PARENT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_VARIANT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_EDU_ARTICLE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_CTA_OPT_OUT_PARENT
@@ -491,6 +493,32 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
             .setEventCategory(SLASH_PRICE_SUBSIDY_BOTTOM_SHEET)
             .setEventLabel(eventLabel)
             .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_VARIANT)
+            .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(userSession.shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendDismissOptOutSingleProductBottomSheetEvent(
+        entrySource: String,
+        isCtaEnabled: Boolean,
+        ctaCopy: String,
+        dismissSource: String
+    ) {
+        val eventLabel = listOf(
+            entrySource,
+            isCtaEnabled.toString(),
+            ctaCopy,
+            dismissSource
+        ).joinToString(" - ")
+        Tracker.Builder()
+            .setEvent(CLICK_PG)
+            .setEventAction(CLICK_CLOSE_BOTTOM_SHEET_PARENT)
+            .setEventCategory(SLASH_PRICE_SUBSIDY_BOTTOM_SHEET)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_PARENT)
             .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE)
             .setShopId(userSession.shopId)
