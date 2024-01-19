@@ -2797,7 +2797,7 @@ class ShopPageHeaderFragment :
                             context = context,
                             asABuyer = data.authorType.asBuyer,
                             title = getString(creationcommonR.string.content_creation_post_as_label),
-                            sourcePage = if (GlobalConfig.isSellerApp()) ContentCreationConsts.VALUE_IS_OPEN_FROM_SHOP_PAGE else "",
+                            sourcePage = if (GlobalConfig.isSellerApp()) ContentCreationConsts.VALUE_IS_OPEN_FROM_SHOP_PAGE else ""
                         )
                         startActivity(intent)
                     }
@@ -3457,6 +3457,7 @@ class ShopPageHeaderFragment :
             }
         }
 
+        // TODO: Check the product list here after being hit on
         // shop products params
         if (initialProductListSize.isMoreThanZero()) {
             val isHasOneProduct = initialProductListSize >= PRODUCT_LIST_INDEX_ONE
@@ -3838,7 +3839,7 @@ class ShopPageHeaderFragment :
             ShopPageActivityResult.createResult(
                 shopId = shopId,
                 isFollow = isFollowing,
-                existingIntentBundle = intentData,
+                existingIntentBundle = intentData
             )
         )
     }

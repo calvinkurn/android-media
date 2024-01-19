@@ -101,7 +101,7 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
     private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val sharedPreferences: SharedPreferences,
-    private val dispatcherProvider: CoroutineDispatchers,
+    private val dispatcherProvider: CoroutineDispatchers
 ) :
     BaseViewModel(dispatcherProvider.main) {
 
@@ -364,8 +364,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                 )
             }
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     fun sendShopShareTracker(shopId: String, channel: String) {
@@ -398,8 +398,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                 GetFollowStatusUseCase.createParams(shopId, pageSource)
             _followStatusData.postValue(Success(getFollowStatusUseCase.get().executeOnBackground()))
         }, onError = {
-            _followStatusData.postValue(Fail(it))
-        })
+                _followStatusData.postValue(Fail(it))
+            })
     }
 
     fun updateFollowStatus(shopId: String, action: String) {
@@ -417,8 +417,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                 )
             )
         }, onError = {
-            _followShopData.postValue(Fail(it))
-        })
+                _followShopData.postValue(Fail(it))
+            })
     }
 
     fun getShopShareAndOperationalHourStatusData(
@@ -455,27 +455,27 @@ class ShopPageHeaderViewModel @Inject constructor(
                     null
                 }
             )
-            val productListDataAsync = asyncCatchError(
-                dispatcherProvider.io,
-                block = {
-                    getProductListData(
-                        shopId = shopId,
-                        page = page,
-                        itemPerPage = itemPerPage,
-                        shopProductFilterParameter = shopProductFilterParameter,
-                        keyword = keyword,
-                        etalaseId = etalaseId,
-                        widgetUserAddressLocalData = widgetUserAddressLocalData
-                    )
-                },
-                onError = {
-                    null
-                }
-            )
+//            val productListDataAsync = asyncCatchError(
+//                dispatcherProvider.io,
+//                block = {
+//                    getProductListData(
+//                        shopId = shopId,
+//                        page = page,
+//                        itemPerPage = itemPerPage,
+//                        shopProductFilterParameter = shopProductFilterParameter,
+//                        keyword = keyword,
+//                        etalaseId = etalaseId,
+//                        widgetUserAddressLocalData = widgetUserAddressLocalData
+//                    )
+//                },
+//                onError = {
+//                    null
+//                }
+//            )
             shopInfoData.await()?.let { shopInfo ->
-                productListDataAsync.await()?.let { shopProductData ->
-                    productListData = shopProductData
-                }
+//                productListDataAsync.await()?.let { shopProductData ->
+//                    productListData = shopProductData
+//                }
                 _shopPageShopShareData.postValue(Success(shopInfo))
                 shopOperationalHourStatusData.await()?.let { shopOperationalHourStatus ->
                     _shopPageTickerData.postValue(
