@@ -128,6 +128,7 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
         super.onViewCreated(view, savedInstanceState)
         setDescriptionSection()
         if (data.selectedProductToOptOut.isNotEmpty()) {
+            sendImpressionSubsidyOptOutReasonBottomSheetTracker()
             observeListOptOutReasonLiveData()
             observeDoOptOutSubsidyResultLiveData()
             setRecyclerView()
@@ -135,13 +136,17 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
             setButtonSubmit()
             setButtonCancel()
         } else {
-            sendImpressionNonSubsidyBottomSheetTracker()
+            sendImpressionNonSubsidyOptOutReasonBottomSheetTracker()
             showDescriptionSection()
         }
     }
 
-    private fun sendImpressionNonSubsidyBottomSheetTracker() {
-        tracker.sendImpressionNonSubsidyBottomSheetEvent(
+    private fun sendImpressionSubsidyOptOutReasonBottomSheetTracker() {
+        tracker.sendImpressionSubsidyOptOutReasonBottomSheetEvent(data.entrySource.value)
+    }
+
+    private fun sendImpressionNonSubsidyOptOutReasonBottomSheetTracker() {
+        tracker.sendImpressionNonSubsidyOptOutReasonBottomSheetEvent(
             data.listProductDetailData.map { it.productId },
         )
     }
