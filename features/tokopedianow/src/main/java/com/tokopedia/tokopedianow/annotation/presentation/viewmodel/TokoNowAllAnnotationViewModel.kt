@@ -78,6 +78,9 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
         isLastVisibleLoadingMore: Boolean
     ) {
         when {
+            !needToLoadMoreData.isNeededToLoadMore -> {
+                _isOnScrollNotNeeded.value = Unit
+            }
             isLastVisibleLoadingMore && job?.isCompleted.orFalse() -> {
                 job = launchCatchError(block = {
                     val response = getAllAnnotationPageUseCase.execute(
@@ -116,9 +119,6 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
                         isNeededToLoadMore = false
                     )
                 }
-            }
-            !needToLoadMoreData.isNeededToLoadMore -> {
-                _isOnScrollNotNeeded.value = Unit
             }
         }
     }
