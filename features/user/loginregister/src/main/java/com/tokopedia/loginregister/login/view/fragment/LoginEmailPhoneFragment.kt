@@ -662,9 +662,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             requireContext(),
             ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_OCL
         )
-        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-        startActivity(intent)
-        activity?.finish()
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_OCL)
     }
 
     private fun fetchRemoteConfig() {
