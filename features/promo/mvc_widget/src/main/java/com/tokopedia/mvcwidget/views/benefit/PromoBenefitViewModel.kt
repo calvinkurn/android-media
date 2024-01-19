@@ -25,10 +25,11 @@ class PromoBenefitViewModel @Inject constructor(
     fun setId(metaData: String) {
         viewModelScope.launch {
             try {
-                val result = getPromoBenefit(metaData)
                 _error.value = false
+                val result = getPromoBenefit(metaData)
                 _state.value = result.toUiModel()
             } catch (e: Exception) {
+                Timber.e(e)
                 _error.value = true
             }
         }

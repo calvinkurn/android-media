@@ -2,19 +2,16 @@ package com.tokopedia.mvcwidget.views.benefit
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -29,7 +26,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.databinding.PromoBenefitBottomsheetBinding
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
-import com.tokopedia.unifyprinciples.stringToUnifyColor
+import com.tokopedia.mvcwidget.utils.getUnifyColorFromHex
+import com.tokopedia.mvcwidget.utils.setAttribute
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -178,19 +176,4 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
             }
         }
     }
-}
-
-internal fun TextView.setAttribute(text: String, color: Int, typeFace: String) {
-    this.text = text
-    setTextColor(color)
-    typeface = when (typeFace) {
-        "bold" -> Typeface.DEFAULT_BOLD
-        else -> Typeface.DEFAULT
-    }
-}
-
-internal fun Context.getUnifyColorFromHex(hex: String): Int {
-    return runCatching {
-        stringToUnifyColor(this, hex).unifyColor!!
-    }.getOrElse { Color.parseColor(hex) }
 }

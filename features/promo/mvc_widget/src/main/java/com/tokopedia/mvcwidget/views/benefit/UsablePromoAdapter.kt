@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.mvcwidget.databinding.LayoutItemUsablePromoBinding
+import com.tokopedia.mvcwidget.utils.getUnifyColorFromHex
+import com.tokopedia.mvcwidget.utils.setAttribute
 
 class UsablePromoAdapter :
     ListAdapter<UsablePromoModel, UsablePromoAdapter.ItemViewHolder>(DiffUtilCallback()) {
@@ -25,8 +27,16 @@ class UsablePromoAdapter :
         ViewHolder(binding.root) {
         fun bind(item: UsablePromoModel) {
             binding.ivIcon.urlSrc = item.icon
-            binding.tvName.text = item.text
-            binding.tvValue.text = item.value
+            binding.tvName.setAttribute(
+                item.title,
+                binding.root.context.getUnifyColorFromHex(item.titleColor),
+                item.titleFormat
+            )
+            binding.tvValue.setAttribute(
+                item.text,
+                binding.root.context.getUnifyColorFromHex(item.textColor),
+                item.textFormat
+            )
         }
     }
 
@@ -35,7 +45,7 @@ class UsablePromoAdapter :
             oldItem: UsablePromoModel,
             newItem: UsablePromoModel
         ): Boolean {
-            return oldItem.text == newItem.text
+            return oldItem.title == newItem.title
         }
 
         override fun areContentsTheSame(

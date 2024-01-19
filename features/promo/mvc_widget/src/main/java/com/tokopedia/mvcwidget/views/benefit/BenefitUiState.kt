@@ -7,10 +7,10 @@ import kotlinx.parcelize.Parcelize
 data class BenefitUiModel(
     val bgImgUrl: String = "",
     val bgColor: String = "#FFF5F6",
-    val estimatePrice: BenefitText = BenefitText(text = ""),
-    val basePrice: BenefitText = BenefitText(text = ""),
+    val estimatePrice: BenefitText = BenefitText(),
+    val basePrice: BenefitText = BenefitText(),
     val usablePromo: List<UsablePromoModel> = listOf(),
-    val promoInfo: List<String> = listOf(),
+    val promoTnc: List<String> = listOf(),
     val tnc: BenefitTnc = BenefitTnc(),
 ) : Parcelable
 
@@ -19,7 +19,7 @@ data class BenefitText(
     val title: String = "Perkiraan harga terhemat",
     val titleColor: String = "#212121",
     val titleFormat: String = "normal",
-    val text: String,
+    val text: String = "",
     val textColor: String = "#212121",
     val textFormat: String = "bold"
 ) : Parcelable
@@ -33,8 +33,10 @@ data class BenefitTnc(
 @Parcelize
 data class UsablePromoModel(
     val icon: String,
+    val title: String,
     val text: String,
-    val value: String,
+    val titleColor: String = "#6D7588",
+    val titleFormat: String = "normal",
+    val textColor: String = "#6D7588",
     val textFormat: String = "normal",
-    val valueFormat: String = "normal",
 ) : Parcelable

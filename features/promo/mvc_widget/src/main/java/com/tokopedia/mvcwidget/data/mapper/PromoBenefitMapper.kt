@@ -31,6 +31,30 @@ enum class Style(val id: String) {
 private typealias Attribute = PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component.Attribute
 private typealias Component = PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component
 
+internal fun PromoCatalogResponse.toUiModel(): BenefitUiModel {
+    val components = promoCatalogGetPDEBottomSheet.resultList.first().widgetList.first().componentList
+    val headerComponent = components.componentOf(PdpComponent.Background)
+    val estimatePriceComponent = components.componentOf(PdpComponent.FinalPrice)
+    val basePriceComponent = components.componentOf(PdpComponent.NetPrice)
+    val tncComponent = components.componentOf(PdpComponent.TnC)
+    val cashback = components.componentOf(PdpComponent.Cashback).toTextWithIconModel()
+    val discount = components.componentOf(PdpComponent.Discount).toTextWithIconModel()
+    val listPromo = listOf(cashback, discount)
+
+    return BenefitUiModel(
+        headerComponent.attributeOf(Style.BgImage),
+        headerComponent.attributeOf(Style.BgColor),
+        estimatePriceComponent.toTextModel(),
+        basePriceComponent.toTextModel(),
+        listPromo,
+        listOf(),
+        BenefitTnc(
+            tncComponent.attributeOf(Style.TextHtml),
+            tncComponent.attributeOf(Style.TextColor)
+        )
+    )
+}
+
 private fun List<Attribute>.toTextModel() = BenefitText(
     attributeOf(Style.Title),
     attributeOf(Style.TitleColor),
@@ -40,53 +64,19 @@ private fun List<Attribute>.toTextModel() = BenefitText(
     attributeOf(Style.TextFormat),
 )
 
+private fun List<Attribute>.toTextWithIconModel() = UsablePromoModel(
+    attributeOf(Style.Icon),
+    attributeOf(Style.Title),
+    attributeOf(Style.Text),
+    attributeOf(Style.TitleColor),
+    attributeOf(Style.TitleFormat),
+    attributeOf(Style.TextColor),
+    attributeOf(Style.TextFormat)
+)
+
 private fun List<Attribute>.attributeOf(style: Style) =
     runCatching { first { it.type == style.id }.value }.getOrDefault("")
 
 private fun List<Component>.componentOf(component: PdpComponent) =
     runCatching { first { it.componentType == component.id }.attributeList }.getOrDefault(emptyList())
-
-internal fun PromoCatalogResponse.toUiModel(): BenefitUiModel {
-    val components =
-        promoCatalogGetPDEBottomSheet.resultList.first().widgetList.first().componentList
-    val headerComponent = components.componentOf(PdpComponent.Background)
-    val estimatePriceComponent = components.componentOf(PdpComponent.FinalPrice)
-    val basePriceComponent = components.componentOf(PdpComponent.NetPrice)
-    val tncComponent = components.componentOf(PdpComponent.TnC)
-    val cashback = components.componentOf(PdpComponent.Cashback).let {
-        UsablePromoModel(
-            it.attributeOf(Style.Icon),
-            it.attributeOf(Style.Title),
-            it.attributeOf(Style.Text),
-            it.attributeOf(Style.TitleFormat),
-            it.attributeOf(Style.TextFormat)
-        )
-    }
-    val discount = components.componentOf(PdpComponent.Discount).let {
-        UsablePromoModel(
-            it.attributeOf(Style.Icon),
-            it.attributeOf(Style.Title),
-            it.attributeOf(Style.Text),
-            it.attributeOf(Style.TitleFormat),
-            it.attributeOf(Style.TextFormat)
-        )
-    }
-    val listPromo = listOf(cashback, discount)
-
-    return BenefitUiModel(
-        headerComponent.attributeOf(Style.BgImage),
-        headerComponent.attributeOf(Style.BgColor),
-        estimatePriceComponent.toTextModel(),
-        basePriceComponent.toTextModel(),
-        listPromo,
-        listOf(
-            "Nominal promo bisa berubah dikarenakan waktu pembelian, ketersediaan produk, periode promosi, ketentuan promo.",
-            "Harga akhir akan ditampilkan di halaman “Pengiriman / Checkout”. Perhatikan sebelum mengkonfirmasi pesanan."
-        ),
-        BenefitTnc(
-            tncComponent.attributeOf(Style.TextHtml),
-            tncComponent.attributeOf(Style.TextColor)
-        )
-    )
-}
 
