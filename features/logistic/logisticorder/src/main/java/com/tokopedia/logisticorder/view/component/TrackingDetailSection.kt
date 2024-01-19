@@ -92,7 +92,7 @@ fun TrackingDetailSection(
                 stringResource(logisticorderR.string.label_seller_courier_tracking),
                 HtmlLinkHelper(
                     LocalContext.current,
-                    data.trackOrder.detail.shipperName
+                    data.trackOrder.detail.shipperName.toHyphenIfEmptyOrNull()
                 ).spannedString?.toAnnotatedString() ?: "",
                 data.trackOrder.detail.shipperCity
             )
@@ -104,7 +104,7 @@ fun TrackingDetailSection(
                     width = Dimension.fillToConstraints
                 },
                 stringResource(logisticorderR.string.label_buyer),
-                data.trackOrder.detail.receiverName,
+                data.trackOrder.detail.receiverName.toHyphenIfEmptyOrNull(),
                 data.trackOrder.detail.receiverCity
             )
             TrackingDetailsItemWithIcon(
