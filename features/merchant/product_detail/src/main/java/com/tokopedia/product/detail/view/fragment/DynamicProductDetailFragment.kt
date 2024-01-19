@@ -6380,9 +6380,9 @@ open class DynamicProductDetailFragment :
      * from old share to share 2.0
      */
     private fun isUsingShareEx(): Boolean {
-//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-//            ROLLENCE_SHARE_EX, ""
-//        ) == ROLLENCE_SHARE_EX
-        return true
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            ROLLENCE_SHARE_EX,
+            ""
+        ) == ROLLENCE_SHARE_EX
     }
 }
