@@ -414,7 +414,7 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
         val storiesPosition = widgetPositionInList + 1
 
         sendEnhanceEcommerceEvent(
-            eventName = Event.viewItem,
+            eventName = Event.selectContent,
             eventAction = "click - stories entry point",
             eventLabel = trackerMultiFields(
                 prefix,
