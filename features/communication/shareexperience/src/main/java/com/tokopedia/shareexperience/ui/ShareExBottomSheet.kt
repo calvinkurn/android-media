@@ -212,6 +212,7 @@ class ShareExBottomSheet :
                         }
                         ShareExChannelEnum.OTHERS -> {
                             openIntentChooser(it)
+                            dismiss()
                         }
                         else -> {
                             it.intent?.let { intent ->
