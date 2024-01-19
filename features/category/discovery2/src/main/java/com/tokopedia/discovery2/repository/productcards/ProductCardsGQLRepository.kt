@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
@@ -33,9 +34,19 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
             }
             ComponentNames.ProductCardRevamp.componentName -> {
                 if (componentProperties?.template == Constant.ProductTemplate.LIST) {
-                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+                    Timber.d("Card Type -> ${componentProperties.cardType}")
+                    if (componentProperties.cardType.equals("V1", true) ) {
+                        DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+                    } else {
+                        DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemListReimagine.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+                    }
                 } else {
-                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+                    Timber.d("Card Type -> ${componentProperties?.cardType}")
+                    if (componentProperties?.cardType.equals("V1", true)) {
+                        DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+                    } else {
+                        DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemReimagine.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+                    }
                 }
             }
             ComponentNames.ProductCardSingle.componentName -> {

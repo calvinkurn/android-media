@@ -274,6 +274,16 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewModel
             )
             initializeComponent(
+                ComponentsList.MasterProductCardReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+            initializeComponent(
+                ComponentsList.MasterProductCardListReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+            initializeComponent(
                 ComponentsList.MasterProductCardItemList,
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel

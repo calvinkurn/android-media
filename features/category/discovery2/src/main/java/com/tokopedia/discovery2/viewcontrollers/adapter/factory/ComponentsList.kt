@@ -39,6 +39,9 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardRevampItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardRevampItem.componentName),
     MasterProductCardItemList(R.layout.master_product_card_item_list_layout, ComponentNames.MasterProductCardItemList.componentName),
 
+    MasterProductCardReimagine(R.layout.master_product_card_item_layout_reimagine, ComponentNames.MasterProductCardItemList.componentName),
+    MasterProductCardListReimagine(R.layout.master_product_card_item_list_layout, ComponentNames.MasterProductCardItemList.componentName),
+
     // Product Card Revamp Carousel
     ProductCardCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardCarousel.componentName),
     ProductCardCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardCarouselItem.componentName),

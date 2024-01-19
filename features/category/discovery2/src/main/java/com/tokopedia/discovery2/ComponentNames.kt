@@ -40,6 +40,9 @@ enum class ComponentNames(val componentName: String) {
     ProductCardRevampItem("product_card_revamp_item"),
     MasterProductCardItemList("master_product_card_item_list"),
 
+    MasterProductCardItemReimagine("master_product_card_item_reimagine"),
+    MasterProductCardItemListReimagine("master_product_card_item_list_reimagine"),
+
     // Product Card Horizontal Carousel
     ProductCardCarousel("product_card_carousel"),
     ProductCardCarouselItem("product_card_carousel_item"),

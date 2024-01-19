@@ -237,12 +237,15 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName
         ) {
             masterProductCardGridView?.let {
+                it.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
                 it.applyCarousel()
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
             masterProductCardListView?.let {
                 it.applyCarousel()
+                it.layoutParams?.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_200)
+                it.layoutParams?.width = Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_70)
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
