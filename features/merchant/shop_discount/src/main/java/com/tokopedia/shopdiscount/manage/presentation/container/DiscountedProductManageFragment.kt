@@ -38,6 +38,7 @@ import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -109,6 +110,9 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
+    @Inject
+    lateinit var tracker: ShopDiscountTracker
+
     private var listener: TabChangeListener? = null
     private var remoteConfig: RemoteConfig? = null
 
@@ -172,6 +176,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
             val tickerAdapter = TickerPagerAdapter(activity ?: return, remoteTickers)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    sendClickEduArticleProductListTickerTracker()
                     routeToUrl(linkUrl.toString())
                 }
             })
@@ -179,6 +184,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
             ticker.addPagerView(tickerAdapter, remoteTickers)
             ticker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    sendClickEduArticleProductListTickerTracker()
                     routeToUrl(linkUrl.toString())
                 }
 
@@ -186,6 +192,10 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
                 }
             })
         }
+    }
+
+    private fun sendClickEduArticleProductListTickerTracker() {
+        tracker.sendClickEduArticleProductListTickerEvent()
     }
 
     private fun setupViews() {

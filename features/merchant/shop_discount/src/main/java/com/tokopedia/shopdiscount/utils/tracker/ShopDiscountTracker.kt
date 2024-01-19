@@ -44,6 +44,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACK
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_CTA_OPT_OUT_PARENT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_CTA_OPT_OUT_VARIANT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_EDU_ARTICLE_OPT_OUT_BOTTOM_SHEET
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_EDU_ARTICLE_PRODUCT_LIST_TICKER
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_OPT_OUT_BULK
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_OPT_OUT_NON_BULK
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_OPT_OUT_VARIANT
@@ -527,4 +528,18 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
             .send()
     }
 
+    fun sendClickEduArticleProductListTickerEvent(){
+        Tracker.Builder()
+            .setEvent(CLICK_PG)
+            .setEventAction(CLICK_EDU_ARTICLE)
+            .setEventCategory(SLASH_PRICE_SUBSIDY_LIST_OF_PRODUCTS)
+            .setEventLabel("")
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_EDU_ARTICLE_PRODUCT_LIST_TICKER)
+            .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(userSession.shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
 }
