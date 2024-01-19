@@ -44,6 +44,41 @@
                 android:visibility="gone" />
 
             <LinearLayout
+                android:id="@+id/progressView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:id="@+id/loaderImage"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_horizontal"
+                    app:loader_type="circular" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/progressiveView_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/topads_dash_reload_title"
+                    app:typographyType="heading_4" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/progressiveView_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:typographyType="body_3" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -90,16 +125,6 @@
                             android:layout_marginEnd="8dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toTopOf="@+id/insightCentreEntryPointHeadline"
-                            app:layout_constraintTop_toBottomOf="@+id/hari_ini" />
-
-                        <include
-                            android:id="@+id/autoadsDeactivationProgress"
-                            layout="@layout/topads_dash_auto_deactivate_status_progress_widget"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="8dp"
-                            android:visibility="gone"
                             app:layout_constraintBottom_toTopOf="@+id/insightCentreEntryPointHeadline"
                             app:layout_constraintTop_toBottomOf="@+id/hari_ini" />
 

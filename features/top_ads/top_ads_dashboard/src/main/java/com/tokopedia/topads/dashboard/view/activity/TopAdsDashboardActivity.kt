@@ -163,9 +163,9 @@ class TopAdsDashboardActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
 
         initInjector()
+        topAdsDashboardPresenter.getVariantById()
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        topAdsDashboardPresenter.getVariantById()
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
         topAdsDashboardPresenter.getAutoAdsStatus(resources, ::setAutoAds)
         topAdsDashboardPresenter.getDashboardGroups(String.EMPTY, Int.ONE)
@@ -486,6 +486,7 @@ class TopAdsDashboardActivity :
             }
         }
         viewPager.adapter = getViewPagerAdapter()
+        viewPager.offscreenPageLimit = 0
         viewPager.offscreenPageLimit = CONST_3
         tabLayout?.getUnifyTabLayout()?.getTabAt(redirectToTab)?.select()
         viewPager.currentItem = redirectToTab

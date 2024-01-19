@@ -673,4 +673,6 @@
     <string name="topads_doesnt_have_product_advertisements_yet">Belum memiliki Iklan Produk.</string>
     <string name="topads_doesnt_have_shop_advertisements_yet">Belum memiliki Iklan Toko.</string>
     <string name="topads_product_advertised_count"><![CDATA[<b>%d</b> Grup Iklan Aktif]]></string>
+    <string name="topads_autops_deactivation_inprogress_title">Sedang dinonaktifkan</string>
+    <string name="topads_autops_deactivation_inprogress_description">Iklanmu sedang dalam proses dinonaktifkan. Setelah 5-10 menit, coba muat lagi halaman ini, ya.</string>
 </resources>

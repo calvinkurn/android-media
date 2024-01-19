@@ -210,13 +210,24 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         view.findViewById<ImageUnify>(topadsdashboardR.id.auto_ad_status_image)
             ?.setImageDrawable(context?.getResDrawable(topadsdashboardR.drawable.ill_iklan_otomatis))
         view.findViewById<UnifyButton>(topadsdashboardR.id.onBoarding)?.setOnClickListener {
-            showActivateAutoPsConfirmationDailog()
+            if(isAutoPsWhitelisted()){
+                showActivateAutoPsConfirmationDailog()
+            } else {
+                RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
+            }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_COBA_SEKARANG,
                 "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
                 CLICK_COBA_AUO_ADS, "")
         }
+        view.findViewById<UnifyButton>(topadsdashboardR.id.onBoarding)?.text =
+            if (isAutoPsWhitelisted())
+                getString(topadsdashboardR.string.topads_enable_auto_ps)
+            else
+                getString(topadsdashboardR.string.auto_ads_status_inactive_button)
+
         loadData()
+
         view.findViewById<UnifyImageButton>(topadsdashboardR.id.btnFilter)?.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
@@ -382,8 +393,11 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         if (checkInProgress()) {
             showProgressLayout()
         } else {
-//            setNoAdsView()
-            setAutoPsEmptyView()
+            if(isAutoPsWhitelisted()){
+                setAutoPsEmptyView()
+            } else {
+                setNoAdsView()
+            }
         }
     }
 
@@ -733,6 +747,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun onStateChanged(state: State?) {
         collapseStateCallBack?.setAppBarState(state)
         swipeRefreshLayout?.isEnabled = state == State.EXPANDED
+    }
+
+    private fun isAutoPsWhitelisted(): Boolean {
+        return (activity as? TopAdsDashboardActivity)?.getAutoPsWhitelist() == true
     }
 
     interface AdInfo {

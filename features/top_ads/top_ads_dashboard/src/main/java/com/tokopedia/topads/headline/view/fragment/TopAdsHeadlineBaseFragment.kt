@@ -7,6 +7,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,9 +25,14 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsFeature
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_INACTIVE
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_SHOP_ADS
 import com.tokopedia.topads.common.data.model.WhiteListUserResponse
@@ -34,7 +40,7 @@ import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.recommendation.RecommendationWidget
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
-import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.R as topadsdashboardR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
@@ -44,6 +50,7 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsBaseTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashDeletedGroupFragment
@@ -78,8 +85,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var noTabSpace: View? = null
     private var recommendationWidget: RecommendationWidget? = null
     private var autoadsOnboarding: CardUnify? = null
+    private var progressView: LinearLayout? = null
     private var autoadsEditWidget: AutoAdsWidgetCommon? = null
-    private var autoadsDeactivationProgress: CardUnify? = null
     private var recommendationWidgetCTAListener: RecommendationWidgetCTAListener? = null
     private var autoPsStatisticTable: CardUnify? = null
     private var confirmationDailog: DialogUnify? = null
@@ -107,6 +114,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var produkTenjual: Typography? = null
     private var totalTenjual: Typography? = null
     private var onBoardingCta: UnifyButton? = null
+    private var isAutoPsWhitelisted: Boolean = false
 
     companion object {
         fun createInstance(): TopAdsHeadlineBaseFragment {
@@ -115,7 +123,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.topads_dash_headline_layout
+        return topadsdashboardR.layout.topads_dash_headline_layout
     }
 
     override fun initInjector() {
@@ -123,28 +131,28 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     override fun setUpView(view: View) {
-        headlineAdsViePager = view.findViewById(R.id.headlineAdsViePager)
-        headlineTabLayout = view.findViewById(R.id.headlineTabLayout)
-        noTabSpace = view.findViewById(R.id.noTabSpace)
-        loader = view.findViewById(R.id.loader)
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        appBarLayout = view.findViewById(R.id.app_bar_layout_2)
-        hariIni = view.findViewById(R.id.hari_ini)
-        pager = view.findViewById(R.id.pager)
-        autoadsOnboarding = view.findViewById(R.id.autoadsOnboarding)
-        recommendationWidget = view.findViewById(R.id.insightCentreEntryPointHeadline)
-        autoadsDeactivationProgress = view.findViewById(R.id.autoadsDeactivationProgress)
-        autoadsEditWidget = view.findViewById(R.id.autoads_edit_widget)
-        autoPsStatisticTable = view.findViewById(R.id.auto_ps_statistic_table)
-        tampil = view.findViewById(R.id.tampil_count)
-        click = view.findViewById(R.id.klik_count)
-        percentClick = view.findViewById(R.id.persentase_klik_count)
-        pendapatan = view.findViewById(R.id.pendapatan_count)
-        efektivitas = view.findViewById(R.id.efektivitas_iklan_count)
-        produkTenjual = view.findViewById(R.id.produk_terjual_count)
-        pengeluaran = view.findViewById(R.id.pengeluaran_count)
-        totalTenjual = view.findViewById(R.id.total_terjual_count)
-        onBoardingCta = view.findViewById(R.id.onBoarding)
+        headlineAdsViePager = view.findViewById(topadsdashboardR.id.headlineAdsViePager)
+        headlineTabLayout = view.findViewById(topadsdashboardR.id.headlineTabLayout)
+        noTabSpace = view.findViewById(topadsdashboardR.id.noTabSpace)
+        loader = view.findViewById(topadsdashboardR.id.loader)
+        swipeRefreshLayout = view.findViewById(topadsdashboardR.id.swipe_refresh_layout)
+        appBarLayout = view.findViewById(topadsdashboardR.id.app_bar_layout_2)
+        hariIni = view.findViewById(topadsdashboardR.id.hari_ini)
+        pager = view.findViewById(topadsdashboardR.id.pager)
+        autoadsOnboarding = view.findViewById(topadsdashboardR.id.autoadsOnboarding)
+        recommendationWidget = view.findViewById(topadsdashboardR.id.insightCentreEntryPointHeadline)
+        autoadsEditWidget = view.findViewById(topadsdashboardR.id.autoads_edit_widget)
+        progressView = view.findViewById(topadsdashboardR.id.progressView)
+        autoPsStatisticTable = view.findViewById(topadsdashboardR.id.auto_ps_statistic_table)
+        tampil = view.findViewById(topadsdashboardR.id.tampil_count)
+        click = view.findViewById(topadsdashboardR.id.klik_count)
+        percentClick = view.findViewById(topadsdashboardR.id.persentase_klik_count)
+        pendapatan = view.findViewById(topadsdashboardR.id.pendapatan_count)
+        efektivitas = view.findViewById(topadsdashboardR.id.efektivitas_iklan_count)
+        produkTenjual = view.findViewById(topadsdashboardR.id.produk_terjual_count)
+        pengeluaran = view.findViewById(topadsdashboardR.id.pengeluaran_count)
+        totalTenjual = view.findViewById(topadsdashboardR.id.total_terjual_count)
+        onBoardingCta = view.findViewById(topadsdashboardR.id.onBoarding)
     }
 
     override fun getChildScreenName(): String {
@@ -167,7 +175,6 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loadStatisticsData()
     }
 
-
     private fun setUpObserver() {
         presenter.groupAdsInsight.observe(viewLifecycleOwner) {
             if (it is TopAdsListAllInsightState.Success) {
@@ -178,11 +185,19 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 }
             }
         }
+        presenter.shopVariant.observe(viewLifecycleOwner){shopVariants ->
+            isAutoPsWhitelisted =
+                shopVariants.isNotEmpty() && shopVariants.filter {
+                    it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
+                        it.variant == TopAdsCommonConstant.AUTOPS_VARIANT }
+                    .isNotEmpty()
+        }
     }
 
     private fun getAutoAdsStatus() {
         try {
-            presenter.getAutoAdsStatus(requireContext().resources, ::setAutoAds)
+//            if(isAutoPsWhitelisted())
+                presenter.getAutoAdsStatus(requireContext().resources, ::setAutoAds)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -190,38 +205,70 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
         when (data.status) {
-            STATUS_INACTIVE -> {
-                autoadsDeactivationProgress?.gone()
-                autoAdsWidget?.gone()
-                autoadsOnboarding?.show()
-                headlineAdsViePager?.show()
-                headlineTabLayout?.show()
-                autoPsStatisticTable?.gone()
-                recommendationWidget?.show()
-                setupOnboarding()
+            STATUS_INACTIVE -> setAutoPsInactiveLayout()
+
+            STATUS_IN_PROGRESS_ACTIVE,
+            STATUS_IN_PROGRESS_AUTOMANAGE,
+            STATUS_IN_PROGRESS_INACTIVE -> setProgressiveLayout(data.status)
+
+            else -> setAutoPsActiveLayout()
+        }
+    }
+
+    private fun setProgressiveLayout(status: Int) {
+        autoAdsWidget?.show()
+        autoAdsWidget?.loadData(0)
+        progressView?.let {
+            it.show()
+            val title = it.findViewById<Typography>(topadsdashboardR.id.progressiveView_title)
+            val desc = it.findViewById<Typography>(topadsdashboardR.id.progressiveView_description)
+            if(status == STATUS_IN_PROGRESS_ACTIVE){
+                title?.text = getString(topadsdashboardR.string.topads_dash_reload_title)
+                desc?.text = getString(topadsdashboardR.string.topads_dash_auto_ads_enable_msg)
+            } else if(status == STATUS_IN_PROGRESS_INACTIVE){
+                title?.text = getString(topadsdashboardR.string.topads_autops_deactivation_inprogress_title)
+                desc?.text = getString(topadsdashboardR.string.topads_autops_deactivation_inprogress_description)
             }
-            else -> {
-                autoadsDeactivationProgress?.gone()
-                autoAdsWidget?.show()
-                autoadsOnboarding?.gone()
-                autoAdsWidget?.loadData(0)
-                headlineAdsViePager?.gone()
-                headlineTabLayout?.gone()
-                autoPsStatisticTable?.show()
-                recommendationWidget?.gone()
-                val resources = context?.resources
-                if(resources != null) {
-                    presenter.getProductStats(
-                        resources,
-                        Utils.format.format(startDate),
-                        Utils.format.format(endDate),
-                        mutableListOf(),
-                        String.EMPTY,
-                        Int.ZERO,
-                        ::setAutoPsStatistics
-                    )
-                }
-            }
+        }
+        autoadsOnboarding?.gone()
+        headlineAdsViePager?.gone()
+        headlineTabLayout?.gone()
+        autoPsStatisticTable?.gone()
+        recommendationWidget?.gone()
+    }
+
+    private fun setAutoPsInactiveLayout(){
+        autoAdsWidget?.gone()
+//        autoadsOnboarding?.showWithCondition(isAutoPsWhitelisted())
+        autoadsOnboarding?.show()
+        headlineAdsViePager?.show()
+        headlineTabLayout?.show()
+        autoPsStatisticTable?.gone()
+        recommendationWidget?.show()
+        progressView?.gone()
+        setupOnboarding()
+    }
+
+    private fun setAutoPsActiveLayout(){
+        autoAdsWidget?.show()
+        autoadsOnboarding?.gone()
+        autoAdsWidget?.loadData(0)
+        headlineAdsViePager?.gone()
+        headlineTabLayout?.gone()
+        autoPsStatisticTable?.show()
+        recommendationWidget?.gone()
+        progressView?.gone()
+        val resources = context?.resources
+        if(resources != null) {
+            presenter.getProductStats(
+                resources,
+                Utils.format.format(startDate),
+                Utils.format.format(endDate),
+                mutableListOf(),
+                String.EMPTY,
+                Int.ZERO,
+                ::setAutoPsStatistics
+            )
         }
     }
 
@@ -237,16 +284,16 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 confirmationDailog?.show()
             }
 
-            val description = getString(R.string.topads_auto_ps_activation_confirmation_desc)
-            val title = getString(R.string.topads_auto_ps_confirmation_title_to_activate_auto_ps)
+            val description = getString(topadsdashboardR.string.topads_auto_ps_activation_confirmation_desc)
+            val title = getString(topadsdashboardR.string.topads_auto_ps_confirmation_title_to_activate_auto_ps)
 
             confirmationDailog?.let {
                 it.setTitle(title)
                 it.setImageUrl(TopAdsDashboardConstant.ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL)
                 it.setDescription(description)
 
-                it.setPrimaryCTAText(getString(R.string.topads_dash_aktifan))
-                it.setSecondaryCTAText(getString(R.string.top_ads_batal))
+                it.setPrimaryCTAText(getString(topadsdashboardR.string.topads_dash_aktifan))
+                it.setSecondaryCTAText(getString(topadsdashboardR.string.top_ads_batal))
 
                 it.setPrimaryCTAClickListener {
                     RouteManager.route(context,ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
@@ -287,6 +334,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         getAutoAdsStatus()
         swipeRefreshLayout?.setOnRefreshListener {
             loadChildStatisticsData()
+            getAutoAdsStatus()
         }
         appBarLayout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
@@ -380,8 +428,11 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 val info = it.topadsGetShopInfoV2_1.data.ads.getOrNull(1)
                 if (info?.type == TopAdsDashboardConstant.HEADLINE) {
                     if (!info.isUsed) {
-//                        showEmptyView()
-                        showAutoPsEmptyView()
+//                        if(isAutoPsWhitelisted()){
+                            showAutoPsEmptyView()
+//                        } else {
+//                            showEmptyView()
+//                        }
                     } else {
                         renderHeadlineViewPager()
                     }
@@ -407,7 +458,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(
                 dataStatistic.summary,
-                resources.getStringArray(R.array.top_ads_tab_statistics_labels)
+                resources.getStringArray(topadsdashboardR.array.top_ads_tab_statistics_labels)
             )
             topAdsTabAdapter?.hideTabforHeadline()
         }
@@ -422,43 +473,43 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(VIEW_MULAI_BERIKLAN,
             "{${userSession.shopId}}",
             userSession.userId)
-        view?.findViewById<ConstraintLayout>(R.id.empty_view)?.visibility = View.VISIBLE
-        view?.findViewById<UnifyButton>(R.id.mulai_beriklan)?.setOnClickListener {
+        view?.findViewById<ConstraintLayout>(topadsdashboardR.id.empty_view)?.visibility = View.VISIBLE
+        view?.findViewById<UnifyButton>(topadsdashboardR.id.mulai_beriklan)?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_MULAI_BERIKLAN,
                 "{${userSession.shopId}}",
                 userSession.userId)
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
         }
-        view?.findViewById<ImageUnify>(R.id.image_empty)
-            ?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
-        view?.findViewById<Typography>(R.id.text_title)?.text =
-            getString(R.string.topads_headline_empty_state_title)
-        view?.findViewById<Typography>(R.id.text_desc)?.text =
-            getString(R.string.topads_headline_empty_state_desc)
+        view?.findViewById<ImageUnify>(topadsdashboardR.id.image_empty)
+            ?.setImageDrawable(context?.getResDrawable(topadsdashboardR.drawable.topads_dashboard_empty_product))
+        view?.findViewById<Typography>(topadsdashboardR.id.text_title)?.text =
+            getString(topadsdashboardR.string.topads_headline_empty_state_title)
+        view?.findViewById<Typography>(topadsdashboardR.id.text_desc)?.text =
+            getString(topadsdashboardR.string.topads_headline_empty_state_desc)
         hariIni?.visibility = View.GONE
     }
 
     private fun showAutoPsEmptyView() {
         appBarLayout?.gone()
         hariIni?.gone()
-        view?.findViewById<CardUnify>(R.id.empty_view_autops)?.let {
+        view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view_autops)?.let {
             it.show()
-            it.findViewById<Typography>(R.id.article_link)?.let {
+            it.findViewById<Typography>(topadsdashboardR.id.article_link)?.let {
                 it.movementMethod = LinkMovementMethod.getInstance()
                 it.text = getClickableString()
             }
-            it.findViewById<ImageUnify>(R.id.empty_image)?.urlSrc = TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL
-            it.findViewById<UnifyButton>(R.id.create_shopads_cta)?.setOnClickListener {
+            it.findViewById<ImageUnify>(topadsdashboardR.id.empty_image)?.urlSrc = TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL
+            it.findViewById<UnifyButton>(topadsdashboardR.id.create_shopads_cta)?.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
             }
-            it.findViewById<UnifyButton>(R.id.autops_activate_cta)?.setOnClickListener {
+            it.findViewById<UnifyButton>(topadsdashboardR.id.autops_activate_cta)?.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
             }
         }
     }
 
     private fun getClickableString(): SpannableString {
-        val text = getString(R.string.topads_auto_ps_iklan_toko_empty_view_desc)
+        val text = getString(topadsdashboardR.string.topads_auto_ps_iklan_toko_empty_view_desc)
         val ss = SpannableString(text)
         val cs = object : ClickableSpan() {
             override fun onClick(p0: View) {

@@ -51,7 +51,7 @@
             android:id="@+id/onBoarding"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/topads_enable_auto_ps"
+            android:text="@string/auto_ads_status_inactive_button"
             android:layout_marginTop="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/status_desc"
