@@ -18,9 +18,6 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
     @RelaxedMockK
     protected lateinit var getAllAnnotationPageUseCase: GetAllAnnotationPageUseCase
 
-    @RelaxedMockK
-    protected lateinit var job: Job
-
     protected lateinit var viewModel: TokoNowAllAnnotationViewModel
 
     protected val categoryId = "123"
