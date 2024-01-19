@@ -62,8 +62,7 @@ class DynamicOneLinerViewHolder(
         val url = data.applink
         dynamicOneLinerIconRight.showIfWithBlock(url.isNotEmpty()) {
             itemView.setOnClickListener {
-                listener.onClickDynamicOneLiner(data.text, componentTrackDataModel)
-                listener.goToApplink(url)
+                listener.onClickDynamicOneLiner(data.text, url, componentTrackDataModel)
             }
 
             val chainStyle = when (data.chevronPos) {

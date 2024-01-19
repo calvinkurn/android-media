@@ -68,7 +68,8 @@ fun NormalPriceComponent(
 ) {
     val data = uiModel ?: return
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(top = 16.dp, start = 16.dp, end = 16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -85,7 +86,10 @@ fun NormalPriceComponent(
                     source = ImageSource.Remote(freeOngkirImageUrl, customUIError = {
 
                     }),
-                    modifier = Modifier.height(20.dp).wrapContentWidth().padding(start = 8.dp)
+                    modifier = Modifier
+                        .height(20.dp)
+                        .wrapContentWidth()
+                        .padding(start = 8.dp)
                 )
             }
         }
@@ -130,12 +134,17 @@ fun PromoPriceHeader(
         modifier = modifier.padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        NestImage(
-            source = Remote(mainIconUrl, customUIError = {
+        if (mainIconUrl.isNotEmpty()) {
+            NestImage(
+                source = Remote(mainIconUrl,
+                    customUIError = {
 
-            }),
-            modifier = Modifier.size(24.dp).padding(end = 4.dp)
-        )
+                    }),
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(end = 4.dp)
+            )
+        }
 
         NestTypography(
             promoPriceFmt,
@@ -172,7 +181,11 @@ fun PromoPriceFooter(
     boLogo: String,
     modifier: Modifier = Modifier
 ) {
-    ConstraintLayout(modifier = modifier.padding(8.dp).fillMaxWidth()) {
+    ConstraintLayout(
+        modifier = modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
         val (normalPrice, slashPrice, boImage) = createRefs()
         val context = LocalContext.current
         if (priceAdditionalFmt.isNotEmpty()) {
@@ -196,27 +209,31 @@ fun PromoPriceFooter(
                 source = Remote(source = boLogo, customUIError = {
 
                 }),
-                modifier = Modifier.constrainAs(boImage) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.absoluteRight)
-                }.height(18.dp)
+                modifier = Modifier
+                    .constrainAs(boImage) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.absoluteRight)
+                    }
+                    .height(18.dp)
             )
         }
 
         if (slashPriceFmt.isNotEmpty()) {
             NestTypography(
                 slashPriceFmt,
-                modifier = Modifier.constrainAs(slashPrice) {
-                    linkTo(
-                        start = normalPrice.end,
-                        top = normalPrice.top,
-                        bottom = normalPrice.bottom,
-                        end = boImage.start,
-                        horizontalBias = 0F
-                    )
-                    width = Dimension.preferredWrapContent
-                }.padding(start = 4.dp, end = 4.dp),
+                modifier = Modifier
+                    .constrainAs(slashPrice) {
+                        linkTo(
+                            start = normalPrice.end,
+                            top = normalPrice.top,
+                            bottom = normalPrice.bottom,
+                            end = boImage.start,
+                            horizontalBias = 0F
+                        )
+                        width = Dimension.preferredWrapContent
+                    }
+                    .padding(start = 4.dp, end = 4.dp),
                 textStyle = NestTheme.typography.small.copy(
                     color = NestTheme.colors.NN._400,
                     textDecoration = TextDecoration.LineThrough
@@ -240,22 +257,27 @@ fun PromoPriceCard(
             .background(
                 data.cardBackgroundColor.color,
                 RoundedCornerShape(10.dp)
-            ).clickable {
+            )
+            .clickable {
                 onPromoPriceClicked.invoke()
             }
     ) {
         val (superGraphic, header, divider, footer) = createRefs()
 
-        NestImage(
-            source = Remote(source = data.superGraphicIconUrl),
-            modifier = Modifier.constrainAs(superGraphic) {
-                top.linkTo(parent.top)
-                end.linkTo(parent.absoluteRight)
-                bottom.linkTo(parent.bottom)
-                height = Dimension.fillToConstraints
-            },
-            contentScale = ContentScale.Fit
-        )
+        if (data.superGraphicIconUrl.isNotEmpty()) {
+            NestImage(
+                source = Remote(source = data.superGraphicIconUrl, customUIError = {
+
+                }),
+                modifier = Modifier.constrainAs(superGraphic) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.absoluteRight)
+                    bottom.linkTo(parent.bottom)
+                    height = Dimension.fillToConstraints
+                },
+                contentScale = ContentScale.Fit
+            )
+        }
 
         PromoPriceHeader(
             mainIconUrl = data.mainIconUrl,

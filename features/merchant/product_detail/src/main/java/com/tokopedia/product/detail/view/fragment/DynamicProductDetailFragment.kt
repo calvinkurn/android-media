@@ -677,6 +677,28 @@ open class DynamicProductDetailFragment :
         setPDPDebugMode()
     }
 
+    private fun onClickDynamicOneLinerPromo() {
+        val mvcData = viewModel.getP2()?.merchantVoucherSummary ?: return
+        val p1 = viewModel.getDynamicProductInfoP1 ?: return
+        goToMvc(
+            shopId = p1.basic.shopID,
+            productId = p1.basic.productID,
+            mvcAdditionalData = mvcData.additionalData
+        )
+    }
+
+    private fun goToMvc(shopId: String, productId: String, mvcAdditionalData: String) {
+        val mContext = context ?: return
+        val intent = TransParentActivity.getIntent(
+            context = mContext,
+            shopId = shopId,
+            source = MvcSource.PDP,
+            productId = productId,
+            additionalParamJson = mvcAdditionalData
+        )
+        mvcLauncher.launch(intent)
+    }
+
     private fun getPrefetchData(): ProductDetailPrefetch.Data? {
         val context = context ?: return null
         val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
@@ -2104,15 +2126,11 @@ open class DynamicProductDetailFragment :
         @MvcSource source: Int,
         uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
     ) {
-        val mContext = context ?: return
-        val intent = TransParentActivity.getIntent(
-            context = mContext,
+        goToMvc(
             shopId = uiModel.shopId,
-            source = source,
             productId = uiModel.productIdMVC,
-            additionalParamJson = uiModel.additionalData
+            mvcAdditionalData = uiModel.additionalData
         )
-        mvcLauncher.launch(intent)
     }
 
     override fun isOwner(): Boolean = viewModel.isShopOwner()
@@ -6307,8 +6325,17 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    override fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel) {
+    override fun onClickDynamicOneLiner(
+        title: String,
+        url: String,
+        component: ComponentTrackDataModel
+    ) {
         val commonTracker = generateCommonTracker() ?: return
+        if (component.componentName == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_PROMO) {
+            onClickDynamicOneLinerPromo()
+        } else {
+            goToApplink(url)
+        }
         DynamicOneLinerTracking.onClickDynamicOneliner(
             title,
             commonTracker,
