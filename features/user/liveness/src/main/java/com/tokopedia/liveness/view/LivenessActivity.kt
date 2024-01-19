@@ -23,16 +23,10 @@ import com.tokopedia.liveness.R
 import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
-import com.tokopedia.liveness.utils.LivenessConstants.REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import javax.inject.Inject
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK as livenessSdk
 
 open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectionComponent> {
-
-    @Inject
-    lateinit var remoteConfig: RemoteConfig
 
     private var fragment: Fragment? = null
 
@@ -62,8 +56,10 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
         livenessSdk.setResultPictureSize(RESOLUTION_LIVENESS)
+
+        //Note: first parameter is to set random liveness type
         livenessSdk.setActionSequence(
-            isRandomDetection(),
+            true,
             Detector.DetectionType.MOUTH,
             Detector.DetectionType.BLINK,
             Detector.DetectionType.POS_YAW
@@ -178,11 +174,6 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
                     finish()
                 }.create().show()
     }
-
-    private fun isRandomDetection(): Boolean = remoteConfig.getBoolean(
-        REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION,
-        false
-    )
 
     companion object {
         private const val RESOLUTION_LIVENESS = 600

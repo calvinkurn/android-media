@@ -308,4 +308,14 @@ object MacroIntent {
             return intent
         }
     }
+
+    object RechargeHomepage {
+        const val RV_RECHARGE_HOMEPAGE = "recycler_view"
+
+        fun getRechargeHomepageIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://recharge/home/dynamic_macrobenchmark")
+            return intent
+        }
+    }
 }
