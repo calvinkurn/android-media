@@ -103,7 +103,7 @@ class BCABalanceViewModel @Inject constructor(
                                 "",
                                 messageLogNR(
                                     TAG_PROCESS_PENDING_BALANCE_GEN_2,
-                                    e.message ?: ""
+                                    e.message
                                 ), 0
                             )
                         )
@@ -147,7 +147,7 @@ class BCABalanceViewModel @Inject constructor(
                                 "",
                                 messageLogNR(
                                     TAG_PROCESS_PENDING_BALANCE_GEN_1,
-                                    e.message ?: ""
+                                    e.message
                                 ), 0
                             )
                         )
@@ -230,7 +230,7 @@ class BCABalanceViewModel @Inject constructor(
                         cardNumber,
                         messageLogNR(
                             TAG_PROCESS_PENDING_BALANCE,
-                            it.message ?: ""
+                            it.message
                         ), lastBalance
                     )
                 )
@@ -309,7 +309,7 @@ class BCABalanceViewModel @Inject constructor(
                     cardNumber,
                     messageLogNR(
                         TAG_PROCESS_TRANSACTION_ID,
-                        it.message ?: ""
+                        it.message
                     ), lastBalance
                 )
             )
@@ -366,7 +366,7 @@ class BCABalanceViewModel @Inject constructor(
                                 cardNumber,
                                 messageLogNR(
                                     TAG_PROCESS_SDK_SESSION_1,
-                                    e.message ?: ""
+                                    e.message
                                 ),
                                 lastBalance
                             )
@@ -458,7 +458,7 @@ class BCABalanceViewModel @Inject constructor(
                         cardNumber,
                         messageLogNR(
                             TAG_PROCESS_SESSION_KEY,
-                            it.message ?: ""
+                            it.message
                         ),
                         lastBalance
                     )
@@ -517,7 +517,7 @@ class BCABalanceViewModel @Inject constructor(
                                 cardNumber,
                                 messageLogNR(
                                     TAG_PROCESS_SDK_SESSION_2,
-                                    e.message ?: ""
+                                    e.message
                                 ),
                                 lastBalance
                             )
@@ -605,7 +605,7 @@ class BCABalanceViewModel @Inject constructor(
                                 cardNumber,
                                 messageLogNR(
                                     TAG_PROCESS_SDK_TOP_UP_1,
-                                    e.message ?: ""
+                                    e.message
                                 ),
                                 lastBalance
                             )
@@ -793,7 +793,7 @@ class BCABalanceViewModel @Inject constructor(
                                 cardNumber,
                                 messageLogNR(
                                     TAG_PROCESS_SDK_TOP_UP_2,
-                                e.message ?: ""
+                                    e.message
                                 ),
                                 lastBalance
                             )
@@ -861,7 +861,7 @@ class BCABalanceViewModel @Inject constructor(
                     cardNumber,
                     messageLogNR(
                         TAG_PROCESS_ACK,
-                        it.message ?: ""
+                        it.message
                     ),
                     updatedBalance
                 )
@@ -928,7 +928,7 @@ class BCABalanceViewModel @Inject constructor(
                             cardNumber,
                             messageLogNR(
                                 TAG_PROCESS_SDK_REVERSAL,
-                                e.message ?: ""
+                                e.message
                             ),
                             lastBalance
                         )
@@ -1013,7 +1013,7 @@ class BCABalanceViewModel @Inject constructor(
                     cardNumber,
                     messageLogNR(
                         TAG_PROCESS_REVERSAL,
-                        it.message ?: ""
+                        it.message
                     ), lastBalance
                 )
             ))
@@ -1054,7 +1054,7 @@ class BCABalanceViewModel @Inject constructor(
                             cardNumber,
                             messageLogNR(
                                 TAG_PROCESS_SDK_BCALASTBCATOP_UP,
-                                e.message ?: ""
+                                e.message
                             ), lastBalance
                         ),
                     ))
@@ -1116,7 +1116,7 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun messageLogNR(step: String, errorMessage: String) : String {
+    private fun messageLogNR(step: String, errorMessage: String?) : String {
         return "$step: $errorMessage"
     }
     private fun separateResponseCodeFromCardData(strLogResp: String): String {

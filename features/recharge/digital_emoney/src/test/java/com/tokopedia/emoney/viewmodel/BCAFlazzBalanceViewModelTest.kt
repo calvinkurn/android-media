@@ -4,6 +4,7 @@ import android.nfc.tech.IsoDep
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
 import com.tokopedia.common_electronic_money.util.ElectronicMoneyEncryption
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.emoney.domain.request.BCAFlazzRequestMapper
@@ -11,7 +12,6 @@ import com.tokopedia.emoney.domain.request.CommonBodyEnc
 import com.tokopedia.emoney.domain.response.BCAFlazzData
 import com.tokopedia.emoney.domain.response.BCAFlazzResponse
 import com.tokopedia.emoney.domain.response.BCAFlazzResponseMapper
-import com.tokopedia.emoney.domain.response.JakCardResponseMapper
 import com.tokopedia.emoney.domain.usecase.GetBCAFlazzUseCase
 import com.tokopedia.emoney.integration.BCALibraryIntegration
 import com.tokopedia.emoney.integration.data.JNIResult
@@ -207,6 +207,15 @@ class BCAFlazzBalanceViewModelTest {
     private val setConfigFailResult = JNIResult(
         0,
         "0000XXXXXXX",
+        0,
+        balance,
+        cardNumber,
+        "0000"
+    )
+
+    private val setConfigFailResultLessThan4 = JNIResult(
+        0,
+        "789",
         0,
         balance,
         cardNumber,
@@ -432,7 +441,7 @@ class BCAFlazzBalanceViewModelTest {
         bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, mockPublicKeyString, mockPrivateKeyString)
         // then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -593,7 +602,54 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
+            ERROR_MESSAGE
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldReturnLastBalance_SetConfigFailLessThanMinimum() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigFailResultLessThan4
+
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkNoPendingBalanceGen1Result
+
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime, ATD
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -640,7 +696,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -687,7 +743,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -730,7 +786,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -963,7 +1019,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1011,7 +1067,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1059,7 +1115,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1107,7 +1163,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1155,7 +1211,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1304,7 +1360,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1447,7 +1503,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1590,7 +1646,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1664,7 +1720,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1738,7 +1794,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -1941,7 +1997,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -2038,7 +2094,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -2245,7 +2301,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -2346,7 +2402,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -2458,7 +2514,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -2570,7 +2626,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -3907,7 +3963,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -3922,7 +3978,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -3937,7 +3993,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -3952,7 +4008,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -3963,11 +4019,11 @@ class BCAFlazzBalanceViewModelTest {
         bcaBalanceViewModel.processSDKBCATopUp2(
             nullIsoDep,
             "",
-            "","","","",BCAFlazzData()
+            "","","","",BCAFlazzData(), 0
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -3982,7 +4038,7 @@ class BCAFlazzBalanceViewModelTest {
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
@@ -3993,11 +4049,11 @@ class BCAFlazzBalanceViewModelTest {
         bcaBalanceViewModel.processSDKBCAlastBCATopUp(
             nullIsoDep,
             "",
-            "","","",""
+            "","","","", 0
         )
         //then
         Assert.assertEquals(
-            ((bcaBalanceViewModel.errorCardMessage.value) as Throwable).message,
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
             ERROR_MESSAGE
         )
     }
