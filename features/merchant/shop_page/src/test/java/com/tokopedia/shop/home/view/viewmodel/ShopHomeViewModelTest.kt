@@ -1544,9 +1544,9 @@ class ShopHomeViewModelTest {
                     myShop = any(),
                     isLoggedIn = any(),
                     isEnableDirectPurchase = any(),
-                    shopId =any(),
-                    listWidgetLayout =any(),
-                    isOverrideTheme =any(),
+                    shopId = any(),
+                    listWidgetLayout = any(),
+                    isOverrideTheme = any(),
                     colorSchema = any()
                 )
             } returns listOf(
@@ -1649,15 +1649,14 @@ class ShopHomeViewModelTest {
             mockkObject(ShopPageHomeMapper)
             every {
                 ShopPageHomeMapper.mapToListShopHomeWidget(
-                    responseWidgetData =any(),
-                    myShop =any(),
-                    isLoggedIn =any(),
+                    responseWidgetData = any(),
+                    myShop = any(),
+                    isLoggedIn = any(),
                     isEnableDirectPurchase = any(),
-                    shopId =any(),
-                    listWidgetLayout =any(),
-                    isOverrideTheme =any(),
+                    shopId = any(),
+                    listWidgetLayout = any(),
+                    isOverrideTheme = any(),
                     colorSchema = any()
-                    )
                 )
             } returns listOf(
                 ProductCardUiModel()
