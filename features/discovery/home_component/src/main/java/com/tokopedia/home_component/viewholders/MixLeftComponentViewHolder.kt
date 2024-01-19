@@ -254,7 +254,11 @@ class MixLeftComponentViewHolder (itemView: View,
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ChannelModelMapper.mapToProductCardModel(element, cardInteraction),
+                    ChannelModelMapper.mapToProductCardModel(
+                        element,
+                        cardInteraction,
+                        isInBackground = channel.channelBanner.imageUrl.isNotEmpty()
+                    ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
@@ -287,6 +291,7 @@ class MixLeftComponentViewHolder (itemView: View,
             Dispatchers.Default,
             productCardWidth,
             isReimagine = true,
+            useCompatPadding = true,
         )
     }
 

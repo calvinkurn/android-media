@@ -8,4 +8,6 @@
     android:clickable="true"
     android:focusable="true"
     app:reimagine="true"
-    app:reimagine_template="listCarousel"/>
+    app:reimagine_template="listCarousel"
+    app:useCompatPadding="true"
+    app:forceWidth="236dp" />

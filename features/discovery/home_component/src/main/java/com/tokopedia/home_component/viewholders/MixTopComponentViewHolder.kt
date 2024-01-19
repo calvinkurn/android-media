@@ -336,6 +336,7 @@ class MixTopComponentViewHolder(
             Dispatchers.Default,
             productCardWidth,
             isReimagine = true,
+            useCompatPadding = true,
         )
     }
 

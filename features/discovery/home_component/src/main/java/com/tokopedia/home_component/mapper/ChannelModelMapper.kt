@@ -16,6 +16,7 @@ object ChannelModelMapper {
         productCardListType: ProductCardModel.ProductListType = ProductCardModel.ProductListType.CONTROL,
         excludeShop: Boolean = false,
         excludeLabelGroup: List<String> = emptyList(),
+        isInBackground: Boolean = false,
     ): ProductCardModel {
         val productCardAnimate = if(cardInteration == true) ANIMATE_OVERLAY_BOUNCE else animateOnPress
         return ProductCardModel(
@@ -61,7 +62,8 @@ object ChannelModelMapper {
             animateOnPress = productCardAnimate,
             isTopStockBar = isTopStockbar,
             cardType = cardType,
-            productListType = productCardListType
+            productListType = productCardListType,
+            isInBackground = isInBackground,
         )
     }
 }

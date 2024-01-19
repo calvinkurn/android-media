@@ -10,4 +10,5 @@
     android:clickable="true"
     android:focusable="true"
     app:reimagine="true"
-    app:reimagine_template="list"/>
+    app:reimagine_template="list"
+    app:useCompatPadding="true" />
