@@ -11,13 +11,13 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.search.result.domain.model.UserProfileDobModel
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.UserProfileDobModel
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -48,8 +48,8 @@ class SearchProductFirstPageGqlUseCase(
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val searchLogger: SearchLogger,
-    private val reimagineRollence: ReimagineRollence,
-): UseCase<SearchProductModel>(), CoroutineScope {
+    private val reimagineRollence: ReimagineRollence
+) : UseCase<SearchProductModel>(), CoroutineScope {
 
     private val masterJob = SupervisorJob()
 
@@ -94,7 +94,7 @@ class SearchProductFirstPageGqlUseCase(
         return Observable.zip(
             gqlSearchProductObservable,
             topAdsImageViewModelObservable,
-            ::setTopAdsImageViewModelList,
+            ::setTopAdsImageViewModelList
         )
     }
 
@@ -158,10 +158,11 @@ class SearchProductFirstPageGqlUseCase(
 
     private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(
         requestParams: RequestParams,
-        params: String,
+        params: String
     ) {
-        if (!requestParams.isSkipGetLastFilterWidget())
+        if (!requestParams.isSkipGetLastFilterWidget()) {
             add(createGetLastFilterRequest(params = params))
+        }
     }
 
     @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
@@ -174,9 +175,9 @@ class SearchProductFirstPageGqlUseCase(
 
     private fun createTopAdsImageViewModelObservable(
         query: String,
-        requestParams: RequestParams,
+        requestParams: RequestParams
     ): Observable<List<TopAdsImageViewModel>> {
-        return if(requestParams.isSkipTdnBanner()) {
+        return if (requestParams.isSkipTdnBanner()) {
             Observable.just(emptyList())
         } else {
             Observable.create<List<TopAdsImageViewModel>>({ emitter ->
@@ -198,8 +199,7 @@ class SearchProductFirstPageGqlUseCase(
                 )
                 emitter.onNext(topAdsImageViewModelList)
                 emitter.onCompleted()
-            }
-            catch (throwable: Throwable) {
+            } catch (throwable: Throwable) {
                 searchLogger.logTDNError(throwable)
                 emitter.onNext(listOf())
             }
@@ -210,12 +210,15 @@ class SearchProductFirstPageGqlUseCase(
         getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
 
     private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
-        val timeoutMs : Long = TDN_TIMEOUT
+        val timeoutMs: Long = TDN_TIMEOUT
 
-        return this.timeout(timeoutMs, TimeUnit.MILLISECONDS, Observable.create({ emitter ->
-            searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
-            emitter.onNext(listOf())
-        }, BUFFER))
+        return this.timeout(
+            timeoutMs, TimeUnit.MILLISECONDS,
+            Observable.create({ emitter ->
+                searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
+                emitter.onNext(listOf())
+            }, BUFFER)
+        )
     }
 
     private fun setTopAdsImageViewModelList(
@@ -233,16 +236,16 @@ class SearchProductFirstPageGqlUseCase(
     private fun createUserProfileDobRequest(): GraphqlRequest =
         GraphqlRequest(
             UserProfileDob(),
-            UserProfileDobModel::class.java,
+            UserProfileDobModel::class.java
         )
 
     private fun MutableList<GraphqlRequest>.addUserProfileDobRequest(
-        reimagineRollence: ReimagineRollence,
+        reimagineRollence: ReimagineRollence
     ) {
-        if (reimagineRollence.search3ProductCard().isUseAceSearchProductV5())
+        if (reimagineRollence.search3ProductCard().isUseAceSearchProductV5()) {
             add(createUserProfileDobRequest())
+        }
     }
-
 
     override fun unsubscribe() {
         super.unsubscribe()
@@ -269,7 +272,9 @@ class SearchProductFirstPageGqlUseCase(
                             total_data
                             val_max
                             val_min
-                            hex_color
+                            hex_color 
+                            image_url_active
+                            image_url_inactive
                             child {
                                 key
                                 value
