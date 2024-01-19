@@ -413,9 +413,6 @@ class ShareExViewModel @Inject constructor(
         }
     }
 
-    private fun resetIntentUiState() {
-    }
-
     private fun setLoadingIntentUiState(channelEnum: ShareExChannelEnum?) {
         updateIntentUiState(
             intent = null,
