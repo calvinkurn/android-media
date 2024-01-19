@@ -32,6 +32,7 @@ object TrackerConstant {
         const val CLICK_OPT_OUT_NON_BULK = "click opt out"
         const val CLICK_OPT_OUT_VARIANT = "click opt out variant"
         const val IMPRESSION_OPT_OUT_REASON_BOTTOM_SHEET_NO_SUBSIDY_PRODUCT = "impression non subsidized"
+        const val CLICK_CLOSE_BOTTOM_SHEET_VARIANT = "click close bottomsheet variant"
     }
 
     object EventCategory{
@@ -65,5 +66,6 @@ object TrackerConstant {
         const val TRACKER_ID_CLICK_OPT_OUT_VARIANT = "49509"
         const val TRACKER_ID_IMPRESSION_OPT_OUT_REASON_BOTTOM_SHEET_NO_SUBSIDY_PRODUCT = "49510"
         const val TRACKER_ID_CLICK_EDU_ARTICLE_OPT_OUT_BOTTOM_SHEET = "49526"
+        const val TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_VARIANT = "49527"
     }
 }

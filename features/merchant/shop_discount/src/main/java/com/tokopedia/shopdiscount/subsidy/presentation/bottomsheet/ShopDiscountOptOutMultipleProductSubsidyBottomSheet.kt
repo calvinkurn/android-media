@@ -1,6 +1,7 @@
 package com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,8 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
 
     companion object {
         private const val DATA = "data"
+        private const val DISMISS_FROM_BOTTOM_SHEET_CLOSE_BUTTON = "x"
+        private const val DISMISS_FROM_OVERLAY = "empty"
         fun newInstance(
             data: ShopDiscountManageProductSubsidyUiModel,
         ): ShopDiscountOptOutMultipleProductSubsidyBottomSheet {
@@ -245,9 +248,24 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
             setTitle(getBottomSheetTitle())
             setChild(this.root)
             setCloseClickListener {
+                sendDismissOptOutMultipleProductBottomSheetTracker(DISMISS_FROM_BOTTOM_SHEET_CLOSE_BUTTON)
                 dismiss()
             }
         }
+    }
+
+    private fun sendDismissOptOutMultipleProductBottomSheetTracker(dismissSource: String) {
+        tracker.sendDismissOptOutMultipleProductBottomSheetEvent(
+            data.entrySource.value,
+            buttonOptOut?.isEnabled.orFalse(),
+            buttonOptOut?.text.toString(),
+            dismissSource
+        )
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        sendDismissOptOutMultipleProductBottomSheetTracker(DISMISS_FROM_OVERLAY)
+        super.onCancel(dialog)
     }
 
     private fun getBottomSheetTitle(): String {
