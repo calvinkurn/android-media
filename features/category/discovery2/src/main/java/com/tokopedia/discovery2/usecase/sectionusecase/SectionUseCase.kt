@@ -50,7 +50,7 @@ class SectionUseCase @Inject constructor(
                     val productListData = when (comp.name) {
                         ComponentNames.ProductCardRevamp.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
-                                if (comp.properties?.cardType.equals("V1", true) ) {
+                                if (comp.properties?.cardType.equals("V1", true)) {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.MasterProductCardItemList.componentName,
@@ -68,7 +68,7 @@ class SectionUseCase @Inject constructor(
                                     )
                                 }
                             } else {
-                                if (comp.properties?.cardType.equals("V1", true) ) {
+                                if (comp.properties?.cardType.equals("V1", true)) {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.ProductCardRevampItem.componentName,
@@ -90,7 +90,7 @@ class SectionUseCase @Inject constructor(
 
                         ComponentNames.ProductCardCarousel.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
-                                if (comp.properties?.cardType.equals("V1", true) ) {
+                                if (comp.properties?.cardType.equals("V1", true)) {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.ProductCardCarouselItemList.componentName,
@@ -98,8 +98,7 @@ class SectionUseCase @Inject constructor(
                                         creativeName,
                                         parentSectionId = comp.parentSectionId
                                     )
-
-                                }else{
+                                } else {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.ProductCardCarouselItemListReimagine.componentName,
@@ -109,7 +108,7 @@ class SectionUseCase @Inject constructor(
                                     )
                                 }
                             } else {
-                                if (comp.properties?.cardType.equals("V1", true) ) {
+                                if (comp.properties?.cardType.equals("V1", true)) {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.ProductCardCarouselItem.componentName,
@@ -117,8 +116,7 @@ class SectionUseCase @Inject constructor(
                                         creativeName,
                                         parentSectionId = comp.parentSectionId
                                     )
-
-                                }else{
+                                } else {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.ProductCardCarouselItemReimagine.componentName,
@@ -131,7 +129,7 @@ class SectionUseCase @Inject constructor(
                         }
 
                         ComponentNames.ProductCardSprintSale.componentName -> {
-                            if (comp.properties?.cardType.equals("V1", true) ) {
+                            if (comp.properties?.cardType.equals("V1", true)) {
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
                                     ComponentNames.ProductCardSprintSaleItem.componentName,
@@ -139,7 +137,7 @@ class SectionUseCase @Inject constructor(
                                     creativeName,
                                     parentSectionId = comp.parentSectionId
                                 )
-                            }else{
+                            } else {
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
                                     ComponentNames.ProductCardSprintSaleItemReimagine.componentName,
@@ -151,14 +149,14 @@ class SectionUseCase @Inject constructor(
                         }
 
                         ComponentNames.ProductCardSprintSaleCarousel.componentName -> {
-                            if (comp.properties?.cardType.equals("V1", true) ) {
+                            if (comp.properties?.cardType.equals("V1", true)) {
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
                                     ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
                                     comp.properties,
                                     creativeName
                                 )
-                            }else{
+                            } else {
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
                                     ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName,
@@ -268,6 +266,7 @@ class SectionUseCase @Inject constructor(
                 }
             }
         }
+        queryParameterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
         return Utils.getQueryString(queryParameterMap)
     }
 
