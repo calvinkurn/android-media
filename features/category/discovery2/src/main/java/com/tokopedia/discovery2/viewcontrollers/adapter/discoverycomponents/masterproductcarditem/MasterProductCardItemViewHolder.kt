@@ -27,8 +27,11 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener {
@@ -36,6 +39,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var masterProductCardItemViewModel: MasterProductCardItemViewModel? = null
     private var masterProductCardGridView: ProductCardGridView? = null
     private var masterProductCardListView: ProductCardListView? = null
+    private var productCardView: CardUnify2? = itemView.findViewById(productcardR.id.cardViewProductCard)
+    private var productCardViewReimagined: CardUnify2? = itemView.findViewById(productcardR.id.productCardCardUnifyContainer)
     private var productCardName = ""
     private var dataItem: DataItem? = null
     private var componentPosition: Int? = null
@@ -116,11 +121,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 handleUIClick(it)
             }
         }
-
     }
 
     private fun checkForVariantProductCard(parentProductId: String?): Boolean {
-        return parentProductId != null && parentProductId.toLongOrZero() > 0
+        return parentProductId != null && parentProductId.toLongOrZero()>0
     }
 
     private fun showNotificationReminderPrompt() {
@@ -140,8 +144,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         masterProductCardItemViewModel?.getProductDataItem()?.let { dataItem ->
             (fragment as DiscoveryFragment).openVariantBottomSheet(
                 productId = dataItem.productId.orEmpty(),
-                parentPosition = masterProductCardItemViewModel?.getParentPositionForCarousel()
-                    ?: RecyclerView.NO_POSITION,
+                parentPosition = masterProductCardItemViewModel?.getParentPositionForCarousel() ?: RecyclerView.NO_POSITION,
                 requestingComponent = masterProductCardItemViewModel?.components
             )
         }
@@ -175,11 +178,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 lifecycle,
                 Observer {
                     if (it == true) {
-                        componentPosition?.let { position ->
-                            (fragment as DiscoveryFragment).openLoginScreen(
-                                position
-                            )
-                        }
+                        componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
                     }
                 }
             )
@@ -207,10 +206,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     if (it) (fragment as DiscoveryFragment).reSync()
                 }
             )
-            masterProductCardItemViewModel?.getScrollSimilarProductComponentID()
-                ?.observe(lifecycle) {
-                    (fragment as DiscoveryFragment).scrollToComponentWithID(it)
-                }
+            masterProductCardItemViewModel?.getScrollSimilarProductComponentID()?.observe(lifecycle) {
+                (fragment as DiscoveryFragment).scrollToComponentWithID(it)
+            }
         }
     }
 
@@ -225,8 +223,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardItemViewModel?.showNotifyToastMessage()?.removeObservers(it)
             masterProductCardItemViewModel?.getComponentPosition()?.removeObservers(it)
             masterProductCardItemViewModel?.getSyncPageLiveData()?.removeObservers(it)
-            masterProductCardItemViewModel?.getScrollSimilarProductComponentID()
-                ?.removeObservers(it)
+            masterProductCardItemViewModel?.getScrollSimilarProductComponentID()?.removeObservers(it)
         }
     }
 
@@ -234,18 +231,22 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         if (productCardName == ComponentNames.ProductCardCarouselItem.componentName ||
             productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
             productCardName == ComponentNames.ProductCardCarouselItemList.componentName ||
+            productCardName == ComponentNames.ProductCardCarouselItemReimagine.componentName ||
+            productCardName == ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName ||
+            productCardName == ComponentNames.ProductCardCarouselItemListReimagine.componentName ||
             productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName
         ) {
             masterProductCardGridView?.let {
-                it.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
+                productCardView?.layoutParams?.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
+                productCardViewReimagined?.layoutParams?.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
                 it.applyCarousel()
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
             masterProductCardListView?.let {
                 it.applyCarousel()
-                it.layoutParams?.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_200)
-                it.layoutParams?.width = Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_70)
+                productCardView?.layoutParams?.width = Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_70)
+                productCardViewReimagined?.layoutParams?.width = Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_70)
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
@@ -261,7 +262,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         setSimilarProductWishlist(dataItem)
         checkProductIsFulfillment(productCardModel)
     }
-
     private fun checkProductIsFulfillment(productCardModel: ProductCardModel) {
         productCardModel.labelGroupList.forEach {
             if (it.position == IS_FULFILLMENT) {
@@ -311,13 +311,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 it.text = notifyText
                 if (notifyMeStatus == true) {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+                        setTextColor(context.resources.getColor(unifyprinciplesR.color.Unify_NN950_68))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.ALTERNATE
                     }
                 } else {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                        setTextColor(context.resources.getColor(unifyprinciplesR.color.Unify_GN500))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.MAIN
                     }
@@ -377,26 +377,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private fun showNotifyResultToast(toastData: Pair<Boolean, String?>) {
         try {
             if (!toastData.first && !toastData.second.isNullOrEmpty()) {
-                Toaster.make(
-                    itemView.rootView,
-                    toastData.second!!,
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_NORMAL
-                )
+                Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
             } else if (toastData.first && !toastData.second.isNullOrEmpty()) {
-                Toaster.make(
-                    itemView.rootView,
-                    toastData.second!!,
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR
-                )
+                Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
             } else {
-                Toaster.make(
-                    itemView.rootView,
-                    itemView.context.getString(R.string.product_card_error_msg),
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR
-                )
+                Toaster.make(itemView.rootView, itemView.context.getString(R.string.product_card_error_msg), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -404,10 +389,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun sentNotifyButtonEvent() {
-        masterProductCardItemViewModel?.let {
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                .trackNotifyClick(it.components, it.isUserLoggedIn(), it.getUserID())
-        }
+        masterProductCardItemViewModel?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(it.components, it.isUserLoggedIn(), it.getUserID()) }
     }
 
     override fun onQuantityChanged(quantity: Int) {
@@ -441,7 +423,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             }
         }
     }
-
     companion object {
         const val IS_FULFILLMENT = "fulfillment"
     }

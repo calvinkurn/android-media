@@ -39,7 +39,7 @@ enum class ComponentNames(val componentName: String) {
     ProductCardRevamp("product_card_revamp"),
     ProductCardRevampItem("product_card_revamp_item"),
     MasterProductCardItemList("master_product_card_item_list"),
-
+    //Reimagine
     MasterProductCardItemReimagine("master_product_card_item_reimagine"),
     MasterProductCardItemListReimagine("master_product_card_item_list_reimagine"),
 
@@ -47,14 +47,21 @@ enum class ComponentNames(val componentName: String) {
     ProductCardCarousel("product_card_carousel"),
     ProductCardCarouselItem("product_card_carousel_item"),
     ProductCardCarouselItemList("product_card_carousel_item_list"),
+    //Reimagine
+    ProductCardCarouselItemReimagine("product_card_carousel_item_reimagine"),
+    ProductCardCarouselItemListReimagine("product_card_carousel_item_list_reimagine"),
 
     // Product Card Sprint Sale
     ProductCardSprintSale("product_card_sprint_sale"),
     ProductCardSprintSaleItem("product_card_sprint_sale_item"),
+    ProductCardSprintSaleItemReimagine("product_card_sprint_sale_item_reimagine"),
 
     // Product Card Horizontal Sprint Sale
     ProductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
     ProductCardSprintSaleCarouselItem("product_card_sprint_sale_carousel_item"),
+    ProductCardSprintSaleCarouselItemReimagine("product_card_sprint_sale_carousel_item_reimagine"),
+
+
     ProductListEmptyState("product_list_empty_state"),
     ContentCardEmptyState("content_card_empty_state"),
     SaleEndState("sale_end_state"),

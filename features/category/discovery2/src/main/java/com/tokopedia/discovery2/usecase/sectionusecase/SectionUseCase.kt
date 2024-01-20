@@ -50,59 +50,124 @@ class SectionUseCase @Inject constructor(
                     val productListData = when (comp.name) {
                         ComponentNames.ProductCardRevamp.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
-                                DiscoveryDataMapper().mapListToComponentList(
-                                    comp.data,
-                                    ComponentNames.MasterProductCardItemList.componentName,
-                                    comp.properties,
-                                    creativeName,
-                                    parentSectionId = comp.parentSectionId
-                                )
+                                if (comp.properties?.cardType.equals("V1", true) ) {
+                                    DiscoveryDataMapper().mapListToComponentList(
+                                        comp.data,
+                                        ComponentNames.MasterProductCardItemList.componentName,
+                                        comp.properties,
+                                        creativeName,
+                                        parentSectionId = comp.parentSectionId
+                                    )
+                                } else {
+                                    DiscoveryDataMapper().mapListToComponentList(
+                                        comp.data,
+                                        ComponentNames.MasterProductCardItemListReimagine.componentName,
+                                        comp.properties,
+                                        creativeName,
+                                        parentSectionId = comp.parentSectionId
+                                    )
+                                }
                             } else {
-                                DiscoveryDataMapper().mapListToComponentList(
-                                    comp.data,
-                                    ComponentNames.ProductCardRevampItem.componentName,
-                                    comp.properties,
-                                    creativeName,
-                                    parentSectionId = comp.parentSectionId
-                                )
+                                if (!comp.properties?.cardType.equals("V1", true) ) {
+                                    DiscoveryDataMapper().mapListToComponentList(
+                                        comp.data,
+                                        ComponentNames.ProductCardRevampItem.componentName,
+                                        comp.properties,
+                                        creativeName,
+                                        parentSectionId = comp.parentSectionId
+                                    )
+                                } else {
+                                    DiscoveryDataMapper().mapListToComponentList(
+                                        comp.data,
+                                        ComponentNames.MasterProductCardItemReimagine.componentName,
+                                        comp.properties,
+                                        creativeName,
+                                        parentSectionId = comp.parentSectionId
+                                    )
+                                }
                             }
                         }
+
                         ComponentNames.ProductCardCarousel.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
+                                if (comp.properties?.cardType.equals("V1", true) ) {
+                                    DiscoveryDataMapper().mapListToComponentList(
+                                        comp.data,
+                                        ComponentNames.ProductCardCarouselItemList.componentName,
+                                        comp.properties,
+                                        creativeName,
+                                        parentSectionId = comp.parentSectionId
+                                    )
+
+                                }else{
+                                    DiscoveryDataMapper().mapListToComponentList(
+                                        comp.data,
+                                        ComponentNames.ProductCardCarouselItemListReimagine.componentName,
+                                        comp.properties,
+                                        creativeName,
+                                        parentSectionId = comp.parentSectionId
+                                    )
+                                }
+                            } else {
+                                if (comp.properties?.cardType.equals("V1", true) ) {
+                                    DiscoveryDataMapper().mapListToComponentList(
+                                        comp.data,
+                                        ComponentNames.ProductCardCarouselItem.componentName,
+                                        comp.properties,
+                                        creativeName,
+                                        parentSectionId = comp.parentSectionId
+                                    )
+
+                                }else{
+                                    DiscoveryDataMapper().mapListToComponentList(
+                                        comp.data,
+                                        ComponentNames.ProductCardCarouselItemReimagine.componentName,
+                                        comp.properties,
+                                        creativeName,
+                                        parentSectionId = comp.parentSectionId
+                                    )
+                                }
+                            }
+                        }
+
+                        ComponentNames.ProductCardSprintSale.componentName -> {
+                            if (comp.properties?.cardType.equals("V1", true) ) {
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
-                                    ComponentNames.ProductCardCarouselItemList.componentName,
+                                    ComponentNames.ProductCardSprintSaleItem.componentName,
                                     comp.properties,
                                     creativeName,
                                     parentSectionId = comp.parentSectionId
                                 )
-                            } else {
+                            }else{
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
-                                    ComponentNames.ProductCardCarouselItem.componentName,
+                                    ComponentNames.ProductCardSprintSaleItemReimagine.componentName,
                                     comp.properties,
                                     creativeName,
                                     parentSectionId = comp.parentSectionId
                                 )
                             }
                         }
-                        ComponentNames.ProductCardSprintSale.componentName -> {
-                            DiscoveryDataMapper().mapListToComponentList(
-                                comp.data,
-                                ComponentNames.ProductCardSprintSaleItem.componentName,
-                                comp.properties,
-                                creativeName,
-                                parentSectionId = comp.parentSectionId
-                            )
-                        }
+
                         ComponentNames.ProductCardSprintSaleCarousel.componentName -> {
-                            DiscoveryDataMapper().mapListToComponentList(
-                                comp.data,
-                                ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
-                                comp.properties,
-                                creativeName
-                            )
+                            if (comp.properties?.cardType.equals("V1", true) ) {
+                                DiscoveryDataMapper().mapListToComponentList(
+                                    comp.data,
+                                    ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
+                                    comp.properties,
+                                    creativeName
+                                )
+                            }else{
+                                DiscoveryDataMapper().mapListToComponentList(
+                                    comp.data,
+                                    ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName,
+                                    comp.properties,
+                                    creativeName
+                                )
+                            }
                         }
+
                         ComponentNames.ContentCard.componentName -> {
                             DiscoveryDataMapper().mapListToComponentList(
                                 comp.data,
@@ -112,6 +177,7 @@ class SectionUseCase @Inject constructor(
                                 parentSectionId = comp.parentSectionId
                             )
                         }
+
                         ComponentNames.ShopOfferHeroBrand.componentName -> {
                             DiscoveryDataMapper().mapListToComponentList(
                                 comp.data,
@@ -121,6 +187,7 @@ class SectionUseCase @Inject constructor(
                                 parentSectionId = comp.parentSectionId
                             )
                         }
+
                         else -> {
                             isProductComponent = false
                             null
@@ -205,6 +272,7 @@ class SectionUseCase @Inject constructor(
     }
 
     companion object {
-        private const val SECTION_FESTIVE_BACKGROUND_TOGGLE = "android_main_app_enable_disco_section_background"
+        private const val SECTION_FESTIVE_BACKGROUND_TOGGLE =
+            "android_main_app_enable_disco_section_background"
     }
 }

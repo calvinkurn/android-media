@@ -274,6 +274,11 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewModel
             )
             initializeComponent(
+                ComponentsList.MasterProductCardItemList,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+            initializeComponent(
                 ComponentsList.MasterProductCardReimagine,
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
@@ -283,11 +288,7 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
-            initializeComponent(
-                ComponentsList.MasterProductCardItemList,
-                ::MasterProductCardItemViewHolder,
-                ::MasterProductCardItemViewModel
-            )
+
 
             // Product Card Horizontal Carousel
             initializeComponent(
@@ -305,6 +306,16 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
+            initializeComponent(
+                ComponentsList.ProductCardCarouselItemReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+            initializeComponent(
+                ComponentsList.ProductCardCarouselItemListReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
 
             // Product Card Sprint Sale
             initializeComponent(
@@ -314,6 +325,11 @@ class DiscoveryHomeFactory {
             )
             initializeComponent(
                 ComponentsList.ProductCardSprintSaleItem,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+            initializeComponent(
+                ComponentsList.ProductCardSprintSaleItemReimagine,
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
@@ -329,6 +345,12 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
+            initializeComponent(
+                ComponentsList.ProductCardSprintSaleCarouselItemReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+
 
             initializeComponent(
                 ComponentsList.ProductListEmptyState,
