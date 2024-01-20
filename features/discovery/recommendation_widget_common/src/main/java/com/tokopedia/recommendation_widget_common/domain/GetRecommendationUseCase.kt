@@ -56,13 +56,16 @@ constructor(
         xSource: String = DEFAULT_VALUE_X_SOURCE,
         pageName: String,
         productIds: List<String>,
-        queryParam: String = ""
+        queryParam: String = "",
+        hasNewProductCardEnabled: Boolean = false,
     ): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
+        val reimagineCardVersion = getProductCardReimagineVersion(hasNewProductCardEnabled)
         val newQueryParam = try {
-            ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam)
-                ?: queryParam
+            ChooseAddressUtils
+                .getLocalizingAddressData(context)
+                .toQueryParam(queryParam)
         } catch (e: Exception) {
             queryParam
         }
@@ -81,7 +84,7 @@ constructor(
         params.putString(PAGE_NAME, pageName)
         params.putString(PRODUCT_IDS, productIdsString)
         params.putString(QUERY_PARAM, newQueryParam)
-        params.putInt(PARAM_CARD_REIMAGINE, getProductCardReimagineVersion())
+        params.putInt(PARAM_CARD_REIMAGINE, reimagineCardVersion)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         return params
     }
@@ -128,8 +131,8 @@ constructor(
         return params
     }
 
-    private fun getProductCardReimagineVersion(): Int {
-        return if (ProductCardExperiment.isReimagine()) {
+    private fun getProductCardReimagineVersion(hasNewProductCardEnabled: Boolean): Int {
+        return if (ProductCardExperiment.isReimagine() && hasNewProductCardEnabled) {
             CARD_REIMAGINE_VERSION
         } else {
             CARD_REVERT_VERSION

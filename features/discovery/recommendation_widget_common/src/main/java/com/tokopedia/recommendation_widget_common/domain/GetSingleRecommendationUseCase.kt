@@ -43,26 +43,32 @@ constructor(
     fun getRecomParams(
         pageNumber: Int,
         productIds: List<String>,
-        queryParam: String = ""
+        queryParam: String = "",
+        hasNewProductCardEnabled: Boolean = false,
     ): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
-        val newQueryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam) ?: queryParam
+        val reimagineCardParam = getProductCardReimagineVersion(hasNewProductCardEnabled)
+        val newQueryParam = ChooseAddressUtils
+            .getLocalizingAddressData(context)
+            .toQueryParam(queryParam)
+
         if (userSession.isLoggedIn) {
             params.putInt(USER_ID, userSession.userId.toIntOrZero())
         } else {
             params.putInt(USER_ID, 0)
         }
+
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(PRODUCT_IDS, productIdsString)
         params.putString(QUERY_PARAM, newQueryParam)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
-        params.putInt(PARAM_CARD_REIMAGINE, getProductCardReimagineVersion())
+        params.putInt(PARAM_CARD_REIMAGINE, reimagineCardParam)
         return params
     }
 
-    private fun getProductCardReimagineVersion(): Int {
-        return if (ProductCardExperiment.isReimagine()) {
+    private fun getProductCardReimagineVersion(hasNewProductCardEnabled: Boolean): Int {
+        return if (ProductCardExperiment.isReimagine() && hasNewProductCardEnabled) {
             CARD_REIMAGINE_VERSION
         } else {
             CARD_REVERT_VERSION

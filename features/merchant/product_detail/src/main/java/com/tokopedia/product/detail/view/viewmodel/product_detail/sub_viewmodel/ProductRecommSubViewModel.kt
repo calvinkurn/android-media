@@ -78,7 +78,8 @@ class ProductRecommSubViewModel @Inject constructor(
                         productIds = arrayListOf(productId),
                         isTokonow = isTokoNow,
                         queryParam = queryParam,
-                        criteriaThematicIDs = listOf(thematicId)
+                        criteriaThematicIDs = listOf(thematicId),
+                        hasNewProductCardEnabled = true
                     )
                 )
 

@@ -17,14 +17,12 @@ data class GetRecommendationRequestParam(
     var userId: Int = 0,
     val shopIds: List<String> = listOf(),
     val criteriaThematicIDs: List<String> = listOf(),
-    var productCardVersion: Int = 0,
+    var hasNewProductCardEnabled: Boolean = false,
 ) {
     fun toGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
 
-        productCardVersion = getProductCardReimagineVersion()
-        requestMap[PRODUCT_CARD_VERSION] = productCardVersion
-
+        requestMap[PRODUCT_CARD_VERSION] = getProductCardReimagineVersion()
         requestMap[PAGE_NUMBER] = pageNumber
         requestMap[QUERY_PARAM] = queryParam
         requestMap[PARAM_TOKONOW] = isTokonow
@@ -50,9 +48,7 @@ data class GetRecommendationRequestParam(
     fun toViewToViewGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
 
-        productCardVersion = getProductCardReimagineVersion()
-        requestMap[PRODUCT_CARD_VERSION] = productCardVersion
-
+        requestMap[PRODUCT_CARD_VERSION] = getProductCardReimagineVersion()
         requestMap[PAGE_NUMBER] = pageNumber
         requestMap[QUERY_PARAM] = queryParam
         if (userId != 0) {
@@ -72,7 +68,7 @@ data class GetRecommendationRequestParam(
 
     private fun getProductCardReimagineVersion(): Int {
         val shouldReimagineEnabled = ProductCardExperiment.isReimagine()
-        return if (shouldReimagineEnabled && !isTokonow) {
+        return if (shouldReimagineEnabled && hasNewProductCardEnabled && !isTokonow) {
             CARD_REIMAGINE_VERSION
         } else {
             CARD_REVERT_VERSION
