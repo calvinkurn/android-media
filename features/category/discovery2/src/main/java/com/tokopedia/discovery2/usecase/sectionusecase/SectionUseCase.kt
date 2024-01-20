@@ -68,7 +68,7 @@ class SectionUseCase @Inject constructor(
                                     )
                                 }
                             } else {
-                                if (!comp.properties?.cardType.equals("V1", true) ) {
+                                if (comp.properties?.cardType.equals("V1", true) ) {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.ProductCardRevampItem.componentName,
