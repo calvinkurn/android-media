@@ -20,7 +20,6 @@ import com.tokopedia.notifications.domain.data.Benefits
 import com.tokopedia.notifications.domain.data.GamiScratchCardCrack
 import com.tokopedia.unifycomponents.ImageUnify
 
-
 class CrackCouponHandler(
     val binding: LayoutInappAnimationBinding,
     private val layoutInflater: LayoutInflater,
@@ -32,27 +31,27 @@ class CrackCouponHandler(
     private var isCouponCracked = false
     var url = ""
 
-     fun getCouponData(slug: String?, direction: MyGestureListener.Direction) {
-         try {
-             AnimationPopupGqlGetData().getAnimationCrackCouponData({
-                 showPopupAnimation()
-                 hideCouponErrorState()
-                 handleCouponData(it, direction)
-             }, {
-                 handleCouponError(slug, direction)
-                 hidePopupAnimationAndCoupons()
-             }, slug)
-         } catch (e: Exception) {
-             ServerLogger.log(
-                 Priority.P2,
-                 "KETUPAT_ANIMATION_POPUP",
-                 mapOf(
-                     "type" to "exception",
-                     "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
-                     "data" to ""
-                 )
-             )
-         }
+    fun getCouponData(slug: String?, direction: MyGestureListener.Direction) {
+        try {
+            AnimationPopupGqlGetData().getAnimationCrackCouponData({
+                showPopupAnimation()
+                hideCouponErrorState()
+                handleCouponData(it, direction)
+            }, {
+                handleCouponError(slug, direction)
+                hidePopupAnimationAndCoupons()
+            }, slug)
+        } catch (e: Exception) {
+            ServerLogger.log(
+                Priority.P2,
+                "KETUPAT_ANIMATION_POPUP",
+                mapOf(
+                    "type" to "exception",
+                    "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                    "data" to ""
+                )
+            )
+        }
     }
 
     private fun showPopupAnimation() {
@@ -106,10 +105,10 @@ class CrackCouponHandler(
             loaderCoupon.gone()
             animationErrorState.gone()
             btnErrorState.gone()
-
         }
     }
 
+    // creating coupons
     private fun createCoupons(
         numberOfCoupons: Int,
         gamiScratchCardCrack: GamiScratchCardCrack,
@@ -127,7 +126,7 @@ class CrackCouponHandler(
     }
 
     private fun playAnimationInDirection(direction: MyGestureListener.Direction) {
-        when(direction) {
+        when (direction) {
             MyGestureListener.Direction.up_right -> {
                 binding.lottieViewPopup.setMaxFrame(569)
                 binding.lottieViewPopup.setMinFrame(420)
@@ -213,8 +212,8 @@ class CrackCouponHandler(
         animationPopupGtmTracker.sendCtaButtonImpressionEvent()
     }
 
-     private fun setCloseButtonMargin(bottomMargin: Float) {
+    private fun setCloseButtonMargin(bottomMargin: Float) {
         binding.icClose.translationY = bottomMargin
-         binding.icClose.translationX = 40.0f
+        binding.icClose.translationX = 40.0f
     }
 }
