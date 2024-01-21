@@ -1,6 +1,10 @@
 package com.tokopedia.mvcwidget.di.module
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.mvcwidget.IO
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -13,4 +17,8 @@ class DispatcherModule {
     @Named(IO)
     fun provideWorkerDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
+
+    @Provides
+    fun provideSession(@ApplicationContext context: Context): UserSessionInterface =
+        UserSession(context)
 }

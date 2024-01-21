@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 
 class PromoBenefitAnalytics @Inject constructor(private val userSession: UserSessionInterface) {
@@ -16,8 +17,8 @@ class PromoBenefitAnalytics @Inject constructor(private val userSession: UserSes
         businessUnit: String,
         currentSite: String,
         promotions: List<PromotionModel>,
-        userId: String
     ) {
+        Timber.d("[PROMO BOTTOMSHEET] Sending analytics $promotions")
         Tracker.Builder()
             .setEvent("view_item")
             .setEventAction("impression - promo detail bottom sheet")
@@ -27,7 +28,7 @@ class PromoBenefitAnalytics @Inject constructor(private val userSession: UserSes
             .setBusinessUnit(businessUnit)
             .setCurrentSite(currentSite)
             .setCustomProperty("promotions", promotions.toMap())
-            .setUserId(userId)
+            .setUserId(userSession.userId)
             .build()
             .send()
     }

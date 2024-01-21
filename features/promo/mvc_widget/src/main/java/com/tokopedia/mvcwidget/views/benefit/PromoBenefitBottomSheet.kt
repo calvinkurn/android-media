@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.databinding.PromoBenefitBottomsheetBinding
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
+import com.tokopedia.mvcwidget.trackers.PromoBenefitAnalytics
 import com.tokopedia.mvcwidget.utils.getUnifyColorFromHex
 import com.tokopedia.mvcwidget.utils.setAttribute
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -43,6 +44,9 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var vmFactory: ViewModelFactory
+
+    @Inject
+    lateinit var analytics: PromoBenefitAnalytics
 
     private val viewModel: PromoBenefitViewModel by viewModels { vmFactory }
 
@@ -73,6 +77,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
     @SuppressLint("DeprecatedMethod")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        analytics.sendImpressionPromoDetailBottomSheetEvent("", "", emptyList())
         binding?.run {
             val frameDialogView = container.parent as FrameLayout
             frameDialogView.setBackgroundColor(Color.TRANSPARENT)
