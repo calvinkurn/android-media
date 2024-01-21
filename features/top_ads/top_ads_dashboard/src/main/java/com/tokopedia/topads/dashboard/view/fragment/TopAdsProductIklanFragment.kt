@@ -465,7 +465,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
                 RouteManager.route(
                     context,
                     ApplinkConstInternalGlobal.WEBVIEW,
-                    TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_ARTICLE_LINK
+                    TopAdsDashboardConstant.IKLAN_PRODUK_AUTO_PS_ARTICLE_LINK
                 )
             }
 

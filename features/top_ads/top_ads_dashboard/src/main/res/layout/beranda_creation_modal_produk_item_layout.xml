@@ -95,7 +95,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="6dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/check1"
+        app:layout_constraintTop_toBottomOf="@id/item1"
         app:srcCompat="@drawable/ic_check_green_24dp"
         app:tint="@color/Unify_GN500"/>
 
@@ -120,7 +120,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="6dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/check2"
+        app:layout_constraintTop_toBottomOf="@id/item2"
         app:srcCompat="@drawable/ic_check_green_24dp"
         app:tint="@color/Unify_GN500"/>
 

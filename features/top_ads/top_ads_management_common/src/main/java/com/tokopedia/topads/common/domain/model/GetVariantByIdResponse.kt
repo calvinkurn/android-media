@@ -19,7 +19,7 @@ data class GetVariantByIdResponse(
             val experiment: String,
             @SerializedName("variant")
             val variant: String
-        ) {}
+        )
     }
 }
 

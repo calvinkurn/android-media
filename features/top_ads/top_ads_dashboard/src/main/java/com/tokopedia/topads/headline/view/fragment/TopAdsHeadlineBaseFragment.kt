@@ -114,7 +114,6 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var produkTenjual: Typography? = null
     private var totalTenjual: Typography? = null
     private var onBoardingCta: UnifyButton? = null
-    private var isAutoPsWhitelisted: Boolean = false
 
     companion object {
         fun createInstance(): TopAdsHeadlineBaseFragment {
@@ -185,18 +184,25 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 }
             }
         }
-        presenter.shopVariant.observe(viewLifecycleOwner){shopVariants ->
-            isAutoPsWhitelisted =
-                shopVariants.isNotEmpty() && shopVariants.filter {
-                    it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
-                        it.variant == TopAdsCommonConstant.AUTOPS_VARIANT }
-                    .isNotEmpty()
+        presenter.shopVariant.observe(viewLifecycleOwner){
+            getAutoAdsStatus()
         }
+    }
+
+    private fun isAutoPsWhitelisted(): Boolean {
+        var isWhitelisted = false
+        presenter.shopVariant.value?.let { shopVariants ->
+            isWhitelisted = shopVariants.isNotEmpty() && shopVariants.filter {
+                it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
+                    it.variant == TopAdsCommonConstant.AUTOPS_VARIANT }
+                .isNotEmpty()
+        }
+        return isWhitelisted
     }
 
     private fun getAutoAdsStatus() {
         try {
-//            if(isAutoPsWhitelisted())
+            if(isAutoPsWhitelisted())
                 presenter.getAutoAdsStatus(requireContext().resources, ::setAutoAds)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
@@ -218,18 +224,16 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private fun setProgressiveLayout(status: Int) {
         autoAdsWidget?.show()
         autoAdsWidget?.loadData(0)
-        progressView?.let {
-            it.show()
-            val title = it.findViewById<Typography>(topadsdashboardR.id.progressiveView_title)
-            val desc = it.findViewById<Typography>(topadsdashboardR.id.progressiveView_description)
-            if(status == STATUS_IN_PROGRESS_ACTIVE){
-                title?.text = getString(topadsdashboardR.string.topads_dash_reload_title)
-                desc?.text = getString(topadsdashboardR.string.topads_dash_auto_ads_enable_msg)
-            } else if(status == STATUS_IN_PROGRESS_INACTIVE){
-                title?.text = getString(topadsdashboardR.string.topads_autops_deactivation_inprogress_title)
-                desc?.text = getString(topadsdashboardR.string.topads_autops_deactivation_inprogress_description)
-            }
+        val title = view?.findViewById<Typography>(topadsdashboardR.id.progressiveView_title)
+        val desc = view?.findViewById<Typography>(topadsdashboardR.id.progressiveView_description)
+        if(status == STATUS_IN_PROGRESS_ACTIVE){
+            title?.text = getString(topadsdashboardR.string.topads_dash_reload_title)
+            desc?.text = getString(topadsdashboardR.string.topads_dash_auto_ads_enable_msg)
+        } else if(status == STATUS_IN_PROGRESS_INACTIVE){
+            title?.text = getString(topadsdashboardR.string.topads_autops_deactivation_inprogress_title)
+            desc?.text = getString(topadsdashboardR.string.topads_autops_deactivation_inprogress_description)
         }
+        progressView?.show()
         autoadsOnboarding?.gone()
         headlineAdsViePager?.gone()
         headlineTabLayout?.gone()
@@ -239,7 +243,6 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     private fun setAutoPsInactiveLayout(){
         autoAdsWidget?.gone()
-//        autoadsOnboarding?.showWithCondition(isAutoPsWhitelisted())
         autoadsOnboarding?.show()
         headlineAdsViePager?.show()
         headlineTabLayout?.show()
@@ -273,34 +276,37 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun setupOnboarding(){
-        onBoardingCta?.setOnClickListener {
-            if (confirmationDailog?.isShowing != true) {
-                confirmationDailog =
-                    DialogUnify(
-                        requireContext(),
-                        DialogUnify.HORIZONTAL_ACTION,
-                        DialogUnify.WITH_ILLUSTRATION
-                    )
-                confirmationDailog?.show()
-            }
-
-            val description = getString(topadsdashboardR.string.topads_auto_ps_activation_confirmation_desc)
-            val title = getString(topadsdashboardR.string.topads_auto_ps_confirmation_title_to_activate_auto_ps)
-
-            confirmationDailog?.let {
-                it.setTitle(title)
-                it.setImageUrl(TopAdsDashboardConstant.ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL)
-                it.setDescription(description)
-
-                it.setPrimaryCTAText(getString(topadsdashboardR.string.topads_dash_aktifan))
-                it.setSecondaryCTAText(getString(topadsdashboardR.string.top_ads_batal))
-
-                it.setPrimaryCTAClickListener {
-                    RouteManager.route(context,ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+        if(isAutoPsWhitelisted()){
+            onBoardingCta?.text = getString(topadsdashboardR.string.topads_enable_auto_ps)
+            onBoardingCta?.setOnClickListener {
+                if (confirmationDailog?.isShowing != true) {
+                    confirmationDailog =
+                        DialogUnify(
+                            requireContext(),
+                            DialogUnify.HORIZONTAL_ACTION,
+                            DialogUnify.WITH_ILLUSTRATION
+                        )
+                    confirmationDailog?.show()
                 }
 
-                it.setSecondaryCTAClickListener {
-                    it.dismiss()
+                val description = getString(topadsdashboardR.string.topads_auto_ps_activation_confirmation_desc)
+                val title = getString(topadsdashboardR.string.topads_auto_ps_confirmation_title_to_activate_auto_ps)
+
+                confirmationDailog?.let {
+                    it.setTitle(title)
+                    it.setImageUrl(TopAdsDashboardConstant.ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL)
+                    it.setDescription(description)
+
+                    it.setPrimaryCTAText(getString(topadsdashboardR.string.topads_dash_aktifan))
+                    it.setSecondaryCTAText(getString(topadsdashboardR.string.top_ads_batal))
+
+                    it.setPrimaryCTAClickListener {
+                        RouteManager.route(context,ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+                    }
+
+                    it.setSecondaryCTAClickListener {
+                        it.dismiss()
+                    }
                 }
             }
         }
@@ -331,7 +337,6 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         super.onViewCreated(view, savedInstanceState)
         loader?.visibility = View.VISIBLE
         loadStatisticsData()
-        getAutoAdsStatus()
         swipeRefreshLayout?.setOnRefreshListener {
             loadChildStatisticsData()
             getAutoAdsStatus()
@@ -359,7 +364,6 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
             }
         })
         presenter.getAdGroupWithInsight(RecommendationConstants.HEADLINE_KEY)
-        setUpObserver()
     }
 
     private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
@@ -423,22 +427,24 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        presenter.getVariantById()
         presenter.getWhiteListedUser(::onSuccessWhiteListing) {
             presenter.getShopAdsInfo {
                 val info = it.topadsGetShopInfoV2_1.data.ads.getOrNull(1)
                 if (info?.type == TopAdsDashboardConstant.HEADLINE) {
                     if (!info.isUsed) {
-//                        if(isAutoPsWhitelisted()){
+                        if(isAutoPsWhitelisted()){
                             showAutoPsEmptyView()
-//                        } else {
-//                            showEmptyView()
-//                        }
+                        } else {
+                            showEmptyView()
+                        }
                     } else {
                         renderHeadlineViewPager()
                     }
                 }
             }
         }
+        setUpObserver()
     }
 
     private fun loadStatisticsData() {
