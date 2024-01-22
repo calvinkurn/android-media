@@ -1,14 +1,18 @@
 package com.tokopedia.content.product.preview.data.mapper
 
+import android.net.Uri
 import com.tokopedia.content.product.preview.data.AddWishlistResponse
 import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
+import com.tokopedia.content.product.preview.data.LikeReviewResponse
 import com.tokopedia.content.product.preview.data.MediaReviewResponse
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.DescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
@@ -17,8 +21,8 @@ import javax.inject.Inject
  * @author by astidhiyaa on 06/12/23
  */
 class ProductPreviewMapper @Inject constructor(private val userSession: UserSessionInterface) {
-    fun mapReviews(response: MediaReviewResponse): List<ReviewUiModel> {
-        return response.data.review.map {
+    fun mapReviews(response: MediaReviewResponse, page: Int): ReviewPageState {
+        val mapped = response.data.review.map {
             ReviewUiModel(
                 reviewId = it.feedbackId,
                 medias = emptyList(), //TODO: map and sew it later,
@@ -26,6 +30,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 likeState = LikeUiState(
                     count = it.likeStats.totalLike,
                     state = LikeUiState.LikeStatus.getByValue(it.likeStats.likeStatus),
+                    withAnimation = false,
                 ),
                 author = AuthorUiModel(
                     name = it.user.fullName,
@@ -36,12 +41,13 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 ),
                 description = DescriptionUiModel(
                     stars = it.rating,
-                    productType = it.variantName,
+                    productType = Uri.decode(it.variantName),
                     timestamp = it.createTimestamp,
-                    description = it.review,
+                    description = Uri.decode(it.review),
                 )
             )
         }
+        return ReviewPageState(pageState = PageState.Success(page, response.data.hasNext), reviewList = mapped)
     }
 
     private fun isOwner(author: MediaReviewResponse.ReviewerUserInfo): Boolean =
@@ -76,4 +82,9 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             isSuccess = response.wishlistAdd.success,
             message = response.wishlistAdd.message
         )
+
+    fun mapLike(response: LikeReviewResponse): LikeUiState = LikeUiState(
+        count = response.data.totalLike,
+        state = LikeUiState.LikeStatus.getByValue(response.data.likeStatus),
+    )
 }

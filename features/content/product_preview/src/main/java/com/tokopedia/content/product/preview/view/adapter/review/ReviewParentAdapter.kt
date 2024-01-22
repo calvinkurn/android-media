@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentLoadingBinding
+import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentLoadingViewHolder
 
-class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Listener) : ListAdapter<ReviewUiModel, ViewHolder>(ReviewAdapterCallback()) {
+class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Listener) :
+    ListAdapter<ReviewUiModel, ViewHolder>(ReviewAdapterCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
@@ -43,6 +45,20 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
         }
     }
 
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position)
+        } else {
+            payloads.forEach {
+                when (val payload = it) {
+                    is Payload.Like -> if (holder is ReviewParentContentViewHolder) holder.bindLike(
+                        payload.state
+                    )
+                }
+            }
+        }
+    }
+
 
     override fun getItemViewType(position: Int): Int {
         //TODO: please adjust to other state as well
@@ -52,6 +68,10 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
     companion object {
         private const val TYPE_CONTENT = 0
         private const val TYPE_LOADING = 1
+    }
+
+    sealed interface Payload {
+        data class Like(val state: LikeUiState) : Payload
     }
 }
 
@@ -66,10 +86,9 @@ internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewUiModel>() {
 
     override fun getChangePayload(oldItem: ReviewUiModel, newItem: ReviewUiModel): Any? {
         //TODO: changes in specified item please define
-        return super.getChangePayload(oldItem, newItem)
-    }
-
-    companion object {
-        internal const val PAYLOAD_LIKE_STATUS = "like_status"
+        return when {
+            oldItem.likeState != newItem.likeState -> ReviewParentAdapter.Payload.Like(newItem.likeState)
+            else -> super.getChangePayload(oldItem, newItem)
+        }
     }
 }

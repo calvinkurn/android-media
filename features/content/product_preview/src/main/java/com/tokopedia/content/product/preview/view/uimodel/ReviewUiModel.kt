@@ -31,11 +31,12 @@ data class MediaUiModel(
 
 data class LikeUiState(
     val count: Int,
-    val state: LikeStatus
+    val state: LikeStatus,
+    val withAnimation: Boolean = false, //from double tap
 ) {
     enum class LikeStatus(val value: Int) {
         Like(1),
-        Dislike(2),
+        Dislike(2), //Not yet
         Reset(3);
 
         companion object {
@@ -47,6 +48,9 @@ data class LikeUiState(
                 }
                 return Reset
             }
+
+            val LikeStatus.switch: LikeStatus
+                get() = if (this == Like) Reset else Like
         }
     }
 }
@@ -69,3 +73,4 @@ data class DescriptionUiModel(
 data class MenuStatus(
     val isReportable: Boolean
 )
+
