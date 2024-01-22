@@ -13,6 +13,7 @@ import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -212,13 +213,14 @@ internal class ListViewStrategy(
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
         initAttributes(attrs)
 
-        val width = if (forceWidthPx > 0) forceWidthPx else MATCH_PARENT
-        productCardView.layoutParams = LayoutParams(width, WRAP_CONTENT)
-
         View.inflate(context, R.layout.product_card_list_layout, productCardView)
 
         val footerView = createFooterView()
         productCardFooterLayoutContainer?.addView(footerView)
+
+        cardViewProductCard?.updateLayoutParams {
+            this.width = if (forceWidthPx > 0) forceWidthPx else MATCH_PARENT
+        }
     }
 
     private fun initAttributes(attrs: AttributeSet?){
