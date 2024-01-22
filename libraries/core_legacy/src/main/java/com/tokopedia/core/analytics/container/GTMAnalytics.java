@@ -98,8 +98,6 @@ public class GTMAnalytics extends ContextAnalytics {
     // have status that describe pending.
     private static final String CHECKOUT_PROGRESS = "checkout_progress";
     private static final String PROMOCLICK = "promoclick";
-
-    private static int prevCampaignHash = 0;
     public static String[] GENERAL_EVENT_KEYS = new String[]{KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT};
     private static final String ECOMMERCE = "ecommerce";
     private final Iris iris;
@@ -1091,15 +1089,6 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendCampaign(Map<String, Object> param) {
         if (!TrackingUtils.isValidCampaign(param)) return;
 
-        // this is to prevent double campaign sent
-        // we check the campaign hash with param. If the hash is same, we conclude that the campaign is the same campaign.
-        int hashCodeTrack = hashCodeTrack(param);
-        if (sameCampaignWithPrevCampaignSent(hashCodeTrack)) {
-            return;
-        } else {
-            saveCampaignHash(hashCodeTrack);
-        }
-
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
 
@@ -1140,25 +1129,6 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle = wrapWithSessionIris(bundle);
 
         pushEventV5("campaignTrack", bundle, context);
-    }
-
-    private int hashCodeTrack(Map<String, Object> param) {
-        int hashCode = 0;
-        for (Map.Entry<String, Object> entry : param.entrySet()) {
-            if (AppEventTracking.GTM.SCREEN_NAME.equals(entry.getKey())) {
-                continue;
-            }
-            hashCode += entry.getValue().hashCode();
-        }
-        return hashCode;
-    }
-
-    private Boolean sameCampaignWithPrevCampaignSent(int hashCodeTrack) {
-        return hashCodeTrack == prevCampaignHash;
-    }
-
-    private void saveCampaignHash(int hashCodeTrack) {
-        prevCampaignHash = hashCodeTrack;
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {

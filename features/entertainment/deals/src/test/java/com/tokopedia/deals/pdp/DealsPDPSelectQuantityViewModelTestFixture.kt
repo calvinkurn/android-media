@@ -2,8 +2,8 @@ package com.tokopedia.deals.pdp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common_entertainment.data.DealsVerifyResponse
-import com.tokopedia.deals.pdp.domain.DealsPDPVerifyUseCase
-import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPSelectQuantityViewModel
+import com.tokopedia.deals.ui.pdp.domain.DealsPDPVerifyUseCase
+import com.tokopedia.deals.ui.pdp.ui.viewmodel.DealsPDPSelectQuantityViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -31,7 +31,7 @@ open class DealsPDPSelectQuantityViewModelTestFixture {
         )
     }
 
-    protected fun onGetVerify_thenReturn(dealsVerify : DealsVerifyResponse) {
+    protected fun onGetVerify_thenReturn(dealsVerify: DealsVerifyResponse) {
         coEvery {
             dealsPDPVerifyUseCase.execute(any())
         } returns dealsVerify
