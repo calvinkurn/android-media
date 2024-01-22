@@ -14,8 +14,6 @@ class PromoBenefitAnalytics @Inject constructor(private val userSession: UserSes
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4436
     // Tracker ID: 49314
     fun sendImpressionPromoDetailBottomSheetEvent(
-        layout: String,
-        component: String,
         productId: String,
         shopId: String,
         promotions: List<PromotionModel>,
@@ -28,9 +26,9 @@ class PromoBenefitAnalytics @Inject constructor(private val userSession: UserSes
             .setEventLabel("")
             .setCustomProperty("trackerId", "49314")
             .setBusinessUnit("product detail page")
-            .setCustomProperty("component", component)
+            .setCustomProperty("component", "null")
             .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("layout", layout)
+            .setCustomProperty("layout", "null")
             .setCustomProperty("productId", productId)
             .setCustomProperty("promotions", promotions.toMap())
             .setShopId(shopId)
