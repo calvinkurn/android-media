@@ -688,7 +688,7 @@ class DigitalCartFragment :
     }
 
     private fun renderMyBillsLayout(cartInfo: CartDigitalInfoData) {
-        myBillsAdapter = DigitalMyBillsAdapter(this, isGotoPlus())
+        myBillsAdapter = DigitalMyBillsAdapter(this)
 
         binding?.rvMyBills?.let {
             it.layoutManager = LinearLayoutManager(context)
@@ -705,12 +705,14 @@ class DigitalCartFragment :
     }
 
     override fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
-        digitalAnalytics.eventClickSubscription(
-            isChecked,
-            getCategoryName(),
-            getOperatorName(),
-            userSession.userId
-        )
+        if (!isGotoPlus()) {
+            digitalAnalytics.eventClickSubscription(
+                isChecked,
+                getCategoryName(),
+                getOperatorName(),
+                userSession.userId
+            )
+        }
         binding?.run {
             handleCrossSellConsent(fintechProduct, isChecked)
             viewModel.onSubscriptionChecked(fintechProduct, isChecked)

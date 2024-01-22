@@ -24,7 +24,7 @@ class DigitalMyBillsViewHolder(
             listener.onSubscriptionImpression(subscription)
 
             widgetMyBills.hasMoreInfo(!isGotoPlus)
-            if (subscription.info.title.isNotEmpty()) {
+            if (isGotoPlus) {
                 widgetMyBills.setTitle(subscription.info.title)
                 widgetMyBills.showTitle()
                 widgetMyBills.showSeparator()
@@ -44,8 +44,11 @@ class DigitalMyBillsViewHolder(
                 }
 
                 override fun onCheckChanged(isChecked: Boolean) {
-                    if (isChecked) widgetMyBills.setDescription(subscription.info.checkedSubtitle)
-                    else widgetMyBills.setDescription(subscription.info.subtitle)
+                    if (isChecked) {
+                        widgetMyBills.setDescription(subscription.info.checkedSubtitle)
+                    } else {
+                        widgetMyBills.setDescription(subscription.info.subtitle)
+                    }
                     listener.onSubscriptionChecked(subscription, isChecked)
                 }
             }
@@ -67,13 +70,15 @@ class DigitalMyBillsViewHolder(
                 widgetMyBills.setDescription(fintechProduct.info.subtitle)
                 widgetMyBills.hasMoreInfo(
                     fintechProduct.info.urlLink.isNotEmpty() ||
-                            fintechProduct.info.tooltipText.isNotEmpty()
+                        fintechProduct.info.tooltipText.isNotEmpty()
                 )
 
                 widgetMyBills.setAdditionalImage(fintechProduct.info.iconUrl)
                 if (fintechProduct.info.iconUrl.isNotEmpty()) {
                     listener.onTebusMurahImpression(fintechProduct, position)
-                } else listener.onCrossellImpression(fintechProduct, position)
+                } else {
+                    listener.onCrossellImpression(fintechProduct, position)
+                }
 
                 widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                     override fun onMoreInfoClicked() {

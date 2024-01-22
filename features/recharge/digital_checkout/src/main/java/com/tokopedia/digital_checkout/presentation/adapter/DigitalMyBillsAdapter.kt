@@ -14,8 +14,7 @@ import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListe
  */
 
 class DigitalMyBillsAdapter(
-    private val listener: MyBillsActionListener,
-    private val isGotoPlus: Boolean
+    private val listener: MyBillsActionListener
 ) : RecyclerView.Adapter<DigitalMyBillsViewHolder>() {
     private var subscriptions = listOf<FintechProduct>()
     private var fintechProducts = listOf<FintechProduct>()
