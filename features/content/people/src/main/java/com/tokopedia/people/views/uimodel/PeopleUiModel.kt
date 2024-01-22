@@ -30,3 +30,9 @@ sealed class PeopleUiModel : BaseItem() {
         val appLink: String
     ) : PeopleUiModel()
 }
+
+val PeopleUiModel.appLink: String
+    get() = when (this) {
+        is PeopleUiModel.ShopUiModel -> appLink
+        is PeopleUiModel.UserUiModel -> appLink
+    }

@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.util.getAsSerializable
 import com.tokopedia.people.viewmodels.FollowListViewModel
 import com.tokopedia.people.views.screen.FollowListErrorScreen
@@ -23,6 +24,7 @@ import com.tokopedia.people.views.screen.FollowListScreen
 import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.people.views.uimodel.action.FollowListAction
+import com.tokopedia.people.views.uimodel.appLink
 import com.tokopedia.people.views.uimodel.state.FollowListState
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.collections.immutable.toPersistentList
@@ -53,6 +55,10 @@ class FollowListFragment @Inject internal constructor(
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
+            val onPeopleClicked: (PeopleUiModel) -> Unit = {
+                RouteManager.route(context, it.appLink)
+            }
+
             val onFollowClicked: (PeopleUiModel) -> Unit = {
                 viewModel.onAction(FollowListAction.Follow(it))
             }
@@ -80,6 +86,7 @@ class FollowListFragment @Inject internal constructor(
                         people = state.followList.toPersistentList(),
                         hasNextPage = state.hasNextPage,
                         onLoadMore = onLoadMore,
+                        onPeopleClicked = onPeopleClicked,
                         onFollowClicked = onFollowClicked,
                         Modifier.fillMaxSize()
                     )

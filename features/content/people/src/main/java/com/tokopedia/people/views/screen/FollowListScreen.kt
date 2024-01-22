@@ -46,6 +46,7 @@ internal fun FollowListScreen(
     people: ImmutableList<PeopleUiModel>,
     hasNextPage: Boolean,
     onLoadMore: () -> Unit,
+    onPeopleClicked: (PeopleUiModel) -> Unit,
     onFollowClicked: (PeopleUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -66,7 +67,7 @@ internal fun FollowListScreen(
                     ShopFollowListItemRow(
                         it,
                         onFollowClicked = onFollowClicked,
-                        onItemClicked = {}
+                        onItemClicked = onPeopleClicked
                     )
                 }
 
@@ -74,7 +75,7 @@ internal fun FollowListScreen(
                     UserFollowListItemRow(
                         it,
                         onFollowClicked = onFollowClicked,
-                        onItemClicked = {}
+                        onItemClicked = onPeopleClicked
                     )
                 }
             }
@@ -285,6 +286,7 @@ private fun FollowListScreenPreview() {
                 }
             }.toPersistentList(),
             hasNextPage = false,
+            {},
             {},
             {},
             Modifier.background(NestTheme.colors.NN._0)
