@@ -686,7 +686,7 @@ data class SearchProductModel(
             @SerializedName("url")
             @Expose
             val url: String = "",
-            @SerializedName("style")
+            @SerializedName("styles")
             @Expose
             val styleList: List<Style> = listOf(),
     )

@@ -638,7 +638,7 @@
               "position": "offers",
               "type": "lightGrey",
               "title": "Grosir",
-              "styles": [
+              "style": [
                 {
                   "key": "background-color",
                   "value": "#F0F3F7"
@@ -657,7 +657,7 @@
               "position": "price",
               "type": "lightGreen",
               "title": "Grosir",
-              "styles": [
+              "style": [
                 {
                   "key": "background-color",
                   "value": "#F0F3F7"
@@ -835,7 +835,7 @@
               "position": "promo",
               "type": "lightGreen",
               "title": "Cashback",
-              "styles": [
+              "style": [
                 {
                   "key": "background-opacity",
                   "value": "1"
@@ -850,7 +850,7 @@
               "position": "credibility",
               "type": "lightBlue",
               "title": "Terbaru",
-              "styles": [
+              "style": [
                 {
                   "key": "background-color",
                   "value": "#F0F3F7"

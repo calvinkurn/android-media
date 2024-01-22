@@ -11,6 +11,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
@@ -103,7 +104,8 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     private fun MutableList<GraphqlRequest>.addQuickFilterRequest(query: String, params: String) {
-        add(createQuickFilterRequest(query = query, params = params))
+        val mutableParams = paramsAddSREIfProductCardExperimentReimagine(params)
+        add(createQuickFilterRequest(query = query, params = mutableParams))
     }
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
@@ -129,9 +131,18 @@ class SearchProductFirstPageGqlUseCase(
         )
 
     private fun MutableList<GraphqlRequest>.addInspirationCarouselRequest(requestParams: RequestParams, params: String) {
-        if (!requestParams.isSkipInspirationCarousel()) {
-            add(createSearchInspirationCarouselRequest(params = params))
+        if (requestParams.isSkipInspirationCarousel()) return
+        val mutableParams = paramsAddSREIfProductCardExperimentReimagine(params)
+        add(createSearchInspirationCarouselRequest(params = mutableParams))
+    }
+
+    private fun paramsAddSREIfProductCardExperimentReimagine(params: String): String {
+        val extraParamSre = "&l_name=sre"
+
+        if (ProductCardExperiment.isReimagine()) {
+            return "$params$extraParamSre"
         }
+        return params
     }
 
     @GqlQuery("InspirationCarousel", SEARCH_INSPIRATION_CAROUSEL_QUERY)
@@ -213,7 +224,8 @@ class SearchProductFirstPageGqlUseCase(
         val timeoutMs: Long = TDN_TIMEOUT
 
         return this.timeout(
-            timeoutMs, TimeUnit.MILLISECONDS,
+            timeoutMs,
+            TimeUnit.MILLISECONDS,
             Observable.create({ emitter ->
                 searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
                 emitter.onNext(listOf())
@@ -369,7 +381,7 @@ class SearchProductFirstPageGqlUseCase(
                                     type
                                     position
                                     url
-                                    style{
+                                    styles {
                                         key
                                         value
                                     }
