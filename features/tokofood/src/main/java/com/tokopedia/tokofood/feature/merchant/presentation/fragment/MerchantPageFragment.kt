@@ -274,6 +274,7 @@ class MerchantPageFragment :
     }
 
     override fun onDestroyView() {
+        removeBottomSheets()
         super.onDestroyView()
         binding = null
         currentPromoName = null
@@ -1144,6 +1145,7 @@ class MerchantPageFragment :
     private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
         hideKeyboard()
         customOrderDetailBottomSheet?.dismiss()
+        customOrderDetailBottomSheet = null
         viewModel.productMap[productUiModel.id] = cardPositions
         val bundle = Bundle().apply {
             putInt(
@@ -1782,6 +1784,13 @@ class MerchantPageFragment :
                 }
             }
         }
+    }
+
+    private fun removeBottomSheets() {
+        universalShareBottomSheet = null
+        merchantInfoBottomSheet = null
+        orderNoteBottomSheet = null
+        customOrderDetailBottomSheet = null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
