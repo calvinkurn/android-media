@@ -74,8 +74,12 @@
         app:layout_constraintEnd_toStartOf="@+id/gl_right"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/iv_review_star"
+        app:layout_constraintTop_toBottomOf="@id/tv_review_details"
+        app:layout_constraintVertical_bias="1.0"
         app:typographyType="display_2"
-        tools:text="TextView description" />
+        android:ellipsize="end"
+        tools:text="TextView description"
+       />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_review_menu"
@@ -97,4 +101,19 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/iv_review_menu"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.content.product.preview.view.components.LikeDanceAnim
+        android:id="@+id/iv_dance_like"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="THUMB"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

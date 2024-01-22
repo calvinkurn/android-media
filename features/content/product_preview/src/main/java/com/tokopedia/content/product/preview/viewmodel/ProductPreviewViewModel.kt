@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.*
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
@@ -66,9 +67,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
-    private val _reviewIndex = MutableStateFlow(0)
-
-    private val reviewPosition get() = _reviewIndex.value
+    private val _reviewPosition = MutableStateFlow(0)
+    private val reviewPosition get() = _reviewPosition.value
 
     private val currentReview
         get() = if (_review.value.isNotEmpty() && reviewPosition in 0 until _review.value.size)
@@ -86,6 +86,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is SubmitReport -> submitReport(action.model)
             is ClickMenu -> menuOnClicked(action.isFromLogin)
             is UpdateReviewPosition -> updateReviewIndex(action.index)
+            is Like -> like(status = action.item)
+            LikeFromResult -> like()
             else -> {}
         }
     }
@@ -230,6 +232,24 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun updateReviewIndex(position: Int) {
-        _reviewIndex.value = position
+        _reviewPosition.value = position
+    }
+
+    private fun like(status: LikeUiState = currentReview.likeState) {
+        if (status.withAnimation && !userSessionInterface.isLoggedIn) return
+
+        requiredLogin(status) {
+            viewModelScope.launchCatchError(block = {
+                val state = repo.likeReview(status, currentReview.reviewId)
+                _review.update { review ->
+                    review.map { model ->
+                        if (model.reviewId == currentReview.reviewId) model.copy(likeState = state.copy(withAnimation = status.withAnimation))
+                        else model
+                    }
+                }
+            }) {
+                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {})
+            }
+        }
     }
 }

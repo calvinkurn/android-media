@@ -25,6 +25,7 @@ import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
@@ -44,7 +45,8 @@ import javax.inject.Inject
 class ReviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
     private val router: Router,
-) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener, MenuBottomSheet.Listener, ReviewReportBottomSheet.Listener {
+) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener, MenuBottomSheet.Listener,
+    ReviewReportBottomSheet.Listener {
 
     private var _binding: FragmentReviewBinding? = null
     private val binding: FragmentReviewBinding
@@ -76,6 +78,12 @@ class ReviewFragment @Inject constructor(
         LoginReviewContract()
     ) { loginStatus ->
         if (loginStatus) viewModel.onAction(ProductPreviewAction.ClickMenu(true))
+    }
+
+    private val likeResult = registerForActivityResult(
+        LoginReviewContract()
+    ) { loginStatus ->
+        if (loginStatus) viewModel.onAction(ProductPreviewAction.LikeFromResult)
     }
 
     override fun getScreenName() = REVIEW_FRAGMENT_TAG
@@ -133,15 +141,21 @@ class ReviewFragment @Inject constructor(
                 .collect {
                     when (val event = it) {
                         is ProductPreviewEvent.ShowMenuSheet -> {
-                            MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
+                            MenuBottomSheet.getOrCreate(
+                                childFragmentManager,
+                                requireActivity().classLoader
+                            ).apply {
                                 setMenu(event.status)
                             }.show(childFragmentManager)
                         }
+
                         is ProductPreviewEvent.LoginEvent<*> -> {
                             when (event.data) {
                                 is MenuStatus -> menuResult.launch(Unit)
+                                is LikeUiState -> likeResult.launch(Unit)
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -174,11 +188,19 @@ class ReviewFragment @Inject constructor(
      * Menu Bottom Sheet Listener
      */
     override fun onOptionClicked(menu: ContentMenuItem) {
-        when(menu.type) {
+        when (menu.type) {
             ContentMenuIdentifier.Report ->
-                ReviewReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
+                ReviewReportBottomSheet.getOrCreate(
+                    childFragmentManager,
+                    requireActivity().classLoader
+                ).show(childFragmentManager)
+
             else -> {}
         }
+    }
+
+    override fun onLike(status: LikeUiState) {
+        viewModel.onAction(ProductPreviewAction.Like(status))
     }
 
     /**
@@ -188,8 +210,9 @@ class ReviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.SubmitReport(report))
     }
 
-    private fun getCurrentPosition() : Int {
-        return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: RecyclerView.NO_POSITION
+    private fun getCurrentPosition(): Int {
+        return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
+            ?: RecyclerView.NO_POSITION
     }
 
     companion object {

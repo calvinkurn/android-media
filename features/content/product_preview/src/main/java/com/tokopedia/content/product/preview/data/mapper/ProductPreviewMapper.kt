@@ -1,7 +1,9 @@
 package com.tokopedia.content.product.preview.data.mapper
 
+import android.net.Uri
 import com.tokopedia.content.product.preview.data.AddWishlistResponse
 import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
+import com.tokopedia.content.product.preview.data.LikeReviewResponse
 import com.tokopedia.content.product.preview.data.MediaReviewResponse
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
@@ -26,6 +28,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 likeState = LikeUiState(
                     count = it.likeStats.totalLike,
                     state = LikeUiState.LikeStatus.getByValue(it.likeStats.likeStatus),
+                    withAnimation = false,
                 ),
                 author = AuthorUiModel(
                     name = it.user.fullName,
@@ -36,9 +39,9 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 ),
                 description = DescriptionUiModel(
                     stars = it.rating,
-                    productType = it.variantName,
+                    productType = Uri.decode(it.variantName),
                     timestamp = it.createTimestamp,
-                    description = it.review,
+                    description = Uri.decode(it.review),
                 )
             )
         }
@@ -76,4 +79,9 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             isSuccess = response.wishlistAdd.success,
             message = response.wishlistAdd.message
         )
+
+    fun mapLike(response: LikeReviewResponse): LikeUiState = LikeUiState(
+        count = response.data.totalLike,
+        state = LikeUiState.LikeStatus.getByValue(response.data.likeStatus),
+    )
 }
