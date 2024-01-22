@@ -6,7 +6,7 @@ import com.tokopedia.order_management_common.presentation.factory.AddOnAdapterFa
 
 data class AddOnSummaryUiModel(
     val addOnIdentifier: String,
-    val totalPriceText: String,
+    val totalPriceText: StringRes,
     val addonsLogoUrl: String,
     val addonsTitle: String,
     val addonItemList: List<AddonItemUiModel>

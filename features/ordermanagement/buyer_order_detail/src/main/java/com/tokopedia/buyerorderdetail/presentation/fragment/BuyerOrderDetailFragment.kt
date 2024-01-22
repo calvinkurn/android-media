@@ -744,7 +744,7 @@ open class BuyerOrderDetailFragment :
 
     private fun onFailedMultiAddToCart(result: MultiATCState.Fail) {
         if (result.throwable == null) {
-            showErrorToaster(result.message.getStringValue(context))
+            showErrorToaster(result.message.getString(context))
         } else {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, result.throwable)

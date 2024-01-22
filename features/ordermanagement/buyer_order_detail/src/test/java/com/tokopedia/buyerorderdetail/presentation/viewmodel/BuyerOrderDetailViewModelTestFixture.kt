@@ -29,8 +29,8 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMa
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
@@ -38,10 +38,11 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel.ProductUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
 import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.track.TrackApp
@@ -65,6 +66,7 @@ import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import com.tokopedia.order_management_common.R as order_management_commonR
 
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class BuyerOrderDetailViewModelTestFixture {
@@ -138,7 +140,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         productUrl = "",
         addonsListUiModel = AddonsListUiModel(
             addOnIdentifier = "1",
-            totalPriceText = "",
+            totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
             addonsLogoUrl = "",
             addonsTitle = "",
             addonsItemList = listOf()
@@ -178,7 +180,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     productNote = "ukurannya 43 ya",
                     addOnSummaryUiModel = AddOnSummaryUiModel(
                         addOnIdentifier = "2",
-                        totalPriceText = "",
+                        totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
                         addonsLogoUrl = "",
                         addonsTitle = "",
                         addonItemList = listOf()
@@ -195,7 +197,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     productNote = "ukurannya 44 ya",
                     addOnSummaryUiModel = AddOnSummaryUiModel(
                         addOnIdentifier = "3",
-                        totalPriceText = "",
+                        totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
                         addonsLogoUrl = "",
                         addonsTitle = "",
                         addonItemList = listOf()

@@ -37,7 +37,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
 import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEventUiState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailChatCounterUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailGroupBookingUiState
@@ -56,6 +55,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
 import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
 import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase

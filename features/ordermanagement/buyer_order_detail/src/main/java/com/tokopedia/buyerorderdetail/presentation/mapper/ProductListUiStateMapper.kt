@@ -12,7 +12,6 @@ import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.kotlin.extensions.orFalse
@@ -21,12 +20,15 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.order_management_common.domain.data.ProductBenefit
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
+import com.tokopedia.order_management_common.R as order_management_commonR
 
 object ProductListUiStateMapper {
 
@@ -122,7 +124,7 @@ object ProductListUiStateMapper {
             productNote = uiModel.productNote,
             addonsListUiModel = AddonsListUiModel(
                 addOnIdentifier = addOnsIdentifier,
-                totalPriceText = addOnSummaryUiModel?.totalPriceText.orEmpty(),
+                totalPriceText = addOnSummaryUiModel?.totalPriceText,
                 addonsLogoUrl = addOnSummaryUiModel?.addonsLogoUrl.orEmpty(),
                 addonsTitle = addOnSummaryUiModel?.addonsTitle.orEmpty(),
                 addonsItemList = addOnSummaryUiModel?.addonItemList?.map {
@@ -776,7 +778,7 @@ object ProductListUiStateMapper {
             if (productBenefit.isValid()) {
                 AddOnSummaryUiModel(
                     addOnIdentifier = bmgmId,
-                    totalPriceText = "${productBenefit.orderDetail?.count()} hadiah",
+                    totalPriceText = StringRes(order_management_commonR.string.om_gwp_collapsed_title_format, listOf(productBenefit.orderDetail?.count().orZero())),
                     addonsLogoUrl = productBenefit.iconUrl,
                     addonsTitle = productBenefit.label,
                     addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId)
@@ -876,7 +878,7 @@ object ProductListUiStateMapper {
                 addOnIdentifier = addOnsIdentifier,
                 addonsTitle = addonInfo.label,
                 addonsLogoUrl = addonInfo.iconUrl,
-                totalPriceText = addonInfo.orderLevel?.totalPriceStr.orEmpty(),
+                totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(addonInfo.orderLevel?.totalPriceStr.orEmpty())),
                 addonsItemList = addonInfo.orderLevel?.addons?.map {
                     val addonNote = it.metadata?.addonNote
                     val infoLink = it.metadata?.infoLink
@@ -1089,7 +1091,7 @@ object ProductListUiStateMapper {
             addOnSummaryUiModel = product.addonSummary?.let {
                 com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
                     addOnIdentifier = addOnIdentifier,
-                    totalPriceText = it.totalPriceStr,
+                    totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(it.totalPriceStr)),
                     addonsLogoUrl = addOnIcon,
                     addonsTitle = addOnLabel,
                     addonItemList = it.addons?.map { addon ->
@@ -1209,7 +1211,7 @@ object ProductListUiStateMapper {
             addOnIdentifier = addOnsIdentifier,
             addonsTitle = details.addonLabel,
             addonsLogoUrl = details.addonIcon,
-            totalPriceText = addonSummary?.totalPriceStr.orEmpty(),
+            totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(addonSummary?.totalPriceStr.orEmpty())),
             addonsItemList = addonSummary?.addons?.map {
                 val addonNote = it.metadata?.addOnNote
                 val infoLink = it.metadata?.infoLink

@@ -15,7 +15,9 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import javax.inject.Inject
+import com.tokopedia.order_management_common.R as order_management_commonR
 
 class GetBomGroupedOrderMapper @Inject constructor() {
 
@@ -300,7 +302,7 @@ class GetBomGroupedOrderMapper @Inject constructor() {
         addOnList: List<Addon>?
     )= AddOnSummaryUiModel(
             addOnIdentifier = "testing",
-            totalPriceText = "",
+            totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
             addonsLogoUrl = addonIcon,
             addonsTitle = addonLabel,
             addonItemList = addOnList?.map { addon ->

@@ -2,10 +2,12 @@ package com.tokopedia.sellerorder.detail.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.order_management_common.domain.data.ProductBenefit
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
@@ -20,6 +22,7 @@ import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiMod
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.SomDetailAddOnOrderLevelUiModel
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
+import com.tokopedia.order_management_common.R as order_management_commonR
 
 object SomGetOrderDetailResponseMapper {
 
@@ -54,7 +57,7 @@ object SomGetOrderDetailResponseMapper {
                         addOnSummaryUiModel = it.addonSummary?.let { addOnSummary ->
                             com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
                                 addOnIdentifier = addOnsIdentifier,
-                                totalPriceText = addOnSummary.totalPriceStr,
+                                totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(addOnSummary.totalPriceStr)),
                                 addonsLogoUrl = addOnIcon,
                                 addonsTitle = addOnLabel,
                                 addonItemList = addOnSummary.addons.map { addon ->
@@ -104,7 +107,7 @@ object SomGetOrderDetailResponseMapper {
             if (productBenefit.isValid()) {
                 AddOnSummaryUiModel(
                     addOnIdentifier = bmgmId,
-                    totalPriceText = "(${productBenefit.orderDetail?.count()} hadiah)",
+                    totalPriceText = StringRes(order_management_commonR.string.om_gwp_collapsed_title_format, listOf(productBenefit.orderDetail?.count().orZero())),
                     addonsLogoUrl = productBenefit.iconUrl,
                     addonsTitle = productBenefit.label,
                     addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId)
@@ -238,7 +241,7 @@ object SomGetOrderDetailResponseMapper {
                     addOnSummaryUiModel = product.addOnSummary?.let { addOnSummary ->
                         com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
                             addOnIdentifier = addOnsIdentifier,
-                            totalPriceText = addOnSummary.totalPriceStr,
+                            totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(addOnSummary.totalPriceStr)),
                             addonsLogoUrl = addOnIcon,
                             addonsTitle = addOnLabel,
                             addonItemList = addOnSummary.addons.map { addon ->
@@ -282,7 +285,7 @@ object SomGetOrderDetailResponseMapper {
                 SomDetailAddOnOrderLevelUiModel(
                     addOnSummaryUiModel = AddOnSummaryUiModel(
                         addOnIdentifier = addOnSummary.label,
-                        totalPriceText = addOnSummary.totalPriceStr,
+                        totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(addOnSummary.totalPriceStr)),
                         addonsLogoUrl = addOnIcon,
                         addonsTitle = addOnLabel,
                         addonItemList = addOnSummary.addons.map { addon ->

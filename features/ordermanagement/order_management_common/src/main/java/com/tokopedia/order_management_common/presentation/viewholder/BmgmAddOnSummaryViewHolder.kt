@@ -14,6 +14,7 @@ import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.factory.AddOnAdapterFactory
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
 import com.tokopedia.order_management_common.util.rotateBackIcon
 import com.tokopedia.order_management_common.util.rotateIcon
@@ -99,7 +100,7 @@ class BmgmAddOnSummaryViewHolder(
 
     private fun PartialBmgmAddOnSummaryBinding.setupChevronExpandable(
         isExpand: Boolean,
-        totalPriceFmt: String
+        totalPriceFmt: StringRes
     ) {
         if (isExpand) {
             expandView()
@@ -114,9 +115,10 @@ class BmgmAddOnSummaryViewHolder(
         icBomDetailBmgmAddonsIconArrowDown.rotateBackIcon()
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.collapseView(totalPriceFmt: String) {
-        tvBomDetailBmgmAddonsTotalPrice.showIfWithBlock(totalPriceFmt.isNotEmpty()) {
-            text = totalPriceFmt
+    private fun PartialBmgmAddOnSummaryBinding.collapseView(totalPriceFmt: StringRes) {
+        val totalPriceText = totalPriceFmt.getString(root.context)
+        tvBomDetailBmgmAddonsTotalPrice.showIfWithBlock(totalPriceText.isNotEmpty()) {
+            text = totalPriceText
         }
         rvAddOn.hide()
         icBomDetailBmgmAddonsIconArrowDown.rotateIcon()
@@ -129,13 +131,13 @@ class BmgmAddOnSummaryViewHolder(
     private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryLabel(
         label: String,
         isExpand: Boolean,
-        totalPriceFmt: String
+        totalPriceFmt: StringRes
     ) {
         tvAddOnLabel.text = label
 
         if (!isExpand) {
             tvBomDetailBmgmAddonsTotalPrice.show()
-            tvBomDetailBmgmAddonsTotalPrice.text = totalPriceFmt
+            tvBomDetailBmgmAddonsTotalPrice.text = totalPriceFmt.getString(root.context)
         } else {
             tvBomDetailBmgmAddonsTotalPrice.hide()
         }

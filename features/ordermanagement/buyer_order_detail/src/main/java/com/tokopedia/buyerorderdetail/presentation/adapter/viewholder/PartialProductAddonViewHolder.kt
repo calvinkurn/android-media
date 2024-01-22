@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.order_management_common.util.rotateBackIcon
 import com.tokopedia.order_management_common.util.rotateIcon
 
@@ -26,7 +27,7 @@ class PartialProductAddonViewHolder(
     private fun setupViews(element: AddonsListUiModel) {
         partialItemBuyerOrderDetailAddonsBinding.run {
             tvBomDetailAddonsTitle.text = element.addonsTitle
-            tvBomDetailAddonsTotalPriceValue.text = element.totalPriceText
+            tvBomDetailAddonsTotalPriceValue.text = element.totalPriceText?.getString(root.context).orEmpty()
             tvBomDetailAddonsTotalPriceLabel.text =
                 root.context.getString(R.string.order_addons_total_price_label, element.addonsTitle)
 
@@ -53,7 +54,7 @@ class PartialProductAddonViewHolder(
 
     private fun PartialItemBuyerOrderDetailAddonsBinding.setupChevronExpandable(
         isExpand: Boolean,
-        totalPriceFmt: String
+        totalPriceFmt: StringRes?
     ) {
         if (isExpand) {
             expandView()
@@ -71,9 +72,10 @@ class PartialProductAddonViewHolder(
         tvBomDetailAddonsTotalPriceValue.show()
     }
 
-    private fun PartialItemBuyerOrderDetailAddonsBinding.collapseView(totalPriceFmt: String) {
-        tvBomDetailAddonsTotalPrice.showIfWithBlock(totalPriceFmt.isNotEmpty()) {
-            text = totalPriceFmt
+    private fun PartialItemBuyerOrderDetailAddonsBinding.collapseView(totalPriceFmt: StringRes?) {
+        val totalPriceText = totalPriceFmt?.getString(root.context).orEmpty()
+        tvBomDetailAddonsTotalPrice.showIfWithBlock(totalPriceText.isNotEmpty()) {
+            text = totalPriceText
         }
         rvAddonsList.hide()
         icBomDetailAddonsIconArrowDown.rotateIcon()
