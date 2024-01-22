@@ -33,7 +33,11 @@ import kotlin.coroutines.CoroutineContext
 const val PRODUCT_PER_PAGE = 10
 private const val RESET_HEIGHT = 0
 
-class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class ProductCardCarouselViewModel(
+    val application: Application,
+    val components: ComponentsItem,
+    val position: Int
+) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselHeaderData: MutableLiveData<ComponentsItem?> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
@@ -42,6 +46,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private val saleEndDate: MutableLiveData<Date> = MutableLiveData()
     private val _atcFailed = SingleLiveEvent<Int>()
     private var isLoading = false
+    private var isReimagine = !components.properties?.cardType.equals("V1", true)
     private val mixLeftComponentsItem: ComponentsItem by lazy { ComponentsItem() }
 
     @JvmField
@@ -86,7 +91,9 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         var lihatSemuaComponentData: ComponentsItem? = null
         components.lihatSemua?.let {
 //            we don't add header component in case after when query is hit but no list of products were found.
-            if (!(components.noOfPagesLoaded == 1 && components.getComponentsItem().isNullOrEmpty())) {
+            if (!(components.noOfPagesLoaded == 1 && components.getComponentsItem()
+                    .isNullOrEmpty())
+            ) {
                 it.run {
                     val lihatSemuaDataItem = DataItem(
                         title = header,
@@ -106,16 +113,20 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     fun fetchProductCarouselData() {
         launchCatchError(block = {
-            productCardsUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
+            productCardsUseCase?.loadFirstPageComponents(
+                components.id,
+                components.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
             components.shouldRefreshComponent = null
             setProductsList()
             setTimer()
         }, onError = {
-                components.noOfPagesLoaded = 1
-                components.verticalProductFailState = true
-                components.shouldRefreshComponent = null
-                productLoadError.value = true
-            })
+            components.noOfPagesLoaded = 1
+            components.verticalProductFailState = true
+            components.shouldRefreshComponent = null
+            productLoadError.value = true
+        })
     }
 
     fun resetComponent() {
@@ -144,7 +155,9 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     private suspend fun reSyncProductCardHeight(list: java.util.ArrayList<ComponentsItem>) {
         if (components.name == ComponentsList.ProductCardCarousel.componentName ||
-            components.name == ComponentsList.ProductCardSprintSaleCarousel.componentName
+            components.name == ComponentsList.ProductCardSprintSaleCarousel.componentName ||
+            components.name == ComponentNames.ProductCardCarouselItemReimagine.componentName ||
+            components.name == ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName
         ) {
             getMaxHeightProductCard(list)
         }
@@ -159,22 +172,52 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             }
             it.data?.firstOrNull()?.let { dataItem ->
                 dataItem.hasNotifyMe = (dataItem.notifyMe != null)
-                productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
+                productCardModelArray.add(
+                    DiscoveryDataMapper().mapDataItemToProductCardModel(
+                        dataItem,
+                        components.name
+                    )
+                )
             }
         }
         if (templateType == LIST) {
-            maxHeightProductCard.value = productCardModelArray.getMaxHeightForListView(application.applicationContext, Dispatchers.Default) ?: 0
+            maxHeightProductCard.value = productCardModelArray.getMaxHeightForListView(
+                application.applicationContext,
+                Dispatchers.Default,
+                isReimagine,
+                useCompatPadding = true
+            )
         } else {
-            val mixLeftPadding = if (isMixLeftBannerPresent()) application.applicationContext.resources.getDimensionPixelSize(R.dimen.dp_10) else 0
-            val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-            maxHeightProductCard.value = (productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth) + mixLeftPadding)
+            val mixLeftPadding =
+                if (isMixLeftBannerPresent()) application.applicationContext.resources.getDimensionPixelSize(
+                    R.dimen.dp_10
+                ) else 0
+            val productImageWidth =
+                if (isReimagine) application.applicationContext.resources
+                    .getDimensionPixelSize(R.dimen.disco_carousel_product_card_grid_width)
+                else application.applicationContext.resources.getDimensionPixelSize(
+                    R.dimen.disco_product_card_width
+                )
+
+            maxHeightProductCard.value = (productCardModelArray.getMaxHeightForGridView(
+                application.applicationContext,
+                Dispatchers.Default,
+                productImageWidth,
+                isReimagine,
+                useCompatPadding = true
+            ) + mixLeftPadding)
         }
     }
 
     fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase?.getCarouselPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE) == true) {
+            if (productCardsUseCase?.getCarouselPaginatedData(
+                    components.id,
+                    components.pageEndPoint,
+                    PRODUCT_PER_PAGE
+                ) == true
+            ) {
                 getProductList()?.let {
                     isLoading = false
                     reSyncProductCardHeight(it)
@@ -185,8 +228,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
                 paginatedErrorData()
             }
         }, onError = {
-                paginatedErrorData()
-            })
+            paginatedErrorData()
+        })
     }
 
     private suspend fun paginatedErrorData() {
