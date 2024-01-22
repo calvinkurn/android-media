@@ -20,6 +20,7 @@ import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.hasGradientBackground
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -130,8 +131,9 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     GridLayoutManager(itemView.context, 1)
                 }
                 val tempDataList: MutableList<ProductCardModel> = mutableListOf()
+                val isInBackground = channel.channelBanner.gradientColor.hasGradientBackground(itemView.context) || channel.channelBanner.backColor.isNotEmpty()
                 val newList : MutableList<HomeRecommendationListCarousel> = channel.channelGrids.map {
-                    val productData = mapGridToProductData(it)
+                    val productData = mapGridToProductData(it, isInBackground)
                     tempDataList.add(productData)
                     HomeRecommendationListData(
                             it.imageUrl,
@@ -168,21 +170,22 @@ class RecommendationListCarouselViewHolder(itemView: View,
         )
     }
 
-    private fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
+    private fun mapGridToProductData(grid: ChannelGrid, isInBackground: Boolean): ProductCardModel {
         return ProductCardModel(
-                productImageUrl = grid.imageUrl,
-                productName = grid.name,
-                discountPercentage = grid.discount,
-                slashedPrice = grid.slashedPrice,
-                formattedPrice = grid.price,
-                hasAddToCartButton = grid.hasBuyButton,
-                isTopAds = grid.isTopads,
-                addToCardText = itemView.context.getString(R.string.home_global_component_buy_again),
-                shopLocation = grid.shop.shopLocation,
-                shopBadgeList = grid.badges.map {
-                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                },
-                cardInteraction = cardInteraction,
+            productImageUrl = grid.imageUrl,
+            productName = grid.name,
+            discountPercentage = grid.discount,
+            slashedPrice = grid.slashedPrice,
+            formattedPrice = grid.price,
+            hasAddToCartButton = grid.hasBuyButton,
+            isTopAds = grid.isTopads,
+            addToCardText = itemView.context.getString(R.string.home_global_component_buy_again),
+            shopLocation = grid.shop.shopLocation,
+            shopBadgeList = grid.badges.map {
+                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+            },
+            cardInteraction = cardInteraction,
+            isInBackground = isInBackground
         )
     }
 
