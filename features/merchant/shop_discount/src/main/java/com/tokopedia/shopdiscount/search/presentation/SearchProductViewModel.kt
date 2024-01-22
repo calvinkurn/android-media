@@ -175,18 +175,6 @@ class SearchProductViewModel @Inject constructor(
         }
     }
 
-    private fun hasNonSubsidyProduct(productDetailData: List<GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList>): Boolean {
-        return productDetailData.any { product ->
-            !product.joinSubsidy
-        }
-    }
-
-    private fun isAllSubsidyProductTypeFull(productDetailData: List<GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList>): Boolean {
-        return productDetailData.all { product ->
-            product.joinSubsidy && ShopDiscountSubsidyInfoUiModel.getSubsidyType(product.subsidyInfo.subsidyType) == ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL
-        }
-    }
-
     private suspend fun getProductDetailData(
         listProductId: List<String>,
         status: Int
@@ -202,10 +190,6 @@ class SearchProductViewModel @Inject constructor(
 
     fun anySubsidyOnSelectedProducts(): Boolean {
         return selectedProducts.any { product -> product.isSubsidy }
-    }
-
-    fun hasOneSelectedNonVariantProduct(): Boolean {
-        return selectedProducts.count { product -> !product.hasVariant } == Int.ONE
     }
 
     fun setTotalProduct(totalProduct: Int) {

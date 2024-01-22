@@ -15,7 +15,10 @@ import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
 import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListUseCase
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
 import com.tokopedia.shopdiscount.product_detail.domain.GetSlashPriceProductDetailUseCase
+import com.tokopedia.shopdiscount.subsidy.model.response.SlashPriceProductRule
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -564,4 +567,140 @@ class SearchProductViewModelTest {
             false
         )
     }
+
+    @Test
+    fun `When get product detail data for edit subsidy products success, then result should success`() {
+        //Given
+        coEvery {
+            getSlashPriceProductDetailUseCase.executeOnBackground()
+        } returns GetSlashPriceProductDetailResponse()
+        //When
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf("123", "456"),
+            DISCOUNT_STATUS_ID_ONGOING,
+            ShopDiscountManageDiscountMode.UPDATE
+        )
+
+        //Then
+        assert(viewModel.manageProductSubsidyUiModelLiveData.value is Success)
+    }
+
+    @Test
+    fun `When get product detail data for delete subsidy products success, then result should success`() {
+        //Given
+        coEvery {
+            getSlashPriceProductDetailUseCase.executeOnBackground()
+        } returns GetSlashPriceProductDetailResponse()
+        //When
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf("123", "456"),
+            DISCOUNT_STATUS_ID_ONGOING,
+            ShopDiscountManageDiscountMode.DELETE
+        )
+
+        //Then
+        assert(viewModel.manageProductSubsidyUiModelLiveData.value is Success)
+    }
+
+    @Test
+    fun `When get product detail data for other mode subsidy products success, then result should success`() {
+        //Given
+        val mode = ""
+        coEvery {
+            getSlashPriceProductDetailUseCase.executeOnBackground()
+        } returns GetSlashPriceProductDetailResponse()
+        //When
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf("123", "456"),
+            DISCOUNT_STATUS_ID_ONGOING,
+            mode
+        )
+
+        //Then
+        assert(viewModel.manageProductSubsidyUiModelLiveData.value is Success)
+    }
+
+    @Test
+    fun `When get product detail data for opt out subsidy products success, then result should success`() {
+        //Given
+        coEvery {
+            getSlashPriceProductDetailUseCase.executeOnBackground()
+        } returns GetSlashPriceProductDetailResponse(
+            GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail(
+                productList = listOf(
+                    GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList(
+                        rule = SlashPriceProductRule(
+                            isAbleToOptOut = false
+                        )
+                    ),
+                    GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList(
+                        rule = SlashPriceProductRule(
+                            isAbleToOptOut = true
+                        )
+                    ),
+                    GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList(
+                        rule = SlashPriceProductRule(
+                            isAbleToOptOut = false
+                        )
+                    )
+                )
+            )
+        )
+        //When
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf("123", "456"),
+            DISCOUNT_STATUS_ID_ONGOING,
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
+        )
+
+        //Then
+        assert(viewModel.manageProductSubsidyUiModelLiveData.value is Success)
+    }
+
+    @Test
+    fun `When get product detail data for opt out subsidy products error, then result should fail`() {
+        //Given
+        val error = MessageErrorException("Server error")
+        coEvery {
+            getSlashPriceProductDetailUseCase.executeOnBackground()
+        } throws error
+        //When
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf("123", "456"),
+            DISCOUNT_STATUS_ID_ONGOING,
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
+        )
+
+        //Then
+        assert(viewModel.manageProductSubsidyUiModelLiveData.value is Fail)
+    }
+
+    @Test
+    fun `When call anySubsidyOnSelectedProducts with subsidy product on selected list, then should return true`() {
+        //Given
+        val product1 = buildDummyProduct("first-product-id-111212").copy(isSubsidy = true)
+        val product2 = buildDummyProduct("first-product-id-111212").copy(isSubsidy = false)
+        viewModel.addProductToSelection(product1)
+        viewModel.addProductToSelection(product2)
+        //When
+        val result = viewModel.anySubsidyOnSelectedProducts()
+
+        //Then
+        assert(result)
+    }
+
+    @Test
+    fun `When call anySubsidyOnSelectedProducts without subsidy product on selected list, then should return false`() {
+        //Given
+        val product1 = buildDummyProduct("first-product-id-111212").copy(isSubsidy = false)
+        val product2 = buildDummyProduct("first-product-id-111212").copy(isSubsidy = false)
+        viewModel.addProductToSelection(product1)
+        viewModel.addProductToSelection(product2)
+        //When
+        val result = viewModel.anySubsidyOnSelectedProducts()
+
+        //Then
+        assert(!result)
+    }
+
 }
