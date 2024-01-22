@@ -173,8 +173,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
         productContentAdapter.submitList(state)
         if (autoScrollFirstOpenContent) {
-            val position = getSelectedItemPosition(state)
-            binding.rvContentProduct.scrollToPosition(position)
+            val autoScrollPosition = getSelectedItemPosition(state)
+            binding.rvContentProduct.scrollToPosition(autoScrollPosition)
             autoScrollFirstOpenContent = false
         }
     }
@@ -218,13 +218,19 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun prepareVideoPlayerIfNeeded(state: List<ContentUiModel>) {
         if (mVideoPlayer != null) return
-        val videoPosition = state.indexOfFirst { it.type == MediaType.Video }
 
+        val videoPosition = state.indexOfFirst { it.type == MediaType.Video }
         if (videoPosition < 0) return
+
         val data = state[videoPosition]
         val videoUrl = data.url
 
-        val instance = videoPlayerManager.occupy(String.format(PRODUCT_CONTENT_VIDEO_KEY_REF, videoUrl))
+        val instance = videoPlayerManager.occupy(
+            String.format(
+                PRODUCT_CONTENT_VIDEO_KEY_REF,
+                videoUrl
+            )
+        )
         val videoPlayer = mVideoPlayer ?: instance
         mVideoPlayer = videoPlayer
         mVideoPlayer?.start(

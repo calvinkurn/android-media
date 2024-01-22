@@ -112,7 +112,6 @@ class ProductPreviewFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-
         viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
     }
 

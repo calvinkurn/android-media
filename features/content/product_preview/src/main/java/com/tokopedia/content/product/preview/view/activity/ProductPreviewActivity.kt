@@ -23,13 +23,10 @@ class ProductPreviewActivity : BaseActivity() {
 
     private lateinit var binding: ActivityProductPreviewBinding
 
-    private var productPreviewData: ProductContentUiModel? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initFragmentFactory()
         super.onCreate(savedInstanceState)
-        getData()
         setStatusBar()
         setupViews()
     }
@@ -40,14 +37,6 @@ class ProductPreviewActivity : BaseActivity() {
 
     private fun initFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
-    }
-
-    private fun getData() {
-        productPreviewData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.extras?.getParcelable(PRODUCT_DATA, ProductContentUiModel::class.java)
-        } else {
-            intent.extras?.getParcelable(PRODUCT_DATA)
-        }
     }
 
     private fun setStatusBar() {
@@ -84,9 +73,17 @@ class ProductPreviewActivity : BaseActivity() {
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
             bundle = Bundle().apply {
-                putParcelable(PRODUCT_DATA, productPreviewData)
+                putParcelable(PRODUCT_DATA, getProductData())
             }
         )
+    }
+
+    private fun getProductData(): ProductContentUiModel? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.extras?.getParcelable(PRODUCT_DATA, ProductContentUiModel::class.java)
+        } else {
+            intent.extras?.getParcelable(PRODUCT_DATA)
+        }
     }
 
     companion object {

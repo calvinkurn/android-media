@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
@@ -35,23 +34,19 @@ import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
-import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
-import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 
 class ReviewFragment @Inject constructor(
     private val router: Router
@@ -77,6 +72,7 @@ class ReviewFragment @Inject constructor(
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = false))
             }
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -122,8 +118,6 @@ class ReviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.onAction(ProductPreviewAction.FetchReview)
-
         setupView()
         observeReview()
         observeEvent()
@@ -143,7 +137,7 @@ class ReviewFragment @Inject constructor(
                 viewLifecycleOwner.lifecycle,
                 Lifecycle.State.RESUMED
             ).withCache().collectLatest { (prev, curr) ->
-               renderList(prev, curr)
+                renderList(prev, curr)
             }
         }
     }
@@ -195,22 +189,22 @@ class ReviewFragment @Inject constructor(
         binding.rvReview.showWithCondition(!isShown)
     }
 
-    private fun showError(state: PageState.Error) {
-        //TODO: why is it in dark mode.
-        binding.reviewGlobalError.show()
+    private fun showError(state: PageState.Error) = with(binding.reviewGlobalError) {
+        // TODO: why is it in dark mode.
+        show()
         if (state.throwable is UnknownHostException) {
-            binding.reviewGlobalError.setType(GlobalError.NO_CONNECTION)
-            binding.reviewGlobalError.errorSecondaryAction.show()
-            binding.reviewGlobalError.errorSecondaryAction.text = getString(contentcommonR.string.content_global_error_secondary_text)
-            binding.reviewGlobalError.setSecondaryActionClickListener {
+            setType(GlobalError.NO_CONNECTION)
+            errorSecondaryAction.show()
+            errorSecondaryAction.text = getString(contentcommonR.string.content_global_error_secondary_text)
+            setSecondaryActionClickListener {
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 router.route(requireActivity(), intent)
             }
         } else {
-            binding.reviewGlobalError.errorSecondaryAction.hide()
-            binding.reviewGlobalError.setType(GlobalError.SERVER_ERROR)
+            errorSecondaryAction.hide()
+            setType(GlobalError.SERVER_ERROR)
         }
-        binding.reviewGlobalError.setActionClickListener {
+        setActionClickListener {
             viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
         }
     }
@@ -228,6 +222,7 @@ class ReviewFragment @Inject constructor(
         binding.rvReview.removeOnScrollListener(scrollListener)
         _binding = null
     }
+
     override fun onMenuClicked(menu: MenuStatus) {
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
@@ -269,7 +264,8 @@ class ReviewFragment @Inject constructor(
             classLoader: ClassLoader,
             bundle: Bundle
         ): ReviewFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(REVIEW_FRAGMENT_TAG) as? ReviewFragment
+            val oldInstance =
+                fragmentManager.findFragmentByTag(REVIEW_FRAGMENT_TAG) as? ReviewFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ReviewFragment::class.java.name
