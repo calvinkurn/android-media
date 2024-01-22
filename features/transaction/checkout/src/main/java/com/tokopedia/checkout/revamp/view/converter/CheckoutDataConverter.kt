@@ -9,6 +9,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CoachmarkPlusData
@@ -192,8 +193,9 @@ class CheckoutDataConverter @Inject constructor() {
                 )
                 products.addAll(productList)
                 cartItemIndex += productList.size
+                val finalItemList = insertProductBenefit(productList)
+                checkoutItems.addAll(finalItemList)
             }
-            checkoutItems.addAll(products)
             val fobject = levelUpParametersFromProductToCartSeller(products)
             val order = CheckoutOrderModel(
                 cartStringGroup = groupShop.cartString,
@@ -477,6 +479,7 @@ class CheckoutDataConverter @Inject constructor() {
             shouldShowGroupInfo = index == 0,
             isBMGMItem = product.isBmgmItem,
             bmgmOfferId = product.bmgmOfferId,
+            bmgmOfferTypeId = product.bmgmOfferTypeId,
             bmgmOfferName = product.bmgmOfferName,
             bmgmOfferMessage = product.bmgmOfferMessage,
             bmgmOfferStatus = product.bmgmOfferStatus,
@@ -486,6 +489,50 @@ class CheckoutDataConverter @Inject constructor() {
             bmgmTierProductList = product.bmgmTierProductList,
             shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER
         )
+    }
+
+    private fun convertFromProductBenefit(product: CheckoutProductModel?): List<CheckoutProductBenefitModel> {
+        val bmgmTier =
+            product?.bmgmTierProductList?.firstOrNull { it.offerId == product.bmgmOfferId && it.offerTypeId == product.bmgmOfferTypeId }
+        return bmgmTier?.benefitProductList?.mapIndexed { index, benefit ->
+            CheckoutProductBenefitModel(
+                cartStringGroup = product.cartStringGroup,
+                productId = benefit.productId,
+                productName = benefit.productName,
+                imageUrl = benefit.imageUrl,
+                quantity = benefit.quantity,
+                originalPrice = benefit.originalPrice,
+                finalPrice = benefit.finalPrice,
+                weight = benefit.weight,
+                weightActual = benefit.weightActual,
+                headerText = bmgmTier.benefitWording,
+                shouldShowHeader = index == 0
+            )
+        } ?: emptyList()
+    }
+
+    private fun insertProductBenefit(products: List<CheckoutProductModel>): List<CheckoutItem> {
+        val finalList = products.fold(mutableListOf<CheckoutItem>()) { acc, product ->
+            val lastItem = acc.lastOrNull()
+            if (lastItem !is CheckoutProductModel) {
+                acc.add(product)
+            } else {
+                if (lastItem.cartStringOrder != product.cartStringOrder ||
+                    lastItem.bmgmOfferId != product.bmgmOfferId
+                ) {
+                    acc.addAll(convertFromProductBenefit(lastItem))
+                    acc.add(product)
+                } else {
+                    acc.add(product)
+                }
+            }
+            acc
+        }
+        val lastItem = finalList.lastOrNull()
+        if (lastItem is CheckoutProductModel) {
+            finalList.addAll(convertFromProductBenefit(lastItem))
+        }
+        return finalList
     }
 
     private inner class Fobject(

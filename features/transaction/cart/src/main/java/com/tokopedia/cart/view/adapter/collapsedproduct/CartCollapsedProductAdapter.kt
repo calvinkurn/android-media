@@ -3,12 +3,14 @@ package com.tokopedia.cart.view.adapter.collapsedproduct
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.databinding.ItemCartCollapsedProductBinding
+import com.tokopedia.cart.databinding.ItemCartCollapsedProductRevampBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.viewholder.now.CartCollapsedProductViewHolder
 
-class CartCollapsedProductAdapter(val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CartCollapsedProductAdapter(
+    val actionListener: ActionListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var cartCollapsedProductHolderDataList: List<CartItemHolderData> = arrayListOf()
 
@@ -17,7 +19,11 @@ class CartCollapsedProductAdapter(val actionListener: ActionListener) : Recycler
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = ItemCartCollapsedProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemCartCollapsedProductRevampBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return CartCollapsedProductViewHolder(binding, actionListener)
     }
 

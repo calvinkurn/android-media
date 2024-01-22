@@ -1372,7 +1372,7 @@ class CheckoutFragment :
                     arrayListOf()
                 for ((_, productName) in addOnBottomSheetModel.products) {
                     for (item in orderProducts) {
-                        if (productName.equals(item.name, ignoreCase = true)) {
+                        if (item is CheckoutProductModel && productName.equals(item.name, ignoreCase = true)) {
                             val product = GiftingProduct()
                             product.cartId = item.cartId.toString()
                             product.productId = item.productId.toString()
@@ -1405,15 +1405,17 @@ class CheckoutFragment :
                 val listProduct =
                     arrayListOf<GiftingProduct>()
                 for (cartItemModel in orderProducts) {
-                    val product = GiftingProduct()
-                    product.cartId = cartItemModel.cartId.toString()
-                    product.productId = cartItemModel.productId.toString()
-                    product.productName = cartItemModel.name
-                    product.productPrice = cartItemModel.price.toLong()
-                    product.productQuantity = cartItemModel.quantity
-                    product.productImageUrl = cartItemModel.imageUrl
-                    product.productParentId = cartItemModel.variantParentId
-                    listProduct.add(product)
+                    if (cartItemModel is CheckoutProductModel) {
+                        val product = GiftingProduct()
+                        product.cartId = cartItemModel.cartId.toString()
+                        product.productId = cartItemModel.productId.toString()
+                        product.productName = cartItemModel.name
+                        product.productPrice = cartItemModel.price.toLong()
+                        product.productQuantity = cartItemModel.quantity
+                        product.productImageUrl = cartItemModel.imageUrl
+                        product.productParentId = cartItemModel.variantParentId
+                        listProduct.add(product)
+                    }
                 }
 
                 val addOnDataList = arrayListOf<AddOnData>()
