@@ -462,12 +462,14 @@ fun View.setLayoutHeight(height: Int) {
     if (layoutParams.height == height) return
 
     layoutParams.height = height
+    requestLayout()
 }
 
 fun View.setLayoutWidth(width: Int) {
     if (layoutParams.width == width) return
 
     layoutParams.width = width
+    requestLayout()
 }
 
 fun View.setOnClickDebounceListener(interval: Int = 750, block: () -> Unit) {
