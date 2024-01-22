@@ -38,11 +38,11 @@ import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
+    private val viewModel by activityViewModels<ProductPreviewViewModel>()
+
     private var _binding: FragmentProductBinding? = null
     private val binding: FragmentProductBinding
         get() = _binding!!
-
-    private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
     private var snapHelperContent = PagerSnapHelper()
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
@@ -50,6 +50,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private val layoutManagerContent by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
     }
+
     private val layoutManagerIndicator by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
     }
@@ -97,13 +98,13 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
             }
         )
     }
+
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                val position = getContentCurrentPosition()
-                scrollTo(position)
-                viewModel.onAction(ProductSelected(position))
-            }
+            if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            val position = getContentCurrentPosition()
+            scrollTo(position)
+            viewModel.onAction(ProductSelected(position))
         }
     }
 
@@ -239,8 +240,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun getContentCurrentPosition(): Int {
-        val snappedView =
-            snapHelperContent.findSnapView(layoutManagerContent) ?: return RecyclerView.NO_POSITION
+        val snappedView = snapHelperContent.findSnapView(layoutManagerContent)
+            ?: return RecyclerView.NO_POSITION
         return binding.rvContentProduct.getChildAdapterPosition(snappedView)
     }
 

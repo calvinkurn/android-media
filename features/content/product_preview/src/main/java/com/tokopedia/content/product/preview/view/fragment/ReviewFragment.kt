@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,30 +30,25 @@ import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
-import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
-import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ReviewFragment @Inject constructor(
-    private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
-    private val router: Router,
-) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener, MenuBottomSheet.Listener, ReviewReportBottomSheet.Listener {
+    private val router: Router
+) : TkpdBaseV4Fragment(),
+    ReviewParentContentViewHolder.Listener,
+    MenuBottomSheet.Listener,
+    ReviewReportBottomSheet.Listener {
+
+    private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
     private var _binding: FragmentReviewBinding? = null
     private val binding: FragmentReviewBinding
         get() = _binding!!
-
-    private val arguments
-        get() = (requireParentFragment() as? ProductPreviewFragment)?.productPreviewData.ifNull { ProductContentUiModel() }
-
-    private val viewModel by viewModels<ProductPreviewViewModel> { viewModelFactory.create(EntrySource((arguments))) }
 
     private val reviewAdapter by lazyThreadSafetyNone {
         ReviewParentAdapter(this)
@@ -101,7 +96,6 @@ class ReviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.onAction(ProductPreviewAction.FetchReview)
 
         setupView()
@@ -174,7 +168,7 @@ class ReviewFragment @Inject constructor(
      * Menu Bottom Sheet Listener
      */
     override fun onOptionClicked(menu: ContentMenuItem) {
-        when(menu.type) {
+        when (menu.type) {
             ContentMenuIdentifier.Report ->
                 ReviewReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
             else -> {}
@@ -188,7 +182,7 @@ class ReviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.SubmitReport(report))
     }
 
-    private fun getCurrentPosition() : Int {
+    private fun getCurrentPosition(): Int {
         return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: RecyclerView.NO_POSITION
     }
 

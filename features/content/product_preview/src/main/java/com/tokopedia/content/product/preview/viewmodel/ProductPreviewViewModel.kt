@@ -82,24 +82,26 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val reviewPosition get() = _reviewIndex.value
 
     private val currentReview
-        get() = if (_review.value.isNotEmpty() && reviewPosition in 0 until _review.value.size)
-            _review.value[reviewPosition] else ReviewUiModel.Empty
+        get() = if (_review.value.isNotEmpty() && reviewPosition in 0 until _review.value.size) {
+            _review.value[reviewPosition]
+        } else {
+            ReviewUiModel.Empty
+        }
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             InitializeProductMainData -> handleInitializeProductMainData()
-            is ProductSelected -> handleProductSelected(action.position)
             FetchReview -> getReview()
             FetchMiniInfo -> getMiniInfo()
-            is ProductAction -> handleProductAction(action.model)
             ProductActionFromResult -> handleProductAction(_miniInfo.value)
+            is ProductSelected -> handleProductSelected(action.position)
+            is ProductAction -> handleProductAction(action.model)
             is Navigate -> navigate(action.appLink)
             is ProductSelected -> handleProductSelected(action.position)
             is SetProductVideoLastDuration -> handleSetProductVideoLastDuration(action.duration)
             is SubmitReport -> submitReport(action.model)
             is ClickMenu -> menuOnClicked(action.isFromLogin)
             is UpdateReviewPosition -> updateReviewIndex(action.index)
-            else -> {}
         }
     }
 
@@ -196,13 +198,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
         _productIndicatorState.value = param.productPreviewData.indicator
     }
 
-    private fun handleInitializeReviewMainData(page: Int) {
-        viewModelScope.launchCatchError(block = {
-            _review.value =
-                repo.getReview(param.productPreviewData.productId, page) // TODO: add pagination
-        }) {}
-    }
-
     private fun handleSetProductVideoLastDuration(duration: Long) {
         _productVideoLastDuration = duration
     }
@@ -225,17 +220,22 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val result = repo.submitReport(model, currentReview.reviewId)
             if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
         }) {
-            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.Report) {
-                submitReport(model)
-            })
+            _uiEvent.emit(
+                ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.Report) {
+                    submitReport(model)
+                }
+            )
         }
     }
 
     private fun menuOnClicked(isFromLogin: Boolean) {
         val status = _review.updateAndGet { review ->
-            if (isFromLogin.not()) review
-            else review.map { model ->
-                model.copy(menus = model.menus.copy(isReportable = userSessionInterface.isLoggedIn && model.author.id != userSessionInterface.userId))
+            if (isFromLogin.not()) {
+                review
+            } else {
+                review.map { model ->
+                    model.copy(menus = model.menus.copy(isReportable = userSessionInterface.isLoggedIn && model.author.id != userSessionInterface.userId))
+                }
             }
         }.getOrNull(reviewPosition)?.menus ?: return
 
