@@ -1,34 +1,33 @@
-package com.tokopedia.purchase_platform.common.feature.bmgm.data.response
+package com.tokopedia.cartcommon.data.response.bmgm
 
 import android.os.Parcelable
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class BmGmTierProduct(
-    @Expose
     @SerializedName("tier_id")
     val tierId: Long = 0L,
-    @Expose
     @SerializedName("tier_name")
     val tierName: String = "",
-    @Expose
     @SerializedName("tier_message")
     val tierMessage: String = "",
-    @Expose
     @SerializedName("tier_discount_text")
     val tierDiscountText: String = "",
-    @Expose
     @SerializedName("tier_discount_amount")
     val tierDiscountAmount: String = "",
-    @Expose
     @SerializedName("price_before_benefit")
     val priceBeforeBenefit: Double = 0.0,
-    @Expose
     @SerializedName("price_after_benefit")
     val priceAfterBenefit: Double = 0.0,
-    @Expose
     @SerializedName("list_product")
-    val listProduct: List<BmGmProduct> = emptyList()
+    val listProduct: List<BmGmProduct> = emptyList(),
+    @SerializedName("benefit_wording")
+    val benefitWording: String = "",
+    @SerializedName("action_wording")
+    val actionWording: String = "",
+    @SerializedName("benefit_quantity")
+    val benefitQuantity: Int = 0,
+    @SerializedName("products_benefit")
+    val productsBenefit: List<BmGmProductBenefit> = emptyList()
 ) : Parcelable

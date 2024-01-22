@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.bmgm.data.response
+package com.tokopedia.cartcommon.data.response.bmgm
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
