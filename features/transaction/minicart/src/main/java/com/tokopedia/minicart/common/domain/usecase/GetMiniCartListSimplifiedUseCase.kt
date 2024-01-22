@@ -8,7 +8,6 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase.Companion.PARAM_VALUE_MINICART
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
@@ -17,7 +16,6 @@ import javax.inject.Inject
 
 class GetMiniCartListSimplifiedUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
-    private val miniCartSimplifiedMapper: MiniCartSimplifiedMapper,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) : UseCase<MiniCartSimplifiedData>() {
 
@@ -82,7 +80,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
         val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
-            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
+            return response.miniCart.toSimplifiedData()
         } else {
             throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
         }
