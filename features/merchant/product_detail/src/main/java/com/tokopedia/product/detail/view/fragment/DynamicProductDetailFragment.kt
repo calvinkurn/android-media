@@ -4120,13 +4120,6 @@ open class DynamicProductDetailFragment :
 
     private fun onClickShareProduct() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            DynamicProductDetailTracking.Click.eventClickPdpShare(
-                productId = productInfo.basic.productID,
-                userId = viewModel.userId,
-                campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
-                bundleId = "0",
-                isAffiliateShareIcon = isAffiliateShareIcon
-            )
             handleShareProduct(productInfo)
         }
     }
@@ -4137,6 +4130,13 @@ open class DynamicProductDetailFragment :
         if (isUsingShareEx()) {
             openShareExBottomSheet(dynamicProductInfoP1)
         } else {
+            DynamicProductDetailTracking.Click.eventClickPdpShare(
+                productId = dynamicProductInfoP1.basic.productID,
+                userId = viewModel.userId,
+                campaignId = zeroIfEmpty(dynamicProductInfoP1.data.campaign.campaignID),
+                bundleId = "0",
+                isAffiliateShareIcon = isAffiliateShareIcon
+            )
             shareProduct(dynamicProductInfoP1)
         }
     }
@@ -4147,7 +4147,8 @@ open class DynamicProductDetailFragment :
         shareExInitializer?.openShareBottomSheet(
             generateShareExBottomSheetArg(
                 productId = dynamicProductInfoP1.basic.productID,
-                productUrl = dynamicProductInfoP1.basic.url
+                productUrl = dynamicProductInfoP1.basic.url,
+                campaignId = dynamicProductInfoP1.data.campaign.campaignID
             )
         )
     }

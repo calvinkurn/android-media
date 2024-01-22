@@ -899,13 +899,21 @@ object DynamicProductDetailMapper {
 
     fun generateShareExBottomSheetArg(
         productId: String,
-        productUrl: String
+        productUrl: String,
+        campaignId: String
     ): ShareExBottomSheetArg {
         return ShareExBottomSheetArg(
             identifier = productId,
             pageTypeEnum = ShareExPageTypeEnum.PDP,
             defaultUrl = productUrl,
-            trackerArg = ShareExTrackerArg()
+            trackerArg = ShareExTrackerArg(
+                labelImpressionBottomSheet = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
+                labelActionClickShareIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
+                labelActionCloseIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
+                labelActionClickChannel = "${ShareExTrackerArg.CHANNEL_KEY} - ${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId - ${ShareExTrackerArg.IMAGE_TYPE_KEY}",
+                labelImpressionAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}",
+                labelActionClickAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}"
+            )
         )
     }
 
