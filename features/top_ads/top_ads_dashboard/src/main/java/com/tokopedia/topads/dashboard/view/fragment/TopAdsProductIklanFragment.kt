@@ -99,6 +99,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private var emptyView: ConstraintLayout? = null
     private var progressView: LinearLayout? = null
     private var description: Typography? = null
+    private var loaderTitle: Typography? = null
     private var btnReload: UnifyButton? = null
     private var viewPagerFrag: ViewPager? = null
     private var autoadsLayout: LinearLayoutCompat? = null
@@ -130,6 +131,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         emptyView = view.findViewById(topadsdashboardR.id.empty_view)
         progressView = view.findViewById(topadsdashboardR.id.progressView)
         description = view.findViewById(topadsdashboardR.id.description)
+        loaderTitle = view.findViewById(topadsdashboardR.id.loader_title)
         btnReload = view.findViewById(topadsdashboardR.id.btnReload)
         viewPagerFrag = view.findViewById(topadsdashboardR.id.view_pager_frag)
         autoadsLayout = view.findViewById(topadsdashboardR.id.autoads_layout)
@@ -413,14 +415,21 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun showProgressLayout() {
+        if(isAutoPsWhitelisted){
+            btnReload?.gone()
+        }
         btnReload?.setOnClickListener {
             swipeRefreshLayout?.isRefreshing = true
             loadData()
         }
-        if (STATUS_IN_PROGRESS_ACTIVE == adCurrentState)
+        if (STATUS_IN_PROGRESS_ACTIVE == adCurrentState) {
+            loaderTitle?.text = getString(topadsdashboardR.string.topads_dash_reload_title)
             description?.text = getString(topadsdashboardR.string.topads_dash_auto_ads_enable_msg)
-        else if (STATUS_IN_PROGRESS_INACTIVE == adCurrentState)
+        }
+        else if (STATUS_IN_PROGRESS_INACTIVE == adCurrentState) {
+            loaderTitle?.text = getString(topadsdashboardR.string.topads_autops_deactivation_inprogress_title)
             description?.text = getString(topadsdashboardR.string.topads_dash_auto_ads_disable_msg)
+        }
         autoadsOnboarding?.gone()
         graphLayout?.gone()
         progressView?.visible()

@@ -220,21 +220,21 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
             STATUS_IN_PROGRESS_ACTIVE,
             STATUS_IN_PROGRESS_AUTOMANAGE,
-            STATUS_IN_PROGRESS_INACTIVE -> setProgressiveLayout(data.status)
+            STATUS_IN_PROGRESS_INACTIVE -> setProgressiveLayout()
 
             else -> setAutoPsActiveLayout()
         }
     }
 
-    private fun setProgressiveLayout(status: Int) {
+    private fun setProgressiveLayout() {
         autoAdsWidget?.show()
         autoAdsWidget?.loadData(0)
         val title = view?.findViewById<Typography>(topadsdashboardR.id.progressiveView_title)
         val desc = view?.findViewById<Typography>(topadsdashboardR.id.progressiveView_description)
-        if(status == STATUS_IN_PROGRESS_ACTIVE){
+        if(currentAdsStatus == STATUS_IN_PROGRESS_ACTIVE){
             title?.text = getString(topadsdashboardR.string.topads_dash_reload_title)
             desc?.text = getString(topadsdashboardR.string.topads_dash_auto_ads_enable_msg)
-        } else if(status == STATUS_IN_PROGRESS_INACTIVE){
+        } else if(currentAdsStatus == STATUS_IN_PROGRESS_INACTIVE){
             title?.text = getString(topadsdashboardR.string.topads_autops_deactivation_inprogress_title)
             desc?.text = getString(topadsdashboardR.string.topads_autops_deactivation_inprogress_description)
         }
@@ -245,7 +245,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         autoPsStatisticTable?.gone()
         recommendationWidget?.gone()
         statisticGraph?.gone()
-        view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view)?.gone()
+        view?.findViewById<ConstraintLayout>(topadsdashboardR.id.empty_view)?.gone()
         view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view_autops)?.gone()
     }
 
@@ -510,20 +510,24 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         if(currentAdsStatus == STATUS_NOT_DELIVERED){
             setAutoPsActiveLayout()
         } else {
-            appBarLayout?.gone()
-            hariIni?.gone()
-            view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view_autops)?.let {
-                it.show()
-                it.findViewById<Typography>(topadsdashboardR.id.article_link)?.let {
-                    it.movementMethod = LinkMovementMethod.getInstance()
-                    it.text = getClickableString()
-                }
-                it.findViewById<ImageUnify>(topadsdashboardR.id.empty_image)?.urlSrc = TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL
-                it.findViewById<UnifyButton>(topadsdashboardR.id.create_shopads_cta)?.setOnClickListener {
-                    RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
-                }
-                it.findViewById<UnifyButton>(topadsdashboardR.id.autops_activate_cta)?.setOnClickListener {
-                    RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+            if(currentAdsStatus == STATUS_IN_PROGRESS_ACTIVE || currentAdsStatus == STATUS_IN_PROGRESS_INACTIVE || currentAdsStatus == STATUS_IN_PROGRESS_AUTOMANAGE){
+                setProgressiveLayout()
+            } else {
+                appBarLayout?.gone()
+                hariIni?.gone()
+                view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view_autops)?.let {
+                    it.show()
+                    it.findViewById<Typography>(topadsdashboardR.id.article_link)?.let {
+                        it.movementMethod = LinkMovementMethod.getInstance()
+                        it.text = getClickableString()
+                    }
+                    it.findViewById<ImageUnify>(topadsdashboardR.id.empty_image)?.urlSrc = TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL
+                    it.findViewById<UnifyButton>(topadsdashboardR.id.create_shopads_cta)?.setOnClickListener {
+                        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
+                    }
+                    it.findViewById<UnifyButton>(topadsdashboardR.id.autops_activate_cta)?.setOnClickListener {
+                        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+                    }
                 }
             }
         }
