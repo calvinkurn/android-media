@@ -36,7 +36,8 @@ data class FestiveEligibilityPolicy(
             ComponentNames.CalendarWidgetCarousel.componentName,
             ComponentNames.ProductHighlight.componentName,
             ComponentNames.ProductCardCarousel.componentName,
-            ComponentNames.ShopOfferHeroBrand.componentName
+            ComponentNames.ShopOfferHeroBrand.componentName,
+            ComponentNames.Margin.componentName
         )
     }
 }
