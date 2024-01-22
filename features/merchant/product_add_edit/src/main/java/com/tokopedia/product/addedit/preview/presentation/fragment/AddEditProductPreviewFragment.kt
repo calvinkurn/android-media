@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.LOGIN
 import com.tokopedia.applink.ApplinkConst.PRODUCT_MANAGE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -118,6 +119,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LATITUDE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LOGIN_REQUEST_CODE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
@@ -386,6 +388,8 @@ class AddEditProductPreviewFragment :
                 REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT -> updateVariantFromIntentData(data)
                 REQUEST_CODE_SHOP_LOCATION -> updateShopLocationFromIntentData(data)
             }
+        } else if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST_CODE) {
+            viewModel.getProductData(viewModel.getProductId())
         }
     }
 
@@ -621,7 +625,8 @@ class AddEditProductPreviewFragment :
             val productInputModel = viewModel.productInputModel.value ?: return@setOnClickListener
 
             if (productInputModel.isCampaignActive ||
-                productInputModel.variantInputModel.isVariantCampaignActive()) {
+                productInputModel.variantInputModel.isVariantCampaignActive()
+            ) {
                 showToasterErrorSetStatusCampaignActive(isChecked)
                 return@setOnClickListener
             }
@@ -664,7 +669,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun processSave(view: View){
+    private fun processSave(view: View) {
         updateProductImage()
         if (isEditing()) {
             ProductEditStepperTracking.trackFinishButton(shopId)
@@ -869,7 +874,6 @@ class AddEditProductPreviewFragment :
         )
         outOfStockCoachMark = CoachMark2(context ?: return)
         outOfStockCoachMark?.showCoachMark(ArrayList(items))
-
     }
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
@@ -1052,7 +1056,8 @@ class AddEditProductPreviewFragment :
     private fun observeHasDTStock() {
         viewModel.hasDTStock.observe(viewLifecycleOwner) { hasDTStock ->
             addEditProductVariantButton?.setColorToDisabled(
-                hasDTStock && viewModel.isVariantEmpty.value == true)
+                hasDTStock && viewModel.isVariantEmpty.value == true
+            )
             addEditProductVariantButton?.setOnClickListener {
                 if (isEditing()) {
                     ProductEditStepperTracking.trackAddProductVariant(shopId)
@@ -1206,7 +1211,14 @@ class AddEditProductPreviewFragment :
                     }
                 }
                 is Fail -> {
-                    showGetProductErrorToast(viewModel.getProductId())
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showGlobalError(description = errorMessage) {
+                        activity?.finish()
+                    }
+                    if (!userSession.isLoggedIn) {
+                        val intent = RouteManager.getIntent(requireContext(), LOGIN)
+                        startActivityForResult(intent, LOGIN_REQUEST_CODE)
+                    }
                 }
             }
         }
@@ -1818,7 +1830,8 @@ class AddEditProductPreviewFragment :
         productStatusSwitch?.isChecked = true
         val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         val descriptionText = getString(
-            productManageR.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml()
+            productManageR.string.product_manage_confirm_inactive_dt_product_desc
+        ).parseAsHtml()
         val successMessage = getString(R.string.product_add_edit_success_to_deactivate_format, productName)
         dialog.apply {
             setTitle(getString(productManageR.string.product_manage_confirm_inactive_dt_product_title))
@@ -1829,7 +1842,7 @@ class AddEditProductPreviewFragment :
                 productStatusSwitch?.isChecked = false
                 viewModel.updateProductStatus(false)
                 Toaster.build(
-                    view?:return@setPrimaryCTAClickListener,
+                    view ?: return@setPrimaryCTAClickListener,
                     successMessage,
                     Toaster.LENGTH_LONG,
                     actionText = getString(R.string.action_oke)
@@ -1958,7 +1971,7 @@ class AddEditProductPreviewFragment :
         showGlobalError(
             context?.getString(shopcommonR.string.admin_no_permission_title, permissionGroup).orEmpty(),
             context?.getString(shopcommonR.string.admin_no_permission_desc, permissionGroup).orEmpty(),
-            AdminPermissionUrl.ERROR_ILLUSTRATION,
+            AdminPermissionUrl.ERROR_ILLUSTRATION
         ) {
             activity?.finish()
             if (GlobalConfig.isSellerApp()) {
