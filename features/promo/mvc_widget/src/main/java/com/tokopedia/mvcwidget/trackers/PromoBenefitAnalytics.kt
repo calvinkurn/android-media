@@ -14,20 +14,26 @@ class PromoBenefitAnalytics @Inject constructor(private val userSession: UserSes
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4436
     // Tracker ID: 49314
     fun sendImpressionPromoDetailBottomSheetEvent(
-        businessUnit: String,
-        currentSite: String,
+        layout: String,
+        component: String,
+        productId: String,
+        shopId: String,
         promotions: List<PromotionModel>,
     ) {
-        Timber.d("[PROMO BOTTOMSHEET] Sending analytics $promotions")
+        Timber.d("[PROMO BOTTOMSHEET] Sending analytics ${promotions.toMap()}")
         Tracker.Builder()
             .setEvent("view_item")
             .setEventAction("impression - promo detail bottom sheet")
             .setEventCategory("product detail page")
             .setEventLabel("")
             .setCustomProperty("trackerId", "49314")
-            .setBusinessUnit(businessUnit)
-            .setCurrentSite(currentSite)
+            .setBusinessUnit("product detail page")
+            .setCustomProperty("component", component)
+            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty("layout", layout)
+            .setCustomProperty("productId", productId)
             .setCustomProperty("promotions", promotions.toMap())
+            .setShopId(shopId)
             .setUserId(userSession.userId)
             .build()
             .send()
