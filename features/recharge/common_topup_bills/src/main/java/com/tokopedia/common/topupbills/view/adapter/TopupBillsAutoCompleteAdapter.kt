@@ -14,10 +14,10 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoComplete
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteEmptyModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteHeaderModel
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import java.lang.IllegalArgumentException
@@ -29,7 +29,7 @@ class TopupBillsAutoCompleteAdapter(
     private var contacts: MutableList<TopupBillsAutoComplete>,
     private var emptyStateUnitTxt: String,
     var listener: ContactArrayListener
-): ArrayAdapter<TopupBillsAutoComplete>(context, textViewResourceId, favorites) {
+) : ArrayAdapter<TopupBillsAutoComplete>(context, textViewResourceId, favorites) {
 
     var allFavorites: MutableList<TopupBillsAutoComplete> = arrayListOf()
     var allContacts: MutableList<TopupBillsAutoComplete> = arrayListOf()
@@ -141,26 +141,6 @@ class TopupBillsAutoCompleteAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return suggestions[position].getViewType().type
-//        when {
-//            position == 0 && suggestions[position] is TopupBillsAutoCompleteEmptyModel -> {
-//                TopupBillsAutoCompleteView.EMPTY_STATE.type
-//            }
-//            suggestions[position] is TopupBillsAutoCompleteHeaderModel -> {
-//                TopupBillsAutoCompleteView.HEADER.type
-//            }
-//            suggestions[position] is TopupBillsAutoCompleteHeaderModel -> {
-//                TopupBillsAutoCompleteView.CONTACT.type
-//            }
-//        }
-//        return if (position == 0) {
-//            if (suggestions[position] is TopupBillsAutoCompleteEmptyModel) {
-//                TopupBillsAutoCompleteView.EMPTY_STATE.type
-//            } else {
-//                TopupBillsAutoCompleteView.HEADER.type
-//            }
-//        } else {
-//            TopupBillsAutoCompleteView.CONTACT.type
-//        }
     }
 
     override fun getItem(position: Int): TopupBillsAutoComplete? {
@@ -207,12 +187,16 @@ class TopupBillsAutoCompleteAdapter(
                         .filterIsInstance<TopupBillsAutoCompleteContactModel>()
                         .filter {
                             it.phoneNumber.startsWith(constraint.toString()) ||
-                            it.name.contains(constraint.toString(), ignoreCase = true)
-                        })
+                                it.name.contains(constraint.toString(), ignoreCase = true)
+                        }
+                )
                 if (filteredFavorites.isNotEmpty()) {
-                    filteredFavorites.add(0, TopupBillsAutoCompleteHeaderModel(
-                        context.getString(R.string.common_topup_autocomplete_header_favorite)
-                    ))
+                    filteredFavorites.add(
+                        0,
+                        TopupBillsAutoCompleteHeaderModel(
+                            context.getString(R.string.common_topup_autocomplete_header_favorite)
+                        )
+                    )
                     filteredSuggestions.addAll(filteredFavorites)
                 }
 
@@ -222,20 +206,24 @@ class TopupBillsAutoCompleteAdapter(
                         .filterIsInstance<TopupBillsAutoCompleteContactModel>()
                         .filter {
                             it.phoneNumber.startsWith(constraint.toString()) ||
-                            it.name.contains(constraint.toString(), ignoreCase = true)
+                                it.name.contains(constraint.toString(), ignoreCase = true)
                         }
                 )
 
                 if (filteredContacts.isNotEmpty()) {
-                    filteredContacts.add(0, TopupBillsAutoCompleteHeaderModel(
-                        context.getString(R.string.common_topup_autocomplete_header_contact)
-                    ))
+                    filteredContacts.add(
+                        0,
+                        TopupBillsAutoCompleteHeaderModel(
+                            context.getString(R.string.common_topup_autocomplete_header_contact)
+                        )
+                    )
                     filteredSuggestions.addAll(filteredContacts)
                 }
 
                 // Condition Check
                 if (!constraint.matches(REGEX_IS_NUMERIC.toRegex()) &&
-                    filteredSuggestions.isEmpty()) {
+                    filteredSuggestions.isEmpty()
+                ) {
                     filteredSuggestions.add(TopupBillsAutoCompleteEmptyModel())
                 }
 
@@ -243,9 +231,11 @@ class TopupBillsAutoCompleteAdapter(
                     values = filteredSuggestions
                     count = filteredSuggestions.size
                 }
-            } else FilterResults().apply {
-                values = listOf<String>()
-                count = 0
+            } else {
+                FilterResults().apply {
+                    values = listOf<String>()
+                    count = 0
+                }
             }
         }
 
@@ -270,8 +260,12 @@ class TopupBillsAutoCompleteAdapter(
         if (start >= 0 && end <= strToPut.length) {
             if (stringToHighlighted.length <= strToPut.length) {
                 spannableStringBuilder
-                    .setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    .setSpan(
+                        android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                        start,
+                        end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
             }
         }
         return spannableStringBuilder
