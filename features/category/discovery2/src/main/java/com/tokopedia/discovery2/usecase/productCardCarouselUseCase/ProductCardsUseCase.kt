@@ -32,6 +32,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         private const val RPC_NEXT_PAGE = "rpc_next_page"
         private const val RPC_PAGE__SIZE = "rpc_page_size"
         private const val RPC_WAREHOUSE_TCO = "rpc_warehouse_tco"
+        private const val PARAM_L_NAME = "l_name"
+        private const val VALUE_L_NAME_SRE = "sre"
     }
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
@@ -225,6 +227,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }
+        queryParameterMap[PARAM_L_NAME] = VALUE_L_NAME_SRE
         return queryParameterMap
     }
 

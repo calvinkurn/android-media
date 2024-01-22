@@ -4,4 +4,6 @@
     android:id="@+id/master_product_card_grid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:reimagine="false" />
+    app:useCompatPadding="true"
+    app:reimagine="true"
+    app:reimagine_template="grid" />
