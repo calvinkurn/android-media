@@ -275,6 +275,8 @@ class MerchantPageFragment :
 
     override fun onDestroyView() {
         removeBottomSheets()
+        binding?.rvProductList?.adapter = null
+        binding?.rvMerchantInfoCarousel?.adapter = null
         super.onDestroyView()
         binding = null
         currentPromoName = null
@@ -1787,9 +1789,13 @@ class MerchantPageFragment :
     }
 
     private fun removeBottomSheets() {
+        universalShareBottomSheet?.dismiss()
         universalShareBottomSheet = null
+        merchantInfoBottomSheet?.dismiss()
         merchantInfoBottomSheet = null
+        orderNoteBottomSheet?.dismiss()
         orderNoteBottomSheet = null
+        customOrderDetailBottomSheet?.dismiss()
         customOrderDetailBottomSheet = null
     }
 

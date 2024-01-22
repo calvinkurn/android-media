@@ -160,6 +160,7 @@ class OrderCustomizationFragment :
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding?.rvCustomList?.adapter = null
         binding = null
         customListAdapter?.removeListeners()
     }
