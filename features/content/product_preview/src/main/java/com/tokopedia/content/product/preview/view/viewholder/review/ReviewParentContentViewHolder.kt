@@ -105,7 +105,7 @@ class ReviewParentContentViewHolder(
 
     fun bindLike(state: LikeUiState) = with(binding.layoutLikeReview) {
         val icon = when (state.state) {
-            LikeUiState.LikeStatus.Reset -> IconUnify.THUMB
+            LikeUiState.LikeStatus.Reset, LikeUiState.LikeStatus.Dislike -> IconUnify.THUMB
             else -> IconUnify.THUMB_FILLED
         }
         ivReviewLike.setImage(newIconId = icon)

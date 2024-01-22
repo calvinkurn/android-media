@@ -76,6 +76,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
+            InitializeProductMainData -> handleInitializeProductMainData()
             is ProductSelected -> handleProductSelected(action.position)
             FetchReview -> getReview()
             FetchMiniInfo -> getMiniInfo()

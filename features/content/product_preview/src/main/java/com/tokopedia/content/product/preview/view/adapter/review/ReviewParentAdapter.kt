@@ -12,7 +12,8 @@ import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentLoadingViewHolder
 
-class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Listener) : ListAdapter<ReviewUiModel, ViewHolder>(ReviewAdapterCallback()) {
+class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Listener) :
+    ListAdapter<ReviewUiModel, ViewHolder>(ReviewAdapterCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
@@ -47,11 +48,12 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position)
-        }
-        else {
+        } else {
             payloads.forEach {
                 when (val payload = it) {
-                    is Payload.Like -> if (holder is ReviewParentContentViewHolder) holder.bindLike(payload.state)
+                    is Payload.Like -> if (holder is ReviewParentContentViewHolder) holder.bindLike(
+                        payload.state
+                    )
                 }
             }
         }
@@ -67,6 +69,10 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
         private const val TYPE_CONTENT = 0
         private const val TYPE_LOADING = 1
     }
+
+    sealed interface Payload {
+        data class Like(val state: LikeUiState) : Payload
+    }
 }
 
 internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewUiModel>() {
@@ -81,12 +87,8 @@ internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewUiModel>() {
     override fun getChangePayload(oldItem: ReviewUiModel, newItem: ReviewUiModel): Any? {
         //TODO: changes in specified item please define
         return when {
-            oldItem.likeState != newItem.likeState -> Payload.Like(newItem.likeState)
+            oldItem.likeState != newItem.likeState -> ReviewParentAdapter.Payload.Like(newItem.likeState)
             else -> super.getChangePayload(oldItem, newItem)
         }
     }
-}
-
-sealed interface Payload {
-    data class Like (val state: LikeUiState) : Payload
 }

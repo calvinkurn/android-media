@@ -48,6 +48,9 @@ data class LikeUiState(
                 }
                 return Reset
             }
+
+            val LikeStatus.switch: LikeStatus
+                get() = if (this == Like) Reset else Like
         }
     }
 }
@@ -70,7 +73,4 @@ data class DescriptionUiModel(
 data class MenuStatus(
     val isReportable: Boolean
 )
-
-val LikeUiState.LikeStatus.switch: LikeUiState.LikeStatus
-    get() = if (this == LikeUiState.LikeStatus.Like) LikeUiState.LikeStatus.Reset else LikeUiState.LikeStatus.Like
 

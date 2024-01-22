@@ -110,7 +110,7 @@
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_disabled="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="THUMB_FILLED"
+        app:icon_name="THUMB"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
