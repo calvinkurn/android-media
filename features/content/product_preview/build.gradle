@@ -74,9 +74,9 @@ dependencies {
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     //Media Review - Compose
-    implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
 }
 
 

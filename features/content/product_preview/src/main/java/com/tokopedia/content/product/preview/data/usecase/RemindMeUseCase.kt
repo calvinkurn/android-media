@@ -8,6 +8,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
@@ -33,7 +34,7 @@ class RemindMeUseCase @Inject constructor(
         val userId: Long,
         @SerializedName("productID")
         val productId: Long,
-    )
+    ) : GqlParam
 
     companion object {
         const val QUERY_NAME = "RemindMeUseCaseQuery"

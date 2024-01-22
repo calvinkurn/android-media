@@ -6,14 +6,9 @@ import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepos
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.FetchMiniInfo
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.FetchReview
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.InitializeProductMainData
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.Navigate
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductAction
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductActionFromResult
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductSelected
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.*
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
@@ -31,6 +26,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 class ProductPreviewViewModel @AssistedInject constructor(
@@ -70,15 +66,27 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
+    private val _reviewIndex = MutableStateFlow(0)
+
+    private val reviewPosition get() = _reviewIndex.value
+
+    private val currentReview
+        get() = if (_review.value.isNotEmpty() && reviewPosition in 0 until _review.value.size)
+            _review.value[reviewPosition] else ReviewUiModel.Empty
+
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             InitializeProductMainData -> handleInitializeProductMainData()
+            is ProductSelected -> handleProductSelected(action.position)
             FetchReview -> getReview()
             FetchMiniInfo -> getMiniInfo()
-            ProductActionFromResult -> handleProductAction(_miniInfo.value)
             is ProductAction -> handleProductAction(action.model)
+            ProductActionFromResult -> handleProductAction(_miniInfo.value)
             is Navigate -> navigate(action.appLink)
-            is ProductSelected -> handleProductSelected(action.position)
+            is SubmitReport -> submitReport(action.model)
+            is ClickMenu -> menuOnClicked(action.isFromLogin)
+            is UpdateReviewPosition -> updateReviewIndex(action.index)
+            else -> {}
         }
     }
 
@@ -118,7 +126,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     }
                 }
             ) {
-                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) { addToCart(model) })
+                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.ATC) { addToCart(model) })
             }
         }
     }
@@ -193,5 +201,35 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 productIndicatorUiModel.copy(selected = index == position)
             }
         }
+    }
+
+    private fun submitReport(model: ReportUiModel) {
+        viewModelScope.launchCatchError(block = {
+            val result = repo.submitReport(model, currentReview.reviewId)
+            if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
+        }) {
+            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.Report) {
+                submitReport(model)
+            })
+        }
+    }
+
+    private fun menuOnClicked(isFromLogin: Boolean) {
+        val status = _review.updateAndGet { review ->
+            if (isFromLogin.not()) review
+            else review.map { model ->
+                model.copy(menus = model.menus.copy(isReportable = userSessionInterface.isLoggedIn && model.author.id != userSessionInterface.userId))
+            }
+        }.getOrNull(reviewPosition)?.menus ?: return
+
+        requiredLogin(status) {
+            viewModelScope.launch {
+                _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(status))
+            }
+        }
+    }
+
+    private fun updateReviewIndex(position: Int) {
+        _reviewIndex.value = position
     }
 }

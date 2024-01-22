@@ -1,4 +1,6 @@
 <resources>
+    <string name="product_preview_report_menu">Laporkan Ulasan</string>
+    <string name="product_preview_watch_menu">Mode Nonton</string>
     <string name="tab_title_product">Produk</string>
     <string name="tab_title_review">Ulasan</string>
     <string name="product_prev_menu_opt_watch">Mode nonton</string>

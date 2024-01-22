@@ -9,8 +9,20 @@ data class ReviewUiModel(
     val menus: MenuStatus,
     val likeState: LikeUiState,
     val author: AuthorUiModel,
-    val description: DescriptionUiModel
-)
+    val description: DescriptionUiModel,
+) {
+    companion object {
+        val Empty
+            get() = ReviewUiModel(
+                reviewId = "",
+                medias = emptyList(),
+                menus = MenuStatus(isReportable = false),
+                likeState = LikeUiState(0, LikeUiState.LikeStatus.Reset),
+                author = AuthorUiModel("", "", "", "", ""),
+                description = DescriptionUiModel(0, "", "", "")
+            )
+    }
+}
 
 data class MediaUiModel(
     val type: String,
