@@ -249,9 +249,6 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     }
 
     fun showLoader() {
-        listTypeData.clear()
-        notifyDataSetChanged()
-
         set(
             (START_LOADER until TOTAL_LOADER).map { index ->
                 WishlistCollectionTypeLayoutData(
