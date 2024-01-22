@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemProductIndicatorBinding
 import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.IndicatorUiModel
 import com.tokopedia.media.loader.loadImage
 
 internal class ProductIndicatorViewHolder(
@@ -15,7 +15,7 @@ internal class ProductIndicatorViewHolder(
     private val listener: ProductIndicatorListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(data: ProductIndicatorUiModel) {
+    fun bind(data: IndicatorUiModel) {
         binding.ivReviewContentImage.loadImage(data.thumbnailUrl)
         if (data.selected) {
             binding.viewSelected.background = ContextCompat.getDrawable(

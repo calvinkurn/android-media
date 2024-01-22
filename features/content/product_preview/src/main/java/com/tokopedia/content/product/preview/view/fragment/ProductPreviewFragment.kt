@@ -20,14 +20,12 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
-import com.tokopedia.content.product.preview.utils.PRODUCT_LAST_VIDEO_DURATION
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.InitializeProductMainData
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.SetProductVideoLastDuration
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
@@ -72,10 +70,6 @@ class ProductPreviewFragment @Inject constructor(
         } else {
             arguments?.getParcelable(PRODUCT_DATA)
         } ?: ProductContentUiModel()
-    }
-
-    private val productVideoLastDuration: Long by lazyThreadSafetyNone {
-        arguments?.getLong(PRODUCT_LAST_VIDEO_DURATION, 0L).orZero()
     }
 
     private val pagerListener: ViewPager2.OnPageChangeCallback by lazyThreadSafetyNone {
@@ -125,7 +119,6 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun initData() {
         viewModel.onAction(InitializeProductMainData)
-        viewModel.onAction(SetProductVideoLastDuration(productVideoLastDuration))
     }
 
     private fun initViews() = with(binding) {

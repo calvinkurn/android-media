@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.view.viewholder.ProductVideoReceiver
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -186,7 +187,9 @@ class ProductVideoCoordinator(
         productVideoDataModel.firstOrNull { it.videoId == videoId }?.seekPosition = getCurrentPosition()
     }
 
-    fun getCurrentPosition() = videoPlayer?.getExoPlayer()?.currentPosition ?: 0L
+    fun getCurrentPosition() = videoPlayer?.getExoPlayer()?.currentPosition.orZero()
+
+    fun getDuration() = videoPlayer?.getExoPlayer()?.duration.orZero()
 }
 
 data class ProductVideoDataModel(

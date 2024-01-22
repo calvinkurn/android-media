@@ -11,11 +11,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.product.preview.databinding.ActivityProductPreviewBinding
 import com.tokopedia.content.product.preview.di.ProductPreviewInjector
 import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
-import com.tokopedia.content.product.preview.utils.PRODUCT_LAST_VIDEO_DURATION
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
-import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
 class ProductPreviewActivity : BaseActivity() {
@@ -26,7 +24,6 @@ class ProductPreviewActivity : BaseActivity() {
     private lateinit var binding: ActivityProductPreviewBinding
 
     private var productPreviewData: ProductContentUiModel? = null
-    private var productVideoLastDuration: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -51,7 +48,6 @@ class ProductPreviewActivity : BaseActivity() {
         } else {
             intent.extras?.getParcelable(PRODUCT_DATA)
         }
-        productVideoLastDuration = intent.extras?.getLong(PRODUCT_LAST_VIDEO_DURATION, 0L)
     }
 
     private fun setStatusBar() {
@@ -89,7 +85,6 @@ class ProductPreviewActivity : BaseActivity() {
             classLoader = classLoader,
             bundle = Bundle().apply {
                 putParcelable(PRODUCT_DATA, productPreviewData)
-                putLong(PRODUCT_LAST_VIDEO_DURATION, productVideoLastDuration.orZero())
             }
         )
     }
@@ -97,13 +92,11 @@ class ProductPreviewActivity : BaseActivity() {
     companion object {
         fun createIntent(
             context: Context,
-            productContentData: ProductContentUiModel,
-            productVideoLastDuration: Long
+            productContentData: ProductContentUiModel
         ): Intent {
             val intent = Intent(context, ProductPreviewActivity::class.java)
             val bundle = Bundle()
             bundle.putParcelable(PRODUCT_DATA, productContentData)
-            bundle.putLong(PRODUCT_LAST_VIDEO_DURATION, productVideoLastDuration)
             intent.putExtras(bundle)
             return intent
         }

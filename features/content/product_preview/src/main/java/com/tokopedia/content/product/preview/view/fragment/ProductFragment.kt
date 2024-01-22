@@ -26,7 +26,7 @@ import com.tokopedia.content.product.preview.view.listener.ProductPreviewListene
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductSelected
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.IndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -180,8 +180,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun renderIndicator(
-        prev: List<ProductIndicatorUiModel>?,
-        state: List<ProductIndicatorUiModel>
+        prev: List<IndicatorUiModel>?,
+        state: List<IndicatorUiModel>
     ) {
         if (prev == state) return
 
@@ -221,7 +221,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         val videoPosition = state.indexOfFirst { it.type == MediaType.Video }
 
         if (videoPosition < 0) return
-        val videoUrl = state[videoPosition].url
+        val data = state[videoPosition]
+        val videoUrl = data.url
 
         val instance = videoPlayerManager.occupy(String.format(PRODUCT_CONTENT_VIDEO_KEY_REF, videoUrl))
         val videoPlayer = mVideoPlayer ?: instance
@@ -232,8 +233,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
             playWhenReady = false
         )
 
-        if (viewModel.productVideoLastDuration == 0L) return
-        mVideoPlayer?.seekDurationTo(viewModel.productVideoLastDuration)
+        mVideoPlayer?.seekDurationTo(data.videoLastDuration)
     }
 
     private fun getSelectedItemPosition(state: List<ContentUiModel>): Int {

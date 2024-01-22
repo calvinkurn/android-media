@@ -8,5 +8,5 @@ import kotlinx.android.parcel.Parcelize
 data class ProductContentUiModel(
     val productId: String = "",
     val content: List<ContentUiModel> = emptyList(),
-    val indicator: List<ProductIndicatorUiModel> = emptyList()
+    val indicator: List<IndicatorUiModel> = emptyList()
 ) : Parcelable

@@ -14,5 +14,4 @@ sealed interface ProductPreviewAction {
     data class ClickMenu(val isFromLogin: Boolean) : ProductPreviewAction
     data class UpdateReviewPosition(val index: Int) : ProductPreviewAction
     data class ProductSelected(val position: Int) : ProductPreviewAction
-    data class SetProductVideoLastDuration(val duration: Long) : ProductPreviewAction
 }

@@ -18,7 +18,7 @@ import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.IndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.state.ProductUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -48,15 +48,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
-    private val _productIndicatorState = MutableStateFlow(emptyList<ProductIndicatorUiModel>())
+    private val _productIndicatorState = MutableStateFlow(emptyList<IndicatorUiModel>())
 
     // TODO: check number
     private val _uiEvent = MutableSharedFlow<ProductPreviewEvent>(20)
     val uiEvent get() = _uiEvent
-
-    private var _productVideoLastDuration: Long = 0L
-    val productVideoLastDuration: Long
-        get() = _productVideoLastDuration
 
     private val _review = MutableStateFlow(emptyList<ReviewUiModel>())
     val review: Flow<List<ReviewUiModel>>
@@ -98,7 +94,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ProductAction -> handleProductAction(action.model)
             is Navigate -> navigate(action.appLink)
             is ProductSelected -> handleProductSelected(action.position)
-            is SetProductVideoLastDuration -> handleSetProductVideoLastDuration(action.duration)
             is SubmitReport -> submitReport(action.model)
             is ClickMenu -> menuOnClicked(action.isFromLogin)
             is UpdateReviewPosition -> updateReviewIndex(action.index)
@@ -196,10 +191,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun handleInitializeProductMainData() {
         _productContentState.value = param.productPreviewData.content
         _productIndicatorState.value = param.productPreviewData.indicator
-    }
-
-    private fun handleSetProductVideoLastDuration(duration: Long) {
-        _productVideoLastDuration = duration
     }
 
     private fun handleProductSelected(position: Int) {
