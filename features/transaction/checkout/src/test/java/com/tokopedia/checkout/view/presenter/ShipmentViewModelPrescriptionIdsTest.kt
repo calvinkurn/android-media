@@ -330,7 +330,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(null, null, listOf(), null, null)
+                        GroupData(null, null, null, listOf(), null, null)
                     )
                 ),
                 ""
@@ -378,6 +378,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
+                            null,
                             null,
                             null,
                             null,
@@ -439,6 +440,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
+                            null,
                             null,
                             null,
                             listOf(),
@@ -509,6 +511,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
+                            null,
                             null,
                             null,
                             listOf(
@@ -591,6 +594,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
+                            null,
                             null,
                             null,
                             listOf(
@@ -676,6 +680,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                         GroupData(
                             null,
                             null,
+                            null,
                             listOf(
                                 GroupData.EpharmacyGroup(
                                     null,
@@ -756,6 +761,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                         GroupData(
                             null,
                             null,
+                            null,
                             listOf(
                                 GroupData.EpharmacyGroup(
                                     null,
@@ -834,6 +840,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
+                            null,
                             null,
                             null,
                             listOf(
@@ -955,7 +962,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             attachmentPageTickerText = null,
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
-                            papPrimaryCTA = null
+                            papPrimaryCTA = null,
+                            checkoutFlow = null
                         )
                     )
                 ),
@@ -1101,7 +1109,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             attachmentPageTickerText = null,
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
-                            papPrimaryCTA = null
+                            papPrimaryCTA = null,
+                            checkoutFlow = null
                         )
                     )
                 ),
@@ -1218,7 +1227,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             attachmentPageTickerText = null,
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
-                            papPrimaryCTA = null
+                            papPrimaryCTA = null,
+                            checkoutFlow = null
                         )
                     )
                 ),
@@ -1561,7 +1571,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             attachmentPageTickerText = null,
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
-                            papPrimaryCTA = null
+                            papPrimaryCTA = null,
+                            checkoutFlow = null
                         )
                     )
                 ),

@@ -439,6 +439,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                         null,
                         null,
                         null,
+                        null,
                         null
                     )
                 )
@@ -512,6 +513,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
                         null,
                         null,
                         listOf(),
@@ -591,6 +593,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
                         null,
                         null,
                         listOf(
@@ -683,6 +686,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
                         null,
                         null,
+                        null,
                         listOf(
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
                                 null,
@@ -773,6 +777,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
                         null,
                         null,
                         listOf(
@@ -890,6 +895,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
                         null,
                         null,
+                        null,
                         listOf(
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
                                 null,
@@ -990,6 +996,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
                         null,
                         null,
                         listOf(
@@ -1117,7 +1124,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                         attachmentPageTickerText = null,
                         attachmentPageTickerLogoUrl = null,
                         toaster = null,
-                        papPrimaryCTA = null
+                        papPrimaryCTA = null,
+                        checkoutFlow = null
                     )
                 )
             )
@@ -1287,7 +1295,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                         attachmentPageTickerText = null,
                         attachmentPageTickerLogoUrl = null,
                         toaster = null,
-                        papPrimaryCTA = null
+                        papPrimaryCTA = null,
+                        checkoutFlow = null
                     )
                 )
             )
@@ -1632,7 +1641,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                         attachmentPageTickerText = null,
                         attachmentPageTickerLogoUrl = null,
                         toaster = null,
-                        papPrimaryCTA = null
+                        papPrimaryCTA = null,
+                        checkoutFlow = null
                     )
                 )
             )
