@@ -29,7 +29,7 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
 
-        Toast.makeText(context, "SMS received", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "On Received triggered", Toast.LENGTH_SHORT).show()
         if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
             val extras = intent.extras
             val status = extras?.get(SmsRetriever.EXTRA_STATUS) as? Status
@@ -44,6 +44,7 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
                     val otp = message.takeLast(6)
 
                     if(::listener.isInitialized && otp.toIntOrNull() != null) {
+                        Toast.makeText(context, "OTP : $otp", Toast.LENGTH_SHORT).show()
                         listener.onReceiveOTP(otp)
                     }
                 }
