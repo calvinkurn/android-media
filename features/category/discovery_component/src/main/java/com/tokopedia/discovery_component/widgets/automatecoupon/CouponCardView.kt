@@ -59,10 +59,14 @@ class CouponCardView @JvmOverloads constructor(
     }
 
     private val cardViewCorners = floatArrayOf(
-        CARD_VIEW_CORNER_RADIUS, CARD_VIEW_CORNER_RADIUS,
-        CARD_VIEW_CORNER_RADIUS, CARD_VIEW_CORNER_RADIUS,
-        CARD_VIEW_CORNER_RADIUS, CARD_VIEW_CORNER_RADIUS,
-        CARD_VIEW_CORNER_RADIUS, CARD_VIEW_CORNER_RADIUS
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS
     )
 
     private val voucherCircleMarginBottomPX by lazy { CIRCLE_CUT_OUT_MARGIN_BOTTOM.toPx() }
@@ -84,46 +88,58 @@ class CouponCardView @JvmOverloads constructor(
 
     private fun drawLeftCircleCut(canvas: Canvas?) {
         // Left cut stroke color
-        canvas?.drawPath(Path().also {
-            it.addCircle(
-                0f,
-                (height - voucherCircleMarginBottomPX),
-                CIRCLE_RADIUS,
-                Path.Direction.CW
-            )
-        }, circleCutStrokeColor)
+        canvas?.drawPath(
+            Path().also {
+                it.addCircle(
+                    0f,
+                    (height - voucherCircleMarginBottomPX),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            circleCutStrokeColor
+        )
 
         // Left cut circle
-        canvas?.clipPath(Path().also {
-            it.addCircle(
-                0f,
-                (height - voucherCircleMarginBottomPX),
-                CIRCLE_RADIUS,
-                Path.Direction.CW
-            )
-        }, Region.Op.DIFFERENCE)
+        canvas?.clipPath(
+            Path().also {
+                it.addCircle(
+                    0f,
+                    (height - voucherCircleMarginBottomPX),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            Region.Op.DIFFERENCE
+        )
     }
 
     private fun drawRightCircleCut(canvas: Canvas?) {
         // Right cut stroke color
-        canvas?.drawPath(Path().also {
-            it.addCircle(
-                width.toFloat(),
-                (height - voucherCircleMarginBottomPX),
-                CIRCLE_RADIUS,
-                Path.Direction.CW
-            )
-        }, circleCutStrokeColor)
+        canvas?.drawPath(
+            Path().also {
+                it.addCircle(
+                    width.toFloat(),
+                    (height - voucherCircleMarginBottomPX),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            circleCutStrokeColor
+        )
 
         // Right cut circle
-        canvas?.clipPath(Path().also {
-            it.addCircle(
-                width.toFloat(),
-                (height - voucherCircleMarginBottomPX),
-                CIRCLE_RADIUS,
-                Path.Direction.CW
-            )
-        }, Region.Op.DIFFERENCE)
+        canvas?.clipPath(
+            Path().also {
+                it.addCircle(
+                    width.toFloat(),
+                    (height - voucherCircleMarginBottomPX),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            Region.Op.DIFFERENCE
+        )
     }
 
     private fun drawCardViewBorder(canvas: Canvas?) {
