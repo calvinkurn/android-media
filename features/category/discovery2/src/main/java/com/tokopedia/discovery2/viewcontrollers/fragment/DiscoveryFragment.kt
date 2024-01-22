@@ -35,12 +35,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponGridView
-import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponListView
-import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
-import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
-import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
-import com.tokopedia.discovery_component.widgets.automatecoupon.TimeLimit
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
