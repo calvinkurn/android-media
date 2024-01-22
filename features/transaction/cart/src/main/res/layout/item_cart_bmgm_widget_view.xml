@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.cartrevamp.view.BmGmWidgetView
+<com.tokopedia.cart.view.BmGmWidgetView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bmgm_widget_view"
     android:layout_width="match_parent"
