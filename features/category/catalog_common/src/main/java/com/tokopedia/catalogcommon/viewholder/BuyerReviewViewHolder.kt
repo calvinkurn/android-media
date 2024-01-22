@@ -61,7 +61,6 @@ class BuyerReviewViewHolder(
     }
 
     override fun bind(element: BuyerReviewUiModel) {
-
         val itemListener = { view: View, data: Any ->
             bindingBuyerReviewCardSlider = ItemBuyerReviewBinding.bind(view)
             val shopIcon: ImageUnify? = bindingBuyerReviewCardSlider?.cardBrShopIcon
@@ -233,7 +232,7 @@ class BuyerReviewViewHolder(
             val highlightedText = itemView.context.getString(R.string.text_selengkapnya)
 
             if (lineCount > maxLine) {
-                val charCountPerLine = reviewDesc.count()/ lineCount
+                val charCountPerLine = reviewDesc.count() / lineCount
                 val sanitizedText = reviewDesc.take((charCountPerLine * maxLine) - highlightedText.count())
                 val trimmedText = if (sanitizedText.endsWith("")) {
                     sanitizedText.trimEnd()
@@ -265,7 +264,6 @@ class BuyerReviewViewHolder(
     interface BuyerReviewListener {
         fun onClickSeeMore(carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel)
         fun onClickImage(carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel, position: Int)
-
         fun onBuyerReviewImpression(buyerReviewUiModel: BuyerReviewUiModel)
     }
 }
