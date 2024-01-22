@@ -14,7 +14,7 @@ internal object QueryDynamicChannelV2 {
         "      name\n" +
         "      type\n" +
         "      token\n" +
-//        "      origami\n" +
+        "      origami\n" +
         "      grids {\n" +
         "        id\n" +
         "        url\n" +
