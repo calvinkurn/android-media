@@ -178,6 +178,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             processBrizzi(intent)
         } else {
             if (bcaLibrary.isSuccessInit && getRollenceBCA()) {
+                issuerActive = ISSUER_ID_FLAZZ
                 initializeBCALibs(tag)
                 val bcaIsMyCard = bcaLibrary.C_BCAIsMyCard()
                 val dataBalance = bcaLibrary.C_BCACheckBalance()

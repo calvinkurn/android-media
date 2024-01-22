@@ -18,6 +18,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcWidgetTableBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
@@ -91,7 +92,6 @@ class TableViewHolder(
                     tvShcTableEmptyDescription.gone()
                     btnShcTableEmpty.gone()
                     shcTableView.visible()
-                    shcTableView.showTable(element.data?.dataSet.orEmpty())
                     shcTableView.addOnSlideImpressionListener { position, maxPosition, isEmpty ->
                         listener.sendTableImpressionEvent(element, absoluteAdapterPosition, position, maxPosition, isEmpty)
                     }
@@ -101,6 +101,10 @@ class TableViewHolder(
                     shcTableView.addOnHtmlClickListener { url, _, _, isEmpty ->
                         listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
                     }
+                    shcTableView.addOnMetaLabelClickListener { meta ->
+                        listener.onHtmlMetaClick(meta)
+                    }
+                    shcTableView.showTable(element.data?.dataSet.orEmpty())
                 }
                 setupLastUpdatedInfo(element)
             } else {
@@ -329,5 +333,6 @@ class TableViewHolder(
         fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {}
         fun sendTableFilterImpression(element: TableWidgetUiModel) {}
         fun sendTableSeeMoreClickEvent(element: TableWidgetUiModel, isEmpty: Boolean) {}
+        fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta)
     }
 }
