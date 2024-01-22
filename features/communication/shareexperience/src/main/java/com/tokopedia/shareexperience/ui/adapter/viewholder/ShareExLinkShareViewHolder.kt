@@ -27,7 +27,7 @@ class ShareExLinkShareViewHolder(
     }
 
     private fun bindTitle(element: ShareExLinkShareUiModel) {
-        binding?.shareexTvTitleLink?.text = element.title
+        binding?.shareexTvTitleLink?.text = HtmlUtil.fromHtml(element.title)
     }
 
     private fun bindImage(element: ShareExLinkShareUiModel) {
@@ -35,7 +35,7 @@ class ShareExLinkShareViewHolder(
     }
 
     private fun bindLink(element: ShareExLinkShareUiModel) {
-        binding?.shareexTvLink?.text = element.link
+        binding?.shareexTvLink?.text = HtmlUtil.fromHtml(element.link)
     }
 
     private fun bindCommissionHtml(element: ShareExLinkShareUiModel) {
@@ -50,7 +50,7 @@ class ShareExLinkShareViewHolder(
     }
 
     private fun bindDate(element: ShareExLinkShareUiModel) {
-        binding?.shareexTvDate?.text = element.date
+        binding?.shareexTvDate?.text = HtmlUtil.fromHtml(element.date)
         binding?.shareexTvDate?.showWithCondition(element.date.isNotBlank())
     }
 
