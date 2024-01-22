@@ -22,6 +22,9 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.reimagine.LabelGroupStyle.TEXT_COLOR
+import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
+import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup.Style
 import com.tokopedia.productcard.reimagine.assignedvalue.renderProductNameWithAssignedValue
 import com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
 import com.tokopedia.productcard.reimagine.overlay.LabelOverlay
@@ -33,6 +36,7 @@ import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ProductCardRenderer(
     private val view: View,
@@ -92,7 +96,7 @@ internal class ProductCardRenderer(
         val cornerType = if (productCardModel.stockInfo() != null) TOP else ALL
 
         imageView?.apply {
-            if (productCardModel.isSafeProduct) 
+            if (productCardModel.isSafeProduct)
                 loadImage(ContextCompat.getDrawable(context, overlayProductImageSafe(cornerType)))
             else
                 loadImage(productCardModel, cornerType)
@@ -276,19 +280,34 @@ internal class ProductCardRenderer(
 
     private fun renderLabelProductOffer(productCardModel: ProductCardModel) {
         val offerLabel = offerLabel ?: return
-        val labelProductOffer = productCardModel.labelProductOffer()
 
-        if (labelProductOffer == null) {
+        if (productCardModel.labelProductOffer() == null) {
             offerLabel.hide()
         } else {
             val hasLabelBenefit = productCardModel.labelBenefit() != null
             val isCarousel = type == ProductCardType.GridCarousel || type == ProductCardType.ListCarousel
             val showLabelProductOffer = !hasLabelBenefit || !isCarousel
+            val labelProductOffer = labelProductOffer(productCardModel)
 
             offerLabel.shouldShowWithAction(showLabelProductOffer) {
                 ProductCardLabel(it.background, it).render(labelProductOffer)
             }
         }
+    }
+
+    private fun labelProductOffer(productCardModel: ProductCardModel): LabelGroup {
+        val labelProductOffer = productCardModel.labelProductOffer() ?: return LabelGroup()
+
+        return if (labelProductOffer.textColor().isNullOrBlank()) {
+            val defaultTextColor = Style(
+                key = TEXT_COLOR,
+                value = context.getColorAsHexString(unifyprinciplesR.color.Unify_YN500)
+            )
+
+            labelProductOffer.copy(
+                styles = labelProductOffer.styles + listOf(defaultTextColor)
+            )
+        } else labelProductOffer
     }
 
     private fun renderCredibilitySection(productCardModel: ProductCardModel) {
