@@ -11,8 +11,8 @@ import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.LikeUiState.LikeStatus.Companion.switch
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
-import com.tokopedia.content.product.preview.view.uimodel.switch
 import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
