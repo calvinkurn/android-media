@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="16dp">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgError"
         android:layout_width="96dp"
         android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvErrorMessage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvErrorTitle"
         tools:src="@drawable/unify_globalerrors_404" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvErrorTitle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnReload"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/imgError"
-        android:gravity="center_vertical"
-        android:minHeight="64dp"
-        android:orientation="vertical">
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/bmsm_mini_cart_error_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgError"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_1"
+        app:typographyWeight="bold"
+        tools:viewBindingIgnore="true" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvErrorTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="@string/bmsm_mini_cart_error_title"
-            app:typographyType="paragraph_1"
-            app:typographyWeight="bold"
-            tools:viewBindingIgnore="true" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvErrorMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="@string/bmsm_mini_cart_error_message"
-            app:typographyType="paragraph_3"
-            tools:viewBindingIgnore="true" />
-    </LinearLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvErrorMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/bmsm_mini_cart_error_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvErrorTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvErrorTitle"
+        app:typographyType="paragraph_3"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnReload"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imgError"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"
         android:text="@string/bmgm_cta_text_error_not_found"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tvErrorMessage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvErrorMessage"
         app:unifyButtonSize="small" />
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
