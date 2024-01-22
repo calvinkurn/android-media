@@ -534,7 +534,7 @@
     <string name="topads_ad_type_selection_product_accordian_item1">Pilih produk yang ingin diiklankan secara spesifik</string>
     <string name="topads_ad_type_selection_product_accordian_item2">Atur biaya iklan sesuai kebutuhan produk</string>
     <string name="topads_ad_type_selection_product_accordian_item3">Performa Iklan tiap produk dapat dipantau dengan mudah</string>
-    <string name="topads_dashboard_create_product_advertisement">Buat Iklan Product</string>
+    <string name="topads_dashboard_create_product_advertisement">Buat Iklan Produk</string>
     <string name="topads_ad_type_selection_shop_subtitle">Iklan Toko akan muncul di tempat strategis yang meningkatkan probabilitas toko dan produkmu dilihat pembeli.</string>
     <string name="topads_ad_type_selection_shop_accordian_title">Tentang Iklan Toko</string>
     <string name="topads_ad_type_selection_shop_accordian_item1">Tampil dengan tampilan dan posisi yang lebih eksklusif</string>

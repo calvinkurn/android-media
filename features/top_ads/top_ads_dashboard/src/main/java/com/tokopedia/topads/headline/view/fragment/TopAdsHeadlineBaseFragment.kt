@@ -114,6 +114,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var produkTenjual: Typography? = null
     private var totalTenjual: Typography? = null
     private var onBoardingCta: UnifyButton? = null
+    private var statisticGraph: CardUnify? = null
 
     companion object {
         fun createInstance(): TopAdsHeadlineBaseFragment {
@@ -152,6 +153,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         pengeluaran = view.findViewById(topadsdashboardR.id.pengeluaran_count)
         totalTenjual = view.findViewById(topadsdashboardR.id.total_terjual_count)
         onBoardingCta = view.findViewById(topadsdashboardR.id.onBoarding)
+        statisticGraph = view.findViewById(topadsdashboardR.id.statistic_graph)
     }
 
     override fun getChildScreenName(): String {
@@ -239,6 +241,9 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         headlineTabLayout?.gone()
         autoPsStatisticTable?.gone()
         recommendationWidget?.gone()
+        statisticGraph?.gone()
+        view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view)?.gone()
+        view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view_autops)?.gone()
     }
 
     private fun setAutoPsInactiveLayout(){
@@ -248,6 +253,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         headlineTabLayout?.show()
         autoPsStatisticTable?.gone()
         recommendationWidget?.show()
+        statisticGraph?.show()
         progressView?.gone()
         setupOnboarding()
     }
@@ -259,6 +265,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         headlineAdsViePager?.gone()
         headlineTabLayout?.gone()
         autoPsStatisticTable?.show()
+        statisticGraph?.show()
         recommendationWidget?.gone()
         progressView?.gone()
         val resources = context?.resources

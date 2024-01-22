@@ -299,7 +299,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
             )
         else if (budget > maxDailyBudget)
             String.format(
-                getString(topadscommonR.string.topads_min_bid_error_msg_format),
+                getString(topadscommonR.string.topads_max_bid_error_msg_format),
                 maxDailyBudget
             )
         else String.EMPTY
