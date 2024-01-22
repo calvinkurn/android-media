@@ -1,0 +1,141 @@
+{
+  "notifcenter_detail_v3": {
+    "paging": {
+      "has_next": true,
+      "has_prev": false
+    },
+    "new_paging": {
+      "has_next": false,
+      "has_prev": false
+    },
+    "new_list": [
+      {
+        "notif_id": "2b5f0391-3008-11ec-ba78-00163e06b0fa",
+        "user_id": 148201400,
+        "shop_id": 0,
+        "section_id": "promotion",
+        "section_key": "Promo",
+        "section_icon": "https://images.tokopedia.net/img/notif-center/promo-new.png",
+        "subsection_key": "",
+        "template_key": "test_product_checkout",
+        "title": "Product Checkout Lho",
+        "button_text": "Klik di sini",
+        "short_description": "Semangat sambut Kemerdekaan dengan produk pilihan HP cashback hingga Rp300rb!",
+        "short_description_html": "Semangat sambut Kemerdekaan dengan produk pilihan HP cashback hingga Rp300rb!",
+        "is_longer_content": false,
+        "show_bottomsheet": false,
+        "type_bottomsheet": 2,
+        "content": "",
+        "type_of_user": 1,
+        "type_link": 5,
+        "create_time": "18:40",
+        "create_time_unix": 1634557218,
+        "update_time": "2021-10-18 18:40:18.357235683 +0700 WIB",
+        "update_time_unix": 1634557218,
+        "expire_time": "2021-11-02 18:40:18.359591715 +0700 WIB",
+        "expire_time_unix": 1635853218,
+        "status": 0,
+        "read_status": 2,
+        "notif_order_type": 0,
+        "is_last_journey": false,
+        "is_show_expire":false,
+        "is_pinned": false,
+        "pinned_text": "",
+        "unique_id": 0,
+        "widget": {
+          "title": "",
+          "description": "",
+          "message": "",
+          "image": "",
+          "button_text": "",
+          "desktop_button_link": "",
+          "mobile_button_link": "",
+          "android_button_link": "",
+          "ios_button_link": ""
+        },
+        "track_history": [],
+        "image": [],
+        "data_notification": {
+          "app_link": "tokopedia://shop/2603104",
+          "desktop_link": "",
+          "info_thumbnail_url": "",
+          "mobile_link": "",
+          "product_name": "",
+          "product_url": "",
+          "checkout_url": "tokopedia://cart"
+        },
+        "total_product": 3,
+        "product_data": [
+          {
+            "has_reminder": false,
+            "product_id": 2134220079,
+            "name": "K124B13Y P4TTY +++ - Putih",
+            "android_url":"tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter",
+            "ios_url":"tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter",
+            "url": "https://www.tokopedia.com/br04dc4st-s4tu/k124b13y-p4tty-putih",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/3/0c236dc9-59c4-4e9b-8231-cc127ed254f2.jpg",
+            "department_id": 0,
+            "min_order": 1,
+            "price": 999999,
+            "price_fmt": "Rp999.999",
+            "currency": "IDR",
+            "price_idr": 999999,
+            "is_buyable": false,
+            "is_topads": false,
+            "is_wishlist": false,
+            "rating": 0,
+            "count_review": 0,
+            "label": {
+              "title": "Stock Habis",
+              "color": "21"
+            },
+            "campaign": {
+              "active": false,
+              "original_price": 999999,
+              "original_price_fmt": "Rp999.999",
+              "discount_percentage": 0,
+              "discount_price": 999999,
+              "discount_price_fmt": "Rp999.999"
+            },
+            "variant": [
+              {
+                "value": "Putih",
+                "identifier": "141647921",
+                "hex": "#ffffff"
+              }
+            ],
+            "shop": {
+              "id": 10973651,
+              "name": "10973651br04dc4st-s4tu",
+              "location": "Jakarta Pusat",
+              "is_gold": true,
+              "is_official": false,
+              "is_tokonow": false,
+              "badges": [
+                {
+                  "title": "Official Store",
+                  "image_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                }
+              ],
+              "free_shipping_icon": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
+            },
+            "stock": 0,
+            "type_button": 3,
+            "is_show": true,
+            "is_variant": true
+          }
+        ],
+        "bottomsheet": {
+          "title": "",
+          "button_cta": {
+            "type": 0,
+            "text": "",
+            "link": "",
+            "data": ""
+          },
+          "components": []
+        }
+      }
+    ]
+  }
+}

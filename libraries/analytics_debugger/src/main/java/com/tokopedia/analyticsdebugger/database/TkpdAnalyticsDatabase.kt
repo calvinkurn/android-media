@@ -9,7 +9,9 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.*
 /**
  * @author okasurya on 5/14/18.
  */
-@Database(entities = [FpmLogDB::class, ApplinkLogDB::class, TopAdsLogDB::class, IrisSaveLogDB::class, IrisSendLogDB::class], version = 9)
+@Database(entities = [FpmLogDB::class, ApplinkLogDB::class,
+    TopAdsLogDB::class, IrisSaveLogDB::class,
+    IrisSendLogDB::class, ServerLogDB::class], version = 10)
 abstract class TkpdAnalyticsDatabase : RoomDatabase() {
 
     abstract fun fpmLogDao(): FpmLogDao
@@ -17,6 +19,7 @@ abstract class TkpdAnalyticsDatabase : RoomDatabase() {
     abstract fun topAdsLogDao(): TopAdsLogDao
     abstract fun irisLogSaveDao(): IrisLogSaveDao
     abstract fun irisLogSendDao(): IrisLogSendDao
+    abstract fun serverLogDao(): ServerLogDao
 
     companion object {
 
@@ -34,7 +37,9 @@ abstract class TkpdAnalyticsDatabase : RoomDatabase() {
                     if (r == null) {
                         r = Room.databaseBuilder(context,
                             TkpdAnalyticsDatabase::class.java, DATABASE_NAME)
-                            .fallbackToDestructiveMigration().build()
+                            .fallbackToDestructiveMigration()
+                            .fallbackToDestructiveMigrationOnDowngrade()
+                            .build()
                         instance = r
                     }
                 }

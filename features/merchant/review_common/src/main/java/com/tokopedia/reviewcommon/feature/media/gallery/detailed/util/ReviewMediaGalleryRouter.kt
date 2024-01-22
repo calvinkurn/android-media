@@ -73,12 +73,13 @@ object ReviewMediaGalleryRouter {
 
     @Retention(AnnotationRetention.SOURCE)
     @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
-    @IntDef(value = [PageSource.PDP, PageSource.REVIEW, PageSource.USER_PROFILE])
+    @IntDef(value = [PageSource.PDP, PageSource.REVIEW, PageSource.USER_PROFILE, PageSource.SHOP_INFO_PAGE])
     annotation class PageSource {
         companion object {
             const val PDP = 0
             const val REVIEW = 1
             const val USER_PROFILE = 2
+            const val SHOP_INFO_PAGE = 3
         }
     }
 }

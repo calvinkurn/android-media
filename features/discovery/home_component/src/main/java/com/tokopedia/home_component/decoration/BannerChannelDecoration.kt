@@ -3,7 +3,7 @@ package com.tokopedia.home_component.decoration
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.tokopedia.home_component.R
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.util.toDpInt
 
 class BannerChannelDecoration : RecyclerView.ItemDecoration() {
@@ -12,7 +12,7 @@ class BannerChannelDecoration : RecyclerView.ItemDecoration() {
                                 parent: RecyclerView,
                                 state: RecyclerView.State) {
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
+            outRect.left = view.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_horizontal_default)
         }
 
         outRect.right = 8f.toDpInt()

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -229,13 +230,20 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     override fun onCloseButtonClicked() {
-        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as? ContentReportBottomSheet?)?.dismiss()
+        ContentReportBottomSheet.get(childFragmentManager)?.dismiss()
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
     }
 
     override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
-        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as? ContentReportBottomSheet?)?.dismiss()
+        ContentReportBottomSheet.get(childFragmentManager)?.dismiss()
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
+
+        analytic?.sendClickReportReason(
+            storiesId = viewModel.mDetail.id,
+            contentType = viewModel.mDetail.content.type,
+            storyType = viewModel.mDetail.storyType,
+            reportReason = item.title
+        )
 
         ContentSubmitReportBottomSheet.getOrCreate(
             childFragmentManager,
@@ -498,14 +506,19 @@ class StoriesDetailFragment @Inject constructor(
                 setContent {
                     StoriesDetailTimer(
                         timerInfo = timerState,
-                    ) { if (isEligiblePage) viewModelAction(NextDetail) }
+                    ) {
+                        if (isEligiblePage) {
+                            mCoachMark?.dismissCoachMark()
+                            viewModelAction(NextDetail)
+                        }
+                    }
                 }
             }
         }
     }
 
     private fun buildEventLabel(): String =
-        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${if (viewModel.mDetail.category == StoriesDetailItem.StoryCategory.Manual) "organic" else "asgc"} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${viewModel.mDetail.storyType} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -515,7 +528,16 @@ class StoriesDetailFragment @Inject constructor(
 
             when (state.category) {
                 StoriesDetailItem.StoryCategory.Manual -> {
-                    val creationTimestamp = ContentDateConverter.convertTime(state.publishedAt)
+                    val creationTimestamp =
+                        ContentDateConverter.getDiffTime(state.publishedAt) { dateTime ->
+                            when {
+                                dateTime.day > THIRTY -> dateTime.yearMonth
+                                dateTime.day in ONE..THIRTY -> "${dateTime.day} ${ContentDateConverter.DAY}"
+                                dateTime.hour in ONE..TWENTY_THREE -> "${dateTime.hour} ${ContentDateConverter.HOUR}"
+                                dateTime.minute in ONE..FIFTY_NINE -> "${dateTime.minute} ${ContentDateConverter.MINUTE_CONCISE}"
+                                else -> ContentDateConverter.BELOW_1_MINUTE_CONCISE
+                            }
+                        }
 
                     tvStoriesTimestamp.text = getString(
                         storiesR.string.story_creation_timestamp,
@@ -570,6 +592,7 @@ class StoriesDetailFragment @Inject constructor(
 
                 TouchEventStories.NEXT_PREV -> {
                     trackTapPreviousDetail()
+                    mCoachMark?.dismissCoachMark()
                     viewModelAction(PreviousDetail)
                 }
 
@@ -590,6 +613,7 @@ class StoriesDetailFragment @Inject constructor(
 
                 TouchEventStories.NEXT_PREV -> {
                     trackTapNextDetail()
+                    mCoachMark?.dismissCoachMark()
                     viewModelAction(NextDetail)
                 }
 
@@ -624,7 +648,7 @@ class StoriesDetailFragment @Inject constructor(
 
         with(binding.nudgeStoriesProduct) {
             setContent {
-                StoriesProductNudge(state.productCount) {
+                StoriesProductNudge(state.productCount, state.isProductAvailable) {
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
             }
@@ -634,15 +658,19 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         showSwipeProductJob = viewLifecycleOwner.lifecycleScope.launch {
             if (state.isProductAvailable) {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
+
                 delay(DELAY_SWIPE_PRODUCT_BADGE_SHOW)
                 TransitionManager.beginDelayedTransition(
                     binding.root,
                     Fade(Fade.IN)
-                        .addTarget(binding.nudgeStoriesProduct)
+                        .addTarget(binding.flStoriesProduct)
                 )
+                binding.flStoriesProduct.show()
                 binding.nudgeStoriesProduct.show()
             } else {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
             }
         }
@@ -755,13 +783,15 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
-        show()
-        type = errorType
-        setAction { onClick() }
-        setCloseAction { activity?.finish() }
-        translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
-    }
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) =
+        with(binding.vStoriesError) {
+            show()
+            type = errorType
+            setAction { onClick() }
+            setCloseAction { activity?.finish() }
+            translationZ =
+                if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
+        }
 
     private fun hideError() = binding.vStoriesError.gone()
 
@@ -947,6 +977,12 @@ class StoriesDetailFragment @Inject constructor(
             updateList(viewModel.userReportReasonList)
         }.show(childFragmentManager, ContentReportBottomSheet.TAG)
 
+        analytic?.sendViewReportReasonList(
+            storiesId = viewModel.mDetail.id,
+            contentType = viewModel.mDetail.content.type,
+            storyType = viewModel.mDetail.storyType
+        )
+
         viewModel.submitAction(StoriesUiAction.OpenReport)
     }
 
@@ -983,21 +1019,21 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun showStoriesDurationCoachmark() {
-        with(binding.vStoriesPartner.tvStoriesTimestamp) {
-            context?.let {
-                if (mCoachMark == null) {
-                    mCoachMark = CoachMark2(it).apply {
-                        onDismissListener = {
-                            viewModel.submitAction(StoriesUiAction.HasSeenDurationCoachMark)
-                        }
+        context?.let {
+            if (mCoachMark == null) {
+                mCoachMark = CoachMark2(it).apply {
+                    onDismissListener = {
+                        viewModel.submitAction(StoriesUiAction.HasSeenDurationCoachMark)
                     }
                 }
+            }
 
-                if (mCoachMark?.isShowing != true) {
+            if (mCoachMark?.isShowing != true) {
+                binding.vStoriesPartner.tvStoriesTimestamp.doOnLayout { storiesTimestamp ->
                     mCoachMark?.showCoachMark(
                         arrayListOf(
                             CoachMark2Item(
-                                this,
+                                storiesTimestamp,
                                 getString(storiesR.string.story_manual_duration_coachmark_title),
                                 getString(storiesR.string.story_manual_duration_coachmark_subtitle),
                                 CoachMark2.POSITION_TOP
@@ -1011,6 +1047,12 @@ class StoriesDetailFragment @Inject constructor(
 
     companion object {
         private const val DELAY_SWIPE_PRODUCT_BADGE_SHOW = 2000L
+
+        private const val THIRTY = 30
+        private const val TWENTY_THREE = 23
+        private const val FIFTY_NINE = 59
+        private const val ONE = 1
+
 
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
 

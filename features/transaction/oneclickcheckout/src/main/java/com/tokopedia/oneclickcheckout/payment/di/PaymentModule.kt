@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.payment.di
 
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
 import com.tokopedia.oneclickcheckout.payment.list.data.PaymentListingParamGqlResponse
@@ -17,9 +18,10 @@ class PaymentModule {
     @PaymentScope
     @Provides
     fun provideGetPaymentListingParamUseCase(
-        graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>
+        graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>,
+        gson: Gson
     ): GetPaymentListingParamUseCase {
-        return GetPaymentListingParamUseCaseImpl(graphqlUseCase)
+        return GetPaymentListingParamUseCaseImpl(graphqlUseCase, gson)
     }
 
     @PaymentScope

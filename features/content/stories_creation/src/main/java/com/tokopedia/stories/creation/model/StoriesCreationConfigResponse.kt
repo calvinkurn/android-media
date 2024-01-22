@@ -38,8 +38,8 @@ data class StoriesCreationConfigResponse(
 ) {
 
     data class MaxStoryBottomSheetConfig(
-        @SerializedName("is_limit_reached")
-        val isLimitReached: Boolean = false,
+        @SerializedName("is_max_story_reached")
+        val isMaxStoryReached: Boolean = false,
 
         @SerializedName("image_url")
         val imageUrl: String = "",
@@ -50,10 +50,10 @@ data class StoriesCreationConfigResponse(
         @SerializedName("description")
         val description: String = "",
 
-        @SerializedName("active_button_copy")
-        val activeButtonCopy: String = "",
+        @SerializedName("create_button_copy")
+        val createButtonCopy: String = "",
 
-        @SerializedName("button_copy")
-        val buttonCopy: String = "",
+        @SerializedName("back_button_copy")
+        val backButtonCopy: String = "",
     )
 }

@@ -86,18 +86,22 @@ fun ExpandableContentCreationItem(
             descriptionTextId = R.string.content_creation_live_description_text,
             clickTextId = R.string.content_creation_live_description_click_label
         )
+
         ContentCreationTypeEnum.POST -> buildDescriptionAnnotatedString(
             descriptionTextId = R.string.content_creation_post_description_text,
             clickTextId = R.string.content_creation_post_description_click_label
         )
+
         ContentCreationTypeEnum.SHORT -> buildDescriptionAnnotatedString(
             descriptionTextId = R.string.content_creation_short_description_text,
             clickTextId = R.string.content_creation_short_description_click_label
         )
+
         ContentCreationTypeEnum.STORY -> buildDescriptionAnnotatedString(
             descriptionTextId = R.string.content_creation_story_description_text,
             clickTextId = R.string.content_creation_story_description_click_label
         )
+
         else -> AnnotatedString("")
     }
 
@@ -132,7 +136,10 @@ fun ExpandableContentCreationItem(
 
             NestTypography(
                 text = data.title,
-                textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold),
+                textStyle = NestTheme.typography.display2.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = NestTheme.colors.NN._950,
+                ),
                 maxLines = 1,
                 modifier = Modifier.weight(1f)
             )
@@ -140,16 +147,15 @@ fun ExpandableContentCreationItem(
             AndroidView(
                 modifier = Modifier.wrapContentHeight(),
                 factory = {
-                    RadioButtonUnify(it).apply {
-                        setOnCheckedChangeListener { _, isChecked ->
-                            if (!isSelected && isChecked) {
-                                onSelect(data)
-                            }
-                        }
-                    }
+                    RadioButtonUnify(it)
                 },
                 update = {
                     it.isChecked = isSelected
+                    it.setOnCheckedChangeListener { _, isChecked ->
+                        if (!isSelected && isChecked) {
+                            onSelect(data)
+                        }
+                    }
                 }
             )
         }

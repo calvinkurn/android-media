@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.databinding.TokochatGlobalErrorBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 class TokoChatErrorBottomSheet: BottomSheetUnify() {
 
@@ -28,7 +30,7 @@ class TokoChatErrorBottomSheet: BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            com.tokopedia.tokochat_common.R.layout.tokochat_global_error, container, false)
+            tokochat_commonR.layout.tokochat_global_error, container, false)
         binding = TokochatGlobalErrorBinding.bind(view)
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -67,6 +69,11 @@ class TokoChatErrorBottomSheet: BottomSheetUnify() {
 
     fun setErrorType(errorType: Int) {
         this.errorType = errorType
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        this.buttonAction = null
     }
 
     companion object {

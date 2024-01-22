@@ -260,12 +260,12 @@ class FollowerListingFragment @Inject constructor(
         val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
-        if (viewModel.username == userSession.userId) {
+        if (viewModel.userId == userSession.userId) {
             textTitle?.text = getString(peopleR.string.up_empty_page_my_follower_title)
         } else {
             textTitle?.text = getString(peopleR.string.up_empty_page_follower_title)
         }
-        textDescription?.showWithCondition(viewModel.username == userSession.userId)
+        textDescription?.showWithCondition(viewModel.userId == userSession.userId)
         textDescription?.text = getString(peopleR.string.up_empty_page_my_follower_desc)
     }
 

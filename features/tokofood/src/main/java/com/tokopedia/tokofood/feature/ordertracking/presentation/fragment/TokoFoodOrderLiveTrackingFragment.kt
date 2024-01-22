@@ -7,6 +7,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
@@ -73,12 +74,16 @@ class TokoFoodOrderLiveTrackingFragment(
     }
 
     private fun updateDriverSectionUiModel(driverSectionUiModel: DriverSectionUiModel?) {
+        var driverUiModel = driverSectionUiModel
         val etaLiveTrackingIndex =
             orderTrackingAdapter.list.indexOfFirst { it is OrderTrackingEstimationUiModel }
         val driverSectionIndex =
             orderTrackingAdapter.list.indexOfFirst { it is DriverSectionUiModel }
         val newList = orderTrackingAdapter.list.toMutableList()
-        driverSectionUiModel?.let { driverSectionModel ->
+        driverUiModel = driverSectionUiModel?.copy(
+            badgeCounter = viewModel.chatCounterUiState.value.counter
+        )
+        driverUiModel?.let { driverSectionModel ->
             if (etaLiveTrackingIndex != RecyclerView.NO_POSITION) {
                 if (driverSectionIndex == RecyclerView.NO_POSITION) {
                     newList.add(

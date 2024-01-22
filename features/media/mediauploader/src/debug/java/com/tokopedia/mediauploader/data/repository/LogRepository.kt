@@ -3,14 +3,16 @@ package com.tokopedia.mediauploader.data.repository
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.FileProvider
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
-import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.data.entity.Logs
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.mediauploader.data.entity.Logs
+import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -27,6 +29,7 @@ class LogRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     @UploaderQualifier private val videoMetaDataExtractor: VideoMetaDataExtractor,
     @UploaderQualifier private val trackerCacheStore: AnalyticsCacheDataStore,
+    @UploaderQualifier private val sourcePolicyManager: SourcePolicyManager
 ) : LogRepository {
 
     /**
@@ -59,10 +62,23 @@ class LogRepositoryImpl @Inject constructor(
                         if (result.fileUrl.isNotEmpty()) {
                             it.add(Logs("Image Url", result.fileUrl))
                         }
+
+                        it.add(
+                            Logs(
+                                "SourcePolicy",
+                                GsonBuilder()
+                                    .setPrettyPrinting()
+                                    .create()
+                                    .toJson(sourcePolicyManager.get())
+                            )
+                        )
                     }
             }
             is UploadResult.Error -> {
-                listOf(Logs("Gagal", result.message))
+                listOf(
+                    Logs("Gagal", result.message),
+                    Logs("ReqID", result.requestId),
+                )
             }
         }
     }

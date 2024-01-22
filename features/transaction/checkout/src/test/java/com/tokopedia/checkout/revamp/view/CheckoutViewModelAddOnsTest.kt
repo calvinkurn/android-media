@@ -455,4 +455,58 @@ class CheckoutViewModelAddOnsTest : BaseCheckoutViewModelTest() {
             (viewModel.listData.value[4] as CheckoutProductModel).addOnProduct
         )
     }
+
+    @Test
+    fun validate_any_protection_add_on_opt_in() {
+        // given
+        coEvery {
+            saveAddOnProductUseCase.executeOnBackground()
+        } returns SaveAddOnStateResponse()
+
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                addOnProduct = AddOnProductDataModel(
+                    listAddOnProductData = arrayListOf(
+                        AddOnProductDataItemModel(uniqueId = "a1", status = 0),
+                        AddOnProductDataItemModel(uniqueId = "a2", status = 0, type = 4)
+                    )
+                )
+            ),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.setAddon(true, AddOnProductDataItemModel(uniqueId = "a2"), 4)
+
+        // then
+        assertEquals(
+            AddOnProductDataModel(
+                listAddOnProductData = arrayListOf(
+                    AddOnProductDataItemModel(uniqueId = "a1", status = 0),
+                    AddOnProductDataItemModel(uniqueId = "a2", status = 1, type = 4)
+                )
+            ),
+            (viewModel.listData.value[4] as CheckoutProductModel).addOnProduct
+        )
+        assert(viewModel.isAnyProtectionAddonOptIn("123"))
+    }
 }

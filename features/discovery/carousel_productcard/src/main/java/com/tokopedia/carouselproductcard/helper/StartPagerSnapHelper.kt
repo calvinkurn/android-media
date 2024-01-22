@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.paging.CarouselPagingModel.Companion.DEFAULT_ITEM_PER_PAGE
 
 class StartPagerSnapHelper(
-    private val pagingPaddingHorizontal: Int
+    private val pagingPaddingHorizontal: Int = 0
 ): PagerSnapHelper() {
 
     private var mVerticalHelper: OrientationHelper? = null

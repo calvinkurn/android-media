@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.R
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcMixTopBinding
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
@@ -54,6 +54,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.productcard.R as productcardR
 
 class MixTopComponentViewHolder(
         itemView: View,
@@ -62,18 +64,18 @@ class MixTopComponentViewHolder(
         private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<MixTopDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
     private var binding: GlobalDcMixTopBinding? by viewBinding()
-    private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
-    private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
-    private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
-    private val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
+    private val bannerTitle = itemView.findViewById<Typography>(home_componentR.id.banner_title)
+    private val bannerDescription = itemView.findViewById<Typography>(home_componentR.id.banner_description)
+    private val bannerUnifyButton = itemView.findViewById<UnifyButton>(home_componentR.id.banner_button)
+    private val recyclerView = itemView.findViewById<RecyclerView>(home_componentR.id.dc_banner_rv)
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
-    private val background = itemView.findViewById<View>(R.id.background)
-    private val containerInside = itemView.findViewById<ConstraintLayout>(R.id.container_inside)
+    private val background = itemView.findViewById<View>(home_componentR.id.background)
+    private val containerInside = itemView.findViewById<ConstraintLayout>(home_componentR.id.container_inside)
     private var adapter: MixTopComponentAdapter? = null
     private var isCacheData = false
     companion object{
         @LayoutRes
-        val LAYOUT = R.layout.global_dc_mix_top
+        val LAYOUT = home_componentR.layout.global_dc_mix_top
         private const val CTA_MODE_MAIN = "main"
         private const val CTA_MODE_TRANSACTION = "transaction"
         private const val CTA_MODE_INVERTED = "inverted"
@@ -159,7 +161,7 @@ class MixTopComponentViewHolder(
     private fun mappingHeader(channel: ChannelModel){
         val bannerItem = channel.channelBanner
         val ctaData = channel.channelBanner.cta
-        var textColor = ContextCompat.getColor(bannerTitle.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        var textColor = ContextCompat.getColor(bannerTitle.context, unifyprinciplesR.color.Unify_NN50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
@@ -175,8 +177,8 @@ class MixTopComponentViewHolder(
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
             layoutParams.setMargins(0, 0, 0, 0)
             recyclerView.layoutParams = layoutParams
-            recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
-            containerInside.setPadding(0, 0, 0, 5f.toDpInt())
+            recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_card_compat_padding_translation_y).toFloat()
+            containerInside.setPadding(0, 0, 0, itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_bottom_with_compat_padding_translated))
         } else {
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
@@ -184,14 +186,14 @@ class MixTopComponentViewHolder(
             layoutParams.setMargins(
                 0,
                 if (bannerTitle.isVisible || bannerDescription.isVisible) 6f.toDpInt() else itemView.context.resources.getDimensionPixelSize(
-                    R.dimen.home_margin_12_dp_product_card
+                    home_componentR.dimen.home_component_padding_12dp_with_compat_padding
                 ),
                 0,
                 0
             )
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = 0f
-            containerInside.setPadding(0, 0, 0, 11f.toDpInt())
+            containerInside.setPadding(0, 0, 0, itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_bottom_with_compat_padding))
         }
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
@@ -261,7 +263,7 @@ class MixTopComponentViewHolder(
         clipboard.setPrimaryClip(clipData)
 
         Toaster.build(view.parent as ViewGroup,
-                getString(R.string.discovery_home_toaster_coupon_copied),
+                getString(home_componentR.string.discovery_home_toaster_coupon_copied),
                 Snackbar.LENGTH_LONG).show()
     }
 
@@ -328,7 +330,7 @@ class MixTopComponentViewHolder(
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 

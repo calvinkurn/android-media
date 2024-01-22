@@ -30,6 +30,13 @@ def isDebugTraceEnabled() {
     return "false";
 }
 
+def isNakamaVersion() {
+    if (project.hasProperty('nakamaVersion')) {
+        return "true"
+    }
+    return "false"
+}
+
 def isPreInstall() {
     if (project.hasProperty('isPreInstall') && isPreInstall == "true") {
         return "true"
@@ -172,6 +179,7 @@ android {
             proguardFiles 'proguard-rules.txt'
             buildConfigField "boolean", "IS_PREINSTALL", "false"
             buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
+            buildConfigField "boolean", "IS_NAKAMA_VERSION", isNakamaVersion()
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
@@ -205,6 +213,7 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
             buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
+            buildConfigField "boolean", "IS_NAKAMA_VERSION", isNakamaVersion()
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
             buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
             buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
@@ -315,6 +324,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
+
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
@@ -328,6 +338,14 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
+
+    implementation projectOrAar(rootProject.ext.libraries.appDownloadManagerCommon)
+    if (project.hasProperty('nakamaVersion') ?: false) {
+        implementation projectOrAar(rootProject.ext.features.feedbackForm)
+        implementation projectOrAar(rootProject.ext.features.appDownloadManagerInstall)
+    } else {
+        implementation projectOrAar(rootProject.ext.features.appDownloadManagerNoInstall)
+    }
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core

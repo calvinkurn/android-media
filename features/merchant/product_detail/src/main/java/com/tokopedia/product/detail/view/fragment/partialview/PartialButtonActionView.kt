@@ -452,10 +452,10 @@ class PartialButtonActionView private constructor(
             sellerButtonContainer.show()
             if (hasTopAdsActive) {
                 btnTopAds.setOnClickListener { buttonListener.rincianTopAdsClicked() }
-                btnTopAds.text = context.getString(R.string.rincian_topads)
+                btnTopAds.text = context.getString(R.string.pdp_rincian_topads)
             } else {
                 btnTopAds.setOnClickListener { buttonListener.advertiseProductClicked() }
-                btnTopAds.text = context.getString(R.string.promote_topads)
+                btnTopAds.text = context.getString(R.string.pdp_promote_topads)
             }
 
             shopModeratedManageButton()

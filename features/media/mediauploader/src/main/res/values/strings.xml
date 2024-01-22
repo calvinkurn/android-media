@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Mediauploader</string>
+    <string name="path_media_uploader" translatable="false">/mediauploader</string>
 </resources>

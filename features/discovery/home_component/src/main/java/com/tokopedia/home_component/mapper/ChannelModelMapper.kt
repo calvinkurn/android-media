@@ -15,6 +15,7 @@ object ChannelModelMapper {
         cardType: Int = CardUnify2.TYPE_SHADOW,
         productCardListType: ProductCardModel.ProductListType = ProductCardModel.ProductListType.CONTROL,
         excludeShop: Boolean = false,
+        excludeLabelGroup: List<String> = emptyList(),
     ): ProductCardModel {
         val productCardAnimate = if(cardInteration == true) ANIMATE_OVERLAY_BOUNCE else animateOnPress
         return ProductCardModel(
@@ -31,7 +32,11 @@ object ChannelModelMapper {
             shopBadgeList = channelGrid.badges.map {
                 ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
             }.takeIf { !excludeShop }.orEmpty(),
-            labelGroupList = channelGrid.labelGroup.map {
+            labelGroupList = channelGrid.labelGroup.filterNot { label ->
+                excludeLabelGroup.any {
+                    it == label.position
+                }
+            }.map {
                 ProductCardModel.LabelGroup(
                     position = it.position,
                     title = it.title,

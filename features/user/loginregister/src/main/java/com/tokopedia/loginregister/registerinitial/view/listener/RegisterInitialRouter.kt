@@ -9,6 +9,6 @@ interface RegisterInitialRouter {
     fun goToOTPRegisterEmail(email: String)
     fun goToOTPActivateEmail(email: String)
     fun onSuccessRegister()
-    fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String)
+    fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String, isFromScp: Boolean = false)
     fun gotoLoginEmailPage(email: String)
 }

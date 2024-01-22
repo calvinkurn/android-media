@@ -2,21 +2,19 @@ package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
-import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStoreImpl
-import com.tokopedia.mediauploader.video.internal.VideoCompressor
-import com.tokopedia.mediauploader.video.internal.VideoCompressorImpl
-import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
-import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractorImpl
+import com.tokopedia.mediauploader.common.GetSourcePolicyUseCase
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManagerImpl
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import com.tokopedia.mediauploader.common.data.store.base.CacheDataStoreImpl
+import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStoreImpl
 import com.tokopedia.mediauploader.common.data.store.util.Serializer
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
+import com.tokopedia.mediauploader.video.data.repository.VideoUploadRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
@@ -27,6 +25,10 @@ import com.tokopedia.mediauploader.video.domain.InitVideoUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.SetAbortUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.SetCompleteUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.SetVideoCompressionUseCase
+import com.tokopedia.mediauploader.video.internal.VideoCompressor
+import com.tokopedia.mediauploader.video.internal.VideoCompressorImpl
+import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
+import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractorImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Binds
@@ -37,6 +39,10 @@ import dagger.Provides
 abstract class MediaUploaderModule {
 
     // -- common --
+
+    @Binds
+    @UploaderQualifier
+    abstract fun provideGetSourcePolicyUseCase(impl: GetSourcePolicyUseCase): GetSourcePolicyUseCase
 
     @Binds
     @UploaderQualifier
@@ -77,6 +83,10 @@ abstract class MediaUploaderModule {
     @Binds
     @UploaderQualifier
     abstract fun provideSetVideoCompressionUseCase(impl: SetVideoCompressionUseCase): SetVideoCompressionUseCase
+
+    @Binds
+    @UploaderQualifier
+    abstract fun provideLargeUploadRepository(impl: VideoUploadRepository): VideoUploadRepository
 
     // -- simple video --
 

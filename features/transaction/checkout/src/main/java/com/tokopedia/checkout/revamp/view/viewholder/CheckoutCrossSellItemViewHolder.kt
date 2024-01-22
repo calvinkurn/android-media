@@ -6,12 +6,21 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellItem
 import com.tokopedia.kotlin.extensions.view.dpToPx
 
-class CheckoutCrossSellItemViewHolder(private val binding: ItemCheckoutCrossSellItemBinding, private val listener: CheckoutAdapterListener) :
-    RecyclerView.ViewHolder(binding.root) {
+class CheckoutCrossSellItemViewHolder(
+    private val binding: ItemCheckoutCrossSellItemBinding,
+    private val listener: CheckoutAdapterListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(checkoutCrossSellItem: CheckoutCrossSellItem, parentWidth: Int) {
         val expectedWidth = parentWidth - 50.dpToPx(binding.root.context.resources.displayMetrics)
         binding.root.layoutParams.width = expectedWidth
+        if (!checkoutCrossSellItem.hasSentImpressionAnalytics) {
+            listener.onPaymentLevelAddOnsImpressed(
+                checkoutCrossSellItem.getCategoryName(),
+                checkoutCrossSellItem.getCrossSellProductId()
+            )
+            checkoutCrossSellItem.hasSentImpressionAnalytics = true
+        }
         CheckoutCrossSellItemView.renderCrossSellItem(checkoutCrossSellItem, binding, listener)
     }
 }

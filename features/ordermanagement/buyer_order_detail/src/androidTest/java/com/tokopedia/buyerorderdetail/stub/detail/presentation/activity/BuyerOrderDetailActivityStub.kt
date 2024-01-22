@@ -10,6 +10,7 @@ import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActi
 import com.tokopedia.buyerorderdetail.stub.common.di.component.BaseAppComponentStubInstance
 import com.tokopedia.buyerorderdetail.stub.detail.di.component.DaggerBuyerOrderDetailComponentStub
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.fragment.BuyerOrderDetailFragmentStub
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 
 class BuyerOrderDetailActivityStub : BuyerOrderDetailActivity() {
 
@@ -17,6 +18,7 @@ class BuyerOrderDetailActivityStub : BuyerOrderDetailActivity() {
         val baseAppComponentStub = BaseAppComponentStubInstance.getBaseAppComponentStub(application)
         return DaggerBuyerOrderDetailComponentStub.builder()
             .baseAppComponentStub(baseAppComponentStub)
+            .tokoChatConfigComponent(TokoChatConnection.getComponent(this))
             .build()
     }
 

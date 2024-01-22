@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
@@ -23,8 +24,9 @@ object MediaUploaderDebugModule {
         @ApplicationContext context: Context,
         @UploaderQualifier videoMetaDataExtractor: VideoMetaDataExtractor,
         @UploaderQualifier trackerCacheStore: AnalyticsCacheDataStore,
+        @UploaderQualifier sourcePolicyManager: SourcePolicyManager
     ): LogRepository {
-        return LogRepositoryImpl(context, videoMetaDataExtractor, trackerCacheStore)
+        return LogRepositoryImpl(context, videoMetaDataExtractor, trackerCacheStore, sourcePolicyManager)
     }
 
     @Provides

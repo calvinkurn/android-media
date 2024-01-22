@@ -18,7 +18,9 @@
         }
       ],
       "sessionIris":".*",
-      "userId":".*"
+      "userId":".*",
+      "productId": ".*",
+      "hits_time": "\\d+"
     },
     {
       "event":"select_content",
@@ -36,7 +38,8 @@
         }
       ],
       "sessionIris":".*",
-      "userId":".*"
+      "userId":".*",
+      "productId": ".*"
     },
     {
       "event":"view_item",

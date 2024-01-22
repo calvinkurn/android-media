@@ -46,6 +46,7 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.databinding.FragmentMenuSettingBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SocialMediaLinksBottomSheet
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
@@ -73,7 +74,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private const val LOGOUT_BUTTON_NAME = "Logout"
         private const val TERM_CONDITION_BUTTON_NAME = "Syarat dan Ketentuan"
-        private const val PRIVACY_POLICY_BUTTON_NAME = "Kebijakan Privasi"
+        private const val PRIVACY_POLICY_BUTTON_NAME = "Pemberitahuan Privasi"
         private const val EXTRA_SCREEN_SHOOT_TRIGGER = "extra_screen_shoot_trigger"
         private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
         private const val EXTRA_SHOW_SETTING_BOTTOM_SHEET = "extra_show_settings"
@@ -144,14 +145,12 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         OtherMenuAdapterTypeFactory(this)
 
     override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
-        var isShowScreenRecorder = false
-        context?.let {
-            isShowScreenRecorder = FirebaseRemoteConfigImpl(it).getBoolean(
-                RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER,
-                false
-            )
-        }
-        return MenuSettingAdapter(context, this, isShowScreenRecorder, adapterTypeFactory)
+        return MenuSettingAdapter(
+            context,
+            FirebaseRemoteConfigImpl(context?.applicationContext),
+            this,
+            adapterTypeFactory
+        )
     }
 
     override fun onItemClicked(t: SettingUiModel?) {}
@@ -161,6 +160,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     override fun initInjector() {
         DaggerSellerHomeComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .sellerHomeModule(SellerHomeModule(requireContext()))
             .build()
             .inject(this)
     }

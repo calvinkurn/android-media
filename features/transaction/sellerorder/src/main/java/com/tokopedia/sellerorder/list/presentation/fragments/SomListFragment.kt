@@ -364,7 +364,10 @@ open class SomListFragment :
             showCoachMarkAutoTabbing(highLightStatusKey)
         } else {
             coachMarkManager?.dismissCoachMark()
-            autoTabbingCoachMark?.dismissCoachMark()
+            autoTabbingCoachMark?.run {
+                onDismissListener = {}
+                dismissCoachMark()
+            }
         }
     }
 
@@ -623,11 +626,19 @@ open class SomListFragment :
         toggleBulkActionButtonVisibility()
     }
 
-    override fun onCheckBoxClickedWhenDisabled() {
+    override fun onCheckBoxClickedWhenDisabled(message: String?) {
+        val toasterMessage = message?.takeIf { it.isNotBlank() }
+            ?: context?.resources?.getString(R.string.som_list_order_cannot_be_selected).orEmpty()
+        val toasterType =
+            if (message == null) {
+                Toaster.TYPE_ERROR
+            } else {
+                Toaster.TYPE_NORMAL
+            }
         showCommonToaster(
             view,
-            context?.resources?.getString(R.string.som_list_order_cannot_be_selected).orEmpty(),
-            Toaster.TYPE_ERROR
+            toasterMessage,
+            toasterType
         )
     }
 
@@ -2225,7 +2236,14 @@ open class SomListFragment :
                 val newItems = ArrayList(adapter.data)
                 val multiSelectSectionIndex = newItems.indexOfFirst { it is SomListMultiSelectSectionUiModel }
                 val emptyStateIndex = newItems.size.dec()
-                val updatedData = data.somListOrders.map { it.copy(multiSelectEnabled = viewModel.isMultiSelectEnabled) }
+                val updatedData = data
+                    .somListOrders
+                    .filter { newOrder ->
+                        newItems.none { existingOrder ->
+                            existingOrder is SomListOrderUiModel && existingOrder.orderId == newOrder.orderId
+                        }
+                    }
+                    .map { it.copy(multiSelectEnabled = viewModel.isMultiSelectEnabled) }
                 newItems.addAll(updatedData)
                 newItems.getOrNull(multiSelectSectionIndex)?.let {
                     if (it is SomListMultiSelectSectionUiModel) {
@@ -2989,13 +3007,15 @@ open class SomListFragment :
                         )
 
                         autoTabbingCoachMark?.run {
-                            onFinishListener = {
+                            val onCompleteListener = {
                                 CoachMarkPreference.setShown(
                                     it,
                                     SHARED_PREF_SOM_LIST_TAB_COACH_MARK,
                                     true
                                 )
                             }
+                            onFinishListener = onCompleteListener
+                            onDismissListener = onCompleteListener
                             isDismissed = false
                             showCoachMark(
                                 step = arrayListOf(coachMarkItem)

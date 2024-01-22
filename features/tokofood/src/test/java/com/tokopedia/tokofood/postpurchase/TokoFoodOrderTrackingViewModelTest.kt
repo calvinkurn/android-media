@@ -1,25 +1,29 @@
 package com.tokopedia.tokofood.postpurchase
 
-import androidx.lifecycle.MutableLiveData
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
-import com.gojek.conversations.network.ConversationsNetworkError
+import app.cash.turbine.test
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokochat.config.util.TokoChatResult
+import com.tokopedia.tokochat.config.util.TokoChatServiceType
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderStatusResponse
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.TokoChatConfigGroupBookingUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.tokofood.utils.JsonResourcesUtil
 import com.tokopedia.tokofood.utils.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.verify
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
@@ -422,126 +426,220 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
 
     @Test
     fun `when getUnreadChatCount should return set live data success`() {
-        val expectedUnreadCount = 5
+        runTest {
+            // Given
+            val expectedUnreadCount = 5
+            every {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            } returns flow {
+                emit(TokoChatResult.Success(expectedUnreadCount))
+            }
 
-        every {
-            getTokoChatUnreadChatCountUseCase.get().unReadCount(CHANNEL_ID)
-        } returns MutableLiveData(expectedUnreadCount)
+            viewModel.chatCounterUiState.test {
+                // When
+                viewModel.channelId = CHANNEL_ID
+                viewModel.fetchUnReadChatCount()
 
-        val actualResult = (viewModel.getUnReadChatCount(CHANNEL_ID).observeAwaitValue() as Success).data
+                skipItems(1)
 
-        verify {
-            getTokoChatUnreadChatCountUseCase.get().unReadCount(CHANNEL_ID)
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.counter, 5)
+                assertEquals(updatedValue.error, null)
+                cancelAndConsumeRemainingEvents()
+            }
+
+            verify {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            }
         }
-
-        assertEquals(expectedUnreadCount, actualResult)
     }
 
     @Test
-    fun `given expectedUnreadCount is null, when getUnreadChatCount should return set live data success`() {
-        val expectedUnreadCount = 0
+    fun `when getUnreadChatCount, return loading`() {
+        runTest {
+            // Given
+            every {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            } returns flow {
+                emit(TokoChatResult.Loading)
+            }
 
-        every {
-            getTokoChatUnreadChatCountUseCase.get().unReadCount(CHANNEL_ID)
-        } returns MutableLiveData(null)
+            viewModel.chatCounterUiState.test {
+                // When
+                viewModel.channelId = CHANNEL_ID
+                viewModel.fetchUnReadChatCount()
 
-        val actualResult = (viewModel.getUnReadChatCount(CHANNEL_ID).observeAwaitValue() as Success).data
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(initialValue.counter, 0)
+                assertEquals(initialValue.error, null)
 
-        verify {
-            getTokoChatUnreadChatCountUseCase.get().unReadCount(CHANNEL_ID)
+                cancelAndConsumeRemainingEvents()
+            }
+
+            verify {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            }
         }
-
-        assertEquals(expectedUnreadCount, actualResult)
     }
 
     @Test
     fun `when getUnreadChatCount should set live data error`() {
-        val errorException = Throwable()
+        runTest {
+            // Given
+            val errorException = Throwable()
+            every {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            } returns flow {
+                emit(TokoChatResult.Error(errorException))
+            }
 
-        every {
-            getTokoChatUnreadChatCountUseCase.get().unReadCount(CHANNEL_ID)
-        } throws errorException
+            viewModel.chatCounterUiState.test {
+                // When
+                viewModel.channelId = CHANNEL_ID
+                viewModel.fetchUnReadChatCount()
 
-        val actualResult =
-            (viewModel.getUnReadChatCount(CHANNEL_ID).observeAwaitValue() as Fail).throwable::class.java
+                skipItems(1)
 
-        verify {
-            getTokoChatUnreadChatCountUseCase.get().unReadCount(CHANNEL_ID)
-        }
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.counter, 0)
+                assertEquals(updatedValue.error, errorException)
 
-        val expectedResult = errorException::class.java
-        assertEquals(expectedResult, actualResult)
-    }
+                cancelAndConsumeRemainingEvents()
+            }
 
-    @Test
-    fun `when initGroupBooking, this method should be called`() {
-        // given
-        val groupBookingListener = object : ConversationsGroupBookingListener {
-            override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {}
-
-            override fun onGroupBookingChannelCreationStarted() {}
-
-            override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {}
-        }
-
-        every {
-            getTokoChatConfigGroupBookingUseCase.initGroupBooking(
-                orderId = ORDER_ID_DUMMY,
-                serviceType = TokoChatConfigGroupBookingUseCase.TOKOFOOD_SERVICE_TYPE,
-                conversationsGroupBookingListener = groupBookingListener
-            )
-        } just Runs
-
-        // when
-        viewModel.initGroupBooking(ORDER_ID_DUMMY, groupBookingListener)
-
-        // then
-        verify {
-            getTokoChatConfigGroupBookingUseCase.initGroupBooking(
-                orderId = ORDER_ID_DUMMY,
-                serviceType = TokoChatConfigGroupBookingUseCase.TOKOFOOD_SERVICE_TYPE,
-                conversationsGroupBookingListener = groupBookingListener
-            )
+            verify {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            }
         }
     }
 
     @Test
-    fun `when initGroupBooking, this method should set livedata error`() {
-        // given
-        val errorException = Throwable()
+    fun `when getUnreadChatCount, throw error`() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable("Oops!")
+            every {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            } throws expectedThrowable
 
-        val groupBookingListener = object : ConversationsGroupBookingListener {
-            override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {}
+            // When
+            viewModel.channelId = CHANNEL_ID
+            viewModel.fetchUnReadChatCount()
 
-            override fun onGroupBookingChannelCreationStarted() {}
-
-            override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {}
+            // Then
+            verify {
+                tokoChatCounterUseCase.get().fetchUnreadCount(CHANNEL_ID)
+            }
         }
+    }
 
-        every {
-            getTokoChatConfigGroupBookingUseCase.initGroupBooking(
-                orderId = ORDER_ID_DUMMY,
-                serviceType = TokoChatConfigGroupBookingUseCase.TOKOFOOD_SERVICE_TYPE,
-                conversationsGroupBookingListener = groupBookingListener
-            )
-        } throws errorException
+    @Test
+    fun `when initGroupBooking, get success channel id`() {
+        runTest {
+            // Given
+            val expectedChannelUrl = "testChannelUrl"
+            every {
+                tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                    orderId = ORDER_ID_DUMMY,
+                    serviceType = TokoChatServiceType.TOKOFOOD
+                )
+            } returns flow {
+                emit(TokoChatResult.Success(expectedChannelUrl))
+            }
 
-        // when
-        viewModel.initGroupBooking(ORDER_ID_DUMMY, conversationsGroupBookingListener = groupBookingListener)
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking(ORDER_ID_DUMMY)
 
-        // then
-        verify {
-            getTokoChatConfigGroupBookingUseCase.initGroupBooking(
-                orderId = ORDER_ID_DUMMY,
-                serviceType = TokoChatConfigGroupBookingUseCase.TOKOFOOD_SERVICE_TYPE,
-                conversationsGroupBookingListener = groupBookingListener
-            )
+                // Then
+                val updatedItem = awaitItem()
+                assertEquals(updatedItem.channelUrl, expectedChannelUrl)
+                assertEquals(updatedItem.error, null)
+
+                cancelAndConsumeRemainingEvents()
+            }
         }
+    }
 
-        val actualResult =
-            (viewModel.mutationProfile.observeAwaitValue() as Fail).throwable::class.java
+    @Test
+    fun `when initGroupBooking, get error conversation`() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable()
+            every {
+                tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                    orderId = ORDER_ID_DUMMY,
+                    serviceType = TokoChatServiceType.TOKOFOOD
+                )
+            } returns flow {
+                emit(TokoChatResult.Error(expectedThrowable))
+            }
 
-        val expectedResult = errorException::class.java
-        assertEquals(expectedResult, actualResult)
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking(ORDER_ID_DUMMY)
+
+                // Then
+                val updatedItem = awaitItem()
+                assertEquals(updatedItem.channelUrl, "")
+                assertEquals(updatedItem.error, expectedThrowable)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when init group booking, get loading`() {
+        runTest {
+            // Given
+            every {
+                tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                    orderId = ORDER_ID_DUMMY,
+                    serviceType = TokoChatServiceType.TOKOFOOD
+                )
+            } returns flow {
+                emit(TokoChatResult.Loading)
+            }
+
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking(ORDER_ID_DUMMY)
+
+                // Then
+                verify {
+                    tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                        orderId = ORDER_ID_DUMMY,
+                        serviceType = TokoChatServiceType.TOKOFOOD
+                    )
+                }
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when init group booking, throw error`() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable("Oops!")
+            every {
+                tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                    orderId = ORDER_ID_DUMMY,
+                    serviceType = TokoChatServiceType.TOKOFOOD
+                )
+            } throws expectedThrowable
+
+            // When
+            viewModel.initGroupBooking(ORDER_ID_DUMMY)
+
+            // Then
+            val result = viewModel.mutationProfile.value as Fail
+            assertEquals(result.throwable.message, expectedThrowable.message)
+        }
     }
 }

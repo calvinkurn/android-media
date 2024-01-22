@@ -59,8 +59,14 @@ object SomConfirmReqPickupQuery : GqlQueryInterface {
                   url_detail
                   action_key
                   type
-                }
+              }
+              ticker_unification_targets {
+                  type
+                  values
+              }
+                
             }
+            
           }
         }
     """.trimIndent()

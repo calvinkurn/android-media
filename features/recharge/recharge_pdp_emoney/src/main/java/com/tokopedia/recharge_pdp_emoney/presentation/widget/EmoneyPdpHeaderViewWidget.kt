@@ -23,8 +23,10 @@ class EmoneyPdpHeaderViewWidget @JvmOverloads constructor(@NotNull context: Cont
         binding = WidgetEmoneyHeaderViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    
-    
+    companion object {
+        private const val MAX_CHAR_EMONEY_CARD_NUMBER_BLOCK = 4
+    }
+
     var titleText: String = ""
         set(title) {
             field = title
@@ -72,13 +74,24 @@ class EmoneyPdpHeaderViewWidget @JvmOverloads constructor(@NotNull context: Cont
     }
 
     fun configureUpdateBalanceWithCardNumber(cardNumber: String, cardBalance: String) {
-        emoneyHeaderViewCardNumberText = cardNumber
+        emoneyHeaderViewCardNumberText = separateNumber(cardNumber)
         emoneyHeaderViewCardBalanceText = cardBalance
         buttonCtaText = resources.getString(R.string.recharge_pdp_emoney_check_saldo_cta)
         setEmoneyHeaderViewButtonListener {
             actionListener?.onClickCheckBalance()
         }
         showEmoneyHeaderWithCardNum()
+    }
+
+    private fun separateNumber(number: String): String {
+        var cardNumber = ""
+        //to seperate emoney card number into 4
+        //e.g. card number: 1234567890123456 will be converted to 1234 5678 9012 3456
+        for ((i, char) in number.withIndex()) {
+            if (i > 0 && i % MAX_CHAR_EMONEY_CARD_NUMBER_BLOCK == 0) cardNumber += " "
+            cardNumber += char
+        }
+        return cardNumber
     }
 
     private fun showEmoneyHeaderWoCardNum() {

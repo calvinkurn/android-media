@@ -51,7 +51,11 @@ data class SearchProductModel(
 
     @SerializedName("fetchLastFilter")
     val lastFilter: LastFilter = LastFilter(),
-) {
+
+    @SerializedName("userProfileDob")
+    val userDOB: UserDOB = UserDOB(),
+
+    ) {
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
 
@@ -849,11 +853,7 @@ data class SearchProductModel(
             @SerializedName("options")
             @Expose
             val inspirationCarouselOptions: List<InspirationCarouselOption> = listOf()
-    ) {
-
-        fun isCarouselSeamless() =
-            layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
-    }
+    )
 
     data class InspirationCarouselOption(
             @SerializedName("title")
@@ -1266,9 +1266,9 @@ data class SearchProductModel(
         @SerializedName("imageURL")
         @Expose
         val imageUrl: String = "",
-        @SerializedName("ctaURL")
+        @SerializedName("ctaApplink")
         @Expose
-        val ctaUrl: String = "",
+        val ctaApplink: String = "",
         @SerializedName("buttonText")
         @Expose
         val buttonText: String = "",

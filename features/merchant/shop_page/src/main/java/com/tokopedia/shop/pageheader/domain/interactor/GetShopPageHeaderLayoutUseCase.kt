@@ -23,7 +23,7 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
             if (isFromCloud)
                 CacheType.ALWAYS_CLOUD
             else
-                CacheType.CLOUD_THEN_CACHE
+                CacheType.CACHE_FIRST
         ).build()
         val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(ShopPageHeaderLayoutResponse::class.java)

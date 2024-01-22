@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.viewmodel.banner
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
+import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -44,6 +45,8 @@ class PlayBroadcasterBannerViewModelTest {
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
     private val mockPlayShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig = mockk(relaxed = true)
     private val mockPlayBroadcastMapper: PlayBroadcastMapper = mockk(relaxed = true)
+
+    private val productUiMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(PriceFormatUtil())
 
     private val mockAddedTag = GetAddedChannelTagsResponse()
     private val mockEmptyProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList(sectionSize = 0)
@@ -98,7 +101,7 @@ class PlayBroadcasterBannerViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playShortsEntryPointRemoteConfig = mockPlayShortsEntryPointRemoteConfig,
         )
 
@@ -123,7 +126,7 @@ class PlayBroadcasterBannerViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playShortsEntryPointRemoteConfig = mockPlayShortsEntryPointRemoteConfig,
         )
 
@@ -148,7 +151,7 @@ class PlayBroadcasterBannerViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playShortsEntryPointRemoteConfig = mockPlayShortsEntryPointRemoteConfig,
         )
 
@@ -172,7 +175,7 @@ class PlayBroadcasterBannerViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playShortsEntryPointRemoteConfig = mockPlayShortsEntryPointRemoteConfig,
         )
 
@@ -196,7 +199,7 @@ class PlayBroadcasterBannerViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playShortsEntryPointRemoteConfig = mockPlayShortsEntryPointRemoteConfig,
         )
 
@@ -221,7 +224,7 @@ class PlayBroadcasterBannerViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
+            productMapper = productUiMapper,
             playShortsEntryPointRemoteConfig = mockPlayShortsEntryPointRemoteConfig,
         )
 

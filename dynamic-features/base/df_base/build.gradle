@@ -64,6 +64,7 @@ dependencies {
 
     //Category
     implementation projectOrAar(rootProject.ext.features.exploreCategory)
+    implementation projectOrAar(rootProject.ext.features.homeExploreCategory)
     implementation projectOrAar(rootProject.ext.features.catalog)
     implementation projectOrAar(rootProject.ext.features.catalogLibrary)
     implementation projectOrAar(rootProject.ext.features.kategori)
@@ -77,13 +78,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.kol)
     implementation projectOrAar(rootProject.ext.features.feed)
     implementation projectOrAar(rootProject.ext.features.stories)
-    implementation projectOrAar(rootProject.ext.features.storiesCreation)
 
     //Digital
     implementation projectOrAar(rootProject.ext.features.digitalTopupBills)
     implementation projectOrAar(rootProject.ext.features.digitalHomepage)
     implementation projectOrAar(rootProject.ext.features.voucherGame)
-    implementation projectOrAar(rootProject.ext.features.rechargeOcr)
     implementation projectOrAar(rootProject.ext.features.rechargeGeneral)
     implementation projectOrAar(rootProject.ext.features.rechargeCreditCard)
     implementation projectOrAar(rootProject.ext.features.digitalEmoney)

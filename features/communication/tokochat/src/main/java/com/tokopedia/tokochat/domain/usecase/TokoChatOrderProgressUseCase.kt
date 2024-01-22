@@ -29,7 +29,13 @@ class TokoChatOrderProgressUseCase @Inject constructor(
               title
               value
             }
+            additionalInfo
             uri
+            ctaButton {
+              title
+              uri
+              enable
+            }
           }
         }
     """.trimIndent()

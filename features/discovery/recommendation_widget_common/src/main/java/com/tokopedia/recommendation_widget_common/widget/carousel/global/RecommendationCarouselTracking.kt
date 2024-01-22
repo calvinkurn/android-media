@@ -47,6 +47,7 @@ import com.tokopedia.track.constant.TrackerConstant.BUSINESS_UNIT
 import com.tokopedia.track.constant.TrackerConstant.CURRENT_SITE
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
+@Deprecated("please use page-specific tracking class")
 object RecommendationCarouselTracking {
     private const val EVENT_ACTION_ATC = "atc pdp recom with atc"
     private const val TRACKER_ID_IMPRESSION = "44135"
@@ -64,7 +65,7 @@ object RecommendationCarouselTracking {
         recomItem: RecommendationItem,
         userId: String,
         quantity: Int,
-        androidPageName: String = RecommendationWidgetSource.PDP.trackingValue, // remove default value after recommendation carousel widget migration
+        androidPageName: String = RecommendationWidgetSource.PDP().eventCategory, // remove default value after recommendation carousel widget migration
         anchorProductId: String
     ) {
         val bundle = Bundle().apply {
@@ -122,6 +123,12 @@ object RecommendationCarouselTracking {
         item: RecommendationItem,
         trackingModel: RecommendationWidgetTrackingModel,
     ) {
+        val list = IMPRESSION_CLICK_DIMENSION_40_FORMAT.format(
+            trackingModel.listPageName,
+            item.pageName,
+            item.recommendationType,
+            if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
+        ) + (if(trackingModel.anchorId.isNotEmpty()) " - ${trackingModel.anchorId}" else "")
         trackingQueue.putEETracking(hashMapOf(
             EVENT to PRODUCT_VIEW,
             EVENT_CATEGORY to trackingModel.androidPageName,
@@ -130,15 +137,11 @@ object RecommendationCarouselTracking {
             TRACKER_ID to TRACKER_ID_IMPRESSION,
             BUSINESS_UNIT to BUSINESS_UNIT_HOME,
             CURRENT_SITE to CURRENT_SITE_MP,
+            ITEM_LIST to list,
             ECOMMERCE to mapOf(
                 CURRENCY_CODE to IDR,
                 IMPRESSIONS to arrayListOf(mapOf(
-                    LIST to IMPRESSION_CLICK_DIMENSION_40_FORMAT.format(
-                        trackingModel.listPageName,
-                        item.pageName,
-                        item.recommendationType,
-                        if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
-                    ) + if(trackingModel.anchorId.isNotEmpty()) " - ${trackingModel.anchorId}" else "",
+                    LIST to list,
                     DIMENSION_56 to item.warehouseId.toString(),
                     KEY_INDEX to item.position + 1,
                     ITEM_BRAND to VALUE_NONE_OTHER,
@@ -157,6 +160,12 @@ object RecommendationCarouselTracking {
         item: RecommendationItem,
         trackingModel: RecommendationWidgetTrackingModel,
     ) {
+        val list = IMPRESSION_CLICK_DIMENSION_40_FORMAT.format(
+            trackingModel.listPageName,
+            item.pageName,
+            item.recommendationType,
+            if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
+        ) + (if(trackingModel.anchorId.isNotEmpty()) " - ${trackingModel.anchorId}" else "")
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             SELECT_CONTENT,
             bundle {
@@ -166,13 +175,9 @@ object RecommendationCarouselTracking {
                 putString(TRACKER_ID, TRACKER_ID_CLICK)
                 putString(BUSINESS_UNIT, BUSINESS_UNIT_HOME)
                 putString(CURRENT_SITE, CURRENT_SITE_MP)
+                putString(ITEM_LIST, list)
                 putParcelableArrayList(ITEMS, arrayListOf(bundle {
-                    putString(DIMENSION_40, IMPRESSION_CLICK_DIMENSION_40_FORMAT.format(
-                        trackingModel.listPageName,
-                        item.pageName,
-                        item.recommendationType,
-                        if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
-                    ) + if(trackingModel.anchorId.isNotEmpty()) " - ${trackingModel.anchorId}" else "")
+                    putString(DIMENSION_40, list)
                     putString(DIMENSION_56, item.warehouseId.toString())
                     putInt(KEY_INDEX, item.position + 1)
                     putString(ITEM_BRAND, VALUE_NONE_OTHER)

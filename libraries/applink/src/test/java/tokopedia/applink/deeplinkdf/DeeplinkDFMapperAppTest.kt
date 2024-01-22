@@ -40,6 +40,7 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_TOKOPOINTS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_PDP
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
+import com.tokopedia.applink.DeeplinkDFMapper.DF_STORIES_CREATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOCHAT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOFOOD
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOPEDIA_NOW
@@ -144,10 +145,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     fun `MA df_content_play_broadcaster`() {
         assertEqualDeepLinkMA(ApplinkConst.PLAY_BROADCASTER, DF_CONTENT_PLAY_BROADCASTER)
         assertEqualDeepLinkMA(ApplinkConst.PLAY_SHORTS, DF_CONTENT_PLAY_BROADCASTER)
-        assertEqualDeepLinkMA(
-            ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER,
-            DF_CONTENT_PLAY_BROADCASTER
-        )
     }
 
     @Test
@@ -177,8 +174,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
             DF_FEED_CONTENT_CREATION
         )
         assertEqualDeepLinkMA(ApplinkConst.FEED_CREATION_PRODUCT_SEARCH, DF_FEED_CONTENT_CREATION)
-
-        assertEqualDeepLinkMA(ApplinkConst.MediaEditor.MEDIA_EDITOR, DF_FEED_CONTENT_CREATION)
     }
 
     @Test
@@ -282,6 +277,14 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `MA df_stories_creation`() {
+        assertEqualDeepLinkMA(ApplinkConst.Stories.STORIES_CREATION, DF_STORIES_CREATION)
+        assertEqualDeepLinkMA(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER, DF_STORIES_CREATION)
+        assertEqualDeepLinkMA(ApplinkConst.MediaEditor.MEDIA_EDITOR, DF_STORIES_CREATION)
+        assertEqualDeepLinkMA(ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR, DF_STORIES_CREATION)
+    }
+
+    @Test
     fun `MA df_travel`() {
         assertEqualDeepLinkMA(DASHBOARD_HOTEL, DF_TRAVEL)
         assertEqualDeepLinkMA(FLIGHT, DF_TRAVEL)
@@ -291,10 +294,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     fun `MA df_user_settings`() {
         every {
             DeeplinkMapperUser.isProfileManagementM2Activated()
-        } returns true
-
-        every {
-            DeeplinkMapperUser.isRollencePrivacyCenterActivated()
         } returns true
 
         every {
@@ -324,10 +323,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         } returns true
 
         every {
-            DeeplinkMapperUser.isRollencePrivacyCenterActivated()
-        } returns true
-
-        every {
             DeeplinkMapperUser.isRollenceGotoKycActivated()
         } returns true
         assertEqualDeepLinkSA("tokopedia://goto-kyc?projectId=7", DF_KYC_SELLERAPP)
@@ -348,5 +343,12 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkSA("tokopedia://product/2506450520/?warehouse_id=12345", DF_SELLER_PDP)
         assertEqualDeepLinkSA("tokopedia://product-edu/1", DF_SELLER_PDP)
         assertEqualDeepLinkSA("tokopedia://post-atc/2506450520", DF_SELLER_PDP)
+    }
+
+    @Test
+    fun `SA df_stories_creation`() {
+        assertEqualDeepLinkSA(ApplinkConst.Stories.STORIES_CREATION, DF_STORIES_CREATION)
+        assertEqualDeepLinkSA(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER, DF_STORIES_CREATION)
+        assertEqualDeepLinkSA(ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR, DF_STORIES_CREATION)
     }
 }

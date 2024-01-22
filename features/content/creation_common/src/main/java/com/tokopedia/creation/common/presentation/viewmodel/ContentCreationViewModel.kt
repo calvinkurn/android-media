@@ -49,6 +49,17 @@ class ContentCreationViewModel @Inject constructor(
     val selectedItemTitle: String
         get() = selectedCreationType.value?.title.orEmpty()
 
+    val creationConfigData: ContentCreationConfigModel
+        get() {
+            val creationConfig = _creationConfig.value
+
+            return if (creationConfig is Success) {
+                creationConfig.data
+            } else {
+                ContentCreationConfigModel.Empty
+            }
+        }
+
     fun selectCreationItem(item: ContentCreationItemModel) {
         _selectedCreationType.value = item
     }
@@ -68,6 +79,11 @@ class ContentCreationViewModel @Inject constructor(
                     }
                 }
 
+                if (selectedCreationType.value == null) {
+                    _selectedCreationType.value =
+                        formattedCreationConfig.creationItems.firstOrNull()
+                }
+
                 _creationConfig.value = Success(formattedCreationConfig)
             } catch (t: Throwable) {
                 _creationConfig.value = Fail(t)
@@ -77,7 +93,9 @@ class ContentCreationViewModel @Inject constructor(
 
     fun getPerformanceDashboardApplink(): String =
         if (_creationConfig.value is Success) {
-            (_creationConfig.value as Success).data.statisticApplink
+            (_creationConfig.value as Success).data.statisticApplink.ifEmpty {
+                ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
+            }
         } else {
             ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
         }

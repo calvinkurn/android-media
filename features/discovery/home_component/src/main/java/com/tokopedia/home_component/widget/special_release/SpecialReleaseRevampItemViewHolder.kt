@@ -13,15 +13,19 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.home_component.R as home_componentR
 
 /**
  * Created by frenzel
  */
-class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<SpecialReleaseRevampItemDataModel>(itemView) {
+class SpecialReleaseRevampItemViewHolder(
+    itemView: View,
+    private val listener: SpecialReleaseRevampListener
+) : AbstractViewHolder<SpecialReleaseRevampItemDataModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_special_release_revamp_item
+        val LAYOUT = home_componentR.layout.home_component_special_release_revamp_item
         private const val className = "com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemViewHolder"
     }
 
@@ -47,7 +51,7 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
 
     private fun HomeComponentSpecialReleaseRevampItemBinding.setShopListener(element: SpecialReleaseRevampItemDataModel) {
         val shopClickListener = View.OnClickListener {
-            element.listener.onShopClicked(
+            listener.onShopClicked(
                 element.trackingAttributionModel,
                 element.grid,
                 element.grid.shop.shopApplink
@@ -56,7 +60,7 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
         cardContainer.setOnClickListener(shopClickListener)
         cta.setOnClickListener(shopClickListener)
         cardContainer.addOnImpressionListener(element.shopImpressHolder) {
-            element.listener.onShopImpressed(
+            listener.onShopImpressed(
                 element.trackingAttributionModel,
                 element.grid
             )
@@ -106,7 +110,7 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
                     element.grid.imageUrl
                 )
             }
-            element.listener.onProductCardClicked(
+            listener.onProductCardClicked(
                 element.trackingAttributionModel,
                 element.grid,
                 element.grid.position,
@@ -126,7 +130,7 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
                         element.grid.imageUrl
                     )
                 }
-                element.listener.onProductCardImpressed(
+                listener.onProductCardImpressed(
                     element.trackingAttributionModel,
                     element.grid,
                     element.grid.position,

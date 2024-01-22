@@ -3,7 +3,6 @@ package com.tokopedia.productcard.test.reimagine
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping
@@ -14,7 +13,6 @@ import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
-import com.tokopedia.productcard.utils.LIGHT_GREEN
 import com.tokopedia.productcard.utils.TEXT_DARK_GREY
 import org.hamcrest.Matcher
 
@@ -113,11 +111,7 @@ private fun slashedPriceWithoutDiscount(): ProductCardReimagineMatcher {
 }
 
 private fun labelBenefit(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val model = ProductCardModel(
         imageUrl = productImageUrl,
         name = longProductName,
@@ -140,11 +134,7 @@ private fun labelBenefit(): ProductCardReimagineMatcher {
 }
 
 private fun rating(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val model = ProductCardModel(
         imageUrl = productImageUrl,
         name = longProductName,
@@ -171,11 +161,7 @@ private fun rating(): ProductCardReimagineMatcher {
 }
 
 private fun labelCredibility(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -205,11 +191,7 @@ private fun labelCredibility(): ProductCardReimagineMatcher {
 }
 
 private fun ratingAndLabelCredibility(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -244,11 +226,7 @@ private fun ratingAndLabelCredibility(): ProductCardReimagineMatcher {
 }
 
 private fun shopSection(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -290,11 +268,7 @@ private fun shopSection(): ProductCardReimagineMatcher {
 }
 
 private fun shopSectionWithoutBadge(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -334,11 +308,7 @@ private fun shopSectionWithoutBadge(): ProductCardReimagineMatcher {
 }
 
 private fun shopSectionWithoutTitle(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -376,11 +346,7 @@ private fun shopSectionWithoutTitle(): ProductCardReimagineMatcher {
 }
 
 private fun bebasOngkir(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",

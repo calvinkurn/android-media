@@ -27,7 +27,8 @@ android {
         main {
             res.srcDirs = [
                     pathSources,
-                    pathSources + 'transparency_fee'
+                    pathSources + 'transparency_fee',
+                    pathSources + 'partial_order_fulfillment'
             ]
         }
     }
@@ -64,6 +65,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopAdminCommon)
     implementation projectOrAar(rootProject.ext.features.orderManagementCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.tokochat_common)
     
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -106,6 +108,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.flexBoxLayout
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
@@ -118,6 +122,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.androidxTest
+    testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     // UI Test

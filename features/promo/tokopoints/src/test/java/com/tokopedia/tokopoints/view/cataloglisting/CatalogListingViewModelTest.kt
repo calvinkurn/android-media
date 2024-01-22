@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -120,40 +121,52 @@ class CatalogListingViewModelTest {
     }
 
     @Test
-    fun `getPointData succes case`(){
-        val observer = mockk<Observer<Resources<TokoPointStatusEntity>>>()
-        val data = mockk<TokoPointStatusEntity>(){
-            every { points } returns mockk()
-        }
-        coEvery{ repository.getPointData() } returns mockk{
-            every { tokoPoints } returns mockk{
-                every { status } returns data
-                every { resultStatus } returns mockk{
-                    every { code } returns CommonConstant.CouponRedemptionCode.SUCCESS
-                }
-            }
-        }
-        viewModel.pointLiveData.observeForever(observer)
+    fun `given status code 200 when getPointData should update pointLiveData with success value`(){
+        val statusCode = 200
+        val tokoPointDetailEntity = TokoPointDetailEntity(
+            tokoPoints = TokoPointEntity(resultStatus = ResultStatusEntity(code = statusCode))
+        )
+
+        coEvery{ repository.getPointData() } returns tokoPointDetailEntity
+
         viewModel.getPointData()
 
-        verify {
-            observer.onChanged(ofType(Success::class as KClass<Success<TokoPointStatusEntity>>))
-        }
+        viewModel.pointLiveData
+            .verifyValueEquals(Success(tokoPointDetailEntity.tokoPoints.status))
+    }
 
-        assert(data == (viewModel.pointLiveData.value as Success).data)
+    @Test
+    fun `given status code NOT 200 when getPointData should NOT update pointLiveData`(){
+        val statusCode = 404
+        val tokoPointDetailEntity = TokoPointDetailEntity(
+            tokoPoints = TokoPointEntity(resultStatus = ResultStatusEntity(code = statusCode))
+        )
 
+        coEvery{ repository.getPointData() } returns tokoPointDetailEntity
+
+        viewModel.getPointData()
+
+        viewModel.pointLiveData
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `given getPointData throws exception when getPointData should catch error`() {
+        coEvery{ repository.getPointData() } throws NullPointerException()
+
+        viewModel.getPointData()
+
+        viewModel.pointLiveData
+            .verifyValueEquals(null)
     }
 
     @Test
     fun `getPointData error case`(){
-        val observer = mockk<Observer<Resources<TokoPointStatusEntity>>>()
         coEvery{ repository.getPointData() } returns null
-        viewModel.pointLiveData.observeForever(observer)
+
         viewModel.getPointData()
 
-        verify {
-            observer.onChanged(ofType(ErrorMessage::class as KClass<ErrorMessage<TokoPointStatusEntity>>))
-        }
+        assert(viewModel.pointLiveData.value == ErrorMessage<TokoPointStatusEntity>(""))
     }
 
 

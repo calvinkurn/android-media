@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PlayVideoWidgetView">
+        <attr name="sizeMode" format="enum">
+            <enum name="followWidth" value="0"/>
+            <enum name="followHeight" value="1"/>
+            <enum name="custom" value="2"/>
+        </attr>
+    </declare-styleable>
+</resources>

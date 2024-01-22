@@ -64,7 +64,7 @@
     <string name="title_privacy_center">Privacy Center</string>
     <string name="dsar_activity_title">Download Data</string>
     <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
-    <string name="privacy_policy_label">Privacy Policy</string>
+    <string name="privacy_policy_label">Privacy Notice</string>
 
     <!--    Dynamic feature for Login Fingerprint-->
     <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
@@ -180,6 +180,9 @@
     <string name="title_category_affiliate">Affiliate</string>
     <string name="title_category_epharmacy">E-Pharmacy</string>
     <string name="title_category_catalog_library">Katalog Tokopedia</string>
+
+    <!-- Home Explore Category -->
+    <string name="title_home_browse_all_category">Browse All Categories</string>
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
@@ -332,6 +335,9 @@
     <!--Play-->
     <string name="title_play_df">Play</string>
     <string name="title_play_broadcaster_df">Play Broadcaster</string>
+
+    <!-- Stories Creation -->
+    <string name="title_stories_creation_df">Stories Creation</string>
 
     <!--Interest Pick-->
     <string name="ip_title">Pilih Inspirasi Kamu</string>

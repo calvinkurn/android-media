@@ -100,7 +100,18 @@ data class Page(
     @SerializedName("additional_info")
     val additionalInfo: List<AdditionalInfo> = listOf(),
     @SerializedName("help_page_url")
-    val helpPageUrl: String = ""
+    val helpPageUrl: String = "",
+    @SerializedName("ticker_unification_targets")
+    val tickerUnificationTargets: List<TickerUnificationTargets> = listOf()
+
+)
+
+data class TickerUnificationTargets(
+    @SerializedName("type")
+    val type: String = "",
+
+    @SerializedName("values")
+    val values: List<String> = listOf()
 )
 
 data class AdditionalInfo(

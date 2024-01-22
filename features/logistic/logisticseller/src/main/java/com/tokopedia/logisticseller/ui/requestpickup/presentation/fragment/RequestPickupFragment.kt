@@ -43,13 +43,14 @@ import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.SomCon
 import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequestPickupViewModel
 import com.tokopedia.logisticseller.ui.requestpickup.util.DateMapper
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -166,6 +167,7 @@ class RequestPickupFragment :
                 is Success -> {
                     confirmReqPickupResponse = it.data.mpLogisticPreShipInfo
                     renderConfirmReqPickup()
+                    renderTicker()
                 }
 
                 is Fail -> {
@@ -198,6 +200,20 @@ class RequestPickupFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun renderTicker() {
+        binding?.tickerInfoCourier?.apply { ->
+            setTickerShape(Ticker.SHAPE_LOOSE)
+            val param = TargetedTickerParamModel(
+                page = TargetedTickerPage.REQUEST_PICKUP,
+                targets = confirmReqPickupResponse.dataSuccess.tickerUnificationTargets.map {
+                    TargetedTickerParamModel.Target(it.type, it.values)
+                }
+            )
+
+            loadAndShow(param)
         }
     }
 
@@ -365,32 +381,6 @@ class RequestPickupFragment :
                 }
             } else {
                 rlSchedulePickup.visibility = View.GONE
-            }
-
-            if (confirmReqPickupResponse.dataSuccess.ticker.text.isNotEmpty()) {
-                val tickerData = confirmReqPickupResponse.dataSuccess.ticker
-                tickerInfoCourier.run {
-                    val formattedDesc = getString(
-                        R.string.req_pickup_ticket_desc_template,
-                        tickerData.text,
-                        tickerData.urlDetail,
-                        tickerData.urlText
-                    )
-                    setHtmlDescription(formattedDesc)
-                    tickerType = Utils.mapStringTickerTypeToUnifyTickerType(tickerData.type)
-                    tickerShape = Ticker.SHAPE_LOOSE
-                    setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                        }
-
-                        override fun onDismiss() {
-                            // no-op
-                        }
-                    })
-                }
-            } else {
-                tickerInfoCourier.visibility = View.GONE
             }
 
             btnReqPickup.setOnClickListener {

@@ -20,6 +20,7 @@ const val CATEGORY_LEVEL_ONE_EGOLD = "egold"
 const val CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION = "purchase-protection"
 const val DIGITAL_PLUS_IDENTIFIER = "PULSA_PLUS"
 const val MARKETPLACE_PLUS_IDENTIFIER = "PLUS"
+const val NONE_OTHER_IDENTIFIER = "none / other"
 
 class BranchPurchaseEvent(val userSession: UserSessionInterface,
                           val thanksPageData: ThanksPageData) {
@@ -68,7 +69,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         shopOrder.purchaseItemList.forEach { purchaseItem ->
             if (isItemPartOfRevenue(purchaseItem)) {
                 revenue += purchaseItem.totalPrice
-                paymentData.setProduct(getPurchasedItemBranch(purchaseItem))
+                paymentData.setProduct(getPurchasedItemBranch(purchaseItem, shopOrder.storeName))
             }
         }
         paymentData.setRevenue(revenue.toString())
@@ -82,13 +83,20 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
                         categoryLevelOne == CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION))
     }
 
-    private fun getPurchasedItemBranch(productItem: PurchaseItem): HashMap<String, String> {
+    private fun getPurchasedItemBranch(productItem: PurchaseItem, storeName: String?): HashMap<String, String> {
         val product = HashMap<String, String>()
         product[LinkerConstants.ID] = productItem.productId
         product[LinkerConstants.NAME] = productItem.productName
         product[LinkerConstants.PRICE] = productItem.price.toString()
         product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.price.toString()
         product[LinkerConstants.QTY] = productItem.quantity.toString()
+        if(TextUtils.isEmpty(productItem.productBrand) ||
+            productItem.productBrand == NONE_OTHER_IDENTIFIER
+        ) {
+            product[LinkerConstants.PRODUCT_BRAND] = storeName ?: ""
+        }else{
+            product[LinkerConstants.PRODUCT_BRAND] = productItem.productBrand
+        }
         product[LinkerConstants.CATEGORY] = getCategoryLevel1(productItem.category)
         return product
     }

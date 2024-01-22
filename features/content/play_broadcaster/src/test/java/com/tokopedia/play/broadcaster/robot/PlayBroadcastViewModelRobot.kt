@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
@@ -60,7 +61,7 @@ internal class PlayBroadcastViewModelRobot(
     playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser(), mockk(relaxed = true)),
     playInteractiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(TestHtmlTextTransformer()),
-    productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(),
+    productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(PriceFormatUtil()),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
     broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),

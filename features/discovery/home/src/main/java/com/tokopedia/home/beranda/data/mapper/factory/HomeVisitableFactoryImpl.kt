@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER_V2

@@ -6,4 +6,6 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 interface ProductItemVisitable: Visitable<ProductListTypeFactory> {
 
     val hasLabelGroupFulfillment: Boolean
+
+    fun isCountedAsProductItem(): Boolean = true
 }

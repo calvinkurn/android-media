@@ -26,7 +26,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPEDIA_PAY
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPOINTS
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
-import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_SIMPAN_THEME_SELECTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_ON_ACCOUNT_SAYA_PAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_OVO_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.BusinessUnit.HOME_AND_BROWSE
@@ -78,7 +77,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_BANK_AC
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CLEAN_CACHE
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CONNECT
-import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CONNECTED_ACC
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_DISABLE
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_EMPTY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_ENABLE
@@ -123,7 +121,7 @@ import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -171,26 +169,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
                 String.format("%s %s", CLICK, item),
                 LABEL_EMPTY
             )
-        )
-    }
-
-    fun eventClickToggleOnGeolocation() {
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(
-            EVENT_CLICK_HOME_PAGE,
-            CATEGORY_HOMEPAGE,
-            ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
-            LABEL_EMPTY
-        )
-    }
-
-    fun eventClickToggleOffGeolocation() {
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(
-            EVENT_CLICK_HOME_PAGE,
-            CATEGORY_HOMEPAGE,
-            ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
-            LABEL_EMPTY
         )
     }
 
@@ -524,20 +502,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         analytics.sendGeneralEvent(map)
     }
 
-    fun eventClickAppSettingShake(enable: Boolean) {
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        val map = TrackAppUtils.gtmData(
-            EVENT_CLICK_ACCOUNT,
-            CATEGORY_ACCOUNT_BUYER,
-            ACTION_CLICK_APP_SETTING_SECTION,
-            String.format(Locale.getDefault(), "%s - %s", LABEL_SHAKE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
-        )
-        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
-        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
-        map[EVENT_USER_ID] = userSession.userId
-        analytics.sendGeneralEvent(map)
-    }
-
     fun eventClickAppSettingGeolocation(enable: Boolean) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
@@ -732,30 +696,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
         map[EVENT_USER_ID] = userSession.userId
         analytics.sendGeneralEvent(map)
-    }
-
-    fun eventClickThemeSetting(isDarkMode: Boolean) {
-        val label: String = if (isDarkMode) "dark" else "light"
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(
-            TrackAppUtils.gtmData(
-                EVENT_CLICK_SETTING,
-                CATEGORY_SETTING_PAGE,
-                ACTION_SIMPAN_THEME_SELECTION,
-                label
-            )
-        )
-    }
-
-    fun trackClickBackLinkAccount() {
-        track(
-            TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
-                ACTION_CLICK_BACK,
-                ""
-            )
-        )
     }
 
     fun trackClickHubungkanLinkAccountPage() {

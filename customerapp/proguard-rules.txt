@@ -391,3 +391,9 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -keep class com.arthenica.mobileffmpeg.** { *; }
 -dontwarn kotlin.jvm.internal.SourceDebugExtension
 -dontwarn com.gojek.onekyc.R$drawable
+
+# BCA Flazz Library
+-keep class com.tokopedia.emoney.integration.BCALibrary {*;}
+-keep class com.tokopedia.emoney.integration.data.JNIResult {*;}
+
+-dontwarn sun.nio.ch.DirectBuffer

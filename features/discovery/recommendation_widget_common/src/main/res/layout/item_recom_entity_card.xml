@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/entryPointCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clEntryPointCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="12dp">
+
+        <android.widget.Space
+            android:id="@+id/entryPointCardSpace"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgEntryPointCard"
+            android:contentDescription="@string/content_desc_imageProduct"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgLabelState"
+            android:contentDescription="@string/content_desc_imageProduct"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgEntryPointCard"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvLabelState"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:typographyWeight="bold"
+            app:typographyType="display_3"
+            tools:text="Trending"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/imgLabelState"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imgLabelState"
+            app:layout_constraintBottom_toBottomOf="@id/imgLabelState"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvProductName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toEndOf="@id/tvLabelState"
+            app:layout_constraintStart_toStartOf="@id/imgLabelState"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelState"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Heading, max 2 lines"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvProductSubtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_NN950"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/tvLabelState"
+            app:layout_constraintStart_toStartOf="@id/imgLabelState"
+            app:layout_constraintTop_toBottomOf="@id/tvProductName"
+            app:typographyType="paragraph_3"
+            tools:text="Subtitle for USP, max 2 lines"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

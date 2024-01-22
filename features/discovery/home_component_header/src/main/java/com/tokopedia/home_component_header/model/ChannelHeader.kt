@@ -1,5 +1,6 @@
 package com.tokopedia.home_component_header.model
 
+import com.tokopedia.home_component_header.util.getLink
 import com.tokopedia.home_component_header.view.HeaderLayoutStrategy
 import com.tokopedia.home_component_header.view.HeaderLayoutStrategyFactory
 
@@ -14,16 +15,25 @@ data class ChannelHeader(
     val backColor: String = "",
     val backImage: String = "",
     val textColor: String = "",
-        //  Data from channel level
+    val iconSubtitleUrl: String = "",
+    val headerType: HeaderType = HeaderType.CHEVRON,
+    //  Data from channel level
     val channelId: String = "",
     val serverTimeOffset: Long = 0,
-    val headerType: HeaderType = HeaderType.CONTROL,
-    val iconSubtitleUrl: String = "",
 ) {
     internal val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(headerType)
 
+    fun hasSeeMoreApplink(): Boolean {
+        return getLink().isNotEmpty()
+    }
+
+    fun hasTitleOnly(): Boolean {
+        return subtitle.isEmpty() &&
+            expiredTime.isEmpty() &&
+            iconSubtitleUrl.isEmpty()
+    }
+
     enum class HeaderType {
-        CONTROL,
-        REVAMP
+        CHEVRON
     }
 }

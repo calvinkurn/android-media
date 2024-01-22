@@ -24,4 +24,10 @@
     <color name="tokopedianow_recipe_label_text_background_dms_color">#F0F3F7</color>
     <color name="tokopedianow_recipe_label_text_dms_color">#6D7588</color>
     <color name="tokopedianow_recipe_title_home_dms_color">#212121</color>
+    <color name="tokopedianow_quest_bg_start_dms_color">#00B278</color>
+    <color name="tokopedianow_quest_bg_center_dms_color">#00A2D0</color>
+    <color name="tokopedianow_quest_bg_end_dms_color">#897EF1</color>
+    <color name="tokopedianow_quest_circle_border_dms_color">#33E4EBF5</color>
+    <color name="tokopedianow_quest_progress_dms_color">#06649E</color>
+    <color name="tokopedianow_quest_selected_circle_dms_color">#FFFFFF</color>
 </resources>

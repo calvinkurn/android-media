@@ -2,7 +2,7 @@
 <resources>
     <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
 
-    <string name="recharge_pdp_emoney_check_saldo">Cek Saldo</string>
+    <string name="recharge_pdp_emoney_check_saldo">Scan Kartu</string>
     <string name="recharge_pdp_emoney_update_saldo">Update Saldo</string>
 
 
@@ -15,7 +15,7 @@
 
     <string name="recharge_pdp_emoney_check_saldo_title">Mau cek saldo? Bisa di sini &#128073;</string>
     <string name="recharge_pdp_emoney_check_saldo_description">Jangan lupa cek setelah top-up untuk lihat saldo terbaru kamu.</string>
-    <string name="recharge_pdp_emoney_check_saldo_cta">Cek Saldo</string>
+    <string name="recharge_pdp_emoney_check_saldo_cta">Scan Kartu</string>
 
     <string name="recharge_pdp_emoney_card_number_label">No. Kartu</string>
     <string name="recharge_pdp_success_message_scan_ocr">Nomor kartu berhasil dipindai</string>
@@ -35,5 +35,14 @@
     <string name="recharge_pdp_emoney_coachmark_title">Pilih mau top-up berapa banyak &#x1f4b0;</string>
     <string name="recharge_pdp_emoney_coachmark_subtitle">Ini nominal top-up yang bisa kamu pilih, lengkap dengan harga masing-masing.</string>
 
-
+    <string name="recharge_pdp_emoney_bca_gen_one"><![CDATA[Kartu Flazz-mu nggak mendukung transaksi ini, pastikan sudah pakai kartu Gen 2, ya. Info lebih lanjut  <a href="https://www.tokopedia.com/help"> klik disini. </a>]]></string>
+    <string name="recharge_pdp_emoney_nfc_not_supported">HP kamu ngga mendukung fitur NFC, kamu ngga bisa melanjutkan transaksi ini.</string>
+    <string name="recharge_pdp_emoney_nfc_is_not_active"><![CDATA[HP kamu NFC lagi mati, harap nyalakan untuk bisa melanjutkan transaksi ini, silahkan klik <a href="nfc"> disini ya. </a>]]></string>
+    <string name="recharge_pdp_emoney_nfc_check_gen">Cek Versi kartu error silahkan ulangi</string>
+    <string name="recharge_pdp_emoney_bca_info_title">Jenis Kartu BCA Flazz</string>
+    <string name="recharge_pdp_emoney_bca_info_gen_one">Generasi 1 \n 1. Tidak ada tanda Wi-Fi pada logo Flazz \n 2. Hanya bisa mengecek saldo \n 3. Tidak bisa melakukan top-up di Tokopedia</string>
+    <string name="recharge_pdp_emoney_bca_info_gen_two">Generasi 2 (versi terbaru) \n 1. Ada tanda Wi-Fi pada logo Flazz  \n 2. Bisa top-up &amp; update saldo di Tokopedia</string>
+    <string name="recharge_pdp_emoney_bca_text_gen_one">Gen 1</string>
+    <string name="recharge_pdp_emoney_bca_text_gen_two">Gen 2</string>
+    <string name="recharge_pdp_emoney_bca_gen_one_additional_link"><![CDATA[Info lebih lanjut  <a href="https://www.tokopedia.com/help"> klik disini. </a>]]></string>
 </resources>

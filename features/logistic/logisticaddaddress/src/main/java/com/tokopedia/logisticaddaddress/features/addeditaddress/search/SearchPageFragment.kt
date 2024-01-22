@@ -39,10 +39,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticCommon.uimodel.AddressUiState
 import com.tokopedia.logisticCommon.uimodel.isAdd
 import com.tokopedia.logisticCommon.uimodel.isEditOrPinpointOnly
@@ -64,7 +67,7 @@ import com.tokopedia.logisticaddaddress.di.addeditaddress.AddEditAddressComponen
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.pinpoint.PinpointPageActivity
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_AUTOCOMPLETE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
@@ -284,7 +287,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         stopLocationUpdate()
     }
 
-    override fun onItemClicked(placeId: String) {
+    override fun onItemClicked(data: SuggestedPlace) {
         when (addressUiState) {
             AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickDropdownSuggestion(
                 userSession.userId
@@ -300,7 +303,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
 
         isPolygon = false
-        goToPinpointPage(placeId, null, null)
+        goToPinpointPage(data, null, null)
     }
 
     private fun setOnBackPressed() {
@@ -688,11 +691,11 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let {
-                ContextCompat.checkSelfPermission(
+                    ContextCompat.checkSelfPermission(
                         it,
                         permission
                     )
-            } != PackageManager.PERMISSION_GRANTED
+                } != PackageManager.PERMISSION_GRANTED
             ) {
                 return false
             }
@@ -713,6 +716,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     data.latitude,
                     data.longitude
                 )
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        data.latitude,
+                        data.longitude
+                    )
+                }
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
@@ -739,16 +748,22 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     locationResult.lastLocation.latitude,
                     locationResult.lastLocation.longitude
                 )
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        locationResult.lastLocation.latitude,
+                        locationResult.lastLocation.longitude
+                    )
+                }
             }
         }
 
     private fun goToPinpointPage(
-        placeId: String?,
+        model: SuggestedPlace?,
         latitude: Double?,
         longitude: Double?
     ) {
         val bundle = Bundle()
-        placeId?.takeIf { it.isNotEmpty() }?.let { bundle.putString(EXTRA_PLACE_ID, placeId) }
+        model?.let { bundle.putParcelable(EXTRA_AUTOCOMPLETE, model) }
         latitude?.takeIf { it != 0.0 }?.let { bundle.putDouble(EXTRA_LAT, it) }
         longitude?.takeIf { it != 0.0 }?.let { bundle.putDouble(EXTRA_LONG, it) }
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)

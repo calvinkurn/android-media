@@ -21,7 +21,8 @@
       "pageSource": ".*",
       "userId": ".*",
       "sessionIris": ".*",
-      "trackerId": "30622"
+      "trackerId": "30622",
+      "hits_time": ".*"
     },
     {
       "event": "select_content",

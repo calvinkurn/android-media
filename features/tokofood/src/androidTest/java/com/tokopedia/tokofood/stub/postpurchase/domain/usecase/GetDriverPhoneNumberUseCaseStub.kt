@@ -5,7 +5,6 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.model.DriverPhoneNumb
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.stub.common.graphql.interactor.GraphqlUseCaseStub
-import com.tokopedia.tokofood.stub.postpurchase.domain.mapper.DriverPhoneNumberMapperStub
 
 class GetDriverPhoneNumberUseCaseStub(
     private val useCase: GraphqlUseCaseStub<DriverPhoneNumberResponse>,

@@ -8,7 +8,7 @@
     android:paddingTop="16dp"
     android:paddingBottom="4dp">
 
-    <com.tokopedia.home_component_header.view.HomeChannelHeaderView
+    <com.tokopedia.home_component_header.view.HomeComponentHeaderView
         android:id="@+id/searchBroadMatchHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

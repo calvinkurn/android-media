@@ -36,13 +36,13 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonSearch!!.setOnClickListener { v ->
-            if (TextUtils.isEmpty(searchInputView.searchText)) {
-                presenter.reloadData()
+            if (TextUtils.isEmpty(searchText)) {
+                presenter?.reloadData()
             } else {
-                presenter.search(searchInputView.searchText)
+                presenter?.search(searchText)
             }
         }
-        searchInputView.setSearchHint("Cari")
+        searchInputView.searchBarPlaceholder = "Cari"
     }
 
     override fun onDestroyView() {
@@ -105,7 +105,7 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     }
 
     override fun onSwipeRefresh() {
-        searchInputView.searchTextView.setText("")
+        searchInputView.searchBarTextField.setText("")
         super.onSwipeRefresh()
     }
 

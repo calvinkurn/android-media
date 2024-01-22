@@ -351,7 +351,36 @@
 
     <!-- SOM Transparency Fee -->
     <string name="som_detail_summary_transparency_fee_note"><![CDATA[%1$s]]></string>
-
     <string name="som_transparency_fee_entry_point_coachmark">Lihat rincian dengan klik tanda panah di sebelah kanan.</string>
 
+    <!-- SOM POF -->
+    <string name="som_pof_title_request">Kirim Pesanan Sebagian</string>
+    <string name="som_pof_title_result">Detail Pesanan Sebagian</string>
+    <string name="som_pof_action_reset">Reset</string>
+    <string name="som_pof_summary_title">Rincian Harga</string>
+    <string name="som_pof_product_list_header_left_label">DETAIL PRODUK</string>
+    <string name="som_pof_product_list_header_right_label">BARANG TERSEDIA</string>
+    <string name="som_pof_product_list_header_fully_fulfilled_label">%1$d produk lainnya dikirim sesuai pesanan</string>
+    <string name="som_pof_description_initial">Untuk menghindari komplain dan penalti, kirim pesanan sesuai stok yang tersedia, ya. &lt;a href=\"https://www.tokopedia.com/help/seller/article/kirim-pesan-sebagian\"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="som_pof_description_waiting_response">Pesanan ini dikirim sebagian. Untuk lanjut memproses pesanan, kamu butuh persetujuan pembeli. &lt;a href=\"https://www.tokopedia.com/help/seller/article/kirim-pesan-sebagian\"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="som_pof_footer_title_no_counter">Total Harga Baru (-)</string>
+    <string name="som_pof_footer_price_no_value">-</string>
+    <string name="som_pof_footer_title_with_counter">Total Harga Baru (%1$d/%2$d)</string>
+    <string name="som_pof_footer_price_with_value">%1$s</string>
+    <string name="som_pof_footer_price_reload">Muat ulang</string>
+    <string name="som_pof_footer_button_text_confirm_no_counter">Konfirmasi</string>
+    <string name="som_pof_footer_button_text_confirm_with_counter">Konfirmasi (%1$d)</string>
+    <string name="som_pof_toaster_error_cannot_empty_all_products">Jumlah barang tersedia tidak boleh 0. Kamu bisa ajukan pembatalan.</string>
+    <string name="som_pof_toaster_error_cannot_exceed_checkout_quantity">Jumlah tidak boleh melebihi total barang dipesan.</string>
+    <string name="som_pof_toaster_error_send_pof">Ada gangguan yang perlu kami bereskan. Coba lagi nanti, ya.</string>
+    <string name="som_pof_toaster_error_re_fetch_pof_estimate">Gagal menampilkan rincian harga. Coba lagi, ya.</string>
+    <string name="som_pof_toaster_success_send_pof">Kamu sudah meminta pesanan ini dikirim sebagian. Tunggu konfirmasi pembeli, ya.</string>
+    <string name="som_pof_summary_description">Total harga barang yang tidak tersedia. Belum termasuk biaya ongkir, cashback, dan pengembalian dana dari Pusat Resolusi.</string>
+    <string name="som_pof_dialog_title_order_has_ongoing_pof">Yakin terima pesanan ini?</string>
+    <string name="som_pof_dialog_subtitle_order_has_ongoing_pof">Pembeli belum konfirmasi. Pastikan kamu bisa mengirim sesuai jumlah barang yang dipesan pembeli, ya.</string>
+    <string name="som_pof_dialog_button_negative_order_has_ongoing_pof">Kembali</string>
+    <string name="som_pof_dialog_button_positive_order_has_ongoing_pof">Ya, Terima</string>
+
+    <!-- Common -->
+    <string name="som_link_formatted">&lt;a href=\"%1$s\"&gt;%2$s&lt;/a&gt;</string>
 </resources>

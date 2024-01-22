@@ -24,7 +24,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
     var source = ""
 
     fun goToVerification(phone: String = "", email: String = "", otpType: Int, context: Context): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP, otpType.toString())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -35,7 +35,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
         return intent
     }
 
-    fun goToLoginPage(context: Activity){
+    fun goToLoginPage(context: Activity) {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
@@ -43,29 +43,32 @@ class RegisterInitialRouterHelper @Inject constructor() {
         context.finish()
     }
 
-    fun goToRegisterEmail(fragment: Fragment){
+    fun goToRegisterEmail(fragment: Fragment) {
         val intent = RegisterEmailActivity.getCallingIntent(fragment.context)
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_REGISTER_EMAIL)
     }
 
-    fun goToRegisterEmailPageWithParams(fragment: Fragment, email: String, token: String, source: String){
+    fun goToRegisterEmailPageWithParams(fragment: Fragment, email: String, token: String, source: String, isFromScp: Boolean = false) {
         val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.EMAIL_REGISTER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, token)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, isFromScp)
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_REGISTER_EMAIL)
     }
 
-    fun goToRedefineRegisterEmailPageWithParams(fragment: Fragment, source: String, isRequiredInputPhone: Boolean){
+    fun goToRedefineRegisterEmailPageWithParams(fragment: Fragment, source: String, isRequiredInputPhone: Boolean) {
         val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.REDEFINE_REGISTER_EMAIL)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE, isRequiredInputPhone)
         fragment.startActivity(intent)
     }
 
-    fun goToChooseAccountPage(fragment: Fragment, accessToken: String, phoneNumber: String){
-        val intent = RouteManager.getIntent(fragment.context,
-                ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT)
+    fun goToChooseAccountPage(fragment: Fragment, accessToken: String, phoneNumber: String) {
+        val intent = RouteManager.getIntent(
+            fragment.context,
+            ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT
+        )
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
@@ -75,27 +78,32 @@ class RegisterInitialRouterHelper @Inject constructor() {
 
     fun goToChangeName(fragment: Fragment, validateToken: String) {
         val intent = (fragment.context?.applicationContext as ApplinkRouter).getApplinkIntent(fragment.context, ApplinkConst.ADD_NAME_PROFILE)
-        intent.putExtras(Bundle().apply {
-            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
-        })
+        intent.putExtras(
+            Bundle().apply {
+                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+            }
+        )
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHANGE_NAME)
     }
 
-    fun goToAddPin2FA(fragment: Fragment, enableSkip2FA: Boolean, validateToken: String = ""){
+    fun goToAddPin2FA(fragment: Fragment, enableSkip2FA: Boolean, validateToken: String = "") {
         val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.ADD_PIN)
-        intent.putExtras(Bundle().apply {
-            putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
-            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
-        })
+        intent.putExtras(
+            Bundle().apply {
+                putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
+                putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+            }
+        )
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_PIN)
     }
 
-    fun goToAddName(fragment: Fragment, uuid: String, phoneNumber: String){
+    fun goToAddName(fragment: Fragment, uuid: String, phoneNumber: String, isFromScp: Boolean = false) {
         val applink = ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
         val intent = RouteManager.getIntent(fragment.context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, isFromScp)
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE)
     }
 }

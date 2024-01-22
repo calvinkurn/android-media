@@ -1,22 +1,30 @@
 package com.tokopedia.buyerorderdetail.presentation.viewmodel
 
+import app.cash.turbine.test
+import com.gojek.conversations.babble.network.data.OrderChatType
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ScpRewardsMedalTouchPointWidgetMapper
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEventUiState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.SavingsWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
@@ -25,8 +33,11 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -79,7 +90,6 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `UI state should equals to PullRefreshLoading when reloading P0 data`() =
         runCollectingUiState { uiStates ->
-            var uiStateBeforeSuccessReloading: BuyerOrderDetailUiState? = null
             createSuccessGetBuyerOrderDetailDataResult()
 
             // assert first initial bom page opened
@@ -90,16 +100,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             // assert data showing after initial first data is completed
             assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
 
-            // reload
-            createSuccessGetBuyerOrderDetailDataResult {
-                advanceUntilIdle()
-                uiStateBeforeSuccessReloading = uiStates.last()
-            }
-
             getBuyerOrderDetailData()
 
             // assert data is pull refresh state after swipe refresh and data not complete yet
-            assertTrue(uiStateBeforeSuccessReloading is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
+            assertTrue(uiStates[uiStates.size - 2] is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
             // assert last state should showing after success pull refresh
             assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
         }
@@ -120,8 +124,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
-            viewModel.finishOrder()
-            advanceUntilIdle()
+            finishOrder()
 
             coVerify {
                 finishOrderUseCase.execute(expectedParams)
@@ -140,8 +143,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
-            viewModel.finishOrder()
-            advanceUntilIdle()
+            finishOrder()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -158,8 +160,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
-            viewModel.finishOrder()
-            advanceUntilIdle()
+            finishOrder()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -181,8 +182,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createFailedFinishOrderResult(expectedException)
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
+                finishOrder()
 
                 val result = viewModel.finishOrderResult.value as Fail
                 assertTrue(result.throwable is MessageErrorException)
@@ -411,10 +411,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
                 viewModel.expandProductList()
-                advanceTimeBy(1000L)
                 assertTrue(isProductListExpanded())
                 viewModel.collapseProductList()
-                advanceTimeBy(1000L)
                 assertTrue(isProductListCollapsed())
             }
         }
@@ -433,7 +431,6 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
                 viewModel.expandProductList()
-                advanceTimeBy(1000L)
                 assertTrue(isProductListExpanded())
             }
         }
@@ -481,6 +478,70 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 (it.last() as BuyerOrderDetailUiState.HasData.Showing)
                     .epharmacyInfoUiState.data
                     .isEmptyData()
+            )
+        }
+
+    @Test
+    fun `change one time method assign all value`() = runBlockingTest {
+        val testResults = mutableListOf<OrderOneTimeEventUiState>()
+
+        val job = launch {
+            viewModel.oneTimeMethodState.toList(testResults)
+        }
+
+        //second assignment, because the first one is default value which OneTimeMethodEvent.Empty
+        viewModel.changeOneTimeMethod(event = OrderOneTimeEvent.ImpressSavingsWidget(
+            orderId = "asd",
+            isPlus = true,
+            isMixPromo = false
+        ))
+
+        assertTrue(testResults[1].event is OrderOneTimeEvent.ImpressSavingsWidget)
+        assertEquals(testResults[1].impressSavingsWidget, true)
+
+        //re-assign and make sure we dont want to update the data, since we need to run every event exactly once
+        viewModel.changeOneTimeMethod(event = OrderOneTimeEvent.ImpressSavingsWidget(
+            orderId = "asd",
+            isPlus = true,
+            isMixPromo = false
+        ))
+
+        assertTrue(testResults.size == 2)
+        job.cancel()
+    }
+
+    @Test
+    fun `SavingsWidgetUiState should success when SavingsWidgetUiStateMapper success`() =
+        runCollectingUiState {
+            createSuccessGetBuyerOrderDetailDataResult()
+
+            every { SavingsWidgetUiStateMapper.map(any()) } returns
+                SavingsWidgetUiState.Success(SavingsWidgetUiModel())
+
+            getBuyerOrderDetailData()
+
+            // if error happen in ephar mapper, return empty data so the section not showing
+            assertTrue(it.last() is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(
+                (it.last() as BuyerOrderDetailUiState.HasData.Showing)
+                    .savingsWidgetUiState is SavingsWidgetUiState.Success
+            )
+        }
+
+    @Test
+    fun `SavingsWidgetUiState should catch error when SavingsWidgetUiStateMapper throwing crash`() =
+        runCollectingUiState {
+            createSuccessGetBuyerOrderDetailDataResult()
+
+            every { SavingsWidgetUiStateMapper.map(any()) } throws Throwable("Error")
+
+            getBuyerOrderDetailData()
+
+            // if error happen in ephar mapper, return empty data so the section not showing
+            assertTrue(it.last() is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(
+                (it.last() as BuyerOrderDetailUiState.HasData.Showing)
+                    .savingsWidgetUiState is SavingsWidgetUiState.Hide
             )
         }
 
@@ -1005,10 +1066,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
-
-                viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                finishOrder()
+                updateScpRewardsMedalTouchPointWidgetState(
                     data = medalTouchPointData,
                     marginLeft = marginLeft,
                     marginTop = marginTop,
@@ -1043,8 +1102,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
+                finishOrder()
                 assertTrue(viewModel.finishOrderResult.value is Fail)
                 assertEquals(
                     ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
@@ -1069,8 +1127,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
+                finishOrder()
 
                 assertTrue(viewModel.finishOrderResult.value is Success)
                 assertEquals(
@@ -1110,10 +1167,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
+                finishOrder()
 
-                viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                updateScpRewardsMedalTouchPointWidgetState(
                     data = medalTouchPointData,
                     marginLeft = marginLeft,
                     marginTop = marginTop,
@@ -1131,7 +1187,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
                         .last().scpRewardsMedalTouchPointWidgetUiState
                 )
-                viewModel.hideScpRewardsMedalTouchPointWidget()
+                hideScpRewardsMedalTouchPointWidget()
                 assertEquals(
                     ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
                     buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
@@ -1239,6 +1295,219 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 viewModel.impressBmgmProduct(this)
 
                 verify(inverse = true) { BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton("987654321") }
+            }
+        }
+    }
+
+    @Test
+    fun `when initGroupBooking, get channel id`() {
+        runTest {
+            // Given
+            val expectedChannelUrl = "testChannelId"
+            val testOrderId = "testOrderId"
+            val source = "gosend_instant"
+            every {
+                tokoChatGroupBookingUseCase.initGroupBookingChat(any(), any())
+            } returns flow {
+                emit(TokoChatResult.Success(expectedChannelUrl))
+            }
+
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking(testOrderId, source)
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.channelUrl, expectedChannelUrl)
+                assertEquals(updatedValue.error, null)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when initGroupBooking, get loading`() {
+        runTest {
+            // Given
+            val testOrderId = "testOrderId"
+            val source = "gosend_instant"
+            every {
+                tokoChatGroupBookingUseCase.initGroupBookingChat(any(), any())
+            } returns flow {
+                emit(TokoChatResult.Loading)
+            }
+
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking(testOrderId, source)
+
+                // Then
+                verify {
+                    tokoChatGroupBookingUseCase.initGroupBookingChat(
+                        testOrderId,
+                        tokoChatGroupBookingUseCase.getServiceType(source),
+                        OrderChatType.Driver
+                    )
+                }
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when initGroupBooking, get error conversation`() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable("Oops!")
+            val testOrderId = "testOrderId"
+            val source = "gosend_instant"
+            every {
+                tokoChatGroupBookingUseCase.initGroupBookingChat(any(), any())
+            } returns flow {
+                emit(TokoChatResult.Error(expectedThrowable))
+            }
+
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking(testOrderId, source)
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.channelUrl, "")
+                assertEquals(updatedValue.error, expectedThrowable)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when initGroupBooking, get error throwable`() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable("Oops!")
+            val testOrderId = "testOrderId"
+            val source = "gosend_instant"
+            every {
+                tokoChatGroupBookingUseCase.initGroupBookingChat(any(), any())
+            } throws expectedThrowable
+
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking(testOrderId, source)
+
+                // Then
+                verify {
+                    tokoChatGroupBookingUseCase.initGroupBookingChat(
+                        testOrderId,
+                        tokoChatGroupBookingUseCase.getServiceType(source),
+                        OrderChatType.Driver
+                    )
+                }
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch unread count, get unread counter`() {
+        runTest {
+            // Given
+            val expectedCounter = 5
+            every {
+                tokoChatCounterUseCase.fetchUnreadCount(any())
+            } returns flow {
+                emit(TokoChatResult.Success(expectedCounter))
+            }
+
+            viewModel.chatCounterUiState.test {
+                // When
+                viewModel.fetchUnReadChatCount()
+
+                skipItems(1)
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.counter, 5)
+                assertEquals(updatedValue.error, null)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch unread count, get loading`() {
+        runTest {
+            // Given
+            every {
+                tokoChatCounterUseCase.fetchUnreadCount(any())
+            } returns flow {
+                emit(TokoChatResult.Loading)
+            }
+
+            viewModel.chatCounterUiState.test {
+                // When
+                viewModel.fetchUnReadChatCount()
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.counter, 0)
+                assertEquals(updatedValue.error, null)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch unread count, get error conversation`() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable()
+            every {
+                tokoChatCounterUseCase.fetchUnreadCount(any())
+            } returns flow {
+                emit(TokoChatResult.Error(expectedThrowable))
+            }
+
+            viewModel.chatCounterUiState.test {
+                // When
+                viewModel.fetchUnReadChatCount()
+
+                skipItems(1)
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.counter, 0)
+                assertEquals(updatedValue.error, expectedThrowable)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch unread count, get error throwable`() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable()
+            every {
+                tokoChatCounterUseCase.fetchUnreadCount(any())
+            } throws expectedThrowable
+
+            viewModel.chatCounterUiState.test {
+                // When
+                viewModel.fetchUnReadChatCount()
+
+                verify {
+                    tokoChatCounterUseCase.fetchUnreadCount("")
+                }
+
+                cancelAndConsumeRemainingEvents()
             }
         }
     }

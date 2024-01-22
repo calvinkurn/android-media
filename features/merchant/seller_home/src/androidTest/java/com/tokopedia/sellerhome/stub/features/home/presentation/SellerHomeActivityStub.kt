@@ -20,7 +20,7 @@ class SellerHomeActivityStub : SellerHomeActivity() {
     }
 
     override fun getComponent(): HomeDashboardComponent {
-        val baseComponentStub = BaseAppComponentStubInstance.getBaseAppComponentStub(application)
+        val baseComponentStub = BaseAppComponentStubInstance.getBaseAppComponentStub(this)
         return DaggerSellerHomeComponentStub.builder()
             .baseAppComponentStub(baseComponentStub)
             .build()

@@ -110,13 +110,21 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         nfcDisabledView = view.findViewById(R.id.view_nfc_disabled)
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
-            override fun onClick(operatorId: String, issuerId: Int) {
+            override fun onClick(operatorId: String, issuerId: Int, isBcaGenOne: Boolean) {
                 emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId, getOperatorName(issuerId))
-                onProcessTopupNow(getPassData(operatorId, issuerId))
+                onProcessTopupNow(getPassData(operatorId, issuerId, isBcaGenOne))
             }
 
             override fun onClickTickerTapcash() {
                 emoneyAnalytics.onShowErrorTapcashClickContactCS(irisSessionId)
+            }
+
+            override fun onClickExtraPendingBalance() {
+                if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
+                    eTollUpdateBalanceResultView.hide()
+                }
+                tapETollCardView.visibility = View.VISIBLE
+                showInitialState()
             }
         })
 
@@ -182,6 +190,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             return OPERATOR_NAME_TAPCASH
         } else if (issuerId == ISSUER_ID_JAKCARD) {
             return OPERATOR_NAME_JAKCARD
+        } else if (issuerId == ISSUER_ID_FLAZZ) {
+            return OPERATOR_NAME_FLAZZ
         }
         return OPERATOR_NAME_EMONEY
     }
@@ -192,7 +202,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     protected abstract fun detectNfc()
 
-    protected abstract fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData
+    protected abstract fun getPassData(operatorId: String, issuerId: Int, isBCAGenOne: Boolean): DigitalCategoryDetailPassData
 
     protected fun showError(errorMessage: String, errorMessageLabel: String = "",
                             imageUrl: String = "",
@@ -336,11 +346,13 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         const val ISSUER_ID_BRIZZI = 2
         const val ISSUER_ID_TAP_CASH = 3
         const val ISSUER_ID_JAKCARD = 4
+        const val ISSUER_ID_FLAZZ = 5
 
         const val OPERATOR_NAME_EMONEY = "emoney"
         const val OPERATOR_NAME_BRIZZI = "brizzi"
         const val OPERATOR_NAME_TAPCASH = "tapcash"
         const val OPERATOR_NAME_JAKCARD = "jakcard"
+        const val OPERATOR_NAME_FLAZZ = "flazz"
 
         const val ETOLL_CATEGORY_ID = "34"
 

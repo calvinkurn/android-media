@@ -2,8 +2,10 @@ package com.tokopedia.tokofood.stub.purchase.di.component
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
-import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailByIdUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase.PromoListTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseComponent
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseScope
@@ -26,7 +28,7 @@ import dagger.Component
         BaseAppComponentStub::class
     ]
 )
-interface TokoFoodPurchaseComponentStub: TokoFoodPurchaseComponent {
+interface TokoFoodPurchaseComponentStub : TokoFoodPurchaseComponent {
 
     fun inject(fragment: TokoFoodPurchaseFragmentStub)
 
@@ -36,14 +38,17 @@ interface TokoFoodPurchaseComponentStub: TokoFoodPurchaseComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun keroEditAddressUseCase(): KeroEditAddressUseCase
+    fun keroEditAddressUseCase(): UpdatePinpointWithAddressIdUseCase
 
-    fun keroGetAddressUseCase(): KeroGetAddressUseCase
+    fun keroGetAddressUseCase(): GetAddressDetailByIdUseCase
+
+    fun updatePinpointUseCase(): UpdatePinpointUseCase
+
+    fun getAddressDetailUseCase(): GetAddressDetailUseCase
 
     fun checkoutTokofoodUseCase(): CheckoutTokoFoodUseCase
 
     fun checkoutGeneralTokoFoodUseCase(): CheckoutGeneralTokoFoodUseCase
 
     fun promoListTokoFoodUseCase(): PromoListTokoFoodUseCase
-
 }

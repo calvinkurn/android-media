@@ -181,7 +181,7 @@ class StoriesCreationPreparationViewModelTest {
     fun `storiesCreation_prepare_reachedMaxStoriesAllowed`() {
         val mockConfig = configModelBuilder.build(
             maxStoriesConfig = StoriesCreationConfiguration.MaxStoriesConfig(
-                isLimitReached = true,
+                isMaxStoryReached = true,
                 imageUrl = "asdf",
                 title = "asdf",
                 description = "asdf",

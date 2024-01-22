@@ -1,16 +1,17 @@
 package com.tokopedia.creation.common.analytics
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Value
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.content.analytic.Event
-import com.tokopedia.content.analytic.BusinessUnit
-import com.tokopedia.content.analytic.CurrentSite
-import com.tokopedia.content.analytic.EventCategory
-import com.tokopedia.content.analytic.Value
 
 /**
  * Created By : Muhammad Furqan on 27/10/23
@@ -36,7 +37,12 @@ class ContentCreationAnalytics @Inject constructor(
                 eventName = Event.clickContent,
                 eventAction = Action.CLICK_NEXT_CONTENT_CREATION,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)} - ${contentTypeTitle.lowercase()}",
-                trackerId = if (widgetSource == ContentCreationEntryPointSource.Shop) "47546" else "47965",
+                trackerId = getTrackerIdBasedOnWidgetSource(
+                    widgetSource,
+                    trackerIdShopPageMainApp = "47546",
+                    trackerIdShopPageSellerApp = "47889",
+                    trackerIdFeed = "47965",
+                ),
                 widgetSource = widgetSource
             )
         )
@@ -51,7 +57,12 @@ class ContentCreationAnalytics @Inject constructor(
                 eventName = Event.clickContent,
                 eventAction = Action.CLICK_PERFORMANCE_DASHBOARD_CONTENT_CREATION,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
-                trackerId = "47550",
+                trackerId = getTrackerIdBasedOnWidgetSource(
+                    widgetSource,
+                    trackerIdShopPageMainApp = "47550",
+                    trackerIdShopPageSellerApp = "47890",
+                    trackerIdFeed = "",
+                ),
                 widgetSource = widgetSource
             )
         )
@@ -66,7 +77,12 @@ class ContentCreationAnalytics @Inject constructor(
                 eventName = Event.viewContentIris,
                 eventAction = Action.VIEW_CONTENT_CREATION_BOTTOM_SHEET,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
-                trackerId = if (widgetSource == ContentCreationEntryPointSource.Shop) "47551" else "47966",
+                trackerId = getTrackerIdBasedOnWidgetSource(
+                    widgetSource,
+                    trackerIdShopPageMainApp = "47551",
+                    trackerIdShopPageSellerApp = "47891",
+                    trackerIdFeed = "47966",
+                ),
                 widgetSource = widgetSource
             )
         )
@@ -81,7 +97,12 @@ class ContentCreationAnalytics @Inject constructor(
                 eventName = Event.viewContentIris,
                 eventAction = Action.VIEW_CREATE_CONTENT,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
-                trackerId = "47797",
+                trackerId = getTrackerIdBasedOnWidgetSource(
+                    widgetSource,
+                    trackerIdShopPageMainApp = "47797",
+                    trackerIdShopPageSellerApp = "47892",
+                    trackerIdFeed = "",
+                ),
                 widgetSource = widgetSource
             )
         )
@@ -96,10 +117,33 @@ class ContentCreationAnalytics @Inject constructor(
                 eventName = Event.clickContent,
                 eventAction = Action.CLICK_CREATE_CONTENT,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
-                trackerId = "47798",
+                trackerId = getTrackerIdBasedOnWidgetSource(
+                    widgetSource,
+                    trackerIdShopPageMainApp = "47798",
+                    trackerIdShopPageSellerApp = "47893",
+                    trackerIdFeed = "",
+                ),
                 widgetSource = widgetSource
             )
         )
+    }
+
+    private fun getTrackerIdBasedOnWidgetSource(
+        widgetSource: ContentCreationEntryPointSource,
+        trackerIdShopPageMainApp: String,
+        trackerIdShopPageSellerApp: String,
+        trackerIdFeed: String
+    ): String {
+        return if (widgetSource == ContentCreationEntryPointSource.Shop) {
+            if (GlobalConfig.isSellerApp()) {
+                trackerIdShopPageSellerApp
+            } else {
+                trackerIdShopPageMainApp
+            }
+        }
+        else {
+            trackerIdFeed
+        }
     }
 
     private fun sendEventTracker(params: Map<String, Any>) {
@@ -118,7 +162,7 @@ class ContentCreationAnalytics @Inject constructor(
         TrackerConstant.EVENT_ACTION to eventAction,
         TrackerConstant.EVENT_LABEL to eventLabel,
         TrackerConstant.BUSINESS_UNIT to BusinessUnit.content,
-        TrackerConstant.CURRENT_SITE to CurrentSite.tokopediaMarketplace,
+        TrackerConstant.CURRENT_SITE to if (GlobalConfig.isSellerApp()) CurrentSite.tokopediaSeller else CurrentSite.tokopediaMarketplace,
         TrackerConstant.TRACKER_ID to trackerId,
         TrackerConstant.USERID to userId
     )
@@ -127,21 +171,21 @@ class ContentCreationAnalytics @Inject constructor(
         when (authorEnum) {
             ContentCreationAuthorEnum.USER -> Value.user
             ContentCreationAuthorEnum.SHOP -> Value.seller
-            ContentCreationAuthorEnum.NONE -> Value.empty
+            ContentCreationAuthorEnum.NONE -> ""
         }
 
     private fun getPartnerId(authorEnum: ContentCreationAuthorEnum) =
         when (authorEnum) {
             ContentCreationAuthorEnum.USER -> userId
             ContentCreationAuthorEnum.SHOP -> shopId
-            ContentCreationAuthorEnum.NONE -> Value.empty
+            ContentCreationAuthorEnum.NONE -> ""
         }
 
     private fun getEventCategory(widgetSource: ContentCreationEntryPointSource) =
         when (widgetSource) {
             ContentCreationEntryPointSource.Shop -> VALUE_CATEGORY_SHOP
             ContentCreationEntryPointSource.Feed -> EventCategory.unifiedFeed
-            else -> Value.empty
+            else -> ""
         }
 
     private object Action {

@@ -183,9 +183,9 @@
     <string name="onekyc_consent_supervised_description">Data pribadi aman dan cuma digunakan untuk verifikasi identitas kamu.</string>
     <string name="onekyc_consent_link_gopayplus">Mulai Verifikasi</string>
     <string name="onekyc_consent_help">Butuh Bantuan?</string>
-    <string name="onekyc_consent_terms_and_policy">Saya menyetujui Syarat &amp; Ketentuan dan Kebijakan Privasi Verifikasi Data Diri.</string>
+    <string name="onekyc_consent_terms_and_policy">Saya menyetujui Syarat &amp; Ketentuan dan Pemberitahuan Privasi Verifikasi Data Diri.</string>
     <string name="onekyc_consent_terms_link">Syarat &amp; Ketentuan</string>
-    <string name="onekyc_consent_privacy_link">Kebijakan Privasi</string>
+    <string name="onekyc_consent_privacy_link">Pemberitahuan Privasi</string>
 
     <!-- OneKyc Blocked -->
     <string name="onekyc_blocked_cashloan_title">Kamu belum bisa aktivasi GoPay Pinjam dulu</string>

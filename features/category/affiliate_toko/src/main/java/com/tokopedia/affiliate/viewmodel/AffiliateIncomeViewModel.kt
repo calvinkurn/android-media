@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.PROJECT_ID
@@ -17,17 +16,12 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateBalanceDataUseCase
-import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliateKycUseCase
 import com.tokopedia.affiliate.usecase.AffiliateTransactionHistoryUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class AffiliateIncomeViewModel : BaseViewModel() {
 
@@ -52,13 +46,6 @@ class AffiliateIncomeViewModel : BaseViewModel() {
         AffiliateValidateUserStatusUseCase(AffiliateRepository())
     val affiliateAffiliateAnnouncementUseCase =
         AffiliateAnnouncementUseCase(AffiliateRepository())
-    val affiliateUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase =
-        AffiliateGetUnreadNotificationUseCase(
-            AffiliateRepository()
-        )
-    private val _unreadNotificationCount = MutableLiveData(Int.ZERO)
-
-    fun getUnreadNotificationCount(): LiveData<Int> = _unreadNotificationCount
     fun getAffiliateBalance() {
         launchCatchError(
             block = {
@@ -138,20 +125,6 @@ class AffiliateIncomeViewModel : BaseViewModel() {
             return tempList
         }
         return null
-    }
-
-    fun fetchUnreadNotificationCount() {
-        val coroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
-            Timber.e(e)
-        }
-        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            _unreadNotificationCount.value =
-                affiliateUnreadNotificationUseCase.getUnreadNotifications()
-        }
-    }
-
-    fun resetNotificationCount() {
-        _unreadNotificationCount.value = Int.ZERO
     }
 
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS

@@ -3,13 +3,53 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingTop="16dp"
     android:paddingBottom="24dp"
     android:background="@drawable/bg_client_number_widget_shadow">
 
-    <include
-        android:id="@+id/client_number_widget_base"
-        layout="@layout/view_client_number_widget_base" />
+    <com.tokopedia.recharge_credit_card.pcidss.widgets.PcidssInputFieldWidget
+        android:id="@+id/client_number_widget_pcidss"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/client_number_widget_see_all"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/client_number_widget_sort_filter"
+        app:layout_constraintBottom_toBottomOf="@id/client_number_widget_sort_filter"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/client_number_widget_sort_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/client_number_widget_see_all"
+        app:layout_constraintTop_toBottomOf="@id/client_number_widget_pcidss" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/client_number_widget_sort_filter_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/client_number_widget_sort_filter" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/client_number_widget_ticker"
@@ -21,7 +61,7 @@
         app:enableAutoSlide="true"
         app:tickerType="announcement"
         app:tickerShapeType="loose"
-        app:layout_constraintTop_toBottomOf="@id/client_number_widget_base"
+        app:layout_constraintTop_toBottomOf="@id/client_number_widget_sort_filter_shimmer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

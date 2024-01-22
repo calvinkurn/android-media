@@ -68,7 +68,7 @@ object MissionWidgetTracking : BaseTrackerConst() {
         bundle.putString(Label.KEY, eventLabel)
         bundle.putString(CustomAction.TRACKER_ID, CustomAction.TRACKER_ID_CLICKED)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
-        bundle.putString(CampaignCode.KEY, DEFAULT_ID)
+        bundle.putString(CampaignCode.KEY, element.data.campaignCode)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(UserId.KEY, userId)
         bundle.putString(ChannelId.KEY, element.channelId)

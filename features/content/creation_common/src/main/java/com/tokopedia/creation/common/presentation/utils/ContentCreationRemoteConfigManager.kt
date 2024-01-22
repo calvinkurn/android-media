@@ -16,7 +16,7 @@ class ContentCreationRemoteConfigManager @Inject constructor(private val remoteC
         getSellerAppConfigData().shopEntryPointItem
     else getMainAppConfigData().shopEntryPointItem
 
-    fun isShowingFeedEntryPoint(): Boolean = getMainAppConfigData().shopEntryPointItem
+    fun isShowingFeedEntryPoint(): Boolean = getMainAppConfigData().feedEntryPointItem
 
     fun isShowingCreation(): Boolean = if (GlobalConfig.isSellerApp())
         getSellerAppConfigData().creation
@@ -25,7 +25,7 @@ class ContentCreationRemoteConfigManager @Inject constructor(private val remoteC
     private fun getConfigData(): ContentCreationRemoteConfigModel = try {
         val rawString = remoteConfig.getString(APP_CONTENT_CREATION_STORIES_CONFIG)
         Gson().fromJson(rawString, ContentCreationRemoteConfigModel::class.java)
-    } catch (t: Throwable) {
+    } catch (_: Throwable) {
         ContentCreationRemoteConfigModel()
     }
 

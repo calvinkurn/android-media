@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="path_media_catalogue" translatable="false">/medialoader-lab</string>
+    <string name="path_media_loader" translatable="false">/medialoader</string>
 
     <string name="hint_medialoader_url">Image URL</string>
     <string name="btn_render_image">Show Image</string>

@@ -98,11 +98,23 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.fragmentKtx
 
+    implementation rootProject.ext.composeDependencies.composeConstraint
+
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     api rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation projectOrAar(rootProject.ext.features.contentTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 }
 
 project.ext {

@@ -24,7 +24,17 @@ class AutoCompleteMapper @Inject constructor() {
             SuggestedPlace(
                 it.structuredFormatting.mainText,
                 it.structuredFormatting.secondaryText,
-                it.placeId
+                it.placeId,
+                it.districtName,
+                it.cityName,
+                it.provinceName,
+                it.districtId,
+                it.cityId,
+                it.provinceId,
+                it.postalCode,
+                it.latitude,
+                it.longitude,
+                it.title
             )
         }
     }

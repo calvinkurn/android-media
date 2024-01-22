@@ -4,6 +4,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.stories.creation.builder.ProductPickerModelBuilder
 import com.tokopedia.stories.creation.provider.ProductPickerTestActivityProvider
 import com.tokopedia.test.application.annotations.CassavaTest
@@ -34,6 +35,7 @@ class ProductPickerSellerAnalyticTest {
 
     /** Mock Class */
     private val mockRepository: ContentProductPickerSellerRepository = mockk(relaxed = true)
+    private val mockCommonRepository: ProductPickerSellerCommonRepository = mockk(relaxed = true)
 
     /** Mock Data */
     private val mockEtalaseList = productPickerModelBuilder.buildEtalaseList()
@@ -45,11 +47,12 @@ class ProductPickerSellerAnalyticTest {
     @Before
     fun setUp() {
         ProductPickerTestActivityProvider.mockRepository = mockRepository
+        ProductPickerTestActivityProvider.mockCommonRepository = mockCommonRepository
 
-        coEvery { mockRepository.getEtalaseList() } returns mockEtalaseList
-        coEvery { mockRepository.getCampaignList() } returns mockCampaignList
+        coEvery { mockCommonRepository.getEtalaseList() } returns mockEtalaseList
+        coEvery { mockCommonRepository.getCampaignList() } returns mockCampaignList
         coEvery { mockRepository.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProductList
-        coEvery { mockRepository.getProductsInCampaign(any(), any()) } returns mockCampaignProductList
+        coEvery { mockCommonRepository.getProductsInCampaign(any(), any()) } returns mockCampaignProductList
         coEvery { mockRepository.getProductTagSummarySection(any(), any()) } returns mockTaggedProductList
     }
 

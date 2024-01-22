@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
@@ -29,6 +30,10 @@ abstract class BaseNotificationSellerTest {
 
     @Inject
     lateinit var topAdsRepository: FakeTopAdsRepository
+
+    @Inject
+    @ApplicationContext
+    lateinit var gqlResponseStub: GqlResponseStub
 
     @Before
     open fun beforeTest() {
@@ -65,7 +70,7 @@ abstract class BaseNotificationSellerTest {
     }
 
     private fun reset() {
-        GqlResponseStub.reset()
+        gqlResponseStub.reset()
         topAdsRepository.isError = false
         topAdsRepository.response = topAdsRepository.defaultResponse
     }

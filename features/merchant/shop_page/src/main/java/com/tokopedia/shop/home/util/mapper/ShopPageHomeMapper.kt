@@ -13,6 +13,7 @@ import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
 import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -91,6 +92,8 @@ object ShopPageHomeMapper {
                 it.isVariant = hasVariant
                 it.parentId = parentId
                 it.averageRating = stats.averageRating
+                it.isFulfillment = ShopUtil.isFulfillmentByGroupLabel(shopProduct.labelGroupList)
+                it.warehouseId = shopProduct.warehouseId
             }
         }
 
@@ -396,7 +399,6 @@ object ShopPageHomeMapper {
         widgetResponse: ShopLayoutWidget.Widget,
         isMyOwnProduct: Boolean,
         isLoggedIn: Boolean,
-        isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
         shopId: String,
         widgetLayout: ShopPageWidgetUiModel?,
@@ -459,38 +461,18 @@ object ShopPageHomeMapper {
                 }
             }
             WidgetTypeEnum.CAMPAIGN.value.lowercase() -> {
-                if (isThematicWidgetShown) {
-                    when (widgetResponse.name) {
-                        WidgetNameEnum.ETALASE_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-                        WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse, isEnableDirectPurchase, widgetLayout, isOverrideTheme, colorSchema)
-                        WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value -> mapToNewProductLaunchCampaignUiModel(
-                            widgetResponse,
-                            isLoggedIn,
-                            widgetLayout,
-                            isOverrideTheme,
-                            colorSchema
-                        )
-                        else -> null
-                    }
-                } else {
-                    when (widgetResponse.name) {
-                        FLASH_SALE_TOKO -> mapToFlashSaleUiModel(
-                            widgetResponse,
-                            isEnableDirectPurchase,
-                            widgetLayout,
-                            isOverrideTheme,
-                            colorSchema
-                        )
-                        WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value -> mapToNewProductLaunchCampaignUiModel(
-                            widgetResponse,
-                            isLoggedIn,
-                            widgetLayout,
-                            isOverrideTheme,
-                            colorSchema
-                        )
-                        else -> null
-                    }
+                when (widgetResponse.name) {
+                    WidgetNameEnum.ETALASE_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                    WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value -> mapToThematicWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                    FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse, isEnableDirectPurchase, widgetLayout, isOverrideTheme, colorSchema)
+                    WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value -> mapToNewProductLaunchCampaignUiModel(
+                        widgetResponse,
+                        isLoggedIn,
+                        widgetLayout,
+                        isOverrideTheme,
+                        colorSchema
+                    )
+                    else -> null
                 }
             }
             WidgetTypeEnum.DYNAMIC.value.lowercase() -> mapCarouselPlayWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
@@ -800,6 +782,8 @@ object ShopPageHomeMapper {
                 hideGimmick = it.hideGimmick
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseId
             }
         }
     }
@@ -824,6 +808,8 @@ object ShopPageHomeMapper {
                 hideGimmick = it.hideGimmick
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseId
             }
         }
     }
@@ -834,6 +820,7 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return listProduct.map {
+            val showStockBar = it.showStockBar
             ShopHomeProductUiModel().apply {
                 id = it.id
                 name = it.name
@@ -847,7 +834,7 @@ object ShopPageHomeMapper {
                 hideGimmick = it.hideGimmick
                 when (statusCampaign.lowercase(Locale.getDefault())) {
                     StatusCampaign.ONGOING.statusCampaign -> {
-                        stockLabel = it.stockWording.title
+                        stockLabel = it.stockWording.title.takeIf { showStockBar }.orEmpty()
                         stockSoldPercentage = it.stockSoldPercentage.toInt()
                     }
                     StatusCampaign.UPCOMING.statusCampaign -> {
@@ -864,6 +851,8 @@ object ShopPageHomeMapper {
                 this.isVariant = it.listChildId.isNotEmpty()
                 this.listChildId = it.listChildId
                 this.parentId = it.parentId
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseId
             }
         }
     }
@@ -955,7 +944,9 @@ object ShopPageHomeMapper {
                             type = labelGroup.type
                         )
                     },
-                    rating = it.rating.toDoubleOrZero()
+                    rating = it.rating.toDoubleOrZero(),
+                    isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups),
+                    warehouseId = it.warehouseId
                 )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
@@ -982,7 +973,9 @@ object ShopPageHomeMapper {
             data.appLink,
             data.webLink,
             data.videoUrl,
-            data.bannerId
+            data.bannerId,
+            isFulfillment = ShopUtil.isFulfillmentByGroupLabel(data.labelGroups),
+            warehouseId = data.warehouseID
         )
     }
 
@@ -1094,6 +1087,8 @@ object ShopPageHomeMapper {
                 this.isVariant = !it.parentId.toLongOrZero().isZero()
                 this.listChildId = it.listChildId
                 this.parentId = it.parentId
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseID
             }
         }
     }
@@ -1111,6 +1106,8 @@ object ShopPageHomeMapper {
                 name = it.showcaseName
                 viewType = widgetName
                 isShowEtalaseName = widgetHeader.isShowEtalaseName == IS_SHOW_ETALASE_NAME
+                isFulfilment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseID
             }
         }
         return if (widgetName == WidgetNameEnum.SHOWCASE_SLIDER_TWO_ROWS.value) {
@@ -1165,6 +1162,8 @@ object ShopPageHomeMapper {
             this.isVariant = response.listChildId.isNotEmpty()
             this.listChildId = response.listChildId
             this.parentId = response.parentId
+            isFulfillment = ShopUtil.isFulfillmentByGroupLabel(response.labelGroups)
+            warehouseId = response.warehouseID
         }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {
@@ -1198,7 +1197,6 @@ object ShopPageHomeMapper {
         responseWidgetData: List<ShopLayoutWidget.Widget>,
         myShop: Boolean,
         isLoggedIn: Boolean,
-        isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
         shopId: String,
         listWidgetLayout: List<ShopPageWidgetUiModel>,
@@ -1207,7 +1205,7 @@ object ShopPageHomeMapper {
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(WidgetTypeEnum.DYNAMIC.value, ignoreCase = true) || it.name == WidgetNameEnum.VOUCHER_STATIC.value || it.type.equals(WidgetTypeEnum.CARD.value, ignoreCase = true) }.onEach {
-                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase, shopId, listWidgetLayout.firstOrNull { widgetLayout -> it.widgetID == widgetLayout.widgetId }, isOverrideTheme, colorSchema)) {
+                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isEnableDirectPurchase, shopId, listWidgetLayout.firstOrNull { widgetLayout -> it.widgetID == widgetLayout.widgetId }, isOverrideTheme, colorSchema)) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetUiModel.let { model ->
                             model.widgetMasterId = it.widgetMasterID
@@ -1269,7 +1267,6 @@ object ShopPageHomeMapper {
         listWidgetLayout: List<ShopPageWidgetUiModel>,
         myShop: Boolean,
         isLoggedIn: Boolean,
-        isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
         shopId: String,
         isOverrideTheme: Boolean,
@@ -1292,7 +1289,6 @@ object ShopPageHomeMapper {
                     ),
                     myShop,
                     isLoggedIn,
-                    isThematicWidgetShown,
                     isEnableDirectPurchase,
                     shopId,
                     it,

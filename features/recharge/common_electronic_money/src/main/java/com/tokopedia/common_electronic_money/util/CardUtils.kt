@@ -132,7 +132,5 @@ class CardUtils {
             }
             return false
         }
-
-
     }
 }

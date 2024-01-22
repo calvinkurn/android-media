@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.content.product.picker.seller.di.ProductPickerBindModule
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponent
 import com.tokopedia.play.broadcaster.shorts.view.activity.PlayShortsActivity
 import dagger.Component
@@ -17,6 +18,7 @@ import dagger.Component
         PlayShortsBindModule::class,
         PlayShortsViewModelModule::class,
         PlayShortsFragmentModule::class,
+        ProductPickerBindModule::class,
         ContentCreationProductTagBindModule::class,
         UGCOnboardingModule::class,
         ContentCoachMarkSharedPrefModule::class,

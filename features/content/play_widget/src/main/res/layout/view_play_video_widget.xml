@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:layout_width="158dp"
+    tools:layout_height="280dp"
+    tools:parentTag="com.tokopedia.unifycomponents.CardUnify2"
+    tools:background="@color/Unify_NN950"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_cover"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            />
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:resize_mode="zoom"
+            app:shutter_background_color="@color/transparent"
+            app:surface_type="texture_view"
+            app:use_artwork="false"
+            app:use_controller="false"
+            />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_play_widget_top_gradient"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.143"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_play_widget_bottom_gradient"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.286"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
+            />
+
+        <include
+            android:id="@+id/tv_live_badge"
+            layout="@layout/view_play_widget_live_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/total_watch_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/total_watch_view"
+            />
+
+        <com.tokopedia.play.widget.ui.custom.PlayTotalWatchBadgeView
+            android:id="@+id/total_watch_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toEndOf="@id/tv_live_badge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="8dp"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/ll_partner_credibility"
+            app:layout_constraintEnd_toEndOf="@id/ll_partner_credibility"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/ll_partner_credibility"
+            app:typographyType="display_2"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_partner_credibility"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+            <com.tokopedia.play_common.view.RoundedImageView
+                android:id="@+id/img_avatar"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:scaleType="centerCrop"
+                app:rImg_cornerRadius="12dp"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/img_badge"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="6dp"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_partner_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_Static_White"
+                app:typographyType="display_3"
+                tools:text="The Goods Dept"
+                />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

@@ -150,7 +150,7 @@
                             app:typographyType="heading_3"
                             app:typographyWeight="bold" />
 
-                        <com.tokopedia.unifycomponents.ticker.Ticker
+                        <com.tokopedia.targetedticker.ui.TargetedTickerWidget
                             android:id="@+id/ticker_info_courier"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

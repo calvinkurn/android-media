@@ -240,6 +240,10 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.DismissSheet(type))
     }
 
+    fun hasSeenTimestampCoachMark() {
+        viewModel.submitAction(StoriesUiAction.HasSeenDurationCoachMark)
+    }
+
     fun testGetProducts() {
         viewModel.submitAction(StoriesUiAction.FetchProduct)
     }

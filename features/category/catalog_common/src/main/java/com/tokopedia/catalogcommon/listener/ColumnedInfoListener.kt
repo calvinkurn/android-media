@@ -7,4 +7,6 @@ interface ColumnedInfoListener {
         sectionTitle: String,
         columnData: List<ColumnedInfoUiModel.ColumnData>
     )
+
+    fun onColumnedInfoImpression(columnedInfoUiModel: ColumnedInfoUiModel)
 }

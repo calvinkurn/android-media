@@ -14,22 +14,30 @@ object CentralizedPromoConstant {
     const val TOKOPEDIA_SELLER = "tokopediaseller"
     const val PHYSICAL_GOODS = "physical goods"
 
-    //FILTER
+    // FILTER
     const val ID_FILTER_ALL = "0"
-    const val EVENT_CLICK_FILTER_ALL= "click all features tab"
+    const val EVENT_CLICK_FILTER_ALL = "click all features tab"
     const val TRACKER_ID_FILTER_ALL = "34633"
 
-    const val EVENT_CLICK_FILTER_INCREASE_BUYER= "click increase buyer traffic tab"
+    const val EVENT_CLICK_FILTER_INCREASE_BUYER = "click increase buyer traffic tab"
     const val ID_FILTER_INCREASE_BUYER = "6"
     const val TRACKER_ID_INCREASE_BUYER = "34634"
 
-    const val EVENT_CLICK_FILTER_INCREASE_NEW_ORDER= "click increase new order tab"
+    const val EVENT_CLICK_FILTER_INCREASE_NEW_ORDER = "click increase new order tab"
     const val ID_FILTER_INCREASE_NEW_ORDER = "7"
     const val TRACKER_ID_INCREASE_NEW_ORDER = "34635"
 
-    const val EVENT_CLICK_FILTER_INCREASE_LOYALTY= "click increase loyalty tab"
+    const val EVENT_CLICK_FILTER_INCREASE_LOYALTY = "click increase loyalty tab"
     const val ID_FILTER_INCREASE_LOYALTY = "8"
-    const val TRACKER_ID_INCREASE_LOYALTY= "34636"
+    const val TRACKER_ID_INCREASE_LOYALTY = "34636"
+
+    const val EVENT_IMPRESSION_FILTER_INCREASE_AVERAGE_ORDER_VALUE = "impression filter - increase average order value"
+    const val EVENT_CLICK_FILTER_INCREASE_AVERAGE_ORDER_VALUE = "click increase average order value tab"
+    const val EVENT_ACTION_WITH_RECOMMENDATION = "with recommendation"
+    const val EVENT_ACTION_WITHOUT_RECOMMENDATION = "without recommendation"
+    const val ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE = "9"
+    const val TRACKER_ID_IMPRESSION_INCREASE_AVERAGE_ORDER_VALUE = "48452"
+    const val TRACKER_ID_CLICK_INCREASE_AVERAGE_ORDER_VALUE = "48453"
 
     // PROMO LIST
     const val TRACKER_ID_IMPRESSION_CARD = "34637"
@@ -39,7 +47,7 @@ object CentralizedPromoConstant {
     const val TRACKER_ID_CLICK_CARD = "34638"
 
     const val EVENT_IMPRESSION_BOTTOM_SHEET = "impression bottom sheet"
-    const val TRACKER_ID_IMPRESSION_BOTTOM_SHEET= "34639"
+    const val TRACKER_ID_IMPRESSION_BOTTOM_SHEET = "34639"
 
     const val EVENT_BOTTOM_SHEET_CHECKBOX = "click bottom sheet - checkbox"
     const val TRACKER_ID_BOTTOM_SHEET_CHECKBOX = "34640"
@@ -47,11 +55,11 @@ object CentralizedPromoConstant {
     const val EVENT_BOTTOM_SHEET_CREATE_CAMPAIGN = "click bottom sheet - create campaign"
     const val TRACKER_ID_BOTTOM_SHEET_CREATE_CAMPAIGN = "34641"
 
-    const val EVENT_BOTTOM_SHEET_PAYWALL= "click bottom sheet - paywall"
-    const val TRACKER_ID_BOTTOM_SHEET_PAYWALL= "34642"
+    const val EVENT_BOTTOM_SHEET_PAYWALL = "click bottom sheet - paywall"
+    const val TRACKER_ID_BOTTOM_SHEET_PAYWALL = "34642"
 
-    const val IMPRESSION_BOTTOM_SHEET_PAYWALL= "impression bottom sheet - paywall"
-    const val TRACKER_ID_IMPRESSION_BOTTOM_SHEET_PAYWALL= "34643"
+    const val IMPRESSION_BOTTOM_SHEET_PAYWALL = "impression bottom sheet - paywall"
+    const val TRACKER_ID_IMPRESSION_BOTTOM_SHEET_PAYWALL = "34643"
 
     // ON GOING
     const val EVENT_ACTION_ON_GOING_IMPRESSION = "impression card - fitur tokomu"
@@ -73,8 +81,11 @@ object CentralizedPromoConstant {
     const val EVENT_ACTION_CLICK_PROMOTION_CARD = "click promotion card"
     const val EVENT_CATEGORY_MVC_PRODUCT = "seller dashboard - iklan dan promosi"
 
+    // AOV
+    const val EVENT_ACTION_IMPRESSION_CARD_AOV = "impression card - increase average order value tab"
+    const val TRACKER_ID_IMPRESSION_CARD_AOV = "48454"
+
     const val ADS_PROMOTION = "/adspromotion"
 
     const val CENTRALIZED_PROMO_COACHMARK_KEY = "coachmark"
-
 }

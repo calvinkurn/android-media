@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
@@ -32,16 +33,7 @@ class CashbackView @JvmOverloads constructor(
     private var shapeDrawable: MaterialShapeDrawable? = null
 
     init {
-        val edgeTreatment = BottomAppBarTopEdgeTreatment(0f, 0f, 0f)
-            .apply {
-                fabDiameter = SCALLOP_DIAMETER
-            }
-
-        val pathModel = ShapeAppearanceModel.builder()
-            .setAllCorners(CornerFamily.ROUNDED, CORNER_SIZE)
-            .setRightEdge(edgeTreatment)
-            .setLeftEdge(edgeTreatment)
-            .build()
+        val pathModel = constructShapeAppearance()
 
         shapeDrawable = MaterialShapeDrawable(pathModel)
         val defaultColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_RN300)
@@ -79,6 +71,24 @@ class CashbackView @JvmOverloads constructor(
         renderBackgroundColor(drawable)
 
         binding.cashback.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN400))
+    }
+
+    private fun constructShapeAppearance(): ShapeAppearanceModel {
+        val shapeAppearanceBuilder = ShapeAppearanceModel.builder()
+            .setAllCorners(CornerFamily.ROUNDED, CORNER_SIZE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val edgeTreatment = BottomAppBarTopEdgeTreatment(0f, 0f, 0f)
+                .apply {
+                    fabDiameter = SCALLOP_DIAMETER
+                }
+
+            shapeAppearanceBuilder
+                .setRightEdge(edgeTreatment)
+                .setLeftEdge(edgeTreatment)
+        }
+
+        return shapeAppearanceBuilder.build()
     }
 
     private fun renderBackgroundColor(drawable: Drawable) {

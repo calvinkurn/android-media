@@ -8,5 +8,6 @@ data class UploadHeader(
     @Expose @SerializedName("reason") val reason: String = "",
     @Expose @SerializedName("is_success") val isSuccess: Boolean = false,
     @Expose @SerializedName("error_code") val errorCode: String = "",
+    @Expose @SerializedName("req_id") val requestId: String? = "",
     @Expose @SerializedName("messages") val messages: List<String> = emptyList()
 )

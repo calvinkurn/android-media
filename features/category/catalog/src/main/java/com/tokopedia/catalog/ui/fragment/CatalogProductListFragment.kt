@@ -72,7 +72,9 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class CatalogProductListFragment :
     BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
     ChooseAddressWidget.ChooseAddressWidgetListener,
-    QuickFilterListener, SortFilterBottomSheet.Callback, ProductListAdapterListener,
+    QuickFilterListener,
+    SortFilterBottomSheet.Callback,
+    ProductListAdapterListener,
     EmptyStateFilterListener {
 
     companion object {
@@ -116,7 +118,7 @@ class CatalogProductListFragment :
 
     private var catalogTitle: String = ""
 
-    private var catalogId: String =  ""
+    private var catalogId: String = ""
 
     private var productSortingStatus: String = ""
 
@@ -141,7 +143,8 @@ class CatalogProductListFragment :
     private val products = ArrayList<Visitable<*>>()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCatalogProductListBinding.inflate(inflater, container, false)
@@ -167,6 +170,7 @@ class CatalogProductListFragment :
                 loadInitialData()
             }
         }
+        sendOpenPageTracker()
     }
 
     override fun getScreenName() = CatalogProductListFragment::class.java.canonicalName.orEmpty()
@@ -208,7 +212,6 @@ class CatalogProductListFragment :
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-
     }
 
     private fun initChooseAddressWidget() {
@@ -614,7 +617,6 @@ class CatalogProductListFragment :
         binding?.chooseAddressWidget?.updateWidget()
     }
 
-
     private fun getDynamicFilterParams(): RequestParams {
         val paramMap = RequestParams()
         val daFilterQueryType = DAFilterQueryType()
@@ -657,7 +659,6 @@ class CatalogProductListFragment :
         )
         return param
     }
-
 
     override fun getRecyclerView(view: View?): RecyclerView? = binding?.productRecyclerview
 
@@ -791,4 +792,11 @@ class CatalogProductListFragment :
         startActivityForResult(intent, LOGIN_REQUEST_CODE)
     }
 
+    private fun sendOpenPageTracker() {
+        CatalogReimagineDetailAnalytics.sendEventOpenScreen(
+            screenName = "${CatalogTrackerConstant.SCREEN_NAME_CATALOG_PRODUCT_LIST_PAGE} - $catalogId",
+            trackerId = CatalogTrackerConstant.TRACKER_ID_OPEN_PAGE_CATALOG_PRODUCT_LIST,
+            userId = viewModel.getUserId()
+        )
+    }
 }

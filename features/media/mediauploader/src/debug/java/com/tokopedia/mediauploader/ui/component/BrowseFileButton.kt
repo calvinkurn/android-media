@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.types.PageType
 
 @Composable
 inline fun BrowseFileButton(
@@ -30,11 +31,16 @@ inline fun BrowseFileButton(
             NestTheme.colors.NN._0
         ),
         onClick = {
-            onClick(MediaPicker.intentWithGalleryFirst(context) {
+            onClick(MediaPicker.intent(context) {
                 singleSelectionMode()
+                pageType(PageType.GALLERY)
+
                 maxVideoFileSize(262144000)
-                maxVideoDuration(180000)
+                maxVideoDuration(9999999)
                 minVideoDuration(1000)
+
+                maxImageResolution(9999)
+                minImageResolution(1)
             })
         }
     ) {

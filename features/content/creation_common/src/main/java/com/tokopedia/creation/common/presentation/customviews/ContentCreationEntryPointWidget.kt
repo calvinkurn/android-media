@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.AttributeSet
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,11 +12,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.AbstractComposeView
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,18 +30,18 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.findFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
-import com.tokopedia.creation.common.di.ContentCreationModule
-import com.tokopedia.creation.common.di.DaggerContentCreationComponent
+import com.tokopedia.creation.common.di.ContentCreationInjector
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
+import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.nest.components.ButtonSize
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
@@ -61,12 +63,15 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 
     var onClickListener: () -> Unit = {}
 
+    val iconColor = mutableStateOf(Int.ZERO)
+    val textColor = mutableStateOf(Int.ZERO)
+
     private val component = createComponent()
     private val factory: ViewModelProvider.Factory = component.contentCreationFactory()
     private val analytics: ContentCreationAnalytics = component.contentCreationAnalytics()
 
     private var viewModel: ContentCreationViewModel? = null
-    var creationBottomSheetListener: ContentCreationBottomSheet.ContentCreationBottomSheetListener? =
+    var creationBottomSheetListener: ContentCreationBottomSheet.Listener? =
         null
     var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
@@ -83,6 +88,8 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                 is ContentCreationBottomSheet -> {
                     childFragment.widgetSource = widgetSource
                     childFragment.shouldShowPerformanceAction = true
+                    childFragment.analytics = analytics
+                    childFragment.creationConfig = viewModel?.creationConfigData ?: ContentCreationConfigModel.Empty
                     creationBottomSheetListener?.let {
                         childFragment.listener = it
                     }
@@ -109,7 +116,9 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                 iconId = IconUnify.VIDEO,
                 text = MethodChecker.fromHtml(stringResource(id = creationcommonR.string.content_creation_entry_point_desription))
                     .toAnnotatedString(),
-                buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label)
+                buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label),
+                iconColor = iconColor.value,
+                textColor = textColor.value
             ) {
                 analytics.clickContentCreationEndpointWidget(
                     viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
@@ -119,11 +128,8 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 
                 getFragmentManager()?.let { fm ->
                     ContentCreationBottomSheet
-                        .getFragment(fm, context.classLoader)
-                        .show(
-                            fm,
-                            creationConfig = creationConfig.data
-                        )
+                        .getOrCreateFragment(fm, context.classLoader)
+                        .show(fm)
                 }
             }
         }
@@ -133,11 +139,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
         viewModel?.fetchConfig(widgetSource)
     }
 
-    private fun createComponent(): ContentCreationComponent =
-        DaggerContentCreationComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-            .contentCreationModule(ContentCreationModule(context))
-            .build()
+    private fun createComponent(): ContentCreationComponent = ContentCreationInjector.get(context)
 
     private fun getFragmentManager(): FragmentManager? =
         try {
@@ -165,13 +167,17 @@ fun ContentCreationEntryPointComponent(
     iconId: Int,
     text: String,
     buttonText: String,
+    iconColor: Int,
+    textColor: Int,
     onClick: () -> Unit
 ) {
     ContentCreationEntryPointComponent(
         iconId = iconId,
         text = AnnotatedString(text),
         buttonText = buttonText,
-        onClick = onClick
+        onClick = onClick,
+        iconColor = iconColor,
+        textColor = textColor
     )
 }
 
@@ -180,27 +186,36 @@ fun ContentCreationEntryPointComponent(
     iconId: Int,
     text: AnnotatedString,
     buttonText: String,
+    iconColor: Int,
+    textColor: Int,
     onClick: () -> Unit
 ) {
-    NestTheme {
+    NestTheme(
+        isOverrideStatusBarColor = false
+    ) {
         Row(
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 2.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .background(NestTheme.colors.NN._0)
-                .border(1.dp, Color(0x40AAB4C8), RoundedCornerShape(12.dp))
+                .border(
+                    1.dp,
+                    colorResource(id = creationcommonR.color.dms_static_creation_entry_point_border),
+                    RoundedCornerShape(12.dp)
+                )
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             NestIcon(
                 iconId = iconId,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
+                colorLightEnable = if (iconColor != Int.ZERO) Color(iconColor) else NestTheme.colors.NN._900,
+                colorNightEnable = if (iconColor != Int.ZERO) Color(iconColor) else NestTheme.colors.NN._900,
             )
             NestTypography(
                 text = text,
                 textStyle = NestTheme.typography.display3.copy(
-                    color = NestTheme.colors.NN._900
+                    color = if (textColor != Int.ZERO) Color(textColor) else NestTheme.colors.NN._900,
                 ),
                 modifier = Modifier
                     .padding(start = 4.dp, end = 8.dp)
@@ -223,7 +238,9 @@ fun ContentCreationEntryPointComponentLightPreview() {
     ContentCreationEntryPointComponent(
         iconId = IconUnify.VIDEO,
         text = "Promosikan produkmu dengan Live, Video, Foto & Story",
-        buttonText = "Buat Konten"
+        buttonText = "Buat Konten",
+        iconColor = Color.White.toArgb(),
+        textColor = Color.White.toArgb()
     ) {
     }
 }
@@ -234,7 +251,9 @@ fun ContentCreationEntryPointComponentDarkPreview() {
     ContentCreationEntryPointComponent(
         iconId = IconUnify.VIDEO,
         text = "Promosikan produkmu dengan Live, Video, Foto & Story",
-        buttonText = "Buat Konten"
+        buttonText = "Buat Konten",
+        iconColor = Color.White.toArgb(),
+        textColor = Color.White.toArgb()
     ) {
     }
 }

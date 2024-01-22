@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -126,6 +127,27 @@ class QrEventBottomSheet: BottomSheetUnify() {
                 it.rvVoucher.onFlingListener = null
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        disableScreenCapture()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        enableScreenCapture()
+    }
+
+    private fun enableScreenCapture() {
+        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
+    private fun disableScreenCapture() {
+        dialog?.window?.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
     }
 
     companion object{

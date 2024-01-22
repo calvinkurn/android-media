@@ -16,7 +16,7 @@ data class StoriesCreationConfiguration(
 ) {
 
     data class MaxStoriesConfig(
-        val isLimitReached: Boolean,
+        val isMaxStoryReached: Boolean,
         val imageUrl: String,
         val title: String,
         val description: String,
@@ -26,7 +26,7 @@ data class StoriesCreationConfiguration(
         companion object {
             val Empty: MaxStoriesConfig
                 get() = MaxStoriesConfig(
-                    isLimitReached = false,
+                    isMaxStoryReached = false,
                     imageUrl = "",
                     title = "",
                     description = "",

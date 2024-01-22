@@ -44,12 +44,12 @@ class StoriesCreationUiMapper @Inject constructor(
             videoSourceId = config.videoSourceId,
             storiesApplinkTemplate = config.storyApplink,
             maxStoriesConfig = StoriesCreationConfiguration.MaxStoriesConfig(
-                isLimitReached = config.maxStoryBottomSheetConfig.isLimitReached,
+                isMaxStoryReached = config.maxStoryBottomSheetConfig.isMaxStoryReached,
                 imageUrl = config.maxStoryBottomSheetConfig.imageUrl,
                 title = config.maxStoryBottomSheetConfig.title,
                 description = config.maxStoryBottomSheetConfig.description,
-                primaryText = config.maxStoryBottomSheetConfig.activeButtonCopy,
-                secondaryText = config.maxStoryBottomSheetConfig.buttonCopy,
+                primaryText = config.maxStoryBottomSheetConfig.createButtonCopy,
+                secondaryText = config.maxStoryBottomSheetConfig.backButtonCopy,
             )
         )
     }

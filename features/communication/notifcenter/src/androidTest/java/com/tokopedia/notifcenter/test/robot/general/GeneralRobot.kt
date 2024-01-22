@@ -10,5 +10,6 @@ object GeneralRobot {
         onView(withId(R.id.recycler_view)).perform(
             smoothScrollTo(position)
         )
+        Thread.sleep(1000)
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTrackingATC
 import com.tokopedia.recommendation_widget_common.widget.cart.CartService
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -18,6 +19,7 @@ class RecommendationWidgetViewModel @Inject constructor(
     state: RecommendationWidgetState = RecommendationWidgetState(),
     private val getRecommendationWidgetUseCase: GetRecommendationUseCase,
     private val cartService: dagger.Lazy<CartService>,
+    private val userSession: UserSessionInterface,
 ): androidx.lifecycle.ViewModel(),
     ViewModel<RecommendationWidgetState> {
 
@@ -34,7 +36,7 @@ class RecommendationWidgetViewModel @Inject constructor(
 
     internal fun bind(model: RecommendationWidgetModel) {
         if (model.widget != null) {
-            updateState { it.from(model, listOf(model.widget)) }
+            updateState { it.from(model, listOf(model.widget), userSession.userId) }
         } else if (!stateValue.contains(model)) {
             updateState { it.loading(model) }
 
@@ -62,7 +64,7 @@ class RecommendationWidgetViewModel @Inject constructor(
             )
         )
 
-        updateState { it.from(model, recommendationWidgetList) }
+        updateState { it.from(model, recommendationWidgetList, userSession.userId) }
 
         getMiniCart()
     }

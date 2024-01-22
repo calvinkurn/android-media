@@ -1,11 +1,13 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.*
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GQLValidateWithdrawalUseCase
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetBankListUseCase
+import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetTopadsAutoTopupWithdrawRecomUseCase
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetWDBannerUseCase
 import com.tokopedia.withdraw.util.observeOnce
 import io.mockk.coEvery
@@ -14,7 +16,9 @@ import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,11 +31,13 @@ class SaldoWithdrawalViewModelTest {
     private val bankListUseCase = mockk<GetBankListUseCase>()
     private val rekeningBannerUseCase = mockk<GetWDBannerUseCase>()
     private val validatePopUpUseCase = mockk<GQLValidateWithdrawalUseCase>()
+    private val topadsAutoTopupWithdrawRecomUseCase = mockk<GetTopadsAutoTopupWithdrawRecomUseCase>()
 
     @ExperimentalCoroutinesApi
     private val saldoWithdrawalViewModel = spyk(SaldoWithdrawalViewModel(bankListUseCase,
             rekeningBannerUseCase,
             validatePopUpUseCase,
+            topadsAutoTopupWithdrawRecomUseCase,
             TestCoroutineDispatcher()))
 
 
@@ -94,7 +100,7 @@ class SaldoWithdrawalViewModelTest {
         val result = mockk<Fail>()
         val bankAccount = mockk<BankAccount>()
         coEvery { validatePopUpUseCase.getValidatePopUpData(bankAccount) } returns result
-        saldoWithdrawalViewModel.getValidatePopUpData(bankAccount)
+        saldoWithdrawalViewModel.getValidatePopUpData(bankAccount, "", 0, false)
         saldoWithdrawalViewModel.validatePopUpWithdrawalMutableData.observeOnce {
             assert(it is Fail)
         }
@@ -107,7 +113,7 @@ class SaldoWithdrawalViewModelTest {
         val validatePopUpWithdrawal = mockk<ValidatePopUpWithdrawal>()
         coEvery { validatePopUpUseCase.getValidatePopUpData(bankAccount) } returns result
         every { result.data.validatePopUpWithdrawal } returns validatePopUpWithdrawal
-        saldoWithdrawalViewModel.getValidatePopUpData(bankAccount)
+        saldoWithdrawalViewModel.getValidatePopUpData(bankAccount, "", 0, false)
         saldoWithdrawalViewModel.bankListResponseMutableData.observeOnce {
             when (it) {
                 is Success -> {
@@ -115,6 +121,63 @@ class SaldoWithdrawalViewModelTest {
                 }
                 else -> assert(false)
             }
+        }
+    }
+
+    @Test
+    fun `getAutoTopAdsRecomWD success and should show bottomsheet`() {
+        val bankAccount = mockk<BankAccount>()
+        val withdrawalAmount = 60000
+        val recomAmount = 50000.0
+        val shopId = "150"
+
+        val mockResponse = mockk<Success<GqlTopadsAutoTopupWithdrawRecomResponse>>()
+        every {
+            mockResponse.data.topAdsAutoTopupWithdrawalRecom.data.autoTopUpStatus
+        } returns 1
+        every {
+            mockResponse.data.topAdsAutoTopupWithdrawalRecom.data.recommendationValue
+        } returns recomAmount
+
+        coEvery {
+            topadsAutoTopupWithdrawRecomUseCase(shopId)
+        } returns mockResponse
+
+        saldoWithdrawalViewModel.getValidatePopUpData(
+            bankAccount,
+            shopId,
+            withdrawalAmount.toLong(),
+            true
+        )
+
+        saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.observeOnce {
+            assertTrue(it.first)
+            assertTrue(it.second == recomAmount.toLong())
+        }
+    }
+
+    @Test
+    fun `getAutoTopAdsRecomWD fail and should not show bottomsheet`() {
+        val bankAccount = mockk<BankAccount>()
+        val withdrawalAmount = 60000
+        val shopId = "150"
+
+        val mockResponse = mockk<Fail>()
+
+        coEvery {
+            topadsAutoTopupWithdrawRecomUseCase(shopId)
+        } returns mockResponse
+
+        saldoWithdrawalViewModel.getValidatePopUpData(
+            bankAccount,
+            shopId,
+            withdrawalAmount.toLong(),
+            true
+        )
+
+        saldoWithdrawalViewModel.shouldOpenTopadsAutoTopupWithdrawRecomBottomSheet.observeOnce {
+            assertTrue(!it.first)
+            assertTrue(it.second == 0L)
         }
     }
 }

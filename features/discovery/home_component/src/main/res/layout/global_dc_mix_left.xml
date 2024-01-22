@@ -16,8 +16,7 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_marginBottom="@dimen/home_component_padding_bottom_default">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/background_loader"

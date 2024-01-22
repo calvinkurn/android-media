@@ -15,6 +15,7 @@ import com.tokopedia.buyerorderdetail.presentation.activity.PartialOrderFulfillm
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.PartialOrderFulfillmentViewModel
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -71,6 +72,7 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
             val appComponent = (it.application as BaseMainApplication).baseAppComponent
             DaggerBuyerOrderDetailComponent.builder()
                 .baseAppComponent(appComponent)
+                .tokoChatConfigComponent(TokoChatConnection.getComponent(it))
                 .build()
                 .inject(this)
         }

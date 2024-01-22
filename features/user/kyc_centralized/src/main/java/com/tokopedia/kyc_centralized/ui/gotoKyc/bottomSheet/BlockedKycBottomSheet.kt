@@ -10,8 +10,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycBlockedBinding
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
@@ -63,14 +61,10 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
     private fun initListener() {
         binding?.btnPrimary?.setOnClickListener {
             if (isBlockedMultipleAccount) {
-                goToTokopediaCare()
+                goToWebview()
             } else {
                 dismiss()
             }
-        }
-
-        binding?.btnSecondary?.setOnClickListener {
-            dismiss()
         }
     }
 
@@ -87,7 +81,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
         finishWithResultCancelled()
     }
 
-    private fun goToTokopediaCare() {
+    private fun goToWebview() {
         GotoKycAnalytics.sendClickOnButtonTokopediaCareBlockingMultipleAccountPageEvent(projectId)
         RouteManager.route(
             context,
@@ -111,8 +105,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
             ivBlocked.loadImageWithoutPlaceholder(getString(R.string.img_url_goto_kyc_blocked_multiple_account))
             tvTitle.text = getString(R.string.goto_kyc_blocked_title_multiple_account)
             tvDescription.text = getString(R.string.goto_kyc_blocked_subtitle_multiple_account)
-            btnPrimary.text = getString(R.string.goto_kyc_contact_tokopedia_care)
-            btnSecondary.show()
+            btnPrimary.text = getString(R.string.goto_kyc_see_term_condition)
         }
     }
 
@@ -124,7 +117,6 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
             tvTitle.text = getString(R.string.goto_kyc_blocked_title_general)
             tvDescription.text = getString(R.string.goto_kyc_blocked_subtitle_general)
             btnPrimary.text = getString(R.string.goto_kyc_oke)
-            btnSecondary.hide()
         }
     }
 
@@ -142,7 +134,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val SOURCE_BACKEND = "backend"
-        private const val PATH_TOKOPEDIA_CARE = "help"
+        private const val PATH_TOKOPEDIA_CARE = "terms"
 
         private const val IS_BLOCKED_MULTIPLE_ACCOUNT = "isBlockedMultipleAccount"
         private const val PROJECT_ID = "projectId"

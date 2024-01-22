@@ -415,15 +415,18 @@ class StoriesViewModel @AssistedInject constructor(
         val position = if (cachedPos > maxPos) maxPos else cachedPos
         updateDetailData(position = position, isReset = true)
 
-        val currentDetailItems = currentDetail.detailItems[position]
+        if (currentDetail == StoriesDetail()) {
+            _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
+            return
+        }
+
+        val currentDetailItems = currentDetail.detailItems.getOrNull(position) ?: return
         val authorIdToCheck = when (currentDetailItems.author.type) {
             AuthorType.Seller -> userSession.shopId
             else -> userSession.userId
         }
 
-        if (currentDetail == StoriesDetail()) {
-            _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
-        } else if (
+        if (
             currentDetailItems.category == StoriesDetailItem.StoryCategory.Manual &&
             !repository.hasSeenManualStoriesDurationCoachmark() &&
             currentDetailItems.author.id == authorIdToCheck

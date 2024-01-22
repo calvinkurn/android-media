@@ -8,6 +8,8 @@ object TopAdsConstants {
     const val LAYOUT_6 = 6
     const val LAYOUT_8 = 8
     const val LAYOUT_9 = 9
+    const val LAYOUT_10 = 10
+    const val LAYOUT_11 = 11
     const val LAYOUT_13 = 13
     const val CONST_5 = 5
     const val FULFILLMENT = "fulfillment"

@@ -39,6 +39,6 @@
         app:layout_constraintStart_toEndOf="@id/iconMandatoryInfo"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_3"
-        tools:text="Saya menyetujui Syarat &amp; Ketentuan dan Kebijakan Privasi untuk {.purpose A} dan {.purpose B}" />
+        tools:text="Saya menyetujui Syarat &amp; Ketentuan dan Pemberitahuan Privasi untuk {.purpose A} dan {.purpose B}" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

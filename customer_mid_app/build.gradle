@@ -85,7 +85,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.dynamicFeatures)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.datePickerRange)
-    implementation projectOrAar(rootProject.ext.libraries.baseListSeller)
     implementation projectOrAar(rootProject.ext.libraries.locationmanager)
     implementation projectOrAar(rootProject.ext.libraries.imagePreviewSlider)
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
@@ -242,6 +241,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.agerestriction)
     implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
     implementation projectOrAar(rootProject.ext.features.scpRewardsWidgets)
+    implementation projectOrAar(rootProject.ext.features.targetedticker)
+
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.features.developerOptions)
     } else {

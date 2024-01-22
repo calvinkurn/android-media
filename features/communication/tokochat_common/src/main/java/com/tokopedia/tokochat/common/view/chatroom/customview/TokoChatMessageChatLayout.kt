@@ -14,9 +14,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.tokochat_common.R
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.MAX_MESSAGE_IN_BUBBLE
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.MAX_MESSAGE_IN_BUBBLE
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubbleUiModel
+import com.tokopedia.tokochat_common.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
@@ -119,7 +119,7 @@ class TokoChatMessageChatLayout : ViewGroup {
     }
 
     fun setMessage(text: CharSequence?) {
-        val textLength = text?.length?: Int.ZERO
+        val textLength = text?.length ?: Int.ZERO
         if (textLength > MAX_MESSAGE_IN_BUBBLE) {
             message?.text = text?.substring(Int.ZERO, MAX_MESSAGE_IN_BUBBLE)
         } else {
@@ -183,13 +183,25 @@ class TokoChatMessageChatLayout : ViewGroup {
          * get measurement and layout params of direct child
          */
         measureChildWithMargins(
-            message, widthMeasureSpec, 0, heightMeasureSpec, 0
+            message,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            readMore, widthMeasureSpec, 0, heightMeasureSpec, 0
+            readMore,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            status, widthMeasureSpec, 0, heightMeasureSpec, 0
+            status,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
 
         /**
@@ -219,7 +231,8 @@ class TokoChatMessageChatLayout : ViewGroup {
         if (messageWidth > maxAvailableWidth) {
             totalHeight -= messageHeight
             val messageWidthSpec = MeasureSpec.makeMeasureSpec(
-                maxAvailableWidth, MeasureSpec.EXACTLY
+                maxAvailableWidth,
+                MeasureSpec.EXACTLY
             )
             message?.measure(messageWidthSpec, heightMeasureSpec)
             messageHeight = getTotalVisibleHeight(message)
@@ -242,7 +255,8 @@ class TokoChatMessageChatLayout : ViewGroup {
             if (readMoreWidth > readMoreMaxWidth) {
                 totalHeight -= readMoreHeight
                 val readMoreWidthSpec = MeasureSpec.makeMeasureSpec(
-                    readMoreMaxWidth, MeasureSpec.EXACTLY
+                    readMoreMaxWidth,
+                    MeasureSpec.EXACTLY
                 )
                 readMore?.measure(readMoreWidthSpec, heightMeasureSpec)
                 readMoreHeight = getTotalVisibleHeight(readMore)
@@ -269,7 +283,7 @@ class TokoChatMessageChatLayout : ViewGroup {
 
         setMeasuredDimension(
             resolveSize(totalWidth, widthMeasureSpec),
-            resolveSize(totalHeight, heightMeasureSpec),
+            resolveSize(totalHeight, heightMeasureSpec)
         )
     }
 

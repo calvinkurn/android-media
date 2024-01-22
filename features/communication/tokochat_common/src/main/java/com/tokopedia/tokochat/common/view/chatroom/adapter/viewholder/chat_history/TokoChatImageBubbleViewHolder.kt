@@ -33,7 +33,7 @@ class TokoChatImageBubbleViewHolder(
 
     private val bgLeft = generateLeftBg(binding?.tokochatLayoutImageBubbleContainer)
     private val bgRight = generateRightBg(binding?.tokochatLayoutImageBubbleContainer)
-    private val bgTextButton = generateTextButtonBg(binding?.tokochatTvImageBubbleError)
+    private val bgTextButton = generateTextButtonBg(binding?.tokochatTvImageBubbleErrorDownload)
 
     fun bind(element: TokoChatImageBubbleUiModel) {
         bindBackgroundBubble(element)
@@ -44,13 +44,12 @@ class TokoChatImageBubbleViewHolder(
         bindStatus(element)
         bindTime(element)
         bindOnClick(element)
-        bindRetryUploadButton(element)
         handleImageDelivered(element)
     }
 
     private fun bindImage(element: TokoChatImageBubbleUiModel, isFromRetry: Boolean = false) {
         if (element.state == TokoChatImageBubbleUiModel.ImageState.LOADING_LOAD) {
-            binding?.tokochatTvImageBubbleError?.hide()
+            binding?.tokochatTvImageBubbleErrorDownload?.hide()
             binding?.tokochatImageBubble?.let {
                 it.setImageDrawable(null)
                 tokoChatImageAttachmentListener.loadImage(
@@ -122,9 +121,19 @@ class TokoChatImageBubbleViewHolder(
     }
 
     private fun bindRetryButton(element: TokoChatImageBubbleUiModel) {
+        bindRetryUploadButton(element)
+        bindRetryDownloadButton(element)
+    }
+
+    private fun bindRetryUploadButton(element: TokoChatImageBubbleUiModel) {
+        val shouldShow = element.state == TokoChatImageBubbleUiModel.ImageState.ERROR_UPLOAD
+        binding?.tokochatIconImageBubbleErrorUpload?.showWithCondition(shouldShow)
+    }
+
+    private fun bindRetryDownloadButton(element: TokoChatImageBubbleUiModel) {
         val shouldShow = element.state == TokoChatImageBubbleUiModel.ImageState.ERROR_LOAD
-        binding?.tokochatTvImageBubbleError?.showWithCondition(shouldShow)
-        binding?.tokochatTvImageBubbleError?.background = bgTextButton
+        binding?.tokochatTvImageBubbleErrorDownload?.background = bgTextButton
+        binding?.tokochatTvImageBubbleErrorDownload?.showWithCondition(shouldShow)
     }
 
     private fun bindStatus(element: TokoChatImageBubbleUiModel) {
@@ -139,7 +148,7 @@ class TokoChatImageBubbleViewHolder(
                 tokoChatImageAttachmentListener.onClickImage(element)
             }
         }
-        binding?.tokochatTvImageBubbleError?.setOnClickListener {
+        binding?.tokochatTvImageBubbleErrorDownload?.setOnClickListener {
             element.updateImageState(TokoChatImageBubbleUiModel.ImageState.LOADING_LOAD)
             bindLoader(element)
             bindImage(element, isFromRetry = true)
@@ -161,11 +170,6 @@ class TokoChatImageBubbleViewHolder(
         if (shouldShow) {
             binding?.tokochatLoaderImageBubble?.type = LoaderUnify.TYPE_CIRCULAR
         }
-    }
-
-    private fun bindRetryUploadButton(element: TokoChatImageBubbleUiModel) {
-        val shouldShow = element.state == TokoChatImageBubbleUiModel.ImageState.ERROR_UPLOAD
-        binding?.tokochatIconImageBubbleErrorUpload?.showWithCondition(shouldShow)
     }
 
     private fun handleImageDelivered(element: TokoChatImageBubbleUiModel) {

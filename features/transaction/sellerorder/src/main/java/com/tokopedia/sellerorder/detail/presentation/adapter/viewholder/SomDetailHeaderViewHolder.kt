@@ -7,15 +7,21 @@ import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+import com.tokopedia.sellerorder.common.domain.model.TickerInfo.Companion.CTA_ACTION_VALUE_POF
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
@@ -35,6 +41,7 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAd
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by fwidjaja on 2019-10-03.
@@ -56,7 +63,7 @@ class SomDetailHeaderViewHolder(
                         setLabel(getWarehouseLabelString(context))
                         show()
                         unlockFeature = true
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+                        setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950_68))
                     }
                 } else {
                     warehouseLabel.hide()
@@ -75,19 +82,21 @@ class SomDetailHeaderViewHolder(
                 }
 
                 if (item.dataObject.tickerInfo.text.isNotEmpty() || item.dataObject.awbUploadProofText.isNotEmpty()) {
-                    val tickerContent = if (item.dataObject.tickerInfo.text.isNotEmpty()) {
-                        item.dataObject.tickerInfo.text
+                    // If ticker is POF ticker
+                    if (item.dataObject.tickerInfo.ctaActionValue == CTA_ACTION_VALUE_POF) {
+                        setupPofTicker(tickerDetailBuyerRequestCancel, item.dataObject.tickerInfo, item.dataObject.orderId, item.dataObject.pofStatus)
                     } else {
-                        item.dataObject.awbUploadProofText
-                    }
-                    val isAwb = item.dataObject.tickerInfo.text.isEmpty()
-                    val tickerUrl = if (item.dataObject.tickerInfo.actionUrl.isNotEmpty()) {
-                        item.dataObject.tickerInfo.actionUrl
-                    } else {
-                        item.dataObject.awbUploadUrl
+                        val tickerContent = item.dataObject.tickerInfo.text.ifBlank {
+                            item.dataObject.awbUploadProofText
+                        }
+                        val isAwb = item.dataObject.tickerInfo.text.isEmpty()
+                        val tickerUrl = item.dataObject.tickerInfo.actionUrl.ifBlank {
+                            item.dataObject.awbUploadUrl
+                        }
+
+                        setupTicker(tickerDetailBuyerRequestCancel, item.dataObject.tickerInfo, tickerContent, tickerUrl, isAwb)
                     }
 
-                    setupTicker(tickerDetailBuyerRequestCancel, item.dataObject.tickerInfo, tickerContent, tickerUrl, isAwb)
                     tickerDetailBuyerRequestCancel.show()
                 } else {
                     tickerDetailBuyerRequestCancel.gone()
@@ -140,7 +149,7 @@ class SomDetailHeaderViewHolder(
             val deadlineBackground = Utils.getColoredDeadlineBackground(
                 context = root.context,
                 colorHex = element.deadlineColor,
-                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+                defaultColor = unifyprinciplesR.color.Unify_YN600
             )
             layoutSomDetailDeadline.background = deadlineBackground
         }
@@ -156,24 +165,24 @@ class SomDetailHeaderViewHolder(
     }
 
     private fun DetailHeaderItemBinding.setDeadlineLowerThan12Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, unifyprinciplesR.color.Unify_RN600)
+        val colorDeadline = MethodChecker.getColor(root.context, unifyprinciplesR.color.Unify_NN0)
         layoutSomDetailDeadline.background = bgDeadline
         icSomDetailDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
         tvSomDetailDeadline.setTextColor(colorDeadline)
     }
 
     private fun DetailHeaderItemBinding.setDeadlineBetween12To24Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, unifyprinciplesR.color.Unify_RN50)
+        val colorDeadline = MethodChecker.getColor(root.context, unifyprinciplesR.color.Unify_RN600)
         layoutSomDetailDeadline.background = bgDeadline
         icSomDetailDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
         tvSomDetailDeadline.setTextColor(colorDeadline)
     }
 
     private fun DetailHeaderItemBinding.setDeadlineMoreThan24Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_more_than_24_hour_color)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, R.color._dms_som_operational_more_than_24_hour_color)
+        val colorDeadline = MethodChecker.getColor(root.context, unifyprinciplesR.color.Unify_NN0)
         layoutSomDetailDeadline.background = bgDeadline
         icSomDetailDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
         tvSomDetailDeadline.setTextColor(colorDeadline)
@@ -185,11 +194,43 @@ class SomDetailHeaderViewHolder(
             val statusOrderColor = if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_AUTO_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_REJECTED) {
-                com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                unifyprinciplesR.color.Unify_RN500
             } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                unifyprinciplesR.color.Unify_NN950_96
             }
             setTextColor(MethodChecker.getColor(context, statusOrderColor))
+        }
+    }
+
+    private fun setupPofTicker(
+        tickerBuyerRequestCancel: Ticker,
+        tickerInfo: TickerInfo,
+        orderId: String,
+        pofStatus: Int
+    ) {
+        tickerBuyerRequestCancel.run {
+            val tickerUrl = UriUtil.buildUriAppendParams(
+                ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT,
+                mapOf(PARAM_ORDER_ID to orderId, PARAM_POF_STATUS to pofStatus)
+            )
+            val tickerCta = context
+                .getString(R.string.som_link_formatted, tickerUrl, tickerInfo.ctaText)
+            val tickerDescription = "${tickerInfo.text} $tickerCta"
+            setHtmlDescription(tickerDescription)
+
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    val intent = RouteManager.getIntentNoFallback(context, tickerUrl)
+                    if (intent != null) {
+                        SomAnalytics.trackClickPofTicker(pofStatus)
+                        context.startActivity(intent)
+                    }
+                }
+
+                override fun onDismiss() {}
+            })
+            tickerType = Utils.mapStringTickerTypeToUnifyTickerType(tickerInfo.type)
+            closeButtonVisibility = View.GONE
         }
     }
 

@@ -12,7 +12,9 @@ object GqlResponseStub {
 
     lateinit var chatFirstTickerResponse: ResponseStub<TokochatRoomTickerResponse>
 
-    lateinit var chatOrderHistoryResponse: ResponseStub<TokoChatOrderProgressResponse>
+    lateinit var chatOrderHistoryTokoFoodResponse: ResponseStub<TokoChatOrderProgressResponse>
+
+    lateinit var chatOrderHistoryLogisticResponse: ResponseStub<TokoChatOrderProgressResponse>
 
     lateinit var getNeedConsentResponse: ResponseStub<ConsentCollectionResponse>
 
@@ -37,8 +39,15 @@ object GqlResponseStub {
             isError = false
         )
 
-        chatOrderHistoryResponse = ResponseStub(
-            filePath = "order_history/success_get_order_history.json",
+        chatOrderHistoryTokoFoodResponse = ResponseStub(
+            filePath = "order_history/success_get_order_history_tokofood.json",
+            type = TokoChatOrderProgressResponse::class.java,
+            query = "query getTokochatOrderProgress",
+            isError = false
+        )
+
+        chatOrderHistoryLogisticResponse = ResponseStub(
+            filePath = "order_history/success_get_order_history_logistic.json",
             type = TokoChatOrderProgressResponse::class.java,
             query = "query getTokochatOrderProgress",
             isError = false

@@ -1,7 +1,7 @@
-package com.tokopedia.mediauploader
+package com.tokopedia.mediauploader.util
 
-import com.tokopedia.mediauploader.common.util.isVideoFormat
 import com.tokopedia.picker.common.utils.fileExtension
+import com.tokopedia.picker.common.utils.isVideoFormat
 import io.mockk.every
 import io.mockk.mockk
 import java.io.File

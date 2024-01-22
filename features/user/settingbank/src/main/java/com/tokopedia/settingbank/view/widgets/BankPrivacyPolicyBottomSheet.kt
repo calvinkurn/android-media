@@ -50,7 +50,7 @@ class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private const val TITLE = "Kebijakan Privasi"
+        private const val TITLE = "Pemberitahuan Privasi"
         private const val TAG = "BankPrivacyBottomSheet"
         fun showBankPrivacyBottomSheet(activity: FragmentActivity?) {
             activity?.let {

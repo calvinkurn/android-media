@@ -25,7 +25,6 @@ import dagger.multibindings.IntoMap
 @Module(
     includes = [
         ProductPickerFragmentModule::class,
-        ProductPickerBindModule::class,
     ]
 )
 abstract class PlayShortsFragmentModule {

@@ -53,7 +53,8 @@
         "item_category": ".*"
       }],
       "eventLabel": ".*",
-      "channelId": ".*"
+      "channelId": ".*",
+      "hits_time": ".*"
     }
   ]
 }

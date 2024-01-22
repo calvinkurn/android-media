@@ -3,14 +3,14 @@ package com.tokopedia.play.widget.analytic.global
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
-import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
 import com.tokopedia.play.widget.analytic.const.VAL_CURRENT_SITE
-import com.tokopedia.play.widget.analytic.const.trackerMultiFields
 import com.tokopedia.play.widget.analytic.const.irisSessionId
 import com.tokopedia.play.widget.analytic.const.isRilisanSpesial
 import com.tokopedia.play.widget.analytic.const.toTrackingString
 import com.tokopedia.play.widget.analytic.const.toTrackingType
+import com.tokopedia.play.widget.analytic.const.trackerMultiFields
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetAnalyticModel
+import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
@@ -33,14 +33,14 @@ import java.util.HashMap
 class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
     @Assisted val model: PlayWidgetAnalyticModel,
     @Assisted val trackingQueue: TrackingQueue,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : PlayWidgetInListMediumAnalyticListener {
 
     @AssistedFactory
     interface Factory {
         fun create(
             model: PlayWidgetAnalyticModel,
-            trackingQueue: TrackingQueue,
+            trackingQueue: TrackingQueue
         ): PlayWidgetMediumGlobalAnalytic
     }
 
@@ -52,7 +52,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.promoView,
@@ -84,6 +84,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         ).appendUserId(userId)
             .appendBusinessUnit(BusinessUnit.play)
             .appendCurrentSite(VAL_CURRENT_SITE)
+            .appendCustomKeyValue(Key.productId, model.productId)
             .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
@@ -94,7 +95,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
             event = Event.promoClick,
@@ -126,6 +127,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         ).appendUserId(userId)
             .appendBusinessUnit(BusinessUnit.play)
             .appendCurrentSite(VAL_CURRENT_SITE)
+            .appendCustomKeyValue(Key.productId, model.productId)
             .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
@@ -133,7 +135,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
 
     override fun onImpressViewAll(
         view: PlayWidgetMediumView,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -147,14 +149,14 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     Key.businessUnit to BusinessUnit.play,
                     Key.currentSite to VAL_CURRENT_SITE,
                     Key.sessionIris to irisSessionId,
-                    Key.userId to userId,
+                    Key.userId to userId
                 )
             )
     }
 
     override fun onClickViewAll(
         view: PlayWidgetMediumView,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -168,7 +170,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     Key.businessUnit to BusinessUnit.play,
                     Key.currentSite to VAL_CURRENT_SITE,
                     Key.sessionIris to irisSessionId,
-                    Key.userId to userId,
+                    Key.userId to userId
                 )
             )
     }
@@ -177,7 +179,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         view: PlayWidgetMediumView,
         item: PlayWidgetBackgroundUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.promoView,
@@ -207,7 +209,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         view: PlayWidgetMediumView,
         item: PlayWidgetBackgroundUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
             event = Event.promoClick,
@@ -237,7 +239,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         view: PlayWidgetMediumView,
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -251,7 +253,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     Key.businessUnit to BusinessUnit.play,
                     Key.currentSite to VAL_CURRENT_SITE,
                     Key.sessionIris to irisSessionId,
-                    Key.userId to userId,
+                    Key.userId to userId
                 )
             )
     }
@@ -260,7 +262,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         view: PlayWidgetMediumView,
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -274,7 +276,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     Key.businessUnit to BusinessUnit.play,
                     Key.currentSite to VAL_CURRENT_SITE,
                     Key.sessionIris to irisSessionId,
-                    Key.userId to userId,
+                    Key.userId to userId
                 )
             )
     }
@@ -284,7 +286,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isRemindMe: Boolean,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -304,7 +306,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     Key.businessUnit to BusinessUnit.play,
                     Key.currentSite to VAL_CURRENT_SITE,
                     Key.sessionIris to irisSessionId,
-                    Key.userId to userId,
+                    Key.userId to userId
                 )
             )
     }
@@ -315,6 +317,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
+        config: PlayWidgetConfigUiModel,
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -334,7 +337,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     Key.businessUnit to BusinessUnit.play,
                     Key.currentSite to VAL_CURRENT_SITE,
                     Key.sessionIris to irisSessionId,
-                    Key.userId to userId,
+                    Key.userId to userId
                 )
             )
     }
@@ -343,7 +346,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -358,7 +361,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     Key.businessUnit to BusinessUnit.play,
                     Key.currentSite to VAL_CURRENT_SITE,
                     Key.sessionIris to irisSessionId,
-                    Key.userId to userId,
+                    Key.userId to userId
                 )
             )
     }
@@ -367,7 +370,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -382,7 +385,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     Key.businessUnit to BusinessUnit.play,
                     Key.currentSite to VAL_CURRENT_SITE,
                     Key.sessionIris to irisSessionId,
-                    Key.userId to userId,
+                    Key.userId to userId
                 )
             )
     }

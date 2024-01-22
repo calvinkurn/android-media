@@ -34,19 +34,19 @@ import org.junit.runner.RunWith
 @CassavaTest
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class LoginActivityTest: LoginBase() {
+class LoginActivityTest : LoginBase() {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
     @Test
     fun validateLoginEmailTracker() {
-        //When
+        // When
         runTest {
             simulateLoginEmail()
         }
 
-        //Then
+        // Then
         val query = listOf(
             getAnalyticValidator(
                 "clickLogin",
@@ -66,12 +66,12 @@ class LoginActivityTest: LoginBase() {
 
     @Test
     fun validateLoginPhoneTracker() {
-        //When
+        // When
         runTest {
             simulateLoginPhone()
         }
 
-        //Then
+        // Then
         val query = listOf(
             getAnalyticValidator(
                 "clickLogin",
@@ -91,12 +91,12 @@ class LoginActivityTest: LoginBase() {
 
     @Test
     fun validateForgotPassClicked() {
-        //When
+        // When
         runTest {
             simulateClickForgotPass()
         }
 
-        //Then
+        // Then
         val query = listOf(
             getAnalyticValidator(
                 "clickAccount",
@@ -110,12 +110,12 @@ class LoginActivityTest: LoginBase() {
 
     @Test
     fun validateRegisterClick() {
-        //When
+        // When
         runTest {
             simulateClickRegister()
         }
 
-        //Then
+        // Then
         val query = listOf(
             getAnalyticValidator(
                 "clickLogin",
@@ -129,12 +129,12 @@ class LoginActivityTest: LoginBase() {
 
     @Test
     fun validateLoginSocmedTracker() {
-        //When
+        // When
         runTest {
             simulateLoginSocmed()
         }
 
-        //Then
+        // Then
         val query = listOf(
             getAnalyticValidator(
                 "clickLogin",
@@ -172,7 +172,7 @@ class LoginActivityTest: LoginBase() {
         clickSubmit()
     }
 
-    fun simulateClickRegister(){
+    fun simulateClickRegister() {
         intending(hasComponent(RegisterInitialActivity::class.java.getName())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         clickRegisterBottom()
     }
@@ -188,10 +188,10 @@ class LoginActivityTest: LoginBase() {
         viewInteraction.perform(typeText(value), closeSoftKeyboard())
     }
 
-    private fun clickRegisterBottom(){
+    private fun clickRegisterBottom() {
         Espresso.onView(CoreMatchers.allOf(withId(R.id.register_button), ViewMatchers.withContentDescription(R.string.content_desc_register_button_phone)))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-                .perform(click())
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(click())
     }
 
     private fun clickChangePassword() {

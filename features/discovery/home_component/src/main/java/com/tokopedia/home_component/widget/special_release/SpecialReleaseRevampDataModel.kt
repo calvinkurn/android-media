@@ -10,6 +10,7 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
  */
 data class SpecialReleaseRevampDataModel(
         val channelModel: ChannelModel,
+        val specialReleaseItems: List<SpecialReleaseRevampItemDataModel>,
         val cardInteraction: Boolean,
         val isCache: Boolean = false
 ): HomeComponentVisitable {

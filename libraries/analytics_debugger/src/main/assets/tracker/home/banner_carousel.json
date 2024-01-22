@@ -17,7 +17,8 @@
       "userId": ".*",
       "eventAction": "slider banner impression",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "hits_time": ".*"
     },
     {
       "promotions": [{

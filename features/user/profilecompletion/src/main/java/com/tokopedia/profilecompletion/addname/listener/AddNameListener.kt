@@ -16,7 +16,6 @@ interface AddNameListener {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun registerPhoneNumberAndName(name: String, phoneNumber: String)
-
+        fun registerPhoneNumberAndName(name: String, phoneNumber: String, token: String, isScpToken: Boolean = false)
     }
 }

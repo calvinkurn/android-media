@@ -8,13 +8,14 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.loginregister.R
-import org.hamcrest.CoreMatchers
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import org.hamcrest.Matchers.not
 
 open class LoginRegisterBase {
 
-    fun clickSubmit(){
+    fun clickSubmit() {
         val viewInteraction = onView(withId(R.id.register_btn))
             .check(matches(isDisplayed()))
         viewInteraction.perform(ViewActions.click())
@@ -62,8 +63,8 @@ open class LoginRegisterBase {
     fun isDisplayingGivenText(id: Int, givenText: String) {
         onView(withId(id))
             .check(matches(withText(givenText))).check(
-            matches(isDisplayed())
-        )
+                matches(isDisplayed())
+            )
     }
 
     fun isDisplayingSubGivenText(givenText: String) {
@@ -83,8 +84,8 @@ open class LoginRegisterBase {
     fun isTextInputHasError(id: Int, errorText: String) {
         onView(withId(id))
             .check(matches(hasErrorText(errorText))).check(
-            matches(isDisplayed())
-        )
+                matches(isDisplayed())
+            )
     }
 
     fun isDialogDisplayed(text: String) {
@@ -111,4 +112,15 @@ open class LoginRegisterBase {
             .perform(ViewActions.click())
     }
 
+    protected fun setupRollence(isScpActive: Boolean = false) {
+        val value = if (isScpActive) {
+            DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION
+        } else {
+            ""
+        }
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION,
+            value
+        )
+    }
 }

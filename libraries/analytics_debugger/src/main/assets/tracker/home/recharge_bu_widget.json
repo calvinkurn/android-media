@@ -19,7 +19,8 @@
       "userId": ".+",
       "eventAction": "impression on banner card dynamic channel bu carousel",
       "sessionIris": ".+",
-      "eventLabel": ".* - .*"
+      "eventLabel": ".* - .*",
+      "hits_time": ".*"
     },
     {
       "promotions": [
@@ -38,7 +39,8 @@
       "userId": ".+",
       "eventAction": "impression on banner dynamic channel bu carousel",
       "sessionIris": ".+",
-      "eventLabel": ".* - .*"
+      "eventLabel": ".* - .*",
+      "hits_time": ".*"
     },
     {
       "businessUnit": "home & browse",
@@ -81,7 +83,8 @@
           "item_variant": ".*",
           "item_category": ".+"
         }
-      ]
+      ],
+      "hits_time": ".*"
     },
     {
       "businessUnit": "home & browse",

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 @Suppress("UNCHECKED_CAST")
+@Deprecated("request with query string is slower in runtime, use GraphqlRepository.request with GqlQueryInterface instead")
 suspend inline fun <P, reified R> GraphqlRepository.request(
     query: String,
     params: P,
@@ -54,6 +55,7 @@ suspend inline fun <P, reified R> GraphqlRepository.request(
     return response.getSuccessData()
 }
 
+@Deprecated("request with query string is slower in runtime, use GraphqlRepository.requestAsFlow with GqlQueryInterface instead")
 inline fun <P, reified R> GraphqlRepository.requestAsFlow(
     query: String,
     params: P

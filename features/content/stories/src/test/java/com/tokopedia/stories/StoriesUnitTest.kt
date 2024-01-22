@@ -39,6 +39,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -841,6 +842,37 @@ class StoriesUnitTest {
     }
 
     @Test
+    fun `when open kebab bottom sheet should fetch reason list but failed`() {
+        val mockException = Exception("Network Issue")
+        coEvery { mockRepository.getReportReasonList() } throws mockException
+
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.openKebabBottomSheet()
+            }
+            robot.getViewModel().isAnyBottomSheetShown.assertTrue()
+            stateEventOpen.second.last().assertEqualTo(StoriesUiEvent.OpenKebab)
+            robot.getBottomSheetState().isAnyShown.assertTrue()
+            robot.getBottomSheetState().mapValues {
+                if (it.key == BottomSheetType.Kebab) {
+                    it.value.assertTrue()
+                } else {
+                    it.value.assertFalse()
+                }
+            }
+
+            assert(robot.getViewModel().userReportReasonList is Fail)
+            val failData = robot.getViewModel().userReportReasonList as Fail
+            assert(failData.throwable == mockException)
+
+            robot.recordState {
+                robot.closeBottomSheet(BottomSheetType.Kebab)
+            }
+            robot.getBottomSheetState().isAnyShown.assertFalse()
+        }
+    }
+
+    @Test
     fun `when open product bottom sheet and close`() {
         val expectedData = mockInitialDataModel(productCount = 5)
 
@@ -1322,6 +1354,55 @@ class StoriesUnitTest {
                     storiesDetailItem.event.assertEqualTo(StoriesDetailItemUiEvent.PAUSE)
                 }
             }
+        }
+    }
+
+    @Test
+    fun `when user hasnt seen timestamp coachmark, it will emit event to show timestamp coachmark`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(
+            selectedGroup = selectedGroup,
+            selectedDetail = selectedDetail,
+            storiesCategory = StoriesDetailItem.StoryCategory.Manual,
+        )
+        val resultGroupItem = expectedData.groupItems[selectedGroup]
+        val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.hasSeenManualStoriesDurationCoachmark() } returns false
+        coEvery { mockUserSession.userId } returns "123"
+        coEvery { mockUserSession.shopId } returns "123"
+
+        getStoriesRobot().use { robot ->
+            val (state, events) = robot.recordStateAndEvents {
+                robot.entryPointTestCase(selectedGroup)
+
+                val actualGroup = robot.getViewModel().mGroup
+                val actualDetail = robot.getViewModel().mDetail
+                val userId = robot.getViewModel().userId
+
+                val expectedGroup =
+                    resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
+
+                actualGroup.assertEqualTo(expectedGroup)
+                actualDetail.assertEqualTo(expectedDetail)
+                userId.assertEqualTo("123")
+            }
+
+            val actualMainData = expectedData.mockMainDataResetValue(state.storiesMainData)
+            state.storiesMainData.assertEqualTo(actualMainData)
+            events.last().assertEqualTo(StoriesUiEvent.ShowStoriesTimeCoachmark)
+        }
+    }
+
+    @Test
+    fun `when user has seen the coachmark, it should call setHasSeenManualStoriesDurationCoachmark`() {
+        getStoriesRobot().use { robot ->
+            robot.hasSeenTimestampCoachMark()
+
+            coVerify(exactly = 1) { mockRepository.setHasSeenManualStoriesDurationCoachmark() }
         }
     }
 }

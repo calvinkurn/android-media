@@ -4,21 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
-import com.tokopedia.creation.common.di.ContentCreationModule
-import com.tokopedia.creation.common.di.DaggerContentCreationComponent
+import com.tokopedia.creation.common.di.ContentCreationInjector
 import com.tokopedia.creation.common.presentation.components.ContentCreationView
-import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
@@ -31,27 +27,16 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
  */
 class ContentCreationBottomSheet : BottomSheetUnify() {
 
-    private var factory: ViewModelProvider.Factory? = null
-    private var viewModel: ContentCreationViewModel? = null
-
-    @StringRes
-    private var title: Int = R.string.content_creation_bottom_sheet_title
+    private val viewModel: ContentCreationViewModel by viewModels {
+        createComponent().contentCreationFactory()
+    }
 
     var shouldShowPerformanceAction: Boolean = false
-    var listener: ContentCreationBottomSheetListener? = null
+    var listener: Listener? = null
     var analytics: ContentCreationAnalytics? = null
-    private var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
+    var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
 
     var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        activity?.let {
-            factory = createComponent().contentCreationFactory()
-            viewModel = ViewModelProvider(it, factory!!)[ContentCreationViewModel::class.java]
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,33 +45,33 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     ): View? {
         isDragable = true
         isHideable = true
+        isSkipCollapseState = true
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
 
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val selectedCreation =
-                    viewModel?.selectedCreationType?.collectAsStateWithLifecycle()
-                val creationList = viewModel?.creationConfig?.collectAsStateWithLifecycle()
+                    viewModel.selectedCreationType.collectAsStateWithLifecycle()
+                val creationList = viewModel.creationConfig.collectAsStateWithLifecycle()
 
                 ContentCreationView(
-                    creationConfig = creationList?.value,
-                    selectedItem = selectedCreation?.value,
+                    creationConfig = creationList.value,
+                    selectedItem = selectedCreation.value,
                     onImpressBottomSheet = {
                         analytics?.eventImpressionContentCreationBottomSheet(
-                            viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                            viewModel.authorType,
                             widgetSource
                         )
                     },
                     onSelectItem = {
-                        viewModel?.selectCreationItem(it)
-                        listener?.onCreationItemSelected(it)
+                        viewModel.selectCreationItem(it)
                     },
                     onNextClicked = {
-                        selectedCreation?.value?.let {
+                        selectedCreation.value?.let {
                             analytics?.eventClickNextButton(
-                                viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
-                                viewModel?.selectedItemTitle.orEmpty(),
+                                viewModel.authorType,
+                                viewModel.selectedItemTitle,
                                 widgetSource
                             )
                             listener?.onCreationNextClicked(it)
@@ -94,7 +79,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                         }
                     },
                     onRetryClicked = {
-                        viewModel?.fetchConfig(widgetSource)
+                        viewModel.fetchConfig(widgetSource)
                     }
                 )
             }
@@ -111,55 +96,39 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     private fun renderHeaderView() {
         context?.let {
-            setTitle(it.getString(title))
+            setTitle(it.getString(R.string.content_creation_bottom_sheet_title))
 
             if (shouldShowPerformanceAction) {
                 setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
                     analytics?.eventClickPerformanceDashboard(
-                        viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                        viewModel.authorType,
                         widgetSource
                     )
                     RouteManager.route(
                         it,
-                        viewModel?.getPerformanceDashboardApplink()
+                        viewModel.getPerformanceDashboardApplink()
                     )
                 }
             }
 
-            viewModel?.fetchConfig(widgetSource, creationConfig)
+            viewModel.fetchConfig(widgetSource, creationConfig)
         }
     }
 
-    fun show(
-        fragmentManager: FragmentManager,
-        @StringRes title: Int? = null,
-        showPerformanceAction: Boolean = false,
-        creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty,
-    ) {
-        title?.let {
-            this.title = it
-        }
-        this.shouldShowPerformanceAction = showPerformanceAction
-        this.creationConfig = creationConfig
-
+    fun show(fragmentManager: FragmentManager) {
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    private fun createComponent(): ContentCreationComponent =
-        DaggerContentCreationComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .contentCreationModule(ContentCreationModule(requireContext()))
-            .build()
+    private fun createComponent(): ContentCreationComponent = ContentCreationInjector.get(requireContext())
 
-    interface ContentCreationBottomSheetListener {
-        fun onCreationItemSelected(data: ContentCreationItemModel)
+    interface Listener {
         fun onCreationNextClicked(data: ContentCreationItemModel)
     }
 
     companion object {
         private const val TAG = "ContentCreationBottomSheet"
 
-        fun getFragment(
+        fun getOrCreateFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): ContentCreationBottomSheet {

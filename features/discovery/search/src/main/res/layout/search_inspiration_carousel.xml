@@ -18,7 +18,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <com.tokopedia.home_component_header.view.HomeChannelHeaderView
+    <com.tokopedia.home_component_header.view.HomeComponentHeaderView
         android:id="@+id/inspirationCarouselHeaderView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

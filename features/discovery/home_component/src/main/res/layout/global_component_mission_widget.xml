@@ -17,7 +17,7 @@
         tools:layout_height="8dp"
         tools:visibility="visible" />
 
-    <com.tokopedia.home_component_header.view.HomeChannelHeaderView
+    <com.tokopedia.home_component_header.view.HomeComponentHeaderView
         android:id="@+id/home_component_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="13dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_component_header_view">
@@ -38,7 +37,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:layout_marginTop="-2dp"
             tools:visibility="visible"/>
 
         <LinearLayout
@@ -47,7 +45,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="188dp"
@@ -70,7 +68,7 @@
             app:unify_local_load_title="@string/home_default_error_title"
             app:unify_local_load_description="@string/home_default_error_desc"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="gone"/>
 
     </LinearLayout>
 

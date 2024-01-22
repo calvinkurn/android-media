@@ -12,7 +12,8 @@ data class ShopWidgetDisplayBannerProductHotspotUiModel(
     override val type: String = "",
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
-    val data: List<Data> = listOf()
+    val data: List<Data> = listOf(),
+    var isShowIntroAnimation: Boolean = true
 ) : BaseShopHomeWidgetUiModel() {
 
     val impressHolder = ImpressHolder()

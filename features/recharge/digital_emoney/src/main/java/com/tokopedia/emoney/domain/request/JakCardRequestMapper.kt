@@ -45,7 +45,7 @@ object JakCardRequestMapper {
 
     fun createEncryptedParam(encKey: String, encPayload: String): JakCardRequest {
         return JakCardRequest(
-            body = JakCardBodyEnc(
+            body = CommonBodyEnc(
                 encKey, encPayload
             )
         )

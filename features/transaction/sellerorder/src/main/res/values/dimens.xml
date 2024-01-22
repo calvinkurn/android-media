@@ -24,4 +24,17 @@
     <!-- order extension -->
     <dimen name="som_order_extension_bottom_sheet_long_description_shimmer_width">304dp</dimen>
     <dimen name="som_order_extension_bottom_sheet_short_description_shimmer_width">249dp</dimen>
+
+    <!-- pof -->
+    <dimen name="som_pof_divider_margin_edge_to_edge">0dp</dimen>
+    <dimen name="som_pof_divider_margin_start_bottom_sheet_summary">16dp</dimen>
+    <dimen name="som_pof_divider_margin_end_bottom_sheet_summary">16dp</dimen>
+    <dimen name="som_pof_divider_margin_top_bottom_sheet_summary">10dp</dimen>
+    <dimen name="som_pof_divider_margin_bottom_bottom_sheet_summary">16dp</dimen>
+    <dimen name="som_pof_footer_icon_size_chevron">24dp</dimen>
+    <dimen name="som_pof_footer_icon_size_reload">16dp</dimen>
+    <dimen name="som_pof_footer_icon_wrapper_radius">12dp</dimen>
+    <dimen name="som_pof_footer_price_margin_top_with_wrapped_icon">4dp</dimen>
+    <dimen name="som_pof_footer_vertical_distance">16dp</dimen>
+    <dimen name="som_pof_footer_horizontal_distance">16dp</dimen>
 </resources>

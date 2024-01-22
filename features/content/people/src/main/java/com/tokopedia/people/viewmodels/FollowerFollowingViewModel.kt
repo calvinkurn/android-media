@@ -50,8 +50,8 @@ class FollowerFollowingViewModel @Inject constructor(
     val profileInfo: Flow<ProfileUiModel>
         get() = _profileInfo
 
-    val username: String
-        get() = _profileInfo.value.username
+    val userId: String
+        get() = _profileInfo.value.userID
 
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Hide)
     val loadingState: Flow<LoadingState>
@@ -77,7 +77,7 @@ class FollowerFollowingViewModel @Inject constructor(
             var result = FollowListUiModel.emptyFollowers.copy(nextCursor = cursor)
 
             do {
-                result = repo.getMyFollowers(username, result.nextCursor, limit)
+                result = repo.getFollowers(userId, result.nextCursor, limit)
             } while (result.followers.isEmpty() && result.nextCursor.isNotEmpty())
 
             profileFollowers.value = Success(result)
@@ -95,7 +95,7 @@ class FollowerFollowingViewModel @Inject constructor(
             var result = FollowListUiModel.emptyFollowingList.copy(nextCursor = cursor)
 
             do {
-                result = repo.getMyFollowing(username, result.nextCursor, limit)
+                result = repo.getFollowing(userId, result.nextCursor, limit)
             } while (result.followingList.isEmpty() && result.nextCursor.isNotEmpty())
 
             profileFollowingsList.value = Success(result)

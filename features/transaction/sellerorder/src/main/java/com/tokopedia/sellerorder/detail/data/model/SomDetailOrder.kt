@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.detail.data.model
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
@@ -132,7 +133,12 @@ data class SomDetailOrder(
         val addOnInfo: AddOnInfo? = null,
 
         @SerializedName("has_reso_status")
-        val hasResoStatus: Boolean? = false
+        @Expose
+        val hasResoStatus: Boolean? = false,
+
+        @SerializedName("pof_data")
+        @Expose
+        val pofData: PofData? = null
     ) {
 
         fun getFirstProduct(): Details.Product? {
@@ -303,6 +309,9 @@ data class SomDetailOrder(
             @Expose
             val id: String = "0",
 
+            @SerializedName("title")
+            val title: String = String.EMPTY,
+
             @SerializedName("name")
             @Expose
             val name: String = "",
@@ -337,9 +346,9 @@ data class SomDetailOrder(
             @SerializedName("awb_upload_proof_text")
             @Expose
             val awbUploadProofText: String = "",
-@SerializedName("ticker_info")
-                val tickerInfo: TickerInfo? = TickerInfo()
-            )
+            @SerializedName("ticker_info")
+            val tickerInfo: TickerInfo? = TickerInfo()
+        )
 
         data class BookingInfo(
             @SerializedName("driver")
@@ -656,6 +665,12 @@ data class SomDetailOrder(
             @SerializedName("penalty_reject_wording")
             @Expose
             val penaltyRejectWording: String = ""
+        )
+
+        data class PofData(
+            @SerializedName("pof_status")
+            @Expose
+            val pofStatus: Int
         )
     }
 }

@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
+import com.tokopedia.creation.common.upload.uploader.activity.ContentCreationPostUploadActivity
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
 import javax.inject.Inject
 import com.tokopedia.creation.common.R
@@ -35,34 +35,29 @@ class ShortsUploadNotificationManager @Inject constructor(
     )
 
     override fun generateSuccessPendingIntent(): PendingIntent? {
-        val intent = PlayShortsPostUploadActivity.getIntent(
+        val shortsUploadData = uploadData
+        if (shortsUploadData !is CreationUploadData.Shorts) return null
+
+        val intent = ContentCreationPostUploadActivity.getIntent(
             context,
-            channelId = uploadData?.creationId.orEmpty(),
-            authorId = uploadData?.authorId.orEmpty(),
-            authorType = uploadData?.authorType.orEmpty(),
-            appLink = uploadData?.let { getPlayRoomAppLink(it) }.orEmpty()
+            channelId = shortsUploadData.creationId,
+            authorId = shortsUploadData.authorId,
+            authorType = shortsUploadData.authorType,
+            uploadType = shortsUploadData.uploadType.type,
+            appLink = getPlayRoomAppLink(shortsUploadData)
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getActivity(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
-            )
-        } else {
-            PendingIntent.getActivity(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_CANCEL_CURRENT
-            )
-        }
+        return PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
     }
 
-    private fun getPlayRoomAppLink(uploadData: CreationUploadData): String {
+    private fun getPlayRoomAppLink(uploadData: CreationUploadData.Shorts): String {
         return buildString {
             append(UriUtil.buildUri(ApplinkConst.PLAY_DETAIL, uploadData.creationId))
             append("?")

@@ -28,6 +28,8 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.gm.common.R as gmcommonR
 
 /**
  * Created by Yehezkiel on 15/06/20
@@ -262,15 +264,15 @@ class ProductShopCredibilityViewHolder(
     ) = with(binding) {
         val context = root.context
         shopCredibilityLastActive.text = HtmlLinkHelper(context, shopLastActiveData).spannedString
-        if (shopLastActiveData == context.getString(R.string.shop_online)) {
+        if (shopLastActiveData == context.getString(R.string.pdp_shop_online)) {
             shopCredibilityLastActive.setWeight(Typography.BOLD)
             shopCredibilityLastActive.setTextColor(
-                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                context.getColorChecker(unifyprinciplesR.color.Unify_GN500)
             )
         } else {
             shopCredibilityLastActive.setType(Typography.DISPLAY_3)
             shopCredibilityLastActive.setTextColor(
-                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
+                context.getColorChecker(unifyprinciplesR.color.Unify_NN950_68)
             )
         }
     }
@@ -358,11 +360,11 @@ class ProductShopCredibilityViewHolder(
         val drawable = when {
             isOs -> MethodChecker.getDrawable(
                 view.context,
-                com.tokopedia.gm.common.R.drawable.ic_official_store_product
+                gmcommonR.drawable.ic_official_store_product
             )
             isPm -> MethodChecker.getDrawable(
                 view.context,
-                com.tokopedia.gm.common.R.drawable.ic_power_merchant
+                gmcommonR.drawable.ic_power_merchant
             )
             else -> null
         }

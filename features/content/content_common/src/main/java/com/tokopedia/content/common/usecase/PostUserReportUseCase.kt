@@ -1,6 +1,8 @@
 package com.tokopedia.content.common.usecase
 
 import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
+import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_USER
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -35,6 +37,7 @@ class PostUserReportUseCase @Inject constructor(
         partnerId: Long,
         partnerType: PartnerType,
         reporterId: Long,
+        source: ReportSource = ReportSource.UNKNOWN
     ): RequestParams {
         val param = mutableMapOf(
             REPORTER_ID_PARAM to reporterId,
@@ -42,10 +45,17 @@ class PostUserReportUseCase @Inject constructor(
             MEDIA_URL_PARAM to mediaUrl,
             REASON_ID_PARAM to reasonId,
             TIMESTAMP_PARAM to timestamp,
-            DESCRIPTION_PARAM to reportDesc,
+            DESCRIPTION_PARAM to reportDesc
         ).apply {
-            if (partnerType == PartnerType.User) put(USER_ID_PARAM, partnerId)
-            else put(SHOP_ID_PARAM, partnerId)
+            if (partnerType == PartnerType.User) {
+                put(USER_ID_PARAM, partnerId)
+            } else {
+                put(SHOP_ID_PARAM, partnerId)
+            }
+
+            if (source.value.isNotEmpty()) {
+                put(SOURCE_PARAM, source.value)
+            }
         }
 
         return RequestParams.create().apply {
@@ -63,6 +73,7 @@ class PostUserReportUseCase @Inject constructor(
         private const val SHOP_ID_PARAM = "shop_id"
         private const val INPUT = "input"
         private const val USER_ID_PARAM = "user_id"
+        private const val SOURCE_PARAM = "source"
 
         const val QUERY_NAME = "PostUserReportUseCaseQuery"
         const val QUERY = """
@@ -82,16 +93,19 @@ class PostUserReportUseCase @Inject constructor(
         companion object {
             private const val VALUE_PLAY_BUYER = "buyer"
 
-            private const val VALUE_STORY_SHOP = 2
-            private const val VALUE_STORY_USER = 3
-
             fun getTypeValue(value: Any): PartnerType =
                 when (value) {
-                    VALUE_STORY_SHOP -> Shop
-                    VALUE_STORY_USER, VALUE_PLAY_BUYER -> User
+                    VALUE_TYPE_ID_SHOP -> Shop
+                    VALUE_TYPE_ID_USER, VALUE_PLAY_BUYER -> User
                     else -> Unknown
                 }
-
         }
+    }
+
+    enum class ReportSource(val value: String) {
+        STORY_STAGING_IMAGE("pVWHVh"),
+        STORY_PROD_IMAGE("ymnjtE"),
+        STORY_VIDEO("ZbQlUU"),
+        UNKNOWN("");
     }
 }

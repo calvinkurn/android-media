@@ -1,23 +1,23 @@
 package com.tokopedia.mediauploader.video
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.mediauploader.BaseParam
+import com.tokopedia.mediauploader.VideoParam
+import com.tokopedia.mediauploader.analytics.UploaderLogger
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
-import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
-import com.tokopedia.mediauploader.common.logger.DebugLog
-import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.video.data.params.SimpleUploadParam
 import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.GetTranscodingStatusUseCase
 import kotlinx.coroutines.delay
-import java.io.File
 import javax.inject.Inject
 
 class SimpleUploaderManager @Inject constructor(
-    @UploaderQualifier private val policyManager: SourcePolicyManager,
+    @UploaderQualifier val sourcePolicyManager: SourcePolicyManager,
     private val simpleUploaderUseCase: GetSimpleUploaderUseCase,
     private val transcodingUseCase: GetTranscodingStatusUseCase,
 ) {
@@ -25,30 +25,41 @@ class SimpleUploaderManager @Inject constructor(
     // set max retry of transcoding checker
     private var maxRetryTranscoding = 0
 
-    suspend operator fun invoke(file: File, sourceId: String, withTranscode: Boolean): UploadResult {
-        val policy = policyManager.get()
+    suspend operator fun invoke(param: VideoParam): UploadResult {
+        val policy = sourcePolicyManager.get() ?: return UploadResult.Error(UNKNOWN_ERROR)
+        val base = param.base as BaseParam
 
-        val uploader = simpleUploaderUseCase(SimpleUploadParam(
-            timeOut = policy?.timeOut.orZero().toString(),
-            sourceId = sourceId,
-            file = file
-        ))
+        val uploader = simpleUploaderUseCase(
+            SimpleUploadParam(
+                timeOut = policy.timeOut.orZero().toString(),
+                sourceId = base.sourceId,
+                file = base.file
+            )
+        )
 
-        val error = uploader.errorMessage ?: UNKNOWN_ERROR
+        val requestId = uploader.requestId ?: ""
+        val error = uploader.errorMessage()
+        
+        val uploadId = uploader.uploadId.orEmpty()
+        val videoUrlResult = uploader.videoUrl.orEmpty()
 
-        if (withTranscode) {
-            while(true) {
+        if (param.withTranscode && uploadId.isEmpty().not()) {
+            while (true) {
                 if (maxRetryTranscoding >= MAX_RETRY_TRANSCODING) {
-                    resetUpload()
-
-                    return UploadResult.Error(TRANSCODING_FAILED)
+                    return UploadResult.Error(TRANSCODING_FAILED).also {
+                        resetUpload()
+                    }
                 }
 
                 if (uploader.uploadId != null) {
                     val transcode = transcodingUseCase(uploader.uploadId)
 
-                    if (transcode.isCompleted()) {
-                        break
+                    // transcoding succeed
+                    if (transcode.isCompleted()) break
+
+                    // transcoding failed
+                    if (transcode.requestId().isNotEmpty()) {
+                        return UploadResult.Error(TRANSCODING_FAILED, transcode.requestId())
                     }
                 }
 
@@ -57,22 +68,19 @@ class SimpleUploaderManager @Inject constructor(
             }
         }
 
-        onShowDebugLogcat(
-            DebugLog(
-                sourceId = sourceId,
-                sourceFile = file.path,
-                url = uploader.videoUrl.toString(),
-                uploadId = uploader.uploadId.toString(),
-                sourcePolicy = policy
-            )
-        )
-
-        return uploader.videoUrl?.let {
+        return if (videoUrlResult.isEmpty().not()) {
             UploadResult.Success(
-                videoUrl = it,
+                videoUrl = uploader.videoUrl ?: "",
                 uploadId = uploader.uploadId.toString()
             )
-        }?: UploadResult.Error(error)
+        } else {
+            UploadResult.Error(
+                message = error,
+                requestId = requestId
+            ).also {
+                UploaderLogger.commonError(base, it)
+            }
+        }
     }
 
     fun setProgressCallback(progressUploader: ProgressUploader?) {
@@ -87,5 +95,4 @@ class SimpleUploaderManager @Inject constructor(
         private const val MAX_RETRY_TRANSCODING = 24
         private const val DELAYED_TO_RETRY = 5_000L // 5sec
     }
-
 }

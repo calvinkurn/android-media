@@ -25,6 +25,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
     var listener: ActionListener? = null
     val binding :WidgetEmoneyInputCardNumberBinding
+    var isShownError: Boolean = false
 
     init {
         binding = WidgetEmoneyInputCardNumberBinding.inflate(LayoutInflater.from(context), this, true)
@@ -44,9 +45,6 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
             clearNumberAndOperator()
             listener?.onRemoveNumberIconClick()
         }
-        binding.emoneyPdpCardCameraIcon.setOnClickListener {
-            listener?.onClickCameraIcon()
-        }
 
         binding.emoneyPdpCardInputNumber.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -60,6 +58,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun renderError(errorMsg: String) {
+        isShownError = errorMsg.isNotEmpty()
         binding.emoneyPdpCardInputNumber.setError(errorMsg.isNotEmpty())
         binding.emoneyPdpCardInputNumber.setPadding(0, 0, 0,
                 if (errorMsg.isNotEmpty()) resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
@@ -99,7 +98,6 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     interface ActionListener {
-        fun onClickCameraIcon()
         fun onClickInputView(inputNumber: String)
         fun onRemoveNumberIconClick()
         fun onInputNumberChanged(inputNumber: String)

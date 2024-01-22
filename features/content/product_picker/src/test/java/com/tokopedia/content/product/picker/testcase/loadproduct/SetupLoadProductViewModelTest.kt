@@ -4,6 +4,7 @@ import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
 import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerViewModelRobot
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.seller.model.PagingType
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
@@ -27,6 +28,7 @@ class SetupLoadProductViewModelTest {
 
     private val testDispatcher = rule.dispatchers
     private val mockRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
+    private val mockCommonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
@@ -136,11 +138,12 @@ class SetupLoadProductViewModelTest {
         val robot = ContentProductPickerSellerViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
-            repo = mockRepo
+            repo = mockRepo,
+            commonRepo = mockCommonRepo,
         )
 
         robot.use {
-            coEvery { mockRepo.getProductsInCampaign(any(), any()) } returns mockCampaignPagedDataResponseWhenSelectCampaign
+            coEvery { mockCommonRepo.getProductsInCampaign(any(), any()) } returns mockCampaignPagedDataResponseWhenSelectCampaign
 
             val state = robot.recordState {
                 robot.submitAction(ProductSetupAction.SelectCampaign(mockCampaign))
@@ -152,7 +155,7 @@ class SetupLoadProductViewModelTest {
                 assertPagingPage(pagingType, 1)
             }
 
-            coEvery { mockRepo.getProductsInCampaign(any(), any()) } returns mockCampaignPagedDataResponseWhenScrollDown
+            coEvery { mockCommonRepo.getProductsInCampaign(any(), any()) } returns mockCampaignPagedDataResponseWhenScrollDown
 
             val stateAfterScrollDown = robot.recordState {
                 robot.submitAction(ProductSetupAction.LoadProductList(""))

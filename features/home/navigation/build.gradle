@@ -31,6 +31,7 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.darkModeConfig)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -80,6 +81,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
+
+    implementation projectOrAar(rootProject.ext.libraries.appDownloadManagerCommon)
+    if (rootProject.hasProperty('nakamaVersion') ?: false) {
+        implementation projectOrAar(rootProject.ext.features.appDownloadManagerInstall)
+    } else {
+        implementation projectOrAar(rootProject.ext.features.appDownloadManagerNoInstall)
+    }
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger

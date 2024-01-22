@@ -23,7 +23,6 @@ class SourcePolicyManagerImpl @Inject constructor(
     override fun set(policy: SourcePolicy) {
         val content = gson.toJson(policy)
         putString(KEY_SOURCE_POLICY, content)
-
         applyEditor()
     }
 
@@ -36,5 +35,4 @@ class SourcePolicyManagerImpl @Inject constructor(
         private const val NAME_PREFERENCE_SOURCE_POLICY = "source_policy"
         private const val KEY_SOURCE_POLICY = "key_policy"
     }
-
 }

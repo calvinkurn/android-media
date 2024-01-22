@@ -9,9 +9,13 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
+import com.tokopedia.telemetry.ITelemetryActivity
 import javax.inject.Inject
 
-open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummaryPageComponent> {
+open class OrderSummaryPageActivity :
+    BaseSimpleActivity(),
+    HasComponent<OrderSummaryPageComponent>,
+    ITelemetryActivity {
 
     @Inject
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
@@ -45,4 +49,6 @@ open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSu
         }
         super.onBackPressed()
     }
+
+    override fun getTelemetrySectionName() = "checkout"
 }

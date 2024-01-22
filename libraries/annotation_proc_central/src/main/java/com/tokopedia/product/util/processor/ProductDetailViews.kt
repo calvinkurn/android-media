@@ -121,7 +121,10 @@ data class ProductDetailViews(
     val campaignId: String?,
     @DefaultValueString("")
     @Key("variantId")
-    val variantId: String?
+    val variantId: String?,
+    @DefaultValueString("")
+    @Key("promoFlag")
+    val promoFlag: String?
 )
 
 object ProductDetailViewsChecker {

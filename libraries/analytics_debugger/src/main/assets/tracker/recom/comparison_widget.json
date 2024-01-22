@@ -29,7 +29,8 @@
         }
       ],
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "hits_time": ".*"
     },
     {
       "event": "view_item_list",
@@ -58,7 +59,8 @@
         }
       ],
       "userId": "",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "hits_time": ".*"
     },
     {
       "event": "clickPDP",

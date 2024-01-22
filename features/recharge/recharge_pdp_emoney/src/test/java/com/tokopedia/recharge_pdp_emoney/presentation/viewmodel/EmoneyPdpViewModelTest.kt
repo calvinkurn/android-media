@@ -4,10 +4,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.data.product.CatalogProductData
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumber
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -16,6 +21,8 @@ import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommend
 import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recharge_pdp_emoney.presentation.domain.GetBCAGenCheckerUseCase
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyBCAGenCheckModel
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -23,12 +30,14 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertNull
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.net.UnknownHostException
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * @author by jessica on 15/04/21
@@ -55,6 +64,9 @@ class EmoneyPdpViewModelTest {
     @RelaxedMockK
     lateinit var getDppoConsentUseCase: GetDppoConsentUseCase
 
+    @RelaxedMockK
+    lateinit var getBCAGenCheckerUseCase: GetBCAGenCheckerUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -62,7 +74,8 @@ class EmoneyPdpViewModelTest {
             userSession,
             rechargeCatalogPrefixUseCase,
             rechargeCatalogProductInputUseCase,
-            getDppoConsentUseCase
+            getDppoConsentUseCase,
+            getBCAGenCheckerUseCase
         )
     }
 
@@ -361,4 +374,128 @@ class EmoneyPdpViewModelTest {
         Assert.assertTrue(actualData is Fail)
         Assert.assertTrue((actualData as Fail).throwable.message == errorMessage)
     }
+
+    @Test
+    fun getBCAGenCheck_Success() {
+        // given
+        val messsage = "Message"
+        val bcaGenCheck = TopupBillsPersoFavNumberData(
+            persoFavoriteNumber = TopupBillsPersoFavNumber(
+                items = listOf(
+                    TopupBillsPersoFavNumberItem(
+                        label1 = "1",
+                        label2 = messsage
+                    )
+                )
+            )
+        )
+        coEvery { getBCAGenCheckerUseCase.execute(listOf("085327499272")) } returns bcaGenCheck
+
+        // when
+        emoneyPdpViewModel.getBCAGenCheck("085327499272")
+
+        // then
+        val actualData = emoneyPdpViewModel.bcaGenCheckerResult.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Success)
+        Assert.assertTrue((actualData as Success).data.isGenOne)
+        Assert.assertTrue((actualData as Success).data.message == messsage)
+    }
+
+    @Test
+    fun getBCAGenCheck_Fail() {
+        // given
+        val messsage = "Message"
+        coEvery { getBCAGenCheckerUseCase.execute(listOf("085327499272")) } throws MessageErrorException(messsage)
+
+        // when
+        emoneyPdpViewModel.getBCAGenCheck("085327499272")
+
+        // then
+        val actualData = emoneyPdpViewModel.bcaGenCheckerResult.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Fail)
+        Assert.assertTrue((actualData as Fail).throwable.message == messsage)
+    }
+
+    @Test
+    fun getBCAGenCheck_FailCancel() {
+        // given
+        val messsage = "Message"
+        coEvery { getBCAGenCheckerUseCase.execute(listOf("085327499272")) } throws CancellationException(messsage)
+
+        // when
+        emoneyPdpViewModel.getBCAGenCheck("085327499272")
+
+        // then
+        val actualData = emoneyPdpViewModel.bcaGenCheckerResult.value
+        Assert.assertNull(actualData)
+    }
+
+    @Test
+    fun getIsSelectedOperatorIdBCA_True(){
+        //given
+        val prefixes = listOf(
+            RechargePrefix(
+                "578",
+                "014520",
+                operator = TelcoOperator(
+                    "78",
+                    attributes = TelcoAttributesOperator(
+                        name = "BCA"
+                    )
+                )
+            )
+        )
+        val response = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect(prefixes = prefixes))
+        coEvery { rechargeCatalogPrefixUseCase.execute(any(), any(), any()) } coAnswers {
+            secondArg<(TelcoCatalogPrefixSelect) -> Unit>().invoke(response)
+        }
+        //when
+        emoneyPdpViewModel.getPrefixOperator(0)
+        emoneyPdpViewModel.getSelectedOperator("0145201100001171", "")
+        val isBCA = emoneyPdpViewModel.selectedOperatorIsBCA()
+        //then
+        assert(isBCA)
+    }
+
+    @Test
+    fun cancellationBCACheckGen() {
+        // given
+        val messsage = "Message"
+        val bcaGenCheck = TopupBillsPersoFavNumberData(
+            persoFavoriteNumber = TopupBillsPersoFavNumber(
+                items = listOf(
+                    TopupBillsPersoFavNumberItem(
+                        label1 = "1",
+                        label2 = messsage
+                    )
+                )
+            )
+        )
+        coEvery { getBCAGenCheckerUseCase.execute(listOf("085327499272")) } returns bcaGenCheck
+
+        // when
+        emoneyPdpViewModel.getBCAGenCheck("085327499272")
+
+        // then
+        val actualData = emoneyPdpViewModel.bcaGenCheckerResult.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Success)
+        Assert.assertTrue((actualData as Success).data.isGenOne)
+        Assert.assertTrue((actualData as Success).data.message == messsage)
+        assertNotNull(emoneyPdpViewModel.bcaCheckGenJob)
+        emoneyPdpViewModel.cancelBCACheckGenJob()
+        emoneyPdpViewModel.bcaCheckGenJob?.let {
+            assert(it.isCompleted)
+        }
+    }
+
+    @Test
+    fun cancellationBCACheckGenNull() {
+        emoneyPdpViewModel.bcaCheckGenJob = null
+        emoneyPdpViewModel.cancelBCACheckGenJob()
+        assertNull(emoneyPdpViewModel.bcaCheckGenJob)
+    }
+
 }

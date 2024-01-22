@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartrevamp.view.uimodel.CartDeleteItemData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
@@ -39,26 +40,23 @@ class DeleteCartTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
-
-        // WHEN
-        cartViewModel.processDeleteCartItem(
-            arrayListOf(cartItemData),
+        val cartDeleteItemData = CartDeleteItemData(
+            removedCartItems = arrayListOf(cartItemData),
             addWishList = false,
             forceExpandCollapsedUnavailableItems = false,
             isFromGlobalCheckbox = true,
             isFromEditBundle = false
         )
 
+        // WHEN
+        cartViewModel.processDeleteCartItem(cartDeleteItemData)
+
         // THEN
         assertEquals(
             DeleteCartEvent.Success(
-                arrayListOf("0"),
+                toBeDeletedCartIds = arrayListOf("0"),
                 removeAllItems = true,
-                forceExpandCollapsedUnavailableItems = false,
-                isFromGlobalCheckbox = true,
-                isFromEditBundle = false,
-                addWishList = false,
-                listCartStringOrderAndOfferId = arrayListOf()
+                cartDeleteItemData = cartDeleteItemData
             ),
             cartViewModel.deleteCartEvent.value
         )
@@ -86,24 +84,21 @@ class DeleteCartTest : BaseCartViewModelTest() {
         }
 
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
-
-        // WHEN
-        cartViewModel.processDeleteCartItem(
-            arrayListOf(secondCartItemData),
+        val cartDeleteItemData = CartDeleteItemData(
+            removedCartItems = arrayListOf(secondCartItemData),
             addWishList = false,
             forceExpandCollapsedUnavailableItems = false
         )
 
+        // WHEN
+        cartViewModel.processDeleteCartItem(cartDeleteItemData)
+
         // THEN
         assertEquals(
             DeleteCartEvent.Success(
-                arrayListOf("1"),
+                toBeDeletedCartIds = arrayListOf("1"),
                 removeAllItems = false,
-                forceExpandCollapsedUnavailableItems = false,
-                isFromGlobalCheckbox = false,
-                isFromEditBundle = false,
-                addWishList = false,
-                listCartStringOrderAndOfferId = arrayListOf()
+                cartDeleteItemData = cartDeleteItemData
             ),
             cartViewModel.deleteCartEvent.value
         )
@@ -131,24 +126,21 @@ class DeleteCartTest : BaseCartViewModelTest() {
         }
 
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
-
-        // WHEN
-        cartViewModel.processDeleteCartItem(
-            arrayListOf(secondCartItemData),
+        val cartDeleteItemData = CartDeleteItemData(
+            removedCartItems = arrayListOf(secondCartItemData),
             addWishList = false,
             forceExpandCollapsedUnavailableItems = false
         )
 
+        // WHEN
+        cartViewModel.processDeleteCartItem(cartDeleteItemData)
+
         // THEN
         assertEquals(
             DeleteCartEvent.Success(
-                arrayListOf("1"),
+                toBeDeletedCartIds = arrayListOf("1"),
                 removeAllItems = false,
-                forceExpandCollapsedUnavailableItems = false,
-                isFromGlobalCheckbox = false,
-                isFromEditBundle = false,
-                addWishList = false,
-                listCartStringOrderAndOfferId = arrayListOf()
+                cartDeleteItemData = cartDeleteItemData
             ),
             cartViewModel.deleteCartEvent.value
         )
@@ -166,13 +158,14 @@ class DeleteCartTest : BaseCartViewModelTest() {
         }
 
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
-
-        // WHEN
-        cartViewModel.processDeleteCartItem(
-            arrayListOf(cartItemData),
+        val cartDeleteItemData = CartDeleteItemData(
+            removedCartItems = arrayListOf(cartItemData),
             addWishList = false,
             forceExpandCollapsedUnavailableItems = false
         )
+
+        // WHEN
+        cartViewModel.processDeleteCartItem(cartDeleteItemData)
 
         // THEN
         assertEquals(
@@ -193,13 +186,14 @@ class DeleteCartTest : BaseCartViewModelTest() {
         }
 
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
-
-        // WHEN
-        cartViewModel.processDeleteCartItem(
-            arrayListOf(cartItemData),
+        val cartDeleteItemData = CartDeleteItemData(
+            removedCartItems = arrayListOf(cartItemData),
             addWishList = false,
             forceExpandCollapsedUnavailableItems = true
         )
+
+        // WHEN
+        cartViewModel.processDeleteCartItem(cartDeleteItemData)
 
         // THEN
         assertEquals(

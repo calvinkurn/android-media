@@ -18,7 +18,7 @@ sealed interface StoriesUiAction {
     ) : StoriesUiAction
     data class UpdateStoryDuration(val duration: Int) : StoriesUiAction
     data class OpenBottomSheet(val type: BottomSheetType) : StoriesUiAction
-    data class SelectReportReason(val reason: PlayUserReportReasoningUiModel.Reasoning): StoriesUiAction
+    data class SelectReportReason(val reason: PlayUserReportReasoningUiModel.Reasoning) : StoriesUiAction
 
     object VideoBuffering : StoriesUiAction
     object PageIsSelected : StoriesUiAction
@@ -34,9 +34,9 @@ sealed interface StoriesUiAction {
     object DeleteStory : StoriesUiAction
     object ContentIsLoaded : StoriesUiAction
     object SetInitialData : StoriesUiAction
-    object OpenReport: StoriesUiAction
-    object ResetReportState: StoriesUiAction
-    object HasSeenDurationCoachMark: StoriesUiAction
+    object OpenReport : StoriesUiAction
+    object ResetReportState : StoriesUiAction
+    object HasSeenDurationCoachMark : StoriesUiAction
 }
 
 enum class StoriesProductAction {

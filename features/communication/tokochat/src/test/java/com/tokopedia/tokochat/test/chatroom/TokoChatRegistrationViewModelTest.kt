@@ -4,7 +4,7 @@ import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
 import com.tokopedia.tokochat.utils.observeAwaitValue
 import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -12,7 +12,7 @@ class TokoChatRegistrationViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when registerActiveChannel should call softRegisterChannel (from SDK) once`() {
-        runBlocking {
+        runTest {
             // When
             viewModel.registerActiveChannel(CHANNEL_ID_DUMMY)
 
@@ -25,7 +25,7 @@ class TokoChatRegistrationViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to registerActiveChannel should call give throwable on error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 registrationChannelUseCase.registerActiveChannel(any())
@@ -44,7 +44,7 @@ class TokoChatRegistrationViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when deRegisterActiveChannel should call softDeregisterChannel (from SDK) once`() {
-        runBlocking {
+        runTest {
             // When
             viewModel.deRegisterActiveChannel(CHANNEL_ID_DUMMY)
 
@@ -57,7 +57,7 @@ class TokoChatRegistrationViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to deRegisterActiveChannel should call give throwable on error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 registrationChannelUseCase.deRegisterActiveChannel(any())

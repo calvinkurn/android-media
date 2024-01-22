@@ -28,6 +28,9 @@ data class ProductAr(
     @SerializedName("discPercentage")
     @Expose
     val discPercentage: String = "",
+    @SerializedName("isPriceMasked")
+    @Expose
+    val isPriceMasked: Boolean = false,
     @SuppressLint("Invalid Data Type")
     @SerializedName("productID")
     @Expose

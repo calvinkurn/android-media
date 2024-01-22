@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -137,7 +136,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseCompo
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -146,7 +145,6 @@ import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
@@ -169,8 +167,6 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.HomeBottomNavListener
@@ -227,8 +223,6 @@ import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
-import rx.Observable
-import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
@@ -590,7 +584,6 @@ open class HomeRevampFragment :
         if (::homeRemoteConfigController.isInitialized) {
             getRemoteConfigController().fetchHomeRemoteConfig()
         }
-        HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         HomeRollenceController.fetchHomeRollenceValue()
 
         // show nav toolbar
@@ -841,14 +834,13 @@ open class HomeRevampFragment :
 
     private fun setupHomePlayWidgetListener() {
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            val contentRect = Rect(
-                0,
-                homeMainToolbarHeight,
-                getScreenWidth(),
-                getScreenHeight() - resources.getDimensionPixelOffset(
+            val contentRect = Rect()
+
+            private val bottomRvOffset = (
+                context?.resources?.getDimensionPixelOffset(
                     unifyprinciplesR.dimen.unify_space_48
+                ) ?: 0
                 )
-            )
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (!::playWidgetCoordinator.isInitialized) return
@@ -864,6 +856,12 @@ open class HomeRevampFragment :
                 val playViewHolder = viewHolders.firstOrNull { it is CarouselPlayWidgetViewHolder }
 
                 if (playViewHolder != null) {
+                    contentRect.set(
+                        0,
+                        homeMainToolbarHeight,
+                        getScreenWidth(),
+                        getScreenHeight() - bottomRvOffset
+                    )
                     val visiblePortion = playViewHolder.itemView.getVisiblePortion(contentRect)
                     if (visiblePortion[1] >= PLAY_CAROUSEL_WIDGET_VISIBLE_PORTION_THRESHOLD) {
                         playWidgetCoordinator.onVisible()
@@ -1957,47 +1955,6 @@ open class HomeRevampFragment :
 
     private fun remoteConfigIsNewBalanceWidget(): Boolean {
         return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
-    }
-
-    private fun detectAndSendLocation() {
-        activity?.let {
-            Observable.just(true).map { aBoolean: Boolean? ->
-                val locationDetectorHelper = LocationDetectorHelper(
-                    permissionCheckerHelper.get(),
-                    LocationServices.getFusedLocationProviderClient(it.applicationContext),
-                    it.applicationContext
-                )
-                locationDetectorHelper.getLocation(
-                    onGetLocation(),
-                    it,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    rationaleText = ""
-                )
-                true
-            }.subscribeOn(Schedulers.io()).subscribe({ }) { }
-        }
-    }
-
-    private fun onGetLocation(): Function1<DeviceLocation, Unit> {
-        return { (latitude, longitude) ->
-            saveLocation(activity, latitude, longitude)
-        }
-    }
-
-    private fun saveLocation(context: Context?, latitude: Double, longitude: Double) {
-        val editor: SharedPreferences.Editor
-        if (context != null && !TextUtils.isEmpty(ConstantKey.LocationCache.KEY_LOCATION)) {
-            sharedPrefs = context.getSharedPreferences(
-                ConstantKey.LocationCache.KEY_LOCATION,
-                Context.MODE_PRIVATE
-            )
-            editor = sharedPrefs.edit()
-        } else {
-            return
-        }
-        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LAT, latitude.toString())
-        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LONG, longitude.toString())
-        editor.apply()
     }
 
     private fun saveFirstInstallTime() {

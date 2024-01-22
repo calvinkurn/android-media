@@ -4,63 +4,58 @@
   "query": [
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "event": "clickContent",
       "userId": ".*",
       "eventAction": "click - lanjut content creation",
       "sessionIris": ".*",
       "eventLabel": ".* - .* - .*",
-      "trackerId": "47546"
+      "trackerId": "(47546|47889)"
     },
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "event": "clickContent",
       "userId": ".*",
       "eventAction": "click - analytics dashboard entry point",
       "sessionIris": ".*",
       "eventLabel": ".* - .*",
-      "trackerId": "47550"
+      "trackerId": "(47550|47890)"
     },
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "event": "viewContentIris",
       "userId": ".*",
       "eventAction": "view - content creation selection page",
       "sessionIris": ".*",
       "eventLabel": ".* - .*",
-      "trackerId": "47551"
+      "trackerId": "(47551|47891)"
     },
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "event": "viewContentIris",
       "userId": ".*",
       "eventAction": "view - create content",
       "sessionIris": ".*",
       "eventLabel": ".* - .*",
-      "trackerId": "47797"
+      "trackerId": "(47797|47892)"
     },
     {
       "businessUnit": "content",
-      "clientId": ".*",
       "eventCategory": "shop page - seller",
-      "currentSite": "tokopediamarketplace",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "event": "clickContent",
       "userId": ".*",
       "eventAction": "click - create content",
       "sessionIris": ".*",
       "eventLabel": ".* - .*",
-      "trackerId": "47798"
+      "trackerId": "(47798|47893)"
     }
   ]
 }

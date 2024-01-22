@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.di
 
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import dagger.Module
@@ -13,7 +14,8 @@ import io.mockk.mockk
 @Module
 class PlayBroadcastRepositoryTestModule(
     private val mockRepo: PlayBroadcastRepository,
-    private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
+    private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository = mockk(relaxed = true),
+    private val mockProductPickerCommonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true),
 ) {
 
     @Provides
@@ -23,4 +25,8 @@ class PlayBroadcastRepositoryTestModule(
     @Provides
     @ActivityRetainedScope
     fun provideContentProductPickerSGCRepository(): ContentProductPickerSellerRepository = mockContentProductPickerSGCRepo
+
+    @Provides
+    @ActivityRetainedScope
+    fun provideProductPickerSellerCommonRepository(): ProductPickerSellerCommonRepository = mockProductPickerCommonRepo
 }

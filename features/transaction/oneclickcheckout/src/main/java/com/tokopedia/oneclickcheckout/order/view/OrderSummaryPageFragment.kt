@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
@@ -47,6 +48,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -64,7 +66,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
@@ -83,6 +84,7 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -112,7 +114,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivity
@@ -169,9 +170,11 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.purchase_platform.common.revamp.PromoEntryPointImprovementRollenceManager
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -212,6 +215,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
     @Inject
     lateinit var promoEntryPointAnalytics: PromoUsageEntryPointAnalytics
+
+    @Inject
+    lateinit var gson: Lazy<Gson>
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -510,6 +516,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         viewModel.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
             RemoteConfigInstance.getInstance().abTestPlatform
         ).isRevamp()
+        viewModel.usePromoEntryPointNewInterface = PromoEntryPointImprovementRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).enableNewInterface()
 
         observeAddressState()
 
@@ -530,8 +539,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         observeOrderTotal()
 
         observeGlobalEvent()
-
-        observeOrderShippingDuration()
 
         observeUploadPrescription()
 
@@ -692,47 +699,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                 is OccState.FirstLoad -> showMainContent(it.data)
                 is OccState.Success -> showMainContent(it.data)
             }
-        }
-    }
-
-    private fun observeOrderShippingDuration() {
-        viewModel.orderShippingDuration.observe(viewLifecycleOwner) {
-            when (it) {
-                is OccState.Loading -> {
-                    // no ops
-                }
-                is OccState.Failed -> {
-                    binding.loaderContent.animateGone()
-                    it.getFailure()?.let { failure ->
-                        handleError(failure.throwable)
-                    }
-                }
-                is OccState.FirstLoad -> {
-                    // no ops
-                }
-                is OccState.Success -> openShippingDurationBottomsheet(it.data)
-            }
-        }
-    }
-
-    private fun openShippingDurationBottomsheet(data: OrderShippingDuration) {
-        activity?.let {
-            ShippingDurationBottomsheet.show(
-                activity = it,
-                fragmentManager = parentFragmentManager,
-                shipmentDetailData = data.shipmentDetailData,
-                selectedServiceId = data.selectedServiceId,
-                shopShipmentList = data.shopShipmentList,
-                cartPosition = 0,
-                products = data.products,
-                cartString = data.cartString,
-                isDisableOrderPrioritas = true,
-                isOcc = true,
-                pslCode = data.pslCode,
-                shippingDurationBottomsheetListener = getShippingDurationListener(),
-                cartData = data.cartData,
-                warehouseId = data.warehouseId
-            )
         }
     }
 
@@ -1718,7 +1684,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                 } else if (currentSpId.isNotEmpty()) {
                     orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
                 }
-                viewModel.getShippingBottomsheetParam()
+                viewModel.getShippingBottomsheetParam()?.let { param ->
+                    ShippingDurationBottomsheet.show(
+                        ratesParam = param,
+                        fragmentManager = parentFragmentManager,
+                        selectedServiceId = viewModel.orderShipment.value.serviceId.toZeroIfNull(),
+                        selectedSpId = viewModel.orderShipment.value.shipperProductId.toZeroIfNull(),
+                        cartPosition = 0,
+                        isDisableOrderPrioritas = true,
+                        isRatesTradeInApi = false,
+                        recipientAddressModel = null,
+                        isOcc = true,
+                        shippingDurationBottomsheetListener = getShippingDurationListener()
+                    )
+                }
             }
         }
 
@@ -1749,6 +1728,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     PaymentListingActivity.EXTRA_CALLBACK_URL,
                     payment.creditCard.additionalData.callbackUrl
                 )
+                val paymentRequest = viewModel.generatePaymentRequest(orderCost)
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_REQUEST, gson.get().toJson(paymentRequest, PaymentRequest::class.java))
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
@@ -1761,6 +1742,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     payment,
                     viewModel.orderCart,
                     orderTotal.orderCost,
+                    viewModel.generatePaymentRequest(orderTotal.orderCost),
                     userSession.get().userId,
                     object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                         override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {

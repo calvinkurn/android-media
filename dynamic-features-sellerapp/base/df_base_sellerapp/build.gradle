@@ -121,7 +121,6 @@ dependencies {
 
     //Media
     implementation projectOrAar(rootProject.ext.features.mediaeditor)
-    implementation projectOrAar(rootProject.ext.features.universalEditor)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 
     implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
@@ -129,7 +128,4 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.centralizedPromo)
     implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
     implementation projectOrAar(rootProject.ext.features.scpAuth)
-
-    // Content
-    implementation projectOrAar(rootProject.ext.features.storiesCreation)
 }

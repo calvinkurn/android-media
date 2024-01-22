@@ -11,7 +11,7 @@
     <dimen name="home_revamp_searchbar_transition_range">16dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
 
-    <dimen name="new_margin_sm">24dp</dimen>
+    <dimen name="new_margin_sm">1dp</dimen>
 
     <!--    default toolbar height + default status bar height + 16 margin-->
     <dimen name="default_toolbar_status_height">96dp</dimen>
@@ -37,4 +37,13 @@
     <dimen name="balance_inner_left_padding">12dp</dimen>
     <dimen name="balance_atf2_inner_right_padding">20dp</dimen>
     <dimen name="balance_atf3_inner_right_padding">12dp</dimen>
+
+    <!--Paddings-->
+    <dimen name="home_padding_bottom_bu_widget">10dp</dimen> <!--already has 2dp padding & card compat padding on item level, so it will be 16dp in total-->
+
+    <dimen name="for_you_outer_padding">16dp</dimen>
+    <dimen name="for_you_outer_padding_with_internal_padding">13dp</dimen>
+    <dimen name="for_you_inner_vertical_padding">8dp</dimen>
+    <dimen name="for_you_inner_vertical_padding_with_internal_padding">-2dp</dimen>
+    <dimen name="for_you_inner_horizontal_padding">8dp</dimen>
 </resources>

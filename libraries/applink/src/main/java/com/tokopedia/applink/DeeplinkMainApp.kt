@@ -35,6 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PATH_SELLER_PARTIAL_ORDER_FULFILLMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -61,7 +62,6 @@ import com.tokopedia.applink.promo.DeeplinkMapperPromo.invokeScpToasterUniversal
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.recommendation.DeeplinkMapperRecommendation
-import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.search.DeeplinkMapperSearch
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
@@ -184,6 +184,11 @@ object DeeplinkMainApp {
         "catalog-library" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperCategory.getRegisteredNavigationCategory(deeplink)
+            }
+        ),
+        "catalog-product-list" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCatalogProductList(deeplink)
             }
         ),
         "category" to mutableListOf(
@@ -628,19 +633,14 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
         ),
-        "order-details" to mutableListOf(
-            DLP.startsWith("umroh") { deeplink: String ->
-                DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail(deeplink)
-            }
-        ),
         "order_list" to mutableListOf(
             DLP.goTo { context: Context, deeplink: String ->
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
         ),
         "otp" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.COTP
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "otp-verify" to mutableListOf(
@@ -873,11 +873,6 @@ object DeeplinkMainApp {
                 DeeplinkMapperPromo.getRegisteredNavigationTokopoints(deeplink)
             }
         ),
-        "s" to mutableListOf(
-            DLP.startsWith("umroh") { deeplink: String ->
-                DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah(deeplink)
-            }
-        ),
         "saldo" to mutableListOf(
             DLP.matchPattern("") { _: String ->
                 ApplinkConstInternalGlobal.SALDO_DEPOSIT
@@ -976,6 +971,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith("seller-center") { _: String ->
                 DeeplinkMapperMerchant.getRegisteredSellerCenter()
+            },
+            DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
+                DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(
@@ -1244,8 +1242,10 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("list") { context: Context, deeplink: String ->
                 DeeplinkMapperCommunication.getRegisteredNavigationTokoChatList(context, deeplink)
+            },
+            DLP.matchPattern("bottomsheet/{type}") { deeplink: String ->
+                DeeplinkMapperCommunication.getRegisteredNavigation(deeplink)
             }
-
         ),
         "tokopoints" to mutableListOf(
             DLP.goTo { deeplink: String ->

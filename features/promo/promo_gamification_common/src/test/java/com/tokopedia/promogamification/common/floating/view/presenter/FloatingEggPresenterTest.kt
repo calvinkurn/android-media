@@ -64,7 +64,7 @@ class FloatingEggPresenterTest {
 
     private fun getView(resources: Resources) = object : FloatingEggContract.View {
         override fun onSuccessGetToken(gamiFloatingButtonEntity: GamiFloatingButtonEntity?) {
-            //Do nothing
+            // Do nothing
         }
 
         override fun onSuccessClickClose(gamiFloatingClickData: GamiFloatingClickData?) {
@@ -76,11 +76,11 @@ class FloatingEggPresenterTest {
         }
 
         override fun onErrorGetToken(throwable: Throwable?) {
-            //Do nothing
+            // Do nothing
         }
 
         override fun onErrorClickClose(throwable: Throwable?) {
-            //Do nothing
+            // Do nothing
         }
     }
 
@@ -181,7 +181,7 @@ class FloatingEggPresenterTest {
     @Test
     fun testClickCloseButton() {
         val floatingID = 12
-        presenter.clickCloseButton(floatingID)
+        presenter.clickCloseButton(floatingID, false)
         verifyOrder {
             getTokenTokopointsUseCase.clearRequest()
             GraphqlHelper.loadRawString(any(), any())
@@ -204,7 +204,7 @@ class FloatingEggPresenterTest {
         val exception = Exception()
         presenter.detachView()
         subscriber.onError(exception)
-        verify(exactly = 0){ view.onErrorClickClose(exception) }
+        verify(exactly = 0) { view.onErrorClickClose(exception) }
     }
 
     @Test

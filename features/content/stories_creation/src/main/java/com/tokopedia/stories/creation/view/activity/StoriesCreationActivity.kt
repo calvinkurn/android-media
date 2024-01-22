@@ -19,10 +19,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.picker.common.MediaPicker
-import com.tokopedia.picker.common.PageSource
-import com.tokopedia.picker.common.types.ModeType
-import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
 import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
@@ -265,6 +261,7 @@ class StoriesCreationActivity : BaseActivity() {
                             showInfoBottomSheet()
                         }
                         is StoriesCreationUiEvent.StoriesUploadQueued -> {
+                            setResult(RESULT_OK)
                             finish()
                         }
                     }

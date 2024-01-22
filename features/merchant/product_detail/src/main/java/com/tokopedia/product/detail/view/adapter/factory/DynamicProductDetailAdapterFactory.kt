@@ -27,7 +27,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherS
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -48,7 +48,7 @@ import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiM
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 
 interface DynamicProductDetailAdapterFactory {
-    fun type(data: ProductMostHelpfulReviewDataModel): Int
+    fun type(data: ProductMostHelpfulReviewUiModel): Int
     fun type(data: ProductDiscussionMostHelpfulDataModel): Int
     fun type(data: ProductGeneralInfoDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int

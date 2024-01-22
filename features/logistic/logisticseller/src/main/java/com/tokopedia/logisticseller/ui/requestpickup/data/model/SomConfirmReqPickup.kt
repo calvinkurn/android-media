@@ -58,7 +58,11 @@ data class SomConfirmReqPickup(
 
                 @SerializedName("ticker")
                 @Expose
-                val ticker: Ticker = Ticker()
+                val ticker: Ticker = Ticker(),
+
+                @SerializedName("ticker_unification_targets")
+                val tickerUnificationTargets: List<TickerUnificationTargets> = listOf()
+
             ) : Parcelable {
 
                 @Parcelize
@@ -177,6 +181,15 @@ data class SomConfirmReqPickup(
                     val actionKey: String = "",
                     @SerializedName("type")
                     val type: String = ""
+                ) : Parcelable
+
+                @Parcelize
+                data class TickerUnificationTargets(
+                    @SerializedName("type")
+                    val type: String = "",
+
+                    @SerializedName("values")
+                    val values: List<String> = listOf()
                 ) : Parcelable
             }
         }

@@ -12,4 +12,6 @@ class PlayWidgetFeedsAnalyticModel : PlayWidgetAnalyticModel {
     override val promotionsItemName: String = "play-feed-widget"
 
     override val promotionsCreativeName: String = "play widget in feed"
+
+    override val productId: String = ""
 }

@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tkpd.macrobenchmark.test.R
 import com.tokopedia.macrobenchmark_util.env.mock.InstrumentationMockHelper.getRawString
+import com.tokopedia.macrobenchmark_util.env.mock.config.CatalogMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.HomeMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.ProductDetailMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.SearchMockResponseConfig
@@ -39,6 +40,7 @@ object MacroIntent {
             const val Home = "home"
             const val Search = "search"
             const val ProductDetail = "product_detail"
+            const val CatalogProductList = "catalog_product_list"
         }
 
         fun getMockSetupIntent(configName: String): Intent {
@@ -73,6 +75,10 @@ object MacroIntent {
             putMockData(ProductDetailMockResponseConfig.KEY_PDP_DATA, R.raw.response_pdp_data)
             putMockData(ProductDetailMockResponseConfig.KEY_PDP_RECOMM, R.raw.response_pdp_recom)
             putMockData(ProductDetailMockResponseConfig.KEY_PDP_PLAY, R.raw.response_pdp_play)
+        }
+
+        fun getCatalogProductListMockIntent() = getMockSetupIntent(Mock.Config.CatalogProductList).apply {
+            putMockData(CatalogMockResponseConfig.KEY_CATALOG_PRODUCT_LIST, R.raw.search_common_response)
         }
     }
 
@@ -268,13 +274,47 @@ object MacroIntent {
         }
     }
 
+    object Catalog {
+        /**
+         * Target recyclerview
+         * Capture view by resource id
+         */
+        const val RV_RESOURCE_ID_CATALOG_PRODUCT_LIST = "product_recyclerview"
+
+        private const val DF_MODULE_NAME = "df_base"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+
+        fun getCatalogProductListIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://catalog-product-list/Samsung?catalog_id=42417&product_sorting_status=1")
+            return intent
+        }
+    }
+
     object DigitalProductDetail {
 
         const val RV_DENOM_GRID = "rv_denom_grid_card"
+        const val RV_DENOM_FULL = "rv_denom_full_card"
 
         fun getPulsaPdpIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://digital/pdp_pulsa_macrobenchmark")
+            return intent
+        }
+
+        fun getDataPlanPdpIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://digital/pdp_data_plan_macrobenchmark")
+            return intent
+        }
+    }
+
+    object RechargeHomepage {
+        const val RV_RECHARGE_HOMEPAGE = "recycler_view"
+
+        fun getRechargeHomepageIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://recharge/home/dynamic_macrobenchmark")
             return intent
         }
     }
