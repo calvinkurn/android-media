@@ -13,6 +13,7 @@ import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewPropertyAnimator
 import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
@@ -84,6 +85,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopPageHeaderFragmentHeaderViewHolderV2(
     private val viewBinding: ShopHeaderFragmentTabContentBinding?,
@@ -98,7 +100,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     companion object {
         private const val CYCLE_DURATION = 3500L
         private const val MAXIMUM_WIDTH_STATIC_USP = 100
-        private const val DELAY_DURATION_TICKER_MILLIS = 1000L
         private const val NEW_SELLER_TEXT_HTML = "Penjual Baru"
     }
 
@@ -634,6 +635,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         tickerShopStatus?.show()
         tickerShopStatus?.tickerTitle =
             HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+        setTickerInitialTextDescription(shopOperationalHourStatus.tickerMessage)
         tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
         tickerShopStatus?.tickerType = if (isMyShop) {
             Ticker.TYPE_WARNING
@@ -653,15 +655,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         } else {
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
         }
-
-        doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
-            tickerShopStatus?.tickerTitle =
-                HtmlLinkHelper(
-                    context,
-                    shopOperationalHourStatus.tickerTitle
-                ).spannedString.toString()
-            tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
-        }
     }
 
     private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
@@ -672,14 +665,14 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val shopId = shopInfo.shopCore.shopID
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
+        val htmlDescription  = if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
+            generateShopModerateTickerDescription(statusMessage)
+        } else {
+            statusMessage
+        }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
-        tickerShopStatus?.setHtmlDescription(
-            if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
-                generateShopModerateTickerDescription(statusMessage)
-            } else {
-                statusMessage
-            }
-        )
+        setTickerInitialTextDescription(htmlDescription)
+        tickerShopStatus?.setHtmlDescription(htmlDescription)
         tickerShopStatus?.show()
         tickerShopStatus?.tickerType = when (shopTickerType) {
             ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
@@ -743,16 +736,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 tickerShopStatus?.closeButtonVisibility = View.VISIBLE
             }
         }
+    }
 
-        doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
-            tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
-            tickerShopStatus?.setHtmlDescription(
-                if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
-                    generateShopModerateTickerDescription(statusMessage)
-                } else {
-                    statusMessage
-                }
-            )
+    /**
+     * TODO temporary fix, need to investigate further, since if we don't set the initial text description it will truncate the text
+     */
+    private fun setTickerInitialTextDescription(htmlDescription: String) {
+        tickerShopStatus?.apply {
+            val tickerDescription: TextView? = findViewById(unifycomponentsR.id.ticker_description)
+            tickerDescription?.text = MethodChecker.fromHtml(htmlDescription)
         }
     }
 

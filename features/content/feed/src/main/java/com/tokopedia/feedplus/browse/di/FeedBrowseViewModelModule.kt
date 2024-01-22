@@ -13,7 +13,7 @@ import dagger.multibindings.IntoMap
  * Created by meyta.taliti on 11/08/23.
  */
 @Module
-abstract class FeedBrowseViewModelModule {
+internal abstract class FeedBrowseViewModelModule {
 
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
