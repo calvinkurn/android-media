@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.view.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -24,21 +25,30 @@ import java.lang.IllegalArgumentException
 class TopupBillsAutoCompleteAdapter(
     @get:JvmName("getContext_") val context: Context,
     private val textViewResourceId: Int,
-    private var items: MutableList<TopupBillsAutoComplete>,
+    private var favorites: MutableList<TopupBillsAutoComplete>,
+    private var contacts: MutableList<TopupBillsAutoComplete>,
     private var emptyStateUnitTxt: String,
     var listener: ContactArrayListener
-): ArrayAdapter<TopupBillsAutoComplete>(context, textViewResourceId, items) {
+): ArrayAdapter<TopupBillsAutoComplete>(context, textViewResourceId, favorites) {
 
-    var itemsAll: MutableList<TopupBillsAutoComplete> = arrayListOf()
+    var allFavorites: MutableList<TopupBillsAutoComplete> = arrayListOf()
+    var allContacts: MutableList<TopupBillsAutoComplete> = arrayListOf()
     var suggestions: MutableList<TopupBillsAutoComplete> = arrayListOf()
 
     init {
-        itemsAll = items
+        allFavorites = favorites
+        allContacts = contacts
     }
 
-    fun updateItems(list: MutableList<TopupBillsAutoComplete>) {
-        this.items = list
-        this.itemsAll = list
+    fun updateItems(
+        favoriteNumbers: MutableList<TopupBillsAutoComplete>,
+        contactNumbers: MutableList<TopupBillsAutoComplete>
+    ) {
+        this.favorites = favoriteNumbers
+        this.allFavorites = favoriteNumbers
+        this.contacts = contactNumbers
+        this.allContacts = contactNumbers
+
         notifyDataSetChanged()
     }
 
@@ -50,7 +60,7 @@ class TopupBillsAutoCompleteAdapter(
                 getAutoCompleteEmptyView(view, layoutInflater)
             }
             TopupBillsAutoCompleteView.HEADER.type -> {
-                getAutoCompleteHeaderView(view, layoutInflater)
+                getAutoCompleteHeaderView(view, layoutInflater, position)
             }
             TopupBillsAutoCompleteView.CONTACT.type -> {
                 getAutoCompleteNumberView(view, layoutInflater, position)
@@ -68,8 +78,27 @@ class TopupBillsAutoCompleteAdapter(
         return tempView
     }
 
-    private fun getAutoCompleteHeaderView(view: View?, inflater: LayoutInflater): View {
-        return inflater.inflate(R.layout.item_topup_bills_autocomplete_header, null)
+    private fun getAutoCompleteHeaderView(view: View?, inflater: LayoutInflater, pos: Int): View {
+        var tempView = view
+        var holder: AutoCompleteHeaderViewHolder
+
+        if (tempView == null) {
+            tempView = inflater.inflate(R.layout.item_topup_bills_autocomplete_header, null)
+            holder = AutoCompleteHeaderViewHolder(
+                tempView.findViewById(R.id.common_topup_bills_autocomplete_header)
+            )
+            tempView.tag = holder
+        } else {
+            holder = tempView.tag as AutoCompleteHeaderViewHolder
+        }
+
+        holder.run {
+            val header = getItem(pos) as TopupBillsAutoCompleteHeaderModel
+            if (header.text.isNotEmpty()) {
+                setTitle(header.text)
+            }
+        }
+        return tempView!!
     }
 
     private fun getAutoCompleteNumberView(view: View?, inflater: LayoutInflater, pos: Int): View {
@@ -111,15 +140,27 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) {
-            if (suggestions[position] is TopupBillsAutoCompleteEmptyModel) {
-                TopupBillsAutoCompleteView.EMPTY_STATE.type
-            } else {
-                TopupBillsAutoCompleteView.HEADER.type
-            }
-        } else {
-            TopupBillsAutoCompleteView.CONTACT.type
-        }
+        return suggestions[position].getViewType().type
+//        when {
+//            position == 0 && suggestions[position] is TopupBillsAutoCompleteEmptyModel -> {
+//                TopupBillsAutoCompleteView.EMPTY_STATE.type
+//            }
+//            suggestions[position] is TopupBillsAutoCompleteHeaderModel -> {
+//                TopupBillsAutoCompleteView.HEADER.type
+//            }
+//            suggestions[position] is TopupBillsAutoCompleteHeaderModel -> {
+//                TopupBillsAutoCompleteView.CONTACT.type
+//            }
+//        }
+//        return if (position == 0) {
+//            if (suggestions[position] is TopupBillsAutoCompleteEmptyModel) {
+//                TopupBillsAutoCompleteView.EMPTY_STATE.type
+//            } else {
+//                TopupBillsAutoCompleteView.HEADER.type
+//            }
+//        } else {
+//            TopupBillsAutoCompleteView.CONTACT.type
+//        }
     }
 
     override fun getItem(position: Int): TopupBillsAutoComplete? {
@@ -153,26 +194,54 @@ class TopupBillsAutoCompleteAdapter(
             }
         }
 
+        @SuppressLint("PII Data Exposure")
         override fun performFiltering(constraint: CharSequence?): FilterResults {
             return if (constraint != null) {
-                val filteredSuggestion: MutableList<TopupBillsAutoComplete> = mutableListOf()
-                filteredSuggestion.addAll(
-                    itemsAll
+                val filteredFavorites: MutableList<TopupBillsAutoComplete> = mutableListOf()
+                val filteredContacts: MutableList<TopupBillsAutoComplete> = mutableListOf()
+                val filteredSuggestions: MutableList<TopupBillsAutoComplete> = mutableListOf()
+
+                // Favorite Section
+                filteredFavorites.addAll(
+                    allFavorites
                         .filterIsInstance<TopupBillsAutoCompleteContactModel>()
                         .filter {
                             it.phoneNumber.startsWith(constraint.toString()) ||
                             it.name.contains(constraint.toString(), ignoreCase = true)
                         })
-                if (filteredSuggestion.isNotEmpty()) {
-                    filteredSuggestion.add(0, TopupBillsAutoCompleteHeaderModel())
-                } else {
-                    if (!constraint.matches(REGEX_IS_NUMERIC.toRegex()) && itemsAll.isNotEmpty())
-                        filteredSuggestion.add(TopupBillsAutoCompleteEmptyModel())
+                if (filteredFavorites.isNotEmpty()) {
+                    filteredFavorites.add(0, TopupBillsAutoCompleteHeaderModel(
+                        context.getString(R.string.common_topup_autocomplete_header_favorite)
+                    ))
+                    filteredSuggestions.addAll(filteredFavorites)
+                }
+
+                // Contact Section
+                filteredContacts.addAll(
+                    allContacts
+                        .filterIsInstance<TopupBillsAutoCompleteContactModel>()
+                        .filter {
+                            it.phoneNumber.startsWith(constraint.toString()) ||
+                            it.name.contains(constraint.toString(), ignoreCase = true)
+                        }
+                )
+
+                if (filteredContacts.isNotEmpty()) {
+                    filteredContacts.add(0, TopupBillsAutoCompleteHeaderModel(
+                        context.getString(R.string.common_topup_autocomplete_header_contact)
+                    ))
+                    filteredSuggestions.addAll(filteredContacts)
+                }
+
+                // Condition Check
+                if (!constraint.matches(REGEX_IS_NUMERIC.toRegex()) &&
+                    filteredSuggestions.isEmpty()) {
+                    filteredSuggestions.add(TopupBillsAutoCompleteEmptyModel())
                 }
 
                 FilterResults().apply {
-                    values = filteredSuggestion
-                    count = filteredSuggestion.size
+                    values = filteredSuggestions
+                    count = filteredSuggestions.size
                 }
             } else FilterResults().apply {
                 values = listOf<String>()
@@ -198,14 +267,11 @@ class TopupBillsAutoCompleteAdapter(
         val end = start + stringToHighlighted.length
 
         val spannableStringBuilder = SpannableStringBuilder(strToPut)
-        if (start >= 0) {
+        if (start >= 0 && end <= strToPut.length) {
             if (stringToHighlighted.length <= strToPut.length) {
                 spannableStringBuilder
                     .setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    0, start, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spannableStringBuilder
-                    .setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                        end, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
         return spannableStringBuilder
@@ -231,6 +297,14 @@ class TopupBillsAutoCompleteAdapter(
 
         fun requestLayout() {
             container.requestLayout()
+        }
+    }
+
+    inner class AutoCompleteHeaderViewHolder(
+        private var title: TextView
+    ) {
+        fun setTitle(text: String) {
+            title.text = text
         }
     }
 

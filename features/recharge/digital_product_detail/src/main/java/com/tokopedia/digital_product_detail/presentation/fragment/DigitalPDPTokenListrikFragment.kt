@@ -599,7 +599,8 @@ class DigitalPDPTokenListrikFragment :
                 setAutoCompleteList(
                     DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
                         autoComplete
-                    )
+                    ),
+                    emptyList()
                 )
             }
         }

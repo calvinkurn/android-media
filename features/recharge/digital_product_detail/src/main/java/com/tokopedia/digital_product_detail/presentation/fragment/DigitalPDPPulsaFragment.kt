@@ -20,11 +20,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
@@ -81,6 +83,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isNumeric
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -166,6 +169,9 @@ class DigitalPDPPulsaFragment :
 
     @Inject
     lateinit var performanceMonitoring: DigitalPDPPulsaPerformanceCallback
+
+    @Inject
+    lateinit var contactDataSource: ContactDataSource
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
@@ -625,12 +631,26 @@ class DigitalPDPPulsaFragment :
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
+
+        fun getContactByPermission(): MutableList<TopupBillsContact> {
+            val isDeniedOnce = localCacheHandler.getBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, false)
+            return if (!isDeniedOnce) {
+                val contacts = contactDataSource.getContactList()
+                contacts
+            } else {
+                mutableListOf()
+            }
+        }
+
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
+                val contacts = getContactByPermission()
+                val mappedContacts = DigitalPDPWidgetMapper.mapContactToWidgetModels(contacts)
                 setAutoCompleteList(
                     DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
                         autoComplete
-                    )
+                    ),
+                    mappedContacts
                 )
             }
         }
@@ -830,7 +850,11 @@ class DigitalPDPPulsaFragment :
     private fun initClientNumberWidget() {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setCustomInputNumberFormatter { inputNumber ->
-                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                if (inputNumber.isNumeric()) {
+                    CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                } else {
+                    inputNumber
+                }
             }
             setInputFieldStaticLabel(
                 getString(

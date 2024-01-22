@@ -20,11 +20,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
@@ -175,6 +177,9 @@ class DigitalPDPDataPlanFragment :
 
     @Inject
     lateinit var performanceMonitoring: DigitalPDPDataPlanPerformanceCallback
+
+    @Inject
+    lateinit var contactDataSource: ContactDataSource
 
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
@@ -802,12 +807,26 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
+
+        fun getContactByPermission(): MutableList<TopupBillsContact> {
+            val isDeniedOnce = localCacheHandler.getBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, false)
+            return if (!isDeniedOnce) {
+                val contacts = contactDataSource.getContactList()
+                contacts
+            } else {
+                mutableListOf()
+            }
+        }
+
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
+                val contacts = getContactByPermission()
+                val mappedContacts = DigitalPDPWidgetMapper.mapContactToWidgetModels(contacts)
                 setAutoCompleteList(
                     DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
                         autoComplete
-                    )
+                    ),
+                    mappedContacts
                 )
             }
         }

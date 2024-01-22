@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -121,6 +122,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
                         before: Int,
                         count: Int
                     ) {
+                        Log.d("MisaelCheck", "${s.toString()}")
                         var isManualInput = false
                         hideClearIcon()
                         clearErrorState()
@@ -160,6 +162,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
             R.layout.item_recharge_client_number_auto_complete,
+            mutableListOf(),
             mutableListOf(),
             context.getString(emptyStateUnitRes),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
@@ -232,9 +235,15 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         setSortFilterChip(favoriteChips)
     }
 
-    fun setAutoCompleteList(suggestions: List<RechargeClientNumberAutoCompleteModel>) {
+    fun setAutoCompleteList(
+        favoriteSuggestions: List<RechargeClientNumberAutoCompleteModel>,
+        contactSuggestions: List<RechargeClientNumberAutoCompleteModel>
+    ) {
         autoCompleteAdapter?.updateItems(
-            suggestions.map {
+            favoriteSuggestions.map {
+                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
+            }.toMutableList(),
+            contactSuggestions.map {
                 TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
             }.toMutableList()
         )
