@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonBpcWidgetBinding
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcItemModel
@@ -30,10 +31,7 @@ class ComparisonBpcWidgetItemViewHolder(
     override fun bind(element: ComparisonBpcItemModel) {
         binding?.run {
             productCardView.applyCarousel()
-            val productCardLayoutParams = productCardView.layoutParams
-            productCardLayoutParams.width = element.productCardWidth
-            productCardLayoutParams.height = element.productCardHeight
-            productCardView.layoutParams = productCardLayoutParams
+            setLayoutParams(element)
 
             bpcSpecsView.setSpecsInfo(element.specsModel)
             productCardView.setProductModel(element.productCardModel)
@@ -64,5 +62,11 @@ class ComparisonBpcWidgetItemViewHolder(
                 listener.onProductCardImpressed(element.recommendationItem, element.trackingModel, element.anchorProductId, element.widgetTitle)
             }
         }
+    }
+
+    private fun setLayoutParams(element: ComparisonBpcItemModel) {
+        val productCardLayoutParams = binding?.productCardView?.layoutParams
+        productCardLayoutParams?.height = element.productCardHeight
+        binding?.productCardView?.layoutParams = productCardLayoutParams
     }
 }

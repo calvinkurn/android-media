@@ -18,6 +18,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:forceWidth="@dimen/comparison_bpc_widget_product_card_width"
         app:reimagine="true"
         app:reimagine_template="listCarousel"
         app:useCompatPadding="true"
