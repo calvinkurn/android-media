@@ -485,6 +485,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun showEmptyView() {
+        progressView?.gone()
         appBarLayout?.visibility = View.GONE
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(VIEW_MULAI_BERIKLAN,
             "{${userSession.shopId}}",
