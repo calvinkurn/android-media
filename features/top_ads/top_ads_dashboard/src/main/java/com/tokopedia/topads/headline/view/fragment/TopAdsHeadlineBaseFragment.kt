@@ -33,6 +33,7 @@ import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_INACTIVE
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_NOT_DELIVERED
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_SHOP_ADS
 import com.tokopedia.topads.common.data.model.WhiteListUserResponse
@@ -115,6 +116,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var totalTenjual: Typography? = null
     private var onBoardingCta: UnifyButton? = null
     private var statisticGraph: CardUnify? = null
+    private var currentAdsStatus: Int? = null
 
     companion object {
         fun createInstance(): TopAdsHeadlineBaseFragment {
@@ -212,6 +214,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
+        currentAdsStatus = data.status
         when (data.status) {
             STATUS_INACTIVE -> setAutoPsInactiveLayout()
 
@@ -503,20 +506,24 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun showAutoPsEmptyView() {
-        appBarLayout?.gone()
-        hariIni?.gone()
-        view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view_autops)?.let {
-            it.show()
-            it.findViewById<Typography>(topadsdashboardR.id.article_link)?.let {
-                it.movementMethod = LinkMovementMethod.getInstance()
-                it.text = getClickableString()
-            }
-            it.findViewById<ImageUnify>(topadsdashboardR.id.empty_image)?.urlSrc = TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL
-            it.findViewById<UnifyButton>(topadsdashboardR.id.create_shopads_cta)?.setOnClickListener {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
-            }
-            it.findViewById<UnifyButton>(topadsdashboardR.id.autops_activate_cta)?.setOnClickListener {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+        if(currentAdsStatus == STATUS_NOT_DELIVERED){
+            setAutoPsActiveLayout()
+        } else {
+            appBarLayout?.gone()
+            hariIni?.gone()
+            view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view_autops)?.let {
+                it.show()
+                it.findViewById<Typography>(topadsdashboardR.id.article_link)?.let {
+                    it.movementMethod = LinkMovementMethod.getInstance()
+                    it.text = getClickableString()
+                }
+                it.findViewById<ImageUnify>(topadsdashboardR.id.empty_image)?.urlSrc = TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL
+                it.findViewById<UnifyButton>(topadsdashboardR.id.create_shopads_cta)?.setOnClickListener {
+                    RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
+                }
+                it.findViewById<UnifyButton>(topadsdashboardR.id.autops_activate_cta)?.setOnClickListener {
+                    RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+                }
             }
         }
     }
