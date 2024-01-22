@@ -3263,6 +3263,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check category inspiration appLink then should return tokopedia internal category inspiration in customerapp`() {
+        val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_FEED}/browse/inspirational"
+        assertEqualsDeepLinkMapper("tokopedia://feed/browse/inspirational", expectedDeepLink)
+    }
+
+    @Test
     fun `check stories shop appLink`() {
         val shopId = "12345"
         val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_STORIES_SHOP}/$shopId"
