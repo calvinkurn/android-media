@@ -5,7 +5,10 @@ import com.tokopedia.gamification.pdp.data.model.KetupatBenefitCouponData
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFactory
 
-class KetupatBenefitCouponItemVHModel(val benefitCouponData: KetupatBenefitCouponData.TokopointsCouponList.TokopointsCouponData) :
+class KetupatBenefitCouponItemVHModel(
+    val benefitCouponData: KetupatBenefitCouponData.TokopointsCouponList.TokopointsCouponData,
+    val scratchCard: KetupatLandingPageData.GamiGetScratchCardLandingPage.ScratchCard
+) :
     Visitable<KetupatLandingTypeFactory> {
     override fun type(typeFactory: KetupatLandingTypeFactory): Int {
         return typeFactory.type(this)

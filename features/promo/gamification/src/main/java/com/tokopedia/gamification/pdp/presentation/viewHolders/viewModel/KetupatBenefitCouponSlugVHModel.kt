@@ -7,7 +7,8 @@ import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFa
 
 class KetupatBenefitCouponSlugVHModel(
     val benefitCouponSlug: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem,
-    val value: KetupatBenefitCouponSlugData?
+    val value: KetupatBenefitCouponSlugData?,
+    val scratchCard: KetupatLandingPageData.GamiGetScratchCardLandingPage.ScratchCard
 ) :
     Visitable<KetupatLandingTypeFactory> {
     override fun type(typeFactory: KetupatLandingTypeFactory): Int {

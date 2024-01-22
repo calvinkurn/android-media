@@ -4,12 +4,14 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatRedirectionBannerVHModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.gamification.R as gamificationR
 
-class KetupatRedirectionBannerVH(itemView: View) : AbstractViewHolder<KetupatRedirectionBannerVHModel>(itemView) {
+class KetupatRedirectionBannerVH(itemView: View) :
+    AbstractViewHolder<KetupatRedirectionBannerVHModel>(itemView) {
 
     companion object {
         @JvmField
@@ -18,6 +20,8 @@ class KetupatRedirectionBannerVH(itemView: View) : AbstractViewHolder<KetupatRed
     }
 
     override fun bind(element: KetupatRedirectionBannerVHModel?) {
+        val scratchCardId = element?.scratchCard?.id.toString()
+
         element?.redirectionBanner.let { bannerData ->
             itemView.findViewById<Typography>(gamificationR.id.redirection_banner_title)?.text =
                 bannerData?.title
@@ -26,7 +30,12 @@ class KetupatRedirectionBannerVH(itemView: View) : AbstractViewHolder<KetupatRed
                 this.setOnClickListener {
                     RouteManager.route(
                         context,
-                        bannerData?.cta?.find { it?.type == "redirection" }?.appLink
+                        bannerData?.cta?.get(0)?.appLink
+                    )
+                    GamificationAnalytics.sendClickBannersInFooterBannerSectionEvent(
+                        "direct_reward_id: $scratchCardId",
+                        "gamification",
+                        "tokopediamarketplace"
                     )
                 }
             }
@@ -35,10 +44,16 @@ class KetupatRedirectionBannerVH(itemView: View) : AbstractViewHolder<KetupatRed
                 this.setOnClickListener {
                     RouteManager.route(
                         context,
-                        bannerData?.cta?.find { it?.type == "redirection" }?.appLink
+                        bannerData?.cta?.get(1)?.appLink
+                    )
+                    GamificationAnalytics.sendClickBannersInFooterBannerSectionEvent(
+                        "direct_reward_id: $scratchCardId",
+                        "gamification",
+                        "tokopediamarketplace"
                     )
                 }
             }
+            GamificationAnalytics.sendImpressFooterBannerSectionEvent("direct_reward_id: $scratchCardId")
         }
     }
 }

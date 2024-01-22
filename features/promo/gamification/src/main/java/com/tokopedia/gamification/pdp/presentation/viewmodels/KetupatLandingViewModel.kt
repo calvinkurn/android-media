@@ -73,8 +73,10 @@ class KetupatLandingViewModel @Inject constructor(
                 timeData.await().apply {
                     referralTimeData.value = this
                 }
-                convertDataToVisitable(landingPageData.value?.gamiGetScratchCardLandingPage).let { visitable ->
-                    ketaupatLandingDataList.value = visitable
+                landingPageData.value?.gamiGetScratchCardLandingPage?.let {
+                    convertDataToVisitable(it).let { visitable ->
+                        ketaupatLandingDataList.value = visitable
+                    }
                 }
             },
             onError = {
@@ -84,7 +86,7 @@ class KetupatLandingViewModel @Inject constructor(
         )
     }
 
-    private fun convertDataToVisitable(data: KetupatLandingPageData.GamiGetScratchCardLandingPage?): ArrayList<Visitable<KetupatLandingTypeFactory>>? {
+    private fun convertDataToVisitable(data: KetupatLandingPageData.GamiGetScratchCardLandingPage): ArrayList<Visitable<KetupatLandingTypeFactory>>? {
         val tempList: ArrayList<Visitable<KetupatLandingTypeFactory>> = ArrayList()
         var header: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
         var crack: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
@@ -93,7 +95,7 @@ class KetupatLandingViewModel @Inject constructor(
         var benefitCouponSlug: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? =
             null
         var banner: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
-        data?.sections?.forEach {
+        data.sections?.forEach {
             when (it?.type) {
                 "header" -> {
                     header = it
@@ -122,32 +124,40 @@ class KetupatLandingViewModel @Inject constructor(
         }
 
         if (header != null) {
-            data?.scratchCard?.let { KetupatTopBannerVHModel(header!!, it) }
+            data.scratchCard?.let { KetupatTopBannerVHModel(header!!, it) }
                 ?.let { tempList.add(it) }
         }
         if (crack != null) {
-            tempList.add(KetupatCrackBannerVHModel(crack!!))
+            data.scratchCard?.let { KetupatCrackBannerVHModel(crack!!, it) }
+                ?.let { tempList.add(it) }
         }
         if (referral != null) {
             referralTimeData.value?.let {
-                KetupatReferralBannerVHModel(referral!!,
-                    it
-                )
+                data.scratchCard?.let { scratchCard -> KetupatReferralBannerVHModel(referral!!, it, scratchCard) }
             }?.let { tempList.add(it) }
         }
         if (benefitCoupon != null) {
-            tempList.add(KetupatBenefitCouponVHModel(benefitCoupon!!, benefitCouponData.value))
+            data.scratchCard?.let {
+                KetupatBenefitCouponVHModel(benefitCoupon!!,
+                    it, benefitCouponData.value)
+            }?.let { tempList.add(it) }
         }
         if (benefitCouponSlug != null) {
-            tempList.add(
+            data.scratchCard?.let {
                 KetupatBenefitCouponSlugVHModel(
                     benefitCouponSlug!!,
-                    benefitCouponSlugData.value
+                    benefitCouponSlugData.value,
+                    it
                 )
-            )
+            }?.let {
+                tempList.add(
+                    it
+                )
+            }
         }
         if (banner != null) {
-            tempList.add(KetupatRedirectionBannerVHModel(banner!!))
+            data.scratchCard?.let { KetupatRedirectionBannerVHModel(banner!!, it) }
+                ?.let { tempList.add(it) }
         }
         return tempList
     }

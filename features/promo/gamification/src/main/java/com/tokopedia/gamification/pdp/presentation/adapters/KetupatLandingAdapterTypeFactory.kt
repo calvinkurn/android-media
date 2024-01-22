@@ -9,7 +9,6 @@ import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatBenefitCou
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatBenefitCouponSlugVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatBenefitCouponVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatCrackBannerVH
-import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatProductRecommVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatRedirectionBannerVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatReferralBannerVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatTopBannerVH
@@ -18,7 +17,6 @@ import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.Ketupat
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponSlugVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatProductRecommVHmodel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatRedirectionBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
@@ -57,10 +55,6 @@ class KetupatLandingAdapterTypeFactory(/*Listener if needed*/) :
 
     override fun type(model: KetupatRedirectionBannerVHModel): Int {
         return KetupatRedirectionBannerVH.LAYOUT
-    }
-
-    override fun type(model: KetupatProductRecommVHmodel): Int {
-        return KetupatProductRecommVH.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {

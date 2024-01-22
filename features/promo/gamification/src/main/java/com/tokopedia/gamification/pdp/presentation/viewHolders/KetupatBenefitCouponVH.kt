@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFactory
@@ -14,7 +15,8 @@ import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.Ketupat
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.gamification.R as gamificationR
 
-class KetupatBenefitCouponVH(itemView: View) : AbstractViewHolder<KetupatBenefitCouponVHModel>(itemView) {
+class KetupatBenefitCouponVH(itemView: View) :
+    AbstractViewHolder<KetupatBenefitCouponVHModel>(itemView) {
 
     companion object {
         @JvmField
@@ -23,6 +25,7 @@ class KetupatBenefitCouponVH(itemView: View) : AbstractViewHolder<KetupatBenefit
     }
 
     override fun bind(element: KetupatBenefitCouponVHModel?) {
+        val scratchCardId = element?.scratchCard?.id.toString()
         element?.benefitCoupon.let { couponData ->
             itemView.findViewById<Typography>(gamificationR.id.coupon_banner_title)?.text =
                 couponData?.title
@@ -37,19 +40,33 @@ class KetupatBenefitCouponVH(itemView: View) : AbstractViewHolder<KetupatBenefit
                         couponData?.cta?.find { it?.type == "redirection" }?.appLink
                     )
                 }
+                GamificationAnalytics.sendClickLihatSemuaInCouponWidgetByCategorySectionEvent(
+                    "direct_reward_id: $scratchCardId",
+                    "gamification",
+                    "tokopediamarketplace"
+                )
             }
         }
         element?.value.let {
             val tempList: ArrayList<Visitable<KetupatLandingTypeFactory>> = ArrayList()
             it?.tokopointsCouponList?.tokopointsCouponData?.forEach {
-                it?.let { it1 -> KetupatBenefitCouponItemVHModel(it1) }
+                it?.let { benefitCouponData ->
+                    element?.scratchCard?.let { scratchCard ->
+                        KetupatBenefitCouponItemVHModel(
+                            benefitCouponData,
+                            scratchCard
+                        )
+                    }
+                }
                     ?.let { it2 -> tempList.add(it2) }
             }
             val adapter = KetupatLandingAdapter(
                 KetupatLandingAdapterTypeFactory()
             )
             adapter.addMoreData(tempList)
-            itemView.findViewById<RecyclerView>(gamificationR.id.rv_benefit_coupon).adapter = adapter
+            itemView.findViewById<RecyclerView>(gamificationR.id.rv_benefit_coupon).adapter =
+                adapter
         }
+        GamificationAnalytics.sendImpressCouponWidgetByCategorySectionEvent("direct_reward_id: $scratchCardId")
     }
 }

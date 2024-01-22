@@ -3,9 +3,11 @@ package com.tokopedia.gamification.pdp.presentation.viewHolders
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -15,7 +17,6 @@ import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.absoluteValue
 import com.tokopedia.gamification.R as gamificationR
 
 class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVHModel>(itemView) {
@@ -25,7 +26,6 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
         @LayoutRes
         var LAYOUT = gamificationR.layout.ketupat_top_banner
 
-        const val TIMER_DATE_FORMAT = "yyyy-MM-dd"
     }
 
     override fun bind(element: KetupatTopBannerVHModel?) {
@@ -37,28 +37,46 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
                 ?.setImageUrl(header.assets.find { it?.key == "BACKGROUND_IMAGE" }?.value.toString())
         }
         element?.scratchCard?.let {
-//            val diff = parseData(it.startTime, TIMER_DATE_FORMAT)?.getDayDiffFromToday
-            val diff = getDateDiffFromToday(it.startTime)
-            if (diff != null && diff > 0) {
-                itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).show()
-                val date = when {
-                    diff > 7 -> {
-                        formatDate("yyyy-MM-dd hh:mm:ss Z", "dd-MMM-yyyy", it.startTime + "00")
-                    }
+            setDate(it.startTime, it.endTime)
+            GamificationAnalytics.sendImpressHeaderSectionEvent("direct_reward_id: ${it.id.toString()}")
+        }
+    }
 
-                    diff in 2..7 -> {
-                        "$diff Days"
-                    }
-
-                    else -> {
-                        formatDate("yyyy-MM-dd hh:mm:ss Z", "hh", it.startTime + "00")
-                    }
-                }
-                itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).apply {
-                    text = date
-                    show()
-                }
+    private fun setDate(startTime: String?, endTime: String?) {
+        val diffStartTime = getDateDiffFromToday(startTime)
+        val diffEndTime = getDateDiffFromToday(endTime)
+        val diff: Long
+        val time: String
+        if ((diffStartTime ?: 0) < 0) {
+            diff = diffEndTime!!
+            time = endTime.toString()
+            itemView.findViewById<Typography>(gamificationR.id.top_banner_subtitle).text =
+                "Event berakhir"
+        } else {
+            diff = diffStartTime ?: 0
+            time = startTime.toString()
+        }
+        itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).show()
+        val date = when {
+            diff > 7 -> {
+                formatDate("yyyy-MM-dd hh:mm:ss Z", "dd MMMM yyyy", time + "00")
             }
+
+            diff in 2..7 -> {
+                "$diff Days"
+            }
+
+            diff < 0 -> {
+                itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).hide()
+                ""
+            }
+            else -> {
+                formatDate("yyyy-MM-dd hh:mm:ss Z", "hh", time + "00")
+            }
+        }
+        itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).apply {
+            text = date
+            show()
         }
     }
 
@@ -67,16 +85,10 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
             val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.ENGLISH)
             formatter.isLenient = false
             formatter.timeZone = TimeZone.getTimeZone("UTC")
-            val diff = formatter.parse(date + "00")?.getDayDiffFromToday()
-            return if (diff == null || diff > 0) {
-                -1
-            } else {
-                diff.absoluteValue
-            }
+            return formatter.parse(date + "00")?.getDayDiffFromToday()
         } catch (e: ParseException) {
             Timber.e(e)
         }
-
         return -1
     }
 

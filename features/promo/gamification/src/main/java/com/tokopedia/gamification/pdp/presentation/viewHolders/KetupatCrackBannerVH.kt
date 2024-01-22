@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.ImageUnify
@@ -11,7 +12,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.gamification.R as gamificationR
 
-class KetupatCrackBannerVH(itemView: View) : AbstractViewHolder<KetupatCrackBannerVHModel>(itemView) {
+class KetupatCrackBannerVH(itemView: View) :
+    AbstractViewHolder<KetupatCrackBannerVHModel>(itemView) {
 
     companion object {
         @JvmField
@@ -20,6 +22,8 @@ class KetupatCrackBannerVH(itemView: View) : AbstractViewHolder<KetupatCrackBann
     }
 
     override fun bind(element: KetupatCrackBannerVHModel?) {
+        val scratchCardId = element?.scratchCard?.id.toString()
+
         element?.crack.let { crackData ->
             itemView.findViewById<Typography>(gamificationR.id.crack_banner_title)?.text =
                 crackData?.title
@@ -30,25 +34,30 @@ class KetupatCrackBannerVH(itemView: View) : AbstractViewHolder<KetupatCrackBann
             itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
                 crackData?.text?.find { it?.key == "DEFAULT" }?.value
             itemView.findViewById<UnifyButton>(gamificationR.id.more_info_btn).apply {
-                text = "Bara Cara Main"
+                text = "Baca Cara Main"
                 this.buttonVariant = UnifyButton.Variant.GHOST
                 this.setOnClickListener {
                     RouteManager.route(
                         context,
                         crackData?.cta?.find { it?.type == "redirection" }?.appLink
                     )
+                    GamificationAnalytics.sendClickCaraMainEvent(
+                        "direct_reward_id: $scratchCardId", "gamification",
+                        "tokopediamarketplace"
+                    )
                 }
             }
             itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).apply {
-//                text = "Belah Ketupat, Yuk!"
-
-//                this.buttonVariant = UnifyButton.Variant.GHOST
                 this.setOnClickListener {
                     itemView.findViewById<ImageUnify>(gamificationR.id.crack_icon_img)
                         ?.setImageUrl(crackData?.assets?.find { it?.key == "IMAGE_ICON_OPENED" }?.value.toString())
                     itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
                         crackData?.text?.find { it?.key == "OPENED" }?.value
                     this.hide()
+                    GamificationAnalytics.sendClickClaimButtonEvent(
+                        "direct_reward_id: $scratchCardId", "gamification",
+                        "tokopediamarketplace"
+                    )
                 }
             }
             crackData?.cta?.get(0)?.imageURL?.let {
@@ -56,6 +65,8 @@ class KetupatCrackBannerVH(itemView: View) : AbstractViewHolder<KetupatCrackBann
                     it
                 )
             }
+
+            GamificationAnalytics.sendImpressManualClaimSectionEvent("direct_reward_id: $scratchCardId")
         }
     }
 }

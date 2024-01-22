@@ -13,6 +13,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.di.ActivityContextModule
+import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
 import com.tokopedia.gamification.pdp.data.di.components.PdpComponent
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
@@ -36,6 +37,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         KetupatLandingAdapter(KetupatLandingAdapterTypeFactory())
     }
     private var ketupatLandingViewModel: KetupatLandingViewModel? = null
+    private var scratchCardId: String? = ""
 
     @Inject
     @JvmField
@@ -52,7 +54,14 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
         ketupatLandingViewModel?.getLandingPageData()?.observe(this) {
             view?.let { view -> setSharingHeaderIconAndListener(view, it) }
+            scratchCardId = it.gamiGetScratchCardLandingPage.scratchCard?.id.toString()
+            GamificationAnalytics.sendDirectRewardLandingPageEvent("direct_reward_id: $scratchCardId" )
         }
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        GamificationAnalytics.sendClickBackOnNavBarEvent("direct_reward_id: $scratchCardId", "gamification", "tokopediamarketplace" )
+        return super.onFragmentBackPressed()
     }
 
     override fun setViewModel(viewModel: BaseViewModel) {
@@ -88,12 +97,13 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         }
         val requestParam = GetRecommendationRequestParam()
         infiniteRecommendationManager?.requestParam = requestParam
-        infiniteRecommendationManager?.fetchRecommendation()
+        infiniteRecommendationManager?.fetchRecommendation().apply {
+            GamificationAnalytics.sendImpressProductRecommendationSectionEvent("direct_reward_id: $scratchCardId")
+        }
 
         ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024")
     }
 
-    // Call from the function where we get the landing page data
     fun setSharingHeaderIconAndListener(
         view: View,
         ketupatLandingPageData: KetupatLandingPageData
@@ -113,6 +123,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                                 ketupatLandingPageData.gamiGetScratchCardLandingPage.appBar?.shared,
                                 userSession.userId
                             )
+                            GamificationAnalytics.sendClickShareOnNavBarEvent("direct_reward_id: $scratchCardId", "gamification","tokopediamarketplace" )
                         },
                         disableDefaultGtmTracker = true
                     )
