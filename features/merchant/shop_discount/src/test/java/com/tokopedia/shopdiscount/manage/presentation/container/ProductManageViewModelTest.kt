@@ -2,10 +2,12 @@ package com.tokopedia.shopdiscount.manage.presentation.container
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
+import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceSellerStatusUseCase
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
 import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListMetaResponse
 import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
@@ -54,6 +56,12 @@ class ProductManageViewModelTest {
     @RelaxedMockK
     lateinit var sellerEligibilityObserver: Observer<in Result<SellerEligibilityData>>
 
+    @RelaxedMockK
+    lateinit var getSlashPriceSellerStatusUseCase: GetSlashPriceSellerStatusUseCase
+
+    @RelaxedMockK
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -63,6 +71,8 @@ class ProductManageViewModelTest {
             CoroutineTestDispatchersProvider,
             getSlashPriceProductListMetaUseCase,
             getSlashPriceBenefitUseCase,
+            getSlashPriceSellerStatusUseCase,
+            getTargetedTickerUseCase,
             authorizeAccessUseCase,
             productListMetaMapper,
             userSession

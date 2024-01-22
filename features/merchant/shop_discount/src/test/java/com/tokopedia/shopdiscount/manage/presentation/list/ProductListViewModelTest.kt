@@ -15,6 +15,7 @@ import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
 import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListUseCase
+import com.tokopedia.shopdiscount.product_detail.domain.GetSlashPriceProductDetailUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -49,6 +50,9 @@ class ProductListViewModelTest {
     lateinit var reserveProductUseCase: MutationDoSlashPriceProductReservationUseCase
 
     @RelaxedMockK
+    lateinit var getSlashPriceProductDetailUseCase: GetSlashPriceProductDetailUseCase
+
+    @RelaxedMockK
     lateinit var productMapper: ProductMapper
 
     @RelaxedMockK
@@ -76,7 +80,8 @@ class ProductListViewModelTest {
             deleteDiscountUseCase,
             reserveProductUseCase,
             productMapper,
-            updateDiscountRequestMapper
+            updateDiscountRequestMapper,
+            getSlashPriceProductDetailUseCase
         )
     }
 

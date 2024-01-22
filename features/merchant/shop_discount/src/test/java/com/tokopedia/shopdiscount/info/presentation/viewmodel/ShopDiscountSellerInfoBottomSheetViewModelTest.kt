@@ -1,8 +1,10 @@
 package com.tokopedia.shopdiscount.info.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
+import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceSellerStatusUseCase
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.info.data.response.GetSlashPriceTickerResponse
 import com.tokopedia.shopdiscount.info.domain.usecase.GetSlashPriceTickerUseCase
@@ -24,6 +26,12 @@ class ShopDiscountSellerInfoBottomSheetViewModelTest {
     @RelaxedMockK
     lateinit var getSlashPriceTickerUseCase: GetSlashPriceTickerUseCase
 
+    @RelaxedMockK
+    lateinit var getSlashPriceSellerStatusUseCase: GetSlashPriceSellerStatusUseCase
+
+    @RelaxedMockK
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -34,7 +42,9 @@ class ShopDiscountSellerInfoBottomSheetViewModelTest {
         ShopDiscountSellerInfoBottomSheetViewModel(
             CoroutineTestDispatchersProvider,
             getSlashPriceBenefitUseCase,
-            getSlashPriceTickerUseCase
+            getSlashPriceTickerUseCase,
+            getSlashPriceSellerStatusUseCase,
+            getTargetedTickerUseCase
         )
     }
 
