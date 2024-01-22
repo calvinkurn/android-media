@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.util.analytics
+package com.tokopedia.promousage.analytics
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
