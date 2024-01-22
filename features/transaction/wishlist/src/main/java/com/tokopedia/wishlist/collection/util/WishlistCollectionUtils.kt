@@ -77,9 +77,10 @@ object WishlistCollectionUtils {
                 )
                 recomm.recommendationProductCardModelData.forEachIndexed { index, productCardModel ->
                     if (recomm.listRecommendationItem.isNotEmpty()) {
+                        val productId = recomm.listRecommendationItem[index].productId
                         listCollection.add(
                             WishlistCollectionTypeLayoutData(
-                                "${WishlistConsts.TYPE_RECOMMENDATION_LIST}_${productCardModel.productName}",
+                                "${WishlistConsts.TYPE_RECOMMENDATION_LIST}_$productId",
                                 productCardModel,
                                 WishlistConsts.TYPE_RECOMMENDATION_LIST,
                                 recommItem = recomm.listRecommendationItem[index]
@@ -115,9 +116,10 @@ object WishlistCollectionUtils {
         )
         recomm.recommendationProductCardModelData.forEachIndexed { index, productCardModel ->
             if (recomm.listRecommendationItem.isNotEmpty()) {
+                val productId = recomm.listRecommendationItem[index].productId
                 listData.add(
                     WishlistCollectionTypeLayoutData(
-                        "${WishlistConsts.TYPE_RECOMMENDATION_LIST}_$index",
+                        "${WishlistConsts.TYPE_RECOMMENDATION_LIST}_$productId",
                         productCardModel,
                         WishlistConsts.TYPE_RECOMMENDATION_LIST,
                         recommItem = recomm.listRecommendationItem[index]
