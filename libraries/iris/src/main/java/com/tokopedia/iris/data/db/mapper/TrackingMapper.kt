@@ -176,7 +176,6 @@ class TrackingMapper {
         const val KEY_NEW_VISIT = "newVisit"
         const val KEY_BROWSER_NAME = "browser_name"
         const val KEY_BROWSER_VERSION_NAME = "browser_version_name"
-        const val KEY_OPERATING_SYSTEM_NAME = "operating_system_name"
         const val KEY_OPERATING_SYSTEM_VERSION_NAME = "operating_system_version_name"
         const val KEY_MOBILE_DEVICE_BRANDING_NAME = "mobile_device_branding_name"
         const val KEY_MOBILE_DEVICE_MODEL_NAME = "mobile_device_model_name"
@@ -199,11 +198,9 @@ class TrackingMapper {
                     if (eventName == EVENT_OPEN_SCREEN) {
                         item.put(KEY_BROWSER_NAME, "")
                         item.put(KEY_BROWSER_VERSION_NAME, "")
-                        item.put(KEY_OPERATING_SYSTEM_NAME, ANDROID)
                         item.put(KEY_OPERATING_SYSTEM_VERSION_NAME, Build.VERSION.RELEASE)
                         item.put(KEY_MOBILE_DEVICE_BRANDING_NAME, Build.BRAND)
                         item.put(KEY_MOBILE_DEVICE_MODEL_NAME, Build.MODEL)
-                        item.put(KEY_MOBILE_DEVICE_INFO_NAME, Build.DEVICE)
                         item.put(KEY_DEVICE_LANGUAGE_NAME, Locale.getDefault().toString())
                         item.put(KEY_SCREEN_RESOLUTION_NAME, DevicePerformanceInfo.getDeviceDpi(context))
                     }
