@@ -53,8 +53,7 @@ public class TopAdsModule {
 
     @TopAdsScope
     @Provides
-    WeakReference<TopAdsImageViewViewModel> provideTopAdsImageViewViewModel(TopAdsImageViewUseCase topAdsImageViewUseCase){
-        TopAdsImageViewViewModel tvm = new TopAdsImageViewViewModel(topAdsImageViewUseCase);
-        return  new WeakReference(tvm);
+    TopAdsImageViewViewModel provideTopAdsImageViewViewModel(TopAdsImageViewUseCase topAdsImageViewUseCase){
+        return new TopAdsImageViewViewModel(topAdsImageViewUseCase);
     }
 }

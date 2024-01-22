@@ -30,7 +30,6 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
-import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class TdnVerticalView : BaseCustomView {
@@ -45,7 +44,7 @@ class TdnVerticalView : BaseCustomView {
 
     @JvmField
     @Inject
-    var topAdsImageViewViewModel: WeakReference<TopAdsImageViewViewModel>? = null
+    var topAdsImageViewViewModel: TopAdsImageViewViewModel? = null
 
     constructor(context: Context) : super(context) {
         init()
@@ -87,7 +86,7 @@ class TdnVerticalView : BaseCustomView {
         productID: String = "",
         page: String = ""
     ) {
-        val qp = topAdsImageViewViewModel?.get()?.getQueryParams(
+        val qp = topAdsImageViewViewModel?.getQueryParams(
             query,
             source,
             pageToken,
@@ -97,9 +96,9 @@ class TdnVerticalView : BaseCustomView {
             productID,
             page
         )
-        qp?.let { topAdsImageViewViewModel?.get()?.getImageData(it) }
+        qp?.let { topAdsImageViewViewModel?.getImageData(it) }
 
-        topAdsImageViewViewModel?.get()?.getResponse()?.observe(context as LifecycleOwner) {
+        topAdsImageViewViewModel?.getResponse()?.observe(context as LifecycleOwner) {
             when (it) {
                 is Success -> {
                     tdnVerticalBannerResponseListener?.onTdnVerticalBannerResponse(it.data)
@@ -121,7 +120,11 @@ class TdnVerticalView : BaseCustomView {
         onLoadFailed: () -> Unit = {},
         onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit = {}
     ) {
-        setTdnModel(tdnBanners.first(), onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
+        if (tdnBanners.isNotEmpty())
+            setTdnModel(tdnBanners.first(), onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
+        else {
+            this.hide()
+        }
     }
 
     private fun setTdnModel(

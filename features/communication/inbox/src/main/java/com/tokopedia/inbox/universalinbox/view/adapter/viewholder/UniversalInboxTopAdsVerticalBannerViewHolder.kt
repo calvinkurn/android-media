@@ -21,15 +21,18 @@ class UniversalInboxTopAdsVerticalBannerViewHolder constructor(
 
     override fun bind(uiModel: UniversalInboxTopAdsVerticalBannerUiModel) {
         bindListener()
-        bindTopAds()
+        bindTopAds(uiModel)
     }
 
-    private fun bindTopAds() {
-        binding?.inboxVerticalTopadsBanner?.getTdnData(
-            SOURCE,
-            ADS_COUNT,
-            dimenId = DIMEN_ID
-        )
+    private fun bindTopAds(uiModel: UniversalInboxTopAdsVerticalBannerUiModel) {
+        if (!uiModel.isRequested){
+            binding?.inboxVerticalTopadsBanner?.getTdnData(
+                SOURCE,
+                ADS_COUNT,
+                dimenId = DIMEN_ID
+            )
+            uiModel.isRequested = true
+        }
     }
 
     private fun bindListener() {
@@ -50,10 +53,7 @@ class UniversalInboxTopAdsVerticalBannerViewHolder constructor(
     }
 
     override fun onTdnVerticalBannerResponse(data: ArrayList<TopAdsImageViewModel>) {
-        if (data.isNotEmpty()) {
-            binding?.inboxVerticalTopadsBanner?.renderTdnBanner(data, EIGHT_DP, ::onTdnBannerClicked)
-        }
-
+        binding?.inboxVerticalTopadsBanner?.renderTdnBanner(data, EIGHT_DP, ::onTdnBannerClicked)
     }
 
     override fun onError(t: Throwable) {
