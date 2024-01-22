@@ -31,8 +31,11 @@ data class ShareExBranchUniversalObjectRequest(
     val contentIndexingMode: BranchUniversalObject.CONTENT_INDEX_MODE = BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC,
     /**
      * ContentMetadata is used to add additional, custom information about the content
-     * In this case, a custom key-value pair ("key1", "value1") is being added
-     * Ex: {an_min_version, 3.150}
+     * In this case, a custom key-value pair "{"an_min_version": "3.150"}" is being added as JSON String
      */
-    val contentMetadataMap: Map<String, String> = mapOf()
+    val customMetaTags: String = "",
+    /**
+     * Temporary variable to accommodate old version that still use custom parameter
+     */
+    val anMinVersion: String = ""
 )

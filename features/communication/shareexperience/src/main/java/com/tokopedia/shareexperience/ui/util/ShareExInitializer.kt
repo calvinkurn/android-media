@@ -128,11 +128,6 @@ class ShareExInitializer(
     ) {
         this.bottomSheetArg = bottomSheetArg
         showLoadingDialog()
-        analytics.trackActionClickIconShare(
-            id = bottomSheetArg.identifier,
-            pageTypeEnum = bottomSheetArg.pageTypeEnum,
-            label = bottomSheetArg.trackerArg.labelActionClickShareIcon
-        )
     }
 
     private fun showLoadingDialog() {
@@ -178,6 +173,18 @@ class ShareExInitializer(
             bottomSheet = ShareExBottomSheet.newInstance(it)
             bottomSheet?.setListener(this)
             bottomSheet?.show(fragmentActivity.supportFragmentManager, "")
+            trackClickIconShare()
+        }
+    }
+
+    private fun trackClickIconShare() {
+        bottomSheetArg?.let {
+            analytics.trackActionClickIconShare(
+                identifier = it.identifier,
+                pageTypeEnum = it.pageTypeEnum,
+                shareId = it.bottomSheetModel?.shareId,
+                label = it.trackerArg.labelActionClickShareIcon
+            )
         }
     }
 

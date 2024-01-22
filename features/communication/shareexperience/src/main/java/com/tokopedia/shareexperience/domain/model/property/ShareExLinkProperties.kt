@@ -19,8 +19,9 @@ data class ShareExLinkProperties(
     val androidDeeplinkPath: String = "",
     val iosDeeplinkPath: String = "",
     val canonicalUrl: String = "",
-    val androidMinVersion: String = "",
-    val iosMinVersion: String = "",
+    val canonicalIdentifier: String = "",
+    val customMetaTags: String = "",
+    val anMinVersion: String = "",
     val feature: ShareExFeatureEnum = ShareExFeatureEnum.SHARE,
     /**
      Fill the campaignName with following format: {Page} - {Page ID} - {User ID} - {Sharing Date} - {Image Generator Source}
@@ -31,4 +32,4 @@ data class ShareExLinkProperties(
      Example: PDP - 123456 - 765389 - 230321 - RXAbs1
      */
     val campaign: String = ""
-): Parcelable
+) : Parcelable

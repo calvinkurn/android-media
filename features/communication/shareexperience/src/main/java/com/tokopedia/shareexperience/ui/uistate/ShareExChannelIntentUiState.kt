@@ -2,6 +2,7 @@ package com.tokopedia.shareexperience.ui.uistate
 
 import android.content.Intent
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
 
 data class ShareExChannelIntentUiState(
     val intent: Intent? = null,
@@ -10,6 +11,7 @@ data class ShareExChannelIntentUiState(
     val channelEnum: ShareExChannelEnum? = null,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
+    val imageType: ShareExImageTypeEnum = ShareExImageTypeEnum.NO_IMAGE,
 
     /**
      * Special case for affiliate

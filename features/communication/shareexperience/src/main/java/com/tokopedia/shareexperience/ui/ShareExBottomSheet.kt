@@ -21,6 +21,7 @@ import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.domain.ShareExConstants.DefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
@@ -125,14 +126,16 @@ class ShareExBottomSheet :
         args?.let {
             viewModel.bottomSheetArgs = args
             analytics.trackImpressionBottomSheet(
-                id = it.identifier,
+                identifier = it.identifier,
                 pageTypeEnum = it.pageTypeEnum,
+                shareId = it.bottomSheetModel?.shareId,
                 label = args.trackerArg.labelImpressionBottomSheet
             )
             setCloseClickListener { _ ->
                 analytics.trackActionClickClose(
-                    id = it.identifier,
+                    identifier = it.identifier,
                     pageTypeEnum = it.pageTypeEnum,
+                    shareId = it.bottomSheetModel?.shareId,
                     label = it.trackerArg.labelActionCloseIcon
                 )
                 dismiss()
@@ -202,6 +205,10 @@ class ShareExBottomSheet :
                     dismiss()
                     listener?.onFailGenerateAffiliateLink(it.shortLink)
                 } else {
+                    trackActionClickChannel(
+                        it.channelEnum,
+                        it.imageType
+                    )
                     when (it.channelEnum) {
                         ShareExChannelEnum.COPY_LINK -> {
                             val isSuccessCopy = context?.copyTextToClipboard(it.shortLink)
@@ -229,6 +236,24 @@ class ShareExBottomSheet :
         }
     }
 
+    private fun trackActionClickChannel(
+        channelEnum: ShareExChannelEnum?,
+        imageTypeEnum: ShareExImageTypeEnum
+    ) {
+        viewModel.bottomSheetArgs?.let {
+            if (channelEnum != null) {
+                analytics.trackActionClickChannel(
+                    identifier = it.identifier,
+                    pageTypeEnum = it.pageTypeEnum,
+                    shareId = it.bottomSheetModel?.shareId,
+                    channel = channelEnum.trackerName,
+                    imageType = imageTypeEnum.value,
+                    label = it.trackerArg.labelActionClickChannel
+                )
+            }
+        }
+    }
+
     override fun onChipClicked(position: Int, text: String) {
         viewModel.processAction(ShareExAction.UpdateShareBody(position, text))
     }
@@ -240,8 +265,9 @@ class ShareExBottomSheet :
     override fun onImpressionAffiliateRegistrationCard() {
         viewModel.bottomSheetArgs?.let {
             analytics.trackImpressionTickerAffiliate(
-                id = it.identifier,
+                identifier = it.identifier,
                 pageTypeEnum = it.pageTypeEnum,
+                shareId = it.bottomSheetModel?.shareId,
                 label = it.trackerArg.labelImpressionAffiliateRegistration
             )
         }
@@ -250,8 +276,9 @@ class ShareExBottomSheet :
     override fun onAffiliateRegistrationCardClicked(appLink: String) {
         viewModel.bottomSheetArgs?.let {
             analytics.trackActionClickAffiliateRegistration(
-                id = it.identifier,
+                identifier = it.identifier,
                 pageTypeEnum = it.pageTypeEnum,
+                shareId = it.bottomSheetModel?.shareId,
                 label = it.trackerArg.labelActionClickAffiliateRegistration
             )
         }

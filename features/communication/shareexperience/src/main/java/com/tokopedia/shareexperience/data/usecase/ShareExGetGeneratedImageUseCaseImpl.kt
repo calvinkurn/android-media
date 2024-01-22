@@ -9,6 +9,7 @@ import com.tokopedia.shareexperience.data.query.ShareExImageGeneratorQuery
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.asFlowResult
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
 import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
@@ -40,7 +41,10 @@ class ShareExGetGeneratedImageUseCaseImpl @Inject constructor(
                 )
                 mapToModel(response.imageGeneratorModel.imageUrl)
             } else {
-                ShareExImageGeneratorModel(params.originalImageUrl)
+                ShareExImageGeneratorModel(
+                    params.originalImageUrl,
+                    ShareExImageTypeEnum.DEFAULT
+                )
             }
             emit(result)
         }
@@ -49,7 +53,7 @@ class ShareExGetGeneratedImageUseCaseImpl @Inject constructor(
     }
 
     private fun mapToModel(generatedImageUrl: String): ShareExImageGeneratorModel {
-        return ShareExImageGeneratorModel(generatedImageUrl)
+        return ShareExImageGeneratorModel(generatedImageUrl, ShareExImageTypeEnum.CONTEXTUAL_IMAGE)
     }
 
     private fun getCompletedImageGeneratorParams(

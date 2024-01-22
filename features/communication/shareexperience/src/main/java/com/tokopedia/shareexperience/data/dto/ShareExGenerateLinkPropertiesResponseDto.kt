@@ -25,10 +25,12 @@ data class ShareExGenerateLinkPropertiesResponseDto(
     val androidDeeplinkPath: String = "",
     @SerializedName("iosDeeplinkPath")
     val iosDeeplinkPath: String = "",
-    @SerializedName("anMinVersion")
-    val androidMinVersion: String = "",
-    @SerializedName("iosMinVersion")
-    val iosMinVersion: String = "",
     @SerializedName("canonicalUrl")
-    val canonicalUrl: String = ""
+    val canonicalUrl: String = "",
+    @SerializedName("canonicalIdentifier")
+    val canonicalIdentifier: String = "",
+    @SerializedName("customMetaTags")
+    val customMetaTags: String = "",
+    @SerializedName("anMinVersion")
+    val anMinVersion: String = ""
 )
