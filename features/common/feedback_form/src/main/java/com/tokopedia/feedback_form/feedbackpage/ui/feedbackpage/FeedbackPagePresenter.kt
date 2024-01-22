@@ -28,7 +28,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
 
     private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
     private var imageData: MutableList<BaseImageFeedbackUiModel> = mutableListOf()
-    private var pageModel: FeedbackModel? = null
+    private var pageModel: FeedbackModel = FeedbackModel()
     private var selectedId = -1
 
     override fun getFeedbackData() {
@@ -37,10 +37,11 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: Subscriber<FeedbackDataResponse>() {
                     override fun onNext(t: FeedbackDataResponse?) {
+                        view.hideLoadingFrame()
                         if (t != null) {
-                            view.setFeedbackData(mapper.mapData(t))
-                            pageModel = mapper.mapData(t)
+                            pageModel = mapper.updateData(t, pageModel.copy())
                         }
+                        view.setFeedbackData(pageModel)
                     }
 
                     override fun onCompleted() {
@@ -48,6 +49,8 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     }
 
                     override fun onError(e: Throwable?) {
+                        view.hideLoadingFrame()
+                        view.setFeedbackData(pageModel)
                         if (e != null) {
                             view.showError(e)
                         }
@@ -86,7 +89,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
 
     }
 
-    override fun sendAttachment(feedbackId: Int, filedata: MultipartBody.Part, totalImage: Int, imageCount: Int) {
+    override fun sendAttachment(feedbackId: Long, filedata: MultipartBody.Part, totalImage: Int, imageCount: Int) {
         feedbackApi.uploadAttachment("/api/v1/feedback/$feedbackId/upload-attachment", filedata)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -114,7 +117,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     }
 
 
-    override fun commitData(feedbackId: Int) {
+    override fun commitData(feedbackId: Long) {
         feedbackApi.commitData("api/v1/feedback/$feedbackId/commit")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -160,10 +163,8 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     /*set selected item radio button*/
     override fun setSelectedPage(pageId: Int) {
         val pageModel = pageModel
-        if (pageModel != null) {
-            selectedId = pageId
-            logicSelection(pageModel)
-        }
+        selectedId = pageId
+        logicSelection(pageModel)
     }
 
     private fun logicSelection(pageModel: FeedbackModel) {

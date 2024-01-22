@@ -33,10 +33,18 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.media.loader.loadAsGif
+import com.tokopedia.media.loader.loadSecureImage
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.utils.ThemeUtils
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.chat_common.R as chat_commonR
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ChatbotImageUploadViewHolder(
     itemView: View?,
@@ -51,7 +59,7 @@ class ChatbotImageUploadViewHolder(
     override fun getProgressBarSendImageId() = R.id.progress_bar
     override fun getLeftActionId() = R.id.left_action
     override fun getChatBalloonId() = R.id.fl_image_container
-    override fun getReadStatusId() = com.tokopedia.chat_common.R.id.chat_status
+    override fun getReadStatusId() = chat_commonR.id.chat_status
     private val datContainer: CardView? = itemView?.findViewById(R.id.dateContainer)
 
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
@@ -99,7 +107,7 @@ class ChatbotImageUploadViewHolder(
         changeHourColor(
             MethodChecker.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                unifyprinciplesR.color.Unify_NN0
             )
         )
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -127,25 +135,48 @@ class ChatbotImageUploadViewHolder(
         messageId: String
     ) {
         try {
-            if (imageview.context != null) {
-                Glide.with(imageview.context)
-                    .load(getGlideUrl(messageId, attachmentType, url, userSession))
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader)
-                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-                    .into(imageview)
-            }
+            loadSecureImage(imageview, url, attachmentType, messageId)
         } catch (e: Exception) {
             if (imageview.context != null) {
                 imageview.setImageDrawable(
                     ContextCompat.getDrawable(
                         imageview.context,
-                        com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader
+                        resourcescommonR.drawable.chatbot_image_placeloader
                     )
                 )
             }
             FirebaseCrashlytics.getInstance().recordException(e)
+        }
+    }
+
+    private fun loadSecureImage(
+        imageview: ImageView,
+        url: String?,
+        attachmentType: String,
+        messageId: String
+    ) {
+        if (imageview.context != null) {
+            val loadSecureImage = FirebaseRemoteConfigImpl(imageview.context)
+                .getBoolean(RemoteConfigKey.ANDROID_CHATBOT_SECURE_IMAGE, true)
+
+            if (loadSecureImage) {
+                if (url?.endsWith(GIF_EXTENSION, true) == true) {
+                    imageview.loadAsGif(url) {
+                        setPlaceHolder(resourcescommonR.drawable.chatbot_image_placeloader)
+                        setErrorDrawable(abstractionR.drawable.error_drawable)
+                    }
+                } else {
+                    imageview.loadSecureImage(url, userSession)
+                }
+            } else {
+                Glide.with(imageview.context)
+                    .load(getGlideUrl(messageId, attachmentType, url, userSession))
+                    .fitCenter()
+                    .dontAnimate()
+                    .placeholder(resourcescommonR.drawable.chatbot_image_placeloader)
+                    .error(abstractionR.drawable.error_drawable)
+                    .into(imageview)
+            }
         }
     }
 
@@ -184,8 +215,8 @@ class ChatbotImageUploadViewHolder(
         if (element.isShowTime && element.isSender) {
             checkMark.show()
             val imageResource = when {
-                element.isDummy -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_rounded_grey
-                else -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_read_rounded_green
+                element.isDummy -> chat_commonR.drawable.ic_chatcommon_check_rounded_grey
+                else -> chat_commonR.drawable.ic_chatcommon_check_read_rounded_green
             }
             val drawable = MethodChecker.getDrawable(checkMark.context, imageResource)
             checkMark.setImageDrawable(drawable)
@@ -199,8 +230,8 @@ class ChatbotImageUploadViewHolder(
         val time = element.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(
                 it,
-                itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
-                itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date)
+                itemView.context.getString(chat_commonR.string.chat_today_date),
+                itemView.context.getString(chat_commonR.string.chat_yesterday_date)
             )
         }
         date?.text = time
@@ -216,6 +247,7 @@ class ChatbotImageUploadViewHolder(
         get() = R.id.date
 
     companion object {
+        const val GIF_EXTENSION = ".gif"
         val LAYOUT = R.layout.item_chatbot_image_upload
     }
 }

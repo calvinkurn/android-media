@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.video
 
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.BaseParam
+import com.tokopedia.mediauploader.BaseParam.Companion.copy
 import com.tokopedia.mediauploader.BaseUploaderParam
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.VideoParam
@@ -61,7 +62,8 @@ class VideoUploaderManager @Inject constructor(
         // start upload time tracker before do uploads
         analytics.setStartUploadTime(trackerCacheKey, System.currentTimeMillis())
 
-        val upload = if (!isSimpleUpload) largeUploaderManager(param) else simpleUploaderManager(param)
+        val newParam = param.copy(base = updateFileSource(base, filePath))
+        val upload = if (!isSimpleUpload) largeUploaderManager(newParam) else simpleUploaderManager(newParam)
 
         return upload.also {
             analytics.setEndUploadTime(trackerCacheKey, System.currentTimeMillis()) // set the end upload time tracker
@@ -116,6 +118,14 @@ class VideoUploaderManager @Inject constructor(
             File(videoCompression(param))
         } else {
             originalFile
+        }
+    }
+
+    private fun updateFileSource(baseParam: BaseParam, newCompressFile: File): BaseParam{
+        return if (baseParam.file.equals(newCompressFile.path)) {
+            baseParam
+        } else {
+            baseParam.copy(newCompressFile)
         }
     }
 }
