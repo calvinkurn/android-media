@@ -1,6 +1,8 @@
 package com.tokopedia.content.product.preview.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
@@ -27,19 +31,25 @@ import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAda
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
-import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
+import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ReviewFragment @Inject constructor(
@@ -64,8 +74,12 @@ class ReviewFragment @Inject constructor(
     private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
 
     private val scrollListener by lazyThreadSafetyNone {
-        object : RecyclerView.OnScrollListener() {
+        object : EndlessRecyclerViewScrollListener(binding.rvReview.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = false))
+            }
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val index = getCurrentPosition()
                     viewModel.onAction(ProductPreviewAction.UpdateReviewPosition(index))
@@ -110,11 +124,11 @@ class ReviewFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.onAction(ProductPreviewAction.FetchReview)
-
         setupView()
         observeReview()
         observeEvent()
+
+        viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
     }
 
     private fun setupView() {
@@ -129,7 +143,7 @@ class ReviewFragment @Inject constructor(
                 viewLifecycleOwner.lifecycle,
                 Lifecycle.State.RESUMED
             ).withCache().collectLatest { (prev, curr) ->
-                renderList(prev, curr)
+               renderList(prev, curr)
             }
         }
     }
@@ -162,9 +176,43 @@ class ReviewFragment @Inject constructor(
         }
     }
 
-    private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
-        if (prev == data) return // TODO: adjust condition
-        reviewAdapter.submitList(data)
+    private fun renderList(prev: ReviewPageState?, data: ReviewPageState) {
+        if (prev?.reviewList == data.reviewList) return
+
+        val state = data.pageState
+
+        showLoading(state is PageState.Load)
+
+        when (state) {
+            is PageState.Success -> reviewAdapter.submitList(data.reviewList)
+            is PageState.Error -> showError(state)
+            else -> {}
+        }
+    }
+
+    private fun showLoading(isShown: Boolean) {
+        binding.reviewLoader.showWithCondition(isShown)
+        binding.rvReview.showWithCondition(!isShown)
+    }
+
+    private fun showError(state: PageState.Error) {
+        //TODO: why is it in dark mode.
+        binding.reviewGlobalError.show()
+        if (state.throwable is UnknownHostException) {
+            binding.reviewGlobalError.setType(GlobalError.NO_CONNECTION)
+            binding.reviewGlobalError.errorSecondaryAction.show()
+            binding.reviewGlobalError.errorSecondaryAction.text = getString(contentcommonR.string.content_global_error_secondary_text)
+            binding.reviewGlobalError.setSecondaryActionClickListener {
+                val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                router.route(requireActivity(), intent)
+            }
+        } else {
+            binding.reviewGlobalError.errorSecondaryAction.hide()
+            binding.reviewGlobalError.setType(GlobalError.SERVER_ERROR)
+        }
+        binding.reviewGlobalError.setActionClickListener {
+            viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
+        }
     }
 
     /**

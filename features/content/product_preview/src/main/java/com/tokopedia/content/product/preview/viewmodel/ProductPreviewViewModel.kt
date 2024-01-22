@@ -6,6 +6,7 @@ import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepos
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.*
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
@@ -13,6 +14,7 @@ import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
+import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.content.product.preview.viewmodel.state.ProductUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -48,9 +50,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<ProductPreviewEvent>(20)
     val uiEvent get() = _uiEvent
 
-    private val _review = MutableStateFlow(emptyList<ReviewUiModel>())
-    val review: Flow<List<ReviewUiModel>>
-        get() = _review // TODO: add state
+    private val _review = MutableStateFlow(ReviewPageState.Empty)
+    val review: Flow<ReviewPageState>
+        get() = _review
 
     val productUiState: Flow<ProductUiState>
         get() = combine(
@@ -70,33 +72,50 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val _reviewPosition = MutableStateFlow(0)
     private val reviewPosition get() = _reviewPosition.value
 
-    private val currentReview
-        get() = if (_review.value.isNotEmpty() && reviewPosition in 0 until _review.value.size)
-            _review.value[reviewPosition] else ReviewUiModel.Empty
+    private val currentReview: ReviewUiModel
+        get() {
+            return if (_review.value.reviewList.isEmpty() || reviewPosition in 0 until _review.value.reviewList.size) ReviewUiModel.Empty
+            else _review.value.reviewList[_reviewPosition.value]
+        }
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             InitializeProductMainData -> handleInitializeProductMainData()
             is ProductSelected -> handleProductSelected(action.position)
-            FetchReview -> getReview()
+            is FetchReview -> getReview(action.isRefresh)
             FetchMiniInfo -> getMiniInfo()
-            is ProductAction -> handleProductAction(action.model)
-            ProductActionFromResult -> handleProductAction(_miniInfo.value)
+            is ProductAction -> addToCart(action.model)
+            is Navigate -> navigate(action.appLink)
             is Navigate -> navigate(action.appLink)
             is SubmitReport -> submitReport(action.model)
             is ClickMenu -> menuOnClicked(action.isFromLogin)
             is UpdateReviewPosition -> updateReviewIndex(action.index)
-            is Like -> like(status = action.item)
+            is Like -> like(action.item)
             LikeFromResult -> like()
             else -> {}
         }
     }
 
-    private fun getReview() {
+    private fun getReview(isRefresh: Boolean) {
+        val state = _review.value.pageState
+        val page = when {
+            isRefresh -> 1
+            state is PageState.Success && state.hasNextPage -> state.page + 1
+            else -> return
+        }
+        if (isRefresh) {
+            _review.update { review -> review.copy(pageState = PageState.Load) }
+        }
         viewModelScope.launchCatchError(block = {
-            _review.value =
-                repo.getReview(param.productPreviewData.productId, 1) // TODO: add pagination
-        }) {}
+            val response = repo.getReview(param.productPreviewData.productId, page)
+            val newList = buildList {
+                if (_review.value.reviewList.isNotEmpty()) addAll(_review.value.reviewList + response.reviewList)
+                else addAll(response.reviewList)
+            }
+            _review.update { review -> review.copy(reviewList = newList, pageState = response.pageState)}
+        }) {
+            _review.update { review -> review.copy(pageState = PageState.Error(it)) }
+        }
     }
 
     private fun getMiniInfo() {
@@ -218,11 +237,13 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun menuOnClicked(isFromLogin: Boolean) {
         val status = _review.updateAndGet { review ->
-            if (isFromLogin.not()) review
-            else review.map { model ->
-                model.copy(menus = model.menus.copy(isReportable = userSessionInterface.isLoggedIn && model.author.id != userSessionInterface.userId))
-            }
-        }.getOrNull(reviewPosition)?.menus ?: return
+            review.copy(reviewList =
+                if (isFromLogin.not()) review.reviewList
+                else review.reviewList.map { model ->
+                    model.copy(menus = model.menus.copy(isReportable = userSessionInterface.isLoggedIn && model.author.id != userSessionInterface.userId))
+                }
+            )
+        }.reviewList.getOrNull(reviewPosition)?.menus ?: return
 
         requiredLogin(status) {
             viewModelScope.launch {
@@ -241,11 +262,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
         requiredLogin(status) {
             viewModelScope.launchCatchError(block = {
                 val state = repo.likeReview(status, currentReview.reviewId)
-                _review.update { review ->
-                    review.map { model ->
-                        if (model.reviewId == currentReview.reviewId) model.copy(likeState = state.copy(withAnimation = status.withAnimation))
-                        else model
-                    }
+                _review.update { reviews ->
+                    reviews.copy(reviewList =
+                    reviews.reviewList.map { review ->
+                        if (review.reviewId == currentReview.reviewId) review.copy(likeState = state.copy(withAnimation = status.withAnimation))
+                        else review
+                    })
                 }
             }) {
                 _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {})

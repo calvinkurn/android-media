@@ -13,7 +13,7 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState.LikeStatus.Companion.switch
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
-import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
@@ -40,10 +40,10 @@ class ProductPreviewRepositoryImpl @Inject constructor(
             mapper.mapMiniInfo(response)
         }
 
-    override suspend fun getReview(productId: String, page: Int): List<ReviewUiModel> =
+    override suspend fun getReview(productId: String, page: Int): ReviewPageState =
         withContext(dispatchers.io) {
             val response = getReviewUseCase(MediaReviewUseCase.Param(productId, page))
-            mapper.mapReviews(response)
+            mapper.mapReviews(response, page)
         }
 
     override suspend fun addToCart(
