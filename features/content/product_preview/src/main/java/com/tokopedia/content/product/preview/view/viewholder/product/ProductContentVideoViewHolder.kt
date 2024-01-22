@@ -24,12 +24,12 @@ class ProductContentVideoViewHolder(
 
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
     private var mIsSelected: Boolean = false
-    private var mVideoIds: String = ""
+    private var mVideoId: String = ""
 
     init {
         binding.root.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View) {
-                if (mVideoIds.isNotEmpty()) onSelected()
+                if (mVideoId.isNotEmpty()) onSelected()
             }
 
             override fun onViewDetachedFromWindow(p0: View) {
@@ -53,8 +53,8 @@ class ProductContentVideoViewHolder(
     }
 
     private fun bindVideoPlayer(content: ContentUiModel) {
-        mVideoIds = PRODUCT_CONTENT_VIDEO_KEY_REF + content.url
-        mVideoPlayer = listener.getVideoPlayer(mVideoIds)
+        mVideoId = String.format(PRODUCT_CONTENT_VIDEO_KEY_REF, content.url)
+        mVideoPlayer = listener.getVideoPlayer(mVideoId)
         binding.playerProductContentVideo.player = mVideoPlayer?.exoPlayer
         binding.playerControl.player = mVideoPlayer?.exoPlayer
 
@@ -94,12 +94,12 @@ class ProductContentVideoViewHolder(
 
     private fun onSelected() {
         mIsSelected = true
-        listener.resumeVideo(mVideoIds)
+        listener.resumeVideo(mVideoId)
     }
 
     private fun onNotSelected() {
         mIsSelected = false
-        listener.pauseVideo(mVideoIds)
+        listener.pauseVideo(mVideoId)
     }
 
     private fun showLoading() {

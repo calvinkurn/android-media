@@ -44,24 +44,18 @@ class ProductPreviewVideoPlayerManager(
     }
 
     private fun getOrCreatePlayer(id: String): ProductPreviewExoPlayer {
-        return getUnoccupiedPlayer(id) ?: run {
+        return getOccupiedPlayer(id) ?: run {
             val player = createPlayer()
             videoMap[player] = ""
             player
         }
     }
 
-    private fun getUnoccupiedPlayer(id: String): ProductPreviewExoPlayer? {
-        return videoMap.entries.firstOrNull { it.value.isEmpty() || it.value == id }?.key
-    }
-
     private fun createPlayer(): ProductPreviewExoPlayer {
         return ProductPreviewExoPlayer(context)
     }
 
-    fun getPlayerById(id: String): ProductPreviewExoPlayer? {
-        return videoMap.entries.firstOrNull {
-            it.value == id
-        }?.key
+    private fun getOccupiedPlayer(id: String): ProductPreviewExoPlayer? {
+        return videoMap.entries.firstOrNull { it.value == id }?.key
     }
 }

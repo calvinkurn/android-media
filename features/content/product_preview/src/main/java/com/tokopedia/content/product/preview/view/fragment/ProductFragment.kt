@@ -218,10 +218,12 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun prepareVideoPlayerIfNeeded(state: List<ContentUiModel>) {
         if (mVideoPlayer != null) return
-        val videoData = state.firstOrNull { it.type == MediaType.Video } ?: return
-        val videoPosition = state.indexOf(videoData)
+        val videoPosition = state.indexOfFirst { it.type == MediaType.Video }
+
+        if (videoPosition < 0) return
         val videoUrl = state[videoPosition].url
-        val instance = videoPlayerManager.occupy(PRODUCT_CONTENT_VIDEO_KEY_REF + videoUrl)
+
+        val instance = videoPlayerManager.occupy(String.format(PRODUCT_CONTENT_VIDEO_KEY_REF, videoUrl))
         val videoPlayer = mVideoPlayer ?: instance
         mVideoPlayer = videoPlayer
         mVideoPlayer?.start(

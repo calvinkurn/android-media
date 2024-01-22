@@ -15,8 +15,8 @@ import com.tokopedia.content.product.preview.utils.PRODUCT_LAST_VIDEO_DURATION
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
-
 
 class ProductPreviewActivity : BaseActivity() {
 
@@ -89,7 +89,7 @@ class ProductPreviewActivity : BaseActivity() {
             classLoader = classLoader,
             bundle = Bundle().apply {
                 putParcelable(PRODUCT_DATA, productPreviewData)
-                putLong(PRODUCT_LAST_VIDEO_DURATION, productVideoLastDuration ?: 0L)
+                putLong(PRODUCT_LAST_VIDEO_DURATION, productVideoLastDuration.orZero())
             }
         )
     }

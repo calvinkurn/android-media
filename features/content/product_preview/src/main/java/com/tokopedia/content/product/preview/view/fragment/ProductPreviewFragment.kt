@@ -37,8 +37,8 @@ import com.tokopedia.content.product.preview.view.uimodel.product.ProductContent
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
-import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -75,7 +75,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private val productVideoLastDuration: Long by lazyThreadSafetyNone {
-        arguments?.getLong(PRODUCT_LAST_VIDEO_DURATION, 0L) ?: 0L
+        arguments?.getLong(PRODUCT_LAST_VIDEO_DURATION, 0L).orZero()
     }
 
     private val pagerListener: ViewPager2.OnPageChangeCallback by lazyThreadSafetyNone {

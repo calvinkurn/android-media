@@ -39,19 +39,11 @@ class ProductContentAdapter(
 
     internal class ProductContentDiffUtil : DiffUtil.ItemCallback<ContentUiModel>() {
         override fun areItemsTheSame(oldItem: ContentUiModel, newItem: ContentUiModel): Boolean {
-            return when {
-                oldItem.type == MediaType.Image && newItem.type == MediaType.Image -> oldItem.contentId == newItem.contentId
-                oldItem.type == MediaType.Video && newItem.type == MediaType.Video -> oldItem.contentId == newItem.contentId
-                else -> oldItem.contentId == newItem.contentId
-            }
+            return oldItem.contentId == newItem.contentId
         }
 
         override fun areContentsTheSame(oldItem: ContentUiModel, newItem: ContentUiModel): Boolean {
-            return when {
-                oldItem.type == MediaType.Image && newItem.type == MediaType.Image -> oldItem == newItem
-                oldItem.type == MediaType.Video && newItem.type == MediaType.Video -> oldItem == newItem
-                else -> oldItem == newItem
-            }
+            return oldItem == newItem
         }
     }
 
