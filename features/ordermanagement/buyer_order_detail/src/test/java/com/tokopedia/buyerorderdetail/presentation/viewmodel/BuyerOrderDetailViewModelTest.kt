@@ -27,6 +27,7 @@ import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpReward
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.clearMocks
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -75,6 +76,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     map(any(), any(), any(), any(), any(), any(), listOf())
                 }
 
+                clearMocks(this, answers = false, childMocks = false, exclusionRules = false)
+
                 viewModel.expandCollapseBmgmProductBenefit("1:2:4", false)
                 viewModel.expandProductList()
 
@@ -82,12 +85,16 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     map(any(), any(), any(), any(), any(), any(), listOf("1:2:4"))
                 }
 
+                clearMocks(this, answers = false, childMocks = false, exclusionRules = false)
+
                 viewModel.expandCollapseBmgmProductBenefit("1:2:3", false)
                 viewModel.collapseProductList()
 
                 verify(exactly = 1) {
                     map(any(), any(), any(), any(), any(), any(), listOf("1:2:4", "1:2:3"))
                 }
+
+                clearMocks(this, answers = false, childMocks = false, exclusionRules = false)
 
                 viewModel.expandCollapseBmgmProductBenefit("1:2:4", true)
                 viewModel.expandProductList()
