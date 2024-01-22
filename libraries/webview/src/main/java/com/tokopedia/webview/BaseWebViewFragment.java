@@ -129,6 +129,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
     private static final String GOFOOD_LINK = "https://gofood.link/";
+    private static final String OPEN_CONTACT_PICKER_APPLINK = "tokopedia://open-contact-picker";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -905,7 +906,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
 
-        if (url.contains("tokopedia://open-contact-picker")) {
+        if (url.contains(OPEN_CONTACT_PICKER_APPLINK)) {
             contactPicker.openContactPicker(
                     BaseWebViewFragment.this,
                     intent -> startActivityForResult(intent, ContactPicker.CONTACT_PICKER_REQUEST_CODE)
@@ -915,10 +916,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if ("".equals(url)) {
             return false;
-        }
-
-        if (url.contains("gift-card/redemption")) {
-
         }
 
         Uri uri = Uri.parse(url);

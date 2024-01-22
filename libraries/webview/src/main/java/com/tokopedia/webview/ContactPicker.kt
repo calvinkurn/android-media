@@ -47,7 +47,6 @@ class ContactPicker: ContactPickerListener {
                         val contactPickerIntent = Intent(
                             Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
                         try {
-//                            fragment.startActivityForResult(contactPickerIntent, CONTACT_PICKER_REQUEST_CODE)
                             action.performAction(contactPickerIntent)
                         } catch (e: ActivityNotFoundException) {
                             Timber.e(e)
@@ -63,8 +62,8 @@ class ContactPicker: ContactPickerListener {
             val projectionNumber: Array<String> = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
             val projectionName: Array<String> = arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
             contactUri?.let {
-                var number: String = ""
-                var name: String = ""
+                var number = ""
+                var name = ""
 
                 contentResolver.query(contactUri, projectionNumber, null, null, null).use { cursor ->
                     if (cursor == null) return
@@ -84,7 +83,6 @@ class ContactPicker: ContactPickerListener {
                     }
                 }
 
-                Toast.makeText(context, "number $number name $name", Toast.LENGTH_SHORT).show()
                 sendSelectedContact(name, number, webView)
             }
         }
