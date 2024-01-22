@@ -41,10 +41,7 @@ internal fun labelGroupProductOffers() = LabelGroup(
 
 internal fun labelGroupAssignedValue() = LabelGroup(
     position = LABEL_REIMAGINE_ASSIGNED_VALUE,
-    imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/ee4f4255-f463-4961-99ce-94e7b8697a68.png",
-    styles = listOf(
-        LabelGroup.Style(LabelGroupStyle.WIDTH, "48"),
-    )
+    imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2024/1/16/2f80f532-2fa2-44ed-bb71-aed656c55dd7.png",
 )
 
 internal fun labelGroupOverlay1() = LabelGroup(

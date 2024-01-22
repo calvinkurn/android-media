@@ -47,6 +47,10 @@ class ProductCardGridView: ConstraintLayout {
         strategy.setThreeDotsOnClickListener { onClickListener.onClick(it) }
     }
 
+    fun setAddToCartOnClickListener(onClickListener: OnClickListener) {
+        strategy.setAddToCartOnClickListener(onClickListener)
+    }
+
     override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
         strategy.setOnClickListener(l)

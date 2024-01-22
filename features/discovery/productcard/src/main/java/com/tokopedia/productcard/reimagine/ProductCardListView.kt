@@ -53,6 +53,10 @@ class ProductCardListView: ConstraintLayout {
         strategy.setOnClickListener(l)
     }
 
+    fun setAddToCartOnClickListener(onClickListener: OnClickListener) {
+        strategy.setAddToCartOnClickListener(onClickListener)
+    }
+
     fun recycle() {
         strategy.recycle()
     }

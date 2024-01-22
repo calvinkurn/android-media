@@ -40,7 +40,7 @@ class ProductCardGridCarouselView: ConstraintLayout {
     }
 
     fun setAddToCartOnClickListener(onClickListener: OnClickListener) {
-        strategy.setAddToCartOnClickListener { onClickListener.onClick(it) }
+        strategy.setAddToCartOnClickListener(onClickListener)
     }
 
     override fun setOnClickListener(l: OnClickListener?) {

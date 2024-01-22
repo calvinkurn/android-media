@@ -15,6 +15,7 @@ import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
+private const val LABEL_ASSIGNED_VALUE_WIDTH_DP = 48
 private const val LABEL_ASSIGNED_VALUE_HEIGHT_DP = 16
 
 internal fun Typography.renderProductNameWithAssignedValue(
@@ -23,22 +24,24 @@ internal fun Typography.renderProductNameWithAssignedValue(
 ) {
     val labelAssignedValue = productCardModel.labelAssignedValue()
     val imageURL = labelAssignedValue?.imageUrl ?: ""
-    val width = labelAssignedValue?.width() ?: 0
 
-    val hasLabelAssignedValue = labelAssignedValue != null && imageURL.isNotEmpty() && width > 0
-
-    if (hasLabelAssignedValue)
+    if (labelAssignedValue != null)
         imageURL.getBitmapImageUrl(
             context = context,
-            properties = { labelAssignedValueProperties(width) },
+            properties = { labelAssignedValueProperties() },
             target = target(this, productName),
         )
     else
         setText(SpannedString(productName), TextView.BufferType.SPANNABLE)
 }
 
-private fun Properties.labelAssignedValueProperties(width: Int) {
-    overrideSize(Resize(width.toPx(), LABEL_ASSIGNED_VALUE_HEIGHT_DP.toPx()))
+private fun Properties.labelAssignedValueProperties() {
+    overrideSize(
+        Resize(
+            width = LABEL_ASSIGNED_VALUE_WIDTH_DP.toPx(),
+            height = LABEL_ASSIGNED_VALUE_HEIGHT_DP.toPx(),
+        )
+    )
 }
 
 private fun target(

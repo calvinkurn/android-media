@@ -81,6 +81,7 @@ class ProductCardListActivityTest: AppCompatActivity() {
                 setProductModel(productCardModel)
                 setOnClickListener { toast("Click") }
                 setThreeDotsClickListener { toast("Three dots click") }
+                setAddToCartOnClickListener { toast("Click ATC") }
             }
         }
 

@@ -113,6 +113,12 @@ internal class ReimagineGridViewStrategy(
         cardContainer?.setOnClickListener(l)
     }
 
+    override fun setAddToCartOnClickListener(l: View.OnClickListener?) {
+        productCardView
+            .findViewById<View?>(R.id.productCardAddToCart)
+            ?.setOnClickListener(l)
+    }
+
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {
         cardContainer?.setOnLongClickListener(l)
     }
