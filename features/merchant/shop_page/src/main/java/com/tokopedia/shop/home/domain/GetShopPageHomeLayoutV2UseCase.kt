@@ -294,6 +294,67 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         linkID
                         Name
                       }
+                    }                 
+                    ... on CampaignOfferingWidget {
+                      OfferID
+                      OfferName
+                      OfferCtaText
+                      WarehouseIDs
+                      Thumbnails
+                      RedirectionOfferURL
+                      RedirectionOfferAppLink
+                      OfferDetail {
+                        TermAndCondition
+                        StartDate
+                        EndDate
+                        TierList {
+                          TierID
+                          Level
+                          TierWording
+                          Rules {
+                            TypeID
+                            Operation
+                            Value
+                          }
+                          Benefit {
+                            TypeID
+                            Operation
+                            Value
+                          }
+                        }
+                      }
+                      Products {
+                        id
+                        name
+                        url
+                        urlApps
+                        urlMobile
+                        imageURL
+                        price
+                        countSold
+                        stock
+                        status
+                        discountedPrice
+                        discountPercentage
+                        position
+                        stockWording {
+                          title
+                        }
+                        hideGimmick
+                        stockSoldPercentage
+                        labelGroups {
+                          position
+                          type
+                          title
+                          url
+                        }
+                        minimumOrder
+                        maximumOrder
+                        childIDs
+                        parentID
+                        showStockbar
+                        rating
+                      }
                     }
                   }
                 }

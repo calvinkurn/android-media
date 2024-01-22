@@ -3,4 +3,10 @@
     <color name="shop_widget_dms_mvc_locked_to_product_voucher_background_color">@color/Unify_NN0</color>
     <color name="dms_clr_thematic_widget_bg_default_first_color">#008849</color>
     <color name="dms_clr_thematic_widget_bg_default_second_color">#00AA5B</color>
+
+    <color name="dms_gwp_card_bg_color">#00846E</color>
+    <color name="dms_gwp_card_transparent_bg_color">#59AAB4C8</color>
+    <color name="dms_static_white">#FFFFFF</color>
+    <color name="dms_static_black">#000000</color>
+    <color name="dms_loading_state_bg_color">#1ADEDEDF</color>
 </resources>
