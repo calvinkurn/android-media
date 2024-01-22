@@ -50,6 +50,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder.Comp
 import com.tokopedia.checkout.view.viewholder.ShipmentUpsellViewHolder
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder.Companion.ITEM_VIEW_TICKER_SHIPPING_COMPLETION
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemExpandModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -810,7 +811,7 @@ class ShipmentAdapter @Inject constructor(
                                     ) || shipmentData.tokoConsultationId == "0" || shipmentData.partnerConsultationId == "0" || TextUtils.isEmpty(
                                         shipmentData.consultationDataString
                                     )
-                                if (prescriptionIdsEmpty && consultationEmpty) {
+                                if ((prescriptionIdsEmpty && consultationEmpty) || uploadPrescriptionUiModel?.isBlockCheckoutFlow.orFalse()) {
                                     isPrescriptionFrontEndValidationError = true
                                     availableCheckout = false
                                     break

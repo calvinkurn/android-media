@@ -19,6 +19,8 @@ data class EPharmacyPrepareProductsGroupResponse(
 
         @Parcelize
         data class GroupData(
+            @SerializedName("checkout_flow")
+            val checkoutFlow: CheckoutFlowEPharmacy?,
             @SerializedName("attachment_page_ticker_text")
             val attachmentPageTickerText: String?,
             @SerializedName("attachment_page_ticker_logo_url")
@@ -30,6 +32,12 @@ data class EPharmacyPrepareProductsGroupResponse(
             @SerializedName("pap_primary_cta")
             val papPrimaryCTA: PapPrimaryCTA?
         ) : Parcelable {
+
+            @Parcelize
+            data class CheckoutFlowEPharmacy(
+                @SerializedName("is_block")
+                val isBlock: Boolean? = false
+            ) : Parcelable
 
             @Parcelize
             data class EpharmacyGroup(

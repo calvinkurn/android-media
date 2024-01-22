@@ -255,7 +255,8 @@ class CheckoutViewModel @Inject constructor(
                                 checkoutId = saf.cartShipmentAddressFormData.epharmacyData.checkoutId,
                                 frontEndValidation = saf.cartShipmentAddressFormData.epharmacyData.frontEndValidation,
                                 consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
-                                rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording
+                                rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording,
+                                isBlockCheckoutFlow = saf.cartShipmentAddressFormData.epharmacyData.isBlockCheckoutFlow
                             )
                             addOnProcessor.fetchPrescriptionIds(
                                 saf.cartShipmentAddressFormData.epharmacyData,
@@ -1913,7 +1914,7 @@ class CheckoutViewModel @Inject constructor(
                                         checkoutItem.tokoConsultationId == "0" ||
                                         checkoutItem.partnerConsultationId == "0" ||
                                         checkoutItem.consultationDataString.isEmpty()
-                                if (prescriptionIdsEmpty && consultationEmpty) {
+                                if ((prescriptionIdsEmpty && consultationEmpty) || checkoutItem.isBlockCheckoutFlowEPharmacy) {
                                     isPrescriptionFrontEndValidationError = true
                                     productErrorPrescriptionCount += 1
                                 } else {

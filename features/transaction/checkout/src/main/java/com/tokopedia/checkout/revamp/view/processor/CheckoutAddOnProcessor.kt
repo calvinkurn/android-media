@@ -17,6 +17,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
@@ -258,6 +259,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                 uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
                 uploadPrescriptionUiModel.shopIds = shopIds
                 uploadPrescriptionUiModel.cartIds = cartIds
+                uploadPrescriptionUiModel.isBlockCheckoutFlow = ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.checkoutFlow?.isBlock.orFalse()
                 checkoutItems[checkoutItems.size - 5] =
                     CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel)
                 return checkoutItems

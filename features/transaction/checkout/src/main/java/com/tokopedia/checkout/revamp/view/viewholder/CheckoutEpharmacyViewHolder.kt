@@ -117,7 +117,10 @@ class CheckoutEpharmacyViewHolder(
             if (uploadPrescriptionUiModel.isIncompletePrescriptionError && uploadPrescriptionUiModel.productErrorCount > 0) {
                 binding.uploadDescriptionText.text =
                     itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_complete, uploadPrescriptionUiModel.productErrorCount)
-            } else {
+            } else if(uploadPrescriptionUiModel.isBlockCheckoutFlow){
+                binding.uploadDescriptionText.text =
+                    itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_quantity_does_not_match)
+            }else {
                 binding.uploadDescriptionText.text =
                     itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found_new)
             }
