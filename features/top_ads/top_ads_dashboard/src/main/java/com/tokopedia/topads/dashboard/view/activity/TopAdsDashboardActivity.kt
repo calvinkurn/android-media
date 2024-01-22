@@ -746,10 +746,6 @@ class TopAdsDashboardActivity :
         loadSummaryStats()
     }
 
-    fun getAutoPsWhitelist(): Boolean{
-        return isAutoPsWhitelisted
-    }
-
     private fun loadSummaryStats() {
         val fragments = (viewPager.adapter as TopAdsDashboardBasePagerAdapter).getList()
         for (frag in fragments) {

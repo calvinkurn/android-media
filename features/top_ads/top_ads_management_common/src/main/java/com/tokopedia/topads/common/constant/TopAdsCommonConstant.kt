@@ -59,6 +59,11 @@ object TopAdsCommonConstant {
     const val MAXIMUM_DAILY_BUDGET = "10000000"
     const val PARAM_FEATURE = "feature"
     const val ONBOARDING_PARAM = "onboarding"
+    const val GROUP_ID_PARAM = "group_id"
+    const val SOURCE_PACKAGE = "source_package"
+    const val SOURCE_AUTOPS_ONBOARDING = "autops_onboarding"
+    const val AD_TYPE_HEADLINE = "headline"
+    const val AD_TYPE_PRODUCT = "product"
 
     var TOPADS_GRAPHQL_TA_URL = when (TokopediaUrl.getInstance().TYPE) {
         Env.STAGING -> "https://gql-staging.tokopedia.com/graphql/ta"

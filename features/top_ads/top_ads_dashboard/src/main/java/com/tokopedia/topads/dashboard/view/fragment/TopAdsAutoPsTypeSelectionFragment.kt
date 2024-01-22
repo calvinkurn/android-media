@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsAutopsTypeSelectionBinding
@@ -52,10 +53,14 @@ class TopAdsAutoPsTypeSelectionFragment: BaseDaggerFragment() {
         binding?.topadsAdCard1?.submit?.run {
             text = getString(R.string.topads_dashboard_create_product_advertisement)
             setOnClickListener {
+                val source = activity?.intent?.extras?.getString(TopAdsCommonConstant.SOURCE_PACKAGE)
                 val intent = RouteManager.getIntent(
                     context,
                     ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS
                 )
+                if (!source.isNullOrEmpty()){
+                    intent.putExtra(TopAdsCommonConstant.SOURCE_PACKAGE, source)
+                }
                 startActivityForResult(intent, TopAdsDashboardConstant.AUTO_ADS_DISABLED)
             }
         }
@@ -72,15 +77,20 @@ class TopAdsAutoPsTypeSelectionFragment: BaseDaggerFragment() {
         binding?.topadsAdCard2?.submit?.run {
             text = getString(R.string.topads_dashboard_create_shop_advertisement)
             setOnClickListener {
+                val source = activity?.intent?.extras?.getString(TopAdsCommonConstant.SOURCE_PACKAGE)
+                val intent = RouteManager.getIntent(
+                    context,
+                    ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
+                )
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(
                     click_iklan_toko,
                     "{${userSession.shopId}}",
                     userSession.userId
                 )
-                RouteManager.route(
-                    context,
-                    ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
-                )
+                if (!source.isNullOrEmpty()){
+                    intent.putExtra(TopAdsCommonConstant.SOURCE_PACKAGE, source)
+                }
+                startActivity(intent)
             }
         }
     }

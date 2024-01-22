@@ -21,6 +21,8 @@ import com.tokopedia.top_ads_on_boarding.databinding.TopadsAutoPsOnboardingFragm
 import com.tokopedia.top_ads_on_boarding.di.TopAdsOnBoardingComponent
 import com.tokopedia.top_ads_on_boarding.view.adapter.OnboardingFaqListAdapter
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SOURCE_AUTOPS_ONBOARDING
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SOURCE_PACKAGE
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class AutoPsOnboardingFragment : BaseDaggerFragment() {
@@ -67,6 +69,7 @@ class AutoPsOnboardingFragment : BaseDaggerFragment() {
                             TopAdsCommonConstant.ONBOARDING_PARAM
                         )
                     }
+            intent.putExtra(SOURCE_PACKAGE,SOURCE_AUTOPS_ONBOARDING)
             startActivity(intent)
         }
 

@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_PRODUCT_ADS
 import com.tokopedia.topads.common.data.internal.ParamObject.KEY_AD_TYPE
@@ -108,6 +109,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private var graphLayout: CardUnify? = null
     private var tabLayout: TabsUnify? = null
     private var confirmationDailog: DialogUnify? = null
+    private var isAutoPsWhitelisted: Boolean = false
 
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
@@ -209,24 +211,9 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         topAdsDashboardPresenter.attachView(this)
         view.findViewById<ImageUnify>(topadsdashboardR.id.auto_ad_status_image)
             ?.setImageDrawable(context?.getResDrawable(topadsdashboardR.drawable.ill_iklan_otomatis))
-        view.findViewById<UnifyButton>(topadsdashboardR.id.onBoarding)?.setOnClickListener {
-            if(isAutoPsWhitelisted()){
-                showActivateAutoPsConfirmationDailog()
-            } else {
-                RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
-            }
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_COBA_SEKARANG,
-                "")
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
-                CLICK_COBA_AUO_ADS, "")
-        }
-        view.findViewById<UnifyButton>(topadsdashboardR.id.onBoarding)?.text =
-            if (isAutoPsWhitelisted())
-                getString(topadsdashboardR.string.topads_enable_auto_ps)
-            else
-                getString(topadsdashboardR.string.auto_ads_status_inactive_button)
 
         loadData()
+        attachobserver()
 
         view.findViewById<UnifyImageButton>(topadsdashboardR.id.btnFilter)?.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
@@ -278,6 +265,26 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
                 }
             })
         Utils.setSearchListener(context, view, ::fetchData)
+    }
+
+    private fun setOnBoardingWidget(isAutoPsWhiteListed: Boolean){
+        view?.findViewById<UnifyButton>(topadsdashboardR.id.onBoarding)?.setOnClickListener {
+            if(isAutoPsWhiteListed){
+                showActivateAutoPsConfirmationDailog()
+            } else {
+                RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
+            }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_COBA_SEKARANG,
+                "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
+                CLICK_COBA_AUO_ADS, "")
+        }
+
+        view?.findViewById<UnifyButton>(topadsdashboardR.id.onBoarding)?.text =
+            if (isAutoPsWhiteListed)
+                getString(topadsdashboardR.string.topads_enable_auto_ps)
+            else
+                getString(topadsdashboardR.string.auto_ads_status_inactive_button)
     }
 
     private fun showActivateAutoPsConfirmationDailog(){
@@ -393,7 +400,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         if (checkInProgress()) {
             showProgressLayout()
         } else {
-            if(isAutoPsWhitelisted()){
+            if(isAutoPsWhitelisted){
                 setAutoPsEmptyView()
             } else {
                 setNoAdsView()
@@ -633,9 +640,21 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private fun loadData() {
         try {
+            topAdsDashboardPresenter.getVariantById()
             topAdsDashboardPresenter.getAutoAdsStatus(requireContext().resources, ::onSuccessAdsInfo)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
+        }
+    }
+
+    private fun attachobserver(){
+        topAdsDashboardPresenter.shopVariant.observe(viewLifecycleOwner) { shopVariants ->
+            isAutoPsWhitelisted =
+                shopVariants.isNotEmpty() && shopVariants.filter {
+                    it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
+                        it.variant == TopAdsCommonConstant.AUTOPS_VARIANT }
+                    .isNotEmpty()
+            setOnBoardingWidget(isAutoPsWhitelisted)
         }
     }
 
@@ -747,10 +766,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun onStateChanged(state: State?) {
         collapseStateCallBack?.setAppBarState(state)
         swipeRefreshLayout?.isEnabled = state == State.EXPANDED
-    }
-
-    private fun isAutoPsWhitelisted(): Boolean {
-        return (activity as? TopAdsDashboardActivity)?.getAutoPsWhitelist() == true
     }
 
     interface AdInfo {

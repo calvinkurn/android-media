@@ -35,6 +35,7 @@ import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.sheet.AutoPsFeedbackBottomSheet
 import com.tokopedia.topads.auto.view.viewmodel.AutoPsViewModel
 import com.tokopedia.topads.auto.view.widget.Range
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SOURCE_PACKAGE
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.utils.TopadsCommonUtil
@@ -379,10 +380,18 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 getString(topadsautoR.string.more_info)
             )
 
-            binding?.manualAdsCta?.id -> RouteManager.route(
-                context,
-                ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION
-            )
+            binding?.manualAdsCta?.id -> {
+                val source = activity?.intent?.extras?.getString(SOURCE_PACKAGE)
+                val intent =
+                RouteManager.getIntent(
+                    context,
+                    ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION
+                )
+                if(!source.isNullOrEmpty()) {
+                    intent.putExtra(SOURCE_PACKAGE,source)
+                }
+                startActivity(intent)
+            }
 
             binding?.btnSubmit?.id -> {
                 binding?.dailyBudget?.editText?.let {
