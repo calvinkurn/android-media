@@ -12,6 +12,7 @@ import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import com.tokopedia.stories.view.model.StoriesArgsModel
+import com.tokopedia.stories.view.utils.ARGS_ENTRY_POINT
 import com.tokopedia.stories.view.utils.ARGS_SOURCE
 import com.tokopedia.stories.view.utils.ARGS_SOURCE_ID
 import com.tokopedia.stories.view.utils.KEY_ARGS
@@ -38,15 +39,19 @@ class StoriesActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: StoriesViewModelFactory.Creator
 
-    private val path get() =  intent.data?.pathSegments
-    private val storiesArgs  get() =  StoriesArgsModel(
-        authorId = path?.last().orEmpty(),
-        authorType = path?.first().orEmpty(),
-        source = intent.data?.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
-            StoriesSource.SHOP_ENTRY_POINT.value
-        },
-        sourceId = intent.data?.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
-    )
+    private val storiesArgs: StoriesArgsModel
+        get() {
+            val path = intent.data?.pathSegments
+            return StoriesArgsModel(
+                authorId = path?.last().orEmpty(),
+                authorType = path?.first().orEmpty(),
+                source = intent.data?.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
+                    StoriesSource.SHOP_ENTRY_POINT.value
+                },
+                sourceId = intent.data?.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
+                entryPoint = intent.data?.getQueryParameter(ARGS_ENTRY_POINT).orEmpty(),
+            )
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
