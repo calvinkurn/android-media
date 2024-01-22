@@ -272,7 +272,7 @@ class StoriesUnitTest {
         } returns StoriesDetail()
 
         every {
-            mockSharedPref.isVisited()
+            mockSharedPref.hasVisit()
         } returns true
 
         getStoriesRobot().use { robot ->
@@ -299,7 +299,7 @@ class StoriesUnitTest {
             mockRepository.getStoriesDetailData(any())
         } throws expectedThrowable
 
-        every { mockSharedPref.isVisited() } returns true
+        every { mockSharedPref.hasVisit() } returns true
 
         getStoriesRobot().use { robot ->
             val state = robot.recordStateAndEvents {

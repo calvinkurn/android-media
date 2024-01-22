@@ -178,7 +178,7 @@ class StoriesGroupFragment @Inject constructor(
                     }
 
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
-                    is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.showWithCondition(event.needToShow)
+                    is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.show()
                     else -> return@collect
                 }
             }

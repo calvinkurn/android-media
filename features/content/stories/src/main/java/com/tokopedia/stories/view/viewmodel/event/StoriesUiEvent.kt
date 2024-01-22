@@ -31,5 +31,5 @@ sealed interface StoriesUiEvent {
         StoriesUiEvent
 
     object ShowStoriesTimeCoachmark : StoriesUiEvent
-    data class OnboardShown(val needToShow: Boolean) : StoriesUiEvent
+    object OnboardShown : StoriesUiEvent
 }

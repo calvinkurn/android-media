@@ -789,11 +789,11 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun setupOnboard() {
-        if (!sharedPref.isVisited()) {
+        if (!sharedPref.hasVisit()) {
             viewModelScope.launch {
-                _storiesEvent.emit(StoriesUiEvent.OnboardShown(true))
+                _storiesEvent.emit(StoriesUiEvent.OnboardShown)
             }
-            sharedPref.setVisit()
+            sharedPref.setHasVisit(true)
         }
     }
 }
