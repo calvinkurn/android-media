@@ -1,19 +1,20 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
 import android.view.View
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.Typography as RTypography
 
@@ -22,7 +23,7 @@ class TabsItemImageViewHolder(
     fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private val tabIconView: ImageView = itemView.findViewById(R.id.imgIcon)
+    private val tabIconView: ImageUnify = itemView.findViewById(R.id.imgIcon)
     private var tabTitleView: RTypography = itemView.findViewById(R.id.tvTitle)
     private var viewModel: TabsItemImageViewModel? = null
     private var itemData: DataItem? = null
@@ -76,12 +77,33 @@ class TabsItemImageViewHolder(
     private fun setTabIcon(item: DataItem) {
         tabTitleView.hide()
 
-        if (item.isSelected) {
-            tabIconView.loadImage(item.tabActiveImageUrl)
-        } else {
-            tabIconView.loadImage(item.tabInactiveImageUrl)
-        }
+        val imageUrl = item.getImageUrl()
+        tabIconView.loadImageWithoutPlaceholder(imageUrl)
+
+        redefineImageDimension(imageUrl)
+
         tabIconView.show()
+    }
+
+    private fun redefineImageDimension(imageUrl: String?) {
+        val lp = tabIconView.layoutParams
+        val heightParamValue = Utils.extractDimension(imageUrl, HEIGHT_QUERY_PARAM)
+        val widthParamValue = Utils.extractDimension(imageUrl, WIDTH_QUERY_PARAM)
+        if (widthParamValue != null && heightParamValue != null) {
+            val aspectRatio = widthParamValue.toFloat() / heightParamValue.toFloat()
+            itemView.context?.resources?.let {
+                val dimenHeight = R.dimen.dp_26
+                val height = it.getDimensionPixelOffset(dimenHeight)
+                lp.height = height
+                lp.width = (aspectRatio * height).toInt()
+            }
+        }
+        tabIconView.layoutParams = lp
+    }
+
+    private fun DataItem.getImageUrl(): String? {
+        return if (isSelected) tabActiveImageUrl
+        else tabInactiveImageUrl
     }
 
     private fun setTabText(name: String) {
@@ -90,24 +112,26 @@ class TabsItemImageViewHolder(
 
     private fun setFontColor(item: DataItem) {
         try {
-            if (item.isSelected) {
-                tabTitleView.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        unifyprinciplesR.color.Unify_GN500
-                    )
-                )
+            val colorResId = if (item.isSelected) {
+                unifyprinciplesR.color.Unify_GN500
             } else {
-                tabTitleView.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        unifyprinciplesR.color.Unify_NN400
-                    )
-                )
+                unifyprinciplesR.color.Unify_NN400
             }
+
+            tabTitleView.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    colorResId
+                )
+            )
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
     //endregion
+
+    companion object {
+        private const val HEIGHT_QUERY_PARAM = "height"
+        private const val WIDTH_QUERY_PARAM = "width"
+    }
 }
