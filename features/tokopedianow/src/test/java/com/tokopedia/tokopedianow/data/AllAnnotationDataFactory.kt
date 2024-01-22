@@ -58,7 +58,7 @@ object AllAnnotationDataFactory {
         )
     )
 
-    fun createSecondPageLoadMoreData(
+    fun createSecondPageNoLoadMoreData(
         annotationList: List<TokoNowGetAnnotationListResponse.AnnotationResponse> = listOf(
             TokoNowGetAnnotationListResponse.AnnotationResponse(
                 annotationID = "14",
@@ -84,6 +84,36 @@ object AllAnnotationDataFactory {
         annotationList = annotationList,
         pagination = TokoNowGetAnnotationListResponse.PaginationResponse(
             hasNext = false,
+            pageLastID = "3221"
+        )
+    )
+
+    fun createSecondPageHasLoadMoreData(
+        annotationList: List<TokoNowGetAnnotationListResponse.AnnotationResponse> = listOf(
+            TokoNowGetAnnotationListResponse.AnnotationResponse(
+                annotationID = "14",
+                name = "annotation 4",
+                appLink = "tokopedia://now/all-annotation"
+            ),
+            TokoNowGetAnnotationListResponse.AnnotationResponse(
+                annotationID = "15",
+                name = "annotation 5",
+                appLink = "tokopedia://now/all-annotation"
+            ),
+            TokoNowGetAnnotationListResponse.AnnotationResponse(
+                annotationID = "16",
+                name = "annotation 6",
+                appLink = "tokopedia://now/all-annotation"
+            )
+        )
+    ) = TokoNowGetAnnotationListResponse.GetAnnotationListResponse(
+        annotationHeader = TokoNowGetAnnotationListResponse.AnnotationHeaderResponse(
+            title = "Semua brand",
+            hasMore = true
+        ),
+        annotationList = annotationList,
+        pagination = TokoNowGetAnnotationListResponse.PaginationResponse(
+            hasNext = true,
             pageLastID = "3221"
         )
     )
