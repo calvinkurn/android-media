@@ -346,6 +346,9 @@ data class GetBuyerOrderDetailResponse(
 
             data class Shipment(
                 @Expose
+                @SerializedName("title")
+                val title: String = String.EMPTY,
+                @Expose
                 @SerializedName("driver")
                 val driver: Driver = Driver(),
                 @Expose

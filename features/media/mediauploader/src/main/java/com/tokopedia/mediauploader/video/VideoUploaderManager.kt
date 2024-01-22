@@ -31,7 +31,6 @@ class VideoUploaderManager @Inject constructor(
 
     override suspend fun upload(param: BaseUploaderParam): UploadResult {
         val base = (param as VideoParam).base as BaseParam
-        setProgressUploader(base.progress)
 
         if (base.sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
         val policy = policyManager.get() ?: return UploadResult.Error(UNKNOWN_ERROR)
@@ -57,6 +56,7 @@ class VideoUploaderManager @Inject constructor(
             ?.mbToBytes() ?: 0
 
         isSimpleUpload = filePath.length() <= maxSizeOfSimpleUpload
+        setProgressUploader(base.progress)
 
         // start upload time tracker before do uploads
         analytics.setStartUploadTime(trackerCacheKey, System.currentTimeMillis())

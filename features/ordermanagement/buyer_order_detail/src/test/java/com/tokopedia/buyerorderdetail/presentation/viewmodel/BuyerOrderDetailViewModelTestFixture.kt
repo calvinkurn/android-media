@@ -38,6 +38,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel.ProductUiModel
@@ -268,8 +269,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every { additionalData } returns additionalEpharmacyData
         },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
-        actionBeforeComplete: () -> Unit = {}
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true)
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
@@ -284,8 +284,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         )
                     )
                 )
-                delay(1)
-                actionBeforeComplete()
+                delay(150)
                 emit(
                     GetBuyerOrderDetailDataRequestState.Complete(
                         GetP0DataRequestState.Complete(
@@ -297,6 +296,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         )
                     )
                 )
+                delay(150)
             }
         }
     }
@@ -316,6 +316,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     )
                 )
             )
+            delay(150)
             emit(
                 GetBuyerOrderDetailDataRequestState.Complete(
                     GetP0DataRequestState.Complete(
@@ -327,6 +328,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     )
                 )
             )
+            delay(150)
         }
     }
 
@@ -491,7 +493,31 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         shouldCheckCache: Boolean = false
     ) {
         viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
-        // skip debounce on viewModel#productListUiState
-        advanceTimeBy(1050L)
+        advanceUntilIdle()
+    }
+
+    fun TestScope.updateScpRewardsMedalTouchPointWidgetState(
+        data: ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder,
+        marginLeft: Int,
+        marginTop: Int,
+        marginRight: Int
+    ) {
+        viewModel.updateScpRewardsMedalTouchPointWidgetState(
+            data = data,
+            marginLeft = marginLeft,
+            marginTop = marginTop,
+            marginRight = marginRight
+        )
+        advanceUntilIdle()
+    }
+
+    fun TestScope.hideScpRewardsMedalTouchPointWidget() {
+        viewModel.hideScpRewardsMedalTouchPointWidget()
+        advanceUntilIdle()
+    }
+
+    fun TestScope.finishOrder() {
+        viewModel.finishOrder()
+        advanceUntilIdle()
     }
 }

@@ -373,6 +373,7 @@ object SomGetOrderDetailResponseMapper {
 
     private fun SomDetailOrder.GetSomDetail.mapToShipmentUiModel(): SomDetailShipping {
         return SomDetailShipping(
+            shippingTitle = shipment.title,
             shippingName = shipment.name + " - " + shipment.productName,
             receiverName = receiver.name,
             receiverPhone = receiver.phone,

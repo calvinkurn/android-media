@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionParams
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
@@ -9,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class GetOrderResolutionUseCase @Inject constructor(
@@ -22,6 +24,18 @@ class GetOrderResolutionUseCase @Inject constructor(
         emit(GetOrderResolutionRequestState.Complete.Success(sendRequest(params).resolutionGetTicketStatus?.data))
     }.catch {
         emit(GetOrderResolutionRequestState.Complete.Error(it))
+    }.onCompletion {
+        logCompletionBreadcrumb(params, it)
+    }
+
+    private fun logCompletionBreadcrumb(params: GetOrderResolutionParams, throwable: Throwable?) {
+        runCatching {
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetOrderResolutionUseCase - Success: $params")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetOrderResolutionUseCase - Error: ${throwable.stackTraceToString()}")
+            }
+        }
     }
 
     private fun createRequestParam(params: GetOrderResolutionParams): Map<String, Any> {

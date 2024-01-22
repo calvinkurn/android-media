@@ -36,8 +36,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -128,7 +126,6 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `UI state should equals to PullRefreshLoading when reloading P0 data`() =
         runCollectingUiState { uiStates ->
-            var uiStateBeforeSuccessReloading: BuyerOrderDetailUiState? = null
             createSuccessGetBuyerOrderDetailDataResult()
 
             // assert first initial bom page opened
@@ -139,16 +136,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             // assert data showing after initial first data is completed
             assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
 
-            // reload
-            createSuccessGetBuyerOrderDetailDataResult {
-                advanceUntilIdle()
-                uiStateBeforeSuccessReloading = uiStates.last()
-            }
-
             getBuyerOrderDetailData()
 
             // assert data is pull refresh state after swipe refresh and data not complete yet
-            assertTrue(uiStateBeforeSuccessReloading is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
+            assertTrue(uiStates[uiStates.size - 2] is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
             // assert last state should showing after success pull refresh
             assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
         }
@@ -169,8 +160,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
-            viewModel.finishOrder()
-            advanceUntilIdle()
+            finishOrder()
 
             coVerify {
                 finishOrderUseCase.execute(expectedParams)
@@ -189,8 +179,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
-            viewModel.finishOrder()
-            advanceUntilIdle()
+            finishOrder()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -207,8 +196,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
-            viewModel.finishOrder()
-            advanceUntilIdle()
+            finishOrder()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -230,8 +218,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             createFailedFinishOrderResult(expectedException)
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
+                finishOrder()
 
                 val result = viewModel.finishOrderResult.value as Fail
                 assertTrue(result.throwable is MessageErrorException)
@@ -460,10 +447,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
                 viewModel.expandProductList()
-                advanceTimeBy(1000L)
                 assertTrue(isProductListExpanded())
                 viewModel.collapseProductList()
-                advanceTimeBy(1000L)
                 assertTrue(isProductListCollapsed())
             }
         }
@@ -482,7 +467,6 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
                 viewModel.expandProductList()
-                advanceTimeBy(1000L)
                 assertTrue(isProductListExpanded())
             }
         }
@@ -588,8 +572,6 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             every { SavingsWidgetUiStateMapper.map(any()) } throws Throwable("Error")
 
             getBuyerOrderDetailData()
-
-            advanceUntilIdle()
 
             // if error happen in ephar mapper, return empty data so the section not showing
             assertTrue(it.last() is BuyerOrderDetailUiState.HasData.Showing)
@@ -1092,10 +1074,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
-
-                viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                finishOrder()
+                updateScpRewardsMedalTouchPointWidgetState(
                     data = medalTouchPointData,
                     marginLeft = marginLeft,
                     marginTop = marginTop,
@@ -1130,8 +1110,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
+                finishOrder()
                 assertTrue(viewModel.finishOrderResult.value is Fail)
                 assertEquals(
                     ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
@@ -1156,8 +1135,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
+                finishOrder()
 
                 assertTrue(viewModel.finishOrderResult.value is Success)
                 assertEquals(
@@ -1197,10 +1175,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
-                viewModel.finishOrder()
-                advanceUntilIdle()
+                finishOrder()
 
-                viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                updateScpRewardsMedalTouchPointWidgetState(
                     data = medalTouchPointData,
                     marginLeft = marginLeft,
                     marginTop = marginTop,
@@ -1218,7 +1195,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
                         .last().scpRewardsMedalTouchPointWidgetUiState
                 )
-                viewModel.hideScpRewardsMedalTouchPointWidget()
+                hideScpRewardsMedalTouchPointWidget()
                 assertEquals(
                     ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
                     buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)

@@ -17,10 +17,9 @@ import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.explicitprofile.data.CategoriesDataModel
 import com.tokopedia.home_account.explicitprofile.data.ExplicitProfileSaveMultiAnswers
 import com.tokopedia.home_account.explicitprofile.data.ExplicitprofileGetQuestion
-import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
+import com.tokopedia.home_account.data.model.LinkStatusResponse
 import com.tokopedia.home_account.stub.data.mocks.GetCentralizedUserMocks
 import com.tokopedia.home_account.test.R
-import com.tokopedia.home_account.view.fragment.FundsAndInvestmentFragment
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
@@ -57,15 +56,9 @@ class GraphqlRepositoryStub : GraphqlRepository {
             }
 
             "GetCentralizedUserAssetConfig" -> {
-                if (requests.first().variables?.get("entryPoint") == FundsAndInvestmentFragment.ASSET_PAGE) {
-                    GqlMockUtil.createSuccessResponse<CentralizedUserAssetDataModel>(
-                        GetCentralizedUserMocks.assetPageResponse
-                    )
-                } else {
-                    GqlMockUtil.createSuccessResponse<CentralizedUserAssetDataModel>(
-                        GetCentralizedUserMocks.userPageResponse
-                    )
-                }
+                GqlMockUtil.createSuccessResponse<CentralizedUserAssetDataModel>(
+                    GetCentralizedUserMocks.userPageResponse
+                )
             }
 
             "midasGetSaldoWidgetBalance" -> {

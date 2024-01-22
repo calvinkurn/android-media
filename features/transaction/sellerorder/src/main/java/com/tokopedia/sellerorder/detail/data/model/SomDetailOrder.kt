@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.detail.data.model
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.order_management_common.domain.data.ProductBenefit
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
@@ -311,6 +312,9 @@ data class SomDetailOrder(
             @Expose
             val id: String = "0",
 
+            @SerializedName("title")
+            val title: String = String.EMPTY,
+
             @SerializedName("name")
             @Expose
             val name: String = "",
@@ -345,9 +349,9 @@ data class SomDetailOrder(
             @SerializedName("awb_upload_proof_text")
             @Expose
             val awbUploadProofText: String = "",
-@SerializedName("ticker_info")
-                val tickerInfo: TickerInfo? = TickerInfo()
-            )
+            @SerializedName("ticker_info")
+            val tickerInfo: TickerInfo? = TickerInfo()
+        )
 
         data class BookingInfo(
             @SerializedName("driver")

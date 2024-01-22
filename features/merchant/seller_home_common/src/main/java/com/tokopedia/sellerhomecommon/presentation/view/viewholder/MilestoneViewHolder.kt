@@ -26,8 +26,10 @@ import com.tokopedia.sellerhomecommon.databinding.ShcMilestoneWidgetErrorBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcMilestoneWidgetLoadingBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcMilestoneWidgetSuccessBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapter
+import com.tokopedia.sellerhomecommon.presentation.adapter.factory.MilestoneAdapterTypeFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneItemRewardUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.MilestoneMissionItemDecoration
@@ -37,11 +39,12 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 import java.util.concurrent.TimeUnit
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MilestoneViewHolder(
     itemView: View,
     private val listener: Listener
-) : AbstractViewHolder<MilestoneWidgetUiModel>(itemView) {
+) : AbstractViewHolder<MilestoneWidgetUiModel>(itemView), MilestoneMissionAdapter.Listener {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_milestone_widget
@@ -64,6 +67,10 @@ class MilestoneViewHolder(
     private var errorStateBinding: ShcMilestoneWidgetErrorBinding? = null
     private var successStateBinding: ShcMilestoneWidgetSuccessBinding? = null
 
+    private val adapterTypeFactory by lazy {
+        MilestoneAdapterTypeFactoryImpl(this)
+    }
+
     override fun bind(element: MilestoneWidgetUiModel) {
         initViewBinding()
 
@@ -75,12 +82,33 @@ class MilestoneViewHolder(
         }
     }
 
+    override fun onMissionActionClick(
+        mission: BaseMilestoneMissionUiModel,
+        position: Int
+    ) {
+        listener.onMilestoneMissionActionClickedListener(mission, position)
+    }
+
+    override fun onMissionImpressionListener(
+        mission: BaseMilestoneMissionUiModel,
+        position: Int
+    ) {
+        listener.sendMilestoneMissionImpressionEvent(mission, position)
+    }
+
+    override fun onRewardActionClick(reward: MilestoneItemRewardUiModel, position: Int) {
+        listener.sendMilestoneRewardActionClickedListener(reward, position)
+    }
+
+    override fun onRewardImpressionListener(reward: MilestoneItemRewardUiModel, position: Int) {
+        listener.sendMilestoneRewardImpressionEvent(reward, position)
+    }
+
     private fun initViewBinding() {
         if (binding == null) {
             binding = ShcMilestoneWidgetBinding.bind(itemView)
 
             binding?.let {
-
                 val loadingStateViewStub = it.stubShcMilestoneLoading.inflate()
                 loadingStateBinding = ShcMilestoneWidgetLoadingBinding.bind(loadingStateViewStub)
 
@@ -120,8 +148,8 @@ class MilestoneViewHolder(
             showCloseWidgetButton(element)
             setupLastUpdatedInfo(element)
 
-            horLineShcMilestoneBtm.isVisible = luvShcMilestone.isVisible
-                    || tvShcMilestoneCta.isVisible
+            horLineShcMilestoneBtm.isVisible = luvShcMilestone.isVisible ||
+                tvShcMilestoneCta.isVisible
 
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
@@ -151,9 +179,9 @@ class MilestoneViewHolder(
     private fun setOnCloseWidgetClicked(element: MilestoneWidgetUiModel) {
         element.data?.milestoneMissions?.let { missions ->
             val finishMissionCard = missions.firstOrNull { it is MilestoneFinishMissionUiModel }
-            finishMissionCard?.let {
+            (finishMissionCard as? MilestoneFinishMissionUiModel)?.let {
                 val position = missions.indexOf(it)
-                listener.onMilestoneMissionActionClickedListener(element, it, position)
+                listener.onMilestoneMissionActionClickedListener(it, position)
             }
         }
     }
@@ -192,10 +220,14 @@ class MilestoneViewHolder(
     private fun hideProgressWithAnimation() {
         successStateBinding?.run {
             val animation = ScaleAnimation(
-                ANIMATION_SCALE_1, ANIMATION_SCALE_0,
-                ANIMATION_SCALE_1, ANIMATION_SCALE_1,
-                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_0,
-                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_1
+                ANIMATION_SCALE_1,
+                ANIMATION_SCALE_0,
+                ANIMATION_SCALE_1,
+                ANIMATION_SCALE_1,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_SCALE_0,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_SCALE_1
             ).apply {
                 fillAfter = true
                 duration = ANIMATION_PROGRESS_DURATION
@@ -215,10 +247,14 @@ class MilestoneViewHolder(
     private fun showProgressWithAnimation() {
         successStateBinding?.run {
             val animation = ScaleAnimation(
-                ANIMATION_SCALE_0, ANIMATION_SCALE_1,
-                ANIMATION_SCALE_1, ANIMATION_SCALE_1,
-                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_0,
-                Animation.RELATIVE_TO_SELF, ANIMATION_SCALE_1
+                ANIMATION_SCALE_0,
+                ANIMATION_SCALE_1,
+                ANIMATION_SCALE_1,
+                ANIMATION_SCALE_1,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_SCALE_0,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_SCALE_1
             ).apply {
                 fillAfter = true
                 duration = ANIMATION_PROGRESS_DURATION
@@ -256,7 +292,7 @@ class MilestoneViewHolder(
     private fun showTimerMoreThanNineDays(deadlineMillis: Long) {
         successStateBinding?.run {
             val timerBackground =
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_TN50)
+                root.context.getResColor(unifyprinciplesR.color.Unify_TN50)
             timerShcMilestone.setBackgroundColor(timerBackground)
             timerShcMilestone.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
             timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_DAY
@@ -269,7 +305,7 @@ class MilestoneViewHolder(
     private fun showTimerLastNineDays(deadlineMillis: Long) {
         successStateBinding?.run {
             val timerBackground =
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+                root.context.getResColor(unifyprinciplesR.color.Unify_YN400)
             timerShcMilestone.setBackgroundColor(timerBackground)
             timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_DAY
             timerShcMilestone.targetDate = Calendar.getInstance().apply {
@@ -281,7 +317,7 @@ class MilestoneViewHolder(
     private fun showTimerLastFourDays(deadlineMillis: Long) {
         successStateBinding?.run {
             val timerBackground =
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                root.context.getResColor(unifyprinciplesR.color.Unify_RN500)
             timerShcMilestone.setBackgroundColor(timerBackground)
             timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_DAY
             timerShcMilestone.targetDate = Calendar.getInstance().apply {
@@ -293,7 +329,7 @@ class MilestoneViewHolder(
     private fun setupCountDownTimer(deadlineMillis: Long) {
         successStateBinding?.run {
             val timerBackground =
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                root.context.getResColor(unifyprinciplesR.color.Unify_RN500)
             timerShcMilestone.setBackgroundColor(timerBackground)
             timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_HOUR
             timerShcMilestone.targetDate = Calendar.getInstance().apply {
@@ -337,13 +373,13 @@ class MilestoneViewHolder(
                     listener.sendMilestoneWidgetCtaClickEvent()
                 }
                 val iconColor = root.context.getResColor(
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
                 val iconWidth = root.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 val iconHeight = root.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 tvShcMilestoneCta.setUnifyDrawableEnd(
                     IconUnify.CHEVRON_RIGHT,
@@ -359,7 +395,9 @@ class MilestoneViewHolder(
         successStateBinding?.run {
             val mission = element.data ?: return
             rvShcMissionMilestone.layoutManager = object : LinearLayoutManager(
-                root.context, HORIZONTAL, false
+                root.context,
+                HORIZONTAL,
+                false
             ) {
                 override fun canScrollVertically(): Boolean = false
             }
@@ -370,29 +408,14 @@ class MilestoneViewHolder(
                     mission.milestoneMissions.size.minus(LAST_ONE)
                 )
             } catch (e: IndexOutOfBoundsException) {
-                //do nothing
+                // do nothing
             }
             rvShcMissionMilestone.addItemDecoration(
                 MilestoneMissionItemDecoration(root.context.dpToPx(MARGIN_IN_DP).toInt())
             )
             rvShcMissionMilestone.adapter = MilestoneMissionAdapter(
                 mission,
-                object : MilestoneMissionAdapter.Listener {
-
-                    override fun onMissionActionClick(
-                        mission: BaseMilestoneMissionUiModel,
-                        position: Int
-                    ) {
-                        listener.onMilestoneMissionActionClickedListener(element, mission, position)
-                    }
-
-                    override fun onMissionImpressionListener(
-                        mission: BaseMilestoneMissionUiModel,
-                        position: Int
-                    ) {
-                        listener.sendMilestoneMissionImpressionEvent(mission, position)
-                    }
-                }
+                adapterTypeFactory
             )
         }
     }
@@ -447,7 +470,6 @@ class MilestoneViewHolder(
     interface Listener : BaseViewHolderListener {
 
         fun onMilestoneMissionActionClickedListener(
-            element: MilestoneWidgetUiModel,
             mission: BaseMilestoneMissionUiModel,
             missionPosition: Int
         ) {
@@ -464,5 +486,15 @@ class MilestoneViewHolder(
         fun sendMilestoneWidgetCtaClickEvent() {}
 
         fun sendMilestoneWidgetMinimizeClickEvent() {}
+
+        fun sendMilestoneRewardActionClickedListener(
+            reward: MilestoneItemRewardUiModel,
+            position: Int
+        ) {}
+
+        fun sendMilestoneRewardImpressionEvent(
+            reward: MilestoneItemRewardUiModel,
+            position: Int
+        ) {}
     }
 }
