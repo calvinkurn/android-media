@@ -179,7 +179,6 @@ class TrackingMapper {
         const val KEY_OPERATING_SYSTEM_VERSION_NAME = "operating_system_version_name"
         const val KEY_MOBILE_DEVICE_BRANDING_NAME = "mobile_device_branding_name"
         const val KEY_MOBILE_DEVICE_MODEL_NAME = "mobile_device_model_name"
-        const val KEY_MOBILE_DEVICE_INFO_NAME = "mobile_device_info_name"
         const val KEY_DEVICE_LANGUAGE_NAME = "device_language_name"
         const val KEY_SCREEN_RESOLUTION_NAME = "screen_resolution_name"
 
