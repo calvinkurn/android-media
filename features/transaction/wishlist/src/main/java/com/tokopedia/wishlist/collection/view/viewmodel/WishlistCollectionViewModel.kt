@@ -93,15 +93,19 @@ class WishlistCollectionViewModel @Inject constructor(
                     if (result.getWishlistCollections.data.isEmptyState) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 _collections.value = Success(result.getWishlistCollections)
                 _collectionData.value =
-                    WishlistCollectionState.Set(WishlistCollectionUtils.mapCollection(result.getWishlistCollections.data))
+                    WishlistCollectionState.Set(
+                        items = WishlistCollectionUtils.mapCollection(result.getWishlistCollections.data),
+                        shouldUpdateRecommendationScrollState = false
+                    )
 
                 val recommendationResult = getRecommendationWishlistV2(1, listOf(), recommSrc)
                 _collectionData.value =
                     WishlistCollectionState.Set(
-                        WishlistCollectionUtils.mapCollection(
+                        items = WishlistCollectionUtils.mapCollection(
                             result.getWishlistCollections.data,
                             recommendationResult
-                        )
+                        ),
+                        shouldUpdateRecommendationScrollState = true
                     )
             } else {
                 _collections.value = Fail(Throwable())

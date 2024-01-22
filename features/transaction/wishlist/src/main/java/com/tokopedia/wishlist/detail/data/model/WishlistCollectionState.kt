@@ -7,7 +7,8 @@ sealed class WishlistCollectionState {
     object InitialLoading : WishlistCollectionState()
 
     data class Set(
-        val items: List<WishlistCollectionTypeLayoutData>
+        val items: List<WishlistCollectionTypeLayoutData>,
+        val shouldUpdateRecommendationScrollState: Boolean
     ) : WishlistCollectionState()
 
     data class Update(

@@ -314,8 +314,7 @@ class WishlistCollectionFragment :
 
         rvScrollListener = object : WishlistEndlessScrollListener(glm) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                val currentPage = page - 1
-                loadRecommendationList(currentPage)
+                loadRecommendationList(page)
             }
         }
 
@@ -564,7 +563,9 @@ class WishlistCollectionFragment :
 
                 is WishlistCollectionState.Set -> {
                     collectionAdapter.set(result.items)
-                    rvScrollListener?.updateStateAfterGetData()
+                    if (result.shouldUpdateRecommendationScrollState) {
+                        rvScrollListener?.updateStateAfterGetData()
+                    }
                 }
 
                 is WishlistCollectionState.Update -> {
