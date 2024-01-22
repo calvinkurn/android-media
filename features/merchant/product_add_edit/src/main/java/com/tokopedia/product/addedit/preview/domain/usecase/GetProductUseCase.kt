@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.util.AddEditProductUnsellableException
 import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3Param
 import com.tokopedia.product.addedit.preview.data.source.api.param.OptionV3
 import com.tokopedia.product.addedit.preview.data.source.api.response.GetProductV3Response
@@ -21,12 +22,14 @@ class GetProductUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): Product {
-
         val graphqlRequest = GraphqlRequest(query, GetProductV3Response::class.java, params.parameters)
         val graphqlResponse: GraphqlResponse = graphqlRepository.response(listOf(graphqlRequest))
         val errors: List<GraphqlError>? = graphqlResponse.getError(GetProductV3Response::class.java)
         if (errors.isNullOrEmpty()) {
             val data = graphqlResponse.getData<GetProductV3Response>(GetProductV3Response::class.java)
+            if (data.product.productType == PRODUCT_TYPE_MERCHANDISE) {
+                throw AddEditProductUnsellableException()
+            }
             return data.product
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
@@ -34,10 +37,10 @@ class GetProductUseCase @Inject constructor(
     }
 
     companion object {
-
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_OPTIONS = "options"
         private const val OPERATION_NAME = "getProductV3"
+        private const val PRODUCT_TYPE_MERCHANDISE = "MERCHANDISE"
         private val OPERATION_PARAM = """
             ${'$'}productID: String!,${'$'}options: OptionV3!
         """.trimIndent()
@@ -63,6 +66,7 @@ class GetProductUseCase @Inject constructor(
                     mustInsurance
                     sku
                     hasDTStock
+                    productType
                     category{
                       id
                       name

@@ -63,4 +63,6 @@ data class Product(
         val cpl: CPL = CPL(),
         @SerializedName("hasDTStock")
         val hasDTStock: Boolean = false,
+        @SerializedName("productType")
+        val productType: String = ""
 )
