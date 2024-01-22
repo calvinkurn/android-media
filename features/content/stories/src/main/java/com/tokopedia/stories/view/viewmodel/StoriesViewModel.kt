@@ -193,6 +193,10 @@ class StoriesViewModel @AssistedInject constructor(
     val userReportReasonList: Result<List<PlayUserReportReasoningUiModel>>
         get() = _userReportReasonList.value ?: Success(emptyList())
 
+    init {
+        setupOnboard()
+    }
+
     fun submitAction(action: StoriesUiAction) {
         when (action) {
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
@@ -306,7 +310,6 @@ class StoriesViewModel @AssistedInject constructor(
                 }
             )
         }
-        setupOnboard()
     }
 
     private fun handleSelectGroup(position: Int, showAnimation: Boolean) {
