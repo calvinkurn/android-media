@@ -177,7 +177,7 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
 
     private fun onFailDoOptOutSubsidy(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        viewBinding?.root?.showError(errorMessage)
+        view?.rootView?.showError(errorMessage)
     }
 
     private fun setButtonCancel() {
