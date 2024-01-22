@@ -21,6 +21,6 @@ data class PlayShortsConfig(
     @SerializedName("eligible_interspersing")
     val eligibleInterspersing: Boolean = false,
 
-    @SerializedName("product_count_for_interspersing") /** TODO: adjust this if contract is updated */
+    @SerializedName("product_count_for_interspersing")
     val productCountForInterspersing: Int = 1,
 )
