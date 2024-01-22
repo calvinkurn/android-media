@@ -152,14 +152,7 @@ object DynamicChannelComponentMapper {
                         id = it.shop.shopId,
                         shopLocation = it.shop.city
                     ),
-                    labelGroup = it.labelGroup.map { label ->
-                        LabelGroup(
-                            title = label.title,
-                            position = label.position,
-                            type = label.type,
-                            url = label.imageUrl
-                        )
-                    },
+                    labelGroup = it.labelGroup.mapLabelGroup(),
                     hasBuyButton = it.hasBuyButton,
                     rating = it.rating,
                     ratingFloat = it.ratingFloat,
@@ -183,6 +176,20 @@ object DynamicChannelComponentMapper {
                 )
             }
         )
+    }
+
+    private fun Array<com.tokopedia.home.beranda.domain.model.LabelGroup>.mapLabelGroup(): List<LabelGroup> {
+        return map { label ->
+            LabelGroup(
+                title = label.title,
+                position = label.position,
+                type = label.type,
+                url = label.imageUrl,
+                styles = label.styles.map {
+                    LabelGroup.Style(it.key, it.value)
+                },
+            )
+        }
     }
 
     fun DynamicHomeChannel.Header.mapToHomeComponentHeader() = HomeComponentHeader(
@@ -265,14 +272,7 @@ object DynamicChannelComponentMapper {
                 shopUrl = shop.url,
                 shopApplink = shop.applink,
             ),
-            labelGroup = labelGroup.map { label ->
-                LabelGroup(
-                    title = label.title,
-                    position = label.position,
-                    type = label.type,
-                    url = label.imageUrl
-                )
-            },
+            labelGroup = labelGroup.mapLabelGroup(),
             hasBuyButton = hasBuyButton,
             rating = rating,
             ratingFloat = ratingFloat,
@@ -383,7 +383,10 @@ object DynamicChannelComponentMapper {
                 title = label.title,
                 position = label.position,
                 type = label.type,
-                url = label.imageUrl
+                url = label.imageUrl,
+                styles = label.styles.map {
+                    LabelGroup.Style(it.key, it.value)
+                }
             )
         },
         rating = rating,

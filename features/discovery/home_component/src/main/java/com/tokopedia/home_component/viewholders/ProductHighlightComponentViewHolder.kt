@@ -10,7 +10,7 @@ import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.LayoutProductHighlightBinding
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.ProductHighlightListener
-import com.tokopedia.home_component.mapper.ProductHighlightModelMapper
+import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelBanner
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -106,7 +106,7 @@ class ProductHighlightComponentViewHolder(
 
     private fun setDealsProductGrid(channel: ChannelModel) {
         val grid = channel.channelGrids.firstOrNull()
-        val channelDataModel = grid?.let { ProductHighlightModelMapper.mapToProductCardModel(it, cardInteraction) }
+        val channelDataModel = grid?.let { ChannelModelMapper.mapToProductCardModel(it, cardInteraction) }
         channelDataModel?.let {
             masterProductCardListView?.setProductModel(it)
         }

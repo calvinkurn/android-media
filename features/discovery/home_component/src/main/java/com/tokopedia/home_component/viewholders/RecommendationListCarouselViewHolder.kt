@@ -35,6 +35,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener?,
@@ -79,7 +81,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
         banner.let {
             val textColor = if (banner.textColor.isEmpty())
-                ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50) else Color.parseColor(banner.textColor)
+                ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_NN50) else Color.parseColor(banner.textColor)
             if(channelConfig.hasCloseButton){
                 listCarouselCloseButton.show()
                 listCarouselCloseButton.setOnClickListener {
@@ -250,8 +252,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
                         cardInteraction = cardInteraction
                     )
                 )
-                val addToCartButton = recommendationCard.findViewById<UnifyButton>(com.tokopedia.productcard.R.id.buttonAddToCart)
-                addToCartButton.text = itemView.context.getString(R.string.home_global_component_buy_again)
+                val addToCartButton: UnifyButton? = recommendationCard.findViewById(productcardR.id.buttonAddToCart)
+                addToCartButton?.run {
+                    text = itemView.context.getString(R.string.home_global_component_buy_again)
+                }
                 recommendationCard.setAddToCartOnClickListener {
                     recommendation.listener?.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)
                 }
