@@ -156,7 +156,6 @@ class TrackingMapper {
 
     companion object {
 
-        const val ANDROID = "android"
         const val DEVICE_ID = "device_id"
         const val USER_ID = "user_id"
         const val EVENT_DATA = "event_data"
