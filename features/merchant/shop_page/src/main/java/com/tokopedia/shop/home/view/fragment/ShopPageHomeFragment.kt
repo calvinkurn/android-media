@@ -47,6 +47,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCAST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -91,6 +92,8 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.showToaster
+import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -219,6 +222,9 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
+import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel
+import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetDependencyProvider
+import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetEventListener
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
@@ -269,7 +275,9 @@ open class ShopPageHomeFragment :
     ShopBannerProductGroupListener,
     ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
     ShopHomeDirectPurchaseByEtalaseWidgetListener,
-    RecyclerviewPoolListener {
+    RecyclerviewPoolListener,
+    BmsmWidgetDependencyProvider,
+    BmsmWidgetEventListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -433,7 +441,9 @@ open class ShopPageHomeFragment :
             shopBannerProductGroupWidgetTabDependencyProvider = this,
             shopHomeDisplayAdvanceCarouselBannerWidgetListener = this,
             shopHomeDirectPurchaseByEtalaseWidgetListener = this,
-            recyclerviewPoolListener = this
+            recyclerviewPoolListener = this,
+            bmsmWidgetDependencyProvider = this,
+            bmsmWidgetListener = this
         )
     }
 
@@ -2599,7 +2609,7 @@ open class ShopPageHomeFragment :
             }
         }
         when (displayWidgetUiModel?.name ?: "") {
-            WidgetNameEnum.BMGM_BANNER.value -> {
+            WidgetNameEnum.BMSM_PD_OFFERING_GROUP.value -> {
                 val applinkUri = Uri.parse(displayWidgetItem.appLink)
                 val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
                 shopPageHomeTracking.impressBmgmBanner(
@@ -2655,7 +2665,7 @@ open class ShopPageHomeFragment :
             }
         }
         when (displayWidgetUiModel?.name ?: "") {
-            WidgetNameEnum.BMGM_BANNER.value -> {
+            WidgetNameEnum.BMSM_PD_OFFERING_GROUP.value -> {
                 val applinkUri = Uri.parse(displayWidgetItem.appLink)
                 val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
                 shopPageHomeTracking.clickBmgmBanner(
@@ -5112,6 +5122,18 @@ open class ShopPageHomeFragment :
         }
     }
 
+    private fun refreshShopPageHeaderCartCounter() {
+        if (ShopUtil.isEnableShopPageReImagined(context)) {
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.apply {
+                refreshCartCounterData()
+            }
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.apply {
+                refreshCartCounterData()
+            }
+        }
+    }
+
     private fun getRealParentFragment(): Fragment? {
         return if (ShopUtil.isEnableShopPageReImagined(context)) {
             parentFragment?.parentFragment
@@ -5662,4 +5684,32 @@ open class ShopPageHomeFragment :
 
     override val parentPool: RecyclerView.RecycledViewPool?
         get() = null
+
+    override val bmsmWidgetHostFragmentManager: FragmentManager
+        get() = childFragmentManager
+
+    override val bmsmWidgetHostLifecycle: Lifecycle
+        get() = this.viewLifecycleOwner.lifecycle
+
+    override fun onBmsmWidgetSuccessAtc(result: AddToCartDataModel) {
+        getShopHeaderBottomViewContainer().showToaster(
+            message = result.data.message.firstOrNull().orEmpty(),
+            typeToaster = Toaster.TYPE_NORMAL
+        )
+        refreshShopPageHeaderCartCounter()
+    }
+
+    override fun onBmsmWidgetErrorAtc(errorMessage: String) {
+        getShopHeaderBottomViewContainer().showToasterError(
+            message = errorMessage
+        )
+    }
+
+    override fun onBmsmWidgetNavigateToOlp(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    override fun onBmsmWidgetProductClicked(product: OfferingProductListUiModel.Product) {
+        RouteManager.route(context, product.productUrl)
+    }
 }
