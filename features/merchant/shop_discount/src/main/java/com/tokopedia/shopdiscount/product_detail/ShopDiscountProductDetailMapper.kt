@@ -82,6 +82,7 @@ object ShopDiscountProductDetailMapper {
             ShopDiscountProductDetailUiModel.ProductDetailData(
                 productId = it.productId,
                 productName = it.name,
+                variantName = it.parentInfo.name,
                 productImageUrl = it.picture,
                 minOriginalPrice = it.price.min,
                 maxOriginalPrice = it.price.max,
@@ -94,7 +95,6 @@ object ShopDiscountProductDetailMapper {
                 startDate = it.startDate,
                 endDate = it.endDate,
                 isVariant = it.isVariant,
-                //TODO need to uncomment below once data is ready from BE
                 maxOrder = it.maxOrder.toIntOrZero(),
                 parentId = it.parentId,
                 isSubsidy = it.joinSubsidy,
@@ -116,23 +116,6 @@ object ShopDiscountProductDetailMapper {
                     sellerDiscountPercentage = it.subsidyInfo.sellerDiscountPercentage
                 ),
                 eventId = it.warehouses.firstOrNull()?.eventId.orEmpty(),
-//                maxOrder = 10,
-//                isSubsidy = true,
-//                subsidyStatusText = "Disubsidi sebagian",
-//                subsidyInfo = ShopDiscountSubsidyInfoUiModel(
-//                    ctaProgramLink = "https://www.tokopedia.com/education/seller-education/",
-//                    subsidyType = ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL,
-//                    discountedPrice = 20000.0,
-//                    discountedPercentage = 5,
-//                    remainingQuota = 10,
-//                    quotaSubsidy = 20,
-//                    maxOrder = 5,
-//                    subsidyDateStart = "2024-04-04 07:30:55 +0700 WIB".formatStartDate(),
-//                    subsidyDateEnd = "2024-06-04 07:30:55 +0700 WIB".formatEndDate(),
-//                    sellerDiscountPrice = 20000.0,
-//                    sellerDiscountPercentage = 11
-//                ),
-//                eventId = "123"
             )
         }
     }

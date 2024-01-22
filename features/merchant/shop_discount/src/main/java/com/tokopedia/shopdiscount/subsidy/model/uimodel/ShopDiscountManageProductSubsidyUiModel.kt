@@ -36,8 +36,6 @@ data class ShopDiscountManageProductSubsidyUiModel(
     }
 
     fun hasNonSubsidyProduct(): Boolean {
-        //TODO need to remove this filter once BE has fixed the response
-//        return true
         return listProductDetailData.any { productDetail ->
             !productDetail.isSubsidy
         }

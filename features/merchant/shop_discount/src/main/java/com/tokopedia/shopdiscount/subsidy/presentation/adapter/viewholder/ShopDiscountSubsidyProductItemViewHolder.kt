@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
@@ -28,7 +29,7 @@ class ShopDiscountSubsidyProductItemViewHolder(
         val LAYOUT = R.layout.layout_item_shop_discount_subsidy_product
     }
 
-    interface Listener{
+    interface Listener {
         fun onClickCheckbox(isChecked: Boolean, uiModel: ShopDiscountProductSubsidyUiModel)
     }
 
@@ -42,6 +43,7 @@ class ShopDiscountSubsidyProductItemViewHolder(
     private val labelDiscount: Label = viewBinding.labelDiscount
     private val textProductPriceOriginal: Typography = viewBinding.textProductPriceOriginal
     private val bottomDivider: View = viewBinding.bottomDivider
+    private val verticalDivider: View = viewBinding.verticalDivider
 
     fun bind(uiModel: ShopDiscountProductSubsidyUiModel) {
         setupCheckbox(uiModel)
@@ -75,13 +77,21 @@ class ShopDiscountSubsidyProductItemViewHolder(
     }
 
     private fun setProductData(uiModel: ShopDiscountProductSubsidyUiModel) {
+        val variantName = uiModel.productDetailData.variantName
+        val subsidyStatusText = uiModel.productDetailData.subsidyStatusText
         imageProduct.loadImage(uiModel.productDetailData.productImageUrl)
         textProductName.text = uiModel.productDetailData.productName
-        //TODO uncomment when variant name is available
-//        textVariantName.text = uiModel.productDetailData.variantName
-        textVariantName.text = "VARIANT_NAME"
-        textSubsidyStatus.text = uiModel.productDetailData.subsidyStatusText
-        textDiscountedPrice.text = uiModel.productDetailData.maxPriceDiscounted.getCurrencyFormatted()
+        textVariantName.shouldShowWithAction(variantName.isNotEmpty()) {
+            textVariantName.text = variantName
+        }
+        if (subsidyStatusText.isEmpty() || variantName.isEmpty()) {
+            verticalDivider.hide()
+        } else {
+            verticalDivider.show()
+        }
+        textSubsidyStatus.text = subsidyStatusText
+        textDiscountedPrice.text =
+            uiModel.productDetailData.maxPriceDiscounted.getCurrencyFormatted()
         labelDiscount.apply {
             text = uiModel.productDetailData.maxDiscount.getPercentFormatted()
         }
@@ -99,7 +109,7 @@ class ShopDiscountSubsidyProductItemViewHolder(
             }
 
             else -> {
-                    R.drawable.shop_discount_bg_subsidy_product_item_no_radius
+                R.drawable.shop_discount_bg_subsidy_product_item_no_radius
             }
         }
         container?.setBackgroundResource(backgroundResource)

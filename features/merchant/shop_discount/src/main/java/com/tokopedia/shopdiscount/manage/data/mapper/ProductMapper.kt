@@ -51,7 +51,6 @@ class ProductMapper @Inject constructor() {
                 ),
                 sku = product.sku,
                 isExpand = product.isExpand,
-                //TODO need to uncomment below once data is ready from BE
                 maxOrder = product.maxOrder.toIntOrZero(),
                 isSubsidy = product.joinSubsidy,
                 subsidyStatusText = product.subsidyStatusText,
@@ -72,23 +71,6 @@ class ProductMapper @Inject constructor() {
                     sellerDiscountPercentage = product.subsidyInfo.sellerDiscountPercentage
                 ),
                 listEventId = product.warehouses.map { warehouse -> warehouse.eventId },
-//                maxOrder = 10,
-//                isSubsidy = true,
-//                subsidyStatusText = "Disubsidi sebagian",
-//                subsidyInfo = ShopDiscountSubsidyInfoUiModel(
-//                    ctaProgramLink = "https://www.tokopedia.com/education/seller-education/",
-//                    subsidyType = ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN,
-//                    discountedPrice = 20000.0,
-//                    discountedPercentage = 5,
-//                    remainingQuota = 10,
-//                    quotaSubsidy = 20,
-//                    maxOrder = 15,
-//                    subsidyDateStart = "2024-04-04 07:30:55 +0700 WIB".formatStartDate(),
-//                    subsidyDateEnd = "2024-06-04 07:30:55 +0700 WIB".formatEndDate(),
-//                    sellerDiscountPrice = 20000.0,
-//                    sellerDiscountPercentage = 11
-//                ),
-//                listEventId = listOf("123", "456")
             )
         }
 

@@ -79,7 +79,9 @@ data class GetSlashPriceProductDetailResponse(
             @SerializedName("join_subsidy")
             val joinSubsidy: Boolean = false,
             @SerializedName("subsidy_status_text")
-            val subsidyStatusText: String = ""
+            val subsidyStatusText: String = "",
+            @SerializedName("parent_info")
+            val parentInfo: ParentInfo = ParentInfo()
         ) {
             data class Price(
                 @SerializedName("min")
@@ -124,6 +126,15 @@ data class GetSlashPriceProductDetailResponse(
                 @SerializedName("original_price")
                 @Expose
                 var originalPrice: Double = 0.0
+            )
+
+            data class ParentInfo(
+                @SerializedName("is_parent")
+                @Expose
+                var isParent: Boolean = false,
+                @SerializedName("name")
+                @Expose
+                var name: String = ""
             )
         }
     }
