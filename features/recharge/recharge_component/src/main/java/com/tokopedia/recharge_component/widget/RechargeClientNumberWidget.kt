@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -14,7 +13,6 @@ import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
@@ -43,7 +41,6 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.common.topupbills.R as commontopupbillsR
 
 /**
@@ -122,7 +119,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
                         before: Int,
                         count: Int
                     ) {
-                        Log.d("MisaelCheck", "${s.toString()}")
                         var isManualInput = false
                         hideClearIcon()
                         clearErrorState()
@@ -186,8 +182,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
                 chipType = ChipsUnify.TYPE_ALTERNATE
                 chipImageResource = getIconUnifyDrawable(
                     context,
-                    IconUnify.VIEW_LIST,
-                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
+                    IconUnify.VIEW_LIST
                 )
                 setOnClickListener {
                     mFilterChipListener?.onClickIcon(true)
