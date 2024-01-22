@@ -74,4 +74,15 @@ sealed interface MiniCartSource {
         override val value: MiniCartSourceValue
             get() = "offer_page"
     }
+
+    object BmsmOLP : MiniCartSource {
+        override val value: MiniCartSourceValue
+            get() = "offer_page"
+    }
+
+    object OfferPageBottomSheet : MiniCartSource {
+
+        override val value: MiniCartSourceValue
+            get() = "bottomsheet_offer_page"
+    }
 }

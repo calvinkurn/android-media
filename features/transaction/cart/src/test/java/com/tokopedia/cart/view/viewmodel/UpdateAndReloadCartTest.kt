@@ -3,9 +3,9 @@ package com.tokopedia.cart.view.viewmodel
 import androidx.lifecycle.Observer
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndReloadCartListData
-import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.uimodel.CartGlobalEvent
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import io.mockk.Runs
 import io.mockk.coEvery
