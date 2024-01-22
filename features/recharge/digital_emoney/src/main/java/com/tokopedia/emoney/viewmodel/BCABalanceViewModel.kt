@@ -469,6 +469,8 @@ class BCABalanceViewModel @Inject constructor(
                     cardType,
                     bcaFlazzData
                 )
+            } else if(result.status == BCAFlazzStatus.DONE.status){
+                errorCardMessageMutable.postValue(MessageErrorException(result.attributes.message))
             } else {
                 bcaInquiryMutable.postValue(
                     BCAFlazzResponseMapper.bcaMapper(
