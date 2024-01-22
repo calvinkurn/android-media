@@ -27,7 +27,7 @@ import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.stringToUnifyColor
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -134,7 +134,7 @@ class GWPViewHolder(
     private fun setTitle(title: String, color: String) {
         binding.gwpTitle.text = title
 
-        val default = unifyPrinciplesR.color.Unify_TN500
+        val default = unifyprinciplesR.color.Unify_TN500
         val unifyColor = getStringUnifyColor(color = color, default = default)
         binding.gwpTitle.setTextColor(unifyColor)
     }
