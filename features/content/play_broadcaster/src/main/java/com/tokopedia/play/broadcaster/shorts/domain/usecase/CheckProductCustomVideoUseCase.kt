@@ -36,10 +36,10 @@ class CheckProductCustomVideoUseCase @Inject constructor(
 
         const val QUERY_NAME = "CheckProductCustomVideoUseCaseQuery"
         const val QUERY = """
-            query broadcasterCheckProductCustomVideo(
+            query broadcasterCheckPDPCustomVideo(
                 ${"$$PARAM_CHANNEL_ID"}: String!
             ) {
-                broadcasterCheckProductCustomVideo(
+                broadcasterCheckPDPCustomVideo(
                     $PARAM_CHANNEL_ID: ${"$$PARAM_CHANNEL_ID"}
                 ) {
                     hasVideo
