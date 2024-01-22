@@ -2,7 +2,9 @@ package com.tokopedia.shopdiscount.info.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
+import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceSellerStatusResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceSellerStatusUseCase
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
@@ -123,4 +125,30 @@ class ShopDiscountSellerInfoBottomSheetViewModelTest {
         assert(liveDataFailValue.throwable.message == mockErrorMessage)
     }
 
+    @Test
+    fun `when get targeted ticker success, then result should success`(){
+        //Given
+        coEvery {
+            getSlashPriceSellerStatusUseCase.executeOnBackground()
+        } returns GetSlashPriceSellerStatusResponse()
+        coEvery {
+            getTargetedTickerUseCase.execute(any())
+        } returns listOf()
+        //When
+        viewModel.getTargetedTickerData()
+        //Then
+        assert(viewModel.targetedTickerData.value is Success)
+    }
+
+    @Test
+    fun `when get targeted ticker error, then result should fail`(){
+        //Given
+        coEvery {
+            getSlashPriceSellerStatusUseCase.executeOnBackground()
+        } throws MessageErrorException("error")
+        //When
+        viewModel.getTargetedTickerData()
+        //Then
+        assert(viewModel.targetedTickerData.value is Fail)
+    }
 }
