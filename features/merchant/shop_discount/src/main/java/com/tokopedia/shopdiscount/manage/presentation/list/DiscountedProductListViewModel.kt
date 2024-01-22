@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductMapper
 import com.tokopedia.shopdiscount.manage.data.mapper.UpdateDiscountRequestMapper
@@ -201,10 +200,6 @@ class DiscountedProductListViewModel @Inject constructor(
 
     fun anySubsidyOnSelectedProducts(): Boolean {
         return selectedProducts.any { product -> product.isSubsidy }
-    }
-
-    fun hasOneSelectedNonVariantProduct(): Boolean {
-        return selectedProducts.count { product -> !product.hasVariant } == Int.ONE
     }
 
     fun getSelectedProductCount(): Int {
