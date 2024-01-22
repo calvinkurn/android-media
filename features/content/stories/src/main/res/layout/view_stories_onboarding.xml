@@ -15,58 +15,22 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="24dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CLOSE"
-        app:layout_constraintBottom_toBottomOf="@+id/loader_circle_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_circle_1"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="18dp"
-        app:layout_constraintStart_toEndOf="@id/iv_onboard_close"
-        app:layout_constraintTop_toBottomOf="@id/layout_timer"
-        app:loader_type="circle" />
-
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_circle_2"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="18dp"
-        app:layout_constraintStart_toEndOf="@id/loader_circle_1"
-        app:layout_constraintTop_toBottomOf="@id/layout_timer"
-        app:loader_type="circle" />
-
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_circle_3"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="18dp"
-        app:layout_constraintStart_toEndOf="@id/loader_circle_2"
-        app:layout_constraintTop_toBottomOf="@id/layout_timer"
-        app:loader_type="circle" />
-
+        app:layout_constraintTop_toBottomOf="@id/layout_timer" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_tap_move_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/loader_circle_1"
-        app:layout_constraintTop_toBottomOf="@+id/loader_circle_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_onboard_close"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-         />
+        app:lottie_loop="true" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_stories_onboard_category"

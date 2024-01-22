@@ -32,7 +32,7 @@ class StoriesOnboardView : ConstraintLayout {
         binding.lottieTapNext.setAnimationFromUrl(context.getString(R.string.stories_onboard_tap_anim))
         binding.lottieTapNext.setFailureListener {  }
 
-        binding.lottieTapMoveCategory.setAnimationFromUrl(context.getString(R.string.stories_onboard_tap_anim))
+        binding.lottieTapMoveCategory.setAnimationFromUrl(context.getString(R.string.stories_onboard_horizontal_swipe_anim))
         binding.lottieTapMoveCategory.setFailureListener {  }
     }
 }
