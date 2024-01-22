@@ -121,6 +121,10 @@ class StoriesGroupFragment @Inject constructor(
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
         storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
+
+        binding.vStoriesOnboarding.setOnClickListener {
+            binding.vStoriesOnboarding.gone()
+        }
     }
 
     private fun setupTopInsets() = with(binding) {
@@ -174,6 +178,7 @@ class StoriesGroupFragment @Inject constructor(
                     }
 
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
+                    is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.showWithCondition(event.needToShow)
                     else -> return@collect
                 }
             }

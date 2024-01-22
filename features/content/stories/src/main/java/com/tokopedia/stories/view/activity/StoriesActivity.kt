@@ -2,30 +2,22 @@ package com.tokopedia.stories.view.activity
 
 import android.content.res.Resources
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import com.tokopedia.stories.view.model.StoriesArgsModel
-import com.tokopedia.stories.view.utils.ARGS_ENTRY_POINT
 import com.tokopedia.stories.view.utils.ARGS_SOURCE
 import com.tokopedia.stories.view.utils.ARGS_SOURCE_ID
 import com.tokopedia.stories.view.utils.KEY_ARGS
 import com.tokopedia.stories.view.utils.KEY_CONFIG_ENABLE_STORIES_ROOM
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
-import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
-import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.stories.R as storiesR
 
@@ -46,21 +38,15 @@ class StoriesActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: StoriesViewModelFactory.Creator
 
-    private val storiesArgs: StoriesArgsModel
-        get() {
-            val path = intent.data?.pathSegments
-            return StoriesArgsModel(
-                authorId = path?.last().orEmpty(),
-                authorType = path?.first().orEmpty(),
-                source = intent.data?.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
-                    StoriesSource.SHOP_ENTRY_POINT.value
-                },
-                sourceId = intent.data?.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
-                entryPoint = intent.data?.getQueryParameter(ARGS_ENTRY_POINT).orEmpty(),
-            )
-        }
-
-    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory.create(storiesArgs) }
+    private val path get() =  intent.data?.pathSegments
+    private val storiesArgs  get() =  StoriesArgsModel(
+        authorId = path?.last().orEmpty(),
+        authorType = path?.first().orEmpty(),
+        source = intent.data?.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
+            StoriesSource.SHOP_ENTRY_POINT.value
+        },
+        sourceId = intent.data?.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -68,7 +54,6 @@ class StoriesActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         getData()
         setupViews()
-        observeEvent()
     }
 
     override fun getTheme(): Resources.Theme {
@@ -101,9 +86,6 @@ class StoriesActivity : BaseActivity() {
         _binding = ActivityStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (isEnableStoriesRoom()) {
-            binding.vStoriesOnboarding.setOnClickListener {
-                binding.vStoriesOnboarding.gone()
-            }
             openFragment()
         }
         else finish()
@@ -134,17 +116,6 @@ class StoriesActivity : BaseActivity() {
             classLoader = classLoader,
             bundle = bundle ?: Bundle(),
         )
-    }
-
-    private fun observeEvent() {
-        lifecycleScope.launchWhenCreated {
-            viewModel.storiesEvent.collectLatest { event ->
-                when (event) {
-                    is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.showWithCondition(event.needToShow)
-                    else -> {}
-                }
-            }
-        }
     }
 
     override fun onDestroy() {
