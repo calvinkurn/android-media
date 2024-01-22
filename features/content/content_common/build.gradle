@@ -45,6 +45,11 @@ android {
 
     buildFeatures {
         viewBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 
     testOptions {
@@ -139,6 +144,9 @@ dependencies {
 
     androidTestImplementation rootProject.ext.unifyDependencies.sortFilter
     androidTestImplementation projectOrAar(rootProject.ext.features.filter)
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
 }
 
 project.ext {

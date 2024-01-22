@@ -37,6 +37,7 @@ import com.tokopedia.content.product.preview.view.uimodel.product.ProductContent
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -54,13 +55,13 @@ class ProductPreviewFragment @Inject constructor(
     private val router: Router
 ) : TkpdBaseV4Fragment() {
 
-    private var _binding: FragmentProductPreviewBinding? = null
-    private val binding: FragmentProductPreviewBinding
-        get() = _binding!!
-
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
         viewModelFactory.create(EntrySource(productPreviewData))
     }
+
+    private var _binding: FragmentProductPreviewBinding? = null
+    private val binding: FragmentProductPreviewBinding
+        get() = _binding!!
 
     private val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -200,8 +201,8 @@ class ProductPreviewFragment @Inject constructor(
                 when (val event = it) {
                     is ProductPreviewEvent.LoginEvent<*> -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
-                        if (event.data is BottomNavUiModel) {
-                            productAtcResult.launch(intent)
+                        when (event.data) {
+                            is BottomNavUiModel -> productAtcResult.launch(intent)
                         }
                     }
 
@@ -231,7 +232,7 @@ class ProductPreviewFragment @Inject constructor(
                     is ProductPreviewEvent.ShowErrorToaster -> {
                         Toaster.build(
                             requireView().rootView,
-                            text = getString(contentproductpreviewR.string.bottom_atc_failed_toaster),
+                            text = event.message.message.ifNull { getString(event.type.textRes) },
                             actionText = getString(contentproductpreviewR.string.bottom_atc_failed_click_toaster),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
@@ -240,6 +241,8 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
+
+                    else -> {}
                 }
             }
         }

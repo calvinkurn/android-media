@@ -10,8 +10,10 @@ import com.tokopedia.content.product.preview.data.usecase.RemindMeUseCase
 import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -67,9 +69,11 @@ class ProductPreviewRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun submitReport(): Boolean {
-        TODO("Not yet implemented")
-    }
+    override suspend fun submitReport(report: ReportUiModel, reviewId: String): Boolean =
+        withContext(dispatchers.io) {
+            val response = submitReportUseCase(SubmitReportUseCase.Param(reasonCode = report.reasonCode, reasonText = report.text, reviewId = reviewId.toIntOrZero()))
+            response.data.success
+        }
 
     override suspend fun remindMe(productId: String): BottomNavUiModel.RemindMeUiModel =
         withContext(dispatchers.io) {
