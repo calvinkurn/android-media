@@ -288,8 +288,9 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         // Given
         viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
-                EPharmacyPrepareProductsGroupResponse(null)
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(null),
+                ""
             )
         }
 
@@ -326,12 +327,13 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         // Given
         viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(null, null, listOf(), null, null)
                     )
-                )
+                ),
+                ""
             )
         }
         every { epharmacyUseCase.cancelJobs() } just Runs
@@ -349,12 +351,13 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         // Given
         viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         null
                     )
-                )
+                ),
+                ""
             )
         }
         viewModel.shipmentCartItemModelList = arrayListOf()
@@ -371,7 +374,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         // Given
         viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
@@ -382,7 +385,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
         viewModel.shipmentCartItemModelList = arrayListOf()
@@ -431,7 +435,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
@@ -442,7 +446,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
 
@@ -500,7 +505,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
@@ -523,7 +528,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
 
@@ -581,7 +587,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
@@ -604,7 +610,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
 
@@ -663,7 +670,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
@@ -686,7 +693,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
 
@@ -742,7 +750,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
@@ -765,7 +773,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
 
@@ -821,7 +830,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
@@ -844,7 +853,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
 
@@ -870,7 +880,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         val errorWording = "error wording"
         every { view.getStringResourceWithArgs(any(), any()) } returns errorWording
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         groupsData = GroupData(
@@ -948,7 +958,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             papPrimaryCTA = null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
         viewModel.shipmentCartItemModelList = arrayListOf(
@@ -1037,7 +1048,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns -1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         groupsData = GroupData(
@@ -1093,7 +1104,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             papPrimaryCTA = null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
         viewModel.shipmentCartItemModelList = arrayListOf(
@@ -1141,7 +1153,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         groupsData = GroupData(
@@ -1209,7 +1221,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             papPrimaryCTA = null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
         viewModel.shipmentCartItemModelList = arrayListOf(
@@ -1336,7 +1349,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
-            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         groupsData = GroupData(
@@ -1551,7 +1564,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             papPrimaryCTA = null
                         )
                     )
-                )
+                ),
+                ""
             )
         }
         viewModel.shipmentCartItemModelList = arrayListOf(

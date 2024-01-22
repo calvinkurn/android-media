@@ -41,6 +41,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 const val CHARACTER_LOADER_JSON_ZIP_FILE = "thanks_page_instant_anim.zip"
 
@@ -201,7 +202,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                 val spannableString = SpannableString(thanksPageData.customDataMessage?.loaderText + " " + secondsRemaining.toString() + " detik")
 
                 val secondIndex = spannableString.indexOf(secondsRemaining.toString())
-                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)), secondIndex, secondIndex + secondsRemaining.toString().length, 0)
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), unifyprinciplesR.color.Unify_GN500)), secondIndex, secondIndex + secondsRemaining.toString().length, 0)
 
                 tv_payment_success_info.text = spannableString
             }
