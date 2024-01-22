@@ -369,6 +369,10 @@ class SearchProductFirstPageGqlUseCase(
                                     type
                                     position
                                     url
+                                    style{
+                                        key
+                                        value
+                                    }
                                 }
                                 original_price
                                 discount_percentage

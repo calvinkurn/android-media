@@ -28,6 +28,7 @@ data class LabelGroupDataView(
                 productLabelGroup.type,
                 productLabelGroup.title,
                 productLabelGroup.url,
+                productLabelGroup.styleList.map(StyleDataView::create),
             )
 
         fun hasFulfillment(labelGroupList: List<LabelGroupDataView>?): Boolean =

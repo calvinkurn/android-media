@@ -309,7 +309,7 @@ internal open class ProductListPresenterTestFixtures {
             inspirationProductPresenterDelegate,
             reimagineRollence,
             lastClickedProductIdProvider,
-            deduplication,
+            deduplication
         )
         productListPresenter.attachView(productListView)
     }
@@ -428,6 +428,20 @@ internal open class ProductListPresenterTestFixtures {
         productItem.priceRange shouldBe topAdsProduct.product.priceRange
         productItem.productListType shouldBe productListType
         productItem.showButtonAtc shouldBe isShowButtonAtc
+        productItem.labelGroupList?.forEachIndexed { index, labelGroupDataView ->
+            val expectedLabelGroup = topAdsProduct.product.labelGroupList[index]
+
+            labelGroupDataView.position shouldBe expectedLabelGroup.position
+            labelGroupDataView.title shouldBe expectedLabelGroup.title
+            labelGroupDataView.type shouldBe expectedLabelGroup.type
+            labelGroupDataView.imageUrl shouldBe expectedLabelGroup.imageUrl
+
+            labelGroupDataView.styleList.forEachIndexed { styleIndex, styleDataView ->
+                val expectedStyle = expectedLabelGroup.styleList[styleIndex]
+                styleDataView.key shouldBe expectedStyle.key
+                styleDataView.value shouldBe expectedStyle.value
+            }
+        }
     }
 
     protected fun Visitable<*>.assertOrganicProduct(
@@ -494,7 +508,7 @@ internal open class ProductListPresenterTestFixtures {
                     topAdsProductList[topAdsProductListIndex],
                     expectedTopAdsProductPosition,
                     expectedProductListType,
-                    expectedShowButtonATC,
+                    expectedShowButtonATC
                 )
                 expectedTopAdsProductPosition++
                 topAdsProductListIndex++
@@ -504,7 +518,7 @@ internal open class ProductListPresenterTestFixtures {
                     expectedOrganicProductPosition,
                     "",
                     expectedProductListType,
-                    expectedBlurred,
+                    expectedBlurred
                 )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
