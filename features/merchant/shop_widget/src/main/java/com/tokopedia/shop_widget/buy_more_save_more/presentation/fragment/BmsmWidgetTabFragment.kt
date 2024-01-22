@@ -302,7 +302,7 @@ class BmsmWidgetTabFragment :
 
             val productBenefitImageFromMinicart = miniCartData.tiersApplied
                 .firstOrNull()
-                ?.benefitProducts?.map {
+                ?.products?.map {
                     it.productImage
                 }
 

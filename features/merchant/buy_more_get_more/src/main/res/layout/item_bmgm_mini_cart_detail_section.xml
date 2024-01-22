@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tvBmgmDetailSection"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:textColor="@color/Unify_NN950"
+    app:typographyType="display_3"
+    tools:text="Potongan Rp900 rb untuk barang di bawah ini:" />

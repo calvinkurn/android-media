@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardBmgmProduct"
+    android:layout_width="32dp"
+    android:layout_height="34dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgBmgmUpsellingItem"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:scaleType="centerCrop"
+        app:unify_image_corner_radius="4" />
+</com.tokopedia.unifycomponents.CardUnify2>
