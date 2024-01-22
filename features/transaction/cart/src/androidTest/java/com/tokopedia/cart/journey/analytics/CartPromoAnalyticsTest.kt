@@ -39,7 +39,7 @@ class CartPromoAnalyticsTest {
     private var idlingResource: IdlingResource? = null
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
+    var cassavaTestRule = CassavaTestRule()
 
     @Before
     fun setup() {
