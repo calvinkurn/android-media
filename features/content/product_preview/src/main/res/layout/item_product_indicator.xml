@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="70dp"
     android:layout_height="70dp"
     android:elevation="0dp"
@@ -14,14 +15,26 @@
             android:id="@+id/iv_review_content_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="H,9:16"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:rImg_cornerRadius="20dp" />
+
+        <View
+            android:id="@+id/view_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.8"
+            android:background="@drawable/bg_overlay_bot" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_video_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:padding="6dp"
+            android:textColor="@color/Unify_Static_White"
+            android:visibility="gone"
+            app:typographyType="display_3"
+            tools:text="00:30" />
 
         <View
             android:id="@+id/view_selected"

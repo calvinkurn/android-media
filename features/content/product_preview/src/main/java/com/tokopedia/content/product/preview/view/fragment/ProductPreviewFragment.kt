@@ -54,23 +54,22 @@ class ProductPreviewFragment @Inject constructor(
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getParcelable(
+                    PRODUCT_DATA,
+                    ProductContentUiModel::class.java
+                )
+            } else {
+                arguments?.getParcelable(PRODUCT_DATA)
+            } ?: ProductContentUiModel()
+        }
         viewModelFactory.create(EntrySource(productPreviewData))
     }
 
     private var _binding: FragmentProductPreviewBinding? = null
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
-
-    private val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(
-                PRODUCT_DATA,
-                ProductContentUiModel::class.java
-            )
-        } else {
-            arguments?.getParcelable(PRODUCT_DATA)
-        } ?: ProductContentUiModel()
-    }
 
     private val pagerListener: ViewPager2.OnPageChangeCallback by lazyThreadSafetyNone {
         pageListenerObject()
@@ -127,7 +126,7 @@ class ProductPreviewFragment @Inject constructor(
             adapter = pagerAdapter
         }
 
-        if (productPreviewData == ProductContentUiModel()) {
+        if (viewModel.productData == ProductContentUiModel()) {
             layoutProductPreviewTab.tvProductTabTitle.gone()
             layoutProductPreviewTab.tvReviewTabTitle.gone()
             layoutProductPreviewTab.viewTabIndicator.gone()
@@ -260,7 +259,7 @@ class ProductPreviewFragment @Inject constructor(
                 context = requireContext(),
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
                 shopId = model.shop.id,
-                productId = productPreviewData.productId,
+                productId = viewModel.productData.productId,
                 startActivitResult = { intent, _ -> startActivity(intent) }
             )
         } else {

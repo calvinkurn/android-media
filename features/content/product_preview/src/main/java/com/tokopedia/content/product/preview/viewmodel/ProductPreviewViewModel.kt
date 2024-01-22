@@ -47,6 +47,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
         fun create(param: EntrySource): ProductPreviewViewModel
     }
 
+    val productData = param.productPreviewData
+
     private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
     private val _productIndicatorState = MutableStateFlow(emptyList<IndicatorUiModel>())
 
