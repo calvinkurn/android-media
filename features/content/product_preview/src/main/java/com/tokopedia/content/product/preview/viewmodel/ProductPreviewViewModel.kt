@@ -103,7 +103,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
             state is PageState.Success && state.hasNextPage -> state.page + 1
             else -> return
         }
-        if (isRefresh) _review.update { review -> review.copy(pageState = PageState.Load) }
+        if (isRefresh) {
+            _review.update { review -> review.copy(pageState = PageState.Load) }
+        }
         viewModelScope.launchCatchError(block = {
             val response = repo.getReview(param.productPreviewData.productId, page)
             val newList = buildList {
