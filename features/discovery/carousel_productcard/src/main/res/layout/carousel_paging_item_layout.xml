@@ -5,4 +5,5 @@
     android:id="@+id/carouselPagingProductCardListView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:reimagine="true" />
+    app:reimagine="true"
+    app:useCompatPadding="true"/>

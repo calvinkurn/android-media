@@ -7,12 +7,14 @@
     <com.tokopedia.productcard.ProductCardGridView
         android:id="@+id/productCardView"
         android:layout_gravity="center_horizontal"
-        android:layout_width="@dimen/comparison_widget_product_card_width"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="1dp"
+        app:forceWidth="@dimen/comparison_widget_product_card_width"
         app:reimagine="true"
         app:reimagine_template="grid"
+        app:useCompatPadding="true"
         />
 
     <com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsView

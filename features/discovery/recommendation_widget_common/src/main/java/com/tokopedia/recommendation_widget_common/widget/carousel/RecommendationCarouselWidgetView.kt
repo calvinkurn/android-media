@@ -407,7 +407,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             context = itemView.context,
             coroutineDispatcher = Dispatchers.Default,
             productImageWidth = productCardWidth,
-            isReimagine = true
+            isReimagine = true,
+            useCompatPadding = true
         )
     }
 
