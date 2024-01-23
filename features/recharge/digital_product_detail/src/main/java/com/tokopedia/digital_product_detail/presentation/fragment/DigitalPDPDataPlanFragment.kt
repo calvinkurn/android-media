@@ -119,6 +119,7 @@ import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBa
 import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceOTPBottomSheet
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeOmniWidget
+import com.tokopedia.recharge_component.widget.isNumeric
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -807,7 +808,6 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
-
         fun getContactByPermission(): MutableList<TopupBillsContact> {
             val isDeniedOnce = localCacheHandler.getBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, false)
             return if (!isDeniedOnce) {
@@ -1170,7 +1170,11 @@ class DigitalPDPDataPlanFragment :
     private fun initClientNumberWidget() {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             setCustomInputNumberFormatter { inputNumber ->
-                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                if (inputNumber.isNumeric()) {
+                    CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                } else {
+                    inputNumber
+                }
             }
             setInputFieldStaticLabel(
                 getString(
