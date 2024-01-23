@@ -35,7 +35,7 @@ data class EPharmacyPrepareProductsGroupResponse(
 
             @Parcelize
             data class CheckoutFlowEPharmacy(
-                @SerializedName("is_block")
+                @SerializedName("is_blocked")
                 val isBlock: Boolean? = false
             ) : Parcelable
 
@@ -225,7 +225,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("qty_comparison")
                         val qtyComparison: QtyComparison?,
                         @SerializedName("price")
-                        val price: Double?,
+                        val price: Double?
                     ) : Parcelable {
 
                         @IgnoredOnParcel
@@ -236,7 +236,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                             @SerializedName("initial_qty")
                             var initialQty: Int?,
                             @SerializedName("recommend_qty")
-                            val recommendedQty: Int?,
+                            val recommendedQty: Int?
                         ) : Parcelable {
                             @IgnoredOnParcel
                             var currentQty: Int = 0
