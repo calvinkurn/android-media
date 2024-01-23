@@ -21,7 +21,7 @@ import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.productcard.reimagine.ProductCardModel.Companion as ProductCardModelReimagine
+import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ReimagineListCarouselViewStrategy(
@@ -40,10 +40,12 @@ internal class ReimagineListCarouselViewStrategy(
 
     override fun additionalMarginStart() = cardContainer?.marginStart ?: 0
 
+    private var useCompatPadding = false
+
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
         View.inflate(context, R.layout.product_card_reimagine_list_carousel_layout, productCardView)
 
-        CompatPaddingUtils(context, productCardView, attrs).updateMargin()
+        initAttributes(attrs)
 
         cardContainer?.run {
             updateLayoutParams { height = MATCH_PARENT }
@@ -57,14 +59,32 @@ internal class ReimagineListCarouselViewStrategy(
         }
     }
 
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
+        val typedArray = context
+            ?.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
+            ?: return
+
+        return try {
+            useCompatPadding = typedArray.getBoolean(R.styleable.ProductCardView_useCompatPadding, false)
+        } catch(_: Throwable) {
+
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
     override fun setProductModel(productCardModel: ProductCardModel) {
         setProductModel(ProductCardModelReimagine.from(productCardModel))
     }
 
-    fun setProductModel(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
+    fun setProductModel(productCardModel: ProductCardModelReimagine) {
         renderer.setProductModel(productCardModel)
 
         stockInfo.render(productCardModel)
+
+        CompatPaddingUtils(productCardView, useCompatPadding, productCardModel).updatePadding()
     }
 
     override fun recycle() { }
