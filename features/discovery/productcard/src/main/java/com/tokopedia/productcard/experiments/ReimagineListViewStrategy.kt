@@ -25,7 +25,7 @@ import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.video_widget.VideoPlayerController
-import com.tokopedia.productcard.reimagine.ProductCardModel.Companion as ProductCardModelReimagine
+import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ReimagineListViewStrategy(
@@ -50,10 +50,12 @@ internal class ReimagineListViewStrategy(
 
     override fun additionalMarginStart(): Int = cardContainer?.marginStart ?: 0
 
+    private var useCompatPadding = false
+
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
         View.inflate(context, R.layout.product_card_reimagine_list_layout, productCardView)
 
-        CompatPaddingUtils(context, productCardView, attrs).updateMargin()
+        initAttributes(attrs)
 
         cardContainer?.run {
             elevation = 0f
@@ -65,23 +67,41 @@ internal class ReimagineListViewStrategy(
         }
     }
 
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
+        val typedArray = context
+            ?.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
+            ?: return
+
+        return try {
+            useCompatPadding = typedArray.getBoolean(R.styleable.ProductCardView_useCompatPadding, false)
+        } catch(_: Throwable) {
+
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
     override fun setProductModel(productCardModel: ProductCardModel) {
         setProductModel(ProductCardModelReimagine.from(productCardModel))
     }
 
-    fun setProductModel(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
+    fun setProductModel(productCardModel: ProductCardModelReimagine) {
         renderer.setProductModel(productCardModel)
 
         renderVideo(productCardModel)
         renderThreeDots(productCardModel)
+
+        CompatPaddingUtils(productCardView, useCompatPadding, productCardModel).updatePadding()
     }
 
-    private fun renderVideo(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
+    private fun renderVideo(productCardModel: ProductCardModelReimagine) {
         videoIdentifier?.showWithCondition(productCardModel.showVideoIdentifier())
         video.setVideoURL(productCardModel.videoUrl)
     }
 
-    private fun renderThreeDots(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
+    private fun renderThreeDots(productCardModel: ProductCardModelReimagine) {
         threeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
             productCardView.post {
                 threeDots?.expandTouchArea(

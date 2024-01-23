@@ -47,6 +47,8 @@ internal class ReimagineGridViewStrategy(
         VideoPlayerController(productCardView, R.id.productCardVideo, R.id.productCardImage)
     }
 
+    private var useCompatPadding = false
+
     override fun additionalMarginStart(): Int = cardContainer?.marginStart ?: 0
 
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
@@ -56,7 +58,7 @@ internal class ReimagineGridViewStrategy(
     private fun init(attrs: AttributeSet? = null) {
         View.inflate(context, R.layout.product_card_reimagine_grid_layout, productCardView)
 
-        CompatPaddingUtils(context, productCardView, attrs).updateMargin()
+        initAttributes(attrs)
 
         cardContainer?.run {
             elevation = 0f
@@ -65,6 +67,22 @@ internal class ReimagineGridViewStrategy(
             setCardUnifyBackgroundColor(
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
             )
+        }
+    }
+
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
+        val typedArray = context
+            ?.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
+            ?: return
+
+        return try {
+            useCompatPadding = typedArray.getBoolean(R.styleable.ProductCardView_useCompatPadding, false)
+        } catch(_: Throwable) {
+
+        } finally {
+            typedArray.recycle()
         }
     }
 
@@ -77,6 +95,8 @@ internal class ReimagineGridViewStrategy(
 
         renderVideo(productCardModel)
         renderThreeDots(productCardModel)
+
+        CompatPaddingUtils(productCardView, useCompatPadding, productCardModel).updatePadding()
     }
 
     private fun renderVideo(productCardModel: ProductCardModelReimagine) {

@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -50,10 +49,12 @@ internal class ReimagineGridCarouselViewStrategy(
     val additionalMarginStart: Int
         get() = cardContainer?.marginStart ?: 0
 
+    private var useCompatPadding = false
+
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
         View.inflate(context, R.layout.product_card_reimagine_grid_carousel_layout, productCardView)
 
-        CompatPaddingUtils(context, productCardView, attrs).updateMargin()
+        initAttributes(attrs)
 
         cardContainer?.run {
             updateLayoutParams { height = MATCH_PARENT }
@@ -63,6 +64,22 @@ internal class ReimagineGridCarouselViewStrategy(
             setCardUnifyBackgroundColor(
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
             )
+        }
+    }
+
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
+        val typedArray = context
+            ?.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
+            ?: return
+
+        return try {
+            useCompatPadding = typedArray.getBoolean(R.styleable.ProductCardView_useCompatPadding, false)
+        } catch(_: Throwable) {
+
+        } finally {
+            typedArray.recycle()
         }
     }
 
@@ -78,6 +95,8 @@ internal class ReimagineGridCarouselViewStrategy(
         renderGuidelineContent(productCardModel)
         setContainerProductHeightCard(productCardModel)
         renderOutlineProductCard(productCardModel)
+
+        CompatPaddingUtils(productCardView, useCompatPadding, productCardModel).updatePadding()
     }
 
     private fun renderGuidelineContent(productCardModel: ProductCardModelReimagine) {
