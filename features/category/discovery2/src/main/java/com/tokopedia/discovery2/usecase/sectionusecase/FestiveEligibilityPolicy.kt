@@ -37,7 +37,8 @@ data class FestiveEligibilityPolicy(
             ComponentNames.ProductHighlight.componentName,
             ComponentNames.ProductCardCarousel.componentName,
             ComponentNames.ShopOfferHeroBrand.componentName,
-            ComponentNames.Margin.componentName
+            ComponentNames.Margin.componentName,
+            ComponentNames.ShopCardView.componentName
         )
     }
 }

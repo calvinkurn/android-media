@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 
 import android.graphics.Color
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,7 +11,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.databinding.HorizontalRvShopCardLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -18,25 +18,32 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import java.lang.Exception
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LocalLoad
 
 private const val ITEM_COUNT_4 = 4
 private const val ITEM_COUNT_6 = 6
 
-class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private val binding: HorizontalRvShopCardLayoutBinding = HorizontalRvShopCardLayoutBinding.bind(itemView)
+class ShopCardViewHolder(
+    itemView: View,
+    fragment: Fragment
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val shopCardRecyclerViewDecorator = ShopCardItemDecorator()
-    private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+    private var linearLayoutManager: LinearLayoutManager =
+        LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private var mShopCardViewModel: ShopCardViewModel? = null
 
+    private val parentContainer = itemView.findViewById<ConstraintLayout>(R.id.parent_container)
+    private val shopCardRv = itemView.findViewById<RecyclerView>(R.id.shop_card_rv)
+    private val emptyStateView = itemView.findViewById<LocalLoad>(R.id.viewEmptyState)
+    private val bgImage = itemView.findViewById<ImageUnify>(R.id.bg_image)
+
     init {
-        with(binding) {
-            linearLayoutManager.initialPrefetchItemCount = ITEM_COUNT_4
-            shopCardRv.layoutManager = linearLayoutManager
-            mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
-            shopCardRv.adapter = mDiscoveryRecycleAdapter
-        }
+        linearLayoutManager.initialPrefetchItemCount = ITEM_COUNT_4
+        shopCardRv.layoutManager = linearLayoutManager
+        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+        shopCardRv.adapter = mDiscoveryRecycleAdapter
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -44,8 +51,8 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
         mShopCardViewModel?.let {
             getSubComponent().inject(it)
         }
-        binding.shopCardRv.show()
-        binding.viewEmptyState.hide()
+        shopCardRv.show()
+        emptyStateView.hide()
         addDefaultItemDecorator()
         if (mShopCardViewModel?.shouldShowShimmer() == true) {
             addShimmer()
@@ -65,7 +72,7 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 }
             }
             mShopCardViewModel?.getShopCardItemsListData()?.observe(it) { item ->
-                binding.shopCardRv.show()
+                shopCardRv.show()
                 mDiscoveryRecycleAdapter.setDataList(item)
             }
 
@@ -91,33 +98,42 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     }
 
     private fun setHolderBackgroundData(item: ComponentsItem?) {
-        with(binding) {
-            try {
-                if (item?.properties?.backgroundImageUrl.isNullOrEmpty()) {
-                    bgImage.hide()
-                } else {
-                    bgImage.show()
-                    bgImage.loadImageWithoutPlaceholder(item?.properties?.backgroundImageUrl)
-                }
-                if (!item?.properties?.backgroundColor.isNullOrEmpty()) {
-                    parentContainer.setBackgroundColor(Color.parseColor(item?.properties?.backgroundColor))
-                } else {
-                    parentContainer.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_shop_card_bg))
-                }
-            } catch (e: Exception) {
-                parentContainer.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_shop_card_bg))
-                e.printStackTrace()
+        try {
+            if (item?.properties?.backgroundImageUrl.isNullOrEmpty()) {
+                bgImage.hide()
+            } else {
+                bgImage.show()
+                bgImage.loadImageWithoutPlaceholder(item?.properties?.backgroundImageUrl)
             }
+            if (!item?.properties?.backgroundColor.isNullOrEmpty()) {
+                parentContainer.setBackgroundColor(Color.parseColor(item?.properties?.backgroundColor))
+            } else {
+                parentContainer.setBackgroundColor(
+                    MethodChecker.getColor(
+                        itemView.context,
+                        R.color.discovery2_dms_shop_card_bg
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            parentContainer.setBackgroundColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    R.color.discovery2_dms_shop_card_bg
+                )
+            )
+            e.printStackTrace()
         }
     }
 
     private fun handleShopCardPagination() {
-        binding.shopCardRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        shopCardRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val visibleItemCount: Int = linearLayoutManager.childCount
                 val totalItemCount: Int = linearLayoutManager.itemCount
-                val firstVisibleItemPosition: Int = linearLayoutManager.findFirstVisibleItemPosition()
+                val firstVisibleItemPosition: Int =
+                    linearLayoutManager.findFirstVisibleItemPosition()
                 if (mShopCardViewModel?.isLoadingData() == false && mShopCardViewModel?.isLastPage() == false) {
                     if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
                         mShopCardViewModel?.fetchShopCardPaginatedData()
@@ -128,33 +144,31 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     }
 
     private fun handleErrorState() {
-        with(binding) {
-            hideShimmer()
-            mDiscoveryRecycleAdapter.notifyDataSetChanged()
-            if (mShopCardViewModel?.getShopList() == null) {
-                viewEmptyState.run {
-                    title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-                    description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
-                    refreshBtn?.setOnClickListener {
-                        reloadComponent()
-                    }
-                    viewEmptyState.show()
+        hideShimmer()
+        mDiscoveryRecycleAdapter.notifyDataSetChanged()
+        if (mShopCardViewModel?.getShopList() == null) {
+            emptyStateView.run {
+                title?.text =
+                    context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+                description?.text =
+                    context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
+                refreshBtn?.setOnClickListener {
+                    reloadComponent()
                 }
-            } else {
-                viewEmptyState.hide()
+                emptyStateView.show()
             }
-
-            binding.shopCardRv.hide()
+        } else {
+            emptyStateView.hide()
         }
+
+        shopCardRv.hide()
     }
 
     private fun reloadComponent() {
-        with(binding) {
-            shopCardRv.show()
-            viewEmptyState.hide()
-            mShopCardViewModel?.resetComponent()
-            mShopCardViewModel?.fetchShopCardData()
-        }
+        shopCardRv.show()
+        emptyStateView.hide()
+        mShopCardViewModel?.resetComponent()
+        mShopCardViewModel?.fetchShopCardData()
     }
 
     private fun addShimmer() {
@@ -170,11 +184,9 @@ class ShopCardViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     }
 
     private fun addDefaultItemDecorator() {
-        with(binding) {
-            if (shopCardRv.itemDecorationCount > 0) {
-                shopCardRv.removeItemDecorationAt(0)
-            }
-            shopCardRv.addItemDecoration(shopCardRecyclerViewDecorator)
+        if (shopCardRv.itemDecorationCount > 0) {
+            shopCardRv.removeItemDecorationAt(0)
         }
+        shopCardRv.addItemDecoration(shopCardRecyclerViewDecorator)
     }
 }
