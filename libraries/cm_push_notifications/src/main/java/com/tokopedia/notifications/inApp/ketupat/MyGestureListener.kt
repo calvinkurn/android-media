@@ -14,7 +14,6 @@ open class MyGestureListener {
 
     fun getDirection(x1: Float, y1: Float?, x2: Float, y2: Float): Direction {
         val angle: Double = getAngle(x1, y1, x2, y2)
-        Log.d("direction angle", "{$angle}")
         return Direction.fromAngleSliced(angle)
     }
 
@@ -59,8 +58,8 @@ open class MyGestureListener {
         percentageDy = (dy.div(maxY)).times(100)
         percentageDx = (dx.div(maxX)).times(100)
         val isInRange = slicedInRange(percentageX1, percentageY1, percentageX2, percentageY2, direction)
-        Log.d("Percentage->", "x1 = $percentageX1, y1 = $percentageY1, x2 = $percentageX2, y2 = $percentageY2")
-        Log.d("Percentage->>>", "dx = $percentageDx, dy = $percentageDy")
+//        Log.d("Percentage->", "x1 = $percentageX1, y1 = $percentageY1, x2 = $percentageX2, y2 = $percentageY2")
+//        Log.d("Percentage->>>", "dx = $percentageDx, dy = $percentageDy")
         if (percentageDy > 13 || percentageDx > 13) {
             return if (isHorizontalCut(direction, percentageY1, percentageY2)) {
                 true

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -30,6 +31,7 @@ class CrackCouponHandler(
     private var numberOfRetry = 0
     private var isCouponCracked = false
     var url = ""
+    var buttonShareAppLink = ""
 
     fun getCouponData(slug: String?, direction: MyGestureListener.Direction) {
         try {
@@ -57,6 +59,10 @@ class CrackCouponHandler(
     private fun showPopupAnimation() {
         binding.lottieViewPopup.visible()
         binding.loaderAnimation.gone()
+        binding.lottieViewPopup.resumeAnimation()
+        if (numberOfRetry < 3 && numberOfRetry != 0) {
+            resetCloseButtonMargin()
+        }
     }
 
     private fun handleCouponData(gamiScratchCardCrack: GamiScratchCardCrack, direction: MyGestureListener.Direction) {
@@ -70,7 +76,7 @@ class CrackCouponHandler(
     private fun handleCouponError(slug: String?, direction: MyGestureListener.Direction) {
         showCouponErrorState()
         binding.btnErrorState.setOnClickListener {
-            if (numberOfRetry == 0) {
+            if (numberOfRetry < 3) {
                 numberOfRetry += 1
                 getCouponData(slug, direction)
                 hideCouponErrorState()
@@ -86,11 +92,11 @@ class CrackCouponHandler(
     private fun showCouponErrorState() {
         with(binding) {
             animationErrorState.visible()
-            if (numberOfRetry == 0) {
+            if (numberOfRetry < 3) {
                 btnErrorState.visible()
             }
         }
-        setCloseButtonMargin(330.0f)
+        setCloseButtonMargin()
         animationPopupGtmTracker.sendErrorImpressionEvent()
     }
 
@@ -179,6 +185,7 @@ class CrackCouponHandler(
     private fun createShareButton(gamiScratchCardCrack: GamiScratchCardCrack) {
         gamiScratchCardCrack.cta?.let {
             binding.ivButtonShare.loadImage(it.imageURL)
+            buttonShareAppLink = it.appLink.toString()
         }
     }
 
@@ -187,6 +194,12 @@ class CrackCouponHandler(
             return url
         }
         return ""
+    }
+
+    fun navigateToAppLink() {
+        if (buttonShareAppLink.isNotEmpty() && buttonShareAppLink != "null") {
+            RouteManager.route(activity, buttonShareAppLink)
+        }
     }
 
     private fun hideCoupons() {
@@ -212,8 +225,13 @@ class CrackCouponHandler(
         animationPopupGtmTracker.sendCtaButtonImpressionEvent()
     }
 
-    private fun setCloseButtonMargin(bottomMargin: Float) {
-        binding.icClose.translationY = bottomMargin
-        binding.icClose.translationX = 40.0f
+    private fun setCloseButtonMargin() {
+//        binding.icClose.translationY = bottomMargin
+        binding.icClose.translationX = 32.0f
+    }
+
+    private fun resetCloseButtonMargin() {
+//        binding.icClose.translationY = 180.0f
+        binding.icClose.translationX = 0.0f
     }
 }

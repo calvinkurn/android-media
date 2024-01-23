@@ -103,6 +103,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
                 if (isSliced && !crackCouponHandler.isCouponCracked()) {
                     crackCouponHandler.getCouponData(slug, direction)
                     binding.loaderCoupon.visible()
+                    binding.lottieViewPopup.pauseAnimation()
                 }
             }
             animationPopupGtmTracker.sendPopupInteractionEvent()
@@ -132,6 +133,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private fun onButtonShareClick(view: View) {
         val onClickListener = OnClickListener { _: View? ->
             (view.parent as ViewGroup).removeView(view)
+            crackCouponHandler.navigateToAppLink()
             animationPopupGtmTracker.sendCtaButtonClickEvent()
         }
         binding.ivButtonShare.setOnClickListener(onClickListener)
