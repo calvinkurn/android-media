@@ -1,7 +1,7 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.mapper
 
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.orderextension.presentation.model.StringRes
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.ToasterQueue
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject

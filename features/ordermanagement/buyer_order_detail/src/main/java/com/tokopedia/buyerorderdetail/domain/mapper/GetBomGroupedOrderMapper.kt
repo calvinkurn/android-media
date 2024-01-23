@@ -1,8 +1,8 @@
 package com.tokopedia.buyerorderdetail.domain.mapper
 
 import com.tokopedia.buyerorderdetail.domain.models.GetBomGroupedOrderResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetBomGroupedOrderResponse.GetBomGroupedOrder.Order.Details.Addon
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocSectionGroupUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
@@ -11,11 +11,13 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocSectionGroupUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import javax.inject.Inject
+import com.tokopedia.order_management_common.R as order_management_commonR
 
 class GetBomGroupedOrderMapper @Inject constructor() {
 
@@ -88,7 +90,9 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                         remainingSlot
                     )
 
-                    if (addonListToShow.addonsItemList.isNotEmpty()) {
+                    if (addonListToShow.addOnSummaryUiModel != null &&
+                        addonListToShow.addOnSummaryUiModel.addonItemList.isNotEmpty()
+                    ) {
                         add(addonListToShow)
                     }
 
@@ -99,7 +103,9 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                         if (productNonBundlingRest.isNotEmpty()) {
                             addAll(productNonBundlingRest)
                         }
-                        if (addonListRest.addonsItemList.isNotEmpty()) {
+                        if (addonListRest.addOnSummaryUiModel != null &&
+                            addonListRest.addOnSummaryUiModel.addonItemList.isNotEmpty()
+                        ) {
                             add(addonListRest)
                         }
                     }
@@ -198,16 +204,16 @@ class GetBomGroupedOrderMapper @Inject constructor() {
             orderDetails.orderAddons to emptyList()
         }
 
-        val mapAddonListToShow = mapToAddonsSection(
+        val mapAddonListToShow = mapToOrderLevelAddOnUiModel(
             addonLabel = orderDetails.addonLabel,
             addonIcon = orderDetails.addonIcon,
-            addonList = addonListToShow
+            addOnList = addonListToShow
         )
 
-        val mapAddonListToRest = mapToAddonsSection(
+        val mapAddonListToRest = mapToOrderLevelAddOnUiModel(
             addonLabel = orderDetails.addonLabel,
             addonIcon = orderDetails.addonIcon,
-            addonList = addonListRest
+            addOnList = addonListRest
         )
 
         return Pair(mapAddonListToShow, mapAddonListToRest)
@@ -267,14 +273,58 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                 productName = it.productName,
                 productThumbnailUrl = it.thumbnail,
                 quantity = it.quantity,
-                addonsListUiModel = mapToAddonsSection(
-                    addonLabel,
-                    addonIcon,
-                    it.addon
+                addOnSummaryUiModel = mapToAddOnUiModel(
+                    addonIcon = addonIcon,
+                    addonLabel = addonLabel,
+                    addOnList = it.addon
                 )
             )
         }
     }
+
+    private fun mapToOrderLevelAddOnUiModel(
+        addonLabel: String,
+        addonIcon: String,
+        addOnList: List<Addon>?
+    ): OwocAddonsListUiModel {
+        return OwocAddonsListUiModel(
+            addOnSummaryUiModel = mapToAddOnUiModel(
+                addonIcon = addonIcon,
+                addonLabel = addonLabel,
+                addOnList = addOnList
+            )
+        )
+    }
+
+    private fun mapToAddOnUiModel(
+        addonIcon: String,
+        addonLabel: String,
+        addOnList: List<Addon>?
+    )= AddOnSummaryUiModel(
+            addOnIdentifier = "testing",
+            totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
+            addonsLogoUrl = addonIcon,
+            addonsTitle = addonLabel,
+            addonItemList = addOnList?.map { addon ->
+                AddOnSummaryUiModel.AddonItemUiModel(
+                    priceText = addon.price,
+                    quantity = addon.quantity,
+                    addonsId = addon.id,
+                    addOnsName = addon.name,
+                    type = addon.type,
+                    addOnsThumbnailUrl = addon.imageUrl,
+                    toStr = "",
+                    fromStr = "",
+                    message = "",
+                    noteCopyable = false,
+                    providedByShopItself = true,
+                    infoLink = "",
+                    tips = "",
+                    orderId = "",
+                    orderDetailId = ""
+                )
+            }.orEmpty()
+        )
 
     private fun mapToProductBundleItemUiModel(
         orderId: String,
@@ -291,31 +341,6 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                 quantity = it.quantity
             )
         }
-    }
-
-    private fun mapToAddonsSection(
-        addonLabel: String,
-        addonIcon: String,
-        addonList: List<GetBomGroupedOrderResponse.GetBomGroupedOrder.Order.Details.Addon>?
-    ): OwocAddonsListUiModel {
-        return OwocAddonsListUiModel(
-            addonsTitle = addonLabel,
-            addonsLogoUrl = addonIcon,
-            addonsItemList = addonList?.map {
-                AddonsListUiModel.AddonItemUiModel(
-                    priceText = it.price,
-                    addOnsName = it.name,
-                    type = it.type,
-                    addonsId = it.id,
-                    quantity = it.quantity,
-                    addOnsThumbnailUrl = it.imageUrl,
-                    toStr = String.EMPTY,
-                    fromStr = String.EMPTY,
-                    message = String.EMPTY,
-                    providedByShopItself = false
-                )
-            }.orEmpty()
-        )
     }
 
     private fun mapToProductListToggleUiModel(

@@ -5,6 +5,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.buyerorderdetail.presentation.coachmark.DriverTippingCoachMarkManager
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 
 data class ShipmentInfoUiModel(
     val owocInfoUiModel: OwocBomDetailSectionUiModel?,

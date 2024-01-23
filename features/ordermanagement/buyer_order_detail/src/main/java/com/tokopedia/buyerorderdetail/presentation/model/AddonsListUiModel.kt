@@ -2,13 +2,17 @@ package com.tokopedia.buyerorderdetail.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 
 data class AddonsListUiModel(
-    val totalPriceText: String,
+    val addOnIdentifier: String,
+    val totalPriceText: StringRes?,
     val addonsLogoUrl: String,
     val addonsTitle: String,
     val addonsItemList: List<AddonItemUiModel>
 ) : Visitable<BuyerOrderDetailTypeFactory> {
+
+    var isExpand: Boolean = true
 
     override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
         return typeFactory.type(this)
@@ -24,6 +28,8 @@ data class AddonsListUiModel(
         val toStr: String,
         val fromStr: String,
         val message: String,
-        val providedByShopItself: Boolean
+        val providedByShopItself: Boolean,
+        val infoLink: String,
+        val tips: String
     )
 }
