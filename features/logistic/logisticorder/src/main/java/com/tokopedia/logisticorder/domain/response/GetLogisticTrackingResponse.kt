@@ -101,18 +101,43 @@ data class Page(
     val additionalInfo: List<AdditionalInfo> = listOf(),
     @SerializedName("help_page_url")
     val helpPageUrl: String = "",
-    @SerializedName("ticker_unification_targets")
-    val tickerUnificationTargets: List<TickerUnificationTargets> = listOf()
-
+    @SerializedName("ticker_unification_params")
+    val tickerUnificationParams: TickerUnificationParams = TickerUnificationParams()
 )
 
-data class TickerUnificationTargets(
-    @SerializedName("type")
-    val type: String = "",
+data class TickerUnificationParams(
 
-    @SerializedName("values")
-    val values: List<String> = listOf()
-)
+    @SerializedName("page")
+    val page: String = "",
+
+    @SerializedName("target")
+    val target: List<Target> = listOf(),
+
+    @SerializedName("template")
+    val template: Template = Template()
+
+) {
+    data class Template(
+        @SerializedName("contents")
+        val contents: List<Content> = listOf()
+    ) {
+        data class Content(
+            @SerializedName("key")
+            val key: String = "",
+
+            @SerializedName("value")
+            val value: String = ""
+        )
+    }
+
+    data class Target(
+        @SerializedName("type")
+        val type: String = "",
+
+        @SerializedName("values")
+        val values: List<String> = listOf()
+    )
+}
 
 data class AdditionalInfo(
     @SerializedName("title")
