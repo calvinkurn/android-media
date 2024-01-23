@@ -176,6 +176,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private SmsRetrieverClient smsRetriever;
 
+    private Boolean isSmsRegistered = false;
+
     /**
      * return the url to load in the webview
      * You can use URLGenerator.java to use generate the seamless URL.
@@ -212,7 +214,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (getActivity() != null) {
+        if (getActivity() != null && isSmsRegistered) {
             getActivity().unregisterReceiver(smsBroadcastReceiver);
         }
     }
@@ -736,7 +738,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     class MyWebViewClient extends WebViewClient {
-        private Boolean isSmsRegistered = false;
         @Override
         public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
             super.doUpdateVisitedHistory(view, url, isReload);
