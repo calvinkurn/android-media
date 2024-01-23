@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Build
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
-import com.tokopedia.device.info.DevicePerformanceInfo
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.iris.data.db.table.PerformanceTracking
 import com.tokopedia.iris.data.db.table.Tracking
@@ -200,7 +200,10 @@ class TrackingMapper {
                         item.put(KEY_MOBILE_DEVICE_BRANDING_NAME, Build.BRAND)
                         item.put(KEY_MOBILE_DEVICE_MODEL_NAME, Build.MODEL)
                         item.put(KEY_DEVICE_LANGUAGE_NAME, Locale.getDefault().toString())
-                        item.put(KEY_SCREEN_RESOLUTION_NAME, DevicePerformanceInfo.getDeviceDpi(context))
+
+                        val screenWidth = DeviceScreenInfo.getScreenWidth(context)
+                        val screenHeight = DeviceScreenInfo.getScreenHeight(context)
+                        item.put(KEY_SCREEN_RESOLUTION_NAME, "${screenWidth}x$screenHeight")
                     }
 
                     if (!cache.hasVisit() && eventName == EVENT_OPEN_SCREEN) {
