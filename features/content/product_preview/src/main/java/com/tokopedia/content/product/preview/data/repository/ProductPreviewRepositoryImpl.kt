@@ -74,7 +74,7 @@ class ProductPreviewRepositoryImpl @Inject constructor(
         mapper.mapLike(response)
     }
 
-    override suspend fun submitReport(report: ReportUiModel, reviewId: String): Boolean =
+    override suspend fun submitReport(report: ReviewReportUiModel, reviewId: String): Boolean =
         withContext(dispatchers.io) {
             val response = submitReportUseCase(
                 SubmitReportUseCase.Param(

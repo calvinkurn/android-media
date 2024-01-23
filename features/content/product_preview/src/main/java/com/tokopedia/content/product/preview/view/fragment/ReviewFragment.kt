@@ -36,6 +36,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiM
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
@@ -259,7 +260,7 @@ class ReviewFragment @Inject constructor(
     /**
      * Review Report Bottom Sheet Listener
      */
-    override fun onReasonClicked(report: ReportUiModel) {
+    override fun onReasonClicked(report: ReviewReportUiModel) {
         viewModel.onAction(ProductPreviewAction.SubmitReport(report))
     }
 
