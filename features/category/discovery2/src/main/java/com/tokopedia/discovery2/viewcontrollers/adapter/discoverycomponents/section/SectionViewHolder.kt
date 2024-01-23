@@ -128,12 +128,9 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         festiveForeground.loadImageWithoutPlaceholder(
             imageUrl,
-            listener = object : ImageLoaderStateListener {
-                override fun successLoad(view: ImageView) {
-                    val minHeight = view?.context?.getMinHeight()
-                    minHeight?.moreThanContainerHeight {
-                        festiveForeground.setLayoutHeight(festiveContainer.measuredHeight)
-                    }
+            listener = object : ImageHandler.ImageLoaderStateListener {
+                override fun successLoad(view: ImageView?) {
+                    festiveForeground.minimumHeight = 0
                 }
 
                 override fun failedLoad(view: ImageView) {
@@ -148,12 +145,9 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         festiveBackground.loadImageWithoutPlaceholder(
             imageUrl,
-            listener = object : ImageLoaderStateListener {
-                override fun successLoad(view: ImageView) {
-                    val minHeight = view?.context?.getMinHeight()
-                    minHeight?.moreThanContainerHeight {
-                        festiveBackground.setLayoutHeight(festiveContainer.measuredHeight)
-                    }
+            listener = object : ImageHandler.ImageLoaderStateListener {
+                override fun successLoad(view: ImageView?) {
+                    festiveBackground.minimumHeight = 0
                 }
 
                 override fun failedLoad(view: ImageView) {
@@ -161,14 +155,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                 }
             }
         )
-    }
-
-    private fun Int?.moreThanContainerHeight(action: () -> Unit) {
-        this?.run {
-            if (festiveContainer.measuredHeight < this) {
-                action.invoke()
-            }
-        }
     }
 
     private fun Context?.getMinHeight(): Int? {
@@ -193,12 +179,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             layout(0, 0, 0, 0)
             minimumHeight = minHeight
         }
-    }
-
-    private fun AppCompatImageView.setLayoutHeight(height: Int) {
-        if (layoutParams.height == height) return
-
-        layoutParams.height = height
     }
 
     private fun addComponentView(item: ComponentsItem) {
