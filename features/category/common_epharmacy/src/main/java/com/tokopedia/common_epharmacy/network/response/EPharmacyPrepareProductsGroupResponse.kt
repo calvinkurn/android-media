@@ -35,8 +35,8 @@ data class EPharmacyPrepareProductsGroupResponse(
 
             @Parcelize
             data class CheckoutFlowEPharmacy(
-                @SerializedName("is_blocked")
-                val isBlock: Boolean? = false
+                @SerializedName("error_message")
+                val checkoutIsBlockErrorMessage: String?
             ) : Parcelable
 
             @Parcelize

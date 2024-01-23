@@ -81,7 +81,6 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultation
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.fingerprint.util.FingerPrintUtil.getPublicKey
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -1058,7 +1057,7 @@ class ShipmentViewModel @Inject constructor(
                 frontEndValidation = cartShipmentAddressFormData.epharmacyData.frontEndValidation,
                 consultationFlow = cartShipmentAddressFormData.epharmacyData.consultationFlow,
                 rejectedWording = cartShipmentAddressFormData.epharmacyData.rejectedWording,
-                isBlockCheckoutFlow = cartShipmentAddressFormData.epharmacyData.isBlockCheckoutFlow,
+                isBlockCheckoutFlowMessage = cartShipmentAddressFormData.epharmacyData.isBlockCheckoutFlowMessage
             )
         )
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
@@ -4738,7 +4737,7 @@ class ShipmentViewModel @Inject constructor(
                 uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
                 uploadPrescriptionUiModel.shopIds = shopIds
                 uploadPrescriptionUiModel.cartIds = cartIds
-                uploadPrescriptionUiModel.isBlockCheckoutFlow = ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.checkoutFlow?.isBlock.orFalse()
+                uploadPrescriptionUiModel.isBlockCheckoutFlowMessage = ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.checkoutFlow?.checkoutIsBlockErrorMessage.orEmpty()
                 view?.updateUploadPrescription(uploadPrescriptionUiModel)
                 view?.showCoachMarkEpharmacy(uploadPrescriptionUiModel)
             }

@@ -12,5 +12,5 @@ data class EpharmacyData(
     var frontEndValidation: Boolean = false,
     var consultationFlow: Boolean = false,
     var rejectedWording: String = "",
-    var isBlockCheckoutFlow: Boolean = false,
+    var isBlockCheckoutFlowMessage: String = ""
 ) : Parcelable

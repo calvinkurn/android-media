@@ -17,7 +17,6 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                 }
                 data {
                   checkout_flow {
-                      is_blocked
                       error_message
                   }
                   attachment_page_ticker_text

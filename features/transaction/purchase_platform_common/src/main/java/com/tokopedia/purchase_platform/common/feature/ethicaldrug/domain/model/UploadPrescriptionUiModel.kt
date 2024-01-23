@@ -22,7 +22,7 @@ data class UploadPrescriptionUiModel(
     var rejectedWording: String = "",
     var hasInvalidPrescription: Boolean = false,
     var isOcc: Boolean = false,
-    var isBlockCheckoutFlow: Boolean = false,
+    var isBlockCheckoutFlowMessage: String = "",
 
     // data for trackers
     var enablerNames: List<String> = emptyList(),

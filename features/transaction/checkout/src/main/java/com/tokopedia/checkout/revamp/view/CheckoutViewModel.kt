@@ -256,7 +256,7 @@ class CheckoutViewModel @Inject constructor(
                                 frontEndValidation = saf.cartShipmentAddressFormData.epharmacyData.frontEndValidation,
                                 consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
                                 rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording,
-                                isBlockCheckoutFlow = saf.cartShipmentAddressFormData.epharmacyData.isBlockCheckoutFlow
+                                isBlockCheckoutFlowMessage = saf.cartShipmentAddressFormData.epharmacyData.isBlockCheckoutFlowMessage
                             )
                             addOnProcessor.fetchPrescriptionIds(
                                 saf.cartShipmentAddressFormData.epharmacyData,
