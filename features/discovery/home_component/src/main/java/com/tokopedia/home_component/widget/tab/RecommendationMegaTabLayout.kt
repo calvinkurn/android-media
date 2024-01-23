@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.widget
+package com.tokopedia.home_component.widget.tab
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,16 +7,18 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.home_component.R
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.home_component.R
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * A shared mega-tab component.
@@ -30,7 +32,7 @@ import com.tokopedia.unifyprinciples.Typography
  * Please read this technical usage for more detail below.
  *
  * Sample Usage:
- * <com.tokopedia.home_component.widget.RecommendationMegaTabLayout
+ * <com.tokopedia.home_component.widget.tab.RecommendationMegaTabLayout
  *    android:id="@+id/tab_recommendation"
  *    android:layout_width="match_parent"
  *    android:layout_height="wrap_content"
@@ -45,9 +47,9 @@ import com.tokopedia.unifyprinciples.Typography
  *    app:tabPaddingBottom="0dp"
  *    app:tabRippleColor="@null"/>
  *
- * Apply the tab data set by using [RecommendationMegaTabLayout.Item] data class.
+ * Apply the tab data set by using [MegaTabItem] data class.
  *
- * import com.tokopedia.home_component.widget.RecommendationMegaTabLayout.Item as MegaTabItem
+ * import com.tokopedia.home_component.widget.tab.RecommendationMegaTabLayout.Item as MegaTabItem
  * ...
  *
  * val tabs = listOf(
@@ -82,10 +84,10 @@ class RecommendationMegaTabLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : TabLayout(context, attrs) {
 
-    private var tabItemList = mutableListOf<Item>()
+    private var tabItemList = mutableListOf<MegaTabItem>()
     private var lastTabSelectedPosition = -1
 
-    fun set(tabList: List<Item>, pager: ViewPager? = null) {
+    fun set(tabList: List<MegaTabItem>, pager: ViewPager? = null) {
         // initiate tab data sets
         tabItemList.clear()
         tabItemList.addAll(tabList)
@@ -100,26 +102,19 @@ class RecommendationMegaTabLayout @JvmOverloads constructor(
         setupWithViewPager(pager)
 
         // setup view
-        for (i in 0 until tabCount) {
-            val tab = getTabAt(i)?: continue
+        for (position in 0 until tabCount) {
+            val tab = getTabAt(position)?: continue
 
             if (tab.customView == null) {
-                val item = tabItemList[i]
+                val item = tabItemList[position]
                 if (item.hasContentEmpty()) continue
 
-                tab.customView = createTabView(tab, item)
+                tab.customView = createTabView(tab, item, position)
             }
         }
 
         // listener: TabLayout
-        addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: Tab?) {
-                updateTabIndicatorState()
-            }
-
-            override fun onTabReselected(tab: Tab?) = Unit
-            override fun onTabUnselected(tab: Tab?) = Unit
-        })
+        onTabSelected { updateTabIndicatorState() }
 
         // listener: ViewPager
         pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -135,24 +130,38 @@ class RecommendationMegaTabLayout @JvmOverloads constructor(
         setActiveStateAt(Int.ZERO)
     }
 
-    private fun createTabView(tab: Tab, item: Item): View {
+    private fun createTabView(tab: Tab, item: MegaTabItem, position: Int): View {
         val rootView = LayoutInflater.from(context).inflate(R.layout.tab_mega_recommendation, null)
 
         val title = rootView.findViewById<Typography>(R.id.txt_title)
         val shimmer = rootView.findViewById<LoaderUnify>(R.id.loader_shimmering)
         val image = rootView.findViewById<ImageView>(R.id.img_icon)
 
-        if (item.title.isNotEmpty()) {
-            title.text = item.title
-            title.show()
+        // set tab title
+        title.text = item.title
 
-            // inactive color state by default
-            title.setTextColor(ContextCompat.getColor(context, INACTIVE_STATE_COLOR))
-        } else {
+        // inactive color state by default
+        title.setTextColor(ContextCompat.getColor(context, INACTIVE_STATE_COLOR))
+
+        if (position < tabCount - 1) {
+            val paddingEnd = resources.getDimensionPixelOffset(R.dimen.home_recommendation_mega_tab_padding)
+            rootView.setPadding(rootView.paddingLeft, rootView.paddingTop, paddingEnd, rootView.paddingBottom)
+        }
+
+        if (item.imageUrl.isNotEmpty()) {
             shimmer.show(); image.show()
             image.loadImageWithoutPlaceholder(item.imageUrl) {
-                listener(onSuccess = { _, _ -> shimmer.hide() })
+                setSignatureKey(ObjectKey(System.currentTimeMillis())) // temporary for debug
+                listener(
+                    onSuccess = { _, _ -> shimmer.hide() },
+                    onError = { _ ->
+                        image.hide()
+                        title.show()
+                    }
+                )
             }
+        } else {
+            title.show()
         }
 
         rootView.setOnClickListener { selectTab(tab) }
@@ -215,11 +224,6 @@ class RecommendationMegaTabLayout @JvmOverloads constructor(
 
     private fun resetAllState() {
         lastTabSelectedPosition = -1
-    }
-
-    data class Item(val title: String = "", val imageUrl: String = "") {
-
-        fun hasContentEmpty() = title.isEmpty() && imageUrl.isEmpty()
     }
 
     companion object {
