@@ -18,21 +18,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/emoneyPdpCardCameraIcon"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:text_field_input_type="number"
             app:text_field_label="@string/recharge_pdp_emoney_input_card_no_label"
             tools:layout_height="@dimen/spacing_lvl4" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/emoneyPdpCardCameraIcon"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:icon_name="CAMERA" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
