@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.databinding.HomeRecommendationFeedViewholderBinding
 import com.tokopedia.home.util.HomeServerLogger
@@ -137,7 +138,12 @@ class HomeRecommendationFeedViewHolder(
         val tabIndex = recommendationTabDataModelList?.indexOfFirst { it.isJumperTab }
             ?: RecyclerView.NO_POSITION
         if (tabIndex != RecyclerView.NO_POSITION) {
-            val tabToSelect = binding.tabLayoutHomeFeeds.getTabAt(tabIndex)
+            val tabToSelect = if (isMegaTabEnabled().not()) {
+                binding.tabLayoutHomeFeeds.getTabAt(tabIndex)
+            } else {
+                binding.tabRecommendation.getTabAt(tabIndex)
+            }
+
             tabToSelect?.select()
         }
     }
@@ -162,8 +168,7 @@ class HomeRecommendationFeedViewHolder(
         }
     }
 
-    // rollout handler
-    private fun isMegaTabEnabled() = true
+    private fun isMegaTabEnabled() = HomeRollenceController.isMegaTabEnabled
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.home_recommendation_feed_viewholder
