@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
@@ -15,15 +14,15 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -36,8 +35,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
@@ -51,8 +48,7 @@ import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryView
 import com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.tokopedia.common_digital.R as common_digitalR
@@ -393,10 +389,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onCloseCoachMark() {
                 commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
-                    categoryName, loyaltyStatus
+                    categoryName,
+                    loyaltyStatus
                 )
             }
-
         })
     }
 
@@ -417,17 +413,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun setCheckoutPassData() {
-         operatorSelected?.run {
-             checkoutPassData = getDefaultCheckoutPassDataBuilder()
-                 .categoryId(categoryId.toString())
-                 .clientNumber(postpaidClientNumberWidget.getInputNumber())
-                 .isPromo("0")
-                 .operatorId(operator.id)
-                 .productId(operator.attributes.defaultProductId)
-                 .utmCampaign(categoryId.toString())
-                 .build()
-         }
-
+        operatorSelected?.run {
+            checkoutPassData = getDefaultCheckoutPassDataBuilder()
+                .categoryId(categoryId.toString())
+                .clientNumber(postpaidClientNumberWidget.getInputNumber())
+                .isPromo("0")
+                .operatorId(operator.id)
+                .productId(operator.attributes.defaultProductId)
+                .utmCampaign(categoryId.toString())
+                .build()
+        }
     }
 
     override fun renderProductFromCustomData(isDelayed: Boolean) {
@@ -608,6 +603,21 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         data: TopupBillsSeamlessFavNumber,
         shouldRefreshInputNumber: Boolean
     ) {
+        fun getContactByPermission(): MutableList<TopupBillsContact> {
+            context?.let {
+                val hasContactPermission = permissionCheckerHelper.hasPermission(
+                    it,
+                    arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT)
+                )
+                return if (hasContactPermission) {
+                    val contacts = contactDataSource.getContactList()
+                    contacts
+                } else {
+                    mutableListOf()
+                }
+            }
+            return mutableListOf()
+        }
         performanceMonitoringStopTrace()
         if (data.favoriteNumbers.isNotEmpty() && shouldRefreshInputNumber) {
             postpaidClientNumberWidget.run {
@@ -618,7 +628,17 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         seamlessFavNumberList = data.favoriteNumbers
         postpaidClientNumberWidget.setFilterChipShimmer(false, data.favoriteNumbers.isEmpty())
         postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers)
-        postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
+
+        val contacts = getContactByPermission()
+        postpaidClientNumberWidget.setAutoCompleteList(
+            data.favoriteNumbers,
+            contacts.map { contact ->
+                TopupBillsSeamlessFavNumberItem(
+                    clientName = contact.name,
+                    clientNumber = contact.phoneNumber
+                )
+            }
+        )
     }
 
     override fun reloadSortFilterChip() {

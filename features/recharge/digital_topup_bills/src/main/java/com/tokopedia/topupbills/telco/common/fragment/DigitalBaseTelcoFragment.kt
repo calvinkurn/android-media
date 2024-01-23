@@ -16,7 +16,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
@@ -27,6 +26,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
@@ -39,7 +39,6 @@ import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberD
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
@@ -95,6 +94,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
+    @Inject
+    lateinit var contactDataSource: ContactDataSource
+
     protected var loyaltyStatus = ""
 
     override fun initInjector() {
@@ -140,7 +142,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
                 override fun onCloseCoachMark() {
                     commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
-                        categoryName, loyaltyStatus
+                        categoryName,
+                        loyaltyStatus
                     )
                 }
             }

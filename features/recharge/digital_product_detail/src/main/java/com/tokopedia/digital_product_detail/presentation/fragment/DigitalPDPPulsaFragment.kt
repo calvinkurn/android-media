@@ -631,15 +631,20 @@ class DigitalPDPPulsaFragment :
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
-
         fun getContactByPermission(): MutableList<TopupBillsContact> {
-            val isDeniedOnce = localCacheHandler.getBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, false)
-            return if (!isDeniedOnce) {
-                val contacts = contactDataSource.getContactList()
-                contacts
-            } else {
-                mutableListOf()
+            context?.let {
+                val hasContactPermission = permissionCheckerHelper.hasPermission(
+                    it,
+                    arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT)
+                )
+                return if (hasContactPermission) {
+                    val contacts = contactDataSource.getContactList()
+                    contacts
+                } else {
+                    mutableListOf()
+                }
             }
+            return mutableListOf()
         }
 
         binding?.rechargePdpPulsaClientNumberWidget?.run {
