@@ -99,6 +99,8 @@ class ShopCardViewHolder(
 
     private fun setHolderBackgroundData(item: ComponentsItem?) {
         try {
+            if (item?.isBackgroundPresent == true) return
+
             if (item?.properties?.backgroundImageUrl.isNullOrEmpty()) {
                 bgImage.hide()
             } else {
