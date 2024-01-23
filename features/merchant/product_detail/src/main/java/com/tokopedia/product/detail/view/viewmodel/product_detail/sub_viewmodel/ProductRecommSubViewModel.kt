@@ -113,7 +113,8 @@ class ProductRecommSubViewModel @Inject constructor(
                     pageName = pageName,
                     productIds = arrayListOf(nonNullProductId),
                     queryParam = queryParam,
-                    criteriaThematicIDs = listOf(thematicId)
+                    criteriaThematicIDs = listOf(thematicId),
+                    hasNewProductCardEnabled = true
                 )
                 val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
                 val dataResponse = recommendationResponse.firstOrNull()
