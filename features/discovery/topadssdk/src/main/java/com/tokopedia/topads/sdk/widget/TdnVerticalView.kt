@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -18,6 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -42,9 +44,20 @@ class TdnVerticalView : BaseCustomView {
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
 
-    @JvmField
-    @Inject
-    var topAdsImageViewViewModel: TopAdsImageViewViewModel? = null
+    companion object {
+        var counter = 0
+    }
+
+    private var topAdsImageViewViewModel: TopAdsImageViewViewModel? = null
+    private fun initViewModel() {
+
+        topAdsImageViewViewModel = viewModelFactory?.let {
+            ViewModelProvider(context as AppCompatActivity,
+                it
+            )[(TopAdsImageViewViewModel::class.java.canonicalName
+                ?: "") + counter++, TopAdsImageViewViewModel::class.java]
+        }
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -86,6 +99,7 @@ class TdnVerticalView : BaseCustomView {
         productID: String = "",
         page: String = ""
     ) {
+        initViewModel()
         val qp = topAdsImageViewViewModel?.getQueryParams(
             query,
             source,
@@ -120,9 +134,10 @@ class TdnVerticalView : BaseCustomView {
         onLoadFailed: () -> Unit = {},
         onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit = {}
     ) {
-        if (tdnBanners.isNotEmpty())
+        if (tdnBanners.isNotEmpty()) {
+            this.show()
             setTdnModel(tdnBanners.first(), onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
-        else {
+        } else {
             this.hide()
         }
     }

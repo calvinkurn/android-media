@@ -12,26 +12,34 @@ import com.tokopedia.topads.sdk.listener.TdnVerticalBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class UniversalInboxTopAdsVerticalBannerViewHolder constructor(
+class UniversalInboxTopAdsVerticalBannerViewHolder(
     itemView: View,
     private val topAdsClickListener: TopAdsImageViewClickListener
 ) : AbstractViewHolder<UniversalInboxTopAdsVerticalBannerUiModel>(itemView), TdnVerticalBannerResponseListener {
 
     private val binding: UniversalInboxTopadsVerticalBannerItemBinding? by viewBinding()
+    private var topAdsUiModel:UniversalInboxTopAdsVerticalBannerUiModel? = null
 
     override fun bind(uiModel: UniversalInboxTopAdsVerticalBannerUiModel) {
         bindListener()
         bindTopAds(uiModel)
+        bindBanner()
+    }
+
+    private fun bindBanner() {
+        val ads = topAdsUiModel?.ads ?: listOf()
+        binding?.inboxVerticalTopadsBanner?.renderTdnBanner(ads, EIGHT_DP, ::onTdnBannerClicked)
     }
 
     private fun bindTopAds(uiModel: UniversalInboxTopAdsVerticalBannerUiModel) {
+        topAdsUiModel = uiModel
         if (!uiModel.isRequested){
             binding?.inboxVerticalTopadsBanner?.getTdnData(
                 SOURCE,
                 ADS_COUNT,
                 dimenId = DIMEN_ID
             )
-            uiModel.isRequested = true
+            topAdsUiModel?.isRequested = true
         }
     }
 
@@ -53,7 +61,8 @@ class UniversalInboxTopAdsVerticalBannerViewHolder constructor(
     }
 
     override fun onTdnVerticalBannerResponse(data: ArrayList<TopAdsImageViewModel>) {
-        binding?.inboxVerticalTopadsBanner?.renderTdnBanner(data, EIGHT_DP, ::onTdnBannerClicked)
+        topAdsUiModel?.ads = data
+        bindBanner()
     }
 
     override fun onError(t: Throwable) {
