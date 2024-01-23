@@ -82,6 +82,10 @@ object AceSearchProductV5Query {
                       title
                       type
                       url
+                      styles {
+                        key
+                        value
+                      }
                     }
                     rating
                     wishlist
