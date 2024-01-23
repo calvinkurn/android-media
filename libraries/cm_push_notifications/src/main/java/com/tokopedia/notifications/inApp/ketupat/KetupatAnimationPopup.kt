@@ -35,19 +35,20 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private val animationPopupGtmTracker = AnimationPopupGtmTracker()
     private var crackCouponHandler = CrackCouponHandler(binding, layoutInflater, animationPopupGtmTracker, activity)
     private var slug: String? = ""
+    private var scratchCardId: String = ""
 
-    open fun loadLottieAnimation(slug: String?, popUpContent: PopUpContent) {
+    open fun loadLottieAnimation(slug: String?, popUpContent: PopUpContent, scratchCardId: String) {
         try {
 //        loadAnimationFromURl(popUpContent)
             this.slug = slug
+            this.scratchCardId = scratchCardId
             handleLottieSlice()
             binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
             binding.lottieViewPopup.setMinFrame("Tutorial")
             binding.lottieViewPopup.setMaxFrame(119)
             onCloseClick(binding.root)
             onParentContainerClick(binding.root)
-            onButtonShareClick(binding.root)
-            animationPopupGtmTracker.sendPopupImpressionEvent()
+            animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
         } catch (e: Exception) {
             ServerLogger.log(
                 Priority.P2,
@@ -64,7 +65,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private fun loadAnimationFromURl(popUpContent: PopUpContent) {
         popUpContent.assets?.get(0)?.let {
             binding.lottieViewPopup.setAnimationFromUrl(it.value)
-            animationPopupGtmTracker.sendPopupImpressionEvent()
+            animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
         }
         popUpContent.assets?.get(1)?.let {
             crackCouponHandler.url = it.value.toString()
@@ -106,7 +107,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
                     binding.lottieViewPopup.pauseAnimation()
                 }
             }
-            animationPopupGtmTracker.sendPopupInteractionEvent()
+            animationPopupGtmTracker.sendPopupInteractionEvent(scratchCardId)
         }
     }
 
@@ -114,7 +115,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
         binding.icClose.visible()
         val onClickListener = OnClickListener { _: View? ->
             (view.parent as ViewGroup).removeView(view)
-            animationPopupGtmTracker.sendPopupCloseEvent()
+            animationPopupGtmTracker.sendPopupCloseEvent(scratchCardId)
         }
         binding.icClose.setOnClickListener(onClickListener)
     }
@@ -124,19 +125,10 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
         val onClickListener = OnClickListener { _: View? ->
             if (percentageDx < 8 || percentageDy < 8) {
                 (view.parent as ViewGroup).removeView(view)
-                animationPopupGtmTracker.sendPopupCloseEvent()
+                animationPopupGtmTracker.sendPopupCloseEvent(scratchCardId)
             }
         }
         binding.parentContainer.setOnClickListener(onClickListener)
-    }
-
-    private fun onButtonShareClick(view: View) {
-        val onClickListener = OnClickListener { _: View? ->
-            (view.parent as ViewGroup).removeView(view)
-            crackCouponHandler.navigateToAppLink()
-            animationPopupGtmTracker.sendCtaButtonClickEvent()
-        }
-        binding.ivButtonShare.setOnClickListener(onClickListener)
     }
 
 }

@@ -52,19 +52,24 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         if (userSession.isLoggedIn) {
             AnimationPopupGqlGetData().getAnimationScratchPopupData({
                 it.popUpContent?.let { popup ->
-                    showLottiePopup(activity, getSlugData(it), popup)
+                    showLottiePopup(activity, getSlugData(it), popup, getScratchCardIdData(it))
                 }
             }, {})
         }
     }
 
-    open fun showLottiePopup(activity: Activity, slug: String?, popUpContent: PopUpContent) {
+    open fun showLottiePopup(
+        activity: Activity,
+        slug: String?,
+        popUpContent: PopUpContent,
+        scratchCardId: String
+    ) {
         try {
             val currentActivity: WeakReference<Activity> =
                 WeakReference(activity)
             val ketupatAnimationPopup = KetupatAnimationPopup(activity.applicationContext, null, activity)
             val weakActivity = currentActivity.get() ?: return
-            ketupatAnimationPopup.loadLottieAnimation(slug, popUpContent)
+            ketupatAnimationPopup.loadLottieAnimation(slug, popUpContent, scratchCardId)
             val root = weakActivity.window
                 .decorView
                 .findViewById<View>(android.R.id.content)
@@ -83,8 +88,12 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    private fun getSlugData(gamiScratchCardData: GamiScratchCardPreEvaluate?): String? {
-        return gamiScratchCardData?.scratchCard?.slug
+    private fun getSlugData(gamiScratchCardData: GamiScratchCardPreEvaluate?): String {
+        return gamiScratchCardData?.scratchCard?.slug ?: ""
+    }
+
+    private fun getScratchCardIdData(gamiScratchCardData: GamiScratchCardPreEvaluate?): String {
+        return gamiScratchCardData?.scratchCard?.id.toString()
     }
     private fun createUserSession(activity: Activity): UserSessionInterface =
         UserSession(activity)

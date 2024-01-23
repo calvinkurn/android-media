@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.tokopedia.applink.RouteManager
@@ -20,6 +21,9 @@ import com.tokopedia.notifications.databinding.LayoutInappAnimationBinding
 import com.tokopedia.notifications.domain.data.Benefits
 import com.tokopedia.notifications.domain.data.GamiScratchCardCrack
 import com.tokopedia.unifycomponents.ImageUnify
+import android.view.View.OnClickListener
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.promoui.common.CouponImageView
 
 class CrackCouponHandler(
     val binding: LayoutInappAnimationBinding,
@@ -32,10 +36,14 @@ class CrackCouponHandler(
     private var isCouponCracked = false
     var url = ""
     var buttonShareAppLink = ""
+    var scratchCardId = ""
+    var CatalogId = ""
+    var CatalogSlug = ""
 
     fun getCouponData(slug: String?, direction: MyGestureListener.Direction) {
         try {
             AnimationPopupGqlGetData().getAnimationCrackCouponData({
+                getTrackerData(it)
                 showPopupAnimation()
                 hideCouponErrorState()
                 handleCouponData(it, direction)
@@ -54,6 +62,14 @@ class CrackCouponHandler(
                 )
             )
         }
+    }
+
+    private fun getTrackerData(gamiScratchCardCrack: GamiScratchCardCrack) {
+        gamiScratchCardCrack.scratchCard?.let {
+            scratchCardId = it.id.toString()
+        }
+
+        gamiScratchCardCrack.benefits
     }
 
     private fun showPopupAnimation() {
@@ -80,11 +96,11 @@ class CrackCouponHandler(
                 numberOfRetry += 1
                 getCouponData(slug, direction)
                 hideCouponErrorState()
-                animationPopupGtmTracker.sendErrorRetryButtonEvent()
+                animationPopupGtmTracker.sendErrorRetryButtonEvent(scratchCardId)
                 binding.loaderAnimation.visible()
             } else {
                 binding.btnErrorState.gone()
-                animationPopupGtmTracker.sendErrorUnRetryableImpressionEvent()
+                animationPopupGtmTracker.sendErrorUnRetryableImpressionEvent(scratchCardId)
             }
         }
     }
@@ -97,7 +113,7 @@ class CrackCouponHandler(
             }
         }
         setCloseButtonMargin()
-        animationPopupGtmTracker.sendErrorImpressionEvent()
+        animationPopupGtmTracker.sendErrorImpressionEvent(scratchCardId)
     }
 
     private fun hidePopupAnimationAndCoupons() {
@@ -123,8 +139,8 @@ class CrackCouponHandler(
         gamiScratchCardCrack.benefits?.let {
             for (i in 0 until numberOfCoupons) {
                 val coupon = layoutInflater.inflate(R.layout.layout_coupon_animation, binding.couponContainer, false)
-                val couponImage = (coupon as View).findViewById<ImageUnify>(R.id.iv_coupon)
-                couponImage.loadImage(getCouponURl(i, it))
+                val couponImage = (coupon as View).findViewById<CouponImageView>(R.id.iv_coupon)
+                couponImage.loadImageFitCenter(getCouponURl(i, it))
                 binding.couponContainer.addView(coupon)
             }
             playAnimationInDirection(direction)
@@ -187,6 +203,7 @@ class CrackCouponHandler(
             binding.ivButtonShare.loadImage(it.imageURL)
             buttonShareAppLink = it.appLink.toString()
         }
+        onButtonShareClick(binding.root)
     }
 
     private fun getCouponURl(couponNumber: Int, couponList: List<Benefits>): String {
@@ -196,7 +213,7 @@ class CrackCouponHandler(
         return ""
     }
 
-    fun navigateToAppLink() {
+    private fun navigateToAppLink() {
         if (buttonShareAppLink.isNotEmpty() && buttonShareAppLink != "null") {
             RouteManager.route(activity, buttonShareAppLink)
         }
@@ -214,7 +231,7 @@ class CrackCouponHandler(
         val layout = binding.couponContainer
         val anim: Animation = AnimationUtils.loadAnimation(activity, R.anim.coupon_scale)
         layout.startAnimation(anim)
-        animationPopupGtmTracker.sendCouponImpressionEvent()
+//        animationPopupGtmTracker.sendCouponImpressionEvent()
     }
 
     private fun couponButtonAnimation() {
@@ -222,7 +239,16 @@ class CrackCouponHandler(
         val layout = binding.ivButtonShare
         val anim: Animation = AnimationUtils.loadAnimation(activity, R.anim.button_translate)
         layout.startAnimation(anim)
-        animationPopupGtmTracker.sendCtaButtonImpressionEvent()
+//        animationPopupGtmTracker.sendCtaButtonImpressionEvent()
+    }
+
+    private fun onButtonShareClick(view: View) {
+        val onClickListener = OnClickListener { _: View? ->
+            (view.parent as ViewGroup).removeView(view)
+            navigateToAppLink()
+//            animationPopupGtmTracker.sendCtaButtonClickEvent()
+        }
+        binding.ivButtonShare.setOnClickListener(onClickListener)
     }
 
     private fun setCloseButtonMargin() {
