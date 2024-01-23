@@ -59,6 +59,10 @@
 
         <activity android:name=".chatbot2.view.activity.ChatbotVideoActivity"/>
 
+        <activity
+            android:name=".chatbot2.view.activity.ChatbotImageActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

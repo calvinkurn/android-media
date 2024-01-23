@@ -28,6 +28,7 @@ import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickIn
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate_toko.databinding.AffiliateEducationLandingPageBinding
 import com.tokopedia.applink.ApplinkConst
@@ -49,6 +50,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.searchbar.R as searchbarR
 
 class AffiliateEducationLandingPage :
     BaseViewModelFragment<AffiliateEducationLandingViewModel>(),
@@ -59,6 +61,7 @@ class AffiliateEducationLandingPage :
     AffiliateEducationBannerClickInterface {
 
     private var eduViewModel: AffiliateEducationLandingViewModel? = null
+    private var affiliateViewModel: AffiliateViewModel? = null
 
     @JvmField
     @Inject
@@ -125,12 +128,14 @@ class AffiliateEducationLandingPage :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return AffiliateEducationLandingPageBinding.inflate(
+    ): View? {
+        binding = AffiliateEducationLandingPageBinding.inflate(
             inflater,
             container,
             false
-        ).also { binding = it }.root
+        )
+        affiliateViewModel = activity?.let { ViewModelProvider(it)[AffiliateViewModel::class.java] }
+        return binding?.root
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -141,10 +146,11 @@ class AffiliateEducationLandingPage :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.eduNavToolbar?.run {
-            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
+            val iconBuilder =
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-                    eduViewModel?.resetNotificationCount()
+                    affiliateViewModel?.resetNotificationCount()
                     sendNotificationClickEvent()
                     RouteManager.route(
                         context,
@@ -180,8 +186,8 @@ class AffiliateEducationLandingPage :
             onBantuanClick()
         }
         if (isAffiliateNCEnabled()) {
-            eduViewModel?.fetchUnreadNotificationCount()
-            eduViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+            affiliateViewModel?.fetchUnreadNotificationCount()
+            affiliateViewModel?.getUnreadNotificationCount()?.observe(viewLifecycleOwner) { count ->
                 binding?.eduNavToolbar?.apply {
                     setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
                 }
@@ -222,7 +228,7 @@ class AffiliateEducationLandingPage :
                 }
             }
         )
-        navToolbar.findViewById<EditText>(com.tokopedia.searchbar.R.id.et_search)
+        navToolbar.findViewById<EditText>(searchbarR.id.et_search)
             ?.setOnFocusChangeListener { v: View, hasFocus ->
                 (v as EditText).hint = if (hasFocus) {
                     getString(R.string.affiliate_landing_page_search_active_placeholder)

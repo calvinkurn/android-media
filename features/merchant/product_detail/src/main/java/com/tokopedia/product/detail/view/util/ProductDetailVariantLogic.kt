@@ -13,7 +13,7 @@ object ProductDetailVariantLogic {
     fun determineVariant(
         mapOfSelectedOptionIds: Map<String, String>,
         productVariant: ProductVariant?
-    ): VariantCategory? {
+    ): VariantCategory? = runCatching {
         val variantLevelOne = productVariant?.variants?.firstOrNull()
         val variantOptions = variantLevelOne?.options
 
@@ -67,11 +67,11 @@ object ProductDetailVariantLogic {
         val stringVariantIdentifier = productVariant.variants.mapNotNull { it.identifier }.joinToString()
 
         val variantTitle = if (areAllVariantHaveSelectedChild) selectedVariantName else stringVariantIdentifier // to determine pilih warna,ukuran or pilih hitam,xl
-        return VariantCategory(
+        VariantCategory(
             name = variantTitle,
             identifier = variantLevelOne.name.orEmpty(),
             hasCustomImage = haveCustomImage,
             variantOptions = listOfVariantLevelOne
         )
-    }
+    }.getOrNull()
 }

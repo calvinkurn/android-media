@@ -215,6 +215,10 @@ data class SearchProductV5(
                         @SerializedName("componentID")
                         @Expose
                         val componentID: String = "",
+
+                        @SerializedName("isImageBlurred")
+                        @Expose
+                        val isImageBlurred: Boolean = false,
                     )
                 }
             }
@@ -301,6 +305,10 @@ data class SearchProductV5(
                 @SerializedName("isPortrait")
                 @Expose
                 val isPortrait: Boolean = false,
+
+                @SerializedName("isImageBlurred")
+                @Expose
+                val isImageBlurred: Boolean = false,
             )
 
             data class LabelGroupVariant(

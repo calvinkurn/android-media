@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
@@ -21,6 +22,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -30,6 +32,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.di.RawQueryKeyConstant
+import com.tokopedia.product.detail.di.RawQueryKeyConstant.PDP_COMPONENT_FILTER_CONDITION
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
@@ -39,7 +44,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import java.util.concurrent.TimeUnit
-
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 object ProductDetailUtil {
 
@@ -70,8 +75,11 @@ fun getIntentImagePreviewWithoutDownloadButton(context: Context, imageUrl: Array
     return ImagePreviewActivity.getCallingIntent(context = context, imageUris = imageUrl, disableDownloadButton = true)
 }
 
-fun String.boldOrLinkText(isLink: Boolean, context: Context,
-                          vararg textToBold: Pair<String, () -> Unit>): SpannableString {
+fun String.boldOrLinkText(
+    isLink: Boolean,
+    context: Context,
+    vararg textToBold: Pair<String, () -> Unit>
+): SpannableString {
     val builder = SpannableString(this)
 
     if (this.isNotEmpty() || this.isNotBlank()) {
@@ -91,18 +99,21 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
             } else {
                 builder.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 builder.setSpan(CustomTypeSpan(typographyBoldTypeFace), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                builder.setSpan(object : ClickableSpan() {
-                    override fun onClick(widget: View) {
-                        it.second.invoke()
-                    }
+                builder.setSpan(
+                    object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            it.second.invoke()
+                        }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.isUnderlineText = false
-                        val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_GN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
-                        ds.color = MethodChecker.getColor(context, textColor)
-                    }
-                }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        override fun updateDrawState(ds: TextPaint) {
+                            super.updateDrawState(ds)
+                            ds.isUnderlineText = false
+                            val textColor = if (isLink) unifyprinciplesR.color.Unify_GN500 else unifyprinciplesR.color.Unify_NN950_96
+                            ds.color = MethodChecker.getColor(context, textColor)
+                        }
+                    },
+                    startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
         }
     }
@@ -112,7 +123,7 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
 
 fun String.renderHtmlBold(
     context: Context,
-    boldColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+    boldColor: Int = unifyprinciplesR.color.Unify_NN950_96
 ): CharSequence? {
     if (this.isEmpty()) return null
     val spannedHtmlString: Spanned = MethodChecker.fromHtml(this)
@@ -189,31 +200,34 @@ internal fun String.getRelativeDate(context: Context): String {
     val yearDivider = monthDivider * ProductDetailUtil.MONTHS_IN_A_YEAR
 
     return if (diff / yearDivider > 0) {
-        context.getString(R.string.shop_online_last_date, getYear)
+        context.getString(R.string.pdp_shop_online_last_date, getYear)
     } else if (diff / monthDivider >= ProductDetailUtil.LAST_ONLINE_MONTH_THRESHOLD) {
-        context.getString(R.string.shop_online_last_date, getMonthAndYear)
+        context.getString(R.string.pdp_shop_online_last_date, getMonthAndYear)
     } else if (diff / dayDivider > 0) {
         val days = diff / dayDivider
         when {
             days <= 1 -> {
-                context.getString(R.string.shop_online_yesterday)
+                context.getString(R.string.pdp_shop_online_yesterday)
             }
             days in IntRange(
                 ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_START,
                 ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_END
             ) -> {
-                context.getString(R.string.shop_online_days_ago, diff / dayDivider)
+                context.getString(R.string.pdp_shop_online_days_ago, diff / dayDivider)
             }
             else -> {
-                context.getString(R.string.shop_online_last_date, getDaysAndMonth)
+                context.getString(R.string.pdp_shop_online_last_date, getDaysAndMonth)
             }
         }
     } else if (diff / hourDivider > 0) {
-        context.getString(R.string.shop_online_hours_ago, diff / hourDivider)
+        context.getString(R.string.pdp_shop_online_hours_ago, diff / hourDivider)
     } else {
         val minutes = diff / minuteDivider
-        if (minutes in 0..ProductDetailUtil.LAST_ONLINE_MINUTES_RANGE_END) context.getString(R.string.shop_online) else
-            context.getString(R.string.shop_online_minute_ago, minutes)
+        if (minutes in 0..ProductDetailUtil.LAST_ONLINE_MINUTES_RANGE_END) {
+            context.getString(R.string.pdp_shop_online)
+        } else {
+            context.getString(R.string.pdp_shop_online_minute_ago, minutes)
+        }
     }
 }
 
@@ -293,8 +307,11 @@ internal fun View?.animateExpand(duration: Long = 200) = this?.run {
     show()
     val animation = object : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-            layoutParams.height = if (interpolatedTime == 1f) ConstraintLayout.LayoutParams.WRAP_CONTENT
-            else (targetHeight * interpolatedTime).toInt()
+            layoutParams.height = if (interpolatedTime == 1f) {
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
+            } else {
+                (targetHeight * interpolatedTime).toInt()
+            }
             alpha = interpolatedTime
             requestLayout()
         }
@@ -374,4 +391,41 @@ fun ViewStub.inflateWithBinding(onInflate: (View) -> Unit) {
 
 fun ViewStub.isInflated(): Boolean {
     return this.parent == null
+}
+
+internal fun List<DynamicPdpDataModel>.componentDevFilter(
+    sharedPref: SharedPreferences
+): List<DynamicPdpDataModel> {
+    if (!GlobalConfig.isAllowDebuggingTools()) return this
+
+    val componentValue = sharedPref.getString(
+        RawQueryKeyConstant.PDP_COMPONENT_FILTER_VALUE,
+        ""
+    ) ?: return this
+    val componentFilterCondition = sharedPref.getString(
+        PDP_COMPONENT_FILTER_CONDITION,
+        ""
+    ) ?: return this
+    val componentFilterOption = sharedPref.getString(
+        RawQueryKeyConstant.PDP_COMPONENT_FILTER_OPTION,
+        ""
+    ) ?: return this
+
+    val multiComponent = componentValue.split(",").map {
+        it.trim()
+    }
+
+    return if (componentFilterOption.equals("type", true)) {
+        if (componentFilterCondition.equals("filter out", true)) {
+            filter { it.type() !in multiComponent }
+        } else if (componentFilterCondition.equals("show only", true)) {
+            filter { it.type() in multiComponent }
+        } else this
+    } else if (componentFilterOption.equals("name", true)) {
+        if (componentFilterCondition.equals("filter out", true)) {
+            filter { it.name() !in multiComponent }
+        } else if (componentFilterCondition.equals("show only", true)) {
+            filter { it.name() in multiComponent }
+        } else this
+    } else this
 }

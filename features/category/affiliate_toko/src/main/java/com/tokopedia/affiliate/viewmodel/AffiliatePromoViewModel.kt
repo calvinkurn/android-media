@@ -14,7 +14,6 @@ import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
-import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSAShopUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
@@ -30,7 +29,6 @@ import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import okio.IOException
 import timber.log.Timber
@@ -43,7 +41,6 @@ class AffiliatePromoViewModel @Inject constructor(
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
     private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase,
     private val affiliateSSAShopUseCase: AffiliateSSAShopUseCase,
-    private val affiliateUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase,
     private val graphqlRepository: GraphqlRepository
 ) : BaseViewModel() {
     private var progressBar = MutableLiveData<Boolean>()
@@ -54,8 +51,6 @@ class AffiliatePromoViewModel @Inject constructor(
     private var discoBanners = MutableLiveData<AffiliateDiscoveryCampaignResponse>()
     private var tokoNowBottomSheetData = MutableLiveData<GenerateAffiliateLinkEligibility?>()
     private val ssaShopList = MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
-    private val _unreadNotificationCount = MutableLiveData(Int.ZERO)
-    fun getUnreadNotificationCount(): LiveData<Int> = _unreadNotificationCount
 
     companion object {
         private const val SUCCESS = 1
@@ -202,20 +197,6 @@ class AffiliatePromoViewModel @Inject constructor(
                 Timber.e(e)
             }
         }
-    }
-
-    fun fetchUnreadNotificationCount() {
-        val coroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
-            Timber.e(e)
-        }
-        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            _unreadNotificationCount.value =
-                affiliateUnreadNotificationUseCase.getUnreadNotifications()
-        }
-    }
-
-    fun resetNotificationCount() {
-        _unreadNotificationCount.value = Int.ZERO
     }
 
     fun getSSAShopList(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> = ssaShopList

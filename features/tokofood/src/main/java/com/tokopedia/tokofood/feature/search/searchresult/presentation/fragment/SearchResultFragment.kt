@@ -43,6 +43,7 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
@@ -81,6 +82,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.tokofood.R as tokofoodR
 
 class SearchResultFragment :
     BaseDaggerFragment(),
@@ -132,7 +134,8 @@ class SearchResultFragment :
     private var currentSortFilterValue: String = String.EMPTY
 
     private var keyword: String = ""
-    private var itemsScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> = mutableListOf()
+    private var itemsScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
+        mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -313,9 +316,11 @@ class SearchResultFragment :
             MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP -> {
                 navigateToAddAddressRevamp()
             }
+
             MerchantSearchOOCUiModel.NO_PINPOINT -> {
                 navigateToSetPinpoint()
             }
+
             MerchantSearchOOCUiModel.OUT_OF_COVERAGE -> {
                 navigateToChangeAddress()
             }
@@ -430,6 +435,7 @@ class SearchResultFragment :
                     is Success -> {
                         applySearchFilterTab(result.data)
                     }
+
                     is Fail -> {
                         logErrorException(
                             result.throwable,
@@ -451,6 +457,7 @@ class SearchResultFragment :
                     is Success -> {
                         updateAdapterVisitables(result.data)
                     }
+
                     is Fail -> {
                         logErrorException(
                             result.throwable,
@@ -472,27 +479,35 @@ class SearchResultFragment :
                     TokofoodSearchUiEvent.EVENT_OPEN_DETAIL_BOTTOMSHEET -> {
                         onOpenDetailFilterBottomSheet(event.data)
                     }
+
                     TokofoodSearchUiEvent.EVENT_SUCCESS_LOAD_DETAIL_FILTER -> {
                         onSuccessLoadDetailFilter(event.data)
                     }
+
                     TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
                         updateLocalAddressData(event.data)
                     }
+
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_DETAIL_FILTER -> {
                         onFailedLoadDetailFilter(event.throwable)
                     }
+
                     TokofoodSearchUiEvent.EVENT_OPEN_QUICK_SORT_BOTTOMSHEET -> {
                         onOpenQuickSortBottomSheet(event.data)
                     }
+
                     TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_PRICE_RANGE_BOTTOMSHEET -> {
                         onOpenQuickFilterPriceRangeBottomSheet(event.data)
                     }
+
                     TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_NORMAL_BOTTOMSHEET -> {
                         onOpenQuickFilterNormalBottomSheet(event.data)
                     }
+
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_MORE -> {
                         onShowLoadMoreErrorToaster(event.throwable)
                     }
+
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_SEARCH_RESULT -> {
                         event.throwable?.let {
                             logErrorException(
@@ -502,6 +517,7 @@ class SearchResultFragment :
                             )
                         }
                     }
+
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_FILTER -> {
                         event.throwable?.let {
                             logErrorException(
@@ -511,6 +527,7 @@ class SearchResultFragment :
                             )
                         }
                     }
+
                     TokofoodSearchUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
                         showPinpointErrorMessage(event.throwable)
                         refreshAddressData()
@@ -521,12 +538,10 @@ class SearchResultFragment :
     }
 
     private fun updateLocalAddressData(data: Any?) {
-        (data as? Pair<*, *>)?.let { (latitude, longitude) ->
-            if (latitude is String && longitude is String) {
-                context?.run {
-                    updateLocalChosenAddressPinpoint(latitude, longitude)
-                    refreshAddressData()
-                }
+        (data as? KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse)?.let { response ->
+            context?.run {
+                response.updateLocalChosenAddressPinpoint(this)
+                refreshAddressData()
             }
         }
     }
@@ -655,10 +670,11 @@ class SearchResultFragment :
 
     private fun onOpenQuickSortBottomSheet(data: Any?) {
         hideKeyboard()
-        (data as? List<*>)?.filterIsInstance(TokofoodQuickSortUiModel::class.java)?.let { uiModels ->
-            TokofoodQuickSortBottomSheet.createInstance(ArrayList(uiModels), this)
-                .show(parentFragmentManager)
-        }
+        (data as? List<*>)?.filterIsInstance(TokofoodQuickSortUiModel::class.java)
+            ?.let { uiModels ->
+                TokofoodQuickSortBottomSheet.createInstance(ArrayList(uiModels), this)
+                    .show(parentFragmentManager)
+            }
     }
 
     private fun onOpenQuickFilterPriceRangeBottomSheet(data: Any?) {
@@ -711,7 +727,8 @@ class SearchResultFragment :
                 val locationPass =
                     it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
                 if (locationPass == null) {
-                    val addressData = it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
+                    val addressData =
+                        it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
                     addressData?.let { address ->
                         viewModel.updatePinpoint(address.latitude, address.longitude)
                     }
@@ -725,7 +742,8 @@ class SearchResultFragment :
     private fun onResultFromChangeAddress(resultCode: Int) {
         if (resultCode == CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS) {
             showToaster(
-                context?.getString(com.tokopedia.tokofood.R.string.search_srp_ooc_success_change_address).orEmpty(),
+                context?.getString(tokofoodR.string.search_srp_ooc_success_change_address)
+                    .orEmpty(),
                 getOkayMessage()
             )
             refreshAddressData()
@@ -763,7 +781,10 @@ class SearchResultFragment :
         )
         intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
         intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-        intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, AddEditAddressSource.TOKOFOOD.source)
+        intent.putExtra(
+            ApplinkConstInternalLogistic.PARAM_SOURCE,
+            AddEditAddressSource.TOKOFOOD.source
+        )
         startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
     }
 
@@ -783,17 +804,23 @@ class SearchResultFragment :
     }
 
     private fun navigateToChangeAddress() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
-            putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
-            putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, ManageAddressSource.TOKOFOOD.source)
-        }
+        val intent =
+            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
+                putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
+                putExtra(
+                    ApplinkConstInternalLogistic.PARAM_SOURCE,
+                    ManageAddressSource.TOKOFOOD.source
+                )
+            }
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
 
     private fun showDetailFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
         if (!isAdded) return
         if (sortFilterBottomSheet == null) {
-            val customTitle = context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_title).orEmpty()
+            val customTitle =
+                context?.getString(tokofoodR.string.search_srp_filter_title)
+                    .orEmpty()
             sortFilterBottomSheet = SortFilterBottomSheet.createInstance(customTitle)
         }
         hideKeyboard()
@@ -818,7 +845,7 @@ class SearchResultFragment :
     }
 
     private fun getApplyButtonText(): String {
-        return context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_apply).orEmpty()
+        return context?.getString(tokofoodR.string.search_srp_filter_apply).orEmpty()
     }
 
     private fun goToMerchantPage(applink: String) {
@@ -850,7 +877,7 @@ class SearchResultFragment :
 
     private fun showPinpointErrorMessage(throwable: Throwable?) {
         val errorMessage = throwable?.message
-            ?: context?.getString(com.tokopedia.tokofood.R.string.search_srp_ooc_failed_edit_pinpoint)
+            ?: context?.getString(tokofoodR.string.search_srp_ooc_failed_edit_pinpoint)
                 .orEmpty()
         showToasterError(errorMessage)
     }
@@ -870,7 +897,8 @@ class SearchResultFragment :
             ?.joinToString(AND_SEPARATOR) { it.toString() }.orEmpty()
     }
 
-    private fun getOkayMessage(): String = context?.getString(com.tokopedia.tokofood.R.string.search_srp_ooc_okay).orEmpty()
+    private fun getOkayMessage(): String =
+        context?.getString(tokofoodR.string.search_srp_ooc_okay).orEmpty()
 
     private fun logErrorException(
         throwable: Throwable,

@@ -11,6 +11,11 @@ interface ShopFlashSaleWidgetListener: CommonProductCardCarouselListener {
         channelGrid: ChannelGrid
     ) { }
 
+    fun onShopTabImpressed(
+        trackingAttributionModel: TrackingAttributionModel,
+        channelGrid: ChannelGrid
+    ) { }
+
     fun onSeeAllClick(trackingAttributionModel: TrackingAttributionModel, link: String) { }
 
     fun onRefreshClick(

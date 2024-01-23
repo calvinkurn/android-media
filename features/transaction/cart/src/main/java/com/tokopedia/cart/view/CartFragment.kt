@@ -3605,7 +3605,7 @@ class CartFragment :
     }
 
     private fun onUndoDeleteClicked(cartIds: List<String>) {
-        cartPageAnalytics.eventClickUndoAfterDeleteProduct(userSession.userId)
+        cartPageAnalytics.eventClickUndoAfterDeleteProduct(userSession.userId, "")
         dPresenter.processUndoDeleteCartItem(cartIds)
     }
 

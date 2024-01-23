@@ -11,9 +11,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-/**
- * Created by fwidjaja on 02/10/21.
- */
 class UohSendEmailBottomSheet : BottomSheetUnify() {
     private var listener: UohSendEmailBottomSheetListener? = null
     private var binding by autoClearedNullable<BottomsheetSendEmailBinding>()

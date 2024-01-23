@@ -16,7 +16,6 @@ import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
-import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import rx.subscriptions.CompositeSubscription
@@ -44,12 +43,6 @@ class CartModule {
     @Provides
     fun provideCompositeSubscription(): CompositeSubscription {
         return CompositeSubscription()
-    }
-
-    @Provides
-    @CartScope
-    fun provideGetWishlistV2UseCase(graphqlRepository: GraphqlRepository): GetWishlistV2UseCase {
-        return GetWishlistV2UseCase(graphqlRepository)
     }
 
     @Provides

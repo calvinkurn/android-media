@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.bumptech.glide.Glide;
@@ -45,9 +44,7 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.HexValidator;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.iconunify.IconUnify;
-import com.tokopedia.iconunify.IconUnifyHelperKt;
 import com.tokopedia.promogamification.common.R;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.promogamification.common.applink.CoreGamificationEventTracking;
@@ -63,7 +60,6 @@ import com.tokopedia.promogamification.common.floating.view.contract.FloatingEgg
 import com.tokopedia.promogamification.common.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.user.session.UserSession;
 
 import java.text.ParseException;
@@ -191,11 +187,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
         // hide tracker
         floatingEggTracker.trackingEggHide(tokenId, tokenName, isMinimized);
-        if(!isMinimized) {
-            ivClose.setVisibility(View.VISIBLE);
-        } else {
-            ivClose.setVisibility(View.GONE);
-        }
     }
 
     private void shiftEggTowardsLeftOrRight(float oldAngle, float newAngle, float oldX, float newX) {
@@ -614,13 +605,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             floatingEggTracker.trackingEggClickCLose(tokenId, tokenName);
             hideFloatingEgg();
         });
-        ivClose.setVisibility(View.VISIBLE);
 
         if(!isPermanent){
+            ivClose.setVisibility(View.VISIBLE);
             minimizeButtonLeft.setVisibility(View.GONE);
         }
         else{
             minimizeButtonLeft.setVisibility(View.VISIBLE);
+            ivClose.setVisibility(View.GONE);
         }
     }
 

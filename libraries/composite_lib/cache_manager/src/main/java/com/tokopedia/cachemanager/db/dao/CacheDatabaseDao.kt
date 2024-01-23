@@ -4,6 +4,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Update
 import com.tokopedia.cachemanager.db.model.CacheDbModel
+import kotlinx.coroutines.flow.Flow
 
 interface CacheDatabaseDao<T : CacheDbModel> {
 
@@ -19,6 +20,7 @@ interface CacheDatabaseDao<T : CacheDbModel> {
     fun deleteByKey(key: String)
     fun deleteTable()
     fun getCacheModel(key: String): T?
+    fun getCacheModelFlow(key: String): Flow<T?>
     fun deleteExpiredRecords(timeStamp:Long)
 
 }

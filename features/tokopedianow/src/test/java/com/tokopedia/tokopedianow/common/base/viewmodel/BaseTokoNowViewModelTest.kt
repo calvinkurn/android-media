@@ -574,4 +574,14 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             assertEquals(null, actualResult)
         }
     }
+
+    @Test
+    fun `when get deviceId should return deviceId from userSession`() {
+        onGetDeviceId_thenReturn(deviceId = "91251")
+
+        val expectedDeviceId = "91251"
+        val actualDeviceId = viewModel.getDeviceId()
+
+        assertEquals(expectedDeviceId, actualDeviceId)
+    }
 }

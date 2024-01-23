@@ -41,6 +41,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MiniCartProductViewHolder(
     private val viewBinding: ItemMiniCartProductBinding,
@@ -86,6 +88,7 @@ class MiniCartProductViewHolder(
         renderBundleQuantity(element)
         renderVerticalLine(element)
         renderBottomDivider(element)
+        renderProductTagInfo(element)
     }
 
     private fun renderDefaultState() {
@@ -282,7 +285,7 @@ class MiniCartProductViewHolder(
 
     private fun createProductInfoText(it: String): Typography {
         return Typography(itemView.context).apply {
-            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+            setTextColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950_68))
             setType(Typography.BODY_3)
             text = if (viewBinding.layoutProductInfo.childCount > 0) ", $it" else it
         }
@@ -434,7 +437,7 @@ class MiniCartProductViewHolder(
         with(viewBinding) {
             val marginTop = itemView.context.resources.getDimension(R.dimen.dp_12).toInt()
             val margin16dp = itemView.context.resources
-                .getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()
+                .getDimension(abstractionR.dimen.dp_16).toInt()
             if (element.isProductDisabled) {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
@@ -612,7 +615,7 @@ class MiniCartProductViewHolder(
                     }
                 }
                 textProductUnavailableAction.context?.let {
-                    textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+                    textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN950_68))
                 }
                 textProductUnavailableAction.show()
             } else {
@@ -696,6 +699,17 @@ class MiniCartProductViewHolder(
         }
     }
 
+    private fun renderProductTagInfo(element: MiniCartProductUiModel) {
+        with(viewBinding) {
+            if (element.productTagInfo.isNotEmpty()) {
+                textProductTagInfo.visible()
+                textProductTagInfo.text = element.productTagInfo.firstOrNull()?.message ?: ""
+            } else {
+                textProductTagInfo.gone()
+            }
+        }
+    }
+
     private fun renderVerticalLine(element: MiniCartProductUiModel) {
         with(viewBinding) {
             if (element.isBundlingItem) {
@@ -748,7 +762,7 @@ class MiniCartProductViewHolder(
                 constraintSet.connect(
                     R.id.text_notes,
                     ConstraintSet.BOTTOM,
-                    com.tokopedia.design.R.id.delete_button,
+                    R.id.button_delete_cart,
                     ConstraintSet.TOP
                 )
                 constraintSet.applyTo(containerProduct)
@@ -833,11 +847,11 @@ class MiniCartProductViewHolder(
 
             val margin = if (element.showBottomDivider) {
                 itemView.context.resources.getDimensionPixelSize(
-                    com.tokopedia.abstraction.R.dimen.dp_0
+                    abstractionR.dimen.dp_0
                 )
             } else {
                 itemView.context.resources.getDimensionPixelSize(
-                    com.tokopedia.abstraction.R.dimen.dp_16
+                    abstractionR.dimen.dp_16
                 )
             }
 

@@ -24,6 +24,8 @@
         "dimension81": ".+",
         "item_brand": ".+",
         "dimension79": ".+",
+        "dimension56": ".+",
+        "dimension58": ".+",
         "item_variant": ".+",
         "item_category": ".+"
       }],
@@ -55,6 +57,8 @@
         "dimension81": ".+",
         "item_brand": ".+",
         "dimension79": ".+",
+        "dimension56": ".+",
+        "dimension58": ".+",
         "item_variant": ".+",
         "item_category": ".+"
       }],

@@ -87,6 +87,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
           shipper_product_id
           shipper_product_name
           shipper_product_desc
+          order_message
           is_show_map
           shipper_weight
           status
@@ -245,6 +246,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
           ticker_courier
           bottom_sheet_description
           title_promo_message
+          order_message
         }
         free_shipping_metadata {
           sent_shipper_partner
@@ -356,6 +358,7 @@ internal fun ratesQuery() = """
               shipper_product_id
               shipper_product_name
               shipper_product_desc
+              order_message
               is_show_map
               shipper_weight
               status
@@ -515,6 +518,7 @@ internal fun ratesQuery() = """
               bottom_sheet_description
               promo_message
               title_promo_message
+              order_message
             }
             free_shipping_metadata {
               sent_shipper_partner

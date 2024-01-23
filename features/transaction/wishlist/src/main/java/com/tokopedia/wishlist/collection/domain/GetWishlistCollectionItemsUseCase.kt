@@ -6,6 +6,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.wishlist.collection.data.params.GetWishlistCollectionItemsParams
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionItemsResponse
 import javax.inject.Inject
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @GqlQuery("GetWishlistCollectionItemsQuery", GetWishlistCollectionItemsUseCase.query)
 class GetWishlistCollectionItemsUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     dispatchers: CoroutineDispatchers
 ) :
     CoroutineUseCase<GetWishlistCollectionItemsParams, GetWishlistCollectionItemsResponse>(dispatchers.io) {
@@ -25,6 +27,7 @@ class GetWishlistCollectionItemsUseCase @Inject constructor(
 
     private fun createVariables(params: GetWishlistCollectionItemsParams): Map<String, Any> {
         val variables = mutableMapOf<String, Any>()
+        params.wishlistChosenAddress = chosenAddressRequestHelper.getChosenAddress()
         variables[KEY_PARAMS] = params
         return variables
     }

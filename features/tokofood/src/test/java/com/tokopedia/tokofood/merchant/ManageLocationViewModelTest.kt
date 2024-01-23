@@ -1,8 +1,10 @@
 package com.tokopedia.tokofood.merchant
 
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
+import com.tokopedia.tokofood.data.createKeroEditAddressResponse
+import com.tokopedia.tokofood.data.createKeroEditAddressResponseFail
 import com.tokopedia.tokofood.data.generateTestDeliveryCoverageResult
-import com.tokopedia.tokofood.data.generateTestGetStateChosenAddressQglResponse
-import com.tokopedia.tokofood.data.generateTestKeroEditAddressResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -24,57 +26,35 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
 
     @Test
     fun `when updatePinPoint is success expect the boolean result to be true`() {
+        val latitude = "111"
+        val longitude = "112"
         coEvery {
-            keroEditAddressUseCase.execute("", "", "")
-        } returns generateTestKeroEditAddressResponse().keroEditAddress.data.isEditSuccess()
-        viewModel.updatePinPoint("", "", "")
-        val expectedResult = generateTestKeroEditAddressResponse()
-        viewModel.updatePinPoint("", "", "")
-        coVerify { keroEditAddressUseCase.execute("", "", "") }
-        assertEquals(expectedResult.keroEditAddress.data.isEditSuccess(), viewModel.updatePinPointState.value)
+            keroEditAddressUseCase(KeroEditAddressParam("", latitude, longitude, ManageAddressSource.TOKOFOOD))
+        } returns createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
+        viewModel.updatePinPoint("", latitude, longitude)
+        coVerify { keroEditAddressUseCase(KeroEditAddressParam("", latitude, longitude, ManageAddressSource.TOKOFOOD)) }
+        assertEquals(viewModel.updatePinPointState.value?.isSuccess, 1)
     }
 
     @Test
     fun `when updatePinPoint is not success expect the boolean result to be false`() {
         coEvery {
-            keroEditAddressUseCase.execute("", "", "")
-        } returns !generateTestKeroEditAddressResponse().keroEditAddress.data.isEditSuccess()
+            keroEditAddressUseCase(KeroEditAddressParam("", "", "", ManageAddressSource.TOKOFOOD))
+        } returns createKeroEditAddressResponseFail().keroEditAddress.data
         viewModel.updatePinPoint("", "", "")
-        val expectedResult = generateTestKeroEditAddressResponse()
         viewModel.updatePinPoint("", "", "")
-        coVerify { keroEditAddressUseCase.execute("", "", "") }
-        assertEquals(!expectedResult.keroEditAddress.data.isEditSuccess(), viewModel.updatePinPointState.value)
+        coVerify { keroEditAddressUseCase(KeroEditAddressParam("", "", "", ManageAddressSource.TOKOFOOD)) }
+        assertEquals(viewModel.updatePinPointState.value?.isSuccess, 0)
     }
 
     @Test
     fun `when updatePinPoint is failed expect error message`() {
         coEvery {
-            keroEditAddressUseCase.execute("", "", "")
+            keroEditAddressUseCase(KeroEditAddressParam("", "", "", ManageAddressSource.TOKOFOOD))
         } throws Throwable("error_message")
         viewModel.updatePinPoint("", "", "")
         val actualResponse = viewModel.errorMessage.value
         assertEquals(actualResponse, "error_message")
-    }
-
-    @Test
-    fun `when getChooseAddress is success expect chosen address data`() {
-        coEvery {
-            getChooseAddressWarehouseLocUseCase(any())
-        } returns generateTestGetStateChosenAddressQglResponse().response
-        val expectedResult = generateTestGetStateChosenAddressQglResponse()
-        viewModel.getChooseAddress("tokofood")
-        val actualResult = viewModel.chooseAddress.value
-        Assert.assertEquals(expectedResult.response, (actualResult as Success).data)
-    }
-
-    @Test
-    fun `when getChooseAddress is success expect fail response`() {
-        val param = "tokofood"
-        val error = Exception("test exception")
-        coEvery { getChooseAddressWarehouseLocUseCase.invoke(param) } throws error
-        viewModel.getChooseAddress(param)
-        val actualResult = viewModel.chooseAddress.value
-        Assert.assertTrue(actualResult is Fail)
     }
 
     @Test

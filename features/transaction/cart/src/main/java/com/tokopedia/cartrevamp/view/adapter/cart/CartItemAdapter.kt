@@ -3,12 +3,13 @@ package com.tokopedia.cartrevamp.view.adapter.cart
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.iconunify.IconUnify
 
 class CartItemAdapter {
     interface ActionListener {
-        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, isFromDeleteButton: Boolean = false)
+        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, deleteSource: CartDeleteButtonSource)
         fun onCartItemQuantityPlusButtonClicked()
         fun onCartItemQuantityMinusButtonClicked()
         fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData)
@@ -39,7 +40,8 @@ class CartItemAdapter {
         fun onBmGmChevronRightClicked(offerLandingPageLink: String, offerId: Long, widgetCaption: String, shopId: String)
         fun onBmGmTickerReloadClicked()
         fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean)
-
         fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String)
+        fun onSwipeToDeleteClosed(productId: String)
+        fun clearAllFocus()
     }
 }
