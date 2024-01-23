@@ -145,7 +145,7 @@ data class ProductCardModel(
                 slashedPrice = productCardModel.slashedPrice,
                 discountPercentage = productCardModel.discountPercentageInt,
                 labelGroupList = productCardModel.labelGroupList.map(LabelGroupReimagine::from),
-                rating = productCardModel.ratingString,
+                rating = productCardModel.countSoldRating,
                 shopBadge = shopBadge(productCardModel),
                 hasAddToCart = productCardModel.hasAddToCartButton,
                 videoUrl = productCardModel.customVideoURL,
