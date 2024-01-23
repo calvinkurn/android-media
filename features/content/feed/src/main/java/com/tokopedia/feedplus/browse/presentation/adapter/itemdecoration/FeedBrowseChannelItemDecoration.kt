@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.browse.presentation.adapter
+package com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration
 
 import android.content.Context
 import android.graphics.Rect
@@ -10,10 +10,10 @@ import com.tokopedia.feedplus.R as feedplusR
 /**
  * Created by meyta.taliti on 22/08/23.
  */
-class FeedBrowseItemDecoration(
+class FeedBrowseChannelItemDecoration(
     private val context: Context,
     @DimenRes spacingHorizontal: Int,
-    @DimenRes spacingTop: Int
+    @DimenRes spacingTop: Int,
 ) : RecyclerView.ItemDecoration() {
 
     private val spacingStart = getDimensionInPixel(feedplusR.dimen.feed_space_16)
@@ -41,11 +41,11 @@ class FeedBrowseItemDecoration(
     }
 
     private fun isPositionStart(parent: RecyclerView, view: View): Boolean {
-        return parent.getChildLayoutPosition(view) == 0
+        return parent.getChildAdapterPosition(view) == 0
     }
 
     private fun isPositionEnd(parent: RecyclerView, view: View, state: RecyclerView.State): Boolean {
         val lastPosition = state.itemCount - 1
-        return parent.getChildLayoutPosition(view) == lastPosition
+        return parent.getChildAdapterPosition(view) == lastPosition
     }
 }
