@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.productcard.reimagine.ProductCardLabel
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.utils.getPixel
+import com.tokopedia.productcard.utils.safeParseColor
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
@@ -96,7 +97,8 @@ class LabelBenefitView: FrameLayout {
     private fun showLabelBenefit(labelGroup: ProductCardModel.LabelGroup) {
         ProductCardLabel(background, text).render(labelGroup)
 
-        circleCutoutStrokePaint?.color = Color.parseColor(labelGroup.outlineColor())
+        val outlineColor = labelGroup.outlineColor() ?: ""
+        circleCutoutStrokePaint?.color = safeParseColor(outlineColor, Color.TRANSPARENT)
         invalidate()
     }
 
