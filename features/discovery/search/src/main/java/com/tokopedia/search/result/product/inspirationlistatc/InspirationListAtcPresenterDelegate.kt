@@ -50,12 +50,13 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
             inspirationListAtcView.trackAddToCartVariant(product)
             if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
 
-            inspirationListAtcView.openVariantBottomSheet(product, type)
+            inspirationListAtcView.openVariantBottomSheet(product, type) {
+                getPostAtcCarousel(product, type)
+            }
         } else {
-            executeAtcCommon(product)
+            executeAtcCommon(product, type)
         }
 
-        getPostAtcCarousel(product, type)
     }
 
     private fun isNotPostAtcCarousel(type: String) : Boolean {
@@ -195,12 +196,16 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
 
     private fun executeAtcCommon(
         product: InspirationCarouselDataView.Option.Product,
+        type: String,
     ) {
         val requestParams = product.createAddToCartRequestParams()
 
         addToCartUseCase.setParams(requestParams)
         addToCartUseCase.execute(
-            { onAddToCartUseCaseSuccess(it, product) },
+            {
+                onAddToCartUseCaseSuccess(it, product)
+                getPostAtcCarousel(product, type)
+            },
             ::onAddToCartUseCaseFailed
         )
     }

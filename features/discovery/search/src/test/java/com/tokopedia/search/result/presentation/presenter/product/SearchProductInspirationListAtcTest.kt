@@ -147,7 +147,7 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
     private fun `Then verify variant bottomsheet will show`(clickedProduct: InspirationCarouselDataView.Option.Product) {
         verify {
-            inspirationListAtcView.openVariantBottomSheet(clickedProduct, expectedType)
+            inspirationListAtcView.openVariantBottomSheet(clickedProduct, expectedType, any())
             inspirationListAtcView.trackAddToCartVariant(clickedProduct)
         }
     }
@@ -291,6 +291,7 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         `Given visitable list will be captured`()
         `Given Load Data`()
         `Given viewUpdater itemList return visitableList`()
+        `Given Add to cart is succeed`()
 
         `Given Inspiration Post Atc API will return Inspiration Post Atc Model`(inspirationListPostAtc)
         `Given recyclerViewUpdater post atc list captured`()
@@ -300,7 +301,6 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
             inspirationListAtc.option.product[0]
         `When user click add to cart`(clickedProductAtc)
 
-        `Then verify add to cart API will hit`()
         `Then verify get post atc carousel is executed`(clickedProductAtc)
         `Then verify recyclerview update`()
     }
@@ -312,13 +312,13 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         `Given Dummy Post Atc in List Visitable`()
         `Given Inspiration Post Atc API will return Inspiration Post Atc Model`(inspirationListPostAtc)
         `Given recyclerView refresh post atc list captured`()
+        `Given Add to cart is succeed`()
 
         val inspirationListAtc = `Create List Dummy Atc Carousel`() as InspirationListAtcDataView
         val clickedProductAtc =
             inspirationListAtc.option.product[0]
         `When user click add to cart`(clickedProductAtc)
 
-        `Then verify add to cart API will hit`()
         `Then verify get post atc carousel is executed`(clickedProductAtc)
         `Then verify recyclerview is refresh on InspirationListPostAtcDataView`()
     }
