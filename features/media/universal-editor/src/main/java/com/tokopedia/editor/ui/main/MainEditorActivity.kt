@@ -3,8 +3,6 @@
 
 package com.tokopedia.editor.ui.main
 
-import android.animation.Animator
-import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,20 +13,20 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.editor.R
 import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
-import com.tokopedia.editor.ui.dialog.ConfirmationDialog
 import com.tokopedia.editor.ui.component.AudioStateUiComponent
 import com.tokopedia.editor.ui.component.GlobalLoaderUiComponent
 import com.tokopedia.editor.ui.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.dialog.ConfirmationDialog
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
@@ -37,7 +35,9 @@ import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
-import com.tokopedia.editor.util.safeLoadNativeLibrary
+import com.tokopedia.editor.util.delegate.ScalableCanvasViewDelegate
+import com.tokopedia.editor.util.delegate.ScalableCanvasViewDelegateImpl
+import com.tokopedia.editor.util.lib.SafeNativeLoader
 import com.tokopedia.editor.util.slideDown
 import com.tokopedia.editor.util.slideOriginalPos
 import com.tokopedia.editor.util.slideTop
@@ -67,8 +67,10 @@ import javax.inject.Inject
  *
  * @applink tokopedia-android-internal://global/universal-editor
  */
-open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listener,
-    DynamicTextCanvasLayout.Listener {
+open class MainEditorActivity : AppCompatActivity(),
+    NavToolbarComponent.Listener,
+    DynamicTextCanvasLayout.Listener,
+    ScalableCanvasViewDelegate by ScalableCanvasViewDelegateImpl() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -108,7 +110,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private val audioMuteState by uiComponent { AudioStateUiComponent(it) }
 
     private val inputTextIntent = registerForActivityResult(StartActivityForResult()) {
-        animateSlide(isShow = true) {}
+        animateSlide(isShow = true)
         val result = InputTextActivity.result(it)
         viewModel.onEvent(MainEditorEvent.InputTextResult(result))
     }
@@ -125,7 +127,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        loadNativeLibrary(this)
+        SafeNativeLoader.load(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
@@ -143,8 +145,9 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
-        if (isSplitInstallEnabled() && newBase != null) {
-            loadNativeLibrary(newBase)
+
+        if (newBase != null) {
+            SafeNativeLoader.load(newBase)
         }
     }
 
@@ -184,28 +187,9 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         viewModel.onEvent(MainEditorEvent.SetupView(param))
     }
 
-    private fun loadNativeLibrary(context: Context) {
-        if (isSplitInstallEnabled()) {
-            SplitCompat.installActivity(context)
-
-            safeLoadNativeLibrary(context, "c++_shared")
-
-            // FFMPEG
-            safeLoadNativeLibrary(context, "mobileffmpeg")
-            safeLoadNativeLibrary(context, "mobileffmpeg_abidetect")
-
-            // Common
-            safeLoadNativeLibrary(context, "avutil")
-            safeLoadNativeLibrary(context, "swscale")
-            safeLoadNativeLibrary(context, "swresample")
-            safeLoadNativeLibrary(context, "avcodec")
-            safeLoadNativeLibrary(context, "avformat")
-            safeLoadNativeLibrary(context, "avdevice")
-            safeLoadNativeLibrary(context, "avfilter")
-        }
-    }
-
     private fun initObserver() {
+        scalableCanvasRegister(this, binding?.canvasContainer)
+
         lifecycleScope.launchWhenCreated {
             viewModel.mainEditorState.collect(::initView)
         }
@@ -239,29 +223,24 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                 viewModel.onEvent(MainEditorEvent.DisposeRemainingTasks)
                 finish()
             }
-
             is MainEditorEffect.ShowCloseDialogConfirmation -> {
                 confirmationDialog.show(this@MainEditorActivity) {
                     viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
                 }
             }
-
             is MainEditorEffect.UpdateTextAddedState -> {
                 val hasTextAdded = binding?.container?.hasTextAdded() ?: return
                 viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
             }
-
             is MainEditorEffect.RemoveAudioState -> {
                 navigationTool.setRemoveAudioUiState(effect.isRemoved)
                 audioMuteState.onShowOrHideAudioState(effect.isRemoved)
             }
-
             is MainEditorEffect.OpenPlacementPage -> {
                 animateSlide {
                     navigateToPlacementImagePage(effect.sourcePath, effect.model)
                 }
             }
-
             is MainEditorEffect.UpdatePagerSourcePath -> pagerContainer.updateView(effect.newSourcePath)
             is MainEditorEffect.FinishEditorPage -> navigateBackToPickerAndFinishIntent(effect.filePath)
             is MainEditorEffect.ShowToastErrorMessage -> onShowToastErrorMessage(effect.message)
@@ -274,7 +253,6 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                     navigateToInputTextTool(effect.model)
                 }
             }
-
             is MainEditorEffect.ShowLoading -> globalLoader.showLoading()
             is MainEditorEffect.HideLoading -> globalLoader.hideLoading()
         }
@@ -295,7 +273,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         overridePendingTransition(0, 0)
     }
 
-    private fun animateSlide(isShow: Boolean = false, onFinish: () -> Unit) {
+    private fun animateSlide(isShow: Boolean = false, onFinish: () -> Unit = {}) {
         val animatorSet = AnimatorSet()
 
         if (!isShow) {
@@ -307,14 +285,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         }
 
         animatorSet.apply {
-            addListener(object : AnimatorListener {
-                override fun onAnimationStart(p0: Animator) {}
-                override fun onAnimationCancel(p0: Animator) {}
-                override fun onAnimationRepeat(p0: Animator) {}
-                override fun onAnimationEnd(p0: Animator) {
-                    onFinish()
-                }
-            })
+            doOnEnd { onFinish() }
             duration = UnifyMotion.T4
             start()
         }
@@ -398,18 +369,5 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         ModuleInjector
             .get(this)
             .inject(this)
-    }
-
-    /**
-     * A hansel-able feature toggle.
-     *
-     * If the SplitCompat.install(...) won't work properly,
-     * we are able to disable by patching it through Hansel.
-     *
-     * This temporary method, this LOC will be deleted in
-     * upcoming two versions after this editor got released.
-     */
-    private fun isSplitInstallEnabled(): Boolean {
-        return true
     }
 }

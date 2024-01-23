@@ -85,12 +85,12 @@ class CentralizedPromoComposeViewModel @Inject constructor(
         }
     }
 
-    //Ensure this only called once in the compose, either remember it once or put in lambda
+    // Ensure this only called once in the compose, either remember it once or put in lambda
     fun getKeyRBAC(key: String): Boolean {
         return pref.getBoolean(key, false)
     }
 
-    //Ensure this only called once in the compose, either remember it once or put in lambda
+    // Ensure this only called once in the compose, either remember it once or put in lambda
     fun getCoachmarkSharedPref(pageId: String): Boolean {
         return pref.getBoolean(pageId + CENTRALIZED_PROMO_COACHMARK_KEY, false)
     }
@@ -107,6 +107,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
         _layoutList.update {
             it.copy(
                 selectedTabFilterData = selectedTabFilterData,
+                hasUpdatedFilter = true,
                 promoCreationData = Loading
             )
         }
@@ -239,6 +240,5 @@ class CentralizedPromoComposeViewModel @Inject constructor(
             showToasterState()
             Fail(e, e.message.toString(), false)
         }
-
     }
 }

@@ -490,11 +490,11 @@ class MilestoneViewHolder(
         fun sendMilestoneRewardActionClickedListener(
             reward: MilestoneItemRewardUiModel,
             position: Int
-        )
+        ) {}
 
         fun sendMilestoneRewardImpressionEvent(
             reward: MilestoneItemRewardUiModel,
             position: Int
-        )
+        ) {}
     }
 }

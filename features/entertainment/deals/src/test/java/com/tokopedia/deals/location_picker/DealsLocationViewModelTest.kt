@@ -3,23 +3,21 @@ package com.tokopedia.deals.location_picker
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.deals.DealsJsonMapper
-import com.tokopedia.deals.common.model.response.SearchData
+import com.tokopedia.deals.ui.location_picker.domain.usecase.DealsLandmarkLocationUseCase
+import com.tokopedia.deals.ui.location_picker.domain.usecase.DealsPopularCitiesUseCase
+import com.tokopedia.deals.ui.location_picker.domain.usecase.DealsPopularLocationUseCase
+import com.tokopedia.deals.ui.location_picker.domain.usecase.DealsSearchLocationUseCase
+import com.tokopedia.deals.ui.location_picker.domain.viewmodel.DealsLocationViewModel
+import com.tokopedia.deals.ui.location_picker.model.response.LocationData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.deals.location_picker.domain.usecase.DealsLandmarkLocationUseCase
-import com.tokopedia.deals.location_picker.domain.usecase.DealsPopularCitiesUseCase
-import com.tokopedia.deals.location_picker.domain.usecase.DealsPopularLocationUseCase
-import com.tokopedia.deals.location_picker.domain.usecase.DealsSearchLocationUseCase
-import com.tokopedia.deals.location_picker.domain.viewmodel.DealsLocationViewModel
-import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.location_picker.model.response.LocationData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.verify
-import io.mockk.mockk
 import io.mockk.just
+import io.mockk.mockk
 import io.mockk.runs
+import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -43,16 +41,16 @@ class DealsLocationViewModelTest {
     @Before
     fun setup() {
         viewModel = DealsLocationViewModel(
-                searchLocationUseCase,
-                popularCitiesUseCase,
-                popularLocationUseCase,
-                landmarkLocationUseCase,
-                dispatcher
+            searchLocationUseCase,
+            popularCitiesUseCase,
+            popularLocationUseCase,
+            landmarkLocationUseCase,
+            dispatcher
         )
         mockThrowable = Throwable("Fetch failed")
         mockEventLocationSearch = Gson().fromJson(
-                DealsJsonMapper.getJson("event_location_search.json"),
-                LocationData::class.java
+            DealsJsonMapper.getJson("event_location_search.json"),
+            LocationData::class.java
         )
     }
 
@@ -70,8 +68,8 @@ class DealsLocationViewModelTest {
 
         // then
         assertEquals(
-                mockThrowable,
-                (viewModel.dealsSearchedLocationResponse.value as Fail).throwable
+            mockThrowable,
+            (viewModel.dealsSearchedLocationResponse.value as Fail).throwable
         )
     }
 
@@ -107,8 +105,8 @@ class DealsLocationViewModelTest {
 
         // then
         assertEquals(
-                mockThrowable,
-                (viewModel.dealsLoadMoreSearchedLocationResponse.value as Fail).throwable
+            mockThrowable,
+            (viewModel.dealsLoadMoreSearchedLocationResponse.value as Fail).throwable
         )
     }
 
@@ -212,8 +210,8 @@ class DealsLocationViewModelTest {
 
         // then
         assertEquals(
-                mockThrowable,
-                (viewModel.dealsLoadMorePopularLocationResponse.value as Fail).throwable
+            mockThrowable,
+            (viewModel.dealsLoadMorePopularLocationResponse.value as Fail).throwable
         )
     }
 
@@ -232,7 +230,7 @@ class DealsLocationViewModelTest {
         // then
         val result = viewModel.dealsLoadMorePopularLocationResponse.value
         assert(result is Success)
-        assertEquals(mockEventLocationSearch.eventLocationSearch,(result as Success).data)
+        assertEquals(mockEventLocationSearch.eventLocationSearch, (result as Success).data)
     }
 
     @Test
@@ -249,8 +247,8 @@ class DealsLocationViewModelTest {
 
         // then
         assertEquals(
-                mockThrowable,
-                (viewModel.dealsDataLandmarkLocationResponse.value as Fail).throwable
+            mockThrowable,
+            (viewModel.dealsDataLandmarkLocationResponse.value as Fail).throwable
         )
     }
 
@@ -286,8 +284,8 @@ class DealsLocationViewModelTest {
 
         // then
         assertEquals(
-                mockThrowable,
-                (viewModel.dealsLoadMoreDataLandmarkLocationResponse.value as Fail).throwable
+            mockThrowable,
+            (viewModel.dealsLoadMoreDataLandmarkLocationResponse.value as Fail).throwable
         )
     }
 
@@ -310,7 +308,7 @@ class DealsLocationViewModelTest {
     }
 
     @Test
-    fun onClearedViewModel(){
+    fun onClearedViewModel() {
         every { searchLocationUseCase.cancelJobs() } just runs
         every { popularCitiesUseCase.cancelJobs() } just runs
         every { popularLocationUseCase.cancelJobs() } just runs

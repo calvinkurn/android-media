@@ -165,7 +165,7 @@ class FeedFragment :
                 binding.rvFeedPost,
                 trackerModelMapper,
                 feedFollowRecommendationListener,
-                dispatchers,
+                dispatchers
             )
         ) {
             if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
@@ -854,7 +854,6 @@ class FeedFragment :
         model: FeedCardVideoContentModel,
         trackerModel: FeedTrackerDataModel
     ) {
-        feedAnalytics?.eventWatchVideoPost(trackerModel)
         feedPostViewModel.trackVisitChannel(model)
         feedPostViewModel.trackChannelPerformance(model)
     }
@@ -898,6 +897,7 @@ class FeedFragment :
         positionInFeed: Int
     ) {
         trackerModel?.let {
+            feedAnalytics?.eventWatchVideoPost(trackerModel)
             feedAnalytics?.eventPostImpression(
                 it,
                 activityId,
