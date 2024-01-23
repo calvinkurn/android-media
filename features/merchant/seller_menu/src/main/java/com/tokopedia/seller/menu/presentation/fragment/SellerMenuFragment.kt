@@ -50,6 +50,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
 
 class SellerMenuFragment :
     Fragment(),
@@ -213,7 +214,7 @@ class SellerMenuFragment :
                 }
                 is Fail -> {
                     if (canShowErrorToaster) {
-                        view?.showToasterError(activity?.resources?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message).orEmpty())
+                        view?.showToasterError(activity?.resources?.getString(sellermenucommonR.string.setting_toaster_error_message).orEmpty())
                     }
                     adapter.showShopInfoError()
                     ShopScoreReputationErrorLogger.logToCrashlytic(
@@ -261,7 +262,7 @@ class SellerMenuFragment :
                     val order = it.data.order
                     adapter.showOrderSection(order)
                     adapter.showNotificationCounter(notificationCount = it.data.resolutionCount, matcher = { item ->
-                        item is SellerMenuItemUiModel && item.title == getString(com.tokopedia.seller.menu.common.R.string.setting_menu_complaint)
+                        item is SellerMenuItemUiModel && item.title == getString(sellermenucommonR.string.setting_menu_complaint)
                     })
                 }
                 else -> {
@@ -293,7 +294,10 @@ class SellerMenuFragment :
             }
             is SettingError -> {
                 if (canShowErrorToaster) {
-                    view?.showToasterError(resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message))
+                    view?.showToasterError(
+                        activity?.resources?.getString(sellermenucommonR.string.setting_toaster_error_message)
+                            .orEmpty()
+                    )
                 }
                 adapter.showShopInfoError()
             }
@@ -326,7 +330,7 @@ class SellerMenuFragment :
             errorMessage,
             Snackbar.LENGTH_LONG,
             Toaster.TYPE_ERROR,
-            resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
+            resources.getString(sellermenucommonR.string.setting_toaster_error_retry),
             View.OnClickListener {
                 retryFetchAfterError()
             }
