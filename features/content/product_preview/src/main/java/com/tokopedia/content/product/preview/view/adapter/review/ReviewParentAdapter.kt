@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentLoadingBinding
-import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentLoadingViewHolder
 
@@ -75,7 +75,7 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
     }
 
     sealed interface Payload {
-        data class Like(val state: LikeUiState) : Payload
+        data class Like(val state: ReviewLikeUiState) : Payload
     }
 }
 

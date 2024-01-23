@@ -6,11 +6,11 @@ import com.tokopedia.content.product.preview.data.response.GetMiniProductInfoRes
 import com.tokopedia.content.product.preview.data.response.LikeReviewResponse
 import com.tokopedia.content.product.preview.data.response.MediaReviewResponse
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.AuthorUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.DescriptionUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.review.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewDescriptionUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,20 +26,20 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             ReviewContentUiModel(
                 reviewId = it.feedbackId,
                 medias = emptyList(), // TODO: map and sew it later,
-                menus = MenuStatus(isReportable = it.isReportable && !isOwner(it.user)),
-                likeState = LikeUiState(
+                menus = ReviewMenuStatus(isReportable = it.isReportable && !isOwner(it.user)),
+                likeState = ReviewLikeUiState(
                     count = it.likeStats.totalLike,
-                    state = LikeUiState.LikeStatus.getByValue(it.likeStats.likeStatus),
+                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(it.likeStats.likeStatus),
                     withAnimation = false
                 ),
-                author = AuthorUiModel(
+                author = ReviewAuthorUiModel(
                     name = it.user.fullName,
                     type = it.user.label,
                     id = it.user.userId,
                     avatarUrl = it.user.image,
                     appLink = it.user.url
                 ),
-                description = DescriptionUiModel(
+                description = ReviewDescriptionUiModel(
                     stars = it.rating,
                     productType = Uri.decode(it.variantName),
                     timestamp = it.createTimestamp,
@@ -92,8 +92,8 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             message = response.wishlistAdd.message
         )
 
-    fun mapLike(response: LikeReviewResponse): LikeUiState = LikeUiState(
+    fun mapLike(response: LikeReviewResponse): ReviewLikeUiState = ReviewLikeUiState(
         count = response.data.totalLike,
-        state = LikeUiState.LikeStatus.getByValue(response.data.likeStatus)
+        state = ReviewLikeUiState.ReviewLikeStatus.getByValue(response.data.likeStatus)
     )
 }

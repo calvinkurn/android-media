@@ -14,25 +14,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.content.product.preview.R
-import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.compose.NestRadioButton
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by astidhiyaa on 28/11/23
  */
 @Composable
-fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit = {}) {
+fun ReportScreen(reports: List<ReviewReportUiModel>, onSubmit: (ReviewReportUiModel) -> Unit = {}) {
     var reason by remember { mutableStateOf("") }
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(ReportUiModel.Empty) }
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(ReviewReportUiModel.Empty) }
     NestTheme {
         Column(
             modifier = Modifier
@@ -43,7 +41,7 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
             NestTypography(
                 text = stringResource(R.string.review_report_header),
                 textStyle = NestTheme.typography.paragraph2.copy(
-                    color = NestTheme.colors.NN._950,
+                    color = NestTheme.colors.NN._950
                 )
             )
             LazyColumn(modifier = Modifier.padding(vertical = 12.dp)) {
@@ -57,9 +55,9 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
                     )
                 }
             }
-            val isOtherReason = selectedOption.reasonCode == 3 //Reason code for other reason is 3.
+            val isOtherReason = selectedOption.reasonCode == 3 // Reason code for other reason is 3.
 
-            //enable when option 3 is clicked
+            // enable when option 3 is clicked
             TextField(
                 value = reason,
                 onValueChange = { reason = it },
@@ -74,7 +72,7 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
                 onClick = {
                     onSubmit(selectedOption.copy(text = if (isOtherReason) reason else selectedOption.text))
                 },
-                isEnabled = selectedOption != ReportUiModel.Empty,
+                isEnabled = selectedOption != ReviewReportUiModel.Empty,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -85,6 +83,6 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
 @Composable
 fun MyApp() {
     ReportScreen(
-        reports = emptyList(),
+        reports = emptyList()
     )
 }
