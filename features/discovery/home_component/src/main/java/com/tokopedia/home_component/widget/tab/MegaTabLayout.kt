@@ -2,21 +2,15 @@ package com.tokopedia.home_component.widget.tab
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
-import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.home_component.R
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -32,7 +26,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * Please read this technical usage for more detail below.
  *
  * Sample Usage:
- * <com.tokopedia.home_component.widget.tab.RecommendationMegaTabLayout
+ * <com.tokopedia.home_component.widget.tab.MegaTabLayout
  *    android:id="@+id/tab_recommendation"
  *    android:layout_width="match_parent"
  *    android:layout_height="wrap_content"
@@ -79,7 +73,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * @author: Home
  * @since: January, 2024
  */
-class RecommendationMegaTabLayout @JvmOverloads constructor(
+class MegaTabLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : TabLayout(context, attrs) {
@@ -131,37 +125,12 @@ class RecommendationMegaTabLayout @JvmOverloads constructor(
     }
 
     private fun createTabView(tab: Tab, item: MegaTabItem, position: Int): View {
-        val rootView = LayoutInflater.from(context).inflate(R.layout.tab_mega_recommendation, null)
-
-        val title = rootView.findViewById<Typography>(R.id.txt_title)
-        val shimmer = rootView.findViewById<LoaderUnify>(R.id.loader_shimmering)
-        val image = rootView.findViewById<ImageView>(R.id.img_icon)
-
-        // set tab title
-        title.text = item.title
-
-        // inactive color state by default
-        title.setTextColor(ContextCompat.getColor(context, INACTIVE_STATE_COLOR))
+        val rootView = com.tokopedia.home_component.widget.tab.TabView(context)
+        rootView.createTabView(item)
 
         if (position < tabCount - 1) {
             val paddingEnd = resources.getDimensionPixelOffset(R.dimen.home_recommendation_mega_tab_padding)
             rootView.setPadding(rootView.paddingLeft, rootView.paddingTop, paddingEnd, rootView.paddingBottom)
-        }
-
-        if (item.imageUrl.isNotEmpty()) {
-            shimmer.show(); image.show()
-            image.loadImageWithoutPlaceholder(item.imageUrl) {
-                setSignatureKey(ObjectKey(System.currentTimeMillis())) // temporary for debug
-                listener(
-                    onSuccess = { _, _ -> shimmer.hide() },
-                    onError = { _ ->
-                        image.hide()
-                        title.show()
-                    }
-                )
-            }
-        } else {
-            title.show()
         }
 
         rootView.setOnClickListener { selectTab(tab) }

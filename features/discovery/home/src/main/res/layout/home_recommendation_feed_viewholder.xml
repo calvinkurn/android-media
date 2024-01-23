@@ -30,7 +30,7 @@
         app:tabRippleColor="@null"
         tools:visibility="visible"/>
 
-    <com.tokopedia.home_component.widget.tab.RecommendationMegaTabLayout
+    <com.tokopedia.home_component.widget.tab.MegaTabLayout
         android:id="@+id/tab_recommendation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
