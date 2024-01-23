@@ -31,7 +31,6 @@ import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
 import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -164,30 +163,33 @@ class WishlistCollectionViewModel @Inject constructor(
     fun loadRecommendation(page: Int) {
         if (!hasNextRecommendation) return
         WishlistIdlingResource.increment()
-        val listData = arrayListOf<WishlistCollectionTypeLayoutData>()
-        launch {
-            try {
-                val recommItems = getRecommendationWishlistV2(
-                    page,
-                    listOf(),
-                    recommSrc
+        launchCatchError(
+            block = {
+                val recommendationItems = getRecommendationWishlistV2(
+                    page = page,
+                    productIds = emptyList(),
+                    pageName = recommSrc
                 )
-                recommItems.recommendationProductCardModelData.forEach { item ->
-                    listData.add(
+                val wishlistRecommendationLayoutData = recommendationItems
+                    .recommendationProductCardModelData.mapIndexed { index, productCardModel ->
+                        val productId = recommendationItems.listRecommendationItem[index].productId
                         WishlistCollectionTypeLayoutData(
-                            "${WishlistConsts.TYPE_RECOMMENDATION_LIST}_${item.productName}",
-                            item,
-                            WishlistConsts.TYPE_RECOMMENDATION_LIST
+                            id = "${WishlistConsts.TYPE_RECOMMENDATION_LIST}_$productId",
+                            dataObject = productCardModel,
+                            typeLayout = WishlistConsts.TYPE_RECOMMENDATION_LIST,
+                            recommItem = recommendationItems.listRecommendationItem[index]
                         )
-                    )
-                }
-                _collectionData.value = WishlistCollectionState.Update(listData)
+                    }
+                _collectionData.value =
+                    WishlistCollectionState.Update(wishlistRecommendationLayoutData)
                 WishlistIdlingResource.decrement()
-            } catch (e: Exception) {
-                Timber.d(e)
+            },
+            onError = {
+                Timber.d(it)
+                _collectionData.value = WishlistCollectionState.Error(it)
                 WishlistIdlingResource.decrement()
             }
-        }
+        )
     }
 
     fun getDeleteWishlistProgress() {
