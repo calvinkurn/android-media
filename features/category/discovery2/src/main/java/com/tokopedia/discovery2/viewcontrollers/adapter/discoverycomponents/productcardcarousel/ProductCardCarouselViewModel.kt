@@ -25,7 +25,7 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
