@@ -33,7 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_2"
-        app:typographyWeight="bold"
         tools:text="Tab text"
         tools:textColor="@color/Unify_NN950_68" />
 
