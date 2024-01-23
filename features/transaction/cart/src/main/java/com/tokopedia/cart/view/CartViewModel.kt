@@ -31,6 +31,7 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.mapper.CartShopGroupTickerGroupMetadataRequestMapper
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.processor.CartCalculator
@@ -2307,7 +2308,8 @@ class CartViewModel @Inject constructor(
                         .build(),
                     enableBoAffordability = cartGroupHolderData.cartShopGroupTicker.enableBoAffordability,
                     enableBundleCrossSell = cartGroupHolderData.cartShopGroupTicker.enableBundleCrossSell,
-                    isTokoNow = cartGroupHolderData.isTokoNow
+                    isTokoNow = cartGroupHolderData.isTokoNow,
+                    groupMetadata = CartShopGroupTickerGroupMetadataRequestMapper.generateGroupMetadata(cartGroupHolderData)
                 )
                 val response = cartShopGroupTickerAggregatorUseCase(cartAggregatorParam)
                     .cartShopGroupTickerAggregator.data
