@@ -48,8 +48,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardCarouselItem.componentName),
     ProductCardCarouselItemList(R.layout.master_product_card_item_list_layout, ComponentNames.ProductCardCarouselItemList.componentName),
     //Reimagine
-    ProductCardCarouselItemReimagine(R.layout.master_product_card_item_layout_reimagine, ComponentNames.ProductCardCarouselItemReimagine.componentName),
-    ProductCardCarouselItemListReimagine(R.layout.master_product_card_item_list_layout_reimagine, ComponentNames.ProductCardCarouselItemListReimagine.componentName),
+    ProductCardCarouselItemReimagine(R.layout.master_product_card_carousel_item_layout_reimagine, ComponentNames.ProductCardCarouselItemReimagine.componentName),
+    ProductCardCarouselItemListReimagine(R.layout.master_product_card_carousel_item_list_layout_reimagine, ComponentNames.ProductCardCarouselItemListReimagine.componentName),
 
 
     // Product Card Sprint Sale
@@ -62,7 +62,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardSprintSaleCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardSprintSaleCarousel.componentName),
     ProductCardSprintSaleCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardSprintSaleCarouselItem.componentName),
     //Reimagine
-    ProductCardSprintSaleCarouselItemReimagine(R.layout.master_product_card_item_layout_reimagine, ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName),
+    ProductCardSprintSaleCarouselItemReimagine(R.layout.master_product_card_carousel_item_layout_reimagine, ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName),
 
 
     ProductListEmptyState(R.layout.product_list_state, ComponentNames.ProductListEmptyState.componentName),

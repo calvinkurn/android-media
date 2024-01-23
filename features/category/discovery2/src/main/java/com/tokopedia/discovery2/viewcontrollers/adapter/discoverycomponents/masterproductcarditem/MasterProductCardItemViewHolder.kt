@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
@@ -49,7 +50,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var buttonNotify: UnifyButton? = null
     private var lastClickTime = 0L
     private var interval: Int = 500
-    private var isFulFillment: Boolean = false
+    private var isFullFilment: Boolean = false
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
@@ -285,16 +286,18 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         if (masterProductCardItemViewModel?.getProductCardType().equals(
                 "v2_no_background",
                 true
-            ) && !(productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName)
+            ) && productCardName != ComponentNames.ShopOfferHeroBrandProductItem.componentName
         ) {
-            productCardViewReimagined?.setBackgroundColor(Color.TRANSPARENT)
+            productCardViewReimagined?.setCardUnifyBackgroundColor(Color.TRANSPARENT)
+        }else{
+            productCardViewReimagined?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN0))
         }
     }
 
     private fun checkProductIsFulfillment(productCardModel: ProductCardModel) {
         productCardModel.labelGroupList.forEach {
             if (it.position == IS_FULFILLMENT) {
-                isFulFillment = true
+                isFullFilment = true
             }
         }
     }
@@ -383,7 +386,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 .trackProductCardClick(
                     it.components,
                     it.isUserLoggedIn(),
-                    isFulFillment,
+                    isFullFilment,
                     dataItem?.warehouseId ?: 0
                 )
         }
@@ -397,7 +400,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 .viewProductsList(
                     it.components,
                     it.isUserLoggedIn(),
-                    isFulFillment,
+                    isFullFilment,
                     dataItem?.warehouseId ?: 0
                 )
         }
