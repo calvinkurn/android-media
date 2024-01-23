@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.component.Menus;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.common.ImageEditorBuilder;
@@ -465,21 +464,26 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         if (position == 0) {
             return;
         }
-        Menus menus = new Menus(this);
-        menus.setItemMenuList(new String[]{getString(R.string.change_to_primary)});
-        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
-            @Override
-            public void onClick(Menus.ItemMenus itemMenus, int pos) {
-                int toPosition = 0;
-                //move the image path to 0
-                imagePickerPreviewWidget.reorderPosition(position, toPosition);
+        showBottomSheetMenu(position);
+    }
 
-                String imageDescription = imageDescriptionList.remove(position);
-                imageDescriptionList.add(toPosition, imageDescription);
-                menus.dismiss();
-            }
+    private void showBottomSheetMenu(int position) {
+        ArrayList<String> list = new ArrayList<>();
+        list.add(getString(R.string.change_to_primary));
+        ImagePickerMenuBottomSheet imagePickerMenuBottomSheet = ImagePickerMenuBottomSheet.newInstance(
+                list
+        );
+        imagePickerMenuBottomSheet.setOnItemClickListener(() -> {
+            int toPosition = 0;
+            //move the image path to 0
+            imagePickerPreviewWidget.reorderPosition(position, toPosition);
+
+            String imageDescription = imageDescriptionList.remove(position);
+            imageDescriptionList.add(toPosition, imageDescription);
+            imagePickerMenuBottomSheet.dismiss();
+            return null;
         });
-        menus.show();
+        imagePickerMenuBottomSheet.show(getSupportFragmentManager(), "menu");
     }
 
     @Override
