@@ -130,7 +130,9 @@ class ReviewFragment @Inject constructor(
     private fun setupView() {
         binding.rvReview.adapter = reviewAdapter
         snapHelper.attachToRecyclerView(binding.rvReview)
+        binding.rvReview.removeOnScrollListener(scrollListener)
         binding.rvReview.addOnScrollListener(scrollListener)
+        binding.rvReview.itemAnimator = null
     }
 
     private fun observeReview() {

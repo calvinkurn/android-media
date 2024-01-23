@@ -10,9 +10,9 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiMo
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewMediaImageViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewMediaVideoViewHolder
 
-class ReviewContentAdapter(
+class ReviewMediaAdapter(
     private val productPreviewVideoListener: ProductPreviewVideoListener
-) : ListAdapter<ReviewMediaUiModel, ViewHolder>(ReviewContentAdapterCallback()) {
+) : ListAdapter<ReviewMediaUiModel, ViewHolder>(ReviewMediaAdapterCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
@@ -37,7 +37,7 @@ class ReviewContentAdapter(
         }
     }
 
-    internal class ReviewContentAdapterCallback : DiffUtil.ItemCallback<ReviewMediaUiModel>() {
+    internal class ReviewMediaAdapterCallback : DiffUtil.ItemCallback<ReviewMediaUiModel>() {
         override fun areItemsTheSame(
             oldItem: ReviewMediaUiModel,
             newItem: ReviewMediaUiModel

@@ -326,16 +326,21 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun handleReviewMediaSelected(position: Int) {
         _reviewContentState.update {
-            it.copy(reviewContent = it.reviewContent.mapIndexed { indexContent, reviewContent ->
-                if (indexContent != _reviewPosition.value) reviewContent
-                reviewContent.copy(
-                    medias = reviewContent.medias.mapIndexed { indexMedia, reviewMedia ->
-                        reviewMedia.copy(
-                            selected = indexMedia == position
+            it.copy(
+                reviewContent = it.reviewContent.mapIndexed { indexContent, reviewContent ->
+                    if (indexContent == _reviewPosition.value) {
+                        reviewContent.copy(
+                            medias = reviewContent.medias.mapIndexed { indexMedia, reviewMedia ->
+                                reviewMedia.copy(
+                                    selected = indexMedia == position
+                                )
+                            }
                         )
-                    })
-            })
+                    } else {
+                        reviewContent
+                    }
+                }
+            )
         }
     }
-
 }
