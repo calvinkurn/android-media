@@ -9,12 +9,12 @@ import javax.inject.Inject
 
 class GetTopAdsAutoAdsUseCase @Inject constructor(
     repository: GraphqlRepository,
-) : GraphqlUseCase<AutoAdsResponse.TopAdsGetAutoAds>(repository) {
+) : GraphqlUseCase<AutoAdsResponse>(repository) {
 
 
     init {
         setGraphqlQuery(GetAutoAdsV2)
-        setTypeClass(AutoAdsResponse.TopAdsGetAutoAds::class.java)
+        setTypeClass(AutoAdsResponse::class.java)
     }
 
     suspend fun execute(shopId: String): AutoAdsResponse.TopAdsGetAutoAds.Data {
@@ -24,7 +24,7 @@ class GetTopAdsAutoAdsUseCase @Inject constructor(
             ).parameters
         )
 
-        return executeOnBackground().data
+        return executeOnBackground().topAdsGetAutoAds.data
     }
 
     fun createRequestParams(shopId: String): RequestParams {
