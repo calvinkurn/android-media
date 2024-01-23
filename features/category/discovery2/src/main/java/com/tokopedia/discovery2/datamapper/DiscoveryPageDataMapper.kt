@@ -225,9 +225,17 @@ class DiscoveryPageDataMapper(
             }
 
             ComponentNames.ProductCardSingle.componentName -> {
-                if (!shouldHideSingleProdCard) {
-                    addRecomQueryProdID(component)
-                    listComponents.add(component)
+                if (component.properties?.cardType.equals("V1", true)) {
+                    if (!shouldHideSingleProdCard) {
+                        addRecomQueryProdID(component)
+                        listComponents.add(component)
+                    }
+                } else {
+                    if (!shouldHideSingleProdCard) {
+                        component.name = ComponentNames.ProductCardSingleReimagine.componentName
+                        addRecomQueryProdID(component)
+                        listComponents.add(component)
+                    }
                 }
             }
 

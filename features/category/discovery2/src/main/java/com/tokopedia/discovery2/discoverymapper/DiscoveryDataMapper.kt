@@ -300,7 +300,10 @@ class DiscoveryDataMapper {
         if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName ||
             componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
             componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName ||
-            componentName == ComponentNames.ProductCardSprintSale.componentName
+            componentName == ComponentNames.ProductCardSprintSale.componentName ||
+            componentName == ComponentNames.ProductCardSprintSaleItemReimagine.componentName ||
+            componentName == ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName
+
         ) {
             productName = dataItem.title ?: ""
             slashedPrice = setSlashPrice(dataItem.discountedPrice, dataItem.price)
