@@ -2,7 +2,6 @@ package com.tokopedia.content.product.preview.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
@@ -72,18 +71,8 @@ class ProductPreviewActivity : BaseActivity() {
         return ProductPreviewFragment.getOrCreate(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
-            bundle = Bundle().apply {
-                putParcelable(PRODUCT_DATA, getProductData())
-            }
+            bundle = intent.extras
         )
-    }
-
-    private fun getProductData(): ProductUiModel? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.extras?.getParcelable(PRODUCT_DATA, ProductUiModel::class.java)
-        } else {
-            intent.extras?.getParcelable(PRODUCT_DATA)
-        }
     }
 
     companion object {
