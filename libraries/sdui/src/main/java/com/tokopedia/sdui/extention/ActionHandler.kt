@@ -2,6 +2,7 @@ package com.tokopedia.sdui.extention
 
 import android.content.Context
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.sdui.interfaces.SDUITrackingInterface
 import com.tokopedia.sdui.utils.DivActionUtils
 import com.tokopedia.track.TrackApp
 import com.yandex.div.core.DivActionHandler
@@ -13,7 +14,8 @@ import com.yandex.div2.DivVisibilityAction
 import java.net.URI
 
 
-class ActionHandler(private val contextDivAction: Context?): DivActionHandler() {
+class ActionHandler(private val contextDivAction: Context?,
+                    private val sduiTrackingInterface: SDUITrackingInterface? = null): DivActionHandler() {
 
     object APPLINK {
         const val HOST_ROUTE = "route"
@@ -24,7 +26,11 @@ class ActionHandler(private val contextDivAction: Context?): DivActionHandler() 
     }
     override fun handleAction(action: DivAction, view: DivViewFacade): Boolean {
         RouteManager.route(contextDivAction, getApplink(parseClickActionUrl(action.url?.rawValue.toString())))
-        sendTracker(action.payload)
+        if(sduiTrackingInterface != null) {
+            sduiTrackingInterface.onViewClick(action.payload)
+        }else {
+            sendTracker(action.payload)
+        }
         return super.handleAction(action, view)
     }
 
@@ -39,7 +45,11 @@ class ActionHandler(private val contextDivAction: Context?): DivActionHandler() 
 
     override fun handleAction(action: DivSightAction, view: DivViewFacade): Boolean {
         //Send impression tracker
-        sendTracker(action.payload)
+        if(sduiTrackingInterface != null) {
+            sduiTrackingInterface.onViewVisible(action.payload)
+        }else {
+            sendTracker(action.payload)
+        }
         return super.handleAction(action, view)
     }
 

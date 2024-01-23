@@ -6,7 +6,8 @@ import org.json.JSONObject
 import org.json.JSONArray
 
 interface SDUIinterface {
-    fun initSDUI(context: Context)
+    fun initSDUI(context: Context,
+                 sduiTrackingInterface: SDUITrackingInterface? = null)
     fun createView(context: Context, templateJson: JSONObject,
                    viewType:String = "divKit", cardsJsonObject: JSONObject) : View?
     fun createView(

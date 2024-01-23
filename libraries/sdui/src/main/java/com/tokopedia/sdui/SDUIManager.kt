@@ -8,6 +8,7 @@ import com.tokopedia.sdui.extention.ActionHandler
 import com.tokopedia.sdui.extention.GlideDivImageLoader
 import com.tokopedia.sdui.extention.HTMLHandler
 import com.tokopedia.sdui.extention.TypeFaceProvider
+import com.tokopedia.sdui.interfaces.SDUITrackingInterface
 import com.tokopedia.sdui.interfaces.SDUIinterface
 import com.yandex.div.DivDataTag
 import com.yandex.div.core.Div2Context
@@ -25,19 +26,22 @@ class SDUIManager : SDUIinterface {
     private var divContext: Div2Context? = null
     private var context: Context? = null
     private var parsingEnvironment: DivParsingEnvironment? = null
-    override fun initSDUI(context: Context) {
+    override fun initSDUI(context: Context,
+                          sduiTrackingInterface: SDUITrackingInterface?) {
         this.context = context
         initDivKit(context)
     }
 
-    private fun initDivKit(context: Context) {
+    private fun initDivKit(context: Context,
+                           sduiTrackingInterface: SDUITrackingInterface? = null) {
         divContext = Div2Context(baseContext = context as ContextThemeWrapper,
-            configuration = createDivConfiguration(context))
+            configuration = createDivConfiguration(context, sduiTrackingInterface))
     }
 
-    private fun createDivConfiguration(context: Context): DivConfiguration {
+    private fun createDivConfiguration(context: Context,
+                                       sduiTrackingInterface: SDUITrackingInterface? = null): DivConfiguration {
         return DivConfiguration.Builder(GlideDivImageLoader(context))
-            .actionHandler(ActionHandler(context))
+            .actionHandler(ActionHandler(context, sduiTrackingInterface))
             .extension(DivLottieExtensionHandler())
             .extension(HTMLHandler())
             .enableViewPool(false)
