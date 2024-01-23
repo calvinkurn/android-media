@@ -598,7 +598,7 @@ class LottieBottomNavbar : LinearLayout {
                 getOldAnimationName(bottomMenu)
             } else {
                 if (selectedItem == Int.ZERO) {
-                    bottomMenu.homeForYou?.animThumbIdleName
+                    bottomMenu.homeForYou?.idleAnimName
                 } else {
                     getOldAnimationName(bottomMenu)
                 }
@@ -611,12 +611,12 @@ class LottieBottomNavbar : LinearLayout {
     private fun getIconTitle(index: Int, bottomMenu: BottomMenu): String? {
         return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
-                bottomMenu.homeForYou?.homeTitle
+                bottomMenu.homeForYou?.initialTitle
             } else {
                 if (selectedItem == Int.ZERO) {
-                    bottomMenu.homeForYou?.forYouTitle
+                    bottomMenu.homeForYou?.jumperTitle
                 } else {
-                    bottomMenu.homeForYou?.homeTitle
+                    bottomMenu.homeForYou?.initialTitle
                 }
             }
         } else {
@@ -630,7 +630,7 @@ class LottieBottomNavbar : LinearLayout {
                 getOldAnimationToEnabledName(bottomMenu)
             } else {
                 if (selectedItem == Int.ZERO) {
-                    bottomMenu.homeForYou?.animThumbIdleName
+                    bottomMenu.homeForYou?.idleAnimName
                 } else {
                     getOldAnimationToEnabledName(bottomMenu)
                 }
@@ -643,9 +643,9 @@ class LottieBottomNavbar : LinearLayout {
     private fun getNewImageName(index: Int, bottomMenu: BottomMenu): Int? {
         return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
-                bottomMenu.homeForYou?.homeImageName
+                bottomMenu.homeForYou?.initialImageName
             } else {
-                bottomMenu.homeForYou?.forYouImageName
+                bottomMenu.homeForYou?.jumperImageName
             }
         } else {
             getOldImageName(bottomMenu)
@@ -702,9 +702,9 @@ class LottieBottomNavbar : LinearLayout {
 
             // update title based on home header or for you section
             titleList[position].text = if (isForYouToHomeSelected) {
-                menu[position].homeForYou?.homeTitle.orEmpty()
+                menu[position].homeForYou?.initialTitle.orEmpty()
             } else {
-                menu[position].homeForYou?.forYouTitle.orEmpty()
+                menu[position].homeForYou?.jumperTitle.orEmpty()
             }
             titleList[position].invalidate()
 
@@ -726,9 +726,9 @@ class LottieBottomNavbar : LinearLayout {
 
             // update animation based on home header or for you section
             val animTransitionName = if (isForYouToHomeSelected) {
-                menu[position].homeForYou?.animThumbToHomeName
+                menu[position].homeForYou?.jumperToInitialAnimName
             } else {
-                menu[position].homeForYou?.animHomeToThumbName
+                menu[position].homeForYou?.initialToJumperAnimName
             }
 
             animTransitionName?.let {
@@ -834,7 +834,7 @@ class LottieBottomNavbar : LinearLayout {
         val isNewForYouState = isForYouSelectedByPosition(newPosition)
 
         if (isNewForYouState) {
-            menu[newPosition].homeForYou?.animThumbIdleName?.let { thumbIdle ->
+            menu[newPosition].homeForYou?.idleAnimName?.let { thumbIdle ->
                 newSelectedItem.setAnimation(thumbIdle)
                 newSelectedItem.speed = menu[newPosition].animSpeed
             }
@@ -860,13 +860,13 @@ class LottieBottomNavbar : LinearLayout {
             val iconTitle = when {
                 newPosition == Int.ZERO -> {
                     if (isForYouToHomeSelected) {
-                        menu.getOrNull(newPosition)?.homeForYou?.homeTitle
+                        menu.getOrNull(newPosition)?.homeForYou?.initialTitle
                     } else {
-                        menu.getOrNull(newPosition)?.homeForYou?.forYouTitle
+                        menu.getOrNull(newPosition)?.homeForYou?.jumperTitle
                     }
                 }
 
-                selectedItem == Int.ZERO -> menu.getOrNull(selectedItem.orZero())?.homeForYou?.homeTitle
+                selectedItem == Int.ZERO -> menu.getOrNull(selectedItem.orZero())?.homeForYou?.initialTitle
                 else -> return
             }
 
@@ -951,7 +951,7 @@ class LottieBottomNavbar : LinearLayout {
 data class BottomMenu(
     val id: Int,
     val title: String,
-    val homeForYou: HomeForYouMenu? = null,
+    val homeForYou: IconJumper? = null,
     val animName: Int? = null,
     val animToEnabledName: Int? = null,
     val animDarkName: Int? = null,
@@ -964,15 +964,14 @@ data class BottomMenu(
     val animToEnabledSpeed: Float = 1f
 )
 
-data class HomeForYouMenu(
-    val homeTitle: String,
-    val forYouTitle: String,
-    val homeImageName: Int? = null,
-    val forYouImageName: Int? = null,
-    val animHomeName: Int? = null,
-    val animThumbIdleName: Int? = null,
-    val animHomeToThumbName: Int? = null,
-    val animThumbToHomeName: Int? = null
+data class IconJumper(
+    val initialTitle: String,
+    val jumperTitle: String,
+    val initialImageName: Int? = null,
+    val jumperImageName: Int? = null,
+    val initialToJumperAnimName: Int? = null,
+    val idleAnimName: Int? = null,
+    val jumperToInitialAnimName: Int? = null
 )
 
 interface IBottomClickListener {
