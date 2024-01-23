@@ -125,7 +125,8 @@ class CheckoutAdapter(
                         inflater,
                         parent,
                         false
-                    )
+                    ),
+                    listener
                 )
             }
 
