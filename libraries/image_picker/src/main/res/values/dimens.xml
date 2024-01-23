@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="image_picker_dp_1">1dp</dimen>
+
     <dimen name="image_picker_tab_min_width">50dp</dimen>
     <dimen name="image_picker_thumbnail_inner_width">72dp</dimen>
     <dimen name="image_picker_thumbnail_outer_width">80dp</dimen>

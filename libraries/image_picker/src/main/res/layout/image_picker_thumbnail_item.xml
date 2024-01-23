@@ -64,7 +64,7 @@
         android:layout_height="24dp"
         android:layout_gravity="top|end"
         android:background="@drawable/circle_light_grey"
-        app:srcCompat="@drawable/ic_close_white"
+        app:srcCompat="@drawable/image_picker_ic_close_white"
         android:padding="2dp"/>
 </FrameLayout>
 

@@ -14,7 +14,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.common.GalleryType
 import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
@@ -31,6 +31,7 @@ import com.tokopedia.imagepicker.videorecorder.utils.show
 import kotlinx.android.synthetic.main.activity_video_picker.*
 import java.io.File
 import java.util.*
+import com.tokopedia.imagepicker.common.R as imagepickercommonR
 
 /**
  * Created by isfaaghyth on 04/03/19.
@@ -235,17 +236,17 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         val isImageExist = intent?.getBooleanExtra(IMAGE_EXIST, false)?: false
 
         if (isImageExist) {
-            val dialog = Dialog(this, Dialog.Type.PROMINANCE)
+            val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.ip_title_update_post))
-            dialog.setDesc(
+            dialog.setDescription(
                     getString(R.string.ip_message_update_choosen_video))
-            dialog.setBtnCancel(getString(R.string.ip_label_cancel))
-            dialog.setBtnOk(getString(com.tokopedia.imagepicker.common.R.string.ip_continue))
-            dialog.setOnOkClickListener{
+            dialog.setSecondaryCTAText(getString(R.string.ip_label_cancel))
+            dialog.setPrimaryCTAText(getString(imagepickercommonR.string.ip_continue))
+            dialog.setPrimaryCTAClickListener{
                 dialog.dismiss()
                 onFinishPicked(videoPath)
             }
-            dialog.setOnCancelClickListener{
+            dialog.setSecondaryCTAClickListener{
                 dialog.dismiss()
             }
             dialog.setCancelable(true)
