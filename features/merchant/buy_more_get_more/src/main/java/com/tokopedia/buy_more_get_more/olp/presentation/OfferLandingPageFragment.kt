@@ -62,6 +62,7 @@ import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
@@ -239,26 +240,26 @@ class OfferLandingPageFragment :
 
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
-            when (offerInfoForBuyer.responseHeader.status) {
-                Status.SUCCESS -> {
+            when (offerInfoForBuyer) {
+                is Success -> {
                     if(!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
-                        viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.nearestWarehouseIds))
-                        viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.offerings.firstOrNull()?.shopData))
-                        viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
-                        viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
-                        viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.offerings.firstOrNull()?.endDate.orEmpty()))
-                        viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.offerings.firstOrNull()?.offerTypeId.orZero()))
-                        setupHeader(offerInfoForBuyer)
+                        viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.data.nearestWarehouseIds))
+                        viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.data.offerings.firstOrNull()?.shopData))
+                        viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.data.offeringJsonData))
+                        viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.data.offerings.firstOrNull()?.tnc.orEmpty()))
+                        viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.data.offerings.firstOrNull()?.endDate.orEmpty()))
+                        viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.data.offerings.firstOrNull()?.offerTypeId.orZero()))
+                        setupHeader(offerInfoForBuyer.data)
                         setupTncBottomSheet()
                         fetchMiniCart()
-                        setMiniCartOnOfferEnd(offerInfoForBuyer)
+                        setMiniCartOnOfferEnd(offerInfoForBuyer.data)
                     } else {
                         setViewState(VIEW_ERROR, Status.OFFER_ENDED)
                     }
                 }
 
                 else -> {
-                    setViewState(VIEW_ERROR, offerInfoForBuyer.responseHeader.status)
+                    setViewState(VIEW_ERROR, getErrorCodeFromThrowable(offerInfoForBuyer.toString().toIntOrZero()))
                 }
             }
         }
@@ -1006,5 +1007,11 @@ class OfferLandingPageFragment :
         }
 
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun getErrorCodeFromThrowable(errorCode: Int): Status {
+        return Status.values().firstOrNull { value ->
+            value.code == errorCode.toLong()
+        } ?: Status.SUCCESS
     }
 }

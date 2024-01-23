@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.ResponseErrorException
 import javax.inject.Inject
 
 class GetOfferInfoForBuyerUseCase @Inject constructor(
@@ -86,7 +87,13 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
 
     suspend fun execute(param: GetOfferingInfoForBuyerRequestParam): OfferInfoForBuyerResponse {
         val request = buildRequest(param)
-        return repository.response(listOf(request)).getSuccessData<OfferInfoForBuyerResponse>()
+        val response = repository.response(listOf(request)).getSuccessData<OfferInfoForBuyerResponse>()
+        val isError = !response.offeringInforBuyer.responseHeader.success
+        if (isError) {
+            throw ResponseErrorException(response.offeringInforBuyer.responseHeader.errorCode.toString())
+        } else {
+            return response
+        }
     }
 
     private fun buildRequest(param: GetOfferingInfoForBuyerRequestParam): GraphqlRequest {
