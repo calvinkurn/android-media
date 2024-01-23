@@ -544,13 +544,13 @@ open class ShopHomeAdapterTypeFactory(
                 parent,
                 provider = bmsmWidgetDependencyProvider,
                 listener = bmsmWidgetListener,
-                isOverrideTheme = shopHomeListener.isOverrideTheme()
+                patternColorType = shopHomeListener.getPatternColorType()
             )
             ShopBmsmWidgetPdViewHolder.LAYOUT -> ShopBmsmWidgetPdViewHolder(
                 parent,
                 provider = bmsmWidgetDependencyProvider,
                 listener = bmsmWidgetListener,
-                isOverrideTheme = shopHomeListener.isOverrideTheme()
+                patternColorType = shopHomeListener.getPatternColorType()
             )
             ShopBmsmWidgetPlaceholderViewHolder.LAYOUT -> ShopBmsmWidgetPlaceholderViewHolder(
                 parent

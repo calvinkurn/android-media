@@ -20,7 +20,7 @@ class ShopBmsmWidgetGwpViewHolder(
     itemView: View,
     private val provider: BmsmWidgetDependencyProvider,
     private val listener: BmsmWidgetEventListener,
-    private val isOverrideTheme: Boolean
+    private val patternColorType: String
 ): AbstractViewHolder<ShopBmsmWidgetGwpUiModel>(itemView)  {
 
     companion object {
@@ -36,7 +36,7 @@ class ShopBmsmWidgetGwpViewHolder(
             binding?.apply {
                 tpgTitle.apply {
                     text = element.header.title
-                    val textColor = if (isOverrideTheme && element.header.colorSchema.listColorSchema.isNotEmpty()) {
+                    val textColor = if (element.header.isOverrideTheme && element.header.colorSchema.listColorSchema.isNotEmpty()) {
                         element.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
                     } else {
                         ContextCompat.getColor(context, R.color.dms_static_black)
@@ -52,7 +52,8 @@ class ShopBmsmWidgetGwpViewHolder(
                         provider,
                         element.data,
                         element.header.isOverrideTheme,
-                        element.header.colorSchema
+                        element.header.colorSchema,
+                        patternColorType
                     )
                     setOnSuccessAtcListener { product ->
                         listener.onBmsmWidgetSuccessAtc(product)

@@ -18,7 +18,7 @@ class ShopBmsmWidgetPdViewHolder(
     itemView: View,
     private val provider: BmsmWidgetDependencyProvider,
     private val listener: BmsmWidgetEventListener,
-    private val isOverrideTheme: Boolean
+    private val patternColorType: String
 ): AbstractViewHolder<ShopBmsmWidgetGwpUiModel>(itemView)  {
 
     companion object {
@@ -27,40 +27,47 @@ class ShopBmsmWidgetPdViewHolder(
     }
 
     private val binding: ItemShopHomeBmsmWidgetPdBinding? by viewBinding()
+    private var isBmsmWidgetAlreadyLoaded = false
 
     override fun bind(element: ShopBmsmWidgetGwpUiModel) {
-        binding?.apply {
-            tpgTitle.apply {
-                text = element.header.title
-                val textColor = if (isOverrideTheme && element.header.colorSchema.listColorSchema.isNotEmpty()){
-                    element.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-                } else {
-                    ContextCompat.getColor(context, R.color.dms_static_black)
+        if (!isBmsmWidgetAlreadyLoaded) {
+            binding?.apply {
+                tpgTitle.apply {
+                    text = element.header.title
+                    val textColor = if (element.header.isOverrideTheme && element.header.colorSchema.listColorSchema.isNotEmpty()){
+                        element.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+                    } else {
+                        ContextCompat.getColor(context, R.color.dms_static_black)
+                    }
+                    setTextColor(textColor)
                 }
-                setTextColor(textColor)
-            }
-            tpgSubTitle.apply {
-                showWithCondition(element.data.size == Int.ONE)
-                text = element.data.firstOrNull()?.offerName
-            }
-            widgetBmsm.apply {
-                setupWidget(
-                    provider,
-                    element.data,
-                    isOverrideTheme,
-                    element.header.colorSchema
-                )
-                setOnSuccessAtcListener { product ->
-                    listener.onBmsmWidgetSuccessAtc(product)
+                tpgSubTitle.apply {
+                    showWithCondition(element.data.size == Int.ONE)
+                    text = element.data.firstOrNull()?.offerName
                 }
-                setOnErrorAtcListener { errorMsg ->
-                    listener.onBmsmWidgetErrorAtc(errorMsg)
-                }
-                setOnNavigateToOlpListener { applink ->
-                    listener.onBmsmWidgetNavigateToOlp(applink)
-                }
-                setOnProductCardClicked { product ->
-                    listener.onBmsmWidgetProductClicked(product)
+                widgetBmsm.apply {
+                    setupWidget(
+                        provider,
+                        element.data,
+                        element.header.isOverrideTheme,
+                        element.header.colorSchema,
+                        patternColorType
+                    )
+                    setOnSuccessAtcListener { product ->
+                        listener.onBmsmWidgetSuccessAtc(product)
+                    }
+                    setOnErrorAtcListener { errorMsg ->
+                        listener.onBmsmWidgetErrorAtc(errorMsg)
+                    }
+                    setOnNavigateToOlpListener { applink ->
+                        listener.onBmsmWidgetNavigateToOlp(applink)
+                    }
+                    setOnProductCardClicked { product ->
+                        listener.onBmsmWidgetProductClicked(product)
+                    }
+                    setOnWidgetVisible {
+                        isBmsmWidgetAlreadyLoaded = true
+                    }
                 }
             }
         }

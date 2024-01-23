@@ -3,6 +3,7 @@ package com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder
 import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
@@ -22,7 +23,6 @@ class BmsmProductListViewHolder(
 
     companion object {
         private const val LABEL_GROUP_PRICE = "price"
-        private const val TWO_ITEMS_PRODUCT_CARD_WIDTH = 176
     }
 
     private val binding: ItemBmsmWidgetProductListBinding? by viewBinding()

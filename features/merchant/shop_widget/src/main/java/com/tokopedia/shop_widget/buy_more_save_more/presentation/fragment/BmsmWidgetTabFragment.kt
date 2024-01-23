@@ -45,6 +45,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdU
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoForBuyerUiModel.BmsmWidgetUiState
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.adapter.BmsmWidgetProductListAdapter
+import com.tokopedia.shop_widget.buy_more_save_more.presentation.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetItemEventListener
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewmodel.BmsmWidgetTabViewModel
 import com.tokopedia.shop_widget.buy_more_save_more.util.Status
@@ -67,6 +68,7 @@ class BmsmWidgetTabFragment :
     companion object {
         private const val BUNDLE_KEY_OFFER_DATA = "offer_data"
         private const val BUNDLE_KEY_SHOP_PAGE_COLOR_SCHEMA = "color_schema"
+        private const val BUNDLE_KEY_SHOP_PAGE_PATTERN_COLOR_TYPE = "color_type"
         private const val BUNDLE_KEY_OFFER_TYPE_ID = "offer_type_id"
         private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
         private const val EXT_PARAM_OFFER_ID = "offer_id"
@@ -82,13 +84,16 @@ class BmsmWidgetTabFragment :
         private const val imageAlphaValue = 128
         private const val OFFER_TYPE_GWP = 2
         private const val OFFER_TYPE_PD = 1
+        private const val COLOR_TYPE_DARK = "dark"
+        private const val COLOR_TYPE_LIGHT = "light"
 
         @JvmStatic
         fun newInstance(
             data: OfferingInfoByShopIdUiModel,
             isOverrideTheme: Boolean,
             offerTypeId: Int,
-            colorSchema: ShopPageColorSchema
+            colorSchema: ShopPageColorSchema,
+            patternColorType: String
         ): BmsmWidgetTabFragment {
             return BmsmWidgetTabFragment().apply {
                 arguments = Bundle().apply {
@@ -96,6 +101,7 @@ class BmsmWidgetTabFragment :
                     putBoolean(BUNDLE_KEY_OVERRIDE_THEME, isOverrideTheme)
                     putInt(BUNDLE_KEY_OFFER_TYPE_ID, offerTypeId)
                     putParcelable(BUNDLE_KEY_SHOP_PAGE_COLOR_SCHEMA, colorSchema)
+                    putString(BUNDLE_KEY_SHOP_PAGE_PATTERN_COLOR_TYPE, patternColorType)
                 }
             }
         }
@@ -126,6 +132,10 @@ class BmsmWidgetTabFragment :
     private val colorSchema by lazy {
         arguments?.getParcelable(BUNDLE_KEY_SHOP_PAGE_COLOR_SCHEMA) as? ShopPageColorSchema
             ?: ShopPageColorSchema()
+    }
+
+    private val patternColorType by lazy {
+        arguments?.getString(BUNDLE_KEY_SHOP_PAGE_PATTERN_COLOR_TYPE)
     }
 
     private var productListAdapter = BmsmWidgetProductListAdapter(this@BmsmWidgetTabFragment)
@@ -260,7 +270,18 @@ class BmsmWidgetTabFragment :
     private fun setupCardLayout() {
         binding?.apply {
             val bgColor = if (isOverrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.BG_PRIMARY_COLOR)
+                if (patternColorType == COLOR_TYPE_DARK) {
+                    MethodChecker.getColor(
+                        context,
+                        R.color.dms_gwp_card_transparent_bg_color
+                    )
+                } else {
+                    MethodChecker.getColor(
+                        context,
+                        R.color.dms_gwp_card_bg_color
+                    )
+                }
+
             } else {
                 MethodChecker.getColor(
                     context,
@@ -347,8 +368,11 @@ class BmsmWidgetTabFragment :
             viewLifecycleOwner.lifecycleScope.launch {
                 if (productList.size > Int.ONE) setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
             }
-            if (productList.size == TWO_PRODUCT_ITEM_SIZE) layoutManager =
-                GridLayoutManager(context, TWO_PRODUCT_ITEM_SIZE)
+            if (productList.size == TWO_PRODUCT_ITEM_SIZE){
+                layoutManager =
+                    GridLayoutManager(context, TWO_PRODUCT_ITEM_SIZE, GridLayoutManager.VERTICAL, false)
+                addItemDecoration(ProductListItemDecoration())
+            }
         }
         productListAdapter.apply {
             if (itemCount.isZero()) addProductList(productList)
@@ -392,7 +416,7 @@ class BmsmWidgetTabFragment :
             cardGroup.gone()
             flContentWrapper.gone()
             cardErrorState.gone()
-            when(status) {
+            when (status) {
                 Status.OOS -> {
                     emptyPageLarge.apply {
                         visible()
@@ -402,6 +426,7 @@ class BmsmWidgetTabFragment :
                     }
                     cardErrorState.gone()
                 }
+
                 else -> {
                     emptyPageLarge.gone()
                     cardErrorState.visible()
@@ -494,6 +519,10 @@ class BmsmWidgetTabFragment :
     }
 
     private fun Typography.setTitle(upsellWording: String, defaultOfferMessage: String) {
+        val textColor = MethodChecker.getColor(
+                context,
+                R.color.dms_static_white
+            )
         this.apply {
             visible()
             text = if (upsellWording.isNotEmpty()) {
@@ -501,13 +530,20 @@ class BmsmWidgetTabFragment :
             } else {
                 MethodChecker.fromHtml(defaultOfferMessage)
             }
+            setTextColor(textColor)
         }
     }
 
     private fun Typography.setSubTitle(messages: List<String>) {
+        val textColor = MethodChecker.getColor(
+                context,
+                R.color.dms_static_white
+            )
+
         this.apply {
             text = MethodChecker.fromHtml(messages.firstOrNull())
             showWithCondition(messages.isNotEmpty())
+            setTextColor(textColor)
         }
     }
 

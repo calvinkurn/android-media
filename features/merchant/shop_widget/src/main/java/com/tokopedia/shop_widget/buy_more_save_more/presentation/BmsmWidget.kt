@@ -83,19 +83,21 @@ class BmsmWidget : ConstraintLayout {
         provider: BmsmWidgetDependencyProvider,
         offerList: List<OfferingInfoByShopIdUiModel>,
         isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        patternColorType: String
     ) {
-        setupTabs(provider, offerList, isOverrideTheme, colorSchema)
+        setupTabs(provider, offerList, isOverrideTheme, colorSchema, patternColorType)
     }
 
     private fun setupTabs(
         provider: BmsmWidgetDependencyProvider,
         offerList: List<OfferingInfoByShopIdUiModel>,
         isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        patternColorType: String
     ) {
         binding?.apply {
-            val fragments = createFragments(offerList, isOverrideTheme, colorSchema)
+            val fragments = createFragments(offerList, isOverrideTheme, colorSchema, patternColorType)
             val pagerAdapter = TabPagerAdapter(
                 provider.bmsmWidgetHostFragmentManager,
                 provider.bmsmWidgetHostLifecycle,
@@ -233,7 +235,8 @@ class BmsmWidget : ConstraintLayout {
     private fun createFragments(
         offerList: List<OfferingInfoByShopIdUiModel>,
         isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        patternColorType: String
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
@@ -242,7 +245,8 @@ class BmsmWidget : ConstraintLayout {
                 data = currentTab,
                 isOverrideTheme = isOverrideTheme,
                 offerTypeId = offerType,
-                colorSchema
+                colorSchema = colorSchema,
+                patternColorType = patternColorType
             )
 
             fragment.apply {
