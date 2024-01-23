@@ -418,7 +418,7 @@ class BmsmWidgetTabFragment :
             flContentWrapper.gone()
             cardErrorState.gone()
             when (status) {
-                Status.OOS -> {
+                Status.GIFT_OOS -> {
                     emptyPageLarge.apply {
                         visible()
                         setImageUrl(TokopediaImageUrl.OLP_NOT_FOUND_ILLUSTRATION)
