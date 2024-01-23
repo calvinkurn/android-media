@@ -112,8 +112,12 @@ data class ProductContentMainData(
     val hasThematicCampaign
         get() = hasCampaign && campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN
 
-    val hasOngoingCampaign
-        get() = hasCampaign &&
-            campaign.campaignIdentifier != CampaignRibbon.THEMATIC_CAMPAIGN &&
-            campaign.shouldShowRibbonCampaign
+    val hasOngoingCampaign: Boolean
+        get() {
+            if (!hasCampaign) return false
+            if (campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN) return false
+            if (campaign.campaignIdentifier == CampaignRibbon.NEW_FLASH_SALE_CAMPAIGN) return true
+            // for campaign id 1,2,3,4 need check end time under 1 day
+            return campaign.shouldShowRibbonCampaign
+        }
 }
