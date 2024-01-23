@@ -21,6 +21,7 @@
     <dimen name="home_dynamic_header_bottom_padding_with_timer_old">8dp</dimen>
 
     <!--Widgets-->
+    <dimen name="home_recommendation_mega_tab_padding">8dp</dimen>
     <dimen name="home_reminder_card_min_height">110dp</dimen>
     <dimen name="home_reminder_background_margin">6dp</dimen>
     <dimen name="home_reminder_product_icon_card_padding">10dp</dimen>
