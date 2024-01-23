@@ -59,6 +59,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondActivity
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
@@ -108,6 +109,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.DialogAcceptOrderFreeShippingSomBinding
@@ -374,7 +376,17 @@ open class SomDetailFragment :
     }
 
     override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.GetSomDetail.Button) {
-        bottomSheetManager?.showSomOrderRequestCancelBottomSheet(it, detailResponse, this)
+        startActivity(
+            Intent(requireActivity(), BuyerRequestCancelRespondActivity::class.java).apply {
+                putExtra("ORDER_ID", orderId)
+                putExtra("ORDER_STATUS_CODE", detailResponse?.statusCode.orZero())
+                putExtra("CANCELLATION_REASON", Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()))
+                putExtra("DESCRIPTION", detailResponse?.button?.firstOrNull()?.popUp?.body.orEmpty())
+                putExtra("PRIMARY_BUTTON_TEXT", detailResponse?.button?.firstOrNull()?.popUp?.getPrimaryButton()?.displayName.orEmpty())
+                putExtra("SECONDARY_BUTTON_TEXT", detailResponse?.button?.firstOrNull()?.popUp?.getSecondaryButton()?.displayName.orEmpty())
+            }
+        )
+//        bottomSheetManager?.showSomOrderRequestCancelBottomSheet(it, detailResponse, this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -28,7 +28,8 @@ android {
             res.srcDirs = [
                     pathSources,
                     pathSources + 'transparency_fee',
-                    pathSources + 'partial_order_fulfillment'
+                    pathSources + 'partial_order_fulfillment',
+                    pathSources + 'buyer_request_cancel_respond'
             ]
         }
     }

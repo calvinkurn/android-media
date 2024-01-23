@@ -881,10 +881,13 @@ open class SomListFragment :
                         rejectCancelOrder(selectedOrderId)
                     }
                 })
+            val popUp = order.buttons.firstOrNull()?.popUp ?: PopUp()
             init(
-                order.buttons.firstOrNull()?.popUp ?: PopUp(),
                 order.cancelRequestOriginNote,
-                order.orderStatusId
+                order.orderStatusId,
+                popUp.body,
+                popUp.getPrimaryButton()?.displayName.orEmpty(),
+                popUp.getSecondaryButton()?.displayName.orEmpty()
             )
             hideKnob()
             showCloseButton()
