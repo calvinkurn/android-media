@@ -17,7 +17,6 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
@@ -26,9 +25,8 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 const val PRODUCT_PER_PAGE = 10
