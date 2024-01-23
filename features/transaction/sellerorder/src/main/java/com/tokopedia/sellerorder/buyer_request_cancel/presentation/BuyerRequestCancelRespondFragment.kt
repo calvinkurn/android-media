@@ -1,19 +1,32 @@
 package com.tokopedia.sellerorder.buyer_request_cancel.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
+import com.tokopedia.sellerorder.buyer_request_cancel.di.BuyerRequestCancelRespondComponent
+import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.databinding.FragmentBuyerRequestCancelRespondBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
-class BuyerRequestCancelRespondFragment : BaseDaggerFragment() {
+class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
+    IBuyerRequestCancelRespondListener.Mediator,
+    IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl() {
 
-    private var bottomSheet: SomOrderRequestCancelBottomSheet? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[BuyerRequestCancelRespondViewModel::class.java]
+    }
+
+    private var bottomSheet: BuyerRequestCancelRespondBottomSheet? = null
 
     private var binding by autoClearedNullable<FragmentBuyerRequestCancelRespondBinding> {
         bottomSheet?.clearViewBinding()
@@ -33,14 +46,34 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment() {
         return "buyer-request-cancel-respond"
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun initInjector() {
+        (activity as? HasComponent<BuyerRequestCancelRespondComponent>)
+            ?.component
+            ?.inject(this)
     }
 
-    private fun getOrderId(): Int {
-        return activity?.intent?.getIntExtra("ORDER_ID", 0).orZero()
+    override fun getBuyerRequestCancelRespondOrderId(): String {
+        return activity?.intent?.getStringExtra("ORDER_ID") ?: "0"
     }
 
-    private fun getOrderStatusId(): Int {
+    override fun getBuyerRequestCancelRespondOrderInvoice(): String {
+        return String.EMPTY
+    }
+
+    override fun getBuyerRequestCancelRespondOrderStatusCodeString(): String {
+        return getOrderStatusCode().toString()
+    }
+
+    override fun getBuyerRequestCancelRespondOrderStatusText(): String {
+        return activity?.intent?.getStringExtra("ORDER_STATUS_TEXT").orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel {
+        return viewModel
+    }
+
+    private fun getOrderStatusCode(): Int {
         return activity?.intent?.getIntExtra("ORDER_STATUS_CODE", 0).orZero()
     }
 
@@ -68,17 +101,17 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment() {
         binding?.run {
             bottomSheet = bottomSheet?.apply {
                 setupBuyerRequestCancelBottomSheet(
-                    somOrderRequestCancelBottomSheet = this,
-                    orderStatusId = getOrderStatusId(),
+                    buyerRequestCancelRespondBottomSheet = this,
+                    orderStatusCode = getOrderStatusCode(),
                     reason = getCancellationReason(),
                     description = getDescription(),
                     primaryButtonText = getPrimaryButtonText(),
                     secondaryButtonText = getSecondaryButtonText()
                 )
-            } ?: SomOrderRequestCancelBottomSheet(root.context).apply {
+            } ?: BuyerRequestCancelRespondBottomSheet(root.context).apply {
                 setupBuyerRequestCancelBottomSheet(
-                    somOrderRequestCancelBottomSheet = this,
-                    orderStatusId = getOrderStatusId(),
+                    buyerRequestCancelRespondBottomSheet = this,
+                    orderStatusCode = getOrderStatusCode(),
                     reason = getCancellationReason(),
                     description = getDescription(),
                     primaryButtonText = getPrimaryButtonText(),
@@ -92,35 +125,20 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment() {
     }
 
     private fun setupBuyerRequestCancelBottomSheet(
-        somOrderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet,
-        orderStatusId: Int = 0,
+        buyerRequestCancelRespondBottomSheet: BuyerRequestCancelRespondBottomSheet,
+        orderStatusCode: Int = 0,
         reason: String = "",
         description: String,
         primaryButtonText: String,
         secondaryButtonText: String
     ) {
-        somOrderRequestCancelBottomSheet.apply {
-            setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                override fun onAcceptOrder(actionName: String) {
-                    onAcceptOrderButtonClicked()
-                }
-
-                override fun onRejectOrder(reasonBuyer: String) {
-
-                }
-
-                override fun onRejectCancelRequest() {
-
-                }
-            })
-            init(reason, orderStatusId, description, primaryButtonText, secondaryButtonText)
+        buyerRequestCancelRespondBottomSheet.apply {
+            registerBuyerRequestCancelRespondListenerMediator(this@BuyerRequestCancelRespondFragment)
+            setListener(this@BuyerRequestCancelRespondFragment)
+            init(reason, orderStatusCode, description, primaryButtonText, secondaryButtonText)
             hideKnob()
             showCloseButton()
         }
-    }
-
-    private fun onAcceptOrderButtonClicked() {
-        Log.d("SOMLog", "onAcceptOrderButtonClicked")
     }
 
     private fun finishActivity() {
