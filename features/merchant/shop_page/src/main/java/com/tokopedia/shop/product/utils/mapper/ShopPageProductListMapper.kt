@@ -16,6 +16,7 @@ import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgr
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel.Companion.THRESHOLD_VIEW_COUNT
@@ -78,6 +79,7 @@ object ShopPageProductListMapper {
                 it.isShowFreeOngkir = freeOngkir.isActive
                 it.freeOngkirPromoIcon = freeOngkir.imgUrl
                 it.etalaseId = etalaseId
+                it.badge = badge.map { ShopBadgeUiModel(title = it.title, imageUrl = it.imageUrl) }
                 it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 it.etalaseType = etalaseType
                 it.stock = stock.toLong()

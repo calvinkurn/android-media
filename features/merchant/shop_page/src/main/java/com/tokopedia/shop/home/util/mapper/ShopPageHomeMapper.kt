@@ -13,6 +13,7 @@ import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
 import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroupStyle
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
@@ -45,6 +46,7 @@ import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -94,6 +96,12 @@ object ShopPageHomeMapper {
                 it.averageRating = stats.averageRating
                 it.isFulfillment = ShopUtil.isFulfillmentByGroupLabel(shopProduct.labelGroupList)
                 it.warehouseId = shopProduct.warehouseId
+                it.shopBadgeList = shopProduct.badge.map { badge ->
+                    ShopBadgeUiModel(
+                        title = badge.title,
+                        imageUrl = badge.imageUrl
+                    )
+                }
             }
         }
 
@@ -102,7 +110,10 @@ object ShopPageHomeMapper {
             position = labelGroup.position,
             title = labelGroup.title,
             type = labelGroup.type,
-            url = labelGroup.url
+            url = labelGroup.url,
+            styles = labelGroup.styles.map {
+                LabelGroupStyle(key = it.key, value = it.value)
+            }
         )
     }
 
@@ -336,7 +347,14 @@ object ShopPageHomeMapper {
             addToCartButtonType = UnifyButton.Type.MAIN,
             stockBarLabel = shopHomeProductViewModel.stockLabel,
             stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage,
-            forceLightModeColor = forceLightModeColor
+            forceLightModeColor = forceLightModeColor,
+            shopBadgeList = shopHomeProductViewModel.shopBadgeList.map {
+                ProductCardModel.ShopBadge(
+                    isShown = true,
+                    imageUrl = it.title,
+                    title = it.imageUrl
+                )
+            }
         )
         return if (isShopCampaignWidgetEnableDirectPurchase(
                 shopHomeProductViewModel.isEnableDirectPurchase,
@@ -391,7 +409,13 @@ object ShopPageHomeMapper {
             position = labelGroupUiModel.position,
             title = labelGroupUiModel.title,
             type = labelGroupUiModel.type,
-            imageUrl = labelGroupUiModel.url
+            imageUrl = labelGroupUiModel.url,
+            styleList = labelGroupUiModel.styles.map { style ->
+                ProductCardModel.LabelGroup.Style(
+                    key = style.key,
+                    value = style.value
+                )
+            }
         )
     }
 
