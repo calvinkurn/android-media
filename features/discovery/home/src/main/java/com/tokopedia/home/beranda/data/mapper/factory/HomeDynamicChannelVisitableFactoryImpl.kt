@@ -94,21 +94,17 @@ class HomeDynamicChannelVisitableFactoryImpl(
         dynamicChannelList.forEachIndexed{ index, channel ->
             val position = index + startPosition
             setDynamicChannelPromoName(position, channel)
-//            if(channel.origami.isNotEmpty()){
-//                createOrigamiChannel(channel.origami, channel.id)
-//                return@forEachIndexed
-//            }
+            if(channel.origami.isNotEmpty()){
+                createOrigamiChannel(channel.origami, channel.id)
+                return@forEachIndexed
+            }
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(channel = channel, position = position)
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> {
-                    if(channel.origami.isNotEmpty()){
-                        createOrigamiChannel(channel.origami, channel.id)
-//                        return@forEachIndexed
-                    }
-//                    createDynamicLegoBannerComponent(channel, position, isCache)
+                    createDynamicLegoBannerComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO -> {
                     createDynamicLegoBannerSixAutoComponent(channel, position, isCache)
