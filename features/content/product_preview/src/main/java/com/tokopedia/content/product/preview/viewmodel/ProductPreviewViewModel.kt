@@ -107,8 +107,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun handleInitializeProductMainData() {
         _productContentState.value = _productContentState.value.copy(
-            content = param.productUiModel.content,
-            indicator = param.productUiModel.indicator
+            content = param.productUiModel.content
         )
     }
 
@@ -125,9 +124,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
             productUiModel.copy(
                 content = productUiModel.content.mapIndexed { index, content ->
                     content.copy(selected = index == position)
-                },
-                indicator = productUiModel.indicator.mapIndexed { index, indicator ->
-                    indicator.copy(selected = index == position)
                 }
             )
         }

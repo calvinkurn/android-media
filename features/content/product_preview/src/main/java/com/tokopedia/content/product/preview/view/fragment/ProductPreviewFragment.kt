@@ -126,7 +126,7 @@ class ProductPreviewFragment @Inject constructor(
             adapter = pagerAdapter
         }
 
-        if (viewModel.productData == ProductUiModel.Empty) {
+        if (viewModel.productData.content.isEmpty()) {
             layoutProductPreviewTab.tvProductTabTitle.gone()
             layoutProductPreviewTab.tvReviewTabTitle.gone()
             layoutProductPreviewTab.viewTabIndicator.gone()

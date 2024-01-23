@@ -6,15 +6,13 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class ProductUiModel(
     val productId: String,
-    val content: List<ProductContentUiModel>,
-    val indicator: List<ProductIndicatorUiModel>
+    val content: List<ProductContentUiModel>
 ) : Parcelable {
     companion object {
         val Empty
             get() = ProductUiModel(
                 productId = "",
-                content = emptyList(),
-                indicator = emptyList()
+                content = emptyList()
             )
     }
 }

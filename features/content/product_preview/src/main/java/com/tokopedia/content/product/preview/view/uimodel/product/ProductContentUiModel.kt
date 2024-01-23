@@ -11,5 +11,7 @@ data class ProductContentUiModel(
     val variantName: String = "",
     val type: MediaType = MediaType.Unknown,
     val url: String = "",
-    val videoLastDuration: Long = 0L
+    val thumbnailUrl: String = "",
+    val videoLastDuration: Long = 0L,
+    val videoTotalDuration: Long = 0L
 ) : Parcelable

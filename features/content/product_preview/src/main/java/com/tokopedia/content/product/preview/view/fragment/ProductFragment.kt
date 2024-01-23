@@ -25,7 +25,6 @@ import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListe
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
 import com.tokopedia.kotlin.extensions.view.hide
@@ -159,8 +158,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
                     currState.productUiModel.content
                 )
                 renderIndicator(
-                    prevState?.productUiModel?.indicator,
-                    currState.productUiModel.indicator
+                    prevState?.productUiModel?.content,
+                    currState.productUiModel.content
                 )
             }
         }
@@ -186,8 +185,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun renderIndicator(
-        prev: List<ProductIndicatorUiModel>?,
-        state: List<ProductIndicatorUiModel>
+        prev: List<ProductContentUiModel>?,
+        state: List<ProductContentUiModel>
     ) {
         if (prev == state) return
 
