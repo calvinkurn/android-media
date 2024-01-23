@@ -344,4 +344,8 @@ class MasterProductCardItemViewModel(val application: Application, val component
             }
         }
     }
+
+    fun getProductCardType(): String {
+        return components.properties?.cardType ?: "v1"
+    }
 }

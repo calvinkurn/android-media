@@ -15,6 +15,7 @@ import com.tokopedia.home_component.model.ChannelBanner
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.hasGradientBackground
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -97,16 +98,18 @@ class ProductHighlightComponentViewHolder(
     private fun ArrayList<String>.getColorMode(): Int {
         val hexWhite = itemView.context.resources.getString(unifyprinciplesR.color.Unify_Static_White)
         // check if get empty or all white gradient color, then use mode normal
-        return if (isEmpty() || get(0).lowercase(Locale.getDefault()).take(7) == hexWhite.lowercase().take(7)) {
-            DynamicChannelHeaderView.COLOR_MODE_NORMAL
-        } else {
+        return if (hasGradientBackground(itemView.context)) {
             DynamicChannelHeaderView.COLOR_MODE_INVERTED
+        } else {
+            DynamicChannelHeaderView.COLOR_MODE_NORMAL
         }
     }
 
     private fun setDealsProductGrid(channel: ChannelModel) {
         val grid = channel.channelGrids.firstOrNull()
-        val channelDataModel = grid?.let { ChannelModelMapper.mapToProductCardModel(it, cardInteraction) }
+        val channelDataModel = grid?.let { ChannelModelMapper.mapToProductCardModel(
+            it, cardInteraction, isInBackground = channel.channelBanner.gradientColor.hasGradientBackground(itemView.context)
+        ) }
         channelDataModel?.let {
             masterProductCardListView?.setProductModel(it)
         }
