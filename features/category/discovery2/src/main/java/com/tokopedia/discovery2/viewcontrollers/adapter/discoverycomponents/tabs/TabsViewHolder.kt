@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
@@ -222,9 +222,13 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                             tab,
                             isSelected
                         )
-//                        }
                     }
                 }
+
+                scrollToCurrentTabPosition(
+                    selectedPosition = selectedPosition,
+                    isFromCategory = tabsViewModel.isFromCategory()
+                )
 
                 tabsHolder.viewTreeObserver
                     .addOnGlobalLayoutListener {
@@ -312,13 +316,12 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         tabsViewModel?.getSyncPageLiveData()?.observe(
-            fragment.viewLifecycleOwner,
-            Observer { needReSync ->
-                if (needReSync) {
-                    (fragment as DiscoveryFragment).reSync()
-                }
+            fragment.viewLifecycleOwner
+        ) { needReSync ->
+            if (needReSync) {
+                (fragment as DiscoveryFragment).reSync()
             }
-        )
+        }
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
@@ -380,7 +383,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private fun TabsViewModel.switchThematicHeaderData(
         tabPosition: Int
     ) {
-        if (isPlainTab()) {
+        if (isPlainTab() || components.name == ComponentNames.TabsImage.componentName) {
             mFragment.setTabPosition(tabPosition)
         }
     }
