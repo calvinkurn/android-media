@@ -1,9 +1,11 @@
 package com.tokopedia.content.analytic.base
 
+import android.os.Bundle
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.analytic.CurrentSite
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.content.analytic.model.ContentEEPromotion
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -104,6 +106,40 @@ abstract class BaseContentAnalytic(
         )
     }
 
+    protected fun sendViewEEPromotions(
+        eventAction: String,
+        eventLabel: String,
+        mainAppTrackerId: String,
+        sellerAppTrackerId: String = "",
+        promotions: List<ContentEEPromotion>,
+    ) {
+        sendEEPromotions(
+            event = Event.viewItem,
+            eventAction = eventAction,
+            eventLabel = eventLabel,
+            mainAppTrackerId = mainAppTrackerId,
+            sellerAppTrackerId = sellerAppTrackerId,
+            promotions = promotions,
+        )
+    }
+
+    protected fun sendClickEEPromotions(
+        eventAction: String,
+        eventLabel: String,
+        mainAppTrackerId: String,
+        sellerAppTrackerId: String = "",
+        promotions: List<ContentEEPromotion>,
+    ) {
+        sendEEPromotions(
+            event = Event.selectContent,
+            eventAction = eventAction,
+            eventLabel = eventLabel,
+            mainAppTrackerId = mainAppTrackerId,
+            sellerAppTrackerId = sellerAppTrackerId,
+            promotions = promotions,
+        )
+    }
+
     protected fun buildEventLabel(
         vararg labels: String
     ): String {
@@ -127,6 +163,41 @@ abstract class BaseContentAnalytic(
             .setUserId(userSession.userId)
             .build()
             .send()
+    }
+
+    private fun sendEEPromotions(
+        event: String,
+        eventAction: String,
+        eventLabel: String,
+        mainAppTrackerId: String,
+        sellerAppTrackerId: String = "",
+        promotions: List<ContentEEPromotion>,
+    ) {
+        val trackerBundle = Bundle().apply {
+            putString(Key.event, event)
+            putString(Key.eventCategory, eventCategory)
+            putString(Key.eventAction, eventAction)
+            putString(Key.eventLabel, eventLabel)
+            putParcelableArrayList(
+                Key.promotions,
+                ArrayList(
+                    promotions.map { item ->
+                        Bundle().apply {
+                            putString(Key.itemId, item.itemId)
+                            putString(Key.itemName, item.itemName)
+                            putString(Key.creativeSlot, item.creativeSlot)
+                            putString(Key.creativeName, item.creativeName)
+                        }
+                    }
+                )
+            )
+            putString(Key.trackerId, getTrackerId(mainAppTrackerId, sellerAppTrackerId))
+            putString(Key.userId, userSession.userId)
+            putString(Key.businessUnit, businessUnit)
+            putString(Key.currentSite, currentSite)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(event, trackerBundle)
     }
 
 
