@@ -50,6 +50,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.tokofood.R as tokofoodR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -372,7 +373,7 @@ class OrderCustomizationFragment :
     }
 
     private fun showErrorMessage() {
-        val message = getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection)
+        val message = getString(tokofoodR.string.text_error_product_custom_selection)
         view?.let { view ->
             Toaster.build(
                 view = view,

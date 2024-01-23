@@ -1789,13 +1789,24 @@ class MerchantPageFragment :
     }
 
     private fun removeBottomSheets() {
-        universalShareBottomSheet?.dismiss()
+        if (universalShareBottomSheet?.isVisible == true) {
+            universalShareBottomSheet?.dismiss()
+        }
         universalShareBottomSheet = null
-        merchantInfoBottomSheet?.dismiss()
+
+        if (merchantInfoBottomSheet?.isVisible == true) {
+            merchantInfoBottomSheet?.dismiss()
+        }
         merchantInfoBottomSheet = null
-        orderNoteBottomSheet?.dismiss()
+
+        if (orderNoteBottomSheet?.isVisible == true) {
+            orderNoteBottomSheet?.dismiss()
+        }
         orderNoteBottomSheet = null
-        customOrderDetailBottomSheet?.dismiss()
+
+        if (customOrderDetailBottomSheet?.isVisible == true) {
+            customOrderDetailBottomSheet?.dismiss()
+        }
         customOrderDetailBottomSheet = null
     }
 
