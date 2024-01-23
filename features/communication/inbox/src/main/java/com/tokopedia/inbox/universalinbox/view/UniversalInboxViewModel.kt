@@ -321,7 +321,13 @@ class UniversalInboxViewModel @Inject constructor(
                 val productRecommendation = result.data.recommendationItemList.mapIndexed { index, item ->
                     // Add the first top ads at the 9th position (index 8), then every 9th position thereafter (change the hardcoded index for another position)
                     if (index % 20 == 7) {
-                        UniversalInboxTopAdsVerticalBannerUiModel()
+                        val existedViewModel = _productRecommendationState.value.productRecommendation.getOrNull(index)
+                        if (existedViewModel !is UniversalInboxTopAdsVerticalBannerUiModel) {
+                            UniversalInboxTopAdsVerticalBannerUiModel()
+                        } else {
+                            existedViewModel
+                        }
+
                     } else {
                         UniversalInboxRecommendationUiModel(item)
                     }

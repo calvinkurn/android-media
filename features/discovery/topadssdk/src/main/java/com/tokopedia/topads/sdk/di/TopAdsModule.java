@@ -50,10 +50,4 @@ public class TopAdsModule {
     GraphqlRepository provideGraphqlRepository(){
         return  GraphqlInteractor.getInstance().getGraphqlRepository();
     }
-
-    @TopAdsScope
-    @Provides
-    TopAdsImageViewViewModel provideTopAdsImageViewViewModel(TopAdsImageViewUseCase topAdsImageViewUseCase){
-        return new TopAdsImageViewViewModel(topAdsImageViewUseCase);
-    }
 }
