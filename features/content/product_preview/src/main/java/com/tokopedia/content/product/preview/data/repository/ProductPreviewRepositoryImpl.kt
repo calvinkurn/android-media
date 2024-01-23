@@ -10,9 +10,9 @@ import com.tokopedia.content.product.preview.data.usecase.RemindMeUseCase
 import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState.ReviewLikeStatus.Companion.switch
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -68,11 +68,17 @@ class ProductPreviewRepositoryImpl @Inject constructor(
         !response.isStatusError()
     }
 
-    override suspend fun likeReview(state: ReviewLikeUiState, reviewId: String): ReviewLikeUiState = withContext(dispatchers.io) {
-        val response =
-            likeUseCase(ReviewLikeUseCase.Param(reviewId = reviewId, likeStatus = state.state.switch.value))
-        mapper.mapLike(response)
-    }
+    override suspend fun likeReview(state: ReviewLikeUiState, reviewId: String): ReviewLikeUiState =
+        withContext(dispatchers.io) {
+            val response =
+                likeUseCase(
+                    ReviewLikeUseCase.Param(
+                        reviewId = reviewId,
+                        likeStatus = state.state.switch.value
+                    )
+                )
+            mapper.mapLike(response)
+        }
 
     override suspend fun submitReport(report: ReviewReportUiModel, reviewId: String): Boolean =
         withContext(dispatchers.io) {

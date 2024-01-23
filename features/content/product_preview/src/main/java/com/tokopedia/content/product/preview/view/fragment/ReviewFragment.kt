@@ -27,11 +27,7 @@ import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
-import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
-import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
-import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
-import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
@@ -67,7 +63,7 @@ class ReviewFragment @Inject constructor(
 
     private val reviewAdapter by lazyThreadSafetyNone {
         ReviewParentAdapter(
-            reviewInteractionListener = this,
+            reviewInteractionListener = this
         )
     }
 
@@ -285,5 +281,4 @@ class ReviewFragment @Inject constructor(
             } as ReviewFragment
         }
     }
-
 }
