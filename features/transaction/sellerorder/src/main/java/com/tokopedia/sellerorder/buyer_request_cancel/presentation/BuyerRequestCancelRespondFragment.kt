@@ -20,7 +20,7 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond
 import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_SECONDARY_BUTTON_TEXT
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerorder.R
@@ -110,7 +110,7 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
     }
 
     override fun getBuyerRequestCancelRespondOrderStatusCode(): Int {
-        return activity?.intent?.getIntExtra(INTENT_PARAM_ORDER_STATUS_CODE, 0).orZero()
+        return activity?.intent?.getStringExtra(INTENT_PARAM_ORDER_STATUS_CODE).orEmpty().toIntOrZero()
     }
 
     override fun getBuyerRequestCancelRespondOrderStatusText(): String {
