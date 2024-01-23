@@ -292,7 +292,7 @@ object DeeplinkMainApp {
             }
         ),
         "feed" to mutableListOf(
-            DLP.matchPattern("browse") { _: Context, deeplink: String ->
+            DLP.startsWith("browse") { _: Context, deeplink: String ->
                 DeeplinkMapperContent.getRegisteredNavigation(deeplink)
             },
             DLP.goTo { deeplink: String ->
@@ -1245,7 +1245,7 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("bottomsheet/{type}") { deeplink: String ->
                 DeeplinkMapperCommunication.getRegisteredNavigation(deeplink)
-            },
+            }
         ),
         "tokopoints" to mutableListOf(
             DLP.goTo { deeplink: String ->

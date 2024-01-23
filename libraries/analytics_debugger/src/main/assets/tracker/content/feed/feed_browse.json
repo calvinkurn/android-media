@@ -1,6 +1,6 @@
 {
   "readme": "Feed Browse - Analytics",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "clickContent",
@@ -90,6 +90,63 @@
       "userId": ".*"
     },
     {
+      "event": "view_item",
+      "eventAction": "view - category inspiration",
+      "eventCategory": "feed browse page",
+      "eventLabel": "BROWSE_PAGE_FEED - .* - .* - \\d+",
+      "trackerId": "45748",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "\\d+",
+          "creative_slot": "\\d+",
+          "item_id": ".* - .*",
+          "item_name": "/ - BROWSE_PAGE_FEED - \\d+ - category inspiration - .*"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - category inspiration",
+      "eventCategory": "feed browse page",
+      "eventLabel": "BROWSE_PAGE_FEED - .* - .* - \\d+",
+      "trackerId": "45749",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "\\d+",
+          "creative_slot": "\\d+",
+          "item_id": ".* - .*",
+          "item_name": "/ - BROWSE_PAGE_FEED - \\d+ - category inspiration - .*"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - creator name",
+      "eventCategory": "feed browse page",
+      "eventLabel": "BROWSE_PAGE_FEED - .* - .* - \\d+",
+      "trackerId": "45754",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "\\d+",
+          "creative_slot": "\\d+",
+          "item_id": ".* - .*",
+          "item_name": "/ - BROWSE_PAGE_FEED - \\d+ - creator name - .*"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
       "event": "clickHomepage",
       "eventAction": "click - back exit browse",
       "eventCategory": "feed browse page",
@@ -99,6 +156,27 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris":".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - back exit category inspiration",
+      "eventCategory": "feed browse page",
+      "eventLabel": "BROWSE_PAGE_FEED",
+      "trackerId": "45755",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "openScreen",
+      "businessUnit": "content",
+      "screenName": "/feed browse page",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "trackerId": "49229",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "true"
     }
   ]
 }

@@ -22,6 +22,10 @@ open class BaseParam(
         fun create(file: File, sourceId: String): BaseParam {
             return BaseParam(file, sourceId, null)
         }
+
+        fun BaseParam.copy(newFile: File): BaseParam {
+            return BaseParam(newFile, sourceId, progress)
+        }
     }
 }
 

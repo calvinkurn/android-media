@@ -45,7 +45,7 @@ class TopFeatureViewHolder(
                 }
             }
         }
-        listener?.onTopFeatureImpression(element.items)
+        listener?.onTopFeatureImpression(element.items, element.widgetName)
         onceCreateView = true
     }
 
