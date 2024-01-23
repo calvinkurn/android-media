@@ -685,11 +685,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private fun updateOngoing() {
         updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
             ongoingCampaignData?.run {
-                val upComing = notifyMeMap?.data
-                shouldShowCampaign = if (upComing?.hasValue == true) {
-                    data?.hasThematicCampaign == false
+                val hasUpcoming = notifyMeMap?.data?.hasValue.orFalse()
+                val uiModel = data ?: run { shouldShowCampaign = false; return@updateData }
+
+                shouldShowCampaign = if (hasUpcoming) {
+                    uiModel.hasOngoingCampaign
                 } else {
-                    data?.hasCampaign == true
+                    uiModel.hasCampaign
                 }
             }
         }
@@ -714,7 +716,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     ribbonCopy = selectedUpcoming?.campaignTypeName.orEmpty()
                 )
 
-                val hasOngoingCampaign = ongoingCampaignData?.data?.hasOngoingCampaign == true
+                val hasOngoingCampaign = ongoingCampaignData?.data?.hasOngoingCampaign.orFalse()
                 shouldShow = data.hasValue && !hasOngoingCampaign
             }
         }

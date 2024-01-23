@@ -28,11 +28,11 @@ data class CampaignModular(
     val endDateUnix: String = "",
     @SerializedName("hideGimmick")
     val hideGimmick: Boolean = false,
-    @SerializedName("isActive")
     /**
      * isActive is false when identifier is thematic and no campaign(0)
      * otherwise when identifier 1,2,3,4,7
      */
+    @SerializedName("isActive")
     val isActive: Boolean = false,
     @SerializedName("isAppsOnly")
     val isAppsOnly: Boolean = false,
@@ -77,7 +77,7 @@ data class CampaignModular(
             val endDateMillis = endDateLong * ONE_THOUSAND
             val endDate = Date(endDateMillis)
             val now = System.currentTimeMillis()
-            val diff = (endDate?.time ?: 0 - now).toFloat()
+            val diff = (endDate.time - now).toFloat()
             if (diff < 0) {
                 // End date is out dated
                 false
