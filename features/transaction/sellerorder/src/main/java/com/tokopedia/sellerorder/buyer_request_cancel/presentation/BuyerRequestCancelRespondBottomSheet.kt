@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.common.presenter.bottomsheet
+package com.tokopedia.sellerorder.buyer_request_cancel.presentation
 
 import android.content.Context
 import android.view.View
@@ -10,7 +10,7 @@ import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.databinding.BottomsheetBuyerRequestCancelOrderBinding
 
-class SomOrderRequestCancelBottomSheet(
+class BuyerRequestCancelRespondBottomSheet(
     context: Context
 ) : SomBottomSheet<BottomsheetBuyerRequestCancelOrderBinding>(
     childViewsLayoutResourceId = LAYOUT,
@@ -28,7 +28,7 @@ class SomOrderRequestCancelBottomSheet(
         private val LAYOUT = R.layout.bottomsheet_buyer_request_cancel_order
     }
 
-    private var listener: SomOrderRequestCancelBottomSheetListener? = null
+    private var _listener: IBuyerRequestCancelRespondListener? = null
 
     override fun bind(view: View): BottomsheetBuyerRequestCancelOrderBinding {
         return BottomsheetBuyerRequestCancelOrderBinding.bind(view)
@@ -56,11 +56,11 @@ class SomOrderRequestCancelBottomSheet(
                     primaryButtonClickAction = {
                         dismiss()
                         when (statusCode) {
-                            SomConsts.STATUS_CODE_ORDER_CREATED -> listener?.onAcceptOrder(primaryButtonText)
+                            SomConsts.STATUS_CODE_ORDER_CREATED -> _listener?.onBuyerRequestCancelRespondAcceptOrder()
                             SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED,
                             SomConsts.STATUS_CODE_WAITING_PICKUP,
                             SomConsts.STATUS_CODE_READY_TO_SEND,
-                            SomConsts.STATUS_CODE_RECEIPT_CHANGED -> listener?.onRejectCancelRequest()
+                            SomConsts.STATUS_CODE_RECEIPT_CHANGED -> _listener?.onBuyerRequestCancelRespondRejectCancelRequest()
                         }
                     }
                 )
@@ -142,7 +142,7 @@ class SomOrderRequestCancelBottomSheet(
             secondaryButtonText = context.getString(R.string.som_buyer_cancellation_cancel_button),
             primaryButtonClickAction = {
                 dismiss()
-                listener?.onRejectOrder(reasonBuyer)
+                _listener?.onBuyerRequestCancelRespondRejectOrder(reasonBuyer)
             }
         )
     }
@@ -179,13 +179,7 @@ class SomOrderRequestCancelBottomSheet(
         }
     }
 
-    fun setListener(listener: SomOrderRequestCancelBottomSheetListener) {
-        this.listener = listener
-    }
-
-    interface SomOrderRequestCancelBottomSheetListener {
-        fun onAcceptOrder(actionName: String)
-        fun onRejectOrder(reasonBuyer: String)
-        fun onRejectCancelRequest()
+    fun setListener(listener: IBuyerRequestCancelRespondListener) {
+        _listener = listener
     }
 }

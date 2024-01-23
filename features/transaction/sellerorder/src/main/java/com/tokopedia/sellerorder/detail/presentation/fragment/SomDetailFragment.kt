@@ -60,6 +60,8 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
 import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondActivity
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondListenerImpl
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondListener
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
@@ -71,10 +73,10 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippi
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReschedulePickupPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
-import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasOnGoingPofDialog
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
 import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
+import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
@@ -173,7 +175,8 @@ open class SomDetailFragment :
     SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener,
     SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener,
     SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener,
-    SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
+    IBuyerRequestCancelRespondListener.Mediator,
+    IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -349,6 +352,7 @@ open class SomDetailFragment :
         setupBackgroundColor()
         setupToolbar()
         prepareLayout()
+        setupMediators()
         observingDetail()
         observingAcceptOrder()
         observingRejectReasons()
@@ -375,7 +379,7 @@ open class SomDetailFragment :
         return bottomSheetManager?.dismissBottomSheets().orFalse()
     }
 
-    override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.GetSomDetail.Button) {
+    override fun onShowBuyerRequestCancelRespondBottomSheet(it: SomDetailOrder.GetSomDetail.Button) {
         startActivity(
             Intent(requireActivity(), BuyerRequestCancelRespondActivity::class.java).apply {
                 putExtra("ORDER_ID", orderId)
@@ -400,31 +404,6 @@ open class SomDetailFragment :
 
     override fun onEditAwbButtonClicked(cancelNotes: String) {
         doEditAwb(cancelNotes)
-    }
-
-    override fun onAcceptOrder(actionName: String) {
-        setActionAcceptOrder(actionName, orderId, true)
-    }
-
-    override fun onRejectOrder(reasonBuyer: String) {
-        SomAnalytics.eventClickButtonTolakPesananPopup(
-            "${detailResponse?.statusCode.orZero()}",
-            detailResponse?.statusText.orEmpty()
-        )
-        val orderRejectRequest = SomRejectRequestParam(
-            orderId = detailResponse?.orderId.orEmpty(),
-            rCode = "0",
-            reason = reasonBuyer
-        )
-        doRejectOrder(orderRejectRequest)
-    }
-
-    override fun onRejectCancelRequest() {
-        SomAnalytics.eventClickButtonTolakPesananPopup(
-            "${detailResponse?.statusCode.orZero()}",
-            detailResponse?.statusText.orEmpty()
-        )
-        rejectCancelOrder()
     }
 
     private fun checkUserRole() {
@@ -468,6 +447,10 @@ open class SomDetailFragment :
 
     override fun initInjector() {
         getComponent(SomDetailComponent::class.java).inject(this)
+    }
+
+    private fun setupMediators() {
+        registerBuyerRequestCancelRespondListenerMediator(this)
     }
 
     private fun observingDetail() {
@@ -733,7 +716,7 @@ open class SomDetailFragment :
                             buttonResp.key.equals(
                                 KEY_RESPOND_TO_CANCELLATION,
                                 true
-                            ) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
+                            ) -> onShowBuyerRequestCancelRespondBottomSheet(buttonResp)
 
                             buttonResp.key.equals(
                                 KEY_UBAH_NO_RESI,
@@ -847,12 +830,6 @@ open class SomDetailFragment :
     private fun skipOrderValidation(): Boolean {
         val hasOngoingBuyerRequestCancel = detailResponse?.buyerRequestCancel?.isRequestCancel == true && detailResponse?.buyerRequestCancel?.status == 0
         return !hasOngoingBuyerRequestCancel
-    }
-
-    private fun rejectCancelOrder() {
-        if (orderId.isNotBlank()) {
-            somDetailViewModel.rejectCancelOrder(orderId)
-        }
     }
 
     private fun setLoadingIndicator(active: Boolean) {
@@ -1633,8 +1610,9 @@ open class SomDetailFragment :
     }
 
     private fun getOrderIdExtra(): String {
-        return arguments?.getString(PARAM_ORDER_ID)?.takeIf { it.isNotBlank() }
-            ?: SomConsts.DEFAULT_INVALID_ORDER_ID
+        return arguments?.getString(PARAM_ORDER_ID)?.takeIf {
+            it.isNotBlank()
+        } ?: SomConsts.DEFAULT_INVALID_ORDER_ID
     }
 
     protected open fun onGoToOrderDetailButtonClicked() {
@@ -1830,6 +1808,26 @@ open class SomDetailFragment :
                 dismissCoachMark()
             }
         }
+    }
+
+    override fun getBuyerRequestCancelRespondOrderId(): String {
+        return orderId
+    }
+
+    override fun getBuyerRequestCancelRespondOrderInvoice(): String {
+        return String.EMPTY
+    }
+
+    override fun getBuyerRequestCancelRespondOrderStatusCodeString(): String {
+        return detailResponse?.statusCode.orZero().toString()
+    }
+
+    override fun getBuyerRequestCancelRespondOrderStatusText(): String {
+        return detailResponse?.statusText.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel {
+        return somDetailViewModel
     }
 
     private inner class AddOnListener : AddOnViewHolder.Listener {
