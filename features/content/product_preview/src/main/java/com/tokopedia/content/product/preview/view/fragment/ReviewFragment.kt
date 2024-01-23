@@ -27,13 +27,16 @@ import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
+import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
+import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
+import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
+import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.AuthorUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.review.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
-import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
@@ -51,7 +54,7 @@ import com.tokopedia.content.common.R as contentcommonR
 class ReviewFragment @Inject constructor(
     private val router: Router
 ) : TkpdBaseV4Fragment(),
-    ReviewParentContentViewHolder.Listener,
+    ReviewInteractionListener,
     MenuBottomSheet.Listener,
     ReviewReportBottomSheet.Listener {
 
@@ -62,7 +65,9 @@ class ReviewFragment @Inject constructor(
         get() = _binding!!
 
     private val reviewAdapter by lazyThreadSafetyNone {
-        ReviewParentAdapter(this)
+        ReviewParentAdapter(
+            reviewInteractionListener = this,
+        )
     }
 
     private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
@@ -159,8 +164,8 @@ class ReviewFragment @Inject constructor(
 
                         is ProductPreviewEvent.LoginEvent<*> -> {
                             when (event.data) {
-                                is MenuStatus -> menuResult.launch(Unit)
-                                is LikeUiState -> likeResult.launch(Unit)
+                                is ReviewMenuStatus -> menuResult.launch(Unit)
+                                is ReviewLikeUiState -> likeResult.launch(Unit)
                             }
                         }
 
@@ -213,7 +218,7 @@ class ReviewFragment @Inject constructor(
     /**
      * Review Content Listener
      */
-    override fun onReviewCredibilityClicked(author: AuthorUiModel) {
+    override fun onReviewCredibilityClicked(author: ReviewAuthorUiModel) {
         val appLink = UriUtil.buildUri(REVIEW_CREDIBILITY_APPLINK, author.id, PAGE_SOURCE)
         router.route(requireContext(), appLink)
     }
@@ -224,7 +229,7 @@ class ReviewFragment @Inject constructor(
         _binding = null
     }
 
-    override fun onMenuClicked(menu: MenuStatus) {
+    override fun onMenuClicked(menu: ReviewMenuStatus) {
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
 
@@ -243,8 +248,12 @@ class ReviewFragment @Inject constructor(
         }
     }
 
-    override fun onLike(status: LikeUiState) {
+    override fun onLike(status: ReviewLikeUiState) {
         viewModel.onAction(ProductPreviewAction.Like(status))
+    }
+
+    override fun onMediaScrolled(position: Int) {
+        viewModel.onAction(ProductPreviewAction.ReviewMediaSelected(position))
     }
 
     /**
@@ -275,4 +284,5 @@ class ReviewFragment @Inject constructor(
             } as ReviewFragment
         }
     }
+
 }

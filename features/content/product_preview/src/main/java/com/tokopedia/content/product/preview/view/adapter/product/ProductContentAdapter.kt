@@ -4,20 +4,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentImageViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentVideoViewHolder
 
 class ProductContentAdapter(
-    private val listener: ProductPreviewListener
+    private val productPreviewVideoListener: ProductPreviewVideoListener
 ) : ListAdapter<ProductContentUiModel, ViewHolder>(ProductContentDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
-            TYPE_IMAGE -> ProductContentImageViewHolder.create(parent, listener)
-            TYPE_VIDEO -> ProductContentVideoViewHolder.create(parent, listener)
+            TYPE_IMAGE -> ProductContentImageViewHolder.create(parent)
+            TYPE_VIDEO -> ProductContentVideoViewHolder.create(parent, productPreviewVideoListener)
             else -> super.createViewHolder(parent, viewType)
         }
     }

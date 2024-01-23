@@ -5,31 +5,73 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.GestureDetector
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
-import com.tokopedia.content.product.preview.view.uimodel.review.AuthorUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.DescriptionUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.review.MenuStatus
+import com.tokopedia.content.product.preview.utils.REVIEW_CONTENT_VIDEO_KEY_REF
+import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter
+import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
+import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
+import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
+import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewDescriptionUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewParentContentViewHolder(
     private val binding: ItemReviewParentContentBinding,
-    private val listener: Listener
-) : ViewHolder(binding.root) {
+    private val reviewInteractionListener: ReviewInteractionListener,
+) : ViewHolder(binding.root),
+    ProductPreviewVideoListener {
+
+    // TODO set null when view destroy
+
+    private var mVideoPlayer: ProductPreviewExoPlayer? = null
+    private val videoPlayerManager by lazyThreadSafetyNone {
+        ProductPreviewVideoPlayerManager(binding.root.context)
+    }
+
+    private val reviewContentAdapter: ReviewContentAdapter by lazyThreadSafetyNone {
+        ReviewContentAdapter(
+            productPreviewVideoListener = this,
+        )
+    }
+
+    private val layoutManagerMedia by lazyThreadSafetyNone {
+        LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            val position = getContentCurrentPosition()
+            scrollTo(position)
+            reviewInteractionListener.onMediaScrolled(position)
+        }
+    }
+
+    private var snapHelperMedia = PagerSnapHelper()
 
     private val clickableSpan: (String) -> ClickableSpan = { desc ->
         object : ClickableSpan() {
@@ -47,27 +89,41 @@ class ReviewParentContentViewHolder(
     }
 
     fun bind(item: ReviewContentUiModel) {
+        bindMedia(item.medias)
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
         setupTap(item)
     }
 
-    private fun bindAuthor(author: AuthorUiModel) = with(binding.layoutAuthorReview) {
+    private fun bindMedia(media: List<ReviewMediaUiModel>) = with(binding.rvReviewMedia) {
+        prepareVideoPlayerIfNeeded(media)
+
+        adapter = reviewContentAdapter
+        layoutManager = layoutManagerMedia
+        snapHelperMedia.attachToRecyclerView(this)
+        removeOnScrollListener(mediaScrollListener)
+        addOnScrollListener(mediaScrollListener)
+        itemAnimator = null
+
+        reviewContentAdapter.submitList(media)
+    }
+
+    private fun bindAuthor(author: ReviewAuthorUiModel) = with(binding.layoutAuthorReview) {
         tvAuthorName.text = author.name
         ivAuthor.loadImageCircle(url = author.avatarUrl)
         lblAuthorStats.setLabel(author.type)
         lblAuthorStats.showWithCondition(author.type.isNotBlank())
 
         lblAuthorStats.setOnClickListener {
-            listener.onReviewCredibilityClicked(author)
+            reviewInteractionListener.onReviewCredibilityClicked(author)
         }
         tvAuthorName.setOnClickListener {
-            listener.onReviewCredibilityClicked(author)
+            reviewInteractionListener.onReviewCredibilityClicked(author)
         }
     }
 
-    private fun bindDescription(description: DescriptionUiModel) = with(binding) {
+    private fun bindDescription(description: ReviewDescriptionUiModel) = with(binding) {
         val divider = root.context.getString(R.string.circle_dot_divider)
         tvReviewDetails.text = buildString {
             append(description.stars)
@@ -103,35 +159,35 @@ class ReviewParentContentViewHolder(
         tvReviewDescription.show()
     }
 
-    fun bindLike(state: LikeUiState) = with(binding.layoutLikeReview) {
+    fun bindLike(state: ReviewLikeUiState) = with(binding.layoutLikeReview) {
         val icon = when (state.state) {
-            LikeUiState.LikeStatus.Reset, LikeUiState.LikeStatus.Dislike -> IconUnify.THUMB
+            ReviewLikeUiState.ReviewLikeStatus.Reset, ReviewLikeUiState.ReviewLikeStatus.Dislike -> IconUnify.THUMB
             else -> IconUnify.THUMB_FILLED
         }
         ivReviewLike.setImage(newIconId = icon)
         tvLikeCount.text = state.count.toString()
         root.setOnClickListener {
-            listener.onLike(state.copy(withAnimation = false))
+            reviewInteractionListener.onLike(state.copy(withAnimation = false))
         }
 
         if (!state.withAnimation) return@with
         binding.ivDanceLike.onAnimStartAction = { binding.ivDanceLike.show() }
         binding.ivDanceLike.onAnimEndAction = { binding.ivDanceLike.gone() }
         binding.ivDanceLike.setIconEnabled(isEnabled = true)
-        binding.ivDanceLike.setIsLiked(state.state == LikeUiState.LikeStatus.Like)
+        binding.ivDanceLike.setIsLiked(state.state == ReviewLikeUiState.ReviewLikeStatus.Like)
         binding.ivDanceLike.playLikeAnimation()
     }
 
     private fun setupTap(item: ReviewContentUiModel) {
         binding.ivReviewMenu.setOnClickListener {
-            listener.onMenuClicked(item.menus)
+            reviewInteractionListener.onMenuClicked(item.menus)
         }
 
         val gesture = GestureDetector(
             binding.root.context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onDoubleTap(e: MotionEvent): Boolean {
-                    listener.onLike(item.likeState.copy(withAnimation = true))
+                    reviewInteractionListener.onLike(item.likeState.copy(withAnimation = true))
                     return true
                 }
             }
@@ -142,18 +198,73 @@ class ReviewParentContentViewHolder(
         }
     }
 
-    interface Listener {
-        fun onReviewCredibilityClicked(author: AuthorUiModel)
-        fun onMenuClicked(menu: MenuStatus)
-        fun onLike(status: LikeUiState)
+    private fun prepareVideoPlayerIfNeeded(media: List<ReviewMediaUiModel>) {
+        if (mVideoPlayer != null) return
+
+        val videoPosition = media.indexOfFirst { it.type == MediaType.Video }
+        if (videoPosition < 0) return
+
+        val data = media[videoPosition]
+        val videoUrl = data.url
+
+        val instance = videoPlayerManager.occupy(
+            String.format(
+                REVIEW_CONTENT_VIDEO_KEY_REF,
+                videoUrl
+            )
+        )
+        val videoPlayer = mVideoPlayer ?: instance
+        mVideoPlayer = videoPlayer
+        mVideoPlayer?.start(
+            videoUrl = videoUrl,
+            isMute = false,
+            playWhenReady = false
+        )
+    }
+
+    private fun scrollTo(position: Int) {
+        binding.rvReviewMedia.smoothScrollToPosition(position)
+    }
+
+    private fun getContentCurrentPosition(): Int {
+        val snappedView = snapHelperMedia.findSnapView(layoutManagerMedia)
+            ?: return RecyclerView.NO_POSITION
+        return binding.rvReviewMedia.getChildAdapterPosition(snappedView)
     }
 
     companion object {
-        fun create(binding: ItemReviewParentContentBinding, listener: Listener) =
-            ReviewParentContentViewHolder(binding, listener)
-
         private const val MAX_LINES_VALUE = 25
         private const val MAX_LINES_THRESHOLD = 2
         private const val READ_MORE_COUNT = 16
+
+        fun create(
+            parent: ViewGroup,
+            reviewInteractionListener: ReviewInteractionListener,
+        ) = ReviewParentContentViewHolder(
+            binding = ItemReviewParentContentBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ),
+            reviewInteractionListener = reviewInteractionListener,
+        )
+    }
+
+    override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
+        return videoPlayerManager.occupy(id)
+    }
+
+    override fun pauseVideo(id: String) {
+        videoPlayerManager.pause(id)
+    }
+
+    override fun resumeVideo(id: String) {
+        videoPlayerManager.resume(id)
+    }
+
+    override fun onScrubbing() {
+    }
+
+    override fun onStopScrubbing() {
     }
 }

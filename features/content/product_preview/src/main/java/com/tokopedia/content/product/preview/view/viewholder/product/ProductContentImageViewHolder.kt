@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.databinding.ItemProductContentImageBinding
-import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -12,7 +11,6 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class ProductContentImageViewHolder(
     private val binding: ItemProductContentImageBinding,
-    private val listener: ProductPreviewListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(content: ProductContentUiModel) {
@@ -34,14 +32,13 @@ class ProductContentImageViewHolder(
     }
 
     companion object {
-        fun create(parent: ViewGroup, listener: ProductPreviewListener) =
+        fun create(parent: ViewGroup) =
             ProductContentImageViewHolder(
                 binding = ItemProductContentImageBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 ),
-                listener = listener
             )
     }
 }

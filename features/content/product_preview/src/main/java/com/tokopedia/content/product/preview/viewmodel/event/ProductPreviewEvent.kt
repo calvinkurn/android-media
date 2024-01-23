@@ -1,8 +1,8 @@
 package com.tokopedia.content.product.preview.viewmodel.event
 
 import com.tokopedia.content.product.preview.R
-import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.review.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
 
 /**
  * @author by astidhiyaa on 12/12/23
@@ -33,11 +33,11 @@ sealed interface ProductPreviewEvent {
     ) : ProductPreviewEvent
 
     data class ShowMenuSheet(
-        val status: MenuStatus,
+        val status: ReviewMenuStatus,
     ) : ProductPreviewEvent
 
     data class LikeUpdate(
-        val state: LikeUiState
+        val state: ReviewLikeUiState
     ) : ProductPreviewEvent
 }
 

@@ -1,40 +1,44 @@
 package com.tokopedia.content.product.preview.view.uimodel.review
 
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
+
 /**
  * @author by astidhiyaa on 06/12/23
  */
 data class ReviewContentUiModel(
     val reviewId: String,
-    val medias: List<MediaUiModel>,
-    val menus: MenuStatus,
-    val likeState: LikeUiState,
-    val author: AuthorUiModel,
-    val description: DescriptionUiModel
+    val medias: List<ReviewMediaUiModel>,
+    val menus: ReviewMenuStatus,
+    val likeState: ReviewLikeUiState,
+    val author: ReviewAuthorUiModel,
+    val description: ReviewDescriptionUiModel
 ) {
     companion object {
         val Empty
             get() = ReviewContentUiModel(
                 reviewId = "",
                 medias = emptyList(),
-                menus = MenuStatus(isReportable = false),
-                likeState = LikeUiState(0, LikeUiState.LikeStatus.Reset),
-                author = AuthorUiModel("", "", "", "", ""),
-                description = DescriptionUiModel(0, "", "", "")
+                menus = ReviewMenuStatus(isReportable = false),
+                likeState = ReviewLikeUiState(0, ReviewLikeUiState.ReviewLikeStatus.Reset),
+                author = ReviewAuthorUiModel("", "", "", "", ""),
+                description = ReviewDescriptionUiModel(0, "", "", "")
             )
     }
 }
 
-data class MediaUiModel(
-    val type: String,
-    val url: String
+data class ReviewMediaUiModel(
+    val mediaId: String = "",
+    val type: MediaType = MediaType.Unknown,
+    val url: String = "",
+    val selected: Boolean = false,
 )
 
-data class LikeUiState(
+data class ReviewLikeUiState(
     val count: Int,
-    val state: LikeStatus,
+    val state: ReviewLikeStatus,
     val withAnimation: Boolean = false // from double tap
 ) {
-    enum class LikeStatus(val value: Int) {
+    enum class ReviewLikeStatus(val value: Int) {
         Like(1),
         Dislike(2), // Not yet
         Reset(3);
@@ -42,20 +46,20 @@ data class LikeUiState(
         companion object {
             private val values = values()
 
-            fun getByValue(value: Int): LikeStatus {
+            fun getByValue(value: Int): ReviewLikeStatus {
                 values.forEach {
                     if (it.value == value) return it
                 }
                 return Reset
             }
 
-            val LikeStatus.switch: LikeStatus
+            val ReviewLikeStatus.switch: ReviewLikeStatus
                 get() = if (this == Like) Reset else Like
         }
     }
 }
 
-data class AuthorUiModel(
+data class ReviewAuthorUiModel(
     val name: String,
     val type: String,
     val id: String,
@@ -63,13 +67,13 @@ data class AuthorUiModel(
     val appLink: String
 )
 
-data class DescriptionUiModel(
+data class ReviewDescriptionUiModel(
     val stars: Int,
     val productType: String,
     val timestamp: String,
     val description: String
 )
 
-data class MenuStatus(
+data class ReviewMenuStatus(
     val isReportable: Boolean
 )

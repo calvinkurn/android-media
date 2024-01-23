@@ -22,7 +22,7 @@ import com.tokopedia.content.product.preview.view.components.items.ProductIndica
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
 import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
-import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
-class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
+class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPreviewVideoListener {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
@@ -60,35 +60,13 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private val productContentAdapter by lazyThreadSafetyNone {
         ProductContentAdapter(
-            listener = object : ProductPreviewListener {
-                override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
-                    return videoPlayerManager.occupy(id)
-                }
-
-                override fun pauseVideo(id: String) {
-                    videoPlayerManager.pause(id)
-                }
-
-                override fun resumeVideo(id: String) {
-                    videoPlayerManager.resume(id)
-                }
-
-                override fun onScrubbing() {
-                    binding.tvIndicatorLabel.hide()
-                    binding.rvIndicatorProduct.hide()
-                }
-
-                override fun onStopScrubbing() {
-                    binding.tvIndicatorLabel.show()
-                    binding.rvIndicatorProduct.show()
-                }
-            }
+            productPreviewVideoListener = this
         )
     }
 
     private val productIndicatorAdapter by lazyThreadSafetyNone {
         ProductIndicatorAdapter(
-            listener = object :
+            productIndicatorListener = object :
                 ProductIndicatorListener {
                 override fun onClickProductIndicator(position: Int) {
                     scrollTo(position)
@@ -261,6 +239,28 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private fun scrollTo(position: Int) {
         binding.rvContentProduct.smoothScrollToPosition(position)
         binding.rvIndicatorProduct.smoothScrollToPosition(position)
+    }
+
+    override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
+        return videoPlayerManager.occupy(id)
+    }
+
+    override fun pauseVideo(id: String) {
+        videoPlayerManager.pause(id)
+    }
+
+    override fun resumeVideo(id: String) {
+        videoPlayerManager.resume(id)
+    }
+
+    override fun onScrubbing() {
+        binding.tvIndicatorLabel.hide()
+        binding.rvIndicatorProduct.hide()
+    }
+
+    override fun onStopScrubbing() {
+        binding.tvIndicatorLabel.show()
+        binding.rvIndicatorProduct.show()
     }
 
     override fun onDestroyView() {

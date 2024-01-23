@@ -7,8 +7,8 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
@@ -102,6 +102,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ClickMenu -> handleClickMenu(action.isFromLogin)
             is UpdateReviewPosition -> handleUpdateReviewPosition(action.index)
             is Like -> handleLikeFromResult(action.item)
+            is ProductPreviewAction.ReviewMediaSelected -> handleReviewMediaSelected(action.position)
         }
     }
 
@@ -294,7 +295,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         _reviewPosition.value = position
     }
 
-    private fun handleLikeFromResult(status: LikeUiState = currentReview.likeState) {
+    private fun handleLikeFromResult(status: ReviewLikeUiState = currentReview.likeState) {
         if (status.withAnimation && !userSessionInterface.isLoggedIn) return
 
         requiredLogin(status) {
@@ -322,4 +323,19 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }
         }
     }
+
+    private fun handleReviewMediaSelected(position: Int) {
+        _reviewContentState.update {
+            it.copy(reviewContent = it.reviewContent.mapIndexed { indexContent, reviewContent ->
+                if (indexContent != _reviewPosition.value) reviewContent
+                reviewContent.copy(
+                    medias = reviewContent.medias.mapIndexed { indexMedia, reviewMedia ->
+                        reviewMedia.copy(
+                            selected = indexMedia == position
+                        )
+                    })
+            })
+        }
+    }
+
 }

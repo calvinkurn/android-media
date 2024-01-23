@@ -4,8 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_Static_Black"
-    android:padding="16dp">
+    android:background="@color/Unify_Static_Black">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_review_media"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_bottom"
@@ -26,6 +34,7 @@
         layout="@layout/layout_author_review"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_review_details"
@@ -69,6 +78,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:ellipsize="end"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/gl_right"
@@ -77,14 +88,13 @@
         app:layout_constraintTop_toBottomOf="@id/tv_review_details"
         app:layout_constraintVertical_bias="1.0"
         app:typographyType="display_2"
-        android:ellipsize="end"
-        tools:text="TextView description"
-       />
+        tools:text="TextView description" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_review_menu"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_marginBottom="16dp"
         app:icon_color_light_disabled="@color/Unify_Static_White"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_disabled="@color/Unify_Static_White"
@@ -98,6 +108,7 @@
         layout="@layout/layout_like_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/iv_review_menu"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -106,6 +117,7 @@
         android:id="@+id/iv_dance_like"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:icon_color_light_disabled="@color/Unify_Static_White"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_disabled="@color/Unify_Static_White"
@@ -114,6 +126,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
