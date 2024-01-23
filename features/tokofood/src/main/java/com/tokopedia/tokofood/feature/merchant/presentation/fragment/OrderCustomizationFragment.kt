@@ -51,6 +51,7 @@ import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.tokofood.R as tokofoodR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -178,7 +179,7 @@ class OrderCustomizationFragment :
         source = arguments?.getString(BUNDLE_KEY_SOURCE) ?: SOURCE
 
         context?.run {
-            if (cartId.isNotBlank()) binding?.atcButton?.text = getString(com.tokopedia.tokofood.R.string.action_update)
+            if (cartId.isNotBlank()) binding?.atcButton?.text = getString(tokofoodR.string.action_update)
         }
 
         productUiModel?.apply {
@@ -288,7 +289,7 @@ class OrderCustomizationFragment :
     private fun setupBackgroundColor() {
         activity?.let {
             it.window.decorView.setBackgroundColor(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background)
             )
         }
     }
@@ -298,7 +299,7 @@ class OrderCustomizationFragment :
             (it as? AppCompatActivity)?.apply {
                 binding?.toolbarOrderCustomization?.run {
                     title = foodName
-                    subtitle = it.getString(com.tokopedia.tokofood.R.string.text_header_order_custom)
+                    subtitle = it.getString(tokofoodR.string.text_header_order_custom)
                     setNavigationOnClickListener {
                         onBackPressed()
                     }
