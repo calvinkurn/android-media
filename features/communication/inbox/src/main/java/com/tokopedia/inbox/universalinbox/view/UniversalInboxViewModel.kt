@@ -27,8 +27,6 @@ import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxNavigationUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxProductRecommendationUiState
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsVerticalBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaErrorUiModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
@@ -102,14 +100,11 @@ class UniversalInboxViewModel @Inject constructor(
     @VisibleForTesting
     var driverJob: Job? = null
 
-    private var page = 1
-
     fun setupViewModelObserver() {
         _actionFlow.process()
         observeInboxMenuLocalFlow()
         observeDriverChannelFlow()
         observeInboxMenuWidgetMetaAndCounterFlow()
-        observeProductRecommendationFlow()
         loadInboxMenuAndWidgetMeta() // do not use processAction
     }
 
@@ -147,11 +142,10 @@ class UniversalInboxViewModel @Inject constructor(
                 // Recommendation process
                 is UniversalInboxAction.RefreshRecommendation -> {
                     removeAllProductRecommendation(true)
-                    page = 1 // reset page
-                    loadProductRecommendation() // Load first page
+                    loadProductRecommendation(1) // Load first page
                 }
                 is UniversalInboxAction.LoadNextPage -> {
-                    loadProductRecommendation()
+                    loadProductRecommendation(it.page)
                 }
                 is UniversalInboxAction.ResetUserScrollState -> {
                     resetUserScrollState()
@@ -302,49 +296,6 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun observeProductRecommendationFlow() {
-        viewModelScope.launch {
-            getRecommendationUseCase.observe()
-                .collectLatest {
-                    withContext(dispatcher.default) {
-                        handleResultProductRecommendation(it)
-                    }
-                }
-        }
-    }
-
-    private fun handleResultProductRecommendation(
-        result: Result<RecommendationWidget>
-    ) {
-        when (result) {
-            is Result.Success -> {
-                val productRecommendation = result.data.recommendationItemList.mapIndexed { index, item ->
-                    // Add the first top ads at the 9th position (index 8), then every 9th position thereafter (change the hardcoded index for another position)
-                    if (index % 20 == 7) {
-                        UniversalInboxTopAdsVerticalBannerUiModel()
-                    } else {
-                        UniversalInboxRecommendationUiModel(item)
-                    }
-                }
-                _productRecommendationState.update {
-                    it.copy(
-                        isLoading = false,
-                        title = result.data.title,
-                        productRecommendation = productRecommendation
-                    )
-                }
-                page++
-            }
-            is Result.Error -> {
-                setLoadingRecommendation(false)
-                showErrorMessage(Pair(result.throwable, ::handleResultProductRecommendation.name))
-            }
-            is Result.Loading -> {
-                setLoadingRecommendation(true)
-            }
-        }
-    }
-
     /**
      * Actions
      */
@@ -379,30 +330,26 @@ class UniversalInboxViewModel @Inject constructor(
     }
 
     private fun setLoadingInboxMenu() {
-        viewModelScope.launch {
-            _inboxMenuUiState.update {
-                it.copy(
-                    isLoading = true,
-                    shouldTrackImpression = false
-                )
-            }
+        _inboxMenuUiState.update {
+            it.copy(
+                isLoading = true,
+                shouldTrackImpression = false
+            )
         }
     }
 
     private fun setErrorWidgetMeta() {
-        viewModelScope.launch {
-            _inboxMenuUiState.update {
-                it.copy(
-                    widgetMeta = it.widgetMeta.copy(
-                        widgetError = UniversalInboxWidgetMetaErrorUiModel(
-                            isError = true,
-                            isLocalLoadLoading = false
-                        )
-                    ),
-                    isLoading = false,
-                    shouldTrackImpression = false
-                )
-            }
+        _inboxMenuUiState.update {
+            it.copy(
+                widgetMeta = it.widgetMeta.copy(
+                    widgetError = UniversalInboxWidgetMetaErrorUiModel(
+                        isError = true,
+                        isLocalLoadLoading = false
+                    )
+                ),
+                isLoading = false,
+                shouldTrackImpression = false
+            )
         }
     }
 
@@ -433,30 +380,55 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun loadProductRecommendation() {
+    private fun loadProductRecommendation(page: Int) {
         viewModelScope.launch {
-            getRecommendationUseCase.fetchProductRecommendation(getRecommendationParam(page))
+            try {
+                getRecommendationUseCase.fetchProductRecommendation(getRecommendationParam(page)).collectLatest {
+                    when (it) {
+                        is Result.Success -> {
+                            handleSuccessGetProductRecommendation(it.data)
+                        }
+                        is Result.Error -> {
+                            setLoadingRecommendation(false)
+                            showErrorMessage(Pair(it.throwable, ::loadProductRecommendation.name))
+                        }
+                        Result.Loading -> {
+                            setLoadingRecommendation(true)
+                        }
+                    }
+                }
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+            }
+        }
+    }
+
+    private fun handleSuccessGetProductRecommendation(recommendationWidget: RecommendationWidget) {
+        val productRecommendation = recommendationWidget.recommendationItemList.map { item ->
+            UniversalInboxRecommendationUiModel(item)
+        }
+        _productRecommendationState.update { uiState ->
+            uiState.copy(
+                title = recommendationWidget.title,
+                productRecommendation = productRecommendation,
+                isLoading = false
+            )
         }
     }
 
     private fun removeAllProductRecommendation(shouldShowLoading: Boolean) {
-        viewModelScope.launch {
-            getRecommendationUseCase.reset()
-            _productRecommendationState.update {
-                it.copy(
-                    title = "",
-                    productRecommendation = listOf(),
-                    isLoading = shouldShowLoading
-                )
-            }
+        _productRecommendationState.update {
+            it.copy(
+                title = "",
+                productRecommendation = listOf(),
+                isLoading = shouldShowLoading
+            )
         }
     }
 
     private fun setLoadingRecommendation(isLoading: Boolean) {
-        viewModelScope.launch {
-            _productRecommendationState.update {
-                it.copy(isLoading = isLoading)
-            }
+        _productRecommendationState.update {
+            it.copy(isLoading = isLoading)
         }
     }
 
@@ -557,9 +529,5 @@ class UniversalInboxViewModel @Inject constructor(
                 resetUserScrollState()
             }
         }
-    }
-
-    fun getRecommendationPage(): Int {
-        return page
     }
 }
