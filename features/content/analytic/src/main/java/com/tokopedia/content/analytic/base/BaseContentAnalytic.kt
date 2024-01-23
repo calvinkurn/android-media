@@ -5,6 +5,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.analytic.CurrentSite
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.content.analytic.model.ContentEEProduct
 import com.tokopedia.content.analytic.model.ContentEEPromotion
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
@@ -90,81 +91,6 @@ abstract class BaseContentAnalytic(
         )
     }
 
-    protected fun sendOpenScreen(
-        screenName: String,
-        mainAppTrackerId: String,
-        sellerAppTrackerId: String = "",
-    ) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(
-            screenName,
-            mapOf(
-                Key.trackerId to getTrackerId(mainAppTrackerId, sellerAppTrackerId),
-                Key.businessUnit to businessUnit,
-                Key.currentSite to currentSite,
-                Key.sessionIris to sessionIris,
-            )
-        )
-    }
-
-    protected fun sendViewEEPromotions(
-        eventAction: String,
-        eventLabel: String,
-        mainAppTrackerId: String,
-        sellerAppTrackerId: String = "",
-        promotions: List<ContentEEPromotion>,
-    ) {
-        sendEEPromotions(
-            event = Event.viewItem,
-            eventAction = eventAction,
-            eventLabel = eventLabel,
-            mainAppTrackerId = mainAppTrackerId,
-            sellerAppTrackerId = sellerAppTrackerId,
-            promotions = promotions,
-        )
-    }
-
-    protected fun sendClickEEPromotions(
-        eventAction: String,
-        eventLabel: String,
-        mainAppTrackerId: String,
-        sellerAppTrackerId: String = "",
-        promotions: List<ContentEEPromotion>,
-    ) {
-        sendEEPromotions(
-            event = Event.selectContent,
-            eventAction = eventAction,
-            eventLabel = eventLabel,
-            mainAppTrackerId = mainAppTrackerId,
-            sellerAppTrackerId = sellerAppTrackerId,
-            promotions = promotions,
-        )
-    }
-
-    protected fun buildEventLabel(
-        vararg labels: String
-    ): String {
-        return buildString {
-            for (i in labels.indices) {
-                append(labels[i])
-
-                if (i != labels.size-1) {
-                    append(" - ")
-                }
-            }
-        }
-    }
-
-    private fun send(
-        trackerBuilder: Tracker.Builder
-    ) {
-        trackerBuilder
-            .setCurrentSite(currentSite)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userSession.userId)
-            .build()
-            .send()
-    }
-
     private fun sendEEPromotions(
         event: String,
         eventAction: String,
@@ -200,6 +126,93 @@ abstract class BaseContentAnalytic(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(event, trackerBundle)
     }
 
+    protected fun sendEEProduct(
+        event: String,
+        eventAction: String,
+        eventLabel: String,
+        itemList: String,
+        mainAppTrackerId: String,
+        sellerAppTrackerId: String = "",
+        products: List<ContentEEProduct>,
+        customFields: Map<String, String>,
+    ) {
+        val trackerBundle = Bundle().apply {
+            putString(Key.event, event)
+            putString(Key.eventCategory, eventCategory)
+            putString(Key.eventAction, eventAction)
+            putString(Key.eventLabel, eventLabel)
+            putParcelableArrayList(
+                Key.items,
+                ArrayList(
+                    products.map { item ->
+                        Bundle().apply {
+                            putString(Key.itemId, item.itemId)
+                            putString(Key.itemName, item.itemName)
+                            putString(Key.itemBrand, item.itemBrand)
+                            putString(Key.itemCategory, item.itemCategory)
+                            putString(Key.itemVariant, item.itemVariant)
+                            putString(Key.price, item.price)
+                            putString(Key.itemIndex, item.index)
+                            item.customFields.entries.forEach {
+                                putString(it.key, it.value)
+                            }
+                        }
+                    }
+                )
+            )
+            putString(Key.itemList, itemList)
+            putString(Key.trackerId, getTrackerId(mainAppTrackerId, sellerAppTrackerId))
+            putString(Key.userId, userSession.userId)
+            putString(Key.businessUnit, businessUnit)
+            putString(Key.currentSite, currentSite)
+            customFields.entries.forEach {
+                putString(it.key, it.value)
+            }
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(event, trackerBundle)
+    }
+
+    protected fun sendOpenScreen(
+        screenName: String,
+        mainAppTrackerId: String,
+        sellerAppTrackerId: String = "",
+    ) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            screenName,
+            mapOf(
+                Key.trackerId to getTrackerId(mainAppTrackerId, sellerAppTrackerId),
+                Key.businessUnit to businessUnit,
+                Key.currentSite to currentSite,
+                Key.sessionIris to sessionIris,
+            )
+        )
+    }
+
+    protected fun buildEventLabel(
+        vararg labels: String
+    ): String {
+        return buildString {
+            for (i in labels.indices) {
+                append(labels[i])
+
+                if (i != labels.size-1) {
+                    append(" - ")
+                }
+            }
+        }
+    }
+
+    private fun send(
+        trackerBuilder: Tracker.Builder
+    ) {
+        trackerBuilder
+            .setCurrentSite(currentSite)
+            .setCustomProperty(Key.sessionIris, sessionIris)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
 
     private fun getTrackerId(
         mainAppTrackerId: String,
