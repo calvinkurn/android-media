@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_info_gen_one"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        app:card_background_color="@color/Unify_NN50"
+        app:card_type="clear"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toStartOf="@id/card_info_gen_two"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/recharge_pdp_emoney_bca_text_gen_one"
+                />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_info_gen_one"
+                android:layout_width="wrap_content"
+                android:layout_height="85dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_info_gen_two"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginEnd="12dp"
+        app:card_background_color="@color/Unify_NN50"
+        app:card_type="clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/card_info_gen_one"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/recharge_pdp_emoney_bca_text_gen_two"
+                />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_info_gen_two"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_bca_info_gen_one"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/recharge_pdp_emoney_bca_info_gen_one"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_info_gen_one"
+        app:typographyType="display_1"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_bca_info_gen_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="18dp"
+        android:text="@string/recharge_pdp_emoney_bca_info_gen_two"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_bca_info_gen_one"
+        app:typographyType="display_1"
+        app:typographyWeight="reguler" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

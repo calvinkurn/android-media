@@ -588,8 +588,9 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev == curr || curr == ProfileUiModel.Empty) return
 
+        val userName = if (curr.username.isEmpty()) "" else getString(R.string.up_username_template, curr.username)
         mainBinding.headerProfile.title = curr.name
-        mainBinding.headerProfile.subtitle = if (curr.username.isEmpty()) "" else "@${curr.username}"
+        mainBinding.headerProfile.subtitle = userName
         mainBinding.headerProfile.visible()
 
         binding.viewFlipper.displayedChild = PAGE_CONTENT
@@ -607,10 +608,8 @@ class UserProfileFragment @Inject constructor(
         setProfileImg(curr)
 
         with(mainBinding) {
-            textUserName.shouldShowWithAction(curr.username.isNotBlank()) {
-                textUserName.text = getString(R.string.up_username_template, curr.username)
-            }
             textDisplayName.text = curr.name
+            textUserName.text = userName
             setProfileBadge(curr.badges)
             layoutUserProfileStats.textContentCount.text = curr.stats.totalPostFmt
             layoutUserProfileStats.textReviewCount.text = curr.stats.totalReviewFmt
