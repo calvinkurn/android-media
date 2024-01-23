@@ -24,5 +24,5 @@
     <string name="om_buy_again_button">Beli Lagi</string>
 
     <string name="raw_string_format">%1$s</string>
-    <string name="om_gwp_collapsed_title_format">(%1$d) hadiah</string>
+    <string name="om_gwp_collapsed_title_format">(%1$d hadiah)</string>
 </resources>
