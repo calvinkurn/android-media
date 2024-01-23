@@ -85,9 +85,11 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
         orderRequestCancelBottomSheet?.run {
             setListener(listener)
             init(
-                popUp,
                 Utils.getL2CancellationReason(orderDetail?.buyerRequestCancel?.reason.orEmpty()),
-                orderDetail?.statusCode.orZero()
+                orderDetail?.statusCode.orZero(),
+                popUp.body,
+                popUp.getPrimaryButton()?.displayName.orEmpty(),
+                popUp.getSecondaryButton()?.displayName.orEmpty()
             )
             init(view)
         }
