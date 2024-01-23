@@ -35,4 +35,15 @@
     <color name="feed_dms_tag_product_icon_background">#FFA617</color>
 
     <color name="feed_dms_red_dot_color">#E02954</color>
+
+    <!--browse-->
+    <color name="feed_dms_browse_placeholder_bg">#E4EBF5</color>
+    <color name="feed_dms_browse_author_widget_top_top_overlay">#33000000</color>
+    <color name="feed_dms_browse_author_widget_top_bottom_overlay">#00000000</color>
+
+    <color name="feed_dms_browse_author_widget_bottom_top_overlay">#00000000</color>
+    <color name="feed_dms_browse_author_widget_bottom_bottom_overlay">#66000000</color>
+
+    <color name="feed_dms_browse_banner_start_overlay">#47000000</color>
+    <color name="feed_dms_browse_banner_end_overlay">#00000000</color>
 </resources>

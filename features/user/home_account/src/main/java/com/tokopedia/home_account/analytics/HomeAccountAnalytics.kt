@@ -172,26 +172,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         )
     }
 
-    fun eventClickToggleOnGeolocation() {
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(
-            EVENT_CLICK_HOME_PAGE,
-            CATEGORY_HOMEPAGE,
-            ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
-            LABEL_EMPTY
-        )
-    }
-
-    fun eventClickToggleOffGeolocation() {
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(
-            EVENT_CLICK_HOME_PAGE,
-            CATEGORY_HOMEPAGE,
-            ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
-            LABEL_EMPTY
-        )
-    }
-
     fun eventAccountProductView(trackingQueue: TrackingQueue, recommendationItem: RecommendationItem, position: Int) {
         val map: Map<String, Any> = DataLayer.mapOf(
             EVENT, EVENT_PRODUCT_VIEW,
@@ -522,20 +502,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         analytics.sendGeneralEvent(map)
     }
 
-    fun eventClickAppSettingShake(enable: Boolean) {
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        val map = TrackAppUtils.gtmData(
-            EVENT_CLICK_ACCOUNT,
-            CATEGORY_ACCOUNT_BUYER,
-            ACTION_CLICK_APP_SETTING_SECTION,
-            String.format(Locale.getDefault(), "%s - %s", LABEL_SHAKE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
-        )
-        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
-        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
-        map[EVENT_USER_ID] = userSession.userId
-        analytics.sendGeneralEvent(map)
-    }
-
     fun eventClickAppSettingGeolocation(enable: Boolean) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
@@ -730,17 +696,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
         map[EVENT_USER_ID] = userSession.userId
         analytics.sendGeneralEvent(map)
-    }
-
-    fun trackClickBackLinkAccount() {
-        track(
-            TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
-                ACTION_CLICK_BACK,
-                ""
-            )
-        )
     }
 
     fun trackClickHubungkanLinkAccountPage() {
