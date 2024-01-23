@@ -27,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.util.Date
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 const val PRODUCT_PER_PAGE = 10
@@ -164,7 +163,7 @@ class ProductCardCarouselViewModel(
     }
 
     private suspend fun getMaxHeightProductCard(list: java.util.ArrayList<ComponentsItem>) {
-        val productCardModelArray = ArrayList<ProductCardModel>()
+        val productCardModelArray : ArrayList<ProductCardModel> = arrayListOf()
         var templateType = GRID
         list.forEach {
             if (it.properties?.template == LIST) {
