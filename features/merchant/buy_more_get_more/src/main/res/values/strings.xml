@@ -35,4 +35,9 @@
     <string name="bmgm_empty_state_product_list_title">Sering dibeli bareng belanjaanmu</string>
     <string name="bmgm_dari_label">Dari</string>
 
+    <string name="bmgm_mini_cart_bmgm_bottom_sheet_title">Barang yang Dipilih</string>
+    <string name="bmgm_mini_cart_widget_label_total_price_unavailable_default">-</string>
+    <string name="bmsm_check_cart">Cek Keranjang</string>
+    <string name="bmsm_mini_cart_error_title">Oops. halaman ini gagal dimuat</string>
+    <string name="bmsm_mini_cart_error_message">Klik Tombol di bawah ini untuk refresh halaman ini, ya!</string>
 </resources>

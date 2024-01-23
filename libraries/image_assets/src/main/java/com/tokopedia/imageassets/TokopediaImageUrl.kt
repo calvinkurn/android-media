@@ -391,7 +391,7 @@ object TokopediaImageUrl {
     const val IMG_TOKOCHAT_LIST_EMPTY = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_list_empty.png"
     const val IMG_EDITSHIPPING_AWB_OTOMATIS = "https://images.tokopedia.net/img/logistic/editshipping/awb_otomatis.png"
     const val IMG_EDITSHIPPING_NON_TUNAI = "https://images.tokopedia.net/img/logistic/editshipping/non_tunai.png"
-    const val OLP_GLOBAL_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png"
+    const val OLP_NOT_FOUND_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png"
     const val OLP_SERVER_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_server_error.png"
     const val OLP_BMGM_HEADER_ILLUSTRATION = "https://images.tokopedia.net/img/android/bmgm/OLP_Header.png"
     const val EVENT_SOFTBOOK_ENDED_BOTTOM_SHEET_IMG_URL = "https://images.tokopedia.net/img/event/event_checkout_softbook_ended_bottom_sheet_mini.png"
@@ -407,4 +407,6 @@ object TokopediaImageUrl {
     const val TOKOPEDIANOW_IC_QUEST_LOCKED_DARK = "https://images.tokopedia.net/img/tokopedianow/icons/tokopedianow_ic_quest_locked_dark.png"
     const val TOKOPEDIANOW_IC_QUEST_LOCKED_LIGHT = "https://images.tokopedia.net/img/tokopedianow/icons/tokopedianow_ic_quest_locked_light.png"
     const val CATALOG_EMPTY_STATE = "https://images.tokopedia.net/img/illustration/global/Medium_Empty_Catalog.png"
+    const val BMSM_GWP_WIDGET_ILLUSTRATION = "https://images.tokopedia.net/img/illustration/seller/Medium_General_Giftbox_Faded.png"
+    const val BMSM_PD_WIDGET_ILLUSTRATION = "https://images.tokopedia.net/img/illustration/seller/Medium_General_Token_Faded.png"
 }

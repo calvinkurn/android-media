@@ -14,6 +14,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.util.setupCardDarkMode
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -43,11 +45,14 @@ open class ProductViewHolder(
     private var partialItemBuyerOrderDetailAddonsBinding: PartialItemBuyerOrderDetailAddonsBinding? =
         null
 
+    private val cardContainer: CardUnify? = itemView?.findViewById(R.id.cardBuyerOrderDetailProduct)
+
     override fun bind(element: ProductListUiModel.ProductUiModel?) {
         element?.let {
             this.element = it
             setupProductList(it)
             setupAddonSection(it.addonsListUiModel)
+            cardContainer?.setupCardDarkMode()
         }
     }
 
@@ -106,7 +111,9 @@ open class ProductViewHolder(
             if (addonsViewStub is ViewStub) addonsViewStub.inflate() else addonsViewStub.show()
             setupAddonsBinding()
             partialProductAddonViewHolder =
-                partialItemBuyerOrderDetailAddonsBinding?.let { PartialProductAddonViewHolder(it) }
+                partialItemBuyerOrderDetailAddonsBinding?.let {
+                    PartialProductAddonViewHolder(listener, it)
+                }
             partialProductAddonViewHolder?.bindViews(addonsListUiModel)
         } else {
             addonsViewStub.hide()

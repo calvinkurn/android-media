@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
-import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
+import com.tokopedia.cart.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.coEvery
 import io.mockk.every

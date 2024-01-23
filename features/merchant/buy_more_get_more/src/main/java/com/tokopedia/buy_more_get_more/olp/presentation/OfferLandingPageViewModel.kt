@@ -10,20 +10,28 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam
-import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam.UserLocation
-import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
+import com.tokopedia.bmsm_widget.domain.entity.TierGifts
+import com.tokopedia.buy_more_get_more.minicart.domain.model.MiniCartParam
+import com.tokopedia.buy_more_get_more.minicart.domain.usecase.GetMiniCartUseCase
+import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartDataUiModel
+import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartVisitable
+import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferInfoForBuyerMapper
+import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferProductListMapper
 import com.tokopedia.buy_more_get_more.olp.data.request.GetSharingDataByOfferIDParam
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpUiState
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.SelectedTierData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
-import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
-import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
 import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
+import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam
+import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam.UserLocation
+import com.tokopedia.campaign.data.request.GetOfferingProductListRequestParam
+import com.tokopedia.campaign.usecase.GetOfferInfoForBuyerUseCase
+import com.tokopedia.campaign.usecase.GetOfferProductListUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -52,8 +60,11 @@ class OfferLandingPageViewModel @Inject constructor(
     private val getOfferProductListUseCase: GetOfferProductListUseCase,
     private val getSharingDataByOfferIDUseCase: GetSharingDataByOfferIDUseCase,
     private val getNotificationUseCase: GetNotificationUseCase,
+    private val getMiniCartUseCase: GetMiniCartUseCase,
     private val addToCartUseCase: AddToCartUseCase,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val getOfferingInfoForBuyerMapper: GetOfferInfoForBuyerMapper,
+    private val getOfferingProductListMapper: GetOfferProductListMapper
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(OlpUiState())
@@ -83,6 +94,10 @@ class OfferLandingPageViewModel @Inject constructor(
     val miniCartAdd: LiveData<Result<AddToCartDataModel>>
         get() = _miniCartAdd
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
+
+    private val _tierGifts = MutableLiveData<Result<SelectedTierData>>()
+    val tierGifts: LiveData<Result<SelectedTierData>>
+        get() = _tierGifts
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
@@ -139,6 +154,7 @@ class OfferLandingPageViewModel @Inject constructor(
             is OlpEvent.SetEndDate -> setEndDate(event.endDate)
             is OlpEvent.SetOfferTypeId -> setOfferTypeId(event.offerTypeId)
             is OlpEvent.SetSharingData -> setSharingData(event.sharingData)
+            is OlpEvent.TapTier -> handleTapTier(event.selectedTier, event.offerInfo)
         }
     }
 
@@ -169,7 +185,8 @@ class OfferLandingPageViewModel @Inject constructor(
             block = {
                 val result =
                     getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam())
-                _offeringInfo.postValue(result)
+                val mappedResult = getOfferingInfoForBuyerMapper.map(result)
+                _offeringInfo.postValue(mappedResult)
             },
             onError = {
                 _error.postValue(it)
@@ -232,7 +249,8 @@ class OfferLandingPageViewModel @Inject constructor(
                 )
 
                 val result = getOfferProductListUseCase.execute(param)
-                _productList.postValue(result)
+                val mappedResult = getOfferingProductListMapper.map(result)
+                _productList.postValue(mappedResult)
             },
             onError = {
                 _error.postValue(it)
@@ -416,5 +434,56 @@ class OfferLandingPageViewModel @Inject constructor(
         }, onError = {
                 it.printStackTrace()
             })
+    }
+
+    private fun handleTapTier(
+        selectedTier: OfferInfoForBuyerUiModel.Offering.Tier,
+        offerInfo: OfferInfoForBuyerUiModel
+    ) {
+        getTierGifts(selectedTier, offerInfo)
+    }
+
+    private fun getTierGifts(
+        selectedTier: OfferInfoForBuyerUiModel.Offering.Tier,
+        offerInfo: OfferInfoForBuyerUiModel
+    ) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val param = MiniCartParam(
+                    shopIds = listOf(currentState.shopData.shopId),
+                    offerIds = currentState.offerIds,
+                    offerJsonData = currentState.offeringJsonData,
+                    warehouseIds = currentState.warehouseIds
+                )
+
+                val miniCartData = getMiniCartUseCase(param = param)
+                val tierGifts = miniCartData.toTierGifts()
+
+                _tierGifts.postValue(Success(SelectedTierData(selectedTier, offerInfo, tierGifts)))
+            },
+            onError = { error ->
+                _tierGifts.postValue(Fail(error))
+            }
+        )
+    }
+
+    private fun BmgmMiniCartDataUiModel.toTierGifts(): List<TierGifts> {
+        val tierGifts = mutableListOf<TierGifts>()
+
+        val gifts = tiers.filterIsInstance<BmgmMiniCartVisitable.TierUiModel>()
+
+        gifts.forEach { gift ->
+            val giftProducts = gift.productsBenefit.map { product ->
+                TierGifts.GiftProduct(
+                    product.productId.toLongOrZero(),
+                    product.quantity
+                )
+            }
+
+            tierGifts.add(TierGifts(giftProducts, gift.tierId))
+        }
+
+        return tierGifts
     }
 }

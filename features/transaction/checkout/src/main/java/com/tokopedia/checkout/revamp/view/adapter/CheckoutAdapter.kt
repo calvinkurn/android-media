@@ -9,6 +9,7 @@ import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutEpharmacyBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutProductBenefitBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutTickerErrorBinding
@@ -21,6 +22,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
@@ -32,6 +34,7 @@ import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCostViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCrossSellViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutOrderViewHolder
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductBenefitViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutPromoViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutTickerErrorViewHolder
@@ -53,6 +56,7 @@ class CheckoutAdapter(
             is CheckoutAddressModel -> CheckoutAddressViewHolder.VIEW_TYPE
             is CheckoutUpsellModel -> CheckoutUpsellViewHolder.VIEW_TYPE
             is CheckoutProductModel -> CheckoutProductViewHolder.VIEW_TYPE
+            is CheckoutProductBenefitModel -> CheckoutProductBenefitViewHolder.VIEW_TYPE
             is CheckoutOrderModel -> CheckoutOrderViewHolder.VIEW_TYPE
             is CheckoutEpharmacyModel -> UploadPrescriptionViewHolder.ITEM_VIEW_UPLOAD
             is CheckoutPromoModel -> CheckoutPromoViewHolder.VIEW_TYPE
@@ -112,6 +116,16 @@ class CheckoutAdapter(
                         false
                     ),
                     listener
+                )
+            }
+
+            CheckoutProductBenefitViewHolder.VIEW_TYPE -> {
+                CheckoutProductBenefitViewHolder(
+                    ItemCheckoutProductBenefitBinding.inflate(
+                        inflater,
+                        parent,
+                        false
+                    )
                 )
             }
 
@@ -179,6 +193,10 @@ class CheckoutAdapter(
 
             is CheckoutProductModel -> {
                 (holder as CheckoutProductViewHolder).bind(item)
+            }
+
+            is CheckoutProductBenefitModel -> {
+                (holder as CheckoutProductBenefitViewHolder).bind(item)
             }
 
             is CheckoutOrderModel -> {

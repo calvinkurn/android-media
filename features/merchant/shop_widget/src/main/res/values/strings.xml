@@ -31,4 +31,10 @@
     <string name="shop_product_empty_product_title_desc">Jadi yang pertama untuk follow Toko %1$s dan temukan update tentang toko ini di feed Anda.</string>
     <string name="shop_page_label_follow">Follow</string>
     <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
+    
+    <!--BMSM Widget-->
+    <string name="bmsm_widget_text_another_product">Produk lainnya</string>
+    <string name="bmsm_widget_text_see_all">Lihat Semua</string>
+    <string name="bmsm_widget_oos_product_title">Barang promosi sudah habis</string>
+    <string name="bmsm_widget_oos_product_description">Kamu teteap bisa cek barang lain atau promosi di toko ini.</string>
 </resources>
