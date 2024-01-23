@@ -66,6 +66,9 @@ data class ComponentData(
     val name: String = "",
     @SerializedName("parentName")
     val parentName: String = "",
+    @SerializedName("labelIcons")
+    @Expose
+    val labelIcons: List<LabelIcons> = emptyList(),
     @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     val price: Price = Price(),

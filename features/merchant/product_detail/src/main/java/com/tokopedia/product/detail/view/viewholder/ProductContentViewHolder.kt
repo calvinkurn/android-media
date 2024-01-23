@@ -51,7 +51,11 @@ class ProductContentViewHolder(
         }
 
         when (payloads[0] as Int) {
-            ProductContentDataModel.PAYLOAD_WISHLIST -> header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
+            ProductContentDataModel.PAYLOAD_WISHLIST -> header.updateWishlist(
+                element.isWishlisted,
+                listener.shouldShowWishlist()
+            )
+
             ProductContentDataModel.PAYLOAD_TRADEIN_BOE_SHARE -> {
                 header.renderTradein(element.showTradeIn())
 
@@ -85,5 +89,10 @@ class ProductContentViewHolder(
                 listener.onFabWishlistClicked(activeState, getComponentTrackData(content))
             }
         }
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        header.onViewRecycled()
     }
 }

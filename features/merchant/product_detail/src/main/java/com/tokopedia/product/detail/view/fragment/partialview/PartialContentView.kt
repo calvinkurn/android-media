@@ -21,6 +21,7 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
+import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemProductContentBinding
@@ -62,7 +63,7 @@ class PartialContentView(
             MethodChecker.fromHtml(data.productName)
         )
 
-        setProductName(kviIcon = data.kviIcon, data.productName)
+        setProductName(labelIcons = data.labelIcons, data.productName)
 
         renderFreeOngkir(freeOngkirImgUrl)
 
@@ -163,11 +164,11 @@ class PartialContentView(
         hideGimmick(campaign)
     }
 
-    private fun setProductName(kviIcon: String, title: String) {
-        if (kviIcon.isBlank()) {
+    private fun setProductName(labelIcons: List<LabelIcons>, title: String) {
+        if (labelIcons.isEmpty()) {
             setProductNameText(title = title)
         } else {
-            setProductNameWithIcon(icon = kviIcon, title = title)
+            setProductNameWithIcon(labelIcons = labelIcons, title = title)
         }
     }
 
@@ -175,28 +176,30 @@ class PartialContentView(
         binding.productName.text = title.parseAsHtmlLink(context, false)
     }
 
-    private fun setProductNameWithIcon(icon: String, title: String) {
+    private fun setProductNameWithIcon(labelIcons: List<LabelIcons>, title: String) {
         val textView = binding.productName
         val stringBuilder = SpannableStringBuilder().apply {
             append(title.parseAsHtmlLink(context, false))
         }
         textView.text = stringBuilder
 
-        loadIcon(url = icon, onSuccess = { resource ->
-            resource.resizeToKviIconSpec()
-            stringBuilder.setKviImageSpan(drawable = resource)
-            textView.text = stringBuilder
-        })
+        labelIcons.reversed().forEach {
+            loadIcon(url = it.iconURL, onSuccess = { resource ->
+                resource.resizeLabelIconSpec()
+                stringBuilder.setLabelIconSpan(drawable = resource)
+                textView.text = stringBuilder
+            })
+        }
     }
 
-    private fun Drawable.resizeToKviIconSpec() {
+    private fun Drawable.resizeLabelIconSpec() {
         val ratio = intrinsicWidth.toFloat() / intrinsicHeight.toFloat()
         val bottom = if (intrinsicHeight > KVI_ICON_HEIGHT) KVI_ICON_HEIGHT else intrinsicHeight
         val right = bottom * ratio
         setBounds(Int.ZERO, Int.ZERO, right.toInt(), bottom)
     }
 
-    private fun SpannableStringBuilder.setKviImageSpan(drawable: Drawable) {
+    private fun SpannableStringBuilder.setLabelIconSpan(drawable: Drawable) {
         val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BOTTOM)
 
         insert(Int.ZERO, "  ")
@@ -238,7 +241,7 @@ class PartialContentView(
     }
 
     private fun hideProductCampaign(campaign: CampaignModular) = with(binding) {
-        setProductName("", campaign.slashPriceFmt)
+        setProductName(emptyList(), campaign.slashPriceFmt)
         campaignRibbon.hide()
         textDiscountRed.gone()
         textSlashPrice.gone()
@@ -253,5 +256,8 @@ class PartialContentView(
 
     override fun onOnGoingCampaignEnded(campaign: CampaignModular) {
         hideProductCampaign(campaign = campaign)
+    }
+
+    fun onViewRecycled() {
     }
 }

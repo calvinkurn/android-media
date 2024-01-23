@@ -5,6 +5,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Bl
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
+import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -124,6 +125,6 @@ data class ProductContentMainData(
     var stockWording: String = "",
     var isVariant: Boolean = false,
     var productName: String = "",
-    var kviIcon: String = "https://images.tokopedia.net/img/jdvdtx/2024/1/8/46b0110b-bf10-4452-88bb-8157d7993878.jpg",
+    var labelIcons: List<LabelIcons> = emptyList(),
     var isProductActive: Boolean = false
 )
