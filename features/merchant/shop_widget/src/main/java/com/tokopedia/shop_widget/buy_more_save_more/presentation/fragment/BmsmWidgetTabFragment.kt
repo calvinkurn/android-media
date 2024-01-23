@@ -30,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -250,7 +251,7 @@ class BmsmWidgetTabFragment :
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
-            setViewState(VIEW_ERROR)
+            setViewState(VIEW_ERROR, getErrorCodeFromThrowable(throwable.localizedMessage.toIntOrZero()))
         }
     }
 
@@ -627,5 +628,11 @@ class BmsmWidgetTabFragment :
             imageAlpha = imageAlphaValue
             colorFilter = grayScaledColorFilter
         }
+    }
+
+    private fun getErrorCodeFromThrowable(errorCode: Int): Status {
+        return Status.values().firstOrNull { value ->
+            value.code == errorCode.toLong()
+        } ?: Status.INVALID_OFFER_ID
     }
 }
