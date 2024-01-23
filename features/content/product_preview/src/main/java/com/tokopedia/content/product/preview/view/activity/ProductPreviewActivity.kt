@@ -13,7 +13,7 @@ import com.tokopedia.content.product.preview.di.ProductPreviewInjector
 import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 import javax.inject.Inject
 
 class ProductPreviewActivity : BaseActivity() {
@@ -78,9 +78,9 @@ class ProductPreviewActivity : BaseActivity() {
         )
     }
 
-    private fun getProductData(): ProductContentUiModel? {
+    private fun getProductData(): ProductUiModel? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.extras?.getParcelable(PRODUCT_DATA, ProductContentUiModel::class.java)
+            intent.extras?.getParcelable(PRODUCT_DATA, ProductUiModel::class.java)
         } else {
             intent.extras?.getParcelable(PRODUCT_DATA)
         }
@@ -89,7 +89,7 @@ class ProductPreviewActivity : BaseActivity() {
     companion object {
         fun createIntent(
             context: Context,
-            productContentData: ProductContentUiModel
+            productContentData: ProductUiModel
         ): Intent {
             val intent = Intent(context, ProductPreviewActivity::class.java)
             val bundle = Bundle()

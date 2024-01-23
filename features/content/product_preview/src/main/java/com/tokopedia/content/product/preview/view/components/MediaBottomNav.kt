@@ -22,7 +22,6 @@ import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by astidhiyaa on 23/11/23
@@ -40,7 +39,7 @@ fun MediaBottomNav(
                 .background(NestTheme.colors.NN._0)
                 .padding(
                     vertical = 8.dp,
-                    horizontal = 16.dp,
+                    horizontal = 16.dp
                 )
         ) {
             val (title, ogPrice, slashedPrice, discountTag, atcBtn) = createRefs()

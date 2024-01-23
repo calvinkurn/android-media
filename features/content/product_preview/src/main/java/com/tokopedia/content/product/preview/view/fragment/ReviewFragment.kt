@@ -27,16 +27,16 @@ import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
-import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
-import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
-import com.tokopedia.content.product.preview.view.uimodel.PageState
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.AuthorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
+import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -133,11 +133,11 @@ class ReviewFragment @Inject constructor(
 
     private fun observeReview() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.review.flowWithLifecycle(
+            viewModel.uiState.flowWithLifecycle(
                 viewLifecycleOwner.lifecycle,
                 Lifecycle.State.RESUMED
             ).withCache().collectLatest { (prev, curr) ->
-                renderList(prev, curr)
+                renderList(prev?.reviewUiModel, curr.reviewUiModel)
             }
         }
     }
@@ -170,16 +170,16 @@ class ReviewFragment @Inject constructor(
         }
     }
 
-    private fun renderList(prev: ReviewPageState?, data: ReviewPageState) {
-        if (prev?.reviewList == data.reviewList) return
+    private fun renderList(prev: ReviewUiModel?, data: ReviewUiModel) {
+        if (prev?.reviewContent == data.reviewContent) return
 
-        val state = data.pageState
+        val state = data.reviewPaging
 
-        showLoading(state is PageState.Load)
+        showLoading(state is ReviewPaging.Load)
 
         when (state) {
-            is PageState.Success -> reviewAdapter.submitList(data.reviewList)
-            is PageState.Error -> showError(state)
+            is ReviewPaging.Success -> reviewAdapter.submitList(data.reviewContent)
+            is ReviewPaging.Error -> showError(state)
             else -> {}
         }
     }
@@ -189,13 +189,14 @@ class ReviewFragment @Inject constructor(
         binding.rvReview.showWithCondition(!isShown)
     }
 
-    private fun showError(state: PageState.Error) = with(binding.reviewGlobalError) {
+    private fun showError(state: ReviewPaging.Error) = with(binding.reviewGlobalError) {
         // TODO: why is it in dark mode.
         show()
         if (state.throwable is UnknownHostException) {
             setType(GlobalError.NO_CONNECTION)
             errorSecondaryAction.show()
-            errorSecondaryAction.text = getString(contentcommonR.string.content_global_error_secondary_text)
+            errorSecondaryAction.text =
+                getString(contentcommonR.string.content_global_error_secondary_text)
             setSecondaryActionClickListener {
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 router.route(requireActivity(), intent)

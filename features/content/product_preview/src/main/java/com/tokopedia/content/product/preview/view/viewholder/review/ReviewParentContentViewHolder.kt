@@ -1,11 +1,11 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -13,11 +13,11 @@ import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
-import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
-import com.tokopedia.content.product.preview.view.uimodel.DescriptionUiModel
-import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
-import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.AuthorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.DescriptionUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -28,7 +28,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewParentContentViewHolder(
     private val binding: ItemReviewParentContentBinding,
-    private val listener: Listener,
+    private val listener: Listener
 ) : ViewHolder(binding.root) {
 
     private val clickableSpan: (String) -> ClickableSpan = { desc ->
@@ -46,7 +46,7 @@ class ReviewParentContentViewHolder(
         }
     }
 
-    fun bind(item: ReviewUiModel) {
+    fun bind(item: ReviewContentUiModel) {
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
@@ -122,7 +122,7 @@ class ReviewParentContentViewHolder(
         binding.ivDanceLike.playLikeAnimation()
     }
 
-    private fun setupTap(item: ReviewUiModel) {
+    private fun setupTap(item: ReviewContentUiModel) {
         binding.ivReviewMenu.setOnClickListener {
             listener.onMenuClicked(item.menus)
         }
@@ -134,7 +134,8 @@ class ReviewParentContentViewHolder(
                     listener.onLike(item.likeState.copy(withAnimation = true))
                     return true
                 }
-            })
+            }
+        )
         binding.root.setOnTouchListener { _, motionEvent ->
             gesture.onTouchEvent(motionEvent)
             true

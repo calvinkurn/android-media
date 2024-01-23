@@ -11,7 +11,7 @@ import com.tokopedia.content.product.preview.utils.PRODUCT_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewPlayerControl
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
-import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -42,7 +42,7 @@ class ProductContentVideoViewHolder(
         }
     }
 
-    fun bind(content: ContentUiModel) {
+    fun bind(content: ProductContentUiModel) {
         bindVideoPlayer(content)
 
         if (content.selected) {
@@ -52,7 +52,7 @@ class ProductContentVideoViewHolder(
         }
     }
 
-    private fun bindVideoPlayer(content: ContentUiModel) {
+    private fun bindVideoPlayer(content: ProductContentUiModel) {
         mVideoId = String.format(PRODUCT_CONTENT_VIDEO_KEY_REF, content.url)
         mVideoPlayer = listener.getVideoPlayer(mVideoId)
         binding.playerProductContentVideo.player = mVideoPlayer?.exoPlayer

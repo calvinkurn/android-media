@@ -5,7 +5,7 @@ import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class IndicatorUiModel(
+data class ProductIndicatorUiModel(
     val indicatorId: String = "",
     val selected: Boolean = false,
     val variantName: String = "",

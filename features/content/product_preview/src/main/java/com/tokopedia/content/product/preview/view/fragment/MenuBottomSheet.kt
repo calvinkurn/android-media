@@ -10,7 +10,7 @@ import com.tokopedia.content.common.report_content.ThreeDotsPage
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.product.preview.R
-import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.review.MenuStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class MenuBottomSheet : BottomSheetUnify() {
     private var mListener: Listener? = null
 
-    private var status : MenuStatus? = null
+    private var status: MenuStatus? = null
 
     private val menus: List<ContentMenuItem> by lazyThreadSafetyNone {
         buildList {

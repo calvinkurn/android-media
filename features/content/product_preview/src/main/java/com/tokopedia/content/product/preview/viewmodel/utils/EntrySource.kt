@@ -1,10 +1,10 @@
 package com.tokopedia.content.product.preview.viewmodel.utils
 
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 
 /**
  * @author by astidhiyaa on 06/12/23
  */
 data class EntrySource(
-    val productPreviewData: ProductContentUiModel
+    val productUiModel: ProductUiModel
 )

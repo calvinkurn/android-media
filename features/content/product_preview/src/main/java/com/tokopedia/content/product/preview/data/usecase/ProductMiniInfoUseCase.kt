@@ -3,7 +3,7 @@ package com.tokopedia.content.product.preview.data.usecase
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
+import com.tokopedia.content.product.preview.data.response.GetMiniProductInfoResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
@@ -18,10 +18,11 @@ import javax.inject.Inject
 @GqlQuery(ProductMiniInfoUseCase.QUERY_NAME, ProductMiniInfoUseCase.QUERY)
 class ProductMiniInfoUseCase @Inject constructor(
     @ApplicationContext private val repo: GraphqlRepository,
-    dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<ProductMiniInfoUseCase.Param, GetMiniProductInfoResponse>(dispatchers.io) {
 
     private val query: GqlQueryInterface = ProductMiniInfoUseCaseQuery()
+
     override suspend fun execute(params: Param): GetMiniProductInfoResponse {
         return repo.request(query, params)
     }
@@ -30,7 +31,7 @@ class ProductMiniInfoUseCase @Inject constructor(
 
     data class Param(
         @SerializedName("productID")
-        val productId: String,
+        val productId: String
     ) : GqlParam
 
     companion object {

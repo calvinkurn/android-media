@@ -3,7 +3,7 @@ package com.tokopedia.content.product.preview.data.usecase
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.preview.data.MediaReviewResponse
+import com.tokopedia.content.product.preview.data.response.MediaReviewResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @GqlQuery(MediaReviewUseCase.QUERY_NAME, MediaReviewUseCase.QUERY)
 class MediaReviewUseCase @Inject constructor(
     @ApplicationContext private val repo: GraphqlRepository,
-    dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<MediaReviewUseCase.Param, MediaReviewResponse>(dispatchers.io) {
 
     private val query: GqlQueryInterface = MediaReviewUseCaseQuery()
@@ -36,7 +36,7 @@ class MediaReviewUseCase @Inject constructor(
         @SerializedName("limit")
         val limit: Int = LIMIT_VALUE,
         @SerializedName("filterBy")
-        val filterBy: String = "media=image,video",
+        val filterBy: String = "media=image,video"
     ) : GqlParam
 
     companion object {

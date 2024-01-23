@@ -24,15 +24,15 @@ import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.InitializeProductMainData
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.emptyProduct
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.withProduct
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
+import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.extensions.view.gone
@@ -54,15 +54,15 @@ class ProductPreviewFragment @Inject constructor(
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
+        val productPreviewData: ProductUiModel by lazyThreadSafetyNone {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arguments?.getParcelable(
                     PRODUCT_DATA,
-                    ProductContentUiModel::class.java
+                    ProductUiModel::class.java
                 )
             } else {
                 arguments?.getParcelable(PRODUCT_DATA)
-            } ?: ProductContentUiModel()
+            } ?: ProductUiModel.Empty
         }
         viewModelFactory.create(EntrySource(productPreviewData))
     }
@@ -88,7 +88,8 @@ class ProductPreviewFragment @Inject constructor(
     private val productAtcResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        if (it.resultCode == Activity.RESULT_OK) viewModel.onAction(ProductPreviewAction.ProductActionFromResult)
+        if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+        viewModel.onAction(ProductPreviewAction.ProductActionFromResult)
     }
 
     override fun onCreateView(
@@ -125,7 +126,7 @@ class ProductPreviewFragment @Inject constructor(
             adapter = pagerAdapter
         }
 
-        if (viewModel.productData == ProductContentUiModel()) {
+        if (viewModel.productData == ProductUiModel.Empty) {
             layoutProductPreviewTab.tvProductTabTitle.gone()
             layoutProductPreviewTab.tvReviewTabTitle.gone()
             layoutProductPreviewTab.viewTabIndicator.gone()
@@ -165,20 +166,12 @@ class ProductPreviewFragment @Inject constructor(
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.vpProductPreview.unregisterOnPageChangeCallback(
-            pagerListener
-        )
-        _binding = null
-    }
-
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.miniInfo
+            viewModel.uiState
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .withCache().collectLatest { (prev, curr) ->
-                    renderBottomNav(prev, curr)
+                    renderBottomNav(prev?.bottomNavUiModel, curr.bottomNavUiModel)
                 }
         }
     }
@@ -262,8 +255,16 @@ class ProductPreviewFragment @Inject constructor(
                 startActivitResult = { intent, _ -> startActivity(intent) }
             )
         } else {
-            viewModel.onAction(ProductPreviewAction.ProductAction(model))
+            viewModel.onAction(ProductPreviewAction.AddToChart(model))
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.vpProductPreview.unregisterOnPageChangeCallback(
+            pagerListener
+        )
+        _binding = null
     }
 
     companion object {

@@ -1,4 +1,8 @@
-package com.tokopedia.content.product.preview.view.uimodel
+package com.tokopedia.content.product.preview.viewmodel.action
+
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
 
 /**
  * @author by astidhiyaa on 12/12/23
@@ -9,7 +13,7 @@ sealed interface ProductPreviewAction {
     object ProductActionFromResult : ProductPreviewAction
     object LikeFromResult : ProductPreviewAction
     data class FetchReview(val isRefresh: Boolean) : ProductPreviewAction
-    data class ProductAction(val model: BottomNavUiModel) : ProductPreviewAction
+    data class AddToChart(val model: BottomNavUiModel) : ProductPreviewAction
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReportUiModel) : ProductPreviewAction
     data class ClickMenu(val isFromLogin: Boolean) : ProductPreviewAction

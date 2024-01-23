@@ -1,6 +1,8 @@
-package com.tokopedia.content.product.preview.view.uimodel
+package com.tokopedia.content.product.preview.viewmodel.event
 
 import com.tokopedia.content.product.preview.R
+import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.MenuStatus
 
 /**
  * @author by astidhiyaa on 12/12/23

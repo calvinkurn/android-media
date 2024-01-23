@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentLoadingBinding
-import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.LikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentLoadingViewHolder
 
 class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Listener) :
-    ListAdapter<ReviewUiModel, ViewHolder>(ReviewAdapterCallback()) {
+    ListAdapter<ReviewContentUiModel, ViewHolder>(ReviewAdapterCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
@@ -21,8 +21,10 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
                 ReviewParentContentViewHolder.create(
                     ItemReviewParentContentBinding.inflate(
                         LayoutInflater.from(parent.context),
-                        parent, false
-                    ), listener
+                        parent,
+                        false
+                    ),
+                    listener
                 )
             }
 
@@ -30,7 +32,8 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
                 ReviewParentLoadingViewHolder(
                     ItemReviewParentLoadingBinding.inflate(
                         LayoutInflater.from(parent.context),
-                        parent, false
+                        parent,
+                        false
                     )
                 )
             }
@@ -51,17 +54,18 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
         } else {
             payloads.forEach {
                 when (val payload = it) {
-                    is Payload.Like -> if (holder is ReviewParentContentViewHolder) holder.bindLike(
-                        payload.state
-                    )
+                    is Payload.Like -> if (holder is ReviewParentContentViewHolder) {
+                        holder.bindLike(
+                            payload.state
+                        )
+                    }
                 }
             }
         }
     }
 
-
     override fun getItemViewType(position: Int): Int {
-        //TODO: please adjust to other state as well
+        // TODO: please adjust to other state as well
         return TYPE_CONTENT
     }
 
@@ -75,17 +79,17 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
     }
 }
 
-internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewUiModel>() {
-    override fun areItemsTheSame(oldItem: ReviewUiModel, newItem: ReviewUiModel): Boolean {
+internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewContentUiModel>() {
+    override fun areItemsTheSame(oldItem: ReviewContentUiModel, newItem: ReviewContentUiModel): Boolean {
         return oldItem.reviewId == newItem.reviewId
     }
 
-    override fun areContentsTheSame(oldItem: ReviewUiModel, newItem: ReviewUiModel): Boolean {
+    override fun areContentsTheSame(oldItem: ReviewContentUiModel, newItem: ReviewContentUiModel): Boolean {
         return oldItem == newItem
     }
 
-    override fun getChangePayload(oldItem: ReviewUiModel, newItem: ReviewUiModel): Any? {
-        //TODO: changes in specified item please define
+    override fun getChangePayload(oldItem: ReviewContentUiModel, newItem: ReviewContentUiModel): Any? {
+        // TODO: changes in specified item please define
         return when {
             oldItem.likeState != newItem.likeState -> ReviewParentAdapter.Payload.Like(newItem.likeState)
             else -> super.getChangePayload(oldItem, newItem)

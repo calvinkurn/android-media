@@ -3,7 +3,7 @@ package com.tokopedia.content.product.preview.data.usecase
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.preview.data.LikeReviewResponse
+import com.tokopedia.content.product.preview.data.response.LikeReviewResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
@@ -22,6 +22,7 @@ class ReviewLikeUseCase @Inject constructor(
 ) : CoroutineUseCase<ReviewLikeUseCase.Param, LikeReviewResponse>(dispatchers.io) {
 
     private val query: GqlQueryInterface = ReviewLikeUseCaseQuery()
+
     override suspend fun execute(params: Param): LikeReviewResponse {
         return repo.request(query, params)
     }
@@ -32,7 +33,7 @@ class ReviewLikeUseCase @Inject constructor(
         @SerializedName("feedbackID")
         val reviewId: String,
         @SerializedName("likeStatus")
-        val likeStatus: Int,
+        val likeStatus: Int
     ) : GqlParam
 
     companion object {
