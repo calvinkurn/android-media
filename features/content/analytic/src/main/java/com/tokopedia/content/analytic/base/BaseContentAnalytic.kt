@@ -104,6 +104,20 @@ abstract class BaseContentAnalytic(
         )
     }
 
+    protected fun buildEventLabel(
+        vararg labels: String
+    ): String {
+        return buildString {
+            for (i in labels.indices) {
+                append(labels[i])
+
+                if (i != labels.size-1) {
+                    append(" - ")
+                }
+            }
+        }
+    }
+
     private fun send(
         trackerBuilder: Tracker.Builder
     ) {
