@@ -15,16 +15,13 @@
         android:layout_height="24dp"
         android:visibility="gone"
         app:loader_corner_radius="8dp"
-        app:loader_type="rect"/>
+        app:loader_type="rect"
+        tools:visibility="visible"/>
 
     <ImageView
         android:id="@+id/img_icon"
         android:layout_width="72dp"
         android:layout_height="24dp"
-        android:maxWidth="72dp"
-        android:maxHeight="24dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
         android:visibility="gone"
         android:scaleType="centerCrop"
         android:contentDescription="@string/content_desc_tab_image"
