@@ -8,6 +8,7 @@ import com.tokopedia.shop.common.data.model.Actions
 import com.tokopedia.shop.common.data.model.RestrictionEngineModel
 import com.tokopedia.shop.common.data.response.RestrictionEngineDataResponse
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroupStyle
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
@@ -148,7 +149,8 @@ object ShopPageProductListMapper {
             position = labelGroup.position,
             title = labelGroup.title,
             type = labelGroup.type,
-            url = labelGroup.url
+            url = labelGroup.url,
+            styles = labelGroup.styles.map { style -> LabelGroupStyle(style.key, style.value) }
         )
     }
 
@@ -246,7 +248,14 @@ object ShopPageProductListMapper {
             stockBarLabel = shopProductUiModel.stockLabel,
             stockBarPercentage = shopProductUiModel.stockBarPercentage,
             isWideContent = isWideContent,
-            forceLightModeColor = isForceLightMode
+            forceLightModeColor = isForceLightMode,
+            shopBadgeList = shopProductUiModel.badge.map {
+                ProductCardModel.ShopBadge(
+                    isShown = true,
+                    imageUrl = it.title,
+                    title = it.imageUrl
+                )
+            }
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
             val productCardModel = if (shopProductUiModel.isVariant) {
@@ -334,7 +343,10 @@ object ShopPageProductListMapper {
             position = labelGroupUiModel.position,
             title = labelGroupUiModel.title,
             type = labelGroupUiModel.type,
-            imageUrl = labelGroupUiModel.url
+            imageUrl = labelGroupUiModel.url,
+            styleList = labelGroupUiModel.styles.map {
+                ProductCardModel.LabelGroup.Style(key = it.key, value = it.value)
+            }
         )
     }
 
