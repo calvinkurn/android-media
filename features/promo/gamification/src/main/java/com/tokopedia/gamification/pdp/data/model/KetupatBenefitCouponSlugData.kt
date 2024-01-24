@@ -22,7 +22,9 @@ data class KetupatBenefitCouponSlugData(
             @SerializedName("code")
             val code: String?,
             @SerializedName("imageURLMobile")
-            val imageURLMobile: String?
+            val imageURLMobile: String?,
+            @SerializedName("imageHalfURLMobile")
+            val imageHalfURLMobile: String?
         )
 
         data class TokopointsExtraInfo(

@@ -136,13 +136,13 @@ class KetupatLandingViewModel @Inject constructor(
                 data.scratchCard?.let { scratchCard -> KetupatReferralBannerVHModel(referral!!, it, scratchCard) }
             }?.let { tempList.add(it) }
         }
-        if (benefitCoupon != null) {
+        if (benefitCoupon != null && benefitCouponData.value?.tokopointsCouponList?.tokopointsCouponData?.isEmpty() == false) {
             data.scratchCard?.let {
                 KetupatBenefitCouponVHModel(benefitCoupon!!,
                     it, benefitCouponData.value)
             }?.let { tempList.add(it) }
         }
-        if (benefitCouponSlug != null) {
+        if (benefitCouponSlug != null && benefitCouponSlugData.value?.tokopointsCouponListStack?.tokopointsCouponDataStack?.isEmpty() == false) {
             data.scratchCard?.let {
                 KetupatBenefitCouponSlugVHModel(
                     benefitCouponSlug!!,
@@ -164,6 +164,8 @@ class KetupatLandingViewModel @Inject constructor(
 
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getLandingPageData(): LiveData<KetupatLandingPageData> = landingPageData
+
+    fun getReferralTimeData() : LiveData<KetupatReferralEventTimeStamp> = referralTimeData
 
     fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<KetupatLandingTypeFactory>>> =
         ketaupatLandingDataList

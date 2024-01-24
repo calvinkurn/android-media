@@ -4,8 +4,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gamification.giftbox.presentation.views.CouponImageView
 import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponItemVHModel
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.gamification.R as gamificationR
 
@@ -22,9 +25,9 @@ class KetupatBenefitCouponItemVH(itemView: View) :
         val scratchCardId = element?.scratchCard?.id.toString()
         element?.benefitCouponData.let { couponData ->
             couponData?.imageUrlMobile?.let {
-                itemView.findViewById<ImageUnify>(gamificationR.id.ketupat_benefit_coupon_banner_image)
+                itemView.findViewById<CouponImageView>(gamificationR.id.ketupat_benefit_coupon_banner_image)
                     .apply {
-                        setImageUrl(
+                        loadImageFitCenter(
                             it
                         )
                         setOnClickListener {

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.gamification.giftbox.presentation.views.CouponImageView
         android:id="@+id/ketupat_benefit_coupon_banner_image"
         android:layout_width="0dp"
         app:layout_constraintStart_toStartOf="parent"

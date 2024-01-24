@@ -21,7 +21,7 @@ class KetupatBenefitCouponSlugItemVH(itemView: View) :
     override fun bind(element: KetupatBenefitCouponSlugItemVHModel?) {
         val scratchCardId = element?.scratchCard?.id.toString()
         element?.benefitCouponSlugData.let { couponData ->
-            couponData?.imageURLMobile?.let {
+            couponData?.imageHalfURLMobile?.let {
                 itemView.findViewById<ImageUnify>(gamificationR.id.ketupat_benefit_coupon_slug_banner_image)
                     .apply {
                         this.setImageUrl(

@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
@@ -49,21 +51,61 @@ class KetupatReferralBannerVH(itemView: View) :
                 itemView.findViewById<ProgressBarUnify>(gamificationR.id.referral_progress_bar)
                     .setValue(percentCompletion, true)
 
-                itemView.findViewById<Typography>(gamificationR.id.referral_bar_text_2).text =
-                    this.stampLevelData.get(0).TotalStampNeeded.toString()
+                this.stampLevelData.get(0).TotalStampNeeded.toString().let {
+                    if (currentProgress != null) {
+                        if (currentProgress >= it.toIntOrZero()) {
+                            itemView.findViewById<Typography>(gamificationR.id.referral_bar_text_2)
+                                .apply {
+                                    this.text = ""
+                                    background =
+                                        resources.getDrawable(gamificationR.drawable.gami_referral_progress_indicator_check_bg)
+                                }
+
+                        }
+                        else {
+                            itemView.findViewById<Typography>(gamificationR.id.referral_bar_text_2).text =
+                                it
+                        }
+                    }
+                }
 
                 (this.stampLevelData.get(0).TotalStampNeeded + this.stampLevelData.get(1).TotalStampNeeded).toString()
                     .also {
-                        itemView.findViewById<Typography>(gamificationR.id.referral_bar_text_3).text =
-                            it
+                        if (currentProgress != null) {
+                            if (currentProgress >= it.toIntOrZero()) {
+                                itemView.findViewById<Typography>(gamificationR.id.referral_bar_text_3)
+                                    .apply {
+                                        this.text = ""
+                                        background =
+                                            resources.getDrawable(gamificationR.drawable.gami_referral_progress_indicator_check_bg)
+                                    }
+
+                            } else {
+                                itemView.findViewById<Typography>(gamificationR.id.referral_bar_text_3).text =
+                                    it
+                            }
+                        }
+
                     }
 
                 (this.stampLevelData.get(0).TotalStampNeeded + this.stampLevelData.get(1).TotalStampNeeded + this.stampLevelData.get(
                     2
                 ).TotalStampNeeded).toString()
                     .also {
-                        itemView.findViewById<Typography>(gamificationR.id.referral_bar_text_4).text =
-                            it
+                        if (currentProgress != null) {
+                            if (currentProgress >= it.toIntOrZero()) {
+                                itemView.findViewById<Typography>(gamificationR.id.referral_bar_text_4)
+                                    .apply {
+                                        this.text = ""
+                                        background =
+                                            resources.getDrawable(gamificationR.drawable.gami_referral_progress_indicator_check_bg)
+                                    }
+
+                            } else {
+                                itemView.findViewById<Typography>(gamificationR.id.referral_bar_text_4).text =
+                                    it
+                            }
+                        }
                     }
 
             }
@@ -72,34 +114,56 @@ class KetupatReferralBannerVH(itemView: View) :
         element?.referral.let { referralData ->
             itemView.findViewById<Typography>(gamificationR.id.referral_banner_title)?.text =
                 referralData?.title
-            itemView.findViewById<ImageUnify>(gamificationR.id.referral_bg_img)
-                ?.setImageUrl(referralData?.assets?.find { it?.key == "BACKGROUND_IMAGE" }?.value.toString())
 
             if (percentCompletion == 100) {
-                itemView.findViewById<ImageUnify>(gamificationR.id.cta_referral)
-                    ?.setImageUrl(referralData?.assets?.find { it?.key == "BUTTON_IMAGE_AFTER" }?.value.toString())
+                referralData?.cta?.find { it?.type == "after" }?.let { cta ->
+                    itemView.findViewById<UnifyButton>(gamificationR.id.cta_referral).text =
+                        cta.text
+
+                    itemView.findViewById<UnifyButton>(gamificationR.id.cta_referral)?.apply {
+                        this.setOnClickListener {
+                            RouteManager.route(
+                                context,
+                                cta.appLink
+                            )
+                            GamificationAnalytics.sendClickReferralSectionEvent(
+                                "direct_reward_id: $scratchCardId", "gamification",
+                                "tokopediamarketplace"
+                            )
+                        }
+                    }
+                }
+
+                itemView.findViewById<ImageUnify>(gamificationR.id.referral_bg_img)
+                    ?.setImageUrl(referralData?.assets?.find { it?.key == "BACKGROUND_IMAGE_AFTER" }?.value.toString())
 
                 itemView.findViewById<Typography>(gamificationR.id.referral_banner_text)?.text =
                     referralData?.text?.find { it?.key == "AFTER_FINISH" }?.value
             } else {
-                itemView.findViewById<ImageUnify>(gamificationR.id.cta_referral)
-                    ?.setImageUrl(referralData?.assets?.find { it?.key == "BUTTON_IMAGE_BEFORE" }?.value.toString())
+                referralData?.cta?.find { it?.type == "before" }?.let { cta ->
+                    itemView.findViewById<UnifyButton>(gamificationR.id.cta_referral).text =
+                        cta.text
+
+                    itemView.findViewById<UnifyButton>(gamificationR.id.cta_referral)?.apply {
+                        this.setOnClickListener {
+                            RouteManager.route(
+                                context,
+                                cta.appLink
+                            )
+                            GamificationAnalytics.sendClickReferralSectionEvent(
+                                "direct_reward_id: $scratchCardId", "gamification",
+                                "tokopediamarketplace"
+                            )
+                        }
+                    }
+
+                }
 
                 itemView.findViewById<Typography>(gamificationR.id.referral_banner_text)?.text =
                     referralData?.text?.find { it?.key == "BEFORE_FINISH" }?.value
-            }
 
-            itemView.findViewById<ImageUnify>(gamificationR.id.cta_referral)?.apply {
-                this.setOnClickListener {
-                    RouteManager.route(
-                        context,
-                        referralData?.cta?.find { it?.type == "redirection" }?.appLink
-                    )
-                    GamificationAnalytics.sendClickReferralSectionEvent(
-                        "direct_reward_id: $scratchCardId", "gamification",
-                        "tokopediamarketplace"
-                    )
-                }
+                itemView.findViewById<ImageUnify>(gamificationR.id.referral_bg_img)
+                    ?.setImageUrl(referralData?.assets?.find { it?.key == "BACKGROUND_IMAGE_BEFORE" }?.value.toString())
             }
         }
 

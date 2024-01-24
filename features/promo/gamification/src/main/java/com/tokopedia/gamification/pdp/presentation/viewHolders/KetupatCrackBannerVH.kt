@@ -35,7 +35,6 @@ class KetupatCrackBannerVH(itemView: View) :
                 crackData?.text?.find { it?.key == "DEFAULT" }?.value
             itemView.findViewById<UnifyButton>(gamificationR.id.more_info_btn).apply {
                 text = "Baca Cara Main"
-                this.buttonVariant = UnifyButton.Variant.GHOST
                 this.setOnClickListener {
                     RouteManager.route(
                         context,

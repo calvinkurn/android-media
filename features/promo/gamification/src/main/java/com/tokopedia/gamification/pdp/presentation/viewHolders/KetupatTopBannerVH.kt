@@ -59,7 +59,7 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
         itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).show()
         val date = when {
             diff > 7 -> {
-                formatDate("yyyy-MM-dd hh:mm:ss Z", "dd MMMM yyyy", time + "00")
+                formatDate("yyyy-MM-dd HH:mm:ss Z", "dd MMMM yyyy", time + "00")
             }
 
             diff in 2..7 -> {
@@ -71,7 +71,7 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
                 ""
             }
             else -> {
-                formatDate("yyyy-MM-dd hh:mm:ss Z", "hh", time + "00")
+                formatDate("yyyy-MM-dd HH:mm:ss Z", "HH:mm:ss", time + "00")
             }
         }
         itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).apply {
@@ -82,7 +82,7 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
 
     private fun getDateDiffFromToday(date: String?): Long? {
         try {
-            val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.ENGLISH)
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.ENGLISH)
             formatter.isLenient = false
             formatter.timeZone = TimeZone.getTimeZone("UTC")
             return formatter.parse(date + "00")?.getDayDiffFromToday()

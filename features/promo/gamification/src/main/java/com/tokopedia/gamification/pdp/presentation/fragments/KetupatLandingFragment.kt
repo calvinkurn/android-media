@@ -1,14 +1,18 @@
 package com.tokopedia.gamification.pdp.presentation.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.gamification.R
@@ -21,6 +25,8 @@ import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapte
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.KetupatLandingViewModel
 import com.tokopedia.gamification.utils.KetupatSharingComponent
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.infinite.main.InfiniteRecommendationManager
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -29,6 +35,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() {
@@ -38,6 +45,13 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
     }
     private var ketupatLandingViewModel: KetupatLandingViewModel? = null
     private var scratchCardId: String? = ""
+
+    private var fragmentDataRendered: Boolean = false
+    private var fragmentViewCreated: Boolean = false
+
+    @Inject
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     @Inject
     @JvmField
@@ -52,15 +66,26 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
             adapter.addMoreData(it)
         }
 
+        ketupatLandingViewModel?.getReferralTimeData()?.observe(this) {
+            view?.findViewById<Group>(R.id.shimmer_group)?.hide()
+            view?.findViewById<RecyclerView>(R.id.ketupat_rv)?.show()
+        }
+
         ketupatLandingViewModel?.getLandingPageData()?.observe(this) {
-            view?.let { view -> setSharingHeaderIconAndListener(view, it) }
+            if (it.gamiGetScratchCardLandingPage.appBar?.isShownShareIcon == true) {
+                view?.let { view -> setSharingHeaderIconAndListener(view, it) }
+            }
             scratchCardId = it.gamiGetScratchCardLandingPage.scratchCard?.id.toString()
-            GamificationAnalytics.sendDirectRewardLandingPageEvent("direct_reward_id: $scratchCardId" )
+            GamificationAnalytics.sendDirectRewardLandingPageEvent("direct_reward_id: $scratchCardId")
         }
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        GamificationAnalytics.sendClickBackOnNavBarEvent("direct_reward_id: $scratchCardId", "gamification", "tokopediamarketplace" )
+        GamificationAnalytics.sendClickBackOnNavBarEvent(
+            "direct_reward_id: $scratchCardId",
+            "gamification",
+            "tokopediamarketplace"
+        )
         return super.onFragmentBackPressed()
     }
 
@@ -78,30 +103,53 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fragmentViewCreated = true
+    }
 
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            view.findViewById<Group>(R.id.shimmer_group)?.hide()
-//        }, 1000)
+    override fun onResume() {
+        super.onResume()
+        if (!fragmentDataRendered) {
+            if (userSessionInterface?.isLoggedIn == true) {
+                ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024")
 
-        val ketupatRV = view.findViewById<RecyclerView>(R.id.ketupat_rv)
-        val layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                val ketupatRV = view?.findViewById<RecyclerView>(R.id.ketupat_rv)
+                val layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
 
-        adapter.setVisitables(ArrayList())
+                adapter.setVisitables(ArrayList())
 
-        ketupatRV?.layoutManager = layoutManager
-        val concatAdapter = ConcatAdapter(adapter)
-        ketupatRV.adapter = concatAdapter
-        val infiniteRecommendationManager = context?.let { InfiniteRecommendationManager(it) }
-        infiniteRecommendationManager?.adapter?.let {
-            concatAdapter.addAdapter(it)
+                ketupatRV?.layoutManager = layoutManager
+
+                val concatAdapter = ConcatAdapter(adapter)
+                ketupatRV?.adapter = concatAdapter
+                val infiniteRecommendationManager =
+                    context?.let { InfiniteRecommendationManager(it) }
+                infiniteRecommendationManager?.adapter?.let {
+                    concatAdapter.addAdapter(it)
+                }
+                val requestParam = GetRecommendationRequestParam()
+                infiniteRecommendationManager?.requestParam = requestParam
+                infiniteRecommendationManager?.fetchRecommendation().apply {
+                    GamificationAnalytics.sendImpressProductRecommendationSectionEvent("direct_reward_id: $scratchCardId")
+                }
+                fragmentDataRendered = true
+            } else {
+                navigateToLoginPage()
+            }
         }
-        val requestParam = GetRecommendationRequestParam()
-        infiniteRecommendationManager?.requestParam = requestParam
-        infiniteRecommendationManager?.fetchRecommendation().apply {
-            GamificationAnalytics.sendImpressProductRecommendationSectionEvent("direct_reward_id: $scratchCardId")
-        }
+    }
 
-        ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024")
+    private fun navigateToLoginPage() {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LOGIN && userSessionInterface?.isLoggedIn == false) {
+            activity?.finish()
+        }
     }
 
     fun setSharingHeaderIconAndListener(
@@ -123,7 +171,11 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                                 ketupatLandingPageData.gamiGetScratchCardLandingPage.appBar?.shared,
                                 userSession.userId
                             )
-                            GamificationAnalytics.sendClickShareOnNavBarEvent("direct_reward_id: $scratchCardId", "gamification","tokopediamarketplace" )
+                            GamificationAnalytics.sendClickShareOnNavBarEvent(
+                                "direct_reward_id: $scratchCardId",
+                                "gamification",
+                                "tokopediamarketplace"
+                            )
                         },
                         disableDefaultGtmTracker = true
                     )
@@ -152,5 +204,6 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
     companion object {
         @JvmStatic
         fun newInstance() = KetupatLandingFragment()
+        const val REQUEST_CODE_LOGIN = 1
     }
 }
