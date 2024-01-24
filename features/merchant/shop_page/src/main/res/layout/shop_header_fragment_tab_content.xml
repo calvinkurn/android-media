@@ -178,7 +178,6 @@
                                     app:layout_constraintRight_toLeftOf="@id/text_shop_name"
                                     app:layout_constraintTop_toTopOf="@id/text_shop_name"
                                     app:layout_constraintVertical_bias="0.5"
-                                    tools:src="@drawable/ic_shop_badge_gold"
                                     tools:visibility="visible" />
 
                                 <com.tokopedia.unifyprinciples.Typography
