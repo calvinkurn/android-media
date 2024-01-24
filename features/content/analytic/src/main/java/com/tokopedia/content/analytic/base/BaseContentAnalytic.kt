@@ -16,11 +16,13 @@ import com.tokopedia.user.session.UserSessionInterface
 /**
  * Created By : Jonathan Darwin on January 23, 2024
  */
-abstract class BaseContentAnalytic(
-    private val userSession: UserSessionInterface,
-    private val businessUnit: String,
-    private val eventCategory: String,
-) {
+abstract class BaseContentAnalytic() {
+
+    abstract val userSession: UserSessionInterface
+
+    abstract val businessUnit: String
+
+    abstract val eventCategory: String
 
     private val currentSite: String
         get() = if (GlobalConfig.isSellerApp()) {
