@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -317,7 +318,11 @@ class BmsmWidgetTabFragment :
 
             tpgTitleWidget.setTitle(upsellWording, defaultOfferMessage)
             tpgSubTitleWidget.setSubTitle(offerMessage)
-            tpgPdUpsellingWording.setSubTitle(offerMessage)
+            tpgPdUpsellingWording.apply {
+                text = MethodChecker.fromHtml(offerMessage.firstOrNull())
+                showWithCondition(offerMessage.isNotEmpty())
+                setPdSubtitleTextColor()
+            }
             when (offerTypeId) {
                 OFFER_TYPE_PD -> setupPdHeader(offerMessage)
                 OFFER_TYPE_GWP -> setupGwpHeader(productGiftImages)
@@ -533,6 +538,21 @@ class BmsmWidgetTabFragment :
             showWithCondition(messages.isNotEmpty())
             setTextColor(textColor)
         }
+    }
+
+    private fun Typography.setPdSubtitleTextColor(): Int{
+        val textColor = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.LIGHT) {
+                    ContextCompat.getColor(context, R.color.dms_pd_sub_title_text_color)
+                } else {
+                    ContextCompat.getColor(context, R.color.dms_static_white)
+                }
+            }
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_pd_sub_title_text_color)
+        }
+        return textColor
     }
 
     fun setOnSuccessAtcListener(onSuccessAtc: (AddToCartDataModel) -> Unit) {
