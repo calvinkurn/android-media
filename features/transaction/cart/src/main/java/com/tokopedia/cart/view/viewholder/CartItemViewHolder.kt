@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.compose.foundation.text.KeyboardActions
@@ -1871,9 +1870,6 @@ class CartItemViewHolder(
             data.cartBmGmTickerData.bmGmCartInfoData.bmGmTierProductList.firstOrNull()
         val isShown = tierProductData?.purchaseBenefitData?.isShown == true
         binding.purchaseBenefitContainer.isVisible = isShown
-        binding.purchaseBenefitContainer.updateLayoutParams<LinearLayout.LayoutParams> {
-            height = if (isShown) LinearLayout.LayoutParams.WRAP_CONTENT else 0
-        }
         binding.purchaseBenefitContainer.setPadding(
             0,
             0,
@@ -1887,11 +1883,22 @@ class CartItemViewHolder(
                 actionListener?.onBmGmTickerReloadClicked()
             }
         } else if (tierProductData != null) {
+            if (isShown) {
+                actionListener?.onViewPurchaseBenefit(
+                    data,
+                    data.cartBmGmTickerData.bmGmCartInfoData,
+                    tierProductData
+                )
+            }
             val purchaseBenefitData = tierProductData.purchaseBenefitData
             binding.benefitPurchaseWidget.setRibbonText(purchaseBenefitData.benefitWording)
             binding.benefitPurchaseWidget.updateData(purchaseBenefitData.getProductGiftUiModel())
             binding.benefitPurchaseWidget.setupCtaClickListener(purchaseBenefitData.actionWording) {
-                actionListener?.onClickPurchaseBenefitActionListener(data.cartBmGmTickerData.bmGmCartInfoData, tierProductData)
+                actionListener?.onClickPurchaseBenefitActionListener(
+                    data,
+                    data.cartBmGmTickerData.bmGmCartInfoData,
+                    tierProductData
+                )
             }
         }
     }

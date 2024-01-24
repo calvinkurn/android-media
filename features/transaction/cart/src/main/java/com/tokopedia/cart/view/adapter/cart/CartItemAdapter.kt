@@ -44,7 +44,13 @@ class CartItemAdapter {
         fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String)
         fun onSwipeToDeleteClosed(productId: String)
         fun clearAllFocus()
+        fun onViewPurchaseBenefit(
+            item: CartItemHolderData,
+            cartDetailInfo: CartDetailInfo,
+            tierProductData: CartDetailInfo.BmGmTierProductData
+        )
         fun onClickPurchaseBenefitActionListener(
+            item: CartItemHolderData,
             cartDetailInfo: CartDetailInfo,
             tierProductData: CartDetailInfo.BmGmTierProductData
         )

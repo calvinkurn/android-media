@@ -5770,10 +5770,31 @@ class CartRevampFragment :
         cartPageAnalytics.eventClickSwipeOnProductCard(productId)
     }
 
-    override fun onClickPurchaseBenefitActionListener(
+    override fun onViewPurchaseBenefit(
+        item: CartItemHolderData,
         cartDetailInfo: CartDetailInfo,
         tierProductData: CartDetailInfo.BmGmTierProductData
     ) {
+        if (!tierProductData.purchaseBenefitData.hasTriggerImpression) {
+            tierProductData.purchaseBenefitData.hasTriggerImpression = true
+            cartPageAnalytics.eventImpressionGwpRecommendation(
+                cartDetailInfo.bmGmData.offerId,
+                item.shopHolderData.shopId,
+                userSession.userId
+            )
+        }
+    }
+
+    override fun onClickPurchaseBenefitActionListener(
+        item: CartItemHolderData,
+        cartDetailInfo: CartDetailInfo,
+        tierProductData: CartDetailInfo.BmGmTierProductData
+    ) {
+        cartPageAnalytics.eventClickGwpRecommendation(
+            cartDetailInfo.bmGmData.offerId,
+            item.shopHolderData.shopId,
+            userSession.userId
+        )
         val giftListBottomSheet = GiftListBottomSheet.newInstance(
             offerId = cartDetailInfo.bmGmData.offerId,
             warehouseId = tierProductData.listProduct.firstOrNull()?.warehouseId ?: 0L,

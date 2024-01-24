@@ -65,6 +65,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataMod
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.data.model.gwp.GWPData
+import com.tokopedia.product.detail.data.model.gwp.asUiModel
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -79,6 +81,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
+import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
+import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -197,6 +201,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val bmgmSneakPeak: BMGMUiModel?
         get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMUiModel
+
+    val gwpSneakPeak: GWPUiModel?
+        get() = mapOfData[ProductDetailConstant.GWP_SNEAK_PEEK_NAME] as? GWPUiModel
 
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
@@ -586,6 +593,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateDynamicOneLiner(it)
 
             updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
+
+            updateGWPSneakPeak(productId = productId, gwp = it.gwp)
         }
     }
 
@@ -1377,6 +1386,28 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else {
                     bmgmSneakPeak?.state = BMGMWidgetUiState.Show(
                         uiModel = bmgmSelected.asUiModel(separator = bmgm.separator)
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateGWPSneakPeak(productId: String, gwp: GWPData) {
+        updateData(ProductDetailConstant.GWP_SNEAK_PEEK_NAME) {
+            if (gwp.data.isEmpty()) {
+                removeComponent(ProductDetailConstant.GWP_SNEAK_PEEK_NAME)
+            } else {
+                val gwpSelected = gwp.data.firstOrNull {
+                    it.productIDs.contains(productId)
+                }
+
+                if (gwpSelected == null) {
+                    gwpSneakPeak?.setState(state = GWPWidgetUiState.Hide)
+                } else {
+                    gwpSneakPeak?.setState(
+                        state = GWPWidgetUiState.Show(
+                            uiModel = gwpSelected.asUiModel(separator = gwp.separator)
+                        )
                     )
                 }
             }

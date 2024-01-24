@@ -4,6 +4,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBenefitBinding
+import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -12,7 +13,8 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class CheckoutProductBenefitViewHolder(
-    private val binding: ItemCheckoutProductBenefitBinding
+    private val binding: ItemCheckoutProductBenefitBinding,
+    private val listener: CheckoutAdapterListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(benefit: CheckoutProductBenefitModel) {
@@ -29,6 +31,7 @@ class CheckoutProductBenefitViewHolder(
                 0,
                 0
             )
+            listener.onViewGwpBenefit(benefit)
         } else {
             binding.ivProductImageFrameBenefit.setMargin(
                 leftMargin,

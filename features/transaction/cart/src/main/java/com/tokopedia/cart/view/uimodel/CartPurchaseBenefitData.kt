@@ -6,7 +6,8 @@ data class CartPurchaseBenefitData(
     val isShown: Boolean = false,
     val benefitWording: String = "",
     val actionWording: String = "",
-    val purchaseBenefitProducts: List<CartProductBenefitData> = emptyList()
+    val purchaseBenefitProducts: List<CartProductBenefitData> = emptyList(),
+    var hasTriggerImpression: Boolean = false
 ) {
 
     fun getProductGiftUiModel(): List<ProductGiftUiModel> {
