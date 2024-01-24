@@ -60,8 +60,8 @@ class TabsItemImageViewHolder(
 
     //region private methods
     private fun renderTabItem(item: DataItem) {
-        val isImageUrlAvailable = item.tabActiveImageUrl?.isNotEmpty() == true
-            && item.tabInactiveImageUrl?.isNotEmpty() == true
+        val isImageUrlAvailable = item.tabActiveImageUrl?.isNotEmpty() == true &&
+            item.tabInactiveImageUrl?.isNotEmpty() == true
 
         if (isImageUrlAvailable) {
             setTabIcon(item)
@@ -92,7 +92,7 @@ class TabsItemImageViewHolder(
         if (widthParamValue != null && heightParamValue != null) {
             val aspectRatio = widthParamValue.toFloat() / heightParamValue.toFloat()
             itemView.context?.resources?.let {
-                val dimenHeight = R.dimen.dp_26
+                val dimenHeight = R.dimen.dp_22
                 val height = it.getDimensionPixelOffset(dimenHeight)
                 lp.height = height
                 lp.width = (aspectRatio * height).toInt()
@@ -102,8 +102,11 @@ class TabsItemImageViewHolder(
     }
 
     private fun DataItem.getImageUrl(): String? {
-        return if (isSelected) tabActiveImageUrl
-        else tabInactiveImageUrl
+        return if (isSelected) {
+            tabActiveImageUrl
+        } else {
+            tabInactiveImageUrl
+        }
     }
 
     private fun setTabText(name: String) {
