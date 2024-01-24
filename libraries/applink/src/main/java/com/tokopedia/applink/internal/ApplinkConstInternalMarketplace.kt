@@ -146,8 +146,6 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
-    const val SHOP_PAGE_SALAM = "$SHOP_PAGE_BASE/${ApplinkConst.SALAM_UMRAH_SHOP_ID}"
-
     const val SHOP_PAGE_NOW_1 = "$SHOP_PAGE_BASE/${TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1}"
 
     const val SHOP_PAGE_NOW_2 = "$SHOP_PAGE_BASE/${TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2}"

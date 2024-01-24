@@ -14,7 +14,6 @@ import com.tokopedia.catalogcommon.listener.AccordionListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.accordion.R as accordionR
@@ -33,8 +32,6 @@ class AccordionInformationViewHolder(
     private val binding by viewBinding<WidgetAccordionInformationBinding>()
 
     private var lastPositionExpand = -1
-
-    private val displayMetrics = itemView.resources.displayMetrics
 
     override fun bind(element: AccordionInformationUiModel) {
         binding?.accordion?.removeAllViews()
@@ -82,7 +79,7 @@ class AccordionInformationViewHolder(
             )
         }
 
-        listener?.onImpressionAccordionInformation()
+        listener?.onImpressionAccordionInformation(element.widgetName)
     }
 
 }

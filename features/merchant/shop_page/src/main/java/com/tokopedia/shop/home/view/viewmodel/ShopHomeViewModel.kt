@@ -877,7 +877,6 @@ class ShopHomeViewModel @Inject constructor(
         listWidgetLayout: List<ShopPageWidgetUiModel>,
         shopId: String,
         widgetUserAddressLocalData: LocalCacheModel,
-        isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
@@ -901,7 +900,6 @@ class ShopHomeViewModel @Inject constructor(
                 responseWidgetContent.listWidget,
                 ShopUtil.isMyShop(shopId, userSessionShopId),
                 isLogin,
-                isThematicWidgetShown,
                 isEnableDirectPurchase,
                 shopId,
                 listWidgetLayout,

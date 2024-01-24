@@ -346,7 +346,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     ): List<ChatActionBubbleUiModel> {
         val result = ArrayList<ChatActionBubbleUiModel>()
         for (item in pojo.chatActions) {
-            result.add(ChatActionBubbleUiModel(item.text, item.value, item.action))
+            result.add(ChatActionBubbleUiModel(item.text, item.value, item.action, item.hexColor, item.iconUrl))
         }
         return result
     }
