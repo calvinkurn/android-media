@@ -40,4 +40,5 @@
     <string name="bmsm_check_cart">Cek Keranjang</string>
     <string name="bmsm_mini_cart_error_title">Oops. halaman ini gagal dimuat</string>
     <string name="bmsm_mini_cart_error_message">Klik Tombol di bawah ini untuk refresh halaman ini, ya!</string>
+    <string name="qty_error_empty_message">Jumlah harus diisi</string>
 </resources>

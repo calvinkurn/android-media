@@ -7,7 +7,8 @@ import com.tokopedia.buy_more_get_more.databinding.ItemGwpMiniCartEditorProductB
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.GwpMiniCartEditorAdapter
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.campaign.utils.extension.doOnTextChanged
-import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -91,15 +92,30 @@ class GwpMiniCartEditorProductViewHolder(
 
     private fun adjustQuantity(element: BmgmMiniCartVisitable.ProductUiModel, qty: CharSequence?) {
         adjustQtyJob?.cancel()
-        adjustQtyJob = coroutineScope.launch(Dispatchers.Default) {
+        adjustQtyJob = coroutineScope.launch {
             delay(ADJUST_QTY_DEBOUNCE)
 
             val newQty = qty.toString().replace(".", "").toIntOrZero()
             val prevQty = element.quantity
+            if (newQty <= Int.ZERO) {
+                withContext(Dispatchers.Main) {
+                    setOnInvalidMinQty(prevQty)
+                }
+                return@launch
+            } else {
+                withContext(Dispatchers.Main) {
+                    binding.gwpQtyEditor.errorMessage.gone()
+                }
+            }
             if (newQty != prevQty) {
                 listener.onCartItemQuantityChanged(element, newQty)
             }
         }
+    }
+
+    private fun setOnInvalidMinQty(prevQty: Int) {
+        binding.gwpQtyEditor.errorMessage.visible()
+        binding.gwpQtyEditor.errorMessage.text = itemView.context.getString(R.string.qty_error_empty_message)
     }
 
     private fun deleteCart(element: BmgmMiniCartVisitable.ProductUiModel) {
