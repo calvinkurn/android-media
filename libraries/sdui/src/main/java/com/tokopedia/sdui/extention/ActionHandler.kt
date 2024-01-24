@@ -11,6 +11,8 @@ import com.yandex.div2.DivAction
 import com.yandex.div2.DivSightAction
 import org.json.JSONObject
 import com.yandex.div2.DivVisibilityAction
+import java.lang.Exception
+import java.lang.IllegalArgumentException
 import java.net.URI
 
 
@@ -59,10 +61,13 @@ class ActionHandler(private val contextDivAction: Context?,
 
     private fun sendTracker(trackerPayload: JSONObject?){
         //Convert JSON to Hash Map
-        if(trackerPayload != null) {
-            val trackingData = trackerPayload.getJSONObject(APPLINK.KEY_TRACKING_DATA)
-            val evnetDataMap: HashMap<String, Any> = DivActionUtils.toMap(trackingData)
-            TrackApp.getInstance().gtm.sendGeneralEvent(evnetDataMap)
+        try {
+            if(trackerPayload != null) {
+                val trackingData = trackerPayload.getJSONObject(APPLINK.KEY_TRACKING_DATA)
+                val evnetDataMap: HashMap<String, Any> = DivActionUtils.toMap(trackingData)
+                TrackApp.getInstance().gtm.sendGeneralEvent(evnetDataMap)
+            }
+        }catch (_:Exception){
         }
     }
 
