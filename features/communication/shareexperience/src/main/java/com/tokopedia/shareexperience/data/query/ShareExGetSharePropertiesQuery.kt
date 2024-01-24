@@ -12,11 +12,11 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
     override fun getQuery(): String = """
         query getShareProperties(${'$'}params: ParamGetShareProperties!) {
           getShareProperties(params: ${'$'}params) {
-            shareId
             bottomsheet {
               title
               subtitle
               properties {
+                shareId
                 chipTitle
                 shareBody {
                   title
