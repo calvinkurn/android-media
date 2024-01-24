@@ -7,7 +7,7 @@ import com.tokopedia.tokofood.databinding.TokofoodItemAddOnItemLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductOptionViewHolder
 
-class ProductOptionAdapter(private val listener: ProductOptionViewHolder.Listener): RecyclerView.Adapter<ProductOptionViewHolder>() {
+class ProductOptionAdapter(private var listener: ProductOptionViewHolder.Listener) : RecyclerView.Adapter<ProductOptionViewHolder>() {
 
     private val optionItems: MutableList<OptionUiModel> = mutableListOf()
 
@@ -44,5 +44,4 @@ class ProductOptionAdapter(private val listener: ProductOptionViewHolder.Listene
             }
         }
     }
-
 }
