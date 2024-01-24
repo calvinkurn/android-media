@@ -73,14 +73,16 @@ class ActionHandler(private val contextDivAction: Context?,
 
     private fun parseClickActionUrl(actionUrlString: String):String{
         var deeplink = ""
-        val deeplinkUri = URI.create(actionUrlString)
-        if(deeplinkUri.host.equals(APPLINK.HOST_ROUTE)){
-            if(deeplinkUri.query.contains(APPLINK.IDENTIFIER_ANDROID_APPLINK)){
-                deeplink = (deeplinkUri.query.split(APPLINK.IDENTIFIER_ANDROID_APPLINK))[1]
-            }else if(deeplinkUri.query.contains(APPLINK.IDENTIFIER_APPLINK)){
-                deeplink = (deeplinkUri.query.split(APPLINK.IDENTIFIER_APPLINK))[1]
+        try {
+            val deeplinkUri = URI.create(actionUrlString)
+            if(deeplinkUri.host.equals(APPLINK.HOST_ROUTE)){
+                if(deeplinkUri.query.contains(APPLINK.IDENTIFIER_ANDROID_APPLINK)){
+                    deeplink = (deeplinkUri.query.split(APPLINK.IDENTIFIER_ANDROID_APPLINK))[1]
+                }else if(deeplinkUri.query.contains(APPLINK.IDENTIFIER_APPLINK)){
+                    deeplink = (deeplinkUri.query.split(APPLINK.IDENTIFIER_APPLINK))[1]
+                }
             }
-        }
+        }catch (_:Exception){}
         return deeplink
     }
 }
