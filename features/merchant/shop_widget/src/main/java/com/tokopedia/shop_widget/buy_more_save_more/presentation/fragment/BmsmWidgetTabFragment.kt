@@ -359,9 +359,7 @@ class BmsmWidgetTabFragment :
                 layoutManager =
                     GridLayoutManager(
                         context,
-                        TWO_PRODUCT_ITEM_SIZE,
-                        GridLayoutManager.VERTICAL,
-                        false
+                        TWO_PRODUCT_ITEM_SIZE
                     )
                 addItemDecoration(ProductListItemDecoration())
             }
@@ -592,7 +590,11 @@ class BmsmWidgetTabFragment :
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = context?.resources?.getDimensionPixelSize(R.dimen.dp_145).orZero()
+        val productCardWidth = if (productCardModelList.size > TWO_PRODUCT_ITEM_SIZE) {
+            context?.resources?.getDimensionPixelSize(R.dimen.dp_132).orZero()
+        } else {
+            context?.resources?.getDimensionPixelSize(R.dimen.dp_200).orZero()
+        }
         return if (productCardModelList.size > Int.ONE){
             productCardModelList.getMaxHeightForGridView(
                 context,

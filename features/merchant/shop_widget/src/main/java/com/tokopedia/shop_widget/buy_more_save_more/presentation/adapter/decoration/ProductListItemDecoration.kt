@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.setMargin
 
 class ProductListItemDecoration : RecyclerView.ItemDecoration() {
 
@@ -24,10 +25,9 @@ class ProductListItemDecoration : RecyclerView.ItemDecoration() {
 
         val spanIndex = (view.layoutParams as GridLayoutManager.LayoutParams).spanIndex
         if (spanIndex == Int.ZERO) {
-            view.setPadding(SPACING_16, SPACING_16, SPACING_10, SPACING_16) //set left padding
+            view.setMargin(SPACING_16, SPACING_16, SPACING_10, SPACING_16) //set left padding
         } else {
-
-            view.setPadding(SPACING_10, SPACING_16, SPACING_16, SPACING_16) //set left padding
+            view.setMargin(SPACING_10, SPACING_16, SPACING_16, SPACING_16) //set left padding
         }
     }
 }

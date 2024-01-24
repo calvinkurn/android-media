@@ -1,29 +1,23 @@
 package com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder
 
-import android.content.res.Resources
 import android.view.View
-import android.view.ViewGroup.LayoutParams
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.visibleWithCondition
-import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
+import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetItemEventListener
-import com.tokopedia.shop_widget.databinding.ItemBmsmWidgetProductListBinding
-import com.tokopedia.unifycomponents.Label
+import com.tokopedia.shop_widget.databinding.ItemBmsmWidgetTwoProductListItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
-class BmsmProductListViewHolder(
+class BmsmTwoProductListViewHolder(
     itemView: View,
     private val listener: BmsmWidgetItemEventListener
 ) : RecyclerView.ViewHolder(itemView) {
 
 
-    private val binding: ItemBmsmWidgetProductListBinding? by viewBinding()
+    private val binding: ItemBmsmWidgetTwoProductListItemBinding? by viewBinding()
 
-    fun bind(element: Product) {
+    fun bind(element: OfferingProductListUiModel.Product) {
         binding?.apply {
             productCard.apply {
                 setProductModel(element.mapToProductCardModel())
@@ -34,7 +28,7 @@ class BmsmProductListViewHolder(
         }
     }
 
-    private fun Product.mapToProductCardModel(): ProductCardModel {
+    private fun OfferingProductListUiModel.Product.mapToProductCardModel(): ProductCardModel {
         return ProductCardModel(
             productImageUrl = imageUrl,
             productName = name,
@@ -47,7 +41,7 @@ class BmsmProductListViewHolder(
         )
     }
 
-    private fun List<Product.LabelGroup>.toLabelGroup(): List<ProductCardModel.LabelGroup> {
+    private fun List<OfferingProductListUiModel.Product.LabelGroup>.toLabelGroup(): List<ProductCardModel.LabelGroup> {
         return map {
             ProductCardModel.LabelGroup(
                 position = it.position,
