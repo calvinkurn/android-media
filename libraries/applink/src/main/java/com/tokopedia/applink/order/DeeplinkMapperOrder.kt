@@ -265,6 +265,7 @@ object DeeplinkMapperOrder {
     }
 
     object BuyerRequestCancelRespond {
+
         const val INTENT_RESULT_SUCCESS = "success"
         const val INTENT_RESULT_MESSAGE = "message"
 
@@ -275,5 +276,24 @@ object DeeplinkMapperOrder {
         const val INTENT_PARAM_DESCRIPTION = "description"
         const val INTENT_PARAM_PRIMARY_BUTTON_TEXT = "primaryButtonText"
         const val INTENT_PARAM_SECONDARY_BUTTON_TEXT = "secondaryButtonText"
+
+        const val PATH = "buyer-request-cancel-respond"
+
+        private const val INTERNAL_APP_LINK = "tokopedia-android-internal://seller/$PATH"
+
+        fun getRegisteredNavigation(uri: Uri): String {
+            val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+            val params = mapOf<String, Any>(
+                INTENT_PARAM_ORDER_ID to uri.getQueryParameter(INTENT_PARAM_ORDER_ID).toZeroStringIfNull(),
+                INTENT_PARAM_ORDER_STATUS_CODE to uri.getQueryParameter(INTENT_PARAM_ORDER_STATUS_CODE).toZeroStringIfNull(),
+                INTENT_PARAM_ORDER_STATUS_TEXT to uri.getQueryParameter(INTENT_PARAM_ORDER_STATUS_TEXT).orEmpty(),
+                INTENT_PARAM_ORDER_L2_CANCELLATION_REASON to uri.getQueryParameter(INTENT_PARAM_ORDER_L2_CANCELLATION_REASON).orEmpty(),
+                INTENT_PARAM_DESCRIPTION to uri.getQueryParameter(INTENT_PARAM_DESCRIPTION).orEmpty(),
+                INTENT_PARAM_PRIMARY_BUTTON_TEXT to uri.getQueryParameter(INTENT_PARAM_PRIMARY_BUTTON_TEXT).orEmpty(),
+                INTENT_PARAM_SECONDARY_BUTTON_TEXT to uri.getQueryParameter(INTENT_PARAM_SECONDARY_BUTTON_TEXT).orEmpty(),
+                RouteManager.KEY_REDIRECT_TO_SELLER_APP to redirectToSellerApp
+            )
+            return UriUtil.buildUriAppendParams(INTERNAL_APP_LINK, params)
+        }
     }
 }
