@@ -5,6 +5,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.analytic.CurrentSite
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.content.analytic.impression.ImpressionManager
+import com.tokopedia.content.analytic.impression.OneTimeImpressionManager
 import com.tokopedia.content.analytic.model.ContentEEProduct
 import com.tokopedia.content.analytic.model.ContentEEPromotion
 import com.tokopedia.track.TrackApp
@@ -29,6 +31,8 @@ abstract class BaseContentAnalytic(
 
     private val sessionIris: String
         get() = TrackApp.getInstance().gtm.irisSessionId
+
+    private val impressionManager = OneTimeImpressionManager<Any>()
 
     protected fun sendEvent(
         event: String,
@@ -187,6 +191,18 @@ abstract class BaseContentAnalytic(
                 Key.sessionIris to sessionIris,
             )
         )
+    }
+
+    protected fun impressOnlyOnce(key: Any, onImpress: () -> Unit) {
+        impressionManager.impress(key, onImpress)
+    }
+
+    protected fun clearAllImpression() {
+        impressionManager.reset()
+    }
+
+    protected fun clearImpression(key: Any) {
+        impressionManager.clear(key)
     }
 
     protected fun buildEventLabel(
