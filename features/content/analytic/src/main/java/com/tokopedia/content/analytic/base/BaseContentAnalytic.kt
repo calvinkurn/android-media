@@ -5,8 +5,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.analytic.CurrentSite
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
-import com.tokopedia.content.analytic.impression.ImpressionManager
+import com.tokopedia.content.analytic.helper.ContentAnalyticHelper
 import com.tokopedia.content.analytic.impression.OneTimeImpressionManager
+import com.tokopedia.content.analytic.model.ContentAnalyticAuthor
 import com.tokopedia.content.analytic.model.ContentEEProduct
 import com.tokopedia.content.analytic.model.ContentEEPromotion
 import com.tokopedia.track.TrackApp
@@ -38,16 +39,16 @@ abstract class BaseContentAnalytic() {
 
     protected fun sendEvent(
         event: String,
-        eventLabel: String,
         eventAction: String,
+        eventLabel: String,
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
     ) {
         send(
             Tracker.Builder()
                 .setEvent(event)
-                .setEventLabel(eventLabel)
                 .setEventAction(eventAction)
+                .setEventLabel(eventLabel)
                 .setCustomProperty(
                     Key.trackerId,
                     getTrackerId(mainAppTrackerId, sellerAppTrackerId)
@@ -58,16 +59,16 @@ abstract class BaseContentAnalytic() {
     }
 
     protected fun sendViewContent(
-        eventLabel: String,
         eventAction: String,
+        eventLabel: String,
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
     ) {
         send(
             Tracker.Builder()
                 .setEvent(Event.viewContentIris)
-                .setEventLabel(eventLabel)
                 .setEventAction(eventAction)
+                .setEventLabel(eventLabel)
                 .setCustomProperty(
                     Key.trackerId,
                     getTrackerId(mainAppTrackerId, sellerAppTrackerId)
@@ -78,16 +79,16 @@ abstract class BaseContentAnalytic() {
     }
 
     protected fun sendClickContent(
-        eventLabel: String,
         eventAction: String,
+        eventLabel: String,
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
     ) {
         send(
             Tracker.Builder()
                 .setEvent(Event.clickContent)
-                .setEventLabel(eventLabel)
                 .setEventAction(eventAction)
+                .setEventLabel(eventLabel)
                 .setCustomProperty(
                     Key.trackerId,
                     getTrackerId(mainAppTrackerId, sellerAppTrackerId)
@@ -207,18 +208,19 @@ abstract class BaseContentAnalytic() {
         impressionManager.clear(key)
     }
 
-    protected fun buildEventLabel(
+
+
+    protected fun concatLabels(
         vararg labels: String
     ): String {
-        return buildString {
-            for (i in labels.indices) {
-                append(labels[i])
+        return ContentAnalyticHelper.concatLabels(*labels)
+    }
 
-                if (i != labels.size-1) {
-                    append(" - ")
-                }
-            }
-        }
+    protected fun concatLabelsWithAuthor(
+        author: ContentAnalyticAuthor,
+        vararg labels: String
+    ): String {
+        return ContentAnalyticHelper.concatLabelsWithAuthor(author, *labels)
     }
 
     private fun send(
