@@ -92,11 +92,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
         when (action) {
             InitializeProductMainData -> handleInitializeProductMainData()
             FetchMiniInfo -> handleFetchMiniInfo()
-            ProductActionFromResult -> handleProductActionFromResult()
+            ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
             LikeFromResult -> handleLikeFromResult()
             is ProductSelected -> handleProductSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh)
-            is ProductAction -> handleProductAction(action.model)
+            is ProductAction -> addToChart(action.model)
             is Navigate -> handleNavigate(action.appLink)
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
@@ -158,7 +158,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleProductAction(model: BottomNavUiModel) {
+    private fun addToChart(model: BottomNavUiModel) {
         requiredLogin(model) {
             viewModelScope.launchCatchError(
                 block = {
@@ -185,7 +185,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     ProductPreviewEvent.ShowErrorToaster(
                         it,
                         ProductPreviewEvent.ShowErrorToaster.Type.ATC
-                    ) { handleProductAction(model) }
+                    ) { addToChart(model) }
                 )
             }
         }
@@ -216,11 +216,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleProductActionFromResult() {
-        val model = _bottomNavContentState.value
+    private fun handleProductAction(model: BottomNavUiModel) {
         when (model.buttonState) {
             BottomNavUiModel.ButtonState.OOS -> remindMe(model)
-            BottomNavUiModel.ButtonState.Active -> handleProductAction(model)
+            BottomNavUiModel.ButtonState.Active -> addToChart(model)
             else -> {}
         }
     }
