@@ -22,10 +22,10 @@ class FlightSortAndFilterUseCase @Inject constructor(private val flightSearchRep
     suspend fun execute(@TravelSortOption flightSortOption: Int,
                         flightFilterModel: FlightFilterModel): List<FlightJourneyModel> =
             flightSearchRepository.getSearchFilter(flightSortOption, flightFilterModel).let {
-                mapToFlightJourney(it.journeyAndRoutes, it.specialTag)
+                mapToFlightJourneyViewModel(it.journeyAndRoutes, it.specialTag)
             }
 
-    private fun mapToFlightJourney(it: List<JourneyAndRoutes>, specialTag: String): List<FlightJourneyModel> {
+    private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>, specialTag: String): List<FlightJourneyModel> {
         val gson = Gson()
         return it.map { journeyAndRoutes ->
             val routes = journeyAndRoutes.routes.map {
