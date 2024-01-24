@@ -504,7 +504,8 @@ class CheckoutDataConverter @Inject constructor() {
             if (it is CheckoutProductModel &&
                 it.cartStringOrder == product.cartStringOrder &&
                 it.bmgmOfferId == product.bmgmOfferId &&
-                it.bmgmOfferTypeId == product.bmgmOfferTypeId
+                it.bmgmOfferTypeId == product.bmgmOfferTypeId &&
+                !it.isError
             ) {
                 it.quantity
             } else {
@@ -533,7 +534,7 @@ class CheckoutDataConverter @Inject constructor() {
     }
 
     private fun insertProductBenefit(products: List<CheckoutProductModel>): List<CheckoutItem> {
-        val finalList = products.foldIndexed(mutableListOf<CheckoutItem>()) { index, acc, product ->
+        val finalList = products.fold(mutableListOf<CheckoutItem>()) { acc, product ->
             val lastItem = acc.lastOrNull()
             if (lastItem !is CheckoutProductModel) {
                 acc.add(product)
@@ -565,8 +566,6 @@ class CheckoutDataConverter @Inject constructor() {
     companion object {
         private const val ACTIVE_ADDRESS = 1
         private const val PRIME_ADDRESS = 2
-        private const val MERCHANT_VOUCHER_TYPE = "merchant"
-        private const val LOGISTIC_VOUCHER_TYPE = "logistic"
 
         private const val BMGM_ITEM_HEADER = 1
     }
