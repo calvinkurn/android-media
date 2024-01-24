@@ -4,29 +4,30 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonComparedWidgetBinding
-import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
+import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonReimagineComparedWidgetBinding
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonViewHolder
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ComparisonWidgetComparedItemViewHolder(
+class ComparisonReimagineWidgetComparedItemViewHolder(
     val view: View
 ): RecyclerView.ViewHolder(view), ComparisonViewHolder {
 
-    private var binding: ItemComparisonComparedWidgetBinding? by viewBinding()
+    private var binding: ItemComparisonReimagineComparedWidgetBinding? by viewBinding()
 
     companion object {
-        private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.comparison.caompareditem.ComparisonWidgetComparedItemViewHolder.kt"
+        private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.comparison.caompareditem.ComparisonReimagineWidgetComparedItemViewHolder.kt"
     }
+
     val context: Context = view.context
 
     override fun bind(
@@ -91,3 +92,4 @@ class ComparisonWidgetComparedItemViewHolder(
         }
     }
 }
+
