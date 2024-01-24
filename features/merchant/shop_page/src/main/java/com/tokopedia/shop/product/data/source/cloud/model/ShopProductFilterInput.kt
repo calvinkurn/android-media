@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.data.source.cloud.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.constant.ShopParamApiConstant
 
 data class ShopProductFilterInput(
     @SerializedName("page")
@@ -62,5 +63,5 @@ data class ShopProductFilterInput(
 
     @SerializedName("usecase")
     @Expose
-    var usecase: String = ""
+    var usecase: String = ShopParamApiConstant.SHOP_GET_PRODUCT_V2
 )
