@@ -6,4 +6,12 @@ package com.tokopedia.content.analytic.model
 data class ContentAnalyticAuthor(
     val id: String,
     val type: String,
-)
+) {
+    companion object {
+        val Empty: ContentAnalyticAuthor
+            get() = ContentAnalyticAuthor(
+                id = "",
+                type = "",
+            )
+    }
+}
