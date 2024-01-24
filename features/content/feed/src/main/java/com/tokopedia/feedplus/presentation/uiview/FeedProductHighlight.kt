@@ -99,7 +99,7 @@ fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight
                     variant = ButtonVariant.FILLED,
                     size = ButtonSize.SMALL,
                     trailingIcon = unifycomponentsR.drawable.iconunify_cart ,
-                    onClick = { /*TODO*/ },
+                    onClick = {  },
                     modifier = Modifier.constrainAs(btnAtc) {
                         width = Dimension.fillToConstraints
                         end.linkTo(parent.end)
