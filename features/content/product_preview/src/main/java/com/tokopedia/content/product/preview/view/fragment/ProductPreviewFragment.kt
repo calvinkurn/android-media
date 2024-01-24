@@ -255,7 +255,7 @@ class ProductPreviewFragment @Inject constructor(
                 startActivitResult = { intent, _ -> startActivity(intent) }
             )
         } else {
-            viewModel.onAction(ProductPreviewAction.AddToChart(model))
+            viewModel.onAction(ProductPreviewAction.ProductAction(model))
         }
     }
 
