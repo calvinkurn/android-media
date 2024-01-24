@@ -5,6 +5,7 @@
     android:clickable="true"
     android:focusable="true"
     app:reimagine="true"
+    app:useCompatPadding="true"
     app:reimagine_template="list"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" />

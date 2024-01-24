@@ -7,4 +7,5 @@
     android:layout_marginTop="-2dp"
     app:reimagine="true"
     app:reimagine_template="grid"
+    app:useCompatPadding="true"
     android:layout_height="wrap_content"/>

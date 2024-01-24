@@ -7,4 +7,5 @@
     android:clickable="true"
     android:focusable="true"
     app:reimagine="true"
+    app:useCompatPadding="true"
     app:reimagine_template="list" />
