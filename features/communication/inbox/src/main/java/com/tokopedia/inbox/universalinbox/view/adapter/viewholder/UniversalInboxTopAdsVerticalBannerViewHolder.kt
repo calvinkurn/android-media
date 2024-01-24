@@ -12,7 +12,7 @@ import com.tokopedia.topads.sdk.listener.TdnVerticalBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class UniversalInboxTopAdsVerticalBannerViewHolder constructor(
+class UniversalInboxTopAdsVerticalBannerViewHolder(
     itemView: View,
     private val topAdsClickListener: TopAdsImageViewClickListener
 ) : AbstractViewHolder<UniversalInboxTopAdsVerticalBannerUiModel>(itemView), TdnVerticalBannerResponseListener {
@@ -27,18 +27,19 @@ class UniversalInboxTopAdsVerticalBannerViewHolder constructor(
     }
 
     private fun bindBanner() {
-        binding?.inboxVerticalTopadsBanner?.renderTdnBanner(topAdsUiModel?.ads!!, EIGHT_DP, ::onTdnBannerClicked)
+        val ads = topAdsUiModel?.ads ?: listOf()
+        binding?.inboxVerticalTopadsBanner?.renderTdnBanner(ads, EIGHT_DP, ::onTdnBannerClicked)
     }
 
     private fun bindTopAds(uiModel: UniversalInboxTopAdsVerticalBannerUiModel) {
         topAdsUiModel = uiModel
-        if (!topAdsUiModel!!.isRequested){
+        if (!uiModel.isRequested){
             binding?.inboxVerticalTopadsBanner?.getTdnData(
                 SOURCE,
                 ADS_COUNT,
                 dimenId = DIMEN_ID
             )
-            topAdsUiModel!!.isRequested = true
+            topAdsUiModel?.isRequested = true
         }
     }
 

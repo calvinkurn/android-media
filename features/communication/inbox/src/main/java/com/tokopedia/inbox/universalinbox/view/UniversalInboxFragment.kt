@@ -56,6 +56,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiMod
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -323,6 +324,9 @@ class UniversalInboxFragment @Inject constructor(
 
     private suspend fun observeProductRecommendation() {
         viewModel.productRecommendationUiState.collectLatest {
+            // Add / Remove loading view
+            toggleLoadingProductRecommendation(it.isLoading)
+
             // Scroll to top when it is loading & empty product list
             // It means refresh
             if (it.isLoading && it.productRecommendation.isEmpty()) {
@@ -333,32 +337,30 @@ class UniversalInboxFragment @Inject constructor(
 
             // Update view only when not loading (not waiting for network)
             // Or product recommendation is empty (refresh / re-shuffle)
-            if (!it.isLoading || it.productRecommendation.isEmpty()) {
-                // Set title & update product recommendation
-                updateProductRecommendation(
+            if (!it.isLoading && it.productRecommendation.isNotEmpty()) {
+                addProductRecommendation(
                     title = it.title,
                     newList = it.productRecommendation
                 )
             }
-
-            // Add / Remove loading view
-            toggleLoadingProductRecommendation(it.isLoading)
         }
     }
 
     private fun toggleLoadingProductRecommendation(isLoading: Boolean) {
         if (isLoading) {
             adapter.addProductRecommendationLoader()
+        } else {
+            adapter.removeProductRecommendationLoader()
         }
     }
 
-    private fun updateProductRecommendation(
+    private fun addProductRecommendation(
         title: String,
         newList: List<Visitable<in UniversalInboxTypeFactory>>
     ) {
         val editedNewList = newList.toMutableList()
         setHeadlineAndBannerExperiment(editedNewList)
-        adapter.tryUpdateProductRecommendations(title, editedNewList)
+        adapter.tryAddProductRecommendation(title, editedNewList)
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
@@ -422,7 +424,7 @@ class UniversalInboxFragment @Inject constructor(
     private fun setTopAdsHeadlineExperiment(newList: MutableList<Visitable<in UniversalInboxTypeFactory>>) {
         var index = Int.ZERO
         if (headlineIndexList != null && headlineIndexList?.isNotEmpty() == true) {
-            val pageNum = viewModel.getRecommendationPage()
+            val pageNum = endlessRecyclerViewScrollListener?.currentPage.toZeroIfNull()
             // Get headline position for first page recommendation
             // 2 is the first, because after we get the data, page is added by 1
             if (pageNum == 2) {
@@ -476,7 +478,6 @@ class UniversalInboxFragment @Inject constructor(
     override fun loadWidgetMetaAndCounter() {
         shouldImpressTracker = true
         shouldTopAdsAndLoadRecommendation = true
-        endlessRecyclerViewScrollListener?.resetState()
         viewModel.processAction(UniversalInboxAction.RefreshPage)
     }
 
@@ -490,9 +491,11 @@ class UniversalInboxFragment @Inject constructor(
                 }
                 setHeadlineIndexList(data)
                 viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
+                endlessRecyclerViewScrollListener?.resetState()
             },
             {
                 viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
+                endlessRecyclerViewScrollListener?.resetState()
             }
         )
     }
@@ -654,7 +657,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        viewModel.processAction(UniversalInboxAction.LoadNextPage) // page handled in view model
+        viewModel.processAction(UniversalInboxAction.LoadNextPage(page))
     }
 
     override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {
