@@ -208,8 +208,6 @@ abstract class BaseContentAnalytic() {
         impressionManager.clear(key)
     }
 
-
-
     protected fun concatLabels(
         vararg labels: String
     ): String {
