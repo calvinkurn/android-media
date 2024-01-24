@@ -10,11 +10,15 @@ import com.tokopedia.flight.shouldBe
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.io.File
 
 /**
  * @author by furqan on 27/07/2020
@@ -133,6 +137,93 @@ class FlightCancellationReasonViewModelTest {
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason shouldBe ""
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId shouldBe "1"
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.attachmentList.size shouldBe 3
+    }
+
+    @Test
+    fun disableNextButtonNotifyState_NextStepFirstTrue() {
+        // given
+        viewModel.cancellationWrapperModel = DUMMY_CANCELLATION_WRAPPER_ATTACHMENT
+        viewModel.buildAttachmentList()
+        viewModel.selectedReason = FlightCancellationPassengerEntity.Reason(
+            "1",
+            "",
+            arrayListOf(),
+            arrayListOf()
+        )
+
+
+        // when
+        viewModel.onNextButtonClicked()
+
+        // then
+        viewModel.canNavigateToNextStep.value!!.first shouldBe true
+        viewModel.canNavigateToNextStep.value!!.second shouldBe true
+        viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason shouldBe ""
+        viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId shouldBe "1"
+        viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.attachmentList.size shouldBe 3
+
+        //when
+        viewModel.disableNextButtonNotifyState()
+
+        //then
+        assertEquals(viewModel.canNavigateToNextStep.value?.first, true)
+        assertEquals(viewModel.canNavigateToNextStep.value?.second, false)
+    }
+
+    @Test
+    fun disableNextButtonNotifyState_NextStepFirstFalse() {
+        //when
+        viewModel.disableNextButtonNotifyState()
+
+        //then
+        assertEquals(viewModel.canNavigateToNextStep.value?.first, false)
+        assertEquals(viewModel.canNavigateToNextStep.value?.second, false)
+    }
+
+    @Test
+    fun trackOnNext_Test() {
+        // given
+        viewModel.cancellationWrapperModel = DUMMY_CANCELLATION_WRAPPER_ATTACHMENT
+        viewModel.buildAttachmentList()
+        viewModel.selectedReason = FlightCancellationPassengerEntity.Reason(
+            "1",
+            "",
+            arrayListOf(),
+            arrayListOf()
+        )
+
+
+        // when
+        viewModel.onNextButtonClicked()
+
+        // then
+        viewModel.canNavigateToNextStep.value!!.first shouldBe true
+        viewModel.canNavigateToNextStep.value!!.second shouldBe true
+        viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason shouldBe ""
+        viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId shouldBe "1"
+        viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.attachmentList.size shouldBe 3
+
+        //given
+        coEvery {
+            userSession.userId
+        } returns "1111"
+
+        //when
+        viewModel.trackOnNext()
+    }
+
+    @Test
+    fun onSuccess_validateAttachment_shouldSuccesssValidation() {
+        // given
+        val fileName = "path/images.jpeg"
+
+        val fileMock = mockk<File>()
+        every { fileMock.length() } returns 2048
+        // when
+        viewModel.onSuccessChangeAttachment(fileName)
+
+        // then
+        viewModel.viewAttachmentModelList.value shouldBe null
     }
 
 }
