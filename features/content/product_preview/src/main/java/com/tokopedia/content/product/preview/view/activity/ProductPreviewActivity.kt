@@ -2,6 +2,7 @@ package com.tokopedia.content.product.preview.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 import javax.inject.Inject
+import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 class ProductPreviewActivity : BaseActivity() {
 
@@ -28,6 +30,12 @@ class ProductPreviewActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setStatusBar()
         setupViews()
+    }
+
+    override fun getTheme(): Resources.Theme {
+        val theme = super.getTheme()
+        theme.applyStyle(contentproductpreviewR.style.ProductPreview_Theme, true)
+        return theme
     }
 
     private fun inject() {
