@@ -13,7 +13,7 @@ sealed interface ProductPreviewAction {
     object ProductActionFromResult : ProductPreviewAction
     object LikeFromResult : ProductPreviewAction
     data class FetchReview(val isRefresh: Boolean) : ProductPreviewAction
-    data class AddToChart(val model: BottomNavUiModel) : ProductPreviewAction
+    data class ProductAction(val model: BottomNavUiModel) : ProductPreviewAction
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReviewReportUiModel) : ProductPreviewAction
     data class ClickMenu(val isFromLogin: Boolean) : ProductPreviewAction

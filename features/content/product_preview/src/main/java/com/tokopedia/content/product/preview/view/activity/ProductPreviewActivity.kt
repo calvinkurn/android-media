@@ -79,7 +79,7 @@ class ProductPreviewActivity : BaseActivity() {
         return ProductPreviewFragment.getOrCreate(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
-            bundle = intent.extras
+            bundle = intent.extras,
         )
     }
 

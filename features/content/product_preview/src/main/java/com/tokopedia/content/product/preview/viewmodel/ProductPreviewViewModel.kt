@@ -12,7 +12,6 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.AddToChart
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ClickMenu
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchMiniInfo
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReview
@@ -20,6 +19,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Like
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.LikeFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Navigate
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
@@ -92,11 +92,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
         when (action) {
             InitializeProductMainData -> handleInitializeProductMainData()
             FetchMiniInfo -> handleFetchMiniInfo()
-            ProductActionFromResult -> handleProductAction()
+            ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
             LikeFromResult -> handleLikeFromResult()
             is ProductSelected -> handleProductSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh)
-            is AddToChart -> handleAddToCart(action.model)
+            is ProductAction -> addToChart(action.model)
             is Navigate -> handleNavigate(action.appLink)
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
@@ -158,7 +158,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleAddToCart(model: BottomNavUiModel) {
+    private fun addToChart(model: BottomNavUiModel) {
         requiredLogin(model) {
             viewModelScope.launchCatchError(
                 block = {
@@ -185,7 +185,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     ProductPreviewEvent.ShowErrorToaster(
                         it,
                         ProductPreviewEvent.ShowErrorToaster.Type.ATC
-                    ) { handleAddToCart(model) }
+                    ) { addToChart(model) }
                 )
             }
         }
@@ -216,11 +216,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleProductAction() {
-        val model = _bottomNavContentState.value
+    private fun handleProductAction(model: BottomNavUiModel) {
         when (model.buttonState) {
             BottomNavUiModel.ButtonState.OOS -> remindMe(model)
-            BottomNavUiModel.ButtonState.Active -> handleAddToCart(model)
+            BottomNavUiModel.ButtonState.Active -> addToChart(model)
             else -> {}
         }
     }
