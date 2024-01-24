@@ -27,8 +27,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
-import com.tokopedia.design.component.ticker.TouchViewPager
-import com.tokopedia.design.list.adapter.TouchImageAdapter
+import com.tokopedia.imagepreview.touch_view_pager_lib.ImagePreviewTouchImageAdapter
+import com.tokopedia.imagepreview.touch_view_pager_lib.ImagePreviewTouchViewPager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
@@ -44,14 +44,14 @@ import java.util.*
 open class ImagePreviewActivity : BaseSimpleActivity() {
     private var title: String? = null
     private var description: String? = null
-    private var adapter: TouchImageAdapter? = null
+    private var adapter: ImagePreviewTouchImageAdapter? = null
     var fileLocations: ArrayList<String>? = null
     private var imageDescriptions: ArrayList<String>? = null
     var position = 0
     private var disableDownload = false
 
     val viewPager by lazy {
-        findViewById<TouchViewPager>(R.id.viewPager)
+        findViewById<ImagePreviewTouchViewPager>(R.id.viewPager)
     }
 
     open fun layoutId(): Int {
@@ -90,8 +90,8 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
     }
 
     open fun setupAdapter() {
-        adapter = TouchImageAdapter(this@ImagePreviewActivity, fileLocations)
-        adapter?.SetonImageStateChangeListener(object : TouchImageAdapter.OnImageStateChange {
+        adapter = ImagePreviewTouchImageAdapter(this@ImagePreviewActivity, fileLocations)
+        adapter?.SetonImageStateChangeListener(object : ImagePreviewTouchImageAdapter.OnImageStateChange {
             override fun OnStateDefault() {
                 viewPager.SetAllowPageSwitching(true);
             }
@@ -159,7 +159,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 ANDROID_GENERAL_CHANNEL)
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(R.string.download_in_process))
-                .setSmallIcon(com.tokopedia.design.R.drawable.ic_stat_notify_white)
+                .setSmallIcon(R.drawable.image_preview_ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                     com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp))
                 .setAutoCancel(true)
