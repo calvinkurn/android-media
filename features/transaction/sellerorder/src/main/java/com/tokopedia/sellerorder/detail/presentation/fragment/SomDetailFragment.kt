@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder
@@ -67,7 +68,6 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
-import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondActivity
 import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondListenerImpl
 import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondListener
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
@@ -388,15 +388,21 @@ open class SomDetailFragment :
 
     override fun onShowBuyerRequestCancelRespondBottomSheet(it: SomDetailOrder.GetSomDetail.Button) {
         startActivityForResult(
-            Intent(requireActivity(), BuyerRequestCancelRespondActivity::class.java).apply {
-                putExtra(INTENT_PARAM_ORDER_ID, orderId)
-                putExtra(INTENT_PARAM_ORDER_STATUS_CODE, detailResponse?.statusCode.orZero())
-                putExtra(INTENT_PARAM_ORDER_STATUS_TEXT, detailResponse?.statusText.orEmpty())
-                putExtra(INTENT_PARAM_ORDER_L2_CANCELLATION_REASON, Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()))
-                putExtra(INTENT_PARAM_DESCRIPTION, detailResponse?.button?.firstOrNull()?.popUp?.body.orEmpty())
-                putExtra(INTENT_PARAM_PRIMARY_BUTTON_TEXT, detailResponse?.button?.firstOrNull()?.popUp?.getPrimaryButton()?.displayName.orEmpty())
-                putExtra(INTENT_PARAM_SECONDARY_BUTTON_TEXT, detailResponse?.button?.firstOrNull()?.popUp?.getSecondaryButton()?.displayName.orEmpty())
-            },
+            RouteManager.getIntent(
+                requireContext(),
+                UriUtil.buildUriAppendParam(
+                    ApplinkConst.Som.BUYER_REQUEST_CANCEL_RESPOND,
+                    mapOf(
+                        INTENT_PARAM_ORDER_ID to orderId,
+                        INTENT_PARAM_ORDER_STATUS_CODE to detailResponse?.statusCode.orZero().toString(),
+                        INTENT_PARAM_ORDER_STATUS_TEXT to detailResponse?.statusText.orEmpty(),
+                        INTENT_PARAM_ORDER_L2_CANCELLATION_REASON to Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()),
+                        INTENT_PARAM_DESCRIPTION to detailResponse?.button?.firstOrNull()?.popUp?.body.orEmpty(),
+                        INTENT_PARAM_PRIMARY_BUTTON_TEXT to detailResponse?.button?.firstOrNull()?.popUp?.getPrimaryButton()?.displayName.orEmpty(),
+                        INTENT_PARAM_SECONDARY_BUTTON_TEXT to detailResponse?.button?.firstOrNull()?.popUp?.getSecondaryButton()?.displayName.orEmpty()
+                    )
+                )
+            ),
             101
         )
 //        bottomSheetManager?.showSomOrderRequestCancelBottomSheet(it, detailResponse, this)
