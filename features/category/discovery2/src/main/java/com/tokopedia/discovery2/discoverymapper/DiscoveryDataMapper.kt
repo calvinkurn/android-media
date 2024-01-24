@@ -290,7 +290,8 @@ class DiscoveryDataMapper {
 
     fun mapDataItemToProductCardModel(
         dataItem: DataItem,
-        componentName: String?
+        componentName: String?,
+        cardType: String?
     ): ProductCardModel {
         val productName: String
         val slashedPrice: String
@@ -323,6 +324,7 @@ class DiscoveryDataMapper {
             } else {
                 ""
             },
+            isInBackground = cardType.equals("v2_with_background", true),
             countSoldRating = dataItem.averageRating,
             isTopAds = dataItem.isTopads ?: false,
             freeOngkir = ProductCardModel.FreeOngkir(

@@ -174,7 +174,8 @@ class ProductCardCarouselViewModel(
                 productCardModelArray.add(
                     DiscoveryDataMapper().mapDataItemToProductCardModel(
                         dataItem,
-                        components.name
+                        components.name,
+                        components.properties?.cardType
                     )
                 )
             }
