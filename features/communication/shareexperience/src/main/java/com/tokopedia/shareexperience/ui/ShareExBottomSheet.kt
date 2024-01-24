@@ -36,6 +36,7 @@ import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
+import com.tokopedia.shareexperience.ui.util.ShareExMediaCleanupStorageWorker
 import com.tokopedia.shareexperience.ui.util.copyTextToClipboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -128,14 +129,14 @@ class ShareExBottomSheet :
             analytics.trackImpressionBottomSheet(
                 identifier = it.identifier,
                 pageTypeEnum = it.pageTypeEnum,
-                shareId = it.bottomSheetModel?.shareId,
+                shareId = getShareId(),
                 label = args.trackerArg.labelImpressionBottomSheet
             )
             setCloseClickListener { _ ->
                 analytics.trackActionClickClose(
                     identifier = it.identifier,
                     pageTypeEnum = it.pageTypeEnum,
-                    shareId = it.bottomSheetModel?.shareId,
+                    shareId = getShareId(),
                     label = it.trackerArg.labelActionCloseIcon
                 )
                 dismiss()
@@ -245,7 +246,7 @@ class ShareExBottomSheet :
                 analytics.trackActionClickChannel(
                     identifier = it.identifier,
                     pageTypeEnum = it.pageTypeEnum,
-                    shareId = it.bottomSheetModel?.shareId,
+                    shareId = getShareId(),
                     channel = channelEnum.trackerName,
                     imageType = imageTypeEnum.value,
                     label = it.trackerArg.labelActionClickChannel
@@ -267,7 +268,7 @@ class ShareExBottomSheet :
             analytics.trackImpressionTickerAffiliate(
                 identifier = it.identifier,
                 pageTypeEnum = it.pageTypeEnum,
-                shareId = it.bottomSheetModel?.shareId,
+                shareId = getShareId(),
                 label = it.trackerArg.labelImpressionAffiliateRegistration
             )
         }
@@ -278,7 +279,7 @@ class ShareExBottomSheet :
             analytics.trackActionClickAffiliateRegistration(
                 identifier = it.identifier,
                 pageTypeEnum = it.pageTypeEnum,
-                shareId = it.bottomSheetModel?.shareId,
+                shareId = getShareId(),
                 label = it.trackerArg.labelActionClickAffiliateRegistration
             )
         }
@@ -313,9 +314,29 @@ class ShareExBottomSheet :
         navigateWithIntent(intentChooser)
     }
 
+    private fun getShareId(): String {
+        return viewModel.bottomSheetArgs
+            ?.bottomSheetModel
+            ?.bottomSheetPage
+            ?.listShareProperty
+            ?.getOrNull(viewModel.bottomSheetUiState.value.chipPosition)
+            ?.shareId.toString()
+    }
+
     override fun onDestroyView() {
-        listener = null
+        cleanUp()
         super.onDestroyView()
+    }
+
+    private fun cleanUp() {
+        listener = null
+        cleanUpMedia()
+    }
+
+    private fun cleanUpMedia() {
+        context?.let {
+            ShareExMediaCleanupStorageWorker.scheduleWorker(it)
+        }
     }
 
     companion object {

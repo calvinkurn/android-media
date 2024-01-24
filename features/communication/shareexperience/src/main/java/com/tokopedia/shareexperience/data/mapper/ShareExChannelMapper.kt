@@ -97,7 +97,7 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getWhatsappChannelTitle(),
                 icon = IconUnify.WHATSAPP,
                 mimeType = ShareExMimeTypeEnum.TEXT,
-                packageName = "com.whatsapp"
+                packageName = ShareExConstants.PackageName.WHATSAPP
             )
         )
         socialMediaChannelList.add(
@@ -106,7 +106,7 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getFacebookFeedChannelTitle(),
                 icon = IconUnify.FACEBOOK,
                 mimeType = ShareExMimeTypeEnum.ALL,
-                packageName = "com.facebook.katana"
+                packageName = ShareExConstants.PackageName.FACEBOOK
             )
         )
         socialMediaChannelList.add(
@@ -115,8 +115,8 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getFacebookStoryChannelTitle(),
                 icon = IconUnify.FACEBOOK_STORY,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
-                packageName = "com.facebook.katana",
-                actionIntent = "com.facebook.stories.ADD_TO_STORY"
+                packageName = ShareExConstants.PackageName.FACEBOOK,
+                actionIntent = ShareExConstants.IntentAction.FB_STORY
             )
         )
         socialMediaChannelList.add(
@@ -125,8 +125,8 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getInstagramFeedChannelTitle(),
                 icon = IconUnify.INSTAGRAM,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
-                packageName = "com.instagram.android",
-                actionIntent = "com.instagram.share.ADD_TO_FEED"
+                packageName = ShareExConstants.PackageName.INSTAGRAM,
+                actionIntent = ShareExConstants.IntentAction.IG_FEED
             )
         )
         socialMediaChannelList.add(
@@ -135,8 +135,8 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getInstagramStoryChannelTitle(),
                 icon = IconUnify.INSTAGRAM_STORY,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
-                packageName = "com.instagram.android",
-                actionIntent = "com.instagram.share.ADD_TO_STORY"
+                packageName = ShareExConstants.PackageName.INSTAGRAM,
+                actionIntent = ShareExConstants.IntentAction.IG_STORY
             )
         )
         socialMediaChannelList.add(
@@ -145,7 +145,7 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getInstagramDirectMessageChannelTitle(),
                 icon = IconUnify.INSTAGRAM_DM,
                 mimeType = ShareExMimeTypeEnum.TEXT,
-                packageName = "com.instagram.android"
+                packageName = ShareExConstants.PackageName.INSTAGRAM
             )
         )
         socialMediaChannelList.add(
@@ -154,7 +154,7 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getLineChannelTitle(),
                 icon = IconUnify.LINE,
                 mimeType = ShareExMimeTypeEnum.TEXT,
-                packageName = "jp.naver.line.android"
+                packageName = ShareExConstants.PackageName.LINE
             )
         )
         socialMediaChannelList.add(
@@ -163,7 +163,7 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getXTwitterChannelTitle(),
                 icon = IconUnify.TWITTER,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
-                packageName = "com.twitter.android"
+                packageName = ShareExConstants.PackageName.TWITTER
             )
         )
         socialMediaChannelList.add(
@@ -172,7 +172,7 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getTelegramChannelTitle(),
                 icon = IconUnify.TELEGRAM,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
-                packageName = "org.telegram.messenger"
+                packageName = ShareExConstants.PackageName.TELEGRAM
             )
         )
         return socialMediaChannelList
@@ -204,7 +204,7 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getEmailChannelTitle(),
                 icon = IconUnify.MESSAGE,
                 mimeType = ShareExMimeTypeEnum.ALL,
-                packageName = "com.google.android.gm"
+                packageName = ShareExConstants.PackageName.GMAIL
             )
         )
         generalChannelList.add(

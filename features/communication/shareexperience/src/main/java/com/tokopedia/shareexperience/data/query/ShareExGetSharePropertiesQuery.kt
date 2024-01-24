@@ -10,8 +10,8 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
     }
 
     override fun getQuery(): String = """
-        query getShareProperties($$PARAMS: ParamGetShareProperties!) {
-          getShareProperties(params: $$PARAMS) {
+        query getShareProperties(${'$'}params: ParamGetShareProperties!) {
+          getShareProperties(params: ${'$'}params) {
             shareId
             bottomsheet {
               title
@@ -63,8 +63,4 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
     """.trimIndent()
 
     override fun getTopOperationName(): String = operationName
-
-    companion object {
-        private const val PARAMS = "params"
-    }
 }

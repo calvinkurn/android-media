@@ -120,23 +120,20 @@ class ShareExViewModel @Inject constructor(
     private fun getShareBottomSheetData() {
         viewModelScope.launch {
             try {
-                bottomSheetArgs?.let {
-                    when {
-                        (it.throwable != null) -> {
-                            getDefaultBottomSheetModel(
-                                it.throwable,
-                                it.defaultUrl
-                            )
-                        }
-                        (it.bottomSheetModel != null) -> {
-                            handleFirstLoadBottomSheetModel(
-                                it.bottomSheetModel,
-                                it.selectedChip
-                            )
-                        }
+                val bottomSheetArgs = bottomSheetArgs!! // Safe !!
+                when {
+                    (bottomSheetArgs.throwable != null) -> {
+                        getDefaultBottomSheetModel(
+                            bottomSheetArgs.throwable,
+                            bottomSheetArgs.defaultUrl
+                        )
                     }
-                } ?: run {
-                    throw IllegalArgumentException("BottomSheetArgs is null")
+                    (bottomSheetArgs.bottomSheetModel != null) -> {
+                        handleFirstLoadBottomSheetModel(
+                            bottomSheetArgs.bottomSheetModel,
+                            bottomSheetArgs.selectedChip
+                        )
+                    }
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
@@ -203,7 +200,8 @@ class ShareExViewModel @Inject constructor(
         _bottomSheetUiState.update { uiState ->
             uiState.copy(
                 title = title,
-                uiModelList = uiModelList
+                uiModelList = uiModelList,
+                chipPosition = chipPosition
             )
         }
         // Change image generator property, it wil be used later when channel clicked

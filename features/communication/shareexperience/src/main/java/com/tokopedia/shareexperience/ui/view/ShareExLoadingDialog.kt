@@ -73,7 +73,7 @@ class ShareExLoadingDialog(
                 try {
                     val request = ShareExProductBottomSheetRequest(
                         pageType = pageTypeEnum.valueInt,
-                        id = id.toLong()
+                        id = id
                     )
                     useCase.getData(request).collectLatest { result ->
                         when (result) {

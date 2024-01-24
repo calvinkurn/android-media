@@ -92,7 +92,7 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
                         type = params.pageTypeEnum.value,
                         url = params.linkerPropertiesRequest.originalUrl,
                         identifier = params.identifierId,
-                        identifierType = 0,
+                        identifierType = 0, // Currently not used, same as IOS
                         additionalParams = listOf(
                             ShareExAffiliateLinkAdditionalParamRequest(OG_TITLE_RAW, params.linkerPropertiesRequest.ogTitle),
                             ShareExAffiliateLinkAdditionalParamRequest(OG_DESCRIPTION_RAW, params.linkerPropertiesRequest.ogTitle),

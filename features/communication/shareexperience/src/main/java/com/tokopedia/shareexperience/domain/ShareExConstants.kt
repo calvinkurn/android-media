@@ -38,4 +38,20 @@ object ShareExConstants {
         const val MEDIUM_KEY = "utm_medium"
         const val CAMPAIGN_KEY = "utm_campaign"
     }
+
+    object PackageName {
+        const val WHATSAPP = "com.whatsapp"
+        const val FACEBOOK = "com.facebook.katana"
+        const val INSTAGRAM = "com.instagram.android"
+        const val LINE = "jp.naver.line.android"
+        const val TWITTER = "com.twitter.android"
+        const val TELEGRAM = "org.telegram.messenger"
+        const val GMAIL = "com.google.android.gm"
+    }
+
+    object IntentAction {
+        const val FB_STORY = "com.facebook.stories.ADD_TO_STORY"
+        const val IG_FEED = "com.instagram.share.ADD_TO_FEED"
+        const val IG_STORY = "com.instagram.share.ADD_TO_STORY"
+    }
 }
