@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
+import com.tokopedia.content.product.preview.utils.PRODUCT_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.utils.PRODUCT_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter
 import com.tokopedia.content.product.preview.view.adapter.product.ProductIndicatorAdapter
@@ -24,9 +24,12 @@ import com.tokopedia.content.product.preview.view.components.player.ProductPrevi
 import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductSelected
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.IndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
@@ -35,19 +38,25 @@ import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
+    private val viewModel by activityViewModels<ProductPreviewViewModel>()
+
     private var _binding: FragmentProductBinding? = null
     private val binding: FragmentProductBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<ProductPreviewViewModel>()
-
-    private var snapHelperContent: PagerSnapHelper = PagerSnapHelper()
+    private var snapHelperContent = PagerSnapHelper()
+    private var mVideoPlayer: ProductPreviewExoPlayer? = null
 
     private val layoutManagerContent by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
     }
+
     private val layoutManagerIndicator by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
+    }
+
+    private val videoPlayerManager by lazyThreadSafetyNone {
+        ProductPreviewVideoPlayerManager(requireContext())
     }
 
     private val productContentAdapter by lazyThreadSafetyNone {
@@ -56,9 +65,28 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
                 override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
                     return videoPlayerManager.occupy(id)
                 }
+
+                override fun pauseVideo(id: String) {
+                    videoPlayerManager.pause(id)
+                }
+
+                override fun resumeVideo(id: String) {
+                    videoPlayerManager.resume(id)
+                }
+
+                override fun onScrubbing() {
+                    binding.tvIndicatorLabel.hide()
+                    binding.rvIndicatorProduct.hide()
+                }
+
+                override fun onStopScrubbing() {
+                    binding.tvIndicatorLabel.show()
+                    binding.rvIndicatorProduct.show()
+                }
             }
         )
     }
+
     private val productIndicatorAdapter by lazyThreadSafetyNone {
         ProductIndicatorAdapter(
             listener = object :
@@ -71,14 +99,12 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         )
     }
 
-    private val videoPlayerManager by lazy { ProductPreviewVideoPlayerManager(requireContext()) }
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == ViewPager2.SCROLL_STATE_IDLE) {
-                val position = getContentCurrentPosition()
-                scrollTo(position)
-                viewModel.onAction(ProductSelected(position))
-            }
+            if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            val position = getContentCurrentPosition()
+            scrollTo(position)
+            viewModel.onAction(ProductSelected(position))
         }
     }
 
@@ -110,10 +136,10 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private fun setupProductContentViews() = with(binding.rvContentProduct) {
         adapter = productContentAdapter
         layoutManager = layoutManagerContent
-        itemAnimator = null
+        snapHelperContent.attachToRecyclerView(this)
         removeOnScrollListener(contentScrollListener)
         addOnScrollListener(contentScrollListener)
-        snapHelperContent.attachToRecyclerView(this)
+        itemAnimator = null
     }
 
     private fun setupProductIndicatorViews() = with(binding.rvIndicatorProduct) {
@@ -140,19 +166,22 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     ) {
         if (prev == state) return
 
+        prepareVideoPlayerIfNeeded(state)
+
         val position = state.indexOfFirst { it.selected }
         if (position < 0) return
 
         productContentAdapter.submitList(state)
         if (autoScrollFirstOpenContent) {
-            binding.rvContentProduct.scrollToPosition(position)
+            val autoScrollPosition = getSelectedItemPosition(state)
+            binding.rvContentProduct.scrollToPosition(autoScrollPosition)
             autoScrollFirstOpenContent = false
         }
     }
 
     private fun renderIndicator(
-        prev: List<ProductIndicatorUiModel>?,
-        state: List<ProductIndicatorUiModel>
+        prev: List<IndicatorUiModel>?,
+        state: List<IndicatorUiModel>
     ) {
         if (prev == state) return
 
@@ -187,15 +216,46 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         }
     }
 
+    private fun prepareVideoPlayerIfNeeded(state: List<ContentUiModel>) {
+        if (mVideoPlayer != null) return
+
+        val videoPosition = state.indexOfFirst { it.type == MediaType.Video }
+        if (videoPosition < 0) return
+
+        val data = state[videoPosition]
+        val videoUrl = data.url
+
+        val instance = videoPlayerManager.occupy(
+            String.format(
+                PRODUCT_CONTENT_VIDEO_KEY_REF,
+                videoUrl
+            )
+        )
+        val videoPlayer = mVideoPlayer ?: instance
+        mVideoPlayer = videoPlayer
+        mVideoPlayer?.start(
+            videoUrl = videoUrl,
+            isMute = false,
+            playWhenReady = false
+        )
+
+        mVideoPlayer?.seekDurationTo(data.videoLastDuration)
+    }
+
+    private fun getSelectedItemPosition(state: List<ContentUiModel>): Int {
+        val selectedData = state.firstOrNull { it.selected } ?: return 0
+        return state.indexOf(selectedData)
+    }
+
     private fun getContentCurrentPosition(): Int {
-        val snappedView =
-            snapHelperContent.findSnapView(layoutManagerContent) ?: return RecyclerView.NO_POSITION
+        val snappedView = snapHelperContent.findSnapView(layoutManagerContent)
+            ?: return RecyclerView.NO_POSITION
         return binding.rvContentProduct.getChildAdapterPosition(snappedView)
     }
 
     private fun scrollTo(position: Int) {
-        binding.rvContentProduct.scrollToPosition(position)
-        binding.rvIndicatorProduct.scrollToPosition(position)
+        binding.rvContentProduct.smoothScrollToPosition(position)
+        binding.rvIndicatorProduct.smoothScrollToPosition(position)
     }
 
     override fun onDestroyView() {

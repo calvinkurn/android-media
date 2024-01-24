@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="30dp"
     android:background="@android:color/transparent"
     app:layoutDescription="@xml/product_preview_tab_scene"
     tools:background="@color/Unify_Static_Black">
@@ -12,7 +13,7 @@
         android:id="@+id/ic_back"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="ARROW_BACK"

@@ -10,9 +10,8 @@ class ProductPreviewVideoPlayerManager(
     private val videoMap = ConcurrentHashMap<ProductPreviewExoPlayer, String>()
 
     fun occupy(id: String): ProductPreviewExoPlayer {
-        val player = getOrCreatePlayer()
+        val player = getOrCreatePlayer(id)
         videoMap[player] = id
-
         return player
     }
 
@@ -44,25 +43,19 @@ class ProductPreviewVideoPlayerManager(
         }?.key?.resume()
     }
 
-    private fun getOrCreatePlayer(): ProductPreviewExoPlayer {
-        return getUnoccupiedPlayer() ?: run {
+    private fun getOrCreatePlayer(id: String): ProductPreviewExoPlayer {
+        return getOccupiedPlayer(id) ?: run {
             val player = createPlayer()
             videoMap[player] = ""
             player
         }
     }
 
-    private fun getUnoccupiedPlayer(): ProductPreviewExoPlayer? {
-        return videoMap.entries.firstOrNull { it.value.isEmpty() }?.key
-    }
-
     private fun createPlayer(): ProductPreviewExoPlayer {
         return ProductPreviewExoPlayer(context)
     }
 
-    fun getPlayerById(id: String): ProductPreviewExoPlayer? {
-        return videoMap.entries.firstOrNull {
-            it.value == id
-        }?.key
+    private fun getOccupiedPlayer(id: String): ProductPreviewExoPlayer? {
+        return videoMap.entries.firstOrNull { it.value == id }?.key
     }
 }

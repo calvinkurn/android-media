@@ -8,5 +8,6 @@ data class ContentUiModel(
     val contentId: String = "",
     val selected: Boolean = false,
     val type: MediaType = MediaType.Unknown,
-    val url: String = ""
+    val url: String = "",
+    val videoLastDuration: Long = 0L
 ) : Parcelable

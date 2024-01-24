@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.view.viewholder.ProductVideoReceiver
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -20,8 +21,9 @@ import kotlinx.coroutines.launch
  * Created by Yehezkiel on 23/11/20
  */
 class ProductVideoCoordinator(
-        lifecycleOwner: LifecycleOwner? = null,
-        private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate) : LifecycleObserver {
+    lifecycleOwner: LifecycleOwner? = null,
+    private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+) : LifecycleObserver {
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
     private var productVideoJob: Job? = null
@@ -44,29 +46,28 @@ class ProductVideoCoordinator(
 
             if (isCurrentReceiverVideoType) {
                 if (lastReceiverProduct != currentReceiver) {
-                    //Means it swipe to another video and we need to change video URL
+                    // Means it swipe to another video and we need to change video URL
                     clearPreviousVideoEntry(lastReceiverProduct)
                 }
 
-                //Set back the exoplayer to playerview
+                // Set back the exoplayer to playerview
                 currentReceiver!!.setPlayer(videoPlayer)
                 val videoData = getVideoDataById(currentReceiver.getVideoId())
                 val currentVideoUrl = videoData?.videoUrl ?: ""
 
                 videoPlayer?.start(
-                        videoUrl = videoData?.videoUrl ?: "",
-                        lastVideoPosition = videoData?.seekPosition ?: 0L,
-                        isMute = videoData?.isMute ?: true,
-                        shouldPrepare = (lastReceiverProduct != currentReceiver || lastVideoUrl != currentVideoUrl)
+                    videoUrl = videoData?.videoUrl ?: "",
+                    lastVideoPosition = videoData?.seekPosition ?: 0L,
+                    isMute = videoData?.isMute ?: true,
+                    shouldPrepare = (lastReceiverProduct != currentReceiver || lastVideoUrl != currentVideoUrl)
                 )
                 currentVideoId = currentReceiver.getVideoId()
 
                 lastReceiverProduct = currentReceiver
                 lastVideoUrl = currentVideoUrl
-
             } else {
                 lastReceiverProduct?.let {
-                    //Pause and save previous video player
+                    // Pause and save previous video player
                     pauseVideoAndSaveLastPosition()
                 }
             }
@@ -104,16 +105,16 @@ class ProductVideoCoordinator(
 
     fun updateAndResume(newData: List<ProductVideoDataModel>) {
         val updatedCurrentVideoPosition = newData.firstOrNull { it.videoId == currentVideoId }?.seekPosition
-                ?: 0
+            ?: 0
         val currentVideoData = productVideoDataModel.firstOrNull { it.videoId == currentVideoId }?.seekPosition
-                ?: 0
+            ?: 0
 
         newData.forEachIndexed { index, i ->
             productVideoDataModel.getOrNull(index)?.isMute = i.isMute
             productVideoDataModel.getOrNull(index)?.seekPosition = i.seekPosition
         }
 
-        //If they not resume video in video detail, just ignore it
+        // If they not resume video in video detail, just ignore it
         if (currentVideoData != updatedCurrentVideoPosition) {
             val currentData = productVideoDataModel.firstOrNull { it.videoId == currentVideoId }
             configureVolume(currentData?.isMute ?: false, currentData?.videoId ?: "")
@@ -183,14 +184,17 @@ class ProductVideoCoordinator(
     }
 
     private fun saveLastVideoPosition(videoId: String) {
-        productVideoDataModel.firstOrNull { it.videoId == videoId }?.seekPosition = videoPlayer?.getExoPlayer()?.currentPosition
-                ?: 0L
+        productVideoDataModel.firstOrNull { it.videoId == videoId }?.seekPosition = getCurrentPosition()
     }
+
+    fun getCurrentPosition() = videoPlayer?.getExoPlayer()?.currentPosition.orZero()
+
+    fun getDuration() = videoPlayer?.getExoPlayer()?.duration.orZero()
 }
 
 data class ProductVideoDataModel(
-        val videoId: String = "",
-        val videoUrl: String = "",
-        var seekPosition: Long = 0,
-        var isMute: Boolean = true
+    val videoId: String = "",
+    val videoUrl: String = "",
+    var seekPosition: Long = 0,
+    var isMute: Boolean = true
 )

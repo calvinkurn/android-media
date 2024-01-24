@@ -9,11 +9,18 @@ import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.*
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.FetchMiniInfo
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.FetchReview
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.InitializeProductMainData
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.Navigate
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductAction
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductActionFromResult
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductSelected
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.IndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.content.product.preview.viewmodel.state.ProductUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
@@ -43,8 +50,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
         fun create(param: EntrySource): ProductPreviewViewModel
     }
 
+    val productData = param.productPreviewData
+
     private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
-    private val _productIndicatorState = MutableStateFlow(emptyList<ProductIndicatorUiModel>())
+    private val _productIndicatorState = MutableStateFlow(emptyList<IndicatorUiModel>())
 
     // TODO: check number
     private val _uiEvent = MutableSharedFlow<ProductPreviewEvent>(20)
@@ -81,18 +90,17 @@ class ProductPreviewViewModel @AssistedInject constructor(
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             InitializeProductMainData -> handleInitializeProductMainData()
+            FetchMiniInfo -> getMiniInfo()
+            ProductActionFromResult -> handleProductAction(_miniInfo.value)
+            LikeFromResult -> like()
             is ProductSelected -> handleProductSelected(action.position)
             is FetchReview -> getReview(action.isRefresh)
-            FetchMiniInfo -> getMiniInfo()
             is ProductAction -> addToCart(action.model)
-            is Navigate -> navigate(action.appLink)
             is Navigate -> navigate(action.appLink)
             is SubmitReport -> submitReport(action.model)
             is ClickMenu -> menuOnClicked(action.isFromLogin)
             is UpdateReviewPosition -> updateReviewIndex(action.index)
             is Like -> like(action.item)
-            LikeFromResult -> like()
-            else -> {}
         }
     }
 
@@ -204,13 +212,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
         _productIndicatorState.value = param.productPreviewData.indicator
     }
 
-    private fun handleInitializeReviewMainData(page: Int) {
-        viewModelScope.launchCatchError(block = {
-            _review.value =
-                repo.getReview(param.productPreviewData.productId, page) // TODO: add pagination
-        }) {}
-    }
-
     private fun handleProductSelected(position: Int) {
         _productContentState.update {
             it.mapIndexed { index, contentUiModel ->
@@ -229,9 +230,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val result = repo.submitReport(model, currentReview.reviewId)
             if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
         }) {
-            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.Report) {
-                submitReport(model)
-            })
+            _uiEvent.emit(
+                ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.Report) {
+                    submitReport(model)
+                }
+            )
         }
     }
 

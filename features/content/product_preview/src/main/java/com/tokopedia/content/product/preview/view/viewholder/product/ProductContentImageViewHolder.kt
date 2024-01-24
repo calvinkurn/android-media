@@ -8,7 +8,7 @@ import com.tokopedia.content.product.preview.view.listener.ProductPreviewListene
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class ProductContentImageViewHolder(
     private val binding: ItemProductContentImageBinding,
@@ -16,7 +16,7 @@ class ProductContentImageViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(content: ContentUiModel) {
-        binding.ivProductContentImage.loadImage(content.url) {
+        binding.ivProductContentImage.loadImageWithoutPlaceholder(content.url) {
             listener(
                 onSuccess = { _, _ ->
                     hideLoading()

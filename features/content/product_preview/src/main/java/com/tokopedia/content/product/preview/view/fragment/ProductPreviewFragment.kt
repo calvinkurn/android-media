@@ -35,8 +35,8 @@ import com.tokopedia.content.product.preview.view.uimodel.product.ProductContent
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
-import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -54,23 +54,22 @@ class ProductPreviewFragment @Inject constructor(
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getParcelable(
+                    PRODUCT_DATA,
+                    ProductContentUiModel::class.java
+                )
+            } else {
+                arguments?.getParcelable(PRODUCT_DATA)
+            } ?: ProductContentUiModel()
+        }
         viewModelFactory.create(EntrySource(productPreviewData))
     }
 
     private var _binding: FragmentProductPreviewBinding? = null
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
-
-    val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(
-                PRODUCT_DATA,
-                ProductContentUiModel::class.java
-            )
-        } else {
-            arguments?.getParcelable(PRODUCT_DATA)
-        } ?: ProductContentUiModel()
-    }
 
     private val pagerListener: ViewPager2.OnPageChangeCallback by lazyThreadSafetyNone {
         pageListenerObject()
@@ -113,7 +112,6 @@ class ProductPreviewFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-
         viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
     }
 
@@ -127,7 +125,7 @@ class ProductPreviewFragment @Inject constructor(
             adapter = pagerAdapter
         }
 
-        if (productPreviewData == ProductContentUiModel()) {
+        if (viewModel.productData == ProductContentUiModel()) {
             layoutProductPreviewTab.tvProductTabTitle.gone()
             layoutProductPreviewTab.tvReviewTabTitle.gone()
             layoutProductPreviewTab.viewTabIndicator.gone()
@@ -260,7 +258,7 @@ class ProductPreviewFragment @Inject constructor(
                 context = requireContext(),
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
                 shopId = model.shop.id,
-                productId = productPreviewData.productId,
+                productId = viewModel.productData.productId,
                 startActivitResult = { intent, _ -> startActivity(intent) }
             )
         } else {
@@ -272,7 +270,7 @@ class ProductPreviewFragment @Inject constructor(
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle
+            bundle: Bundle?
         ): ProductPreviewFragment {
             val oldInstance =
                 fragmentManager.findFragmentByTag(PRODUCT_PREVIEW_FRAGMENT_TAG) as? ProductPreviewFragment
