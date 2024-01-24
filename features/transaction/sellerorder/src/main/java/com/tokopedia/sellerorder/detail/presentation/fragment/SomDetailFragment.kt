@@ -31,6 +31,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_DESCRIPTION
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_L2_CANCELLATION_REASON
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_CODE
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_TEXT
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_PRIMARY_BUTTON_TEXT
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_SECONDARY_BUTTON_TEXT
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -78,6 +86,12 @@ import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewMode
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_ACCEPTING_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_EDIT_AWB
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_ORDER_DETAIL
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_ORDER_REJECT_REASONS
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_WHEN_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
@@ -255,13 +269,6 @@ open class SomDetailFragment :
     }
 
     companion object {
-
-        private const val ERROR_GET_ORDER_DETAIL = "Error when get order detail."
-        private const val ERROR_ACCEPTING_ORDER = "Error when accepting order."
-        private const val ERROR_GET_ORDER_REJECT_REASONS = "Error when get order reject reasons."
-        private const val ERROR_WHEN_SET_DELIVERED = "Error when set order status to delivered."
-        private const val ERROR_EDIT_AWB = "Error when edit AWB."
-        private const val ERROR_REJECT_ORDER = "Error when rejecting order."
         private const val PAGE_NAME = "seller order detail page."
 
         private const val SHARED_PREF_DETAIL_TRANSPARENCY_FEE_COACH_MARK =
@@ -376,15 +383,17 @@ open class SomDetailFragment :
     }
 
     override fun onShowBuyerRequestCancelRespondBottomSheet(it: SomDetailOrder.GetSomDetail.Button) {
-        startActivity(
+        startActivityForResult(
             Intent(requireActivity(), BuyerRequestCancelRespondActivity::class.java).apply {
-                putExtra("ORDER_ID", orderId)
-                putExtra("ORDER_STATUS_CODE", detailResponse?.statusCode.orZero())
-                putExtra("CANCELLATION_REASON", Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()))
-                putExtra("DESCRIPTION", detailResponse?.button?.firstOrNull()?.popUp?.body.orEmpty())
-                putExtra("PRIMARY_BUTTON_TEXT", detailResponse?.button?.firstOrNull()?.popUp?.getPrimaryButton()?.displayName.orEmpty())
-                putExtra("SECONDARY_BUTTON_TEXT", detailResponse?.button?.firstOrNull()?.popUp?.getSecondaryButton()?.displayName.orEmpty())
-            }
+                putExtra(INTENT_PARAM_ORDER_ID, orderId)
+                putExtra(INTENT_PARAM_ORDER_STATUS_CODE, detailResponse?.statusCode.orZero())
+                putExtra(INTENT_PARAM_ORDER_STATUS_TEXT, detailResponse?.statusText.orEmpty())
+                putExtra(INTENT_PARAM_ORDER_L2_CANCELLATION_REASON, Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()))
+                putExtra(INTENT_PARAM_DESCRIPTION, detailResponse?.button?.firstOrNull()?.popUp?.body.orEmpty())
+                putExtra(INTENT_PARAM_PRIMARY_BUTTON_TEXT, detailResponse?.button?.firstOrNull()?.popUp?.getPrimaryButton()?.displayName.orEmpty())
+                putExtra(INTENT_PARAM_SECONDARY_BUTTON_TEXT, detailResponse?.button?.firstOrNull()?.popUp?.getSecondaryButton()?.displayName.orEmpty())
+            },
+            101
         )
 //        bottomSheetManager?.showSomOrderRequestCancelBottomSheet(it, detailResponse, this)
     }
@@ -1286,6 +1295,16 @@ open class SomDetailFragment :
             handleFindNewDriverResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_POF) {
             handlePof(resultCode, data)
+        } else if (requestCode == 101) {
+            if (resultCode == Activity.RESULT_OK) {
+                val success = data?.getBooleanExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_SUCCESS, false).orFalse()
+                val message = data?.getStringExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_MESSAGE).orEmpty()
+                if (success) {
+                    showToaster(message, view, Toaster.TYPE_NORMAL)
+                } else {
+                    showToaster(message, view, Toaster.TYPE_ERROR)
+                }
+            }
         }
     }
 
