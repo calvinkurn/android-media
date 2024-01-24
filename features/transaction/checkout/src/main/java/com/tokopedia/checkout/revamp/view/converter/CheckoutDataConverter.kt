@@ -491,12 +491,31 @@ class CheckoutDataConverter @Inject constructor() {
         )
     }
 
-    private fun convertFromProductBenefit(product: CheckoutProductModel?): List<CheckoutProductBenefitModel> {
+    private fun convertFromProductBenefit(
+        product: CheckoutProductModel,
+        currentList: MutableList<CheckoutItem>
+    ): List<CheckoutProductBenefitModel> {
         val bmgmTier =
-            product?.bmgmTierProductList?.firstOrNull { it.offerId == product.bmgmOfferId && it.offerTypeId == product.bmgmOfferTypeId }
+            product.bmgmTierProductList.firstOrNull {
+                it.offerId == product.bmgmOfferId && it.offerTypeId == product.bmgmOfferTypeId
+            }
+        val totalBenefitQuantity = bmgmTier?.benefitProductList?.sumOf { it.quantity } ?: 0
+        val totalProductsQuantityInOffer = currentList.sumOf {
+            if (it is CheckoutProductModel &&
+                it.cartStringOrder == product.cartStringOrder &&
+                it.bmgmOfferId == product.bmgmOfferId &&
+                it.bmgmOfferTypeId == product.bmgmOfferTypeId &&
+                !it.isError
+            ) {
+                it.quantity
+            } else {
+                0
+            }
+        }
         return bmgmTier?.benefitProductList?.mapIndexed { index, benefit ->
             CheckoutProductBenefitModel(
                 cartStringGroup = product.cartStringGroup,
+                offerId = bmgmTier.offerId,
                 productId = benefit.productId,
                 productName = benefit.productName,
                 imageUrl = benefit.imageUrl,
@@ -505,8 +524,11 @@ class CheckoutDataConverter @Inject constructor() {
                 finalPrice = benefit.finalPrice,
                 weight = benefit.weight,
                 weightActual = benefit.weightActual,
+                shopId = product.shopId,
                 headerText = bmgmTier.benefitWording,
-                shouldShowHeader = index == 0
+                shouldShowHeader = index == 0,
+                sumOfCheckoutProductsQuantity = totalProductsQuantityInOffer,
+                sumOfBenefitProductsQuantity = totalBenefitQuantity
             )
         } ?: emptyList()
     }
@@ -520,7 +542,7 @@ class CheckoutDataConverter @Inject constructor() {
                 if (lastItem.cartStringOrder != product.cartStringOrder ||
                     lastItem.bmgmOfferId != product.bmgmOfferId
                 ) {
-                    acc.addAll(convertFromProductBenefit(lastItem))
+                    acc.addAll(convertFromProductBenefit(lastItem, acc))
                     acc.add(product)
                 } else {
                     acc.add(product)
@@ -530,7 +552,7 @@ class CheckoutDataConverter @Inject constructor() {
         }
         val lastItem = finalList.lastOrNull()
         if (lastItem is CheckoutProductModel) {
-            finalList.addAll(convertFromProductBenefit(lastItem))
+            finalList.addAll(convertFromProductBenefit(lastItem, finalList))
         }
         return finalList
     }
@@ -544,8 +566,6 @@ class CheckoutDataConverter @Inject constructor() {
     companion object {
         private const val ACTIVE_ADDRESS = 1
         private const val PRIME_ADDRESS = 2
-        private const val MERCHANT_VOUCHER_TYPE = "merchant"
-        private const val LOGISTIC_VOUCHER_TYPE = "logistic"
 
         private const val BMGM_ITEM_HEADER = 1
     }

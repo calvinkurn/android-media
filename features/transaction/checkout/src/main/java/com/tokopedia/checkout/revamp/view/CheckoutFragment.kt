@@ -26,8 +26,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstBmsm
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -61,6 +61,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
@@ -2240,7 +2241,7 @@ class CheckoutFragment :
             shopId,
             userSessionInterface.userId
         )
-        RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
+        RouteManager.route(context, ApplinkConstBmsm.BMGM_MINI_CART_DETAIL)
     }
 
     private fun onTriggerEpharmacyTracker(showErrorToaster: Boolean) {
@@ -2752,5 +2753,18 @@ class CheckoutFragment :
 
     override fun onSendImpressionDropshipWidgetAnalytics() {
         checkoutAnalyticsCourierSelection.eventViewDropshipWidget()
+    }
+
+    override fun onViewGwpBenefit(benefit: CheckoutProductBenefitModel) {
+        if (!benefit.hasTriggerImpression) {
+            benefit.hasTriggerImpression = true
+            checkoutAnalyticsCourierSelection.eventImpressionGwp(
+                benefit.offerId,
+                benefit.sumOfCheckoutProductsQuantity,
+                benefit.sumOfBenefitProductsQuantity,
+                benefit.shopId,
+                userSessionInterface.userId
+            )
+        }
     }
 }
