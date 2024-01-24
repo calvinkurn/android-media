@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -25,6 +27,7 @@ import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * @author by astidhiyaa on 22/01/24
@@ -41,7 +44,7 @@ fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
-                    .background(color = NestTheme.colors.NN._950)
+                    .background(color = Color(0xB22E3137), shape = RoundedCornerShape(12.dp))
             ) {
                 val (image, title, ogPrice, discountedPrice, btnAtc, btnClose) = createRefs()
                 //Product Image
@@ -74,7 +77,7 @@ fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight
                         color = NestTheme.colors.NN._0
                     ),
                     modifier = Modifier.constrainAs(ogPrice) {
-                        width = Dimension.preferredWrapContent
+                        width = Dimension.fillToConstraints
                         top.linkTo(title.bottom, 4.dp)
                         start.linkTo(title.start)
                         end.linkTo(btnAtc.start, 4.dp)
@@ -96,6 +99,7 @@ fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight
                     text = "+",
                     variant = ButtonVariant.FILLED,
                     size = ButtonSize.SMALL,
+                    trailingIcon = unifycomponentsR.drawable.iconunify_cart ,
                     onClick = { /*TODO*/ },
                     modifier = Modifier.constrainAs(btnAtc) {
                         width = Dimension.fillToConstraints
