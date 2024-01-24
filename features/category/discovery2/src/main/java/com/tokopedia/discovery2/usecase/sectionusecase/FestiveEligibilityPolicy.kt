@@ -41,7 +41,8 @@ data class FestiveEligibilityPolicy(
             ComponentNames.ShopCardView.componentName,
             ComponentNames.ShopCardItemView.componentName,
             ComponentNames.MerchantVoucherGrid.componentName,
-            ComponentNames.MerchantVoucherGridItem.componentName
+            ComponentNames.MerchantVoucherGridItem.componentName,
+            ComponentNames.ShopOfferSupportingBrand.componentName
         )
     }
 }
