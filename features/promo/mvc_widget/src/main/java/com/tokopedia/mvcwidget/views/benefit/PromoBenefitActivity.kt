@@ -9,7 +9,7 @@ class PromoBenefitActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         PromoBenefitBottomSheet.newInstance(
-            "1"
+            "1", "", ""
         ).show(supportFragmentManager, null)
     }
 }
