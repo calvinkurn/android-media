@@ -281,22 +281,18 @@ internal class ProductCardRenderer(
     private fun renderLabelProductOffer(productCardModel: ProductCardModel) {
         val offerLabel = offerLabel ?: return
 
-        if (productCardModel.labelProductOffer() == null) {
+        val labelProductOffer = labelProductOffer(productCardModel)
+
+        if (labelProductOffer == null) {
             offerLabel.hide()
         } else {
-            val hasLabelBenefit = productCardModel.labelBenefit() != null
-            val isCarousel = type == ProductCardType.GridCarousel || type == ProductCardType.ListCarousel
-            val showLabelProductOffer = !hasLabelBenefit || !isCarousel
-            val labelProductOffer = labelProductOffer(productCardModel)
-
-            offerLabel.shouldShowWithAction(showLabelProductOffer) {
-                ProductCardLabel(it.background, it).render(labelProductOffer)
-            }
+            offerLabel.show()
+            ProductCardLabel(offerLabel.background, offerLabel).render(labelProductOffer)
         }
     }
 
-    private fun labelProductOffer(productCardModel: ProductCardModel): LabelGroup {
-        val labelProductOffer = productCardModel.labelProductOffer() ?: return LabelGroup()
+    private fun labelProductOffer(productCardModel: ProductCardModel): LabelGroup? {
+        val labelProductOffer = productCardModel.labelProductOffer() ?: return null
 
         return if (labelProductOffer.textColor().isNullOrBlank()) {
             val defaultTextColor = Style(
