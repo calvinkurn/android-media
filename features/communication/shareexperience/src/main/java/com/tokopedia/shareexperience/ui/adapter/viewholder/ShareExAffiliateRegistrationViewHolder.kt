@@ -9,6 +9,7 @@ import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.databinding.ShareexperienceRegisterAffiliateCardItemBinding
 import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
+import com.tokopedia.utils.htmltags.HtmlUtil
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExAffiliateRegistrationViewHolder(
@@ -30,9 +31,9 @@ class ShareExAffiliateRegistrationViewHolder(
     override fun bind(element: ShareExAffiliateRegistrationUiModel) {
         this.element = element
         binding?.shareexIvRegisterAffiliateIcon?.loadImage(element.affiliateRegistrationModel.icon)
-        binding?.shareexTvRegisterAffiliateTitle?.text = element.affiliateRegistrationModel.title
-        binding?.shareexTvRegisterAffiliateDesc?.text = element.affiliateRegistrationModel.description
-        binding?.shareexLabelRegisterAffiliate?.text = element.affiliateRegistrationModel.label
+        binding?.shareexTvRegisterAffiliateTitle?.text = HtmlUtil.fromHtml(element.affiliateRegistrationModel.title)
+        binding?.shareexTvRegisterAffiliateDesc?.text = HtmlUtil.fromHtml(element.affiliateRegistrationModel.description)
+        binding?.shareexLabelRegisterAffiliate?.text = HtmlUtil.fromHtml(element.affiliateRegistrationModel.label)
         impressTracker(element)
     }
 

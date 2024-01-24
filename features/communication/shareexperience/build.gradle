@@ -16,7 +16,7 @@ buildscript {
 
 android {
     namespace 'com.tokopedia.shareexperience'
-    testNamespace 'com.tokopedia.shareexperience'
+    testNamespace 'com.tokopedia.shareexperience.test'
     buildFeatures {
         viewBinding true
     }

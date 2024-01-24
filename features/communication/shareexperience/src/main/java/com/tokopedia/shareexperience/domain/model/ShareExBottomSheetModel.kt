@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ShareExBottomSheetModel(
+    val shareId: String? = null,
     val title: String = "",
     val subtitle: String = "",
     val bottomSheetPage: ShareExBottomSheetPageModel = ShareExBottomSheetPageModel()
-): Parcelable
-
+) : Parcelable

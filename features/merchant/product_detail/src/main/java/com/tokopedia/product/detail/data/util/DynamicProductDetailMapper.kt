@@ -114,6 +114,10 @@ import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateEligibilityRequest
 import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateProductRequest
 import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateShopRequest
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExInitializerArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.uistate.ShareExInitializationUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
@@ -182,7 +186,7 @@ object DynamicProductDetailMapper {
                             name = component.componentName,
                             position = index,
                             queryParam = componentData?.queryParam.orEmpty(),
-                            thematicId = componentData?.thematicId.orEmpty(),
+                            thematicId = componentData?.thematicId.orEmpty()
                         )
                     )
                 }
@@ -410,7 +414,8 @@ object DynamicProductDetailMapper {
 
             else -> {
                 if (component.componentName.startsWith(RECOM_VERTICAL) ||
-                    component.componentName.contains(RECOM_STEAL_THE_LOOK)) {
+                    component.componentName.contains(RECOM_STEAL_THE_LOOK)
+                ) {
                     PdpRecommendationWidgetDataModel(
                         recommendationWidgetModel = mapPdpRecommendationWidgetModel(component, dynamicProductInfoP1, index)
                     )
@@ -876,6 +881,68 @@ object DynamicProductDetailMapper {
         )
     }
 
+    fun generateShareExInitializerArg(
+        productInfo: DynamicProductInfoP1,
+        shopInfo: ShopInfo?,
+        variantData: ProductVariant?,
+        onSuccess: (ShareExInitializationUiState) -> Unit = {}
+    ): ShareExInitializerArg {
+        return ShareExInitializerArg(
+            affiliateEligibilityRequest = generateAffiliateEligibilityRequest(
+                productInfo,
+                shopInfo,
+                variantData
+            ),
+            onSuccess = onSuccess
+        )
+    }
+
+    fun generateShareExBottomSheetArg(
+        productId: String,
+        productUrl: String,
+        campaignId: String
+    ): ShareExBottomSheetArg {
+        return ShareExBottomSheetArg(
+            identifier = productId,
+            pageTypeEnum = ShareExPageTypeEnum.PDP,
+            defaultUrl = productUrl,
+            trackerArg = ShareExTrackerArg(
+                labelImpressionBottomSheet = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
+                labelActionClickShareIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
+                labelActionCloseIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
+                labelActionClickChannel = "${ShareExTrackerArg.CHANNEL_KEY} - ${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId - ${ShareExTrackerArg.IMAGE_TYPE_KEY}",
+                labelImpressionAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}",
+                labelActionClickAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}"
+            )
+        )
+    }
+
+    private fun generateAffiliateEligibilityRequest(
+        productInfo: DynamicProductInfoP1,
+        shopInfo: ShopInfo?,
+        variantData: ProductVariant?
+    ): ShareExAffiliateEligibilityRequest {
+        return ShareExAffiliateEligibilityRequest(
+            pageType = ShareExPageTypeEnum.PDP.value,
+            product = ShareExAffiliateProductRequest(
+                productID = productInfo.basic.productID,
+                catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
+                catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "0",
+                catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
+                productPrice = productInfo.data.price.value.toString(),
+                maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(),
+                productStatus = productInfo.basic.status,
+                formattedProductPrice = productInfo.data.price.priceFmt
+            ),
+            shop = ShareExAffiliateShopRequest(
+                shopID = productInfo.basic.shopID,
+                isOS = productInfo.data.isOS,
+                isPM = productInfo.data.isPowerMerchant,
+                shopStatus = shopInfo?.statusInfo?.shopStatus
+            )
+        )
+    }
+
     fun generateImageGeneratorData(product: DynamicProductInfoP1, bebasOngkir: BebasOngkirImage): PdpParamModel {
         return PdpParamModel(
             productId = product.basic.productID,
@@ -1076,7 +1143,7 @@ object DynamicProductDetailMapper {
             pageType = component.type,
             queryParam = data?.queryParam.orEmpty(),
             criteriaThematicIDs = thematicIds,
-            productIds = listOf(dynamicProductInfoP1.basic.productID),
+            productIds = listOf(dynamicProductInfoP1.basic.productID)
         )
         val trackingModel = RecommendationWidgetTrackingModel(
             androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
@@ -1087,7 +1154,7 @@ object DynamicProductDetailMapper {
         return RecommendationWidgetModel(
             metadata = metadata,
             trackingModel = trackingModel,
-            source = source,
+            source = source
         )
     }
 

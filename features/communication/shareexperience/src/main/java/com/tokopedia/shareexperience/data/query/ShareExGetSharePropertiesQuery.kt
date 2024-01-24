@@ -12,6 +12,7 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
     override fun getQuery(): String = """
         query getShareProperties($$PARAMS: ParamGetShareProperties!) {
           getShareProperties(params: $$PARAMS) {
+            shareId
             bottomsheet {
               title
               subtitle
@@ -51,6 +52,9 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
                   iosUrl
                   iosDeeplinkPath
                   canonicalUrl
+                  canonicalIdentifier
+                  customMetaTags
+                  anMinVersion
                 }
               }
             }

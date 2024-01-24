@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
-import org.json.JSONObject
 import javax.inject.Inject
 
 class ShareExBranchLinkUseCaseImpl @Inject constructor(
@@ -68,7 +67,7 @@ class ShareExBranchLinkUseCaseImpl @Inject constructor(
         bou.setContentMetadata(
             ContentMetadata().addCustomMetadata(
                 CUSTOM_META_TAGS,
-                JSONObject(bouRequest.contentMetadataMap).toString()
+                bouRequest.customMetaTags
             )
         )
         return bou
@@ -98,9 +97,8 @@ class ShareExBranchLinkUseCaseImpl @Inject constructor(
             .addControlParameter(IOS_DEEPLINK_PATH, linkerRequest.iosDeeplinkPath)
             .addControlParameter(ShareExConstants.ShortLinkKey.SOURCE, ShareExConstants.ShortLinkValue.SOURCE)
 
-        val androidMinVersion = params.branchUniversalObjectRequest.contentMetadataMap[AN_MIN_VERSION]
-        if (androidMinVersion != null) {
-            linkProperties.addControlParameter(AN_MIN_VERSION, androidMinVersion)
+        if (linkerRequest.anMinVersion.isNotBlank()) {
+            linkProperties.addControlParameter(AN_MIN_VERSION, linkerRequest.anMinVersion)
         }
         return linkProperties
     }

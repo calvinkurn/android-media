@@ -7,9 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.analytic.ShareExAnalytics
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
@@ -26,6 +23,7 @@ import com.tokopedia.shareexperience.ui.view.ShareExLoadingDialog
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -71,7 +69,7 @@ class ShareExInitializer(
         }
     }
 
-    fun start(arg: ShareExInitializerArg) {
+    fun additionalCheck(arg: ShareExInitializerArg) {
         weakActivity.get()?.lifecycleScope?.launch {
             try {
                 /**
@@ -103,14 +101,24 @@ class ShareExInitializer(
         useCase.getData(affiliateEligibilityRequest).collectLatest {
             when (it) {
                 is ShareExResult.Success -> {
-                    onSuccess(
-                        ShareExInitializationUiState(
-                            isEligibleAffiliate = it.data.isEligible && isShareAffiliateIconEnabled()
+                    withContext(dispatchers.main) {
+                        onSuccess(
+                            ShareExInitializationUiState(
+                                isEligibleAffiliate = it.data.isEligible
+                            )
                         )
-                    )
+                    }
                 }
-                is ShareExResult.Error -> onError(it.throwable)
-                ShareExResult.Loading -> onLoading()
+                is ShareExResult.Error -> {
+                    withContext(dispatchers.main) {
+                        onError(it.throwable)
+                    }
+                }
+                ShareExResult.Loading -> {
+                    withContext(dispatchers.main) {
+                        onLoading()
+                    }
+                }
             }
         }
     }
@@ -120,11 +128,6 @@ class ShareExInitializer(
     ) {
         this.bottomSheetArg = bottomSheetArg
         showLoadingDialog()
-        analytics.trackActionClickIconShare(
-            id = bottomSheetArg.identifier,
-            pageTypeEnum = bottomSheetArg.pageTypeEnum,
-            label = bottomSheetArg.trackerArg.labelActionClickShareIcon
-        )
     }
 
     private fun showLoadingDialog() {
@@ -170,6 +173,18 @@ class ShareExInitializer(
             bottomSheet = ShareExBottomSheet.newInstance(it)
             bottomSheet?.setListener(this)
             bottomSheet?.show(fragmentActivity.supportFragmentManager, "")
+            trackClickIconShare()
+        }
+    }
+
+    private fun trackClickIconShare() {
+        bottomSheetArg?.let {
+            analytics.trackActionClickIconShare(
+                identifier = it.identifier,
+                pageTypeEnum = it.pageTypeEnum,
+                shareId = it.bottomSheetModel?.shareId,
+                label = it.trackerArg.labelActionClickShareIcon
+            )
         }
     }
 
@@ -246,11 +261,5 @@ class ShareExInitializer(
         dialog = null
         bottomSheet = null
         bottomSheetArg = null
-    }
-
-    private fun isShareAffiliateIconEnabled(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.AFFILIATE_SHARE_ICON
-        ) == RollenceKey.AFFILIATE_SHARE_ICON && !GlobalConfig.isSellerApp()
     }
 }

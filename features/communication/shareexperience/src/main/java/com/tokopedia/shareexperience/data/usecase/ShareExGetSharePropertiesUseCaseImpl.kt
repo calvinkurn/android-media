@@ -57,7 +57,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 sharePropertiesQuery,
                 request
             )
-            val result = mapper.map(dto.response.bottomSheet)
+            val result = mapper.map(dto.response)
             emit(result)
         }
             .asFlowResult()

@@ -1,29 +1,29 @@
 package com.tokopedia.shareexperience.data.mapper
 
-import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
+import com.tokopedia.shareexperience.data.dto.ShareExSharePropertiesResponseDto
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateEligibilityResponseDto
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorArgResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
 import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
+import com.tokopedia.shareexperience.domain.model.ShareExFeatureEnum
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExBottomSheetPageModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
-import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
-import com.tokopedia.shareexperience.domain.model.ShareExFeatureEnum
 import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
+import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import javax.inject.Inject
 
 class ShareExPropertyMapper @Inject constructor(
     private val channelMapper: ShareExChannelMapper
 ) {
-    fun map(dto: ShareExBottomSheetResponseDto): ShareExBottomSheetModel {
+    fun map(dto: ShareExSharePropertiesResponseDto): ShareExBottomSheetModel {
         val listShareProperty = arrayListOf<ShareExPropertyModel>()
         val listChip = arrayListOf<String>()
-        dto.properties.forEach {
+        dto.bottomSheet.properties.forEach {
             val affiliate = ShareExAffiliateModel(
                 registration = it.affiliateRegistrationWidget.mapToDomainModel(),
                 eligibility = it.affiliateEligibility.mapToDomainModel()
@@ -46,8 +46,9 @@ class ShareExPropertyMapper @Inject constructor(
                     androidDeeplinkPath = it.generateLinkProperties.androidDeeplinkPath,
                     iosDeeplinkPath = it.generateLinkProperties.iosDeeplinkPath,
                     canonicalUrl = it.generateLinkProperties.canonicalUrl,
-                    androidMinVersion = it.generateLinkProperties.androidMinVersion,
-                    iosMinVersion = it.generateLinkProperties.iosMinVersion,
+                    canonicalIdentifier = it.generateLinkProperties.canonicalIdentifier,
+                    customMetaTags = it.generateLinkProperties.customMetaTags,
+                    anMinVersion = it.generateLinkProperties.anMinVersion,
                     feature = ShareExFeatureEnum.SHARE,
                     campaign = "" // will be changed later when user clicked channel
                 ),
@@ -63,8 +64,9 @@ class ShareExPropertyMapper @Inject constructor(
             commonChannel = channelMapper.generateDefaultChannel()
         )
         return ShareExBottomSheetModel(
-            title = dto.title,
-            subtitle = dto.subtitle,
+            shareId = dto.shareId,
+            title = dto.bottomSheet.title,
+            subtitle = dto.bottomSheet.subtitle,
             bottomSheetPage = body
         )
     }
@@ -83,6 +85,7 @@ class ShareExPropertyMapper @Inject constructor(
             commonChannel = channelMapper.generateDefaultChannel()
         )
         return ShareExBottomSheetModel(
+            shareId = null,
             title = ShareExConstants.DefaultValue.DEFAULT_TITLE,
             bottomSheetPage = body
         )

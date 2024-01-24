@@ -1,8 +1,6 @@
 package com.tokopedia.shareexperience.data.usecase.shortlink
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.AN_MIN_VERSION
-import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.IOS_MIN_VERSION
 import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_DESCRIPTION_RAW
 import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_IMAGE_URL_RAW
 import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_TITLE_RAW
@@ -120,14 +118,12 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
         params: ShareExShortLinkRequest
     ): ShareExBranchUniversalObjectRequest {
         return ShareExBranchUniversalObjectRequest(
-            canonicalId = params.identifierId,
+            canonicalId = params.linkerPropertiesRequest.canonicalIdentifier,
             title = params.linkerPropertiesRequest.ogTitle,
             description = params.linkerPropertiesRequest.message,
             contentImageUrl = params.linkerPropertiesRequest.ogImageUrl,
-            contentMetadataMap = mapOf(
-                AN_MIN_VERSION to params.linkerPropertiesRequest.androidMinVersion,
-                IOS_MIN_VERSION to params.linkerPropertiesRequest.iosMinVersion
-            )
+            customMetaTags = params.linkerPropertiesRequest.customMetaTags,
+            anMinVersion = params.linkerPropertiesRequest.anMinVersion
         )
     }
 }
