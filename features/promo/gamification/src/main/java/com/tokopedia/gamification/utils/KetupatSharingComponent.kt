@@ -50,12 +50,12 @@ class KetupatSharingComponent(rootView: View) {
             )
             setLinkProperties(
                 LinkProperties(
-                    linkerType = TAG,
+                    linkerType = "KetupatLP",
                     id = TAG,
                     ogTitle = data.ogTitle,
                     ogDescription = data.message!!,
                     ogImageUrl = data.ogImageURL,
-                    deeplink = "tokopedia-android-internal://gamification/ketupat_rewards_landing_page",
+                    deeplink = "tokopedia://gamification/ketupat_rewards_landing_page",
                     desktopUrl = "https://www.tokopedia.com"
                 )
             )
