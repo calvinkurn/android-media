@@ -15,6 +15,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/pc_review_content"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:indicator_color="INVERTED"
+        app:indicator_type="CIRCLE"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@id/layout_author_review"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_bottom"
         android:layout_width="wrap_content"
@@ -34,7 +47,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="layout_author_review, iv_review_star, tv_review_details, tv_review_description, iv_review_menu" />
-
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_review_interaction"

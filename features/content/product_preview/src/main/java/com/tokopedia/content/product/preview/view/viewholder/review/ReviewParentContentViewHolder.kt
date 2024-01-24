@@ -30,6 +30,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUi
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewDescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -48,12 +49,24 @@ class ReviewParentContentViewHolder(
 
     init {
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(p0: View) {}
+            override fun onViewAttachedToWindow(p0: View) {
+                if (reviewMediaAdapter.itemCount < 0) return
+                binding.rvReviewMedia.addOnScrollListener(contentScrollListener)
+            }
 
             override fun onViewDetachedFromWindow(p0: View) {
                 mVideoPlayer = null
+                binding.rvReviewMedia.removeOnScrollListener(contentScrollListener)
             }
         })
+    }
+
+    private val contentScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            val position = getContentCurrentPosition()
+            binding.pcReviewContent.setCurrentIndicator(position)
+        }
     }
 
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
@@ -101,10 +114,12 @@ class ReviewParentContentViewHolder(
 
         adapter = reviewMediaAdapter
         layoutManager = layoutManagerMedia
+        addOnScrollListener(contentScrollListener)
         snapHelperMedia.attachToRecyclerView(this)
         itemAnimator = null
 
         reviewMediaAdapter.submitList(media)
+        setupPageControlMedia(media.size)
     }
 
     private fun bindAuthor(author: ReviewAuthorUiModel) = with(binding.layoutAuthorReview) {
@@ -218,6 +233,16 @@ class ReviewParentContentViewHolder(
             isMute = false,
             playWhenReady = false
         )
+    }
+
+    private fun setupPageControlMedia(mediaSize: Int) = with(binding.pcReviewContent) {
+        setIndicator(mediaSize)
+    }
+
+    private fun getContentCurrentPosition(): Int {
+        val snappedView = snapHelperMedia.findSnapView(layoutManagerMedia)
+            ?: return RecyclerView.NO_POSITION
+        return binding.rvReviewMedia.getChildAdapterPosition(snappedView)
     }
 
     override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
