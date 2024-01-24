@@ -34,7 +34,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 161
-        const val SIZE_PATH = 270
+        const val SIZE_PATH = 271
     }
 
     override fun setup() {
@@ -2609,6 +2609,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check tokonow see all category appLink then should return tokopedia internal tokonow see all category in customerapp`() {
         val expectedDeepLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
         val actualDeeplink = ApplinkConst.TokopediaNow.SEE_ALL_CATEGORY
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokonow shopping list appLink then should return tokopedia internal shopping list in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalTokopediaNow.SHOPPING_LIST
+        val actualDeeplink = ApplinkConst.TokopediaNow.SHOPPING_LIST
         assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
     }
 

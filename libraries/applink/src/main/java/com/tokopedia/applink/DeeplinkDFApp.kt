@@ -568,7 +568,8 @@ object DeeplinkDFApp {
             PathType.PATTERN,
             "/recipe/similar-product-bottomsheet"
         ),
-        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication")
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication"),
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/shopping-list")
     )
 
     private fun getDfTravel() = mutableListOf(

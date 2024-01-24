@@ -84,4 +84,7 @@ object ApplinkConstInternalTokopediaNow {
     //TokoNowBuyerCommunicationActivity
     @JvmField
     val BUYER_COMMUNICATION_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/buyer-communication"
+
+    @JvmField
+    val SHOPPING_LIST = "$INTERNAL_TOKOPEDIA_NOW/shopping-list"
 }
