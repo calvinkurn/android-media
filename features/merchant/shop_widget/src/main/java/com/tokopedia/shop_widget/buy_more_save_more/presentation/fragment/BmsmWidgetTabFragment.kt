@@ -392,7 +392,8 @@ class BmsmWidgetTabFragment :
             flContentWrapper.gone()
             cardErrorState.gone()
             when (status) {
-                Status.GIFT_OOS -> {
+                Status.GIFT_OOS,
+                Status.OOS -> {
                     emptyPageLarge.apply {
                         visible()
                         setImageUrl(TokopediaImageUrl.OLP_NOT_FOUND_ILLUSTRATION)
@@ -401,7 +402,6 @@ class BmsmWidgetTabFragment :
                     }
                     cardErrorState.gone()
                 }
-
                 else -> {
                     emptyPageLarge.gone()
                     cardErrorState.visible()
