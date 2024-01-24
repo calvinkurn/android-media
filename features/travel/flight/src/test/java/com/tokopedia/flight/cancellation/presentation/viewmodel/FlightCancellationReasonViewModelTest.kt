@@ -213,12 +213,9 @@ class FlightCancellationReasonViewModelTest {
     }
 
     @Test
-    fun onSuccess_validateAttachment_shouldSuccesssValidation() {
+    fun onSuccess_validateAttachment_shouldFailedValidation_FileNameNotEmpty() {
         // given
         val fileName = "path/images.jpeg"
-
-        val fileMock = mockk<File>()
-        every { fileMock.length() } returns 2048
         // when
         viewModel.onSuccessChangeAttachment(fileName)
 
