@@ -22,6 +22,8 @@ import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdU
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.fragment.BmsmWidgetTabFragment
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetDependencyProvider
+import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
+import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
 import com.tokopedia.shop_widget.databinding.LayoutBmsmCustomViewBinding
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
@@ -56,6 +58,8 @@ class BmsmWidget : ConstraintLayout {
     private var onProductClicked: (Product) -> Unit = {}
     private var onWidgetVisible: () -> Unit = {}
     private var tabTotalWidth = 0
+    private var colorThemeConfiguration: BmsmWidgetColorThemeConfig = BmsmWidgetColorThemeConfig.DEFAULT
+    private var patternColorType: ColorType = ColorType.LIGHT
 
     companion object {
         private const val ONE_TAB = 1
@@ -82,22 +86,20 @@ class BmsmWidget : ConstraintLayout {
     fun setupWidget(
         provider: BmsmWidgetDependencyProvider,
         offerList: List<OfferingInfoByShopIdUiModel>,
-        isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema,
-        patternColorType: String
+        colorThemeConfiguration: BmsmWidgetColorThemeConfig,
+        patternColorType: ColorType
     ) {
-        setupTabs(provider, offerList, isOverrideTheme, colorSchema, patternColorType)
+        this.patternColorType = patternColorType
+        this.colorThemeConfiguration = colorThemeConfiguration
+        setupTabs(provider, offerList)
     }
 
     private fun setupTabs(
         provider: BmsmWidgetDependencyProvider,
-        offerList: List<OfferingInfoByShopIdUiModel>,
-        isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema,
-        patternColorType: String
+        offerList: List<OfferingInfoByShopIdUiModel>
     ) {
         binding?.apply {
-            val fragments = createFragments(offerList, isOverrideTheme, colorSchema, patternColorType)
+            val fragments = createFragments(offerList)
             val pagerAdapter = TabPagerAdapter(
                 provider.bmsmWidgetHostFragmentManager,
                 provider.bmsmWidgetHostLifecycle,
@@ -128,14 +130,9 @@ class BmsmWidget : ConstraintLayout {
                 tabTitle?.text = fragments[currentPosition].first
 
                 if (currentPosition == Int.ZERO) {
-                    tab.select(
-                        isOverrideTheme,
-                        colorSchema)
+                    tab.selectTab()
                 }  else {
-                    tab.unselect(
-                        isOverrideTheme,
-                        colorSchema
-                    )
+                    tab.unselect()
                 }
 
                 tab.view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
@@ -143,23 +140,19 @@ class BmsmWidget : ConstraintLayout {
                     (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
                 tabTotalWidth += tabWidth
             }
-            handleTabChange(tabBmsmWidget, isOverrideTheme, colorSchema)
-            applyTabRuleWidth(offerList, tabBmsmWidget, isOverrideTheme)
+            handleTabChange(tabBmsmWidget)
+            applyTabRuleWidth(offerList, tabBmsmWidget)
         }
     }
 
-    private fun handleTabChange(
-        tabsUnify: TabsUnify,
-        isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
-    ) {
+    private fun handleTabChange(tabsUnify: TabsUnify) {
         tabsUnify.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab?.select(isOverrideTheme, colorSchema)
+                tab?.selectTab()
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                tab.unselect(isOverrideTheme, colorSchema)
+                tab.unselect()
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -169,8 +162,7 @@ class BmsmWidget : ConstraintLayout {
 
     private fun applyTabRuleWidth(
         tabs: List<OfferingInfoByShopIdUiModel>,
-        tabsUnify: TabsUnify,
-        isOverrideTheme: Boolean
+        tabsUnify: TabsUnify
     ) {
         tabsUnify.post {
             when {
@@ -178,7 +170,6 @@ class BmsmWidget : ConstraintLayout {
                 tabs.size == ONE_TAB -> tabsUnify.gone()
                 else -> {
                     tabsUnify.visible()
-
                     val screenWidth =
                         DeviceScreenInfo.getScreenWidth(tabsUnify.context) - MARGIN_16_DP.dpToPx() - MARGIN_16_DP.dpToPx()
                     if (tabTotalWidth < screenWidth) {
@@ -193,31 +184,20 @@ class BmsmWidget : ConstraintLayout {
         }
     }
 
-    private fun TabLayout.Tab?.select(isOverrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
+    private fun TabLayout.Tab?.selectTab() {
         val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
-        val textColor = if (isOverrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-        } else {
-            ContextCompat.getColor(context, R.color.dms_static_black)
-        }
         tabTitle?.apply {
             typeface = Typography.getFontType(context, true, Typography.DISPLAY_3)
-            setTextColor(textColor)
+            setTextColor(getTextColor())
             invalidate()
         }
     }
 
-    private fun TabLayout.Tab?.unselect(isOverrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
+    private fun TabLayout.Tab?.unselect() {
         val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
-        val textColor = if (isOverrideTheme && colorSchema.listColorSchema.isNotEmpty())  {
-            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR)
-        } else {
-            ContextCompat.getColor(context, R.color.dms_static_black)
-        }
-
         tabTitle?.apply {
             typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
-            setTextColor(textColor)
+            setTextColor(getTextColor())
             invalidate()
         }
     }
@@ -233,19 +213,15 @@ class BmsmWidget : ConstraintLayout {
     }
 
     private fun createFragments(
-        offerList: List<OfferingInfoByShopIdUiModel>,
-        isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema,
-        patternColorType: String
+        offerList: List<OfferingInfoByShopIdUiModel>
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         offerList.forEachIndexed { _, currentTab ->
             val fragment = BmsmWidgetTabFragment.newInstance(
                 data = currentTab,
-                isOverrideTheme = isOverrideTheme,
                 offerTypeId = offerType,
-                colorSchema = colorSchema,
+                colorThemeConfiguration = colorThemeConfiguration,
                 patternColorType = patternColorType
             )
 
@@ -295,5 +271,20 @@ class BmsmWidget : ConstraintLayout {
 
     fun setOnWidgetVisible(onWidgetVisible: () -> Unit) {
         this.onWidgetVisible = onWidgetVisible
+    }
+
+    private fun getTextColor(): Int{
+        val textColor = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.LIGHT) {
+                    ContextCompat.getColor(context, R.color.dms_static_black)
+                } else {
+                    ContextCompat.getColor(context, R.color.dms_static_white)
+                }
+            }
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_static_black)
+        }
+        return textColor
     }
 }

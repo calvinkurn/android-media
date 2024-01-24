@@ -12,6 +12,8 @@ import com.tokopedia.shop.databinding.ItemShopHomeBmsmWidgetPdBinding
 import com.tokopedia.shop.home.view.model.ShopBmsmWidgetGwpUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetDependencyProvider
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetEventListener
+import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
+import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopBmsmWidgetPdViewHolder(
@@ -34,24 +36,21 @@ class ShopBmsmWidgetPdViewHolder(
             binding?.apply {
                 tpgTitle.apply {
                     text = element.header.title
-                    val textColor = if (element.header.isOverrideTheme && element.header.colorSchema.listColorSchema.isNotEmpty()){
-                        element.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-                    } else {
-                        ContextCompat.getColor(context, R.color.dms_static_black)
-                    }
-                    setTextColor(textColor)
+                    setTextColor(getTextColor(element))
                 }
                 tpgSubTitle.apply {
                     showWithCondition(element.data.size == Int.ONE)
                     text = element.data.firstOrNull()?.offerName
+                    setTextColor(getTextColor(element))
                 }
                 widgetBmsm.apply {
                     setupWidget(
-                        provider,
-                        element.data,
-                        element.header.isOverrideTheme,
-                        element.header.colorSchema,
-                        patternColorType
+                        provider = provider,
+                        offerList = element.data,
+                        colorThemeConfiguration = getColorThemeConfiguration(element),
+                        patternColorType = ColorType.values().firstOrNull { value ->
+                            value.type == patternColorType
+                        } ?: ColorType.LIGHT
                     )
                     setOnSuccessAtcListener { product ->
                         listener.onBmsmWidgetSuccessAtc(product)
@@ -71,5 +70,34 @@ class ShopBmsmWidgetPdViewHolder(
                 }
             }
         }
+    }
+
+    private fun getColorThemeConfiguration(element: ShopBmsmWidgetGwpUiModel): BmsmWidgetColorThemeConfig {
+        val colorThemeConfiguration = if (element.isFestivity) {
+            BmsmWidgetColorThemeConfig.FESTIVITY
+        } else {
+            if (element.header.isOverrideTheme) {
+                BmsmWidgetColorThemeConfig.REIMAGINE
+            } else {
+                BmsmWidgetColorThemeConfig.DEFAULT
+            }
+        }
+        return colorThemeConfiguration
+    }
+
+    private fun getTextColor(element: ShopBmsmWidgetGwpUiModel): Int {
+        val textColor =  when (getColorThemeConfiguration(element)) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(itemView.context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.LIGHT.type) {
+                    ContextCompat.getColor(itemView.context, R.color.dms_static_black)
+                } else {
+                    ContextCompat.getColor(itemView.context, R.color.dms_static_white)
+                }
+            }
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(itemView.context, R.color.dms_static_black)
+        }
+
+        return textColor
     }
 }
