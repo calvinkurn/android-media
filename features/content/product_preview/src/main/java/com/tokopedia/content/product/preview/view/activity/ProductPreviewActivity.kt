@@ -12,7 +12,7 @@ import com.tokopedia.content.product.preview.di.ProductPreviewInjector
 import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 import javax.inject.Inject
 
 class ProductPreviewActivity : BaseActivity() {
@@ -71,14 +71,14 @@ class ProductPreviewActivity : BaseActivity() {
         return ProductPreviewFragment.getOrCreate(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
-            bundle = intent.extras
+            bundle = intent.extras,
         )
     }
 
     companion object {
         fun createIntent(
             context: Context,
-            productContentData: ProductContentUiModel
+            productContentData: ProductUiModel
         ): Intent {
             val intent = Intent(context, ProductPreviewActivity::class.java)
             val bundle = Bundle()

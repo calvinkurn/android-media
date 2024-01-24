@@ -23,11 +23,10 @@ import com.tokopedia.content.product.preview.view.components.player.ProductPrevi
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
 import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
-import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductSelected
-import com.tokopedia.content.product.preview.view.uimodel.product.IndicatorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -153,16 +152,22 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.productUiState.withCache().collectLatest { (prevState, currState) ->
-                renderContent(prevState?.productContent, currState.productContent)
-                renderIndicator(prevState?.productIndicator, currState.productIndicator)
+            viewModel.uiState.withCache().collectLatest { (prevState, currState) ->
+                renderContent(
+                    prevState?.productUiModel?.content,
+                    currState.productUiModel.content
+                )
+                renderIndicator(
+                    prevState?.productUiModel?.content,
+                    currState.productUiModel.content
+                )
             }
         }
     }
 
     private fun renderContent(
-        prev: List<ContentUiModel>?,
-        state: List<ContentUiModel>
+        prev: List<ProductContentUiModel>?,
+        state: List<ProductContentUiModel>
     ) {
         if (prev == state) return
 
@@ -180,8 +185,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun renderIndicator(
-        prev: List<IndicatorUiModel>?,
-        state: List<IndicatorUiModel>
+        prev: List<ProductContentUiModel>?,
+        state: List<ProductContentUiModel>
     ) {
         if (prev == state) return
 
@@ -216,7 +221,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         }
     }
 
-    private fun prepareVideoPlayerIfNeeded(state: List<ContentUiModel>) {
+    private fun prepareVideoPlayerIfNeeded(state: List<ProductContentUiModel>) {
         if (mVideoPlayer != null) return
 
         val videoPosition = state.indexOfFirst { it.type == MediaType.Video }
@@ -242,7 +247,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         mVideoPlayer?.seekDurationTo(data.videoLastDuration)
     }
 
-    private fun getSelectedItemPosition(state: List<ContentUiModel>): Int {
+    private fun getSelectedItemPosition(state: List<ProductContentUiModel>): Int {
         val selectedData = state.firstOrNull { it.selected } ?: return 0
         return state.indexOf(selectedData)
     }

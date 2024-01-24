@@ -6,6 +6,9 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -23,6 +26,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
@@ -1080,7 +1084,7 @@ object DynamicProductDetailMapper {
         return RecommendationWidgetModel(
             metadata = metadata,
             trackingModel = trackingModel,
-            source = source,
+            source = source
         )
     }
 
@@ -1095,6 +1099,33 @@ object DynamicProductDetailMapper {
             type = component.type,
             name = component.componentName,
             items = data.socialProof.asUiModel()
+        )
+    }
+
+    fun mapProductDetailToProductPreview(
+        productId: String,
+        data: DynamicProductInfoP1 = DynamicProductInfoP1(),
+        position: Int = 0,
+        videoLastDuration: Long = 0L,
+        videoTotalDuration: Long = 0L
+    ): ProductUiModel {
+        return ProductUiModel(
+            productId = productId,
+            content = data.data.getGalleryItems().mapIndexed { index, item ->
+                ProductContentUiModel(
+                    contentId = item.id,
+                    selected = index == position,
+                    type = when (item.type) {
+                        ProductDetailGallery.Item.Type.Video -> MediaType.Video
+                        ProductDetailGallery.Item.Type.Image -> MediaType.Image
+                        else -> MediaType.Unknown
+                    },
+                    url = item.url,
+                    thumbnailUrl = item.thumbnailUrl,
+                    videoLastDuration = videoLastDuration,
+                    videoTotalDuration = videoTotalDuration
+                )
+            }
         )
     }
 }

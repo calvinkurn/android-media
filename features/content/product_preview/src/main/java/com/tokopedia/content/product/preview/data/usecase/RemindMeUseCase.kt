@@ -3,7 +3,7 @@ package com.tokopedia.content.product.preview.data.usecase
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.preview.data.AddWishlistResponse
+import com.tokopedia.content.product.preview.data.response.AddWishlistResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
@@ -22,7 +22,8 @@ class RemindMeUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<RemindMeUseCase.Param, AddWishlistResponse>(dispatchers.io) {
 
-    private val query : GqlQueryInterface = RemindMeUseCaseQuery()
+    private val query: GqlQueryInterface = RemindMeUseCaseQuery()
+
     override suspend fun execute(params: Param): AddWishlistResponse {
         return repo.request(query, params)
     }
@@ -33,7 +34,7 @@ class RemindMeUseCase @Inject constructor(
         @SerializedName("userID")
         val userId: Long,
         @SerializedName("productID")
-        val productId: Long,
+        val productId: Long
     ) : GqlParam
 
     companion object {

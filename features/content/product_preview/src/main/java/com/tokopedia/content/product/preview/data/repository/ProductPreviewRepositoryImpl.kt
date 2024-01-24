@@ -10,12 +10,12 @@ import com.tokopedia.content.product.preview.data.usecase.RemindMeUseCase
 import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.LikeUiState.LikeStatus.Companion.switch
-import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
-import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState.ReviewLikeStatus.Companion.switch
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -32,15 +32,16 @@ class ProductPreviewRepositoryImpl @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val remindMeUseCase: RemindMeUseCase,
     private val userSessionInterface: UserSessionInterface,
-    private val mapper: ProductPreviewMapper,
+    private val mapper: ProductPreviewMapper
 ) : ProductPreviewRepository {
+
     override suspend fun getProductMiniInfo(productId: String): BottomNavUiModel =
         withContext(dispatchers.io) {
             val response = miniInfoUseCase(ProductMiniInfoUseCase.Param(productId))
             mapper.mapMiniInfo(response)
         }
 
-    override suspend fun getReview(productId: String, page: Int): ReviewPageState =
+    override suspend fun getReview(productId: String, page: Int): ReviewUiModel =
         withContext(dispatchers.io) {
             val response = getReviewUseCase(MediaReviewUseCase.Param(productId, page))
             mapper.mapReviews(response, page)
@@ -60,20 +61,20 @@ class ProductPreviewRepositoryImpl @Inject constructor(
                     atcExternalSource = AtcFromExternalSource.ATC_FROM_PRODUCT_PREVIEW,
                     productName = productName,
                     price = price.toString(),
-                    userId = userSessionInterface.userId,
+                    userId = userSessionInterface.userId
                 )
             )
         }.executeOnBackground()
         !response.isStatusError()
     }
 
-    override suspend fun likeReview(state: LikeUiState, reviewId: String): LikeUiState = withContext(dispatchers.io) {
+    override suspend fun likeReview(state: ReviewLikeUiState, reviewId: String): ReviewLikeUiState = withContext(dispatchers.io) {
         val response =
             likeUseCase(ReviewLikeUseCase.Param(reviewId = reviewId, likeStatus = state.state.switch.value))
         mapper.mapLike(response)
     }
 
-    override suspend fun submitReport(report: ReportUiModel, reviewId: String): Boolean =
+    override suspend fun submitReport(report: ReviewReportUiModel, reviewId: String): Boolean =
         withContext(dispatchers.io) {
             val response = submitReportUseCase(
                 SubmitReportUseCase.Param(

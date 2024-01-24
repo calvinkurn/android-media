@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview.data
+package com.tokopedia.content.product.preview.data.response
 
 import com.google.gson.annotations.SerializedName
 

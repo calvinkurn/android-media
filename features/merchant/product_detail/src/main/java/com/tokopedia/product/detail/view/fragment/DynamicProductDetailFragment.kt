@@ -215,7 +215,6 @@ import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.mapper.ProductDetailMapper
 import com.tokopedia.product.detail.tracking.APlusContentTracking
 import com.tokopedia.product.detail.tracking.BMGMTracking
 import com.tokopedia.product.detail.tracking.CommonTracker
@@ -487,8 +486,6 @@ open class DynamicProductDetailFragment :
 
     @Inject
     lateinit var affiliateCookieHelper: dagger.Lazy<AffiliateCookieHelper>
-
-    private val productDetailMapper: ProductDetailMapper = ProductDetailMapper()
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var screenshotDetector: ScreenshotDetector? = null
@@ -2317,9 +2314,11 @@ open class DynamicProductDetailFragment :
         videoLastDuration: Long = productVideoCoordinator?.getCurrentPosition().orZero(),
         videoTotalDuration: Long = productVideoCoordinator?.getDuration().orZero()
     ) {
+        val productId = productId ?: return
         val intent = ProductPreviewActivity.createIntent(
             context = requireActivity(),
-            productContentData = productDetailMapper.mapProductDetailToProductPreview(
+            productContentData = DynamicProductDetailMapper.mapProductDetailToProductPreview(
+                productId = productId,
                 data = data,
                 position = position,
                 videoLastDuration = videoLastDuration,

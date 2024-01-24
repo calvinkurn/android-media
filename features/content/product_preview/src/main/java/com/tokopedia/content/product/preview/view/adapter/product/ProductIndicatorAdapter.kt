@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
-import com.tokopedia.content.product.preview.view.uimodel.product.IndicatorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductIndicatorViewHolder
 
 class ProductIndicatorAdapter(
     private val listener: ProductIndicatorListener
-) : ListAdapter<IndicatorUiModel, ViewHolder>(ProductIndicatorDiffUtil()) {
+) : ListAdapter<ProductContentUiModel, ViewHolder>(ProductIndicatorDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ProductIndicatorViewHolder.create(parent, listener)
@@ -20,17 +20,17 @@ class ProductIndicatorAdapter(
         (holder as ProductIndicatorViewHolder).bind(getItem(position))
     }
 
-    internal class ProductIndicatorDiffUtil : DiffUtil.ItemCallback<IndicatorUiModel>() {
+    internal class ProductIndicatorDiffUtil : DiffUtil.ItemCallback<ProductContentUiModel>() {
         override fun areItemsTheSame(
-            oldItem: IndicatorUiModel,
-            newItem: IndicatorUiModel
+            oldItem: ProductContentUiModel,
+            newItem: ProductContentUiModel
         ): Boolean {
             return oldItem == newItem
         }
 
         override fun areContentsTheSame(
-            oldItem: IndicatorUiModel,
-            newItem: IndicatorUiModel
+            oldItem: ProductContentUiModel,
+            newItem: ProductContentUiModel
         ): Boolean {
             return oldItem.selected == newItem.selected
         }
