@@ -99,7 +99,10 @@ class BmsmWidgetTabFragment :
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_OFFER_DATA, data)
                     putInt(BUNDLE_KEY_OFFER_TYPE_ID, offerTypeId)
-                    putSerializable(BUNDLE_KEY_SHOP_PAGE_COLOR_THEME_CONFIG, colorThemeConfiguration)
+                    putSerializable(
+                        BUNDLE_KEY_SHOP_PAGE_COLOR_THEME_CONFIG,
+                        colorThemeConfiguration
+                    )
                     putSerializable(BUNDLE_KEY_SHOP_PAGE_PATTERN_COLOR_TYPE, patternColorType)
                 }
             }
@@ -246,7 +249,10 @@ class BmsmWidgetTabFragment :
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
-            setViewState(VIEW_ERROR, getErrorCodeFromThrowable(throwable.localizedMessage.toIntOrZero()))
+            setViewState(
+                VIEW_ERROR,
+                getErrorCodeFromThrowable(throwable.localizedMessage.toIntOrZero())
+            )
         }
     }
 
@@ -343,9 +349,14 @@ class BmsmWidgetTabFragment :
             viewLifecycleOwner.lifecycleScope.launch {
                 if (productList.size > Int.ONE) setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
             }
-            if (productList.size == TWO_PRODUCT_ITEM_SIZE){
+            if (productList.size == TWO_PRODUCT_ITEM_SIZE) {
                 layoutManager =
-                    GridLayoutManager(context, TWO_PRODUCT_ITEM_SIZE, GridLayoutManager.VERTICAL, false)
+                    GridLayoutManager(
+                        context,
+                        TWO_PRODUCT_ITEM_SIZE,
+                        GridLayoutManager.VERTICAL,
+                        false
+                    )
                 addItemDecoration(ProductListItemDecoration())
             }
         }
@@ -402,6 +413,7 @@ class BmsmWidgetTabFragment :
                     }
                     cardErrorState.gone()
                 }
+
                 else -> {
                     emptyPageLarge.gone()
                     cardErrorState.visible()
@@ -443,7 +455,7 @@ class BmsmWidgetTabFragment :
             tpgSubTitleWidget.gone()
             pdUpsellingWrapper.apply {
                 visibleWithCondition(offerMessage.isNotEmpty())
-                setBackgroundResource(R.drawable.bmsm_pd_upselling_wording_background)
+                setBackgroundResource(getPdUpsellingWrapperBackground())
             }
             rvProduct.apply {
                 if (pdUpsellingWrapper.isVisible) {
@@ -495,9 +507,9 @@ class BmsmWidgetTabFragment :
 
     private fun Typography.setTitle(upsellWording: String, defaultOfferMessage: String) {
         val textColor = MethodChecker.getColor(
-                context,
-                R.color.dms_static_white
-            )
+            context,
+            R.color.dms_static_white
+        )
         this.apply {
             visible()
             text = if (upsellWording.isNotEmpty()) {
@@ -511,9 +523,9 @@ class BmsmWidgetTabFragment :
 
     private fun Typography.setSubTitle(messages: List<String>) {
         val textColor = MethodChecker.getColor(
-                context,
-                R.color.dms_static_white
-            )
+            context,
+            R.color.dms_static_white
+        )
 
         this.apply {
             text = MethodChecker.fromHtml(messages.firstOrNull())
@@ -618,6 +630,7 @@ class BmsmWidgetTabFragment :
                     R.color.dms_gwp_card_transparent_bg_color
                 )
             }
+
             BmsmWidgetColorThemeConfig.REIMAGINE -> {
                 if (patternColorType == ColorType.DARK) {
                     MethodChecker.getColor(
@@ -631,6 +644,7 @@ class BmsmWidgetTabFragment :
                     )
                 }
             }
+
             else -> {
                 MethodChecker.getColor(
                     context,
@@ -639,5 +653,26 @@ class BmsmWidgetTabFragment :
             }
         }
         return bgColor
+    }
+
+    private fun getPdUpsellingWrapperBackground(): Int {
+        val background = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> {
+                R.drawable.bmsm_pd_upselling_wording_transparent_background
+            }
+
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.DARK) {
+                    R.drawable.bmsm_pd_upselling_wording_transparent_background
+                } else {
+                    R.drawable.bmsm_pd_upselling_wording_background
+                }
+            }
+
+            else -> {
+                R.drawable.bmsm_pd_upselling_wording_background
+            }
+        }
+        return background
     }
 }

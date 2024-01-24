@@ -144,6 +144,7 @@
                     android:layout_height="24dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
+                    android:visibility="gone"
                     android:background="@drawable/bmsm_pd_upselling_wording_background"
                     android:gravity="left|center"
                     android:orientation="horizontal"
