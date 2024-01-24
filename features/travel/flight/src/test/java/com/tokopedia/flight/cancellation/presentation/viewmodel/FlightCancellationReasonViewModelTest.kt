@@ -3,10 +3,14 @@ package com.tokopedia.flight.cancellation.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.flight.cancellation.data.FlightCancellationPassengerEntity
 import com.tokopedia.flight.cancellation.domain.FlightCancellationAttachmentUploadUseCase
+import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
+import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
+import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationReasonAndAttachmentModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.DUMMY_CANCELLATION_WRAPPER
 import com.tokopedia.flight.dummy.DUMMY_CANCELLATION_WRAPPER_ATTACHMENT
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
@@ -262,6 +266,55 @@ class FlightCancellationReasonViewModelTest {
     @Test
     fun onNextButtonClicked_AttachmentMandatory_True_TotalPassanger_0() {
         viewModel.cancellationWrapperModel = FlightCancellationWrapperModel()
+        viewModel.buildAttachmentList()
+        viewModel.selectedReason = FlightCancellationPassengerEntity.Reason(
+            "1",
+            "",
+            arrayListOf(),
+            arrayListOf(
+                FlightCancellationPassengerEntity.RequiredDoc(
+                    "1",
+                    "TitleA"
+                ),
+                FlightCancellationPassengerEntity.RequiredDoc(
+                    "2",
+                    "TitleB"
+                ),
+                FlightCancellationPassengerEntity.RequiredDoc(
+                    "3",
+                    "TitleC"
+                ),
+                FlightCancellationPassengerEntity.RequiredDoc(
+                    "4",
+                    "TitleD"
+                )
+            )
+        )
+
+        // when
+        viewModel.onNextButtonClicked()
+        //then
+        viewModel.canNavigateToNextStep.value?.first shouldBe true
+        viewModel.canNavigateToNextStep.value?.second shouldBe true
+    }
+
+    @Test
+    fun onNextButtonClicked_AttachmentMandatory_True_TotalPassanger_More_Than_0() {
+        viewModel.cancellationWrapperModel = FlightCancellationWrapperModel(
+            FlightCancellationReasonAndAttachmentModel(),
+            arrayListOf(
+                FlightCancellationModel(
+                    passengerModelList = arrayListOf(
+                        FlightCancellationPassengerModel(
+                            "A",
+                            firstName = "Firmanda",
+                            lastName = "Nugroho",
+                            status = FlightBookingPassenger.ADULT.value
+                        )
+                    )
+                )
+            )
+        )
         viewModel.buildAttachmentList()
         viewModel.selectedReason = FlightCancellationPassengerEntity.Reason(
             "1",
