@@ -662,7 +662,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             requireContext(),
             ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_OCL
         )
-        startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_OCL)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun fetchRemoteConfig() {
@@ -1060,10 +1062,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onSuccessLogin() {
         dismissLoadingLogin()
         activityShouldEnd = true
-
-        if (viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text?.isNotBlank() == true) {
-            userSession.autofillUserData = viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString()
-        }
 
         registerPushNotif()
         submitIntegrityApi()

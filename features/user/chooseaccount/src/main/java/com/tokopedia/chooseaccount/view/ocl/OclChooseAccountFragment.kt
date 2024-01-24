@@ -28,16 +28,20 @@ import com.tokopedia.chooseaccount.view.listener.OclChooseAccountListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.tracker.OclTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
+class OclChooseAccountFragment : BaseDaggerFragment(), OclChooseAccountListener {
 
     private var binding by autoClearedNullable<FragmentOclChooseAccountBinding>()
 
     protected var adapter: OclAccountAdapter? = null
+
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -101,7 +105,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
 
         setupSpannableText()
         viewModel.mainLoader.observe(viewLifecycleOwner) {
-            if(it) {
+            if (it) {
                 binding?.mainView?.hide()
                 binding?.chooseAccountLoader?.show()
             } else {
@@ -111,7 +115,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         }
 
         viewModel.toasterError.observe(viewLifecycleOwner) {
-            if(it.isNotEmpty()) {
+            if (it.isNotEmpty()) {
                 Toaster.build(view, it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
@@ -134,7 +138,7 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
         }
 
         viewModel.loginFailedToaster.observe(viewLifecycleOwner) {
-            if(it.isNotEmpty()) {
+            if (it.isNotEmpty()) {
                 OclTracker.sendClickOnOneClickLoginEvent("${OclTracker.LABEL_FAILED} - $it")
                 Toaster.build(view, it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
@@ -160,6 +164,10 @@ class OclChooseAccountFragment: BaseDaggerFragment(), OclChooseAccountListener {
     override fun onDeleteButtonClicked(account: OclAccount) {
         OclTracker.sendClickOnButtonHapusEvent()
         showDeleteConfirmationDialog(account)
+    }
+
+    open fun refreshRolloutVariant() {
+        abTestPlatform.fetchByType(null)
     }
 
     private fun showDeleteConfirmationDialog(account: OclAccount) {
