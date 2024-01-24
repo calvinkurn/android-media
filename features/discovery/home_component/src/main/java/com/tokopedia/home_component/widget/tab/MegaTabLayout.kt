@@ -1,6 +1,8 @@
 package com.tokopedia.home_component.widget.tab
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -81,6 +83,26 @@ class MegaTabLayout @JvmOverloads constructor(
     private var tabItemList = mutableListOf<MegaTabItem>()
     private var lastTabSelectedPosition = -1
 
+    private val linePaint = Paint()
+
+    init {
+        setSelectedTabIndicator(null)
+        tabMode = MODE_SCROLLABLE
+        tabRippleColor = null
+
+        createBottomLine()
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+
+        // Get the height of the view
+        val height = height.toFloat()
+
+        // Draw the line at the bottom of the view
+        canvas.drawLine(0f, height, width.toFloat(), height, linePaint)
+    }
+
     fun set(tabList: List<MegaTabItem>, pager: ViewPager? = null) {
         // initiate tab data sets
         tabItemList.clear()
@@ -125,7 +147,9 @@ class MegaTabLayout @JvmOverloads constructor(
     }
 
     private fun createTabView(tab: Tab, item: MegaTabItem, position: Int): View {
-        val rootView = com.tokopedia.home_component.widget.tab.TabView(context)
+        val rootView = MegaTabView(context)
+
+        rootView.setOnClickListener { selectTab(tab) }
         rootView.createTabView(item)
 
         if (position < tabCount - 1) {
@@ -133,7 +157,6 @@ class MegaTabLayout @JvmOverloads constructor(
             rootView.setPadding(rootView.paddingLeft, rootView.paddingTop, paddingEnd, rootView.paddingBottom)
         }
 
-        rootView.setOnClickListener { selectTab(tab) }
 
         return rootView
     }
@@ -158,36 +181,31 @@ class MegaTabLayout @JvmOverloads constructor(
 
     private fun setActiveStateAt(position: Int) {
         updateStateAt(position) { title, indicator ->
-            title.setTextColor(ContextCompat.getColor(context, ACTIVE_STATE_COLOR))
-            indicator.show()
+            title?.setTextColor(ContextCompat.getColor(context, ACTIVE_STATE_COLOR))
+            indicator?.show()
         }
     }
 
     private fun setInactiveStateAt(position: Int) {
         updateStateAt(position) { title, indicator ->
-            title.setTextColor(ContextCompat.getColor(context, INACTIVE_STATE_COLOR))
-            indicator.invisible()
+            title?.setTextColor(ContextCompat.getColor(context, INACTIVE_STATE_COLOR))
+            indicator?.invisible()
         }
     }
 
-    private fun updateStateAt(position: Int, state: (Typography, View) -> Unit) {
+    private fun updateStateAt(position: Int, state: (Typography?, View?) -> Unit) {
         val tab = getTabAt(position) ?: return
 
         val text = getTextFromTab(tab)
         val indicator = getIndicatorFromTab(tab)
-
-        if (text != null && indicator != null) {
-            state(text, indicator)
-        }
+        state(text, indicator)
     }
 
     private fun getTextFromTab(tab: Tab): Typography? {
-        if (tab.customView == null) return null
         return tab.customView?.findViewById(R.id.txt_title)
     }
 
     private fun getIndicatorFromTab(tab: Tab): View? {
-        if (tab.customView == null) return null
         return tab.customView?.findViewById(R.id.tab_indicator)
     }
 
@@ -195,8 +213,15 @@ class MegaTabLayout @JvmOverloads constructor(
         lastTabSelectedPosition = -1
     }
 
+    private fun createBottomLine() {
+        linePaint.color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN50)
+        linePaint.strokeWidth = resources.displayMetrics.density * BOTTOM_STROKE_WEIGHT
+    }
+
     companion object {
         private val ACTIVE_STATE_COLOR = unifyprinciplesR.color.Unify_GN500
         private val INACTIVE_STATE_COLOR = unifyprinciplesR.color.Unify_NN400
+
+        private val BOTTOM_STROKE_WEIGHT = 2
     }
 }
