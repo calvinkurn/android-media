@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="16dp"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="2dp"
     tools:ignore="MissingDefaultResource">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -22,8 +23,6 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="10dp"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
