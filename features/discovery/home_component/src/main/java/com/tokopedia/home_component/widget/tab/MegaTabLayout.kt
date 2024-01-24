@@ -2,17 +2,22 @@ package com.tokopedia.home_component.widget.tab
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.home_component.R
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -82,10 +87,13 @@ class MegaTabLayout @JvmOverloads constructor(
 
     private var tabItemList = mutableListOf<MegaTabItem>()
     private var lastTabSelectedPosition = -1
-
     private val linePaint = Paint()
 
+    private var useInactiveImageState = false
+
     init {
+        initAttrs(attrs)
+
         setSelectedTabIndicator(null)
         tabMode = MODE_SCROLLABLE
         tabRippleColor = null
@@ -101,6 +109,19 @@ class MegaTabLayout @JvmOverloads constructor(
 
         // Draw the line at the bottom of the view
         canvas.drawLine(0f, height, width.toFloat(), height, linePaint)
+    }
+
+    private fun initAttrs(attrSet: AttributeSet?) {
+        if (attrSet == null) return
+
+        val attrList = context.obtainStyledAttributes(attrSet, R.styleable.MegaTabLayout)
+        val shouldUseInactiveImageMode = attrList.getBoolean(
+            R.styleable.MegaTabLayout_grayscale_inactive_mode,
+            false
+        )
+
+        useInactiveImageState = shouldUseInactiveImageMode
+        attrList.recycle()
     }
 
     fun set(tabList: List<MegaTabItem>, pager: ViewPager? = null) {
@@ -126,6 +147,7 @@ class MegaTabLayout @JvmOverloads constructor(
                 if (item.hasContentEmpty()) continue
 
                 tab.customView = createTabView(tab, item, position)
+                setInactiveStateAt(position)
             }
         }
 
@@ -157,7 +179,6 @@ class MegaTabLayout @JvmOverloads constructor(
             rootView.setPadding(rootView.paddingLeft, rootView.paddingTop, paddingEnd, rootView.paddingBottom)
         }
 
-
         return rootView
     }
 
@@ -180,33 +201,37 @@ class MegaTabLayout @JvmOverloads constructor(
     }
 
     private fun setActiveStateAt(position: Int) {
-        updateStateAt(position) { title, indicator ->
-            title?.setTextColor(ContextCompat.getColor(context, ACTIVE_STATE_COLOR))
-            indicator?.show()
+        updateStateAt(position) { view ->
+            view.typography?.setTextColor(ContextCompat.getColor(context, ACTIVE_STATE_COLOR))
+            view.indicator?.show()
+            updateImageState(view.imageView, true)
         }
     }
 
     private fun setInactiveStateAt(position: Int) {
-        updateStateAt(position) { title, indicator ->
-            title?.setTextColor(ContextCompat.getColor(context, INACTIVE_STATE_COLOR))
-            indicator?.invisible()
+        updateStateAt(position) { view ->
+            view.typography?.setTextColor(ContextCompat.getColor(context, INACTIVE_STATE_COLOR))
+            view.indicator?.invisible()
+            updateImageState(view.imageView, false)
         }
     }
 
-    private fun updateStateAt(position: Int, state: (Typography?, View?) -> Unit) {
+    private fun updateImageState(imageView: ImageView?, isActiveState: Boolean) {
+        if (useInactiveImageState && imageView?.isVisible == true) {
+            if (isActiveState) {
+                imageView.colorFilter = null
+            } else {
+                val colorMatrix =  ColorMatrix()
+                colorMatrix.setSaturation(0.0f)
+                val filter =  ColorMatrixColorFilter(colorMatrix)
+                imageView.colorFilter = filter
+            }
+        }
+    }
+
+    private fun updateStateAt(position: Int, state: (TabStateView) -> Unit) {
         val tab = getTabAt(position) ?: return
-
-        val text = getTextFromTab(tab)
-        val indicator = getIndicatorFromTab(tab)
-        state(text, indicator)
-    }
-
-    private fun getTextFromTab(tab: Tab): Typography? {
-        return tab.customView?.findViewById(R.id.txt_title)
-    }
-
-    private fun getIndicatorFromTab(tab: Tab): View? {
-        return tab.customView?.findViewById(R.id.tab_indicator)
+        state(TabStateView.get(tab))
     }
 
     private fun resetAllState() {
@@ -218,10 +243,34 @@ class MegaTabLayout @JvmOverloads constructor(
         linePaint.strokeWidth = resources.displayMetrics.density * BOTTOM_STROKE_WEIGHT
     }
 
+    /**
+     * An view comes from [MegaTabView].
+     *
+     * This [TabStateView] tries to extract the views from [MegaTabView] were added into this [MegaTabLayout].
+     * The main goal is, we've ability to access the views make some modification of it, such as visibility,
+     * change the background color, etc.
+     */
+    internal data class TabStateView(
+        val typography: Typography?,
+        val indicator: View?,
+        val imageView: ImageView?,
+    ) {
+
+        companion object {
+            fun get(tab: Tab): TabStateView {
+                return TabStateView(
+                    typography = tab.customView?.findViewById(R.id.txt_title),
+                    indicator = tab.customView?.findViewById(R.id.tab_indicator),
+                    imageView = tab.customView?.findViewById(R.id.img_icon),
+                )
+            }
+        }
+    }
+
     companion object {
         private val ACTIVE_STATE_COLOR = unifyprinciplesR.color.Unify_GN500
         private val INACTIVE_STATE_COLOR = unifyprinciplesR.color.Unify_NN400
 
-        private val BOTTOM_STROKE_WEIGHT = 2
+        private const val BOTTOM_STROKE_WEIGHT = 2
     }
 }

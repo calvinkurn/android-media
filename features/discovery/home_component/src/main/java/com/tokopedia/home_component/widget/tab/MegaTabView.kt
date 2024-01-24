@@ -7,7 +7,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.home_component.databinding.TabMegaRecommendationBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -18,13 +17,9 @@ class MegaTabView @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
 
-    private val binding: TabMegaRecommendationBinding
+    private val binding = TabMegaRecommendationBinding.inflate(LayoutInflater.from(context))
 
     init {
-        binding = TabMegaRecommendationBinding.inflate(
-            LayoutInflater.from(context)
-        )
-
         addView(binding.root)
     }
 
@@ -43,7 +38,6 @@ class MegaTabView @JvmOverloads constructor(
         binding.imgIcon.show()
 
         binding.imgIcon.loadImageWithoutPlaceholder(url) {
-            setSignatureKey(ObjectKey(System.currentTimeMillis())) // temporary for debug
             listener(
                 onSuccess = { _, _ -> onImageFetchSucceed() },
                 onError = { _ -> onImageFetchFailed() }
