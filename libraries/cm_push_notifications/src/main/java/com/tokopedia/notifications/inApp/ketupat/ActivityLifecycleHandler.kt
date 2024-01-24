@@ -20,16 +20,44 @@ import java.lang.ref.WeakReference
 open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+//        try {
+//            val activityName = activity::class.java.simpleName
+//            val isAnimationPopupEnabled = FirebaseRemoteConfigImpl(activity.applicationContext)
+//                .getBoolean("ketupat_animation_popup_enable", true)
+//            if (activityName == HomePageActivity) {
+//                //get active campaigns list for in app
+//                //if list size > 0 show in app and return
+//                //else show popup
+//                if (!CMInAppManager.getInstance().existsActiveInAppCampaign(HomePageActivity, true)
+//                    && isAnimationPopupEnabled
+//                ) {
+//                    getScratchCardData(activity)
+//                }
+//            }
+//        } catch (e: Exception) {
+//            ServerLogger.log(
+//                Priority.P2,
+//                "KETUPAT_ANIMATION_POPUP",
+//                mapOf(
+//                    "type" to "exception",
+//                    "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+//                    "data" to ""
+//                )
+//            )
+//        }
+    }
+
+    override fun onActivityPostResumed(activity: Activity) {
         try {
             val activityName = activity::class.java.simpleName
             val isAnimationPopupEnabled = FirebaseRemoteConfigImpl(activity.applicationContext)
                 .getBoolean("ketupat_animation_popup_enable", true)
             if (activityName == HomePageActivity) {
-                //get active campaigns list for in app
-                //if list size > 0 show in app and return
-                //else show popup
-                if (!CMInAppManager.getInstance().existsActiveInAppCampaign(HomePageActivity, true)
-                    && isAnimationPopupEnabled
+                // get active campaigns list for in app
+                // if list size > 0 show in app and return
+                // else show popup
+                if (!CMInAppManager.getInstance().existsActiveInAppCampaign(HomePageActivity, true) &&
+                    isAnimationPopupEnabled
                 ) {
                     getScratchCardData(activity)
                 }
