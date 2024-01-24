@@ -19,7 +19,7 @@ data class ShareExGenerateAffiliateLinkDataResponseDto(
     val identifierType: Int = 0,
 
     @SerializedName("LinkID")
-    val linkID: Int = 0,
+    val linkID: Long = 0,
 
     @SerializedName("URL")
     val url: ShareExGenerateAffiliateLinkUrlResponseDto = ShareExGenerateAffiliateLinkUrlResponseDto()

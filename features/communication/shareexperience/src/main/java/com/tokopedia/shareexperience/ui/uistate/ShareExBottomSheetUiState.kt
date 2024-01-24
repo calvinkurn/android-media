@@ -5,5 +5,6 @@ import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 
 data class ShareExBottomSheetUiState(
     val title: String = "",
-    val uiModelList: List<Visitable<in ShareExTypeFactory>>? = null
+    val uiModelList: List<Visitable<in ShareExTypeFactory>>? = null,
+    val chipPosition: Int = 0
 )

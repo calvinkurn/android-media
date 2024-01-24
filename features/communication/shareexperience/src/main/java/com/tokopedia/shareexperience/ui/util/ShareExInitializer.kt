@@ -170,6 +170,7 @@ class ShareExInitializer(
 
     private fun showShareBottomSheet(fragmentActivity: FragmentActivity) {
         bottomSheetArg?.let {
+            bottomSheet?.dismiss()
             bottomSheet = ShareExBottomSheet.newInstance(it)
             bottomSheet?.setListener(this)
             bottomSheet?.show(fragmentActivity.supportFragmentManager, "")
@@ -182,7 +183,7 @@ class ShareExInitializer(
             analytics.trackActionClickIconShare(
                 identifier = it.identifier,
                 pageTypeEnum = it.pageTypeEnum,
-                shareId = it.bottomSheetModel?.shareId,
+                shareId = it.bottomSheetModel?.bottomSheetPage?.listShareProperty?.firstOrNull()?.shareId.toString(),
                 label = it.trackerArg.labelActionClickShareIcon
             )
         }

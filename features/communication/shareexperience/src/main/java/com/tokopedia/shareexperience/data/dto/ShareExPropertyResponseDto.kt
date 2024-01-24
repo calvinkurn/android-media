@@ -6,6 +6,8 @@ import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistra
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
 
 data class ShareExPropertyResponseDto(
+    @SerializedName("shareId")
+    val shareId: String? = null,
     @SerializedName("chipTitle")
     val chipTitle: String = "",
     @SerializedName("shareBody")

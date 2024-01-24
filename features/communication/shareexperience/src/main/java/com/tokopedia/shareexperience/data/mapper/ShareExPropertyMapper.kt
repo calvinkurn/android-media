@@ -29,6 +29,7 @@ class ShareExPropertyMapper @Inject constructor(
                 eligibility = it.affiliateEligibility.mapToDomainModel()
             )
             val property = ShareExPropertyModel(
+                shareId = it.shareId,
                 title = it.shareBody.title,
                 listImage = it.shareBody.thumbnailUrls,
                 affiliate = affiliate,
@@ -64,7 +65,6 @@ class ShareExPropertyMapper @Inject constructor(
             commonChannel = channelMapper.generateDefaultChannel()
         )
         return ShareExBottomSheetModel(
-            shareId = dto.shareId,
             title = dto.bottomSheet.title,
             subtitle = dto.bottomSheet.subtitle,
             bottomSheetPage = body
@@ -85,7 +85,6 @@ class ShareExPropertyMapper @Inject constructor(
             commonChannel = channelMapper.generateDefaultChannel()
         )
         return ShareExBottomSheetModel(
-            shareId = null,
             title = ShareExConstants.DefaultValue.DEFAULT_TITLE,
             bottomSheetPage = body
         )

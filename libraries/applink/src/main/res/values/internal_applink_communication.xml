@@ -15,5 +15,4 @@
     <!--Sharing Experience-->
     <string name="title_applink_sharing_experience">Sharing Experience</string>
     <string name="path_post_purchase_sharing">/sharing/post-purchase</string>
-    <string name="path_share_experience">/share-experience</string>
 </resources>

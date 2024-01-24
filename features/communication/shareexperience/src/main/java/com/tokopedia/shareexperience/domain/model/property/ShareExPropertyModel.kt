@@ -6,6 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ShareExPropertyModel(
+    val shareId: String? = null,
     val listImage: List<String> = listOf(),
     val title: String = "",
     val affiliate: ShareExAffiliateModel = ShareExAffiliateModel(),

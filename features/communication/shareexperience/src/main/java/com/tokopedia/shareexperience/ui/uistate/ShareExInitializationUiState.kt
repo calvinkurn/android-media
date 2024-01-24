@@ -1,7 +1,8 @@
 package com.tokopedia.shareexperience.ui.uistate
 
 /**
- * Add more initialization variable needed for ShareExInitializer
+ * You can add more initialization variable needed for ShareExInitializer
+ * isEligibleAffiliate used in PDP
  */
 data class ShareExInitializationUiState(
     val isEligibleAffiliate: Boolean = false
