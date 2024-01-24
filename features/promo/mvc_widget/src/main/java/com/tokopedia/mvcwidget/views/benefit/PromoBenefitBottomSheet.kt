@@ -88,7 +88,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                 unifycomponentsR.drawable.bottomsheet_background
             )
 
-            lifecycleScope.launch {
+            lifecycleScope.launchWhenCreated {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
                     launch {
                         viewModel.state.collect { model ->
