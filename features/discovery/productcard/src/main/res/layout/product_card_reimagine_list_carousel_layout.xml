@@ -103,7 +103,7 @@
                 android:layout_marginEnd="8dp"
                 android:textColor="@color/Unify_NN600"
                 android:visibility="gone"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:ellipsize="end"
                 app:layout_constraintBottom_toBottomOf="@id/productCardStockInfoBackground"
                 app:layout_constraintStart_toStartOf="@id/productCardStockInfoBackground"

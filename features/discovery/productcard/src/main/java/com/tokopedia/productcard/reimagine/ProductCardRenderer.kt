@@ -170,8 +170,6 @@ internal class ProductCardRenderer(
 
         nameText?.background = nameTextBackground(isSafeProduct)
         nameText?.shouldShowWithAction(productCardModel.name.isNotEmpty()) {
-            it.maxLines = maxLinesName()
-
             if (isSafeProduct) {
                 it.setText(SpannableString(""), TextView.BufferType.SPANNABLE)
                 it.contentDescription = ""
@@ -182,12 +180,6 @@ internal class ProductCardRenderer(
                     context.getString(R.string.content_desc_textViewProductName) + " " + name
             }
         }
-    }
-
-    private fun maxLinesName(): Int {
-        val hasMultilineName = type != ProductCardType.GridCarousel
-
-        return if (hasMultilineName) 2 else 1
     }
 
     private fun nameTextBackground(isSafeProduct: Boolean) =

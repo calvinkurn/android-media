@@ -1,10 +1,12 @@
 package com.tokopedia.productcard.reimagine.assignedvalue
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.SpannedString
-import android.text.style.DynamicDrawableSpan.ALIGN_BASELINE
 import android.text.style.ImageSpan
 import android.widget.TextView
 import com.tokopedia.media.loader.data.Properties
@@ -50,7 +52,7 @@ private fun target(
 ): MediaBitmapEmptyTarget<Bitmap> =
     MediaBitmapEmptyTarget(
         onReady = { bitmap ->
-            val imageSpan = ImageSpan(typography.context, bitmap, ALIGN_BASELINE)
+            val imageSpan = CenterImageSpan(typography.context, bitmap)
             val spannableStringBuilder = SpannableStringBuilder("  $productName")
             spannableStringBuilder.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             typography.setText(spannableStringBuilder, TextView.BufferType.SPANNABLE)
@@ -59,3 +61,28 @@ private fun target(
             typography.setText(SpannedString(productName), TextView.BufferType.SPANNABLE)
         }
     )
+
+private class CenterImageSpan(context: Context, bitmap: Bitmap): ImageSpan(context, bitmap) {
+
+    override fun draw(
+        canvas: Canvas,
+        text: CharSequence?,
+        start: Int,
+        end: Int,
+        x: Float,
+        top: Int,
+        y: Int,
+        bottom: Int,
+        paint: Paint
+    ) {
+        super.draw(canvas, text, start, end, x, top, y, bottom, paint)
+
+        canvas.save()
+
+        val transY = (bottom - top) / 2 - drawable.bounds.height() / 2
+
+        canvas.translate(x, transY.toFloat())
+        drawable.draw(canvas)
+        canvas.restore()
+    }
+}
