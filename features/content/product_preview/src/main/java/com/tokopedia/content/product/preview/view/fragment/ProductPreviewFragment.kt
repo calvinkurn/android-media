@@ -271,7 +271,7 @@ class ProductPreviewFragment @Inject constructor(
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle
+            bundle: Bundle?
         ): ProductPreviewFragment {
             val oldInstance =
                 fragmentManager.findFragmentByTag(PRODUCT_PREVIEW_FRAGMENT_TAG) as? ProductPreviewFragment
