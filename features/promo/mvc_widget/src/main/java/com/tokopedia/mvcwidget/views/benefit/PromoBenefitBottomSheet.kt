@@ -175,9 +175,9 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         const val ARG_BOTTOM_SHEET = "ARG_BOTTOM_SHEET"
-        fun newInstance(variantId: String) = PromoBenefitBottomSheet().apply {
+        fun newInstance(metaDataJson: String) = PromoBenefitBottomSheet().apply {
             arguments = Bundle().apply {
-                putString(ARG_BOTTOM_SHEET, variantId)
+                putString(ARG_BOTTOM_SHEET, metaDataJson)
             }
         }
     }
