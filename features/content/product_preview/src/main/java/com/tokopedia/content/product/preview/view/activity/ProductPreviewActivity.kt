@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -28,7 +27,6 @@ class ProductPreviewActivity : BaseActivity() {
         inject()
         initFragmentFactory()
         super.onCreate(savedInstanceState)
-        setStatusBar()
         setupViews()
     }
 
@@ -44,13 +42,6 @@ class ProductPreviewActivity : BaseActivity() {
 
     private fun initFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
-    }
-
-    private fun setStatusBar() {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
     }
 
     private fun setupViews() {
@@ -79,7 +70,7 @@ class ProductPreviewActivity : BaseActivity() {
         return ProductPreviewFragment.getOrCreate(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
-            bundle = intent.extras,
+            bundle = intent.extras
         )
     }
 
