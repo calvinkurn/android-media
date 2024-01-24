@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.yandex.div:div-core:29.1.0'
     implementation 'com.yandex.div:div:29.1.0'
     implementation 'com.yandex.div:div-json:29.1.0'
-    implementation "com.yandex.div:div-lottie:29.1.0"
+    implementation "com.yandex.div:div-lottie:3.0.1"
     implementation "com.yandex.div:utils:29.1.0"
 }
 
