@@ -3,6 +3,7 @@ package com.tokopedia.filter.quick
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.tokopedia.filter.R
@@ -25,6 +26,8 @@ internal class SortFilterItemViewHolder(
             chip_image_icon.shouldShowWithAction(sortFilterItem.iconUrl.isNotEmpty()) {
                 chip_image_icon.setImageUrl(sortFilterItem.iconUrl)
             }
+
+            chipSize = ChipsUnify.SIZE_MEDIUM
 
             val imageUrl: String = if (sortFilterItem.isSelected) {
                 sortFilterItem.imageUrlActive
@@ -72,6 +75,7 @@ internal class SortFilterItemViewHolder(
             .load(imageUrl)
             .into(imageView)
         addCustomView(imageView)
+        chip_sub_container.setPadding(0)
     }
 
     companion object {
