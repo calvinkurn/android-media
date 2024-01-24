@@ -38,7 +38,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.reviewcommon.R as reviewcommonR
 
-
 class BuyerReviewViewHolder(
     itemView: View,
     private val listener: BuyerReviewListener? = null
@@ -49,6 +48,7 @@ class BuyerReviewViewHolder(
         val LAYOUT = R.layout.widget_buyer_review
         private const val MAX_LINE = 3
         private const val MAX_LINE_WITHOUT_IMAGES = 8
+        private const val MAX_REVIEW_INDICATOR = 14
     }
 
     private val binding: WidgetBuyerReviewBinding? by viewBinding()
@@ -171,6 +171,7 @@ class BuyerReviewViewHolder(
 
         cardData = element
         carouselData = dataWidgetToCarouselData(element)
+        binding?.pcIndicator?.setMaximumIndicator(MAX_REVIEW_INDICATOR)
         binding?.pcIndicator?.setIndicator(carouselData?.size.orZero())
         binding?.pcIndicator?.isVisible = carouselData?.isNotEmpty().orFalse()
         carouselBuyerReview?.apply {
@@ -210,7 +211,7 @@ class BuyerReviewViewHolder(
             bitmap,
             Int.ZERO,
             Int.ZERO,
-            (drawable.intrinsicWidth * (value/5f)).toInt(),
+            (drawable.intrinsicWidth * (value / 5f)).toInt(),
             drawable.intrinsicHeight
         )
     }
@@ -253,12 +254,24 @@ class BuyerReviewViewHolder(
             llUserReputation.children.forEach {
                 (it as? Typography)?.setTextColor(textColorSmall)
             }
-            cardBrSeparatorStatus.setTextColor(MethodChecker.getColor(
-                itemView.context, R.color.dms_static_divider))
-            cardBrSeparatorTotalHelp.setTextColor(MethodChecker.getColor(
-                itemView.context, R.color.dms_static_divider))
-            divShopInfo.setBackgroundColor(MethodChecker.getColor(
-                itemView.context, R.color.dms_static_color_divider))
+            cardBrSeparatorStatus.setTextColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    R.color.dms_static_divider
+                )
+            )
+            cardBrSeparatorTotalHelp.setTextColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    R.color.dms_static_divider
+                )
+            )
+            divShopInfo.setBackgroundColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    R.color.dms_static_color_divider
+                )
+            )
             cardBrShopInfoPrefix.setTextColor(textColorSmall)
 
             if (element.darkMode) {
