@@ -149,6 +149,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                         viewModel.error.collect {
                             globalError.isVisible = it
                             layoutBenefit.root.isVisible = !it
+                            containerTnc.isVisible = !it
                         }
                     }
                 }
