@@ -588,13 +588,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         overlayView.setShowCropFrame(OverlayView.DEFAULT_SHOW_CROP_FRAME);
         overlayView.setCropFrameColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0));
-        overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(R.dimen.image_picker_dp_1));
+        overlayView.setCropFrameStrokeWidth(getContext().getResources().getDimensionPixelSize(R.dimen.image_picker_dp_1));
 
         overlayView.setShowCropGrid(OverlayView.DEFAULT_SHOW_CROP_GRID);
         overlayView.setCropGridRowCount(OverlayView.DEFAULT_CROP_GRID_ROW_COUNT);
         overlayView.setCropGridColumnCount(OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT);
         overlayView.setCropGridColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0_68));
-        overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(R.dimen.image_picker_dp_1));
+        overlayView.setCropGridStrokeWidth(getContext().getResources().getDimensionPixelSize(R.dimen.image_picker_dp_1));
 
         setToInitialRatio();
 
