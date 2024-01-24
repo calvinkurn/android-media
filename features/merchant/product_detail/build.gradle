@@ -18,6 +18,7 @@ android {
                     pathSources + 'detail/bmgm',
                     pathSources + 'detail/shipment',
                     pathSources + 'detail/review',
+                    pathSources + 'detail/gwp',
             ]
         }
         androidTest {
@@ -126,6 +127,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.viewAllCard
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
