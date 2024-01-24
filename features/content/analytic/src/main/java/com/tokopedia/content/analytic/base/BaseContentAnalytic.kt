@@ -8,8 +8,9 @@ import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.analytic.helper.ContentAnalyticHelper
 import com.tokopedia.content.analytic.impression.OneTimeImpressionManager
 import com.tokopedia.content.analytic.model.ContentAnalyticAuthor
-import com.tokopedia.content.analytic.model.ContentEEProduct
-import com.tokopedia.content.analytic.model.ContentEEPromotion
+import com.tokopedia.content.analytic.model.ContentEnhanceEcommerce
+import com.tokopedia.content.analytic.model.isEEProduct
+import com.tokopedia.content.analytic.model.isEEPromotion
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,44 +38,18 @@ abstract class BaseContentAnalytic {
 
     private val impressionManager = OneTimeImpressionManager<Any>()
 
-    protected fun sendEvent(
-        event: String,
-        eventAction: String,
-        eventLabel: String,
-        mainAppTrackerId: String,
-        sellerAppTrackerId: String = "",
-    ) {
-        send(
-            Tracker.Builder()
-                .setEvent(event)
-                .setEventAction(eventAction)
-                .setEventLabel(eventLabel)
-                .setCustomProperty(
-                    Key.trackerId,
-                    getTrackerId(mainAppTrackerId, sellerAppTrackerId)
-                )
-                .setEventCategory(eventCategory)
-                .setBusinessUnit(businessUnit)
-        )
-    }
-
     protected fun sendViewContent(
         eventAction: String,
         eventLabel: String,
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
     ) {
-        send(
-            Tracker.Builder()
-                .setEvent(Event.viewContentIris)
-                .setEventAction(eventAction)
-                .setEventLabel(eventLabel)
-                .setCustomProperty(
-                    Key.trackerId,
-                    getTrackerId(mainAppTrackerId, sellerAppTrackerId)
-                )
-                .setEventCategory(eventCategory)
-                .setBusinessUnit(businessUnit)
+        sendEvent(
+            event = Event.viewContentIris,
+            eventAction = eventAction,
+            eventLabel = eventLabel,
+            mainAppTrackerId = mainAppTrackerId,
+            sellerAppTrackerId = sellerAppTrackerId,
         )
     }
 
@@ -84,100 +59,13 @@ abstract class BaseContentAnalytic {
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
     ) {
-        send(
-            Tracker.Builder()
-                .setEvent(Event.clickContent)
-                .setEventAction(eventAction)
-                .setEventLabel(eventLabel)
-                .setCustomProperty(
-                    Key.trackerId,
-                    getTrackerId(mainAppTrackerId, sellerAppTrackerId)
-                )
-                .setEventCategory(eventCategory)
-                .setBusinessUnit(businessUnit)
+        sendEvent(
+            event = Event.clickContent,
+            eventAction = eventAction,
+            eventLabel = eventLabel,
+            mainAppTrackerId = mainAppTrackerId,
+            sellerAppTrackerId = sellerAppTrackerId,
         )
-    }
-
-    protected fun sendEEPromotions(
-        event: String,
-        eventAction: String,
-        eventLabel: String,
-        mainAppTrackerId: String,
-        sellerAppTrackerId: String = "",
-        promotions: List<ContentEEPromotion>,
-    ) {
-        val trackerBundle = Bundle().apply {
-            putString(Key.event, event)
-            putString(Key.eventCategory, eventCategory)
-            putString(Key.eventAction, eventAction)
-            putString(Key.eventLabel, eventLabel)
-            putParcelableArrayList(
-                Key.promotions,
-                ArrayList(
-                    promotions.map { item ->
-                        Bundle().apply {
-                            putString(Key.itemId, item.itemId)
-                            putString(Key.itemName, item.itemName)
-                            putString(Key.creativeSlot, item.creativeSlot)
-                            putString(Key.creativeName, item.creativeName)
-                        }
-                    }
-                )
-            )
-            putString(Key.trackerId, getTrackerId(mainAppTrackerId, sellerAppTrackerId))
-            putString(Key.userId, userSession.userId)
-            putString(Key.businessUnit, businessUnit)
-            putString(Key.currentSite, currentSite)
-        }
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(event, trackerBundle)
-    }
-
-    protected fun sendEEProduct(
-        event: String,
-        eventAction: String,
-        eventLabel: String,
-        itemList: String,
-        mainAppTrackerId: String,
-        sellerAppTrackerId: String = "",
-        products: List<ContentEEProduct>,
-        customFields: Map<String, String>,
-    ) {
-        val trackerBundle = Bundle().apply {
-            putString(Key.event, event)
-            putString(Key.eventCategory, eventCategory)
-            putString(Key.eventAction, eventAction)
-            putString(Key.eventLabel, eventLabel)
-            putParcelableArrayList(
-                Key.items,
-                ArrayList(
-                    products.map { item ->
-                        Bundle().apply {
-                            putString(Key.itemId, item.itemId)
-                            putString(Key.itemName, item.itemName)
-                            putString(Key.itemBrand, item.itemBrand)
-                            putString(Key.itemCategory, item.itemCategory)
-                            putString(Key.itemVariant, item.itemVariant)
-                            putString(Key.price, item.price)
-                            putString(Key.itemIndex, item.index)
-                            item.customFields.entries.forEach {
-                                putString(it.key, it.value)
-                            }
-                        }
-                    }
-                )
-            )
-            putString(Key.itemList, itemList)
-            putString(Key.trackerId, getTrackerId(mainAppTrackerId, sellerAppTrackerId))
-            putString(Key.userId, userSession.userId)
-            putString(Key.businessUnit, businessUnit)
-            putString(Key.currentSite, currentSite)
-            customFields.entries.forEach {
-                putString(it.key, it.value)
-            }
-        }
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(event, trackerBundle)
     }
 
     protected fun sendOpenScreen(
@@ -194,6 +82,151 @@ abstract class BaseContentAnalytic {
                 Key.sessionIris to sessionIris,
             )
         )
+    }
+
+    protected fun sendEEPromotions(
+        event: String,
+        eventAction: String,
+        eventLabel: String,
+        promotions: List<ContentEnhanceEcommerce.Promotion>,
+        mainAppTrackerId: String,
+        sellerAppTrackerId: String = "",
+        customFields: Map<String, String> = emptyMap(),
+    ) {
+        sendEE(
+            event = event,
+            eventAction = eventAction,
+            eventLabel = eventLabel,
+            contentEEList = promotions,
+            mainAppTrackerId = mainAppTrackerId,
+            sellerAppTrackerId = sellerAppTrackerId,
+            customFields = customFields,
+        )
+    }
+
+    protected fun sendEEProduct(
+        event: String,
+        eventAction: String,
+        eventLabel: String,
+        itemList: String,
+        products: List<ContentEnhanceEcommerce.Product>,
+        mainAppTrackerId: String,
+        sellerAppTrackerId: String = "",
+        customFields: Map<String, String> = emptyMap(),
+    ) {
+        sendEE(
+            event = event,
+            eventAction = eventAction,
+            eventLabel = eventLabel,
+            contentEEList = products,
+            mainAppTrackerId = mainAppTrackerId,
+            sellerAppTrackerId = sellerAppTrackerId,
+            customFields = customFields.apply {
+                Key.itemList to itemList
+            },
+        )
+    }
+
+    protected fun sendEvent(
+        event: String,
+        eventAction: String,
+        eventLabel: String,
+        mainAppTrackerId: String,
+        sellerAppTrackerId: String = "",
+    ) {
+        sendGeneral(
+            Tracker.Builder()
+                .setEvent(event)
+                .setEventAction(eventAction)
+                .setEventLabel(eventLabel)
+                .setCustomProperty(
+                    Key.trackerId,
+                    getTrackerId(mainAppTrackerId, sellerAppTrackerId)
+                )
+                .setEventCategory(eventCategory)
+                .setBusinessUnit(businessUnit)
+        )
+    }
+
+    private fun sendGeneral(
+        trackerBuilder: Tracker.Builder
+    ) {
+        trackerBuilder
+            .setCurrentSite(currentSite)
+            .setCustomProperty(Key.sessionIris, sessionIris)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    private fun sendEE(
+        event: String,
+        eventAction: String,
+        eventLabel: String,
+        contentEEList: List<ContentEnhanceEcommerce>,
+        mainAppTrackerId: String,
+        sellerAppTrackerId: String = "",
+        customFields: Map<String, String> = emptyMap(),
+    ) {
+        val trackerBundle = Bundle().apply {
+            putString(Key.event, event)
+            putString(Key.eventCategory, eventCategory)
+            putString(Key.eventAction, eventAction)
+            putString(Key.eventLabel, eventLabel)
+
+            when {
+                contentEEList.isEEProduct() -> {
+                    val products = contentEEList.filterIsInstance<ContentEnhanceEcommerce.Product>()
+
+                    putParcelableArrayList(
+                        Key.items,
+                        ArrayList(
+                            products.map { item ->
+                                Bundle().apply {
+                                    putString(Key.itemId, item.itemId)
+                                    putString(Key.itemName, item.itemName)
+                                    putString(Key.itemBrand, item.itemBrand)
+                                    putString(Key.itemCategory, item.itemCategory)
+                                    putString(Key.itemVariant, item.itemVariant)
+                                    putString(Key.price, item.price)
+                                    putString(Key.itemIndex, item.index)
+                                    item.customFields.entries.forEach {
+                                        putString(it.key, it.value)
+                                    }
+                                }
+                            }
+                        )
+                    )
+                }
+                contentEEList.isEEPromotion() -> {
+                    val promotions = contentEEList.filterIsInstance<ContentEnhanceEcommerce.Promotion>()
+
+                    putParcelableArrayList(
+                        Key.promotions,
+                        ArrayList(
+                            promotions.map { item ->
+                                Bundle().apply {
+                                    putString(Key.itemId, item.itemId)
+                                    putString(Key.itemName, item.itemName)
+                                    putString(Key.creativeSlot, item.creativeSlot)
+                                    putString(Key.creativeName, item.creativeName)
+                                }
+                            }
+                        )
+                    )
+                }
+            }
+
+            putString(Key.trackerId, getTrackerId(mainAppTrackerId, sellerAppTrackerId))
+            putString(Key.userId, userSession.userId)
+            putString(Key.businessUnit, businessUnit)
+            putString(Key.currentSite, currentSite)
+            customFields.entries.forEach {
+                putString(it.key, it.value)
+            }
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(event, trackerBundle)
     }
 
     protected fun impressOnlyOnce(key: Any, onImpress: () -> Unit) {
@@ -219,17 +252,6 @@ abstract class BaseContentAnalytic {
         vararg labels: String
     ): String {
         return ContentAnalyticHelper.concatLabelsWithAuthor(author, *labels)
-    }
-
-    private fun send(
-        trackerBuilder: Tracker.Builder
-    ) {
-        trackerBuilder
-            .setCurrentSite(currentSite)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userSession.userId)
-            .build()
-            .send()
     }
 
     private fun getTrackerId(
