@@ -99,7 +99,7 @@ class GwpMiniCartEditorProductViewHolder(
             val prevQty = element.quantity
             if (newQty <= Int.ZERO) {
                 withContext(Dispatchers.Main) {
-                    setOnInvalidMinQty(prevQty)
+                    setOnInvalidMinQty()
                 }
                 return@launch
             } else {
@@ -113,7 +113,7 @@ class GwpMiniCartEditorProductViewHolder(
         }
     }
 
-    private fun setOnInvalidMinQty(prevQty: Int) {
+    private fun setOnInvalidMinQty() {
         binding.gwpQtyEditor.errorMessage.visible()
         binding.gwpQtyEditor.errorMessage.text = itemView.context.getString(R.string.qty_error_empty_message)
     }
