@@ -1,10 +1,12 @@
 package com.tokopedia.notifications.inApp.ketupat
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -15,14 +17,12 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.databinding.LayoutInappAnimationBinding
 import com.tokopedia.notifications.domain.data.Benefits
 import com.tokopedia.notifications.domain.data.GamiScratchCardCrack
-import com.tokopedia.unifycomponents.ImageUnify
-import android.view.View.OnClickListener
-import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.promoui.common.CouponImageView
 
 class CrackCouponHandler(
@@ -146,36 +146,44 @@ class CrackCouponHandler(
             playAnimationInDirection(direction)
         }
     }
+    
+     fun getStartFrameByMarker(marker: String): Int {
+         return binding.lottieViewPopup.composition?.getMarker(marker)?.startFrame?.toInt() ?: 0
+    }
 
+    @SuppressLint("RestrictedApi")
     private fun playAnimationInDirection(direction: MyGestureListener.Direction) {
         when (direction) {
             MyGestureListener.Direction.up_right -> {
-                binding.lottieViewPopup.setMaxFrame(569)
-                binding.lottieViewPopup.setMinFrame(420)
-            }
-            MyGestureListener.Direction.up_left -> {
-                binding.lottieViewPopup.setMaxFrame(269)
-                binding.lottieViewPopup.setMinFrame(120)
-            }
-            MyGestureListener.Direction.down_left -> {
-                binding.lottieViewPopup.setMaxFrame(269)
-                binding.lottieViewPopup.setMinFrame(120)
+                binding.lottieViewPopup.setMaxFrame(getStartFrameByMarker("Middle") - 1)
+                binding.lottieViewPopup.setMinFrame(getStartFrameByMarker("Right"))
             }
             MyGestureListener.Direction.down_right -> {
-                binding.lottieViewPopup.setMaxFrame(569)
-                binding.lottieViewPopup.setMinFrame(420)
+                binding.lottieViewPopup.setMaxFrame(getStartFrameByMarker("Middle") - 1)
+                binding.lottieViewPopup.setMinFrame(getStartFrameByMarker("Right"))
+            }
+            MyGestureListener.Direction.up_left -> {
+                binding.lottieViewPopup.setMaxFrame(getStartFrameByMarker("Right") - 1)
+                binding.lottieViewPopup.setMinFrame(getStartFrameByMarker("Left"))
+            }
+            MyGestureListener.Direction.down_left -> {
+                binding.lottieViewPopup.setMaxFrame(getStartFrameByMarker("Right") - 1)
+                binding.lottieViewPopup.setMinFrame(getStartFrameByMarker("Left"))
             }
             MyGestureListener.Direction.horizontol -> {
-                binding.lottieViewPopup.setMaxFrame(419)
-                binding.lottieViewPopup.setMinFrame(270)
+                binding.lottieViewPopup.setMaxFrame(getStartFrameByMarker("Up") - 1)
+                binding.lottieViewPopup.setMinFrame(getStartFrameByMarker("Middle"))
             }
             MyGestureListener.Direction.vertical -> {
-                binding.lottieViewPopup.setMaxFrame(719)
-                binding.lottieViewPopup.setMinFrame(570)
+                binding.lottieViewPopup.composition?.endFrame?.let {
+                    binding.lottieViewPopup.setMaxFrame(
+                        it.toInt() - 1)
+                }
+                binding.lottieViewPopup.setMinFrame(getStartFrameByMarker("Up") - 1)
             }
             else -> {
-                binding.lottieViewPopup.setMaxFrame(269)
-                binding.lottieViewPopup.setMinFrame(120)
+                binding.lottieViewPopup.setMaxFrame(getStartFrameByMarker("Right") - 1)
+                binding.lottieViewPopup.setMinFrame(getStartFrameByMarker("Left"))
             }
         }
         playPrizeSound(activity.applicationContext)
@@ -253,7 +261,7 @@ class CrackCouponHandler(
 
     private fun setCloseButtonMargin() {
 //        binding.icClose.translationY = bottomMargin
-        binding.icClose.translationX = 32.0f
+        binding.icClose.translationX = 30.0f
     }
 
     private fun resetCloseButtonMargin() {

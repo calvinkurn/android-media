@@ -39,13 +39,11 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
 
     open fun loadLottieAnimation(slug: String?, popUpContent: PopUpContent, scratchCardId: String) {
         try {
-//        loadAnimationFromURl(popUpContent)
+        loadAnimationFromURl(popUpContent)
             this.slug = slug
             this.scratchCardId = scratchCardId
             handleLottieSlice()
             binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
-            binding.lottieViewPopup.setMinFrame("Tutorial")
-            binding.lottieViewPopup.setMaxFrame(119)
             onCloseClick(binding.root)
             onParentContainerClick(binding.root)
             animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
@@ -66,6 +64,8 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
         popUpContent.assets?.get(0)?.let {
             binding.lottieViewPopup.setAnimationFromUrl(it.value)
             animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
+            binding.lottieViewPopup.setMinFrame("Tutorial")
+            binding.lottieViewPopup.setMaxFrame(59)
         }
         popUpContent.assets?.get(1)?.let {
             crackCouponHandler.url = it.value.toString()
