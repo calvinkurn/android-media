@@ -1,15 +1,19 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,8 +39,10 @@ fun FeedProductLabel(
             modifier = Modifier
                 .wrapContentWidth()
                 .height(28.dp)
-                .alpha(0.8f)
-                .paint(painter = painterResource(id = R.drawable.feed_tag_product_background))
+                .shadow(elevation = 16.dp)
+                .alpha(0.8f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
             NestIcon(
                 iconId = IconUnify.SHOPPING_BAG,
@@ -52,7 +58,10 @@ fun FeedProductLabel(
                 textStyle = NestTheme.typography.display3.copy(
                     color = NestTheme.colors.NN._0
                 ),
-                modifier = Modifier.wrapContentSize()
+                modifier = Modifier
+                    .wrapContentSize()
+                    .widthIn(0.dp, 240.dp)
+                    .padding(end = 8.dp)
             )
         }
     }
