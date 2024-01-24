@@ -41,6 +41,8 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
     private val infoAdapter = AdditionalInfoAdapter()
 
     private var infoStateIsShown = true
+    private var productId: String = ""
+    private var shopId: String = ""
 
     @Inject
     lateinit var vmFactory: ViewModelFactory
@@ -62,6 +64,8 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
             .build()
             .inject(this)
         val meta = arguments?.getString(ARG_BOTTOM_SHEET) ?: "-1"
+        productId = arguments?.getString(ARG_PRODUCT_ID) ?: ""
+        shopId = arguments?.getString(ARG_SHOP_ID) ?: ""
         viewModel.setId(meta)
     }
 
@@ -77,7 +81,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
     @SuppressLint("DeprecatedMethod")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        analytics.sendImpressionPromoDetailBottomSheetEvent("", "", emptyList())
+        analytics.sendImpressionPromoDetailBottomSheetEvent(productId, shopId, emptyList())
         binding?.run {
             val frameDialogView = container.parent as FrameLayout
             frameDialogView.setBackgroundColor(Color.TRANSPARENT)
@@ -175,10 +179,15 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         const val ARG_BOTTOM_SHEET = "ARG_BOTTOM_SHEET"
-        fun newInstance(metaDataJson: String) = PromoBenefitBottomSheet().apply {
-            arguments = Bundle().apply {
-                putString(ARG_BOTTOM_SHEET, metaDataJson)
+        const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
+        const val ARG_SHOP_ID = "ARG_SHOP_ID"
+        fun newInstance(metaDataJson: String, productId: String, shopId: String) =
+            PromoBenefitBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_BOTTOM_SHEET, metaDataJson)
+                    putString(ARG_PRODUCT_ID, productId)
+                    putString(ARG_SHOP_ID, shopId)
+                }
             }
-        }
     }
 }
