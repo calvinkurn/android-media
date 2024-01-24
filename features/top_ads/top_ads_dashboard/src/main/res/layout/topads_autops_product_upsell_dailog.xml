@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@id/subtitle"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        android:text="@string/topads_ad_type_selection_shop_accordian_title" />
+        android:text="@string/topads_ad_type_selection_product_accordian_title" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/accordian_icon"
