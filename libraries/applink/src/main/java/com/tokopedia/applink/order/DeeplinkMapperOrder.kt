@@ -263,4 +263,17 @@ object DeeplinkMapperOrder {
         )
         return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_PARTIAL_ORDER_FULFILLMENT, params)
     }
+
+    object BuyerRequestCancelRespond {
+        const val INTENT_RESULT_SUCCESS = "success"
+        const val INTENT_RESULT_MESSAGE = "message"
+
+        const val INTENT_PARAM_ORDER_ID = "orderId"
+        const val INTENT_PARAM_ORDER_STATUS_CODE = "statusCode"
+        const val INTENT_PARAM_ORDER_STATUS_TEXT = "statusText"
+        const val INTENT_PARAM_ORDER_L2_CANCELLATION_REASON = "l2Reason"
+        const val INTENT_PARAM_DESCRIPTION = "description"
+        const val INTENT_PARAM_PRIMARY_BUTTON_TEXT = "primaryButtonText"
+        const val INTENT_PARAM_SECONDARY_BUTTON_TEXT = "secondaryButtonText"
+    }
 }
