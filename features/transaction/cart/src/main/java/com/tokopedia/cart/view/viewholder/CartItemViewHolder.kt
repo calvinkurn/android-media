@@ -26,7 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
-import com.tokopedia.cart.view.BmGmWidgetView
+import com.tokopedia.cart.view.customview.BmGmWidgetView
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cart.view.customview.CartViewBinderHelper
