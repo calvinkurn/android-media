@@ -154,7 +154,7 @@ class LargeUploaderManager @Inject constructor(
             if (transcodeStatus.isCompleted()) break
 
             // transcode failed
-            if (transcodeStatus.isFailed()) {
+            if (transcodeStatus.requestId().isNotEmpty() || transcodeStatus.isFailed()) {
                 return getTranscodeError(transcodeStatus.requestId())
             }
 
