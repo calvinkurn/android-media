@@ -38,6 +38,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
+import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.buy_more_save_more.di.component.DaggerBmsmWidgetComponent
@@ -347,7 +348,7 @@ class BmsmWidgetTabFragment :
     private fun setProductListData(productList: List<Product>) {
         binding?.rvProduct?.apply {
             viewLifecycleOwner.lifecycleScope.launch {
-                if (productList.size > Int.ONE) setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
+                setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
             }
             if (productList.size == TWO_PRODUCT_ITEM_SIZE) {
                 layoutManager =
@@ -572,11 +573,18 @@ class BmsmWidgetTabFragment :
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = context?.resources?.getDimensionPixelSize(R.dimen.dp_145).orZero()
-        return productCardModelList.getMaxHeightForGridView(
-            context,
-            Dispatchers.Default,
-            productCardWidth
-        )
+        return if (productCardModelList.size > Int.ONE){
+            productCardModelList.getMaxHeightForGridView(
+                context,
+                Dispatchers.Default,
+                productCardWidth
+            )
+        } else {
+            productCardModelList.getMaxHeightForListView(
+                context,
+                Dispatchers.Default
+            )
+        }
     }
 
     private fun List<Product>.mapToProductCardModel(): List<ProductCardModel> {
