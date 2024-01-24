@@ -80,7 +80,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".chatbot2.csat.CsatActivity"
+            android:name=".chatbot2.csat.view.CsatActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent">
             <intent-filter>

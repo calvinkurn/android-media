@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.csat
+package com.tokopedia.chatbot.chatbot2.csat.view
 
 import android.content.pm.ActivityInfo
 import android.os.Build
