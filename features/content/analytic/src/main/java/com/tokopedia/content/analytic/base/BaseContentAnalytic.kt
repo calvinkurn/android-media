@@ -95,7 +95,7 @@ abstract class BaseContentAnalytic(
         )
     }
 
-    private fun sendEEPromotions(
+    protected fun sendEEPromotions(
         event: String,
         eventAction: String,
         eventLabel: String,
