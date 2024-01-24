@@ -609,9 +609,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
 
-            updateColorPromoPriceFromUpcoming(
+            updatePromoPriceWithP2(
                 productId = productId,
-                promoPriceStyle = it.promoPriceStyle
+                promoPriceStyle = it.promoPriceStyle,
+                freeOngkirImgUrl = boeImageUrl
             )
         }
     }
@@ -730,22 +731,37 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateColorPromoPriceFromUpcoming(
+    fun updatePromoPriceWithP2(
         productId: String,
-        promoPriceStyle: List<PromoPriceStyle>?
+        promoPriceStyle: List<PromoPriceStyle>?,
+        freeOngkirImgUrl: String,
+        //update promoCodes when change variant, no need to update when update p2data
+        promoCodes: List<PromoCodesResponse>? = null
     ) {
         updateData(ProductDetailConstant.PRICE) {
             promoPrice?.run {
+                normalPriceBoUrl = freeOngkirImgUrl
+
                 if (promoPriceData != null) {
-                    val selectedPromoStyle =
-                        promoPriceStyle?.getPromoStyleByProductId(productId) ?: return@run
                     promoPriceData = promoPriceData?.copy(
-                        mainIconUrl = selectedPromoStyle.iconUrl,
-                        mainTextColor = selectedPromoStyle.mainTextColor,
-                        cardBackgroundColor = selectedPromoStyle.backgroundColor,
-                        superGraphicIconUrl = selectedPromoStyle.superGraphicUrl,
-                        separatorColor = selectedPromoStyle.separatorColor
+                        boIconUrl = freeOngkirImgUrl
                     )
+
+                    if (promoCodes != null) {
+                        promoIdsString = promoCodes.mapIntoListPromoIdsString() ?: listOf()
+                    }
+
+                    val selectedPromoStyle =
+                        promoPriceStyle?.getPromoStyleByProductId(productId)
+                    if (selectedPromoStyle != null) {
+                        promoPriceData = promoPriceData?.copy(
+                            mainIconUrl = selectedPromoStyle.iconUrl,
+                            mainTextColor = selectedPromoStyle.mainTextColor,
+                            cardBackgroundColor = selectedPromoStyle.backgroundColor,
+                            superGraphicIconUrl = selectedPromoStyle.superGraphicUrl,
+                            separatorColor = selectedPromoStyle.separatorColor,
+                        )
+                    }
                 }
             }
         }
@@ -754,11 +770,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     /**
      * Use this only when update variant, because no need to update tradein when variant changed
      */
-    fun updateNotifyMeContentPromoPrice(
+    fun updateNotifyMeAndContent(
         productId: String,
         upcomingData: Map<String, ProductUpcomingData>?,
-        freeOngkirImgUrl: String,
-        promoCodes:List<PromoCodesResponse>
+        freeOngkirImgUrl: String
     ) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
@@ -782,16 +797,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     selectedUpcoming?.campaignTypeName.orEmpty(),
                     selectedUpcoming?.startDate.orEmpty()
                 )
-            }
-        }
-
-        updateData(ProductDetailConstant.PRICE) {
-            promoPrice?.run {
-                promoPriceData = promoPriceData?.copy(
-                    boIconUrl = freeOngkirImgUrl
-                )
-                normalPriceBoUrl = freeOngkirImgUrl
-                promoIdsString = promoCodes.mapIntoListPromoIdsString()
             }
         }
     }

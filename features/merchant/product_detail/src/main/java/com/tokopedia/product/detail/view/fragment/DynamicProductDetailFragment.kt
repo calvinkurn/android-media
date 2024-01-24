@@ -2744,17 +2744,19 @@ open class DynamicProductDetailFragment :
         }
         pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
 
-        pdpUiUpdater?.updateColorPromoPriceFromUpcoming(
+        pdpUiUpdater?.updatePromoPriceWithP2(
             productId = selectedChild?.productId.toString(),
-            promoPriceStyle = viewModel.p2Data.value?.promoPriceStyle
-        )
-
-        pdpUiUpdater?.updateNotifyMeContentPromoPrice(
-            productId = selectedChild?.productId.toString(),
-            upcomingData = viewModel.p2Data.value?.upcomingCampaigns,
+            promoPriceStyle = viewModel.p2Data.value?.promoPriceStyle,
             freeOngkirImgUrl = boeData.imageURL,
             promoCodes = updatedDynamicProductInfo?.data?.promoPrice?.promoCodes ?: listOf()
         )
+
+        pdpUiUpdater?.updateNotifyMeAndContent(
+            productId = selectedChild?.productId.toString(),
+            upcomingData = viewModel.p2Data.value?.upcomingCampaigns,
+            freeOngkirImgUrl = boeData.imageURL
+        )
+
         val selectedTicker = viewModel.p2Data.value?.getTickerByProductId(productId ?: "")
         pdpUiUpdater?.updateTicker(selectedTicker)
 
