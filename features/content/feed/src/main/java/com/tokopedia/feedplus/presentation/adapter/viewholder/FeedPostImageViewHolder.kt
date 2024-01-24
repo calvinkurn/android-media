@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewParent
 import androidx.annotation.LayoutRes
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +39,7 @@ import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationCompo
 import com.tokopedia.feedplus.presentation.util.animation.FeedPostAlphaAnimator
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -92,7 +94,6 @@ class FeedPostImageViewHolder(
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
-    private val productTagView = FeedProductTagView(binding.productTagView, listener)
     private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
     private val commentButtonView = FeedCommentButtonView(binding.feedCommentButton, listener)
@@ -119,7 +120,7 @@ class FeedPostImageViewHolder(
         binding.btnDisableClearMode,
         binding.postLikeButton.root,
         binding.feedCommentButton.root,
-        binding.productTagView.root,
+        binding.productTagView.rootView,
         binding.productTagButton.root,
         binding.rvFeedAsgcTags,
         binding.feedCampaignRibbon.root
@@ -229,6 +230,8 @@ class FeedPostImageViewHolder(
         }
 
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
+
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -397,28 +400,29 @@ class FeedPostImageViewHolder(
     private fun updateProductTagText(element: FeedCardImageContentModel) {
         val index = layoutManager.findFirstVisibleItemPosition()
 
+        /**
+         * Condition: [check if its not OOB & tagging is not empty]
+         * 1. Only one product and first index of tagging is == product (not oob)
+         * 2.(or Else) bind Regular Text
+         *      1. If not met condition; hide
+         */
+
         if (index in PRODUCT_COUNT_ZERO until element.media.size) {
             element.media[index].let {
                 if (it.tagging.isNotEmpty()) {
                     if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
-                        productTagView.bindText(
-                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
-                            element.totalProducts
-                        )
+                        binding.setupProductLabel(listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]), element.totalProducts)
                     } else {
-                        productTagView.bindText(
-                            element.products,
-                            element.totalProducts
-                        )
+                        binding.setupProductLabel(element.products, element.totalProducts)
                     }
                 } else {
-                    productTagView.showClearView()
+                    binding.productTagView.gone()
                 }
             }
         }
 
         if (isInClearView) {
-            productTagView.showClearView()
+            binding.productTagView.gone()
         }
     }
 
@@ -501,19 +505,7 @@ class FeedPostImageViewHolder(
             } else {
                 model.products
             }
-
-        productTagView.bindData(
-            postId = model.id,
-            author = model.author,
-            postType = model.typename,
-            isFollowing = model.followers.isFollowed,
-            campaign = model.campaign,
-            products = products,
-            totalProducts = model.totalProducts,
-            trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition,
-            topAdsTrackerData = topAdsTrackerDataModel
-        )
+        binding.setupProductLabel(products, model.totalProducts)
         productButtonView.bindData(
             postId = model.id,
             author = model.author,
@@ -599,7 +591,7 @@ class FeedPostImageViewHolder(
             menuButton.hide()
             shareButton.hide()
             productTagButton.root.hide()
-            productTagView.root.hide()
+            productTagView.rootView.hide()
             overlayTop.root.hide()
             overlayBottom.root.hide()
             overlayRight.root.hide()
@@ -629,7 +621,8 @@ class FeedPostImageViewHolder(
             }
         }
 
-        productTagView.showIfPossible()
+        //TODO: check
+        //productTagView.showIfPossible()
         productButtonView.showIfPossible()
     }
 
@@ -695,6 +688,10 @@ class FeedPostImageViewHolder(
             if (topAdsTrackerDataModel == null) setTopAdsTrackerModel(element)
             topAdsTrackerDataModel?.let { listener.onTopAdsClick(it) }
         }
+    }
+
+    private fun ItemFeedPostBinding.setupProductLabel(products: List<FeedCardProductModel>, totalProducts : Int) {
+//        binding.productTagView.setContent { FeedProductLabel(products = products, totalProducts = totalProducts) }
     }
 
     companion object {

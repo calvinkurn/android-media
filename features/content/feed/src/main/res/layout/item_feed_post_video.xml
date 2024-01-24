@@ -71,20 +71,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="decorative_white" />
 
-    <include
+
+    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/product_tag_view"
-        layout="@layout/feed_product_tag_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:visibility="visible" />
+        tools:visibility="visible"/>
 
     <include
         android:id="@+id/layout_author_info"

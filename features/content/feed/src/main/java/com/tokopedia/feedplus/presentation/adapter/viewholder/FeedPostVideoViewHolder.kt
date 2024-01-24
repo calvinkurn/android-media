@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import androidx.annotation.LayoutRes
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
@@ -38,6 +39,7 @@ import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationCompo
 import com.tokopedia.feedplus.presentation.util.animation.FeedPostAlphaAnimator
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -76,7 +78,7 @@ class FeedPostVideoViewHolder(
         listener,
         captionViewListener
     )
-    private val productTagView = FeedProductTagView(binding.productTagView, listener)
+//    private val productTagView = FeedProductTagView(binding.productTagView, listener)
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
@@ -101,7 +103,7 @@ class FeedPostVideoViewHolder(
         binding.overlayBottom.root,
         binding.overlayRight.root,
         binding.btnDisableClearMode,
-        binding.productTagView.root,
+        binding.productTagView.rootView,
         binding.productTagButton.root,
         binding.rvFeedAsgcTags,
         binding.feedCampaignRibbon.root
@@ -204,6 +206,8 @@ class FeedPostVideoViewHolder(
         binding.playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
             postGestureDetector.onTouchEvent(motionEvent)
         }
+
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -373,18 +377,9 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindProductTag(data: FeedCardVideoContentModel) {
-        productTagView.bindData(
-            postId = data.id,
-            author = data.author,
-            postType = data.typename,
-            isFollowing = data.followers.isFollowed,
-            campaign = data.campaign,
-            products = data.products,
-            totalProducts = data.totalProducts,
-            trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition,
-            topAdsTrackerData = null
-        )
+        binding.productTagView.setContent {
+            FeedProductLabel(products = data.products, totalProducts = data.totalProducts)
+        }
 
         productButtonView.bindData(
             postId = data.id,
@@ -501,7 +496,7 @@ class FeedPostVideoViewHolder(
             btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
 
-        productTagView.showClearView()
+        binding.productTagView.rootView.gone()
         productButtonView.showClearView()
     }
 
@@ -514,14 +509,14 @@ class FeedPostVideoViewHolder(
             menuButton.show()
             shareButton.show()
             productTagButton.root.show()
-            productTagView.root.show()
+            productTagView.rootView.show()
             overlayTop.root.show()
             overlayBottom.root.show()
             overlayRight.root.show()
             btnDisableClearMode.hide()
         }
 
-        productTagView.showIfPossible()
+        //productTagView.showIfPossible()
         productButtonView.showIfPossible()
     }
 
