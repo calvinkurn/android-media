@@ -251,10 +251,6 @@ class ReviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.Like(status))
     }
 
-    override fun onMediaScrolled(position: Int) {
-        viewModel.onAction(ProductPreviewAction.ReviewMediaSelected(position))
-    }
-
     /**
      * Review Report Bottom Sheet Listener
      */

@@ -151,9 +151,6 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
 
         prepareVideoPlayerIfNeeded(state)
 
-        val position = state.indexOfFirst { it.selected }
-        if (position < 0) return
-
         productContentAdapter.submitList(state)
         if (autoScrollFirstOpenContent) {
             val autoScrollPosition = getSelectedItemPosition(state)
@@ -168,8 +165,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
     ) {
         if (prev == state) return
 
-        val position = state.indexOfFirst { it.selected }
-        if (position < 0) return
+        val position = getSelectedItemPosition(state)
 
         productIndicatorAdapter.submitList(state)
         if (autoScrollFirstOpenIndicator) {

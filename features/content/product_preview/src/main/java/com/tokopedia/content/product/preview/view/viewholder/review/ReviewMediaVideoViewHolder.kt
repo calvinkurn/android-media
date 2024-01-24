@@ -43,12 +43,6 @@ class ReviewMediaVideoViewHolder(
 
     fun bind(content: ReviewMediaUiModel) {
         bindVideoPlayer(content)
-
-        if (content.selected) {
-            onSelected()
-        } else {
-            onNotSelected()
-        }
     }
 
     private fun bindVideoPlayer(content: ReviewMediaUiModel) {

@@ -8,5 +8,4 @@ interface ReviewInteractionListener {
     fun onReviewCredibilityClicked(author: ReviewAuthorUiModel)
     fun onMenuClicked(menu: ReviewMenuStatus)
     fun onLike(status: ReviewLikeUiState)
-    fun onMediaScrolled(position: Int)
 }

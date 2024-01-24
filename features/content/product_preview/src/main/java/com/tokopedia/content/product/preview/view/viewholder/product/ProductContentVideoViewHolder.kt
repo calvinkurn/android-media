@@ -44,12 +44,6 @@ class ProductContentVideoViewHolder(
 
     fun bind(content: ProductContentUiModel) {
         bindVideoPlayer(content)
-
-        if (content.selected) {
-            onSelected()
-        } else {
-            onNotSelected()
-        }
     }
 
     private fun bindVideoPlayer(content: ProductContentUiModel) {

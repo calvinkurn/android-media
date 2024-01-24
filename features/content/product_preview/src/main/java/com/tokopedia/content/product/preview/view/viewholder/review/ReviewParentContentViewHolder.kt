@@ -32,6 +32,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiSta
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -51,7 +52,6 @@ class ReviewParentContentViewHolder(
 
             override fun onViewDetachedFromWindow(p0: View) {
                 mVideoPlayer = null
-                binding.rvReviewMedia.removeOnScrollListener(mediaScrollListener)
             }
         })
     }
@@ -69,14 +69,6 @@ class ReviewParentContentViewHolder(
 
     private val layoutManagerMedia by lazyThreadSafetyNone {
         LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-    }
-
-    private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState != RecyclerView.SCROLL_STATE_IDLE) return
-            val position = getContentCurrentPosition()
-            reviewInteractionListener.onMediaScrolled(position)
-        }
     }
 
     private var snapHelperMedia = PagerSnapHelper()
@@ -110,8 +102,6 @@ class ReviewParentContentViewHolder(
         adapter = reviewMediaAdapter
         layoutManager = layoutManagerMedia
         snapHelperMedia.attachToRecyclerView(this)
-        removeOnScrollListener(mediaScrollListener)
-        addOnScrollListener(mediaScrollListener)
         itemAnimator = null
 
         reviewMediaAdapter.submitList(media)
@@ -230,12 +220,6 @@ class ReviewParentContentViewHolder(
         )
     }
 
-    private fun getContentCurrentPosition(): Int {
-        val snappedView = snapHelperMedia.findSnapView(layoutManagerMedia)
-            ?: return RecyclerView.NO_POSITION
-        return binding.rvReviewMedia.getChildAdapterPosition(snappedView)
-    }
-
     override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
         return videoPlayerManager.occupy(id)
     }
@@ -249,9 +233,13 @@ class ReviewParentContentViewHolder(
     }
 
     override fun onScrubbing() {
+        binding.groupReviewDetails.hide()
+        binding.groupReviewInteraction.hide()
     }
 
     override fun onStopScrubbing() {
+        binding.groupReviewDetails.show()
+        binding.groupReviewInteraction.show()
     }
 
     companion object {

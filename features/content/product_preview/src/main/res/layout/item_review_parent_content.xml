@@ -29,6 +29,19 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.8" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_review_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="layout_author_review, iv_review_star, tv_review_details, tv_review_description, iv_review_menu" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_review_interaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="layout_like_review, iv_review_menu" />
+
     <include
         android:id="@+id/layout_author_review"
         layout="@layout/layout_author_review"
@@ -127,4 +140,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

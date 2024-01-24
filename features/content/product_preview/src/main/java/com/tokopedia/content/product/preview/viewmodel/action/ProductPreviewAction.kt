@@ -20,5 +20,4 @@ sealed interface ProductPreviewAction {
     data class UpdateReviewPosition(val index: Int) : ProductPreviewAction
     data class Like(val item: ReviewLikeUiState) : ProductPreviewAction
     data class ProductSelected(val position: Int) : ProductPreviewAction
-    data class ReviewMediaSelected(val position: Int) : ProductPreviewAction
 }

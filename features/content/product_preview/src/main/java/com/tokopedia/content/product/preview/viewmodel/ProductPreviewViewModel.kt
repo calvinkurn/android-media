@@ -102,7 +102,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ClickMenu -> handleClickMenu(action.isFromLogin)
             is UpdateReviewPosition -> handleUpdateReviewPosition(action.index)
             is Like -> handleLikeFromResult(action.item)
-            is ProductPreviewAction.ReviewMediaSelected -> handleReviewMediaSelected(action.position)
         }
     }
 
@@ -324,23 +323,4 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleReviewMediaSelected(position: Int) {
-        _reviewContentState.update {
-            it.copy(
-                reviewContent = it.reviewContent.mapIndexed { indexContent, reviewContent ->
-                    if (indexContent == _reviewPosition.value) {
-                        reviewContent.copy(
-                            medias = reviewContent.medias.mapIndexed { indexMedia, reviewMedia ->
-                                reviewMedia.copy(
-                                    selected = indexMedia == position
-                                )
-                            }
-                        )
-                    } else {
-                        reviewContent
-                    }
-                }
-            )
-        }
-    }
 }
