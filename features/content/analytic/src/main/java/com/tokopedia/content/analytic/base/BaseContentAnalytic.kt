@@ -17,7 +17,7 @@ import com.tokopedia.user.session.UserSessionInterface
 /**
  * Created By : Jonathan Darwin on January 23, 2024
  */
-abstract class BaseContentAnalytic() {
+abstract class BaseContentAnalytic {
 
     abstract val userSession: UserSessionInterface
 
