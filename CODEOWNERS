@@ -273,6 +273,7 @@
 /features/communication/tokochat/                       @tokopedia/android-minionmark-dev
 /features/communication/tokochat_common/                @tokopedia/android-minionmark-dev
 /features/communication/tokochat_config_common/         @tokopedia/android-minionmark-dev
+/features/communication/shareexperience/                @tokopedia/android-minionmark-dev
 
 /features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
