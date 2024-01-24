@@ -92,11 +92,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
         when (action) {
             InitializeProductMainData -> handleInitializeProductMainData()
             FetchMiniInfo -> handleFetchMiniInfo()
-            ProductActionFromResult -> handleProductAction()
+            ProductActionFromResult -> handleProductActionFromResult()
             LikeFromResult -> handleLikeFromResult()
             is ProductSelected -> handleProductSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh)
-            is ProductAction -> handleAddToCart(action.model)
+            is ProductAction -> handleProductAction(action.model)
             is Navigate -> handleNavigate(action.appLink)
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
@@ -158,7 +158,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleAddToCart(model: BottomNavUiModel) {
+    private fun handleProductAction(model: BottomNavUiModel) {
         requiredLogin(model) {
             viewModelScope.launchCatchError(
                 block = {
@@ -185,7 +185,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     ProductPreviewEvent.ShowErrorToaster(
                         it,
                         ProductPreviewEvent.ShowErrorToaster.Type.ATC
-                    ) { handleAddToCart(model) }
+                    ) { handleProductAction(model) }
                 )
             }
         }
@@ -216,11 +216,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleProductAction() {
+    private fun handleProductActionFromResult() {
         val model = _bottomNavContentState.value
         when (model.buttonState) {
             BottomNavUiModel.ButtonState.OOS -> remindMe(model)
-            BottomNavUiModel.ButtonState.Active -> handleAddToCart(model)
+            BottomNavUiModel.ButtonState.Active -> handleProductAction(model)
             else -> {}
         }
     }
