@@ -149,10 +149,12 @@ class HomeRecommendationFeedViewHolder(
     }
 
     override fun onFeedContentScrolled(dy: Int, totalScrollY: Int) {
+        if (isMegaTabEnabled()) return
         binding.tabLayoutHomeFeeds.adjustTabCollapseOnScrolled(dy, totalScrollY)
     }
 
     override fun onFeedContentScrollStateChanged(newState: Int) {
+        if (isMegaTabEnabled()) return
         if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
             binding.tabLayoutHomeFeeds.scrollActiveTabToLeftScreen()
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -161,6 +163,7 @@ class HomeRecommendationFeedViewHolder(
     }
 
     fun showFeedTabShadow(show: Boolean?) {
+        if (isMegaTabEnabled()) return
         if (show == true) {
             binding.viewFeedShadow.visibility = View.VISIBLE
         } else {
