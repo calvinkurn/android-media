@@ -310,6 +310,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         superGraphicURL
                         priceAdditionalFmt
                         separatorColor
+                        bottomsheetParam
                         promoCodes{
                           promoID
                           promoCode
@@ -392,6 +393,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                           superGraphicURL
                           priceAdditionalFmt
                           separatorColor
+                          bottomsheetParam
                           promoCodes {
                               promoID
                               promoCode

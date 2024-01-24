@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder.promo_price.delegate
 
+import com.tokopedia.mvcwidget.views.benefit.PromoBenefitBottomSheet
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.fragment.delegate.BaseComponentCallback
 import com.tokopedia.product.detail.view.viewholder.promo_price.event.ProductPriceEvent
@@ -8,6 +9,10 @@ import com.tokopedia.product.detail.view.viewholder.promo_price.tracker.PromoPri
 class ProductPriceCallback(
     mediator: PdpComponentCallbackMediator
 ) : BaseComponentCallback<ProductPriceEvent>(mediator = mediator) {
+    companion object {
+        private const val PROMO_PRICE_BS_TAG = "PROMO_PRICE_BS_TAG"
+    }
+
     override fun onEvent(event: ProductPriceEvent) {
         when (event) {
             is ProductPriceEvent.OnPromoPriceClicked -> onPromoPriceClicked(data = event)
@@ -17,14 +22,21 @@ class ProductPriceCallback(
     private fun onPromoPriceClicked(
         data: ProductPriceEvent.OnPromoPriceClicked
     ) {
+        val p1 = viewModel.getDynamicProductInfoP1 ?: return
         PromoPriceTracker.onPromoPriceClicked(
-            queueTracker,
-            data.subtitle,
-            data.defaultPriceFmt,
-            data.slashPriceFmt,
-            data.promoPriceFmt,
-            data.promoId,
-            data.trackerData.asCommonTracker()
+            queueTracker = queueTracker,
+            subtitle = data.subtitle,
+            defaultPriceFmt = data.defaultPriceFmt,
+            slashPriceFmt = data.slashPriceFmt,
+            promoPriceFmt = data.promoPriceFmt,
+            promoId = data.promoId,
+            trackerData = data.trackerData.asCommonTracker()
         )
+
+        PromoBenefitBottomSheet.newInstance(
+            metaDataJson = data.bottomSheetParams,
+            productId = p1.basic.productID,
+            shopId = p1.basic.shopID
+        ).show(childFragmentManager, PROMO_PRICE_BS_TAG)
     }
 }

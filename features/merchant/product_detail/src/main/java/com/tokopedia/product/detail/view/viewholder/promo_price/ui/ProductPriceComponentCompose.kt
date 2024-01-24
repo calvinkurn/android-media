@@ -42,6 +42,7 @@ import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiMod
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 private const val NORMAL_PROMO_UI = 1
+private const val EMPTY_PROMO_UI = 0
 private val Static_950: Color = Color(0xFF212121)
 
 @Composable
@@ -53,7 +54,7 @@ fun ProductDetailPriceComponent(
     onPromoPriceClicked: () -> Unit = {}
 ) {
     NestTheme {
-        if (priceComponentType == NORMAL_PROMO_UI) {
+        if (priceComponentType == NORMAL_PROMO_UI || priceComponentType == EMPTY_PROMO_UI) {
             NormalPriceComponent(normalPromoUiModel, normalPriceBoUrl)
         } else {
             PromoPriceCard(promoPriceData, onPromoPriceClicked)
@@ -83,7 +84,7 @@ fun NormalPriceComponent(
 
             if (freeOngkirImageUrl.isNotEmpty()) {
                 NestImage(
-                    source = ImageSource.Remote(freeOngkirImageUrl, customUIError = {
+                    source = Remote(freeOngkirImageUrl, customUIError = {
 
                     }),
                     modifier = Modifier
@@ -102,7 +103,7 @@ fun NormalPriceComponent(
                 NestTypography(
                     data.slashPriceFmt,
                     textStyle = NestTheme.typography.display3.copy(
-                        color = NestTheme.colors.NN._400,
+                        color = NestTheme.colors.NN._600,
                         textDecoration = TextDecoration.LineThrough
                     )
                 )

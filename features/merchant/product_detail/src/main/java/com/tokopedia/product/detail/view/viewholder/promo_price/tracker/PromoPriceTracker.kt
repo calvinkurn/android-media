@@ -49,7 +49,7 @@ object PromoPriceTracker {
             "event" to "select_content",
             "eventCategory" to "product detail page",
             "eventAction" to "click - promo price component",
-            "eventLabel" to subtitle,
+            "eventLabel" to "promo_name:$subtitle",
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
             "trackerId" to "49311",

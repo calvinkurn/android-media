@@ -24,6 +24,8 @@ data class PromoPriceResponse(
     val separatorColor: String = "",
     @SerializedName("priceAdditionalFmt")
     val priceAdditionalFmt: String = "",
+    @SerializedName("bottomsheetParam")
+    val bottomSheetParam: String = "",
     @SerializedName("promoCodes")
     val promoCodes: List<PromoCodesResponse> = listOf()
 )
@@ -63,6 +65,7 @@ fun PromoPriceResponse.mapIntoPromoPriceUiModel(
         mainIconUrl = iconUrl,
         boIconUrl = "",
         superGraphicIconUrl = superGraphicUrl,
-        applink = applink
+        applink = applink,
+        bottomSheetParam = bottomSheetParam
     )
 }

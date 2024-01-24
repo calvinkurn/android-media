@@ -26,6 +26,9 @@ abstract class BaseComponentCallback<Event : BaseComponentEvent>(
     protected val queueTracker
         get() = mediator.queueTracker
 
+    protected val childFragmentManager
+        get() = mediator.rootView.childFragmentManager
+
     @Suppress("UNCHECKED_CAST")
     override fun event(event: BaseComponentEvent) {
         when (event) {
@@ -36,6 +39,7 @@ abstract class BaseComponentCallback<Event : BaseComponentEvent>(
             is GoToApplink -> {
                 RouteManager.route(context, event.applink)
             }
+
             else -> {
                 val mEvent = event as? Event
 

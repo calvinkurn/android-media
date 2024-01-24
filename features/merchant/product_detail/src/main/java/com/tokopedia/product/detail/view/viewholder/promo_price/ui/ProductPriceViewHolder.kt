@@ -41,6 +41,7 @@ class ProductPriceViewHolder(
         val applink = element.promoPriceData?.applink.orEmpty()
         val subtitle = element.promoPriceData?.promoSubtitle.orEmpty()
         val slashPriceFmt = element.promoPriceData?.slashPriceFmt.orEmpty()
+        val bottomSheetParams = element.promoPriceData?.bottomSheetParam.orEmpty()
         val promoPriceFmt = element.promoPriceData?.promoPriceFmt.orEmpty()
         val defaultPriceFmt = element.normalPromoUiModel?.priceFmt.orEmpty()
         val promoIds = element.promoIdsString
@@ -53,6 +54,7 @@ class ProductPriceViewHolder(
                 promoPriceFmt = promoPriceFmt,
                 slashPriceFmt = slashPriceFmt,
                 promoId = promoIds,
+                bottomSheetParams = bottomSheetParams,
                 trackerData = ComponentTrackDataModel(
                     componentType = element.type,
                     componentName = element.name,

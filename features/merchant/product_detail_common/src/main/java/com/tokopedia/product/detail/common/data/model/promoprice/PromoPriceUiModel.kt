@@ -12,5 +12,6 @@ data class PromoPriceUiModel(
     val mainIconUrl: String = "",
     val boIconUrl: String = "",
     val superGraphicIconUrl: String = "",
-    val applink: String = ""
+    val applink: String = "",
+    val bottomSheetParam: String = ""
 )

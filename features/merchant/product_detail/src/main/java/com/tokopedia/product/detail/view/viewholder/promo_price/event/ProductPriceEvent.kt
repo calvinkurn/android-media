@@ -12,6 +12,7 @@ sealed interface ProductPriceEvent : BaseComponentEvent {
         val slashPriceFmt: String,
         val promoPriceFmt: String,
         val promoId: List<String>,
+        val bottomSheetParams: String,
         val trackerData: ComponentTrackDataModel
     ) : ProductPriceEvent
 }

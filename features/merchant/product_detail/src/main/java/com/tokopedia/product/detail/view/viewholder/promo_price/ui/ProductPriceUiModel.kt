@@ -24,10 +24,11 @@ data class ProductPriceUiModel(
     override fun name(): String = name
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductPriceUiModel) {
-            priceComponentType != newData.priceComponentType ||
-                normalPromoUiModel != newData.normalPromoUiModel ||
-                normalPriceBoUrl != newData.normalPriceBoUrl ||
-                promoIdsString != newData.promoIdsString
+            priceComponentType == newData.priceComponentType &&
+                normalPromoUiModel == newData.normalPromoUiModel &&
+                normalPriceBoUrl == newData.normalPriceBoUrl &&
+                promoIdsString == newData.promoIdsString &&
+                promoPriceData == newData.promoPriceData
         } else {
             false
         }
