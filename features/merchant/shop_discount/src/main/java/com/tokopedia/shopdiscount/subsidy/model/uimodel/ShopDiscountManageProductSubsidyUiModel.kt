@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageEntrySource
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
+import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -58,7 +59,7 @@ data class ShopDiscountManageProductSubsidyUiModel(
     }
 
     fun isAllSelectedProductFullSubsidy(): Boolean {
-        return selectedProductToOptOut.all {
+        return selectedProductToOptOut.allCheckEmptyList {
             ShopDiscountSubsidyInfoUiModel.getSubsidyType(it.subsidyInfo.subsidyType.value) == ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL
         }
     }
