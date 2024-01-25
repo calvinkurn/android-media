@@ -4577,17 +4577,6 @@ open class DynamicProductDetailFragment :
             setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
             show()
         }
-        setMarginToolbarTabletMode()
-    }
-
-    private fun setMarginToolbarTabletMode() {
-        if (isTabletMode()) {
-            navToolbar?.addOneTimeGlobalLayoutListener {
-                binding?.swipeRefreshPdp?.run {
-                    setMargin(0, navToolbar?.height ?: 0, 0, 0)
-                }
-            }
-        }
     }
 
     private fun updateToolbarShareAffiliate() {
