@@ -6,17 +6,12 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logisticorder.domain.response.GetDriverTipResponse
-import com.tokopedia.logisticorder.usecase.query.TrackingPageQuery
 import javax.inject.Inject
 
 class GetDriverTipUseCase @Inject constructor(
     @ApplicationContext private val gql: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<String?, GetDriverTipResponse>(dispatcher.io) {
-
-    override fun graphqlQuery(): String {
-        return TrackingPageQuery.getDriverTip
-    }
 
     override suspend fun execute(orderId: String?): GetDriverTipResponse {
         val param = mapOf(
@@ -26,4 +21,32 @@ class GetDriverTipUseCase @Inject constructor(
         )
         return gql.request(graphqlQuery(), param)
     }
+
+    override fun graphqlQuery() = """
+        mutation mpLogisticDriverTipInfo (${'$'}input: MPLogisticDriverTipInfoInputs! ){
+          mpLogisticDriverTipInfo(input: ${'$'}input) {
+             status
+             last_driver {
+               photo
+               name
+               phone
+               license_number
+               is_changed
+             }
+             prepayment {
+               info
+               preset_amount
+               max_amount
+               min_amount
+               payment_link
+             }
+             payment {
+               amount
+               amount_formatted
+               method
+               method_icon
+             }
+           }
+         }
+    """.trimIndent()
 }

@@ -129,13 +129,15 @@ class CarouselPagingProductCardView: ConstraintLayout {
         listener: CarouselPagingListener,
         recycledViewPool: RecycledViewPool? = RecycledViewPool(),
     ) {
-        layoutManager = GridLayoutManager(
-            context,
-            model.itemPerPage,
-            HORIZONTAL,
-            false
-        ).apply {
-            spanSizeLookup = spanSizeLookup()
+        if (layoutManager == null) {
+            layoutManager = GridLayoutManager(
+                context,
+                model.itemPerPage,
+                HORIZONTAL,
+                false
+            ).apply {
+                spanSizeLookup = spanSizeLookup()
+            }
         }
 
         snapHelper.itemPerPage = model.itemPerPage

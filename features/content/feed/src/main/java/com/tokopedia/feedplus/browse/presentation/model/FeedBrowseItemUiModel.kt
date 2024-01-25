@@ -6,28 +6,29 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-open class FeedBrowseItemUiModel
+interface FeedBrowseItemUiModel
 
-sealed class ChipUiState : FeedBrowseItemUiModel() {
+sealed interface ChipUiState : FeedBrowseItemUiModel {
 
-    object Placeholder : ChipUiState()
+    object Placeholder : ChipUiState
 
     data class Data(
         val items: List<FeedBrowseChipUiModel>
-    ) : ChipUiState()
+    ) : ChipUiState
 }
 
-sealed class ChannelUiState : FeedBrowseItemUiModel() {
+sealed interface ChannelUiState : FeedBrowseItemUiModel {
 
-    object Placeholder : ChannelUiState()
+    object Placeholder : ChannelUiState
 
     data class Data(
         val items: List<PlayWidgetChannelUiModel>,
         val config: FeedBrowseConfigUiModel
-    ) : ChannelUiState()
+    ) : ChannelUiState
 
     data class Error(
         val throwable: Throwable,
         val extraParam: WidgetRequestModel? = null
-    ) : ChannelUiState()
+    ) : ChannelUiState
 }
+
