@@ -47,7 +47,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
 //        }
     }
 
-    override fun onActivityPostResumed(activity: Activity) {
+    override fun onActivityResumed(activity: Activity) {
         try {
             val activityName = activity::class.java.simpleName
             val isAnimationPopupEnabled = FirebaseRemoteConfigImpl(activity.applicationContext)
@@ -127,8 +127,6 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         UserSession(activity)
 
     override fun onActivityStarted(activity: Activity) { }
-
-    override fun onActivityResumed(activity: Activity) { }
 
     override fun onActivityPaused(activity: Activity) { }
 
