@@ -12,4 +12,5 @@ interface DynamicPdpDataModel : Visitable<DynamicProductDetailAdapterFactory> {
     fun newInstance() : DynamicPdpDataModel
     fun getChangePayload(newData: DynamicPdpDataModel) : Bundle?
     val impressHolder: ImpressHolder
+    fun impressionKey() = type() + name()
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -37,6 +39,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
+import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.buy_more_save_more.di.component.DaggerBmsmWidgetComponent
@@ -45,8 +48,11 @@ import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdU
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoForBuyerUiModel.BmsmWidgetUiState
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.adapter.BmsmWidgetProductListAdapter
+import com.tokopedia.shop_widget.buy_more_save_more.presentation.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetItemEventListener
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewmodel.BmsmWidgetTabViewModel
+import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
+import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
 import com.tokopedia.shop_widget.buy_more_save_more.util.Status
 import com.tokopedia.shop_widget.databinding.FragmentBmsmWidgetBinding
 import com.tokopedia.unifycomponents.ImageUnify
@@ -66,7 +72,8 @@ class BmsmWidgetTabFragment :
 
     companion object {
         private const val BUNDLE_KEY_OFFER_DATA = "offer_data"
-        private const val BUNDLE_KEY_SHOP_PAGE_COLOR_SCHEMA = "color_schema"
+        private const val BUNDLE_KEY_SHOP_PAGE_COLOR_THEME_CONFIG = "color_theme_config"
+        private const val BUNDLE_KEY_SHOP_PAGE_PATTERN_COLOR_TYPE = "color_type"
         private const val BUNDLE_KEY_OFFER_TYPE_ID = "offer_type_id"
         private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
         private const val EXT_PARAM_OFFER_ID = "offer_id"
@@ -86,16 +93,19 @@ class BmsmWidgetTabFragment :
         @JvmStatic
         fun newInstance(
             data: OfferingInfoByShopIdUiModel,
-            isOverrideTheme: Boolean,
             offerTypeId: Int,
-            colorSchema: ShopPageColorSchema
+            colorThemeConfiguration: BmsmWidgetColorThemeConfig,
+            patternColorType: ColorType
         ): BmsmWidgetTabFragment {
             return BmsmWidgetTabFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_OFFER_DATA, data)
-                    putBoolean(BUNDLE_KEY_OVERRIDE_THEME, isOverrideTheme)
                     putInt(BUNDLE_KEY_OFFER_TYPE_ID, offerTypeId)
-                    putParcelable(BUNDLE_KEY_SHOP_PAGE_COLOR_SCHEMA, colorSchema)
+                    putSerializable(
+                        BUNDLE_KEY_SHOP_PAGE_COLOR_THEME_CONFIG,
+                        colorThemeConfiguration
+                    )
+                    putSerializable(BUNDLE_KEY_SHOP_PAGE_PATTERN_COLOR_TYPE, patternColorType)
                 }
             }
         }
@@ -115,17 +125,18 @@ class BmsmWidgetTabFragment :
             ?: OfferingInfoByShopIdUiModel()
     }
 
-    private val isOverrideTheme by lazy {
-        arguments?.getBoolean(BUNDLE_KEY_OVERRIDE_THEME) ?: false
-    }
-
     private val offerTypeId by lazy {
         arguments?.getInt(BUNDLE_KEY_OFFER_TYPE_ID)
     }
 
-    private val colorSchema by lazy {
-        arguments?.getParcelable(BUNDLE_KEY_SHOP_PAGE_COLOR_SCHEMA) as? ShopPageColorSchema
-            ?: ShopPageColorSchema()
+    private val colorThemeConfiguration by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_SHOP_PAGE_COLOR_THEME_CONFIG) as? BmsmWidgetColorThemeConfig
+            ?: BmsmWidgetColorThemeConfig.DEFAULT
+    }
+
+    private val patternColorType by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_SHOP_PAGE_PATTERN_COLOR_TYPE) as? ColorType
+            ?: ColorType.LIGHT
     }
 
     private var productListAdapter = BmsmWidgetProductListAdapter(this@BmsmWidgetTabFragment)
@@ -240,7 +251,10 @@ class BmsmWidgetTabFragment :
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
-            setViewState(VIEW_ERROR)
+            setViewState(
+                VIEW_ERROR,
+                getErrorCodeFromThrowable(throwable.localizedMessage.toIntOrZero())
+            )
         }
     }
 
@@ -259,25 +273,15 @@ class BmsmWidgetTabFragment :
 
     private fun setupCardLayout() {
         binding?.apply {
-            val bgColor = if (isOverrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.BG_PRIMARY_COLOR)
-            } else {
-                MethodChecker.getColor(
-                    context,
-                    R.color.dms_gwp_card_bg_color
-                )
-            }
-            cardContent.setCardBackgroundColor(bgColor)
+            cardContent.setCardBackgroundColor(getCardBackgroundColor())
             pdIllustration.apply {
                 setGreyScaledTransparentIllustration(
-                    bgColor,
                     TokopediaImageUrl.BMSM_PD_WIDGET_ILLUSTRATION
                 )
                 showWithCondition(offerTypeId == OFFER_TYPE_PD)
             }
             gwpIllustration.apply {
                 setGreyScaledTransparentIllustration(
-                    bgColor,
                     TokopediaImageUrl.BMSM_GWP_WIDGET_ILLUSTRATION
                 )
                 showWithCondition(offerTypeId == OFFER_TYPE_GWP)
@@ -302,7 +306,7 @@ class BmsmWidgetTabFragment :
 
             val productBenefitImageFromMinicart = miniCartData.tiersApplied
                 .firstOrNull()
-                ?.products?.map {
+                ?.benefitProducts?.map {
                     it.productImage
                 }
 
@@ -314,7 +318,11 @@ class BmsmWidgetTabFragment :
 
             tpgTitleWidget.setTitle(upsellWording, defaultOfferMessage)
             tpgSubTitleWidget.setSubTitle(offerMessage)
-            tpgPdUpsellingWording.setSubTitle(offerMessage)
+            tpgPdUpsellingWording.apply {
+                text = MethodChecker.fromHtml(offerMessage.firstOrNull())
+                showWithCondition(offerMessage.isNotEmpty())
+                setPdSubtitleTextColor()
+            }
             when (offerTypeId) {
                 OFFER_TYPE_PD -> setupPdHeader(offerMessage)
                 OFFER_TYPE_GWP -> setupGwpHeader(productGiftImages)
@@ -345,10 +353,16 @@ class BmsmWidgetTabFragment :
     private fun setProductListData(productList: List<Product>) {
         binding?.rvProduct?.apply {
             viewLifecycleOwner.lifecycleScope.launch {
-                if (productList.size > Int.ONE) setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
+                setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
             }
-            if (productList.size == TWO_PRODUCT_ITEM_SIZE) layoutManager =
-                GridLayoutManager(context, TWO_PRODUCT_ITEM_SIZE)
+            if (productList.size == TWO_PRODUCT_ITEM_SIZE) {
+                layoutManager =
+                    GridLayoutManager(
+                        context,
+                        TWO_PRODUCT_ITEM_SIZE
+                    )
+                addItemDecoration(ProductListItemDecoration())
+            }
         }
         productListAdapter.apply {
             if (itemCount.isZero()) addProductList(productList)
@@ -392,7 +406,8 @@ class BmsmWidgetTabFragment :
             cardGroup.gone()
             flContentWrapper.gone()
             cardErrorState.gone()
-            when(status) {
+            when (status) {
+                Status.GIFT_OOS,
                 Status.OOS -> {
                     emptyPageLarge.apply {
                         visible()
@@ -402,6 +417,7 @@ class BmsmWidgetTabFragment :
                     }
                     cardErrorState.gone()
                 }
+
                 else -> {
                     emptyPageLarge.gone()
                     cardErrorState.visible()
@@ -443,7 +459,7 @@ class BmsmWidgetTabFragment :
             tpgSubTitleWidget.gone()
             pdUpsellingWrapper.apply {
                 visibleWithCondition(offerMessage.isNotEmpty())
-                setBackgroundResource(R.drawable.bmsm_pd_upselling_wording_background)
+                setBackgroundResource(getPdUpsellingWrapperBackground())
             }
             rvProduct.apply {
                 if (pdUpsellingWrapper.isVisible) {
@@ -494,6 +510,10 @@ class BmsmWidgetTabFragment :
     }
 
     private fun Typography.setTitle(upsellWording: String, defaultOfferMessage: String) {
+        val textColor = MethodChecker.getColor(
+            context,
+            R.color.dms_static_white
+        )
         this.apply {
             visible()
             text = if (upsellWording.isNotEmpty()) {
@@ -501,14 +521,36 @@ class BmsmWidgetTabFragment :
             } else {
                 MethodChecker.fromHtml(defaultOfferMessage)
             }
+            setTextColor(textColor)
         }
     }
 
     private fun Typography.setSubTitle(messages: List<String>) {
+        val textColor = MethodChecker.getColor(
+            context,
+            R.color.dms_static_white
+        )
+
         this.apply {
             text = MethodChecker.fromHtml(messages.firstOrNull())
             showWithCondition(messages.isNotEmpty())
+            setTextColor(textColor)
         }
+    }
+
+    private fun Typography.setPdSubtitleTextColor(): Int{
+        val textColor = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.LIGHT) {
+                    ContextCompat.getColor(context, R.color.dms_pd_sub_title_text_color)
+                } else {
+                    ContextCompat.getColor(context, R.color.dms_static_white)
+                }
+            }
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_pd_sub_title_text_color)
+        }
+        return textColor
     }
 
     fun setOnSuccessAtcListener(onSuccessAtc: (AddToCartDataModel) -> Unit) {
@@ -548,12 +590,23 @@ class BmsmWidgetTabFragment :
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = context?.resources?.getDimensionPixelSize(R.dimen.dp_145).orZero()
-        return productCardModelList.getMaxHeightForGridView(
-            context,
-            Dispatchers.Default,
-            productCardWidth
-        )
+        val productCardWidth = if (productCardModelList.size > TWO_PRODUCT_ITEM_SIZE) {
+            context?.resources?.getDimensionPixelSize(R.dimen.dp_132).orZero()
+        } else {
+            context?.resources?.getDimensionPixelSize(R.dimen.dp_200).orZero()
+        }
+        return if (productCardModelList.size > Int.ONE){
+            productCardModelList.getMaxHeightForGridView(
+                context,
+                Dispatchers.Default,
+                productCardWidth
+            )
+        } else {
+            productCardModelList.getMaxHeightForListView(
+                context,
+                Dispatchers.Default
+            )
+        }
     }
 
     private fun List<Product>.mapToProductCardModel(): List<ProductCardModel> {
@@ -582,7 +635,7 @@ class BmsmWidgetTabFragment :
         }
     }
 
-    private fun ImageUnify.setGreyScaledTransparentIllustration(bgColor: Int, imageUrl: String) {
+    private fun ImageUnify.setGreyScaledTransparentIllustration(imageUrl: String) {
         this.apply {
             setImageUrl(imageUrl)
             val matrix = ColorMatrix()
@@ -591,5 +644,65 @@ class BmsmWidgetTabFragment :
             imageAlpha = imageAlphaValue
             colorFilter = grayScaledColorFilter
         }
+    }
+
+    private fun getErrorCodeFromThrowable(errorCode: Int): Status {
+        return Status.values().firstOrNull { value ->
+            value.code == errorCode.toLong()
+        } ?: Status.INVALID_OFFER_ID
+    }
+
+    private fun getCardBackgroundColor(): Int {
+        val bgColor = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> {
+                MethodChecker.getColor(
+                    context,
+                    R.color.dms_gwp_card_transparent_bg_color
+                )
+            }
+
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.DARK) {
+                    MethodChecker.getColor(
+                        context,
+                        R.color.dms_gwp_card_transparent_bg_color
+                    )
+                } else {
+                    MethodChecker.getColor(
+                        context,
+                        R.color.dms_gwp_card_bg_color
+                    )
+                }
+            }
+
+            else -> {
+                MethodChecker.getColor(
+                    context,
+                    R.color.dms_gwp_card_bg_color
+                )
+            }
+        }
+        return bgColor
+    }
+
+    private fun getPdUpsellingWrapperBackground(): Int {
+        val background = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> {
+                R.drawable.bmsm_pd_upselling_wording_transparent_background
+            }
+
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.DARK) {
+                    R.drawable.bmsm_pd_upselling_wording_transparent_background
+                } else {
+                    R.drawable.bmsm_pd_upselling_wording_background
+                }
+            }
+
+            else -> {
+                R.drawable.bmsm_pd_upselling_wording_background
+            }
+        }
+        return background
     }
 }

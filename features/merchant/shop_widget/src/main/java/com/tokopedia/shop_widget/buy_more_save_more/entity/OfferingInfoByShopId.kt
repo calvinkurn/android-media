@@ -68,7 +68,7 @@ data class OfferingInfoByShopIdUiModel(
                 imageUrl = product.imageUrl,
                 name = product.name,
                 price = product.price,
-                rating = if (product.rating.isMoreThanZero()) product.rating.toString() else "",
+                rating = if (product.rating.isMoreThanZero()) product.rating.toDouble().toString() else "",
                 soldCount = product.soldCount,
                 stock = product.stock,
                 isVbs = product.isVbs,

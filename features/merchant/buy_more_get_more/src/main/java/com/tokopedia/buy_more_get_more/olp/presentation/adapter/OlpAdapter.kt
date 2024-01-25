@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel.Product
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
-import com.tokopedia.buy_more_get_more.olp.domain.entity.WidgetItem
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductListViewHolder
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductSortingViewHolder
 import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
@@ -174,12 +173,6 @@ open class OlpAdapter(
         val newList = getNewVisitableItems()
         productListUiModel.addAll(productList)
         newList.addAll(productList)
-        submitList(newList)
-    }
-
-    fun setWidget(widgetItems: List<WidgetItem>) {
-        val newList = getNewVisitableItems()
-        newList.addAll(widgetItems)
         submitList(newList)
     }
 }
