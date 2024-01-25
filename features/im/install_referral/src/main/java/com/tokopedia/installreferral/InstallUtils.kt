@@ -63,7 +63,7 @@ object InstallUtils {
                 map[UTM_MEDIUM] = mapQuery[UTM_MEDIUM] ?: ""
             } else {
                 map[UTM_SOURCE] = referrer
-                map[UTM_MEDIUM] = "preload"
+                map[UTM_MEDIUM] = ""
             }
             IrisAnalytics.getInstance(context).sendEvent(map)
         }
