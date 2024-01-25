@@ -601,6 +601,7 @@ class OfferLandingPageFragment :
                         )
                     }
 
+                    Status.GIFT_OOS,
                     Status.OOS -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),

@@ -53,6 +53,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWi
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewmodel.BmsmWidgetTabViewModel
 import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
 import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
+import com.tokopedia.shop_widget.buy_more_save_more.util.NonFatalIssueLogger
 import com.tokopedia.shop_widget.buy_more_save_more.util.Status
 import com.tokopedia.shop_widget.databinding.FragmentBmsmWidgetBinding
 import com.tokopedia.unifycomponents.ImageUnify
@@ -245,12 +246,14 @@ class BmsmWidgetTabFragment :
                 }
 
                 is Fail -> {
+                    sendLogger(atc.throwable)
                     onErrorAtc.invoke(atc.throwable.localizedMessage.orEmpty())
                 }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
+            sendLogger(throwable)
             setViewState(
                 VIEW_ERROR,
                 getErrorCodeFromThrowable(throwable.localizedMessage.toIntOrZero())
@@ -353,7 +356,7 @@ class BmsmWidgetTabFragment :
     private fun setProductListData(productList: List<Product>) {
         binding?.rvProduct?.apply {
             viewLifecycleOwner.lifecycleScope.launch {
-                setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
+                if (productList.size > Int.ONE) setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
             }
             if (productList.size == TWO_PRODUCT_ITEM_SIZE) {
                 layoutManager =
@@ -704,5 +707,9 @@ class BmsmWidgetTabFragment :
             }
         }
         return background
+    }
+
+    private fun sendLogger(t: Throwable) {
+        NonFatalIssueLogger.logToCrashlytics(t, this::class.java.canonicalName)
     }
 }
