@@ -666,4 +666,8 @@
         <key>android_enable_dark_mode_intro_bottom_sheet</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_pdp_enable_tablet_mode</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

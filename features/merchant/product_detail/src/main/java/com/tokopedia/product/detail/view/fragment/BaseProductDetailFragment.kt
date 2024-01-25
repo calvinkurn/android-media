@@ -24,14 +24,21 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTabletLeftSectionDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTabletRightSectionDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TabletPosition
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.data.util.CenterLayoutManagerTablet
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_LEFT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_RIGHT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_TYPE
 import com.tokopedia.product.detail.databinding.DynamicProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.util.RecommendationItemDecoration
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -108,10 +115,16 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun submitInitialList(visitables: List<DynamicPdpDataModel>, cacheState: CacheState?) {
         hideSwipeLoading()
-        recordPerformanceTrace(visitables, true, cacheState)
+
+        val finalData = if (DeviceScreenInfo.isTablet(requireContext()) ) {
+            manipulateDataTabletMode(visitables)
+        } else {
+            recordPerformanceTrace(visitables, true, cacheState)
+            visitables
+        }
 
         rvPdp?.post {
-            productAdapter?.submitList(visitables)
+            productAdapter?.submitList(finalData)
         }
     }
 
@@ -120,6 +133,42 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             recordPerformanceTrace(visitables, false)
             productAdapter?.submitList(visitables)
         }
+    }
+
+    internal fun isTabletMode(): Boolean {
+        val isEnableTabletMode =
+            remoteConfig.getBoolean(
+                RemoteConfigKey.ANDROID_PDP_ENABLE_TABLET_MODE,
+                false
+            )
+        return DeviceScreenInfo.isTablet(requireContext()) && isEnableTabletMode
+    }
+
+    internal fun manipulateDataTabletMode(newData: List<DynamicPdpDataModel>)
+        : List<DynamicPdpDataModel> {
+        val temp1 = mutableListOf<DynamicPdpDataModel>()
+        val temp2 = mutableListOf<DynamicPdpDataModel>()
+        val temp3 = mutableListOf<DynamicPdpDataModel>()
+
+        newData.forEach { dynamicPdpDataModel ->
+            if (dynamicPdpDataModel.position().name == TabletPosition.LEFT.name) {
+                temp1.add(dynamicPdpDataModel)
+                return@forEach
+            }
+
+            if (dynamicPdpDataModel.position().name == TabletPosition.RIGHT.name) {
+                temp2.add(dynamicPdpDataModel)
+                return@forEach
+            }
+
+            if (dynamicPdpDataModel.position().name == TabletPosition.BOTTOM.name) {
+                temp3.add(dynamicPdpDataModel)
+                return@forEach
+            }
+        }
+        val leftTab = ProductTabletLeftSectionDataModel(TABLET_LEFT, TABLET_TYPE, temp1)
+        val rightTab = ProductTabletRightSectionDataModel(TABLET_RIGHT, TABLET_TYPE, temp2)
+        return listOf(leftTab, rightTab) + temp3
     }
 
     private fun recordPerformanceTrace(
@@ -261,7 +310,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         rv.apply {
             isNestedScrollingEnabled = false
             itemAnimator = null
-            layoutManager = if (DeviceScreenInfo.isTablet(context)) {
+            layoutManager = if (isTabletMode()) {
                 initGridLayoutManager(view.context)
             } else {
                 initStaggeredLayoutManager(view.context)

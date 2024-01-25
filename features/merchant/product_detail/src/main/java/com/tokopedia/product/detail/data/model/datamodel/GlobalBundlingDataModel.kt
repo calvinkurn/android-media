@@ -12,6 +12,7 @@ data class GlobalBundlingDataModel(
     val data: GlobalBundling = GlobalBundling(),
     var shouldRefresh: Boolean = true
 ) : DynamicPdpDataModel {
+    override fun position(): TabletPosition = TabletPosition.BOTTOM
 
     companion object {
         val DEFAULT_WIDGET_TYPE = WidgetType.TYPE_2.typeCode

@@ -324,4 +324,6 @@ public class RemoteConfigKey {
 
     public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
 
+    public static final String ANDROID_PDP_ENABLE_TABLET_MODE = "android_pdp_enable_tablet_mode";
+
 }

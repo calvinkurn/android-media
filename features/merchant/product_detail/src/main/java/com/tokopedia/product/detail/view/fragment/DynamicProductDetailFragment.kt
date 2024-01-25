@@ -72,8 +72,6 @@ import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceConnectionInfo
-import com.tokopedia.device.info.DeviceInfo
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -94,6 +92,7 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -179,10 +178,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductTabletLeftSectionDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductTabletRightSectionDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
-import com.tokopedia.product.detail.data.model.datamodel.TabletPosition
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
@@ -3418,31 +3414,8 @@ open class DynamicProductDetailFragment :
     private fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
 
-        val temp1 = mutableListOf<DynamicPdpDataModel>()
-        val temp2 = mutableListOf<DynamicPdpDataModel>()
-        val temp3 = mutableListOf<DynamicPdpDataModel>()
-
-        newData.forEachIndexed { index, dynamicPdpDataModel ->
-            if (dynamicPdpDataModel.position().name == TabletPosition.LEFT.name) {
-                temp1.add(dynamicPdpDataModel)
-                return@forEachIndexed
-            }
-
-            if (dynamicPdpDataModel.position().name == TabletPosition.RIGHT.name) {
-                temp2.add(dynamicPdpDataModel)
-                return@forEachIndexed
-            }
-
-            if (dynamicPdpDataModel.position().name == TabletPosition.BOTTOM.name) {
-                temp3.add(dynamicPdpDataModel)
-                return@forEachIndexed
-            }
-        }
-
-        val leftTab = ProductTabletLeftSectionDataModel("tablet", "tablet", temp1)
-        val rightTab = ProductTabletRightSectionDataModel("tablet-right", "tablet", temp2)
-        val finalData = if (DeviceScreenInfo.isTablet(requireContext()) ) {
-            listOf(leftTab, rightTab) + temp3
+        val finalData = if (isTabletMode()) {
+            manipulateDataTabletMode(newData)
         } else {
             newData
         }
@@ -3502,23 +3475,22 @@ open class DynamicProductDetailFragment :
     }
 
     private fun submitInitialList() {
-//        if (isRemoteCacheableActive()) {
-//            // when cache first then cloud is true, we want to keep refresh layout to UI
-//            // prevent interaction loading state for several component
-//            val submitInitialList = viewModel.getDynamicProductInfoP1?.cacheState?.cacheFirstThenCloud == false
-//            if (submitInitialList) {
-//                submitInitialList(
-//                    pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty(),
-//                    viewModel.getDynamicProductInfoP1?.cacheState
-//                )
-//            }
-//        } else {
-//            submitInitialList(
-//                pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty(),
-//                viewModel.getDynamicProductInfoP1?.cacheState
-//            )
-//        }
-        updateUi()
+        if (isRemoteCacheableActive()) {
+            // when cache first then cloud is true, we want to keep refresh layout to UI
+            // prevent interaction loading state for several component
+            val submitInitialList = viewModel.getDynamicProductInfoP1?.cacheState?.cacheFirstThenCloud == false
+            if (submitInitialList) {
+                submitInitialList(
+                    pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty(),
+                    viewModel.getDynamicProductInfoP1?.cacheState
+                )
+            }
+        } else {
+            submitInitialList(
+                pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty(),
+                viewModel.getDynamicProductInfoP1?.cacheState
+            )
+        }
     }
 
     private fun setupProductVideoCoordinator() {
@@ -4630,12 +4602,17 @@ open class DynamicProductDetailFragment :
             setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
             show()
         }
+        setMarginToolbarTabletMode()
+    }
 
-//        navToolbar?.addOneTimeGlobalLayoutListener {
-//            binding?.swipeRefreshPdp?.run {
-//                setPadding(0, navToolbar?.height ?: 0, 0, 0)
-//            }
-//        }
+    private fun setMarginToolbarTabletMode() {
+        if (isTabletMode()) {
+            navToolbar?.addOneTimeGlobalLayoutListener {
+                binding?.swipeRefreshPdp?.run {
+                    setMargin(0, navToolbar?.height ?: 0, 0, 0)
+                }
+            }
+        }
     }
 
     private fun updateToolbarShareAffiliate() {
