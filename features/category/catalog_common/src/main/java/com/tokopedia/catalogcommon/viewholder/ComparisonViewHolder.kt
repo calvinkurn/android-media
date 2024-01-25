@@ -73,6 +73,9 @@ class ComparisonViewHolder(
         contents: List<ComparisonUiModel.ComparisonContent>
     ) {
         rvComparisonItems.apply {
+            if (contents.size == Int.ONE) {
+                setOnTouchListener { _, _ -> return@setOnTouchListener true }
+            }
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = ComparisonItemAdapter(
                 contents,
