@@ -37,7 +37,7 @@ class MiniCartEditorViewModel @Inject constructor(
     private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
     private val getGroupProductTickerUseCase: Lazy<GetGroupProductTickerUseCase>,
     private val dispatchers: Lazy<CoroutineDispatchers>,
-    private val userSession: UserSessionInterface,
+    private val userSession: Lazy<UserSessionInterface>,
     setCartListCheckboxStateUseCase: Lazy<SetCartlistCheckboxStateUseCase>
 ) : BaseCartCheckboxViewModel(setCartListCheckboxStateUseCase.get(), dispatchers.get()) {
 
@@ -59,7 +59,7 @@ class MiniCartEditorViewModel @Inject constructor(
     }
 
     fun getUserId(): String {
-        return userSession.userId
+        return userSession.get().userId
     }
 
     private fun setCartListCheckboxState() {
