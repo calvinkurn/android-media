@@ -654,6 +654,9 @@ open class DynamicProductDetailFragment :
     override val queueTracker: TrackingQueue
         get() = trackingQueue
 
+    override val recyclerViewPool: RecyclerView.RecycledViewPool?
+        get() = getRecyclerView()?.recycledViewPool
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (prefetchCacheId.isEmpty()) showLoading()
@@ -2764,6 +2767,10 @@ open class DynamicProductDetailFragment :
         viewModel.getP2()?.bmgm?.let {
             pdpUiUpdater?.updateBMGMSneakPeak(productId = productId.orEmpty(), bmgm = it)
         }
+
+        viewModel.getP2()?.gwp?.let {
+            pdpUiUpdater?.updateGWPSneakPeak(productId = productId.orEmpty(), gwp = it)
+        }
     }
 
     /**
@@ -4418,9 +4425,7 @@ open class DynamicProductDetailFragment :
             lcaWarehouseId = getLcaWarehouseId(),
             campaignId = campaignId,
             variantId = variantId,
-            offerId = viewModel.getP2()?.bmgm?.data?.firstOrNull {
-                it.productIDs.contains(productId)
-            }?.offerId.orEmpty(),
+            offerId = viewModel.getP2()?.getOfferIdPriority(pid = productId).orEmpty(),
             nearestWarehouseId = viewModel.getMultiOriginByProductId().id
         )
     }

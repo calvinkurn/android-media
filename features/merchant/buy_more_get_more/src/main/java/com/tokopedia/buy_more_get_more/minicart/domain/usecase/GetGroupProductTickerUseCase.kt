@@ -140,7 +140,7 @@ class GetGroupProductTickerUseCase @Inject constructor(
                         )
                     )
                 ),
-                source = BmGmGetGroupProductTickerParams.SOURCE_MINI_CART,
+                source = BmGmGetGroupProductTickerParams.SOURCE_OFFER_PAGE,
                 type = Const.TYPE_BMGM.asLowerCase()
             )
         }

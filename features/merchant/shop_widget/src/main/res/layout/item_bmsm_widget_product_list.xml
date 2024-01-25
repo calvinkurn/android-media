@@ -2,7 +2,6 @@
 <com.tokopedia.productcard.ProductCardGridView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/product_card"
     android:layout_width="132dp"
-    android:layout_height="match_parent"
-    android:layout_marginEnd="8dp">
+    android:layout_height="match_parent">
 
 </com.tokopedia.productcard.ProductCardGridView>

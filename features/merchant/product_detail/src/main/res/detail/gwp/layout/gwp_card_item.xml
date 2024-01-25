@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gwp_card_item"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    app:card_type="border">
+
+    <LinearLayout
+        android:id="@+id/gwp_card_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:id="@+id/gwp_images"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_height="64dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/gwp_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:typographyType="paragraph_3"
+                tools:text="Belanja Rp1,2jt dapat" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/gwp_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/Unify_NN950"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                tools:text="Soft Pinch Blush" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/gwp_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:visibility="gone"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="paragraph_3"
+                tools:text="dan hadiah lain"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

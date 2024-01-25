@@ -75,8 +75,8 @@ class OfferLandingPageViewModel @Inject constructor(
     val currentState: OlpUiState
         get() = _uiState.value
 
-    private val _offeringInfo = MutableLiveData<OfferInfoForBuyerUiModel>()
-    val offeringInfo: LiveData<OfferInfoForBuyerUiModel>
+    private val _offeringInfo = MutableLiveData<Result<OfferInfoForBuyerUiModel>>()
+    val offeringInfo: LiveData<Result<OfferInfoForBuyerUiModel>>
         get() = _offeringInfo
 
     private val _productList = MutableLiveData<OfferProductListUiModel>()
@@ -186,10 +186,10 @@ class OfferLandingPageViewModel @Inject constructor(
                 val result =
                     getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam())
                 val mappedResult = getOfferingInfoForBuyerMapper.map(result)
-                _offeringInfo.postValue(mappedResult)
+                _offeringInfo.postValue(Success(mappedResult))
             },
             onError = {
-                _error.postValue(it)
+                _offeringInfo.postValue(Fail(it))
             }
         )
     }
