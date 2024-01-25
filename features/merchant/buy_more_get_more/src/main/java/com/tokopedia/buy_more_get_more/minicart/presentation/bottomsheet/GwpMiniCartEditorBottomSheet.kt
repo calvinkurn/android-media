@@ -18,6 +18,7 @@ import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.BottomSheetGwpMiniCartEditorBinding
+import com.tokopedia.buy_more_get_more.minicart.analytics.BmgmMiniCartTracker
 import com.tokopedia.buy_more_get_more.minicart.common.di.DaggerBmgmComponent
 import com.tokopedia.buy_more_get_more.minicart.common.utils.MiniCartUtils
 import com.tokopedia.buy_more_get_more.minicart.common.utils.logger.NonFatalIssueLogger
@@ -134,6 +135,8 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         val tiersGift = data.tiers.filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
             .flatMap { it.productList }.groupBy { it.tierId }
         val selectedTierId = tiersGift.keys.firstOrNull().orZero()
+        val shopId = param.shopIds.firstOrNull().orZero().toString()
+        val userId = viewModel.getUserId()
 
         val bottomSheet = GiftListBottomSheet.newInstance(
             offerId = selectedOfferId,
@@ -151,6 +154,13 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         )
         if (childFragmentManager.isStateSaved || bottomSheet.isAdded) return
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+
+        BmgmMiniCartTracker.sendClickHadiahEntryEvent(
+            offerId = selectedOfferId.toString(),
+            warehouseId = warehouseId.toString(),
+            shopId = shopId,
+            userId = userId
+        )
     }
 
     fun setParameter(param: MiniCartParam, offerEndDate: String) {
@@ -204,7 +214,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
                         openCartPage()
                     }
 
-                    else -> {}/* no-op */
+                    else -> {} /* no-op */
                 }
             }
         }

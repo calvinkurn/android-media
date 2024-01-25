@@ -14,11 +14,12 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -47,6 +48,9 @@ class MiniCartEditorViewModelTest : BaseCartCheckboxViewModelTest<MiniCartEditor
     @RelaxedMockK
     lateinit var getMiniCartEditorDataUseCase: GetMiniCartEditorDataUseCase
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     private val defaultState = MiniCartEditorState()
 
     override fun createViewModel(): MiniCartEditorViewModel {
@@ -56,8 +60,21 @@ class MiniCartEditorViewModelTest : BaseCartCheckboxViewModelTest<MiniCartEditor
             { deleteCartUseCase },
             { getGroupProductTickerUseCase },
             { coroutineTestRule.dispatchers },
+            { userSession },
             { setCartListCheckboxStateUseCase },
         )
+    }
+
+    @Test
+    fun `when get user id from user session should return the user id`() {
+        val dummyUserId = "1"
+        every {
+            userSession.userId
+        } returns dummyUserId
+
+        val actualUserId = viewModel.getUserId()
+
+        assertEquals(dummyUserId, actualUserId)
     }
 
     @Test

@@ -14,6 +14,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,7 @@ class MiniCartEditorViewModel @Inject constructor(
     private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
     private val getGroupProductTickerUseCase: Lazy<GetGroupProductTickerUseCase>,
     private val dispatchers: Lazy<CoroutineDispatchers>,
+    private val userSession: Lazy<UserSessionInterface>,
     setCartListCheckboxStateUseCase: Lazy<SetCartlistCheckboxStateUseCase>
 ) : BaseCartCheckboxViewModel(setCartListCheckboxStateUseCase.get(), dispatchers.get()) {
 
@@ -54,6 +56,10 @@ class MiniCartEditorViewModel @Inject constructor(
             is MiniCartEditorEvent.AdjustQuantity -> adjustQuantity(event.product, event.newQty)
             is MiniCartEditorEvent.DeleteCart -> deleteCart(event.product)
         }
+    }
+
+    fun getUserId(): String {
+        return userSession.get().userId
     }
 
     private fun setCartListCheckboxState() {
