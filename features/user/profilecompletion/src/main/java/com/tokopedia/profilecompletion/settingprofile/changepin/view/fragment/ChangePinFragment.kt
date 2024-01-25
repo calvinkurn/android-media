@@ -64,8 +64,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var loadingDialog: LoadingDialog
+    private var loadingDialog: LoadingDialog? = null
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     protected val changePinViewModel by lazy { viewModelProvider.get(ChangePinViewModel::class.java) }
@@ -98,6 +97,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        loadingDialog = context?.let { LoadingDialog(it) }
         ColorUtils.setBackgroundColor(context, activity)
     }
 
@@ -214,12 +214,12 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun showLoading() {
-        loadingDialog.show()
+        loadingDialog?.show()
         hideKeyboard()
     }
 
     private fun dismissLoading() {
-        loadingDialog.dismiss()
+        loadingDialog?.dismiss()
         showKeyboard()
     }
 

@@ -28,7 +28,6 @@ class ChangeGenderActivity : BaseSimpleActivity(), HasComponent<ProfileCompletio
     override fun getComponent(): ProfileCompletionSettingComponent {
         return DaggerProfileCompletionSettingComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
             .build()
     }
 

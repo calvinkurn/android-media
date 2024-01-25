@@ -56,8 +56,7 @@ open class AddPinFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var loadingDialog: LoadingDialog
+    private var loadingDialog: LoadingDialog? = null
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
@@ -81,6 +80,7 @@ open class AddPinFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        loadingDialog = context?.let { LoadingDialog(it) }
         ColorUtils.setBackgroundColor(context, activity)
     }
 
@@ -340,12 +340,12 @@ open class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        loadingDialog.show()
+        loadingDialog?.show()
         hideKeyboard()
     }
 
     protected fun dismissLoading() {
-        loadingDialog.dismiss()
+        loadingDialog?.dismiss()
         showKeyboard()
     }
 

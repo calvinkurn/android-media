@@ -22,7 +22,6 @@ import com.tokopedia.profilecompletion.settingprofile.addpin.data.StatusPinData
 import com.tokopedia.profilecompletion.settingprofile.addpin.view.activity.PinOnboardingActivity
 import com.tokopedia.profilecompletion.settingprofile.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
-import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.databinding.FragmentNewAddPhoneBinding
@@ -54,9 +53,6 @@ class PinOnboardingFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var loadingDialog: LoadingDialog
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }

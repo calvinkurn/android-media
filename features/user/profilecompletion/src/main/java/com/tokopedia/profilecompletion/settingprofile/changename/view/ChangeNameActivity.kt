@@ -42,7 +42,6 @@ class ChangeNameActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionS
     override fun getComponent(): ProfileCompletionSettingComponent {
         return DaggerProfileCompletionSettingComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
             .build()
     }
 
