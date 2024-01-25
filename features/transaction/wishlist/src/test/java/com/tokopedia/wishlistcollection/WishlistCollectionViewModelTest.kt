@@ -447,6 +447,20 @@ class WishlistCollectionViewModelTest {
     }
 
     @Test
+    fun loadRecommendation_getRecommendationFailed() {
+        // given
+        coEvery {
+            wishlistCollectionViewModel.getRecommendationWishlistV2(any(), any(), any())
+        } throws RuntimeException("error")
+
+        // when
+        wishlistCollectionViewModel.loadRecommendation(0)
+
+        // then
+        assert(wishlistCollectionViewModel.collectionData.value is WishlistCollectionState.Error)
+    }
+
+    @Test
     fun `Execute GetDeleteWishlistProgress Success Status OK And Error is Empty`() {
         // given
         coEvery {
