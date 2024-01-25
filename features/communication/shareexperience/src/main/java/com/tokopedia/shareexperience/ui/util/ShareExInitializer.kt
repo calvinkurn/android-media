@@ -1,7 +1,8 @@
 package com.tokopedia.shareexperience.ui.util
 
 import android.view.View
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -32,16 +33,16 @@ import javax.inject.Inject
  * Put anything that share feature needed to do before showing the UI in here
  */
 class ShareExInitializer(
-    activity: FragmentActivity
+    fragment: Fragment
 ) : DefaultLifecycleObserver, ShareExBottomSheetListener {
 
-    private val weakActivity = WeakReference(activity)
+    private val weakActivity = WeakReference(fragment)
     private var dialog: ShareExLoadingDialog? = null
     private var bottomSheet: ShareExBottomSheet? = null
     private var bottomSheetArg: ShareExBottomSheetArg? = null
 
     init {
-        addObserver(activity)
+        addObserver(fragment)
         initInjector()
     }
 
@@ -54,12 +55,12 @@ class ShareExInitializer(
     @Inject
     lateinit var analytics: ShareExAnalytics
 
-    private fun addObserver(activity: FragmentActivity) {
-        activity.lifecycle.addObserver(this)
+    private fun addObserver(fragment: Fragment) {
+        fragment.lifecycle.addObserver(this)
     }
 
     private fun initInjector() {
-        val baseMainApplication = weakActivity.get()?.applicationContext as? BaseMainApplication
+        val baseMainApplication = weakActivity.get()?.context?.applicationContext as? BaseMainApplication
         baseMainApplication?.let {
             DaggerShareExComponent
                 .builder()
@@ -131,15 +132,17 @@ class ShareExInitializer(
     }
 
     private fun showLoadingDialog() {
-        weakActivity.get()?.let { activity ->
-            bottomSheetArg?.let { arg ->
-                dialog = ShareExLoadingDialog(
-                    context = activity,
-                    id = arg.identifier,
-                    pageTypeEnum = arg.pageTypeEnum,
-                    onResult = ::onResultShareBottomSheetModel
-                ).also { dialog ->
-                    dialog.show()
+        weakActivity.get()?.let { fragment ->
+            fragment.context?.let { context ->
+                bottomSheetArg?.let { arg ->
+                    dialog = ShareExLoadingDialog(
+                        context = context,
+                        id = arg.identifier,
+                        pageTypeEnum = arg.pageTypeEnum,
+                        onResult = ::onResultShareBottomSheetModel
+                    ).also { dialog ->
+                        dialog.show()
+                    }
                 }
             }
         }
@@ -154,13 +157,13 @@ class ShareExInitializer(
                         bottomSheetArg = arg.copy(
                             bottomSheetModel = result.data
                         )
-                        showShareBottomSheet(it)
+                        showShareBottomSheet(it.childFragmentManager)
                     }
                     is ShareExResult.Error -> {
                         bottomSheetArg = arg.copy(
                             throwable = result.throwable
                         )
-                        showShareBottomSheet(it)
+                        showShareBottomSheet(it.childFragmentManager)
                     }
                     ShareExResult.Loading -> Unit
                 }
@@ -168,12 +171,12 @@ class ShareExInitializer(
         }
     }
 
-    private fun showShareBottomSheet(fragmentActivity: FragmentActivity) {
+    private fun showShareBottomSheet(childFragmentManager: FragmentManager) {
         bottomSheetArg?.let {
             bottomSheet?.dismiss()
             bottomSheet = ShareExBottomSheet.newInstance(it)
             bottomSheet?.setListener(this)
-            bottomSheet?.show(fragmentActivity.supportFragmentManager, "")
+            bottomSheet?.show(childFragmentManager, TAG)
             trackClickIconShare()
         }
     }
@@ -218,7 +221,7 @@ class ShareExInitializer(
 
     override fun onSuccessCopyLink() {
         weakActivity.get()?.let {
-            val contentView: View? = it.findViewById(android.R.id.content)
+            val contentView: View? = it.activity?.findViewById(android.R.id.content)
             contentView?.let { view ->
                 showToaster(
                     view = view,
@@ -237,7 +240,7 @@ class ShareExInitializer(
 
     override fun onFailGenerateAffiliateLink(shortLink: String) {
         weakActivity.get()?.let {
-            val contentView: View? = it.findViewById(android.R.id.content)
+            val contentView: View? = it.activity?.findViewById(android.R.id.content)
             contentView?.let { view ->
                 showToaster(
                     view = contentView,
@@ -262,5 +265,9 @@ class ShareExInitializer(
         dialog = null
         bottomSheet = null
         bottomSheetArg = null
+    }
+
+    companion object {
+        private const val TAG = "ShareExperience"
     }
 }
