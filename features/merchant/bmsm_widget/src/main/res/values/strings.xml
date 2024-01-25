@@ -5,6 +5,5 @@
     <string name="gwp_gift_list">Daftar hadiah</string>
     <string name="gwp_gift_image">Gift image</string>
     <string name="gwp_gift_out_of_stock">Habis</string>
-    <string name="gwp_gift_ribbon_text_your_reward">Hadiahmu</string>
     <string name="gwp_gift_ribbon_text_selected">Terpilih</string>
 </resources>
