@@ -61,6 +61,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -787,12 +788,19 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
 
             if (getContext() != null && url.contains("/paylater/acquisition/otp-verification") && !url.contains("otpCode")) {
-                Toast.makeText(getContext(), "Start listening SMS", Toast.LENGTH_SHORT).show();
 
                 if (getContext() != null && !isSmsRegistered) {
-                    smsRetriever.startSmsRetriever();
+
+                    Task<Void> task = smsRetriever.startSmsRetriever();
+                    task.addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "Start listening SMS Success", Toast.LENGTH_SHORT).show();
+                    });
+                    task.addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Start listening SMS Failed", Toast.LENGTH_SHORT).show();
+                    });
+
                     isSmsRegistered = true;
-                    smsBroadcastReceiver.register(getContext(), otpCode -> {
+                    smsBroadcastReceiver.register(getActivity(), otpCode -> {
                         String currentUrl = webView.getUrl();
 
                         if (currentUrl != null && currentUrl.contains("/paylater/acquisition/otp-verification")) {
