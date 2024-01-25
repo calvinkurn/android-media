@@ -11,9 +11,11 @@ import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadSuccessData
 import com.tokopedia.creation.common.upload.uploader.notification.PostUploadNotificationManager
+import com.tokopedia.creation.common.upload.util.plus
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By : Jonathan Darwin on September 21, 2023
@@ -34,35 +36,41 @@ class PostUploadManager @AssistedInject constructor(
     override suspend fun execute(
         notificationId: Int,
     ): CreationUploadExecutionResult {
+
+        val createPostData: CreatePostViewModel = SaveInstanceCacheManager(
+            appContext,
+            uploadData.draftId
+        ).get(
+            CreatePostViewModel.TAG,
+            CreatePostViewModel::class.java
+        ) ?: return CreationUploadExecutionResult.Error(
+            uploadData,
+            Exception("Cache manager with id ${uploadData.draftId} is empty")
+        )
+
         return try {
             broadcastInit(uploadData, notificationId)
-
-            val cacheManager = SaveInstanceCacheManager(appContext, uploadData.draftId)
-            val viewModel: CreatePostViewModel = cacheManager.get(
-                CreatePostViewModel.TAG,
-                CreatePostViewModel::class.java
-            ) ?: throw Exception("Cache manager with id ${uploadData.draftId} is empty")
 
             var uploadedMedia = 0
 
             val submitPostData = submitPostUseCase.execute(
-                id = viewModel.postId,
-                type = viewModel.authorType,
-                token = viewModel.token,
+                id = createPostData.postId,
+                type = createPostData.authorType,
+                token = createPostData.token,
                 authorId = uploadData.authorId,
-                caption = viewModel.caption,
-                media = viewModel.completeImageList.map {
+                caption = createPostData.caption,
+                media = createPostData.completeImageList.map {
                     getFileAbsolutePath(it.path)!! to it.type
                 },
-                mediaList = viewModel.completeImageList,
-                mediaWidth = viewModel.mediaWidth,
-                mediaHeight = viewModel.mediaHeight,
+                mediaList = createPostData.completeImageList,
+                mediaWidth = createPostData.mediaWidth,
+                mediaHeight = createPostData.mediaHeight,
                 onSuccessUploadPerMedia = {
-                    if (viewModel.completeImageList.isNotEmpty()) {
+                    if (createPostData.completeImageList.isNotEmpty()) {
                         uploadedMedia++
                         updateProgress(
                             uploadData,
-                            (uploadedMedia / viewModel.completeImageList.size.toDouble() * 100).toInt()
+                            (uploadedMedia / createPostData.completeImageList.size.toDouble() * 100).toInt()
                         )
                     }
                 }
@@ -84,11 +92,18 @@ class PostUploadManager @AssistedInject constructor(
 
             CreationUploadExecutionResult.Success
         } catch (throwable: Throwable) {
+            var loggedThrowable = throwable
+
+            val resaveDraftThrowable = resaveDraft(createPostData)
+            if (resaveDraftThrowable != null) {
+                loggedThrowable += resaveDraftThrowable
+            }
+
             broadcastFail(uploadData)
 
             CreationUploadExecutionResult.Error(
                 uploadData,
-                throwable
+                loggedThrowable
             )
         }
     }
@@ -103,5 +118,23 @@ class PostUploadManager @AssistedInject constructor(
 
     private fun addFlagOnCreatePostSuccess() {
         sellerAppReviewHelper.savePostFeedFlag()
+    }
+
+    private fun resaveDraft(createPostData: CreatePostViewModel): Throwable? {
+        return try {
+            val cacheManager = SaveInstanceCacheManager(appContext, true)
+            cacheManager.put(
+                CreatePostViewModel.TAG,
+                createPostData,
+                TimeUnit.DAYS.toMillis(7)
+            )
+            cacheManager.id?.let { newDraftId ->
+                broadcastUpdateData(uploadData.copy(draftId = newDraftId))
+            }
+
+            null
+        } catch (throwable: Throwable) {
+            throwable
+        }
     }
 }
