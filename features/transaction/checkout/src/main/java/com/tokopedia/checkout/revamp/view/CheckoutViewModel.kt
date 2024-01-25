@@ -63,6 +63,7 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.processor.CheckoutShippingProcessor
+import com.tokopedia.logisticcart.shipping.processor.LogisticProcessorGetRatesParam
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -744,7 +745,11 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val editAddressResult =
-                logisticCartProcessor.editAddressPinpoint(latitude, longitude, recipientAddressModel)
+                logisticCartProcessor.editAddressPinpoint(
+                    latitude,
+                    longitude,
+                    recipientAddressModel
+                )
             pageState.value = CheckoutPageState.Normal
             if (editAddressResult.isSuccess) {
                 loadSAF(
@@ -1026,7 +1031,7 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
-        val ratesParam = logisticProcessor.getRatesParam(
+        val schellyParam = logisticProcessor.getSchellyProcessorParam(
             order,
             helper.getOrderProducts(checkoutItems, order.cartStringGroup),
             listData.value.address()!!.recipientAddressModel,
@@ -1036,19 +1041,14 @@ class CheckoutViewModel @Inject constructor(
             cartDataForRates,
             "",
             false,
-            listData.value.promo()!!
-        )
-
-        val schellyParam = logisticProcessor.getSchellyParam(
-            ratesParam,
+            listData.value.promo()!!,
             order.fulfillmentId.toString(),
             order.isRecommendScheduleDelivery,
             order.startDate
         )
 
         val result = logisticCartProcessor.getScheduleDelivery(
-            schellyParam,
-            order.validationMetadata
+            schellyParam
         )
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
@@ -1162,7 +1162,7 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
-        val ratesParam = logisticProcessor.getRatesParam(
+        val ratesParam = logisticProcessor.getRatesProcessorParam(
             order,
             helper.getOrderProducts(checkoutItems, order.cartStringGroup),
             listData.value.address()!!.recipientAddressModel,
@@ -1174,8 +1174,17 @@ class CheckoutViewModel @Inject constructor(
             false,
             listData.value.promo()!!
         )
-        val schellyParam = logisticProcessor.getSchellyParam(
-            ratesParam,
+        val schellyParam = logisticProcessor.getSchellyProcessorParam(
+            order,
+            helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+            listData.value.address()!!.recipientAddressModel,
+            isTradeIn,
+            isTradeInByDropOff,
+            codData,
+            cartDataForRates,
+            "",
+            false,
+            listData.value.promo()!!,
             order.fulfillmentId.toString(),
             order.isRecommendScheduleDelivery,
             order.startDate
@@ -1183,13 +1192,7 @@ class CheckoutViewModel @Inject constructor(
 
         val result = logisticCartProcessor.getRatesWithScheduleDelivery(
             ratesParam,
-            schellyParam,
-            order.shippingId,
-            order.spId,
-            order.boCode,
-            order.validationMetadata,
-            order.isDisableChangeCourier,
-            order.isAutoCourierSelection
+            schellyParam
         )
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
@@ -1247,9 +1250,9 @@ class CheckoutViewModel @Inject constructor(
             }
             // handle error
             val ratesError = result?.ratesError
-            val boPromoCode = logisticProcessor.getBoPromoCode(order)
             if (ratesError != null) {
                 if (ratesError is MessageErrorException) {
+                    val boPromoCode = logisticProcessor.getBoPromoCode(order)
                     CheckoutLogger.logOnErrorLoadCourierNew(
                         ratesError,
                         order,
@@ -1302,28 +1305,20 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
-        val result = logisticCartProcessor.getRates(
-            logisticProcessor.getRatesParam(
-                order,
-                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
-                listData.value.address()!!.recipientAddressModel,
-                isTradeIn,
-                isTradeInByDropOff,
-                codData,
-                cartDataForRates,
-                "",
-                false,
-                listData.value.promo()!!
-            ),
-            order.shippingId,
-            order.spId,
-            order.boCode,
-            order.shouldResetCourier,
-            order.validationMetadata,
-            order.isDisableChangeCourier,
-            order.shipment.courierItemData?.serviceId,
-            order.isAutoCourierSelection
+        val ratesParam = logisticProcessor.getRatesProcessorParam(
+            order,
+            helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+            listData.value.address()!!.recipientAddressModel,
+            isTradeIn,
+            isTradeInByDropOff,
+            codData,
+            cartDataForRates,
+            "",
+            false,
+            listData.value.promo()!!
         )
+
+        val result = logisticCartProcessor.getRates(ratesParam)
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
         if (orderModel != null) {
@@ -1379,9 +1374,9 @@ class CheckoutViewModel @Inject constructor(
 
             // handle error
             val ratesError = result?.ratesError
-            val boPromoCode = logisticProcessor.getBoPromoCode(order)
             if (ratesError != null) {
                 if (ratesError is MessageErrorException) {
+                    val boPromoCode = logisticProcessor.getBoPromoCode(order)
                     CheckoutLogger.logOnErrorLoadCourierNew(
                         ratesError,
                         order,
@@ -2504,23 +2499,31 @@ class CheckoutViewModel @Inject constructor(
             if (voucher.code == order.shipment.courierItemData?.selectedShipper?.logPromoCode) {
                 continue
             }
-            val result = logisticCartProcessor.getRatesWithBoCode(
-                logisticProcessor.getRatesParam(
-                    order,
-                    helper.getOrderProducts(checkoutItems, order.cartStringGroup),
-                    checkoutItems.address()!!.recipientAddressModel,
-                    isTradeIn,
-                    isTradeInByDropOff,
-                    codData,
-                    cartDataForRates,
-                    "",
-                    false,
-                    checkoutItems.promo()!!
-                ),
-                voucher.shippingId,
-                voucher.spId,
+            val ratesParam = logisticProcessor.getRatesParam(
+                order,
+                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+                checkoutItems.address()!!.recipientAddressModel,
+                isTradeIn,
                 isTradeInByDropOff,
-                voucher.code
+                codData,
+                cartDataForRates,
+                "",
+                false,
+                checkoutItems.promo()!!
+            )
+            val result = logisticCartProcessor.getRatesWithBoCode(
+                LogisticProcessorGetRatesParam(
+                    ratesParam = ratesParam,
+                    selectedServiceId = voucher.shippingId,
+                    selectedSpId = voucher.spId,
+                    isTradeInDropOff = isTradeInByDropOff,
+                    boPromoCode = voucher.code,
+                    currentServiceId = null,
+                    isAutoCourierSelection = order.isAutoCourierSelection,
+                    isDisableChangeCourier = order.isDisableChangeCourier,
+                    shouldResetCourier = order.shouldResetCourier,
+                    validationMetadata = order.validationMetadata
+                )
             )
             val courierItemData = result?.courier
             if (courierItemData != null) {

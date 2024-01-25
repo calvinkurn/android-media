@@ -87,34 +87,26 @@ class CheckoutShippingProcessor @Inject constructor(
     }
 
     suspend fun getRates(
-        ratesParam: RatesParam,
-        selectedServiceId: Int,
-        selectedSpId: Int,
-        boPromoCode: String,
-        shouldResetCourier: Boolean,
-        validationMetadata: String,
-        isDisableChangeCourier: Boolean,
-        currentServiceId: Int?,
-        isAutoCourierSelection: Boolean
+        param: LogisticProcessorGetRatesParam
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
-                var shippingRecommendationData = ratesUseCase(ratesParam)
+                var shippingRecommendationData = ratesUseCase(param.ratesParam)
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
-                    ratesParam.shopShipments,
-                    selectedSpId,
-                    selectedServiceId
+                    param.ratesParam.shopShipments,
+                    param.selectedSpId,
+                    param.selectedServiceId
                 )
                 var errorReason = "rates invalid data"
-                if (shouldResetCourier) {
+                if (param.shouldResetCourier) {
                     // todo
                     error("racing condition against epharmacy validation")
                 }
                 if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                    if (isBoUnstackEnabled && boPromoCode.isNotEmpty()) {
+                    if (isBoUnstackEnabled && param.boPromoCode.isNotEmpty()) {
                         val logisticPromo =
-                            shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == boPromoCode && !it.disabled }
+                            shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == param.boPromoCode && !it.disabled }
                         if (logisticPromo != null) {
                             for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                                 if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
@@ -131,12 +123,12 @@ class CheckoutShippingProcessor @Inject constructor(
                                                 val courierItemData =
                                                     generateCourierItemData(
                                                         false,
-                                                        selectedSpId,
+                                                        param.selectedSpId,
                                                         shippingCourierUiModel,
                                                         shippingRecommendationData,
                                                         logisticPromo,
-                                                        validationMetadata,
-                                                        isDisableChangeCourier
+                                                        param.validationMetadata,
+                                                        param.isDisableChangeCourier
                                                     )
                                                 return@withContext RatesResult(
                                                     courierItemData,
@@ -157,9 +149,9 @@ class CheckoutShippingProcessor @Inject constructor(
                                     shippingCourierUiModel.isSelected = false
                                 }
                                 val newSelectedSpId = getSelectedSpId(
-                                    selectedSpId,
+                                    param.selectedSpId,
                                     shippingDurationUiModel,
-                                    currentServiceId
+                                    param.currentServiceId
                                 )
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (shippingCourierUiModel.productData.shipperProductId == newSelectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
@@ -174,8 +166,8 @@ class CheckoutShippingProcessor @Inject constructor(
                                                 shippingCourierUiModel,
                                                 shippingRecommendationData,
                                                 null,
-                                                validationMetadata,
-                                                isDisableChangeCourier
+                                                param.validationMetadata,
+                                                param.isDisableChangeCourier
                                             )
                                             if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
@@ -197,7 +189,7 @@ class CheckoutShippingProcessor @Inject constructor(
                         }
 
                         // corner case auto selection if BE default duration failed
-                        if (isAutoCourierSelection) {
+                        if (param.isAutoCourierSelection) {
                             val shippingDuration =
                                 shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error.errorId.isEmpty() && it.serviceData.error.errorMessage.isEmpty() }
                             if (shippingDuration != null) {
@@ -208,12 +200,12 @@ class CheckoutShippingProcessor @Inject constructor(
                                 if (shippingCourier != null) {
                                     val courierItemData = generateCourierItemData(
                                         false,
-                                        selectedSpId,
+                                        param.selectedSpId,
                                         shippingCourier,
                                         shippingRecommendationData,
                                         null,
-                                        validationMetadata,
-                                        isDisableChangeCourier
+                                        param.validationMetadata,
+                                        param.isDisableChangeCourier
                                     )
                                     val shouldValidatePromo =
                                         courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
@@ -330,30 +322,24 @@ class CheckoutShippingProcessor @Inject constructor(
     }
 
     suspend fun getRatesWithScheduleDelivery(
-        ratesParam: RatesParam,
-        schellyParam: ScheduleDeliveryParam,
-        selectedServiceId: Int,
-        selectedSpId: Int,
-        boPromoCode: String,
-        validationMetadata: String,
-        isDisableChangeCourier: Boolean,
-        isAutoCourierSelection: Boolean
+        ratesProcessorParam: LogisticProcessorGetRatesParam,
+        schellyProcessorParam: LogisticProcessorGetSchellyParam
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
                 var shippingRecommendationData =
-                    ratesWithScheduleUseCase(ratesParam to schellyParam)
+                    ratesWithScheduleUseCase(ratesProcessorParam.ratesParam to schellyProcessorParam.schellyParam)
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
-                    ratesParam.shopShipments,
-                    selectedSpId,
+                    ratesProcessorParam.ratesParam.shopShipments,
+                    ratesProcessorParam.selectedSpId,
                     0
                 )
                 var errorReason = "rates invalid data"
                 if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.scheduleDeliveryData != null) {
-                    if (isBoUnstackEnabled && boPromoCode.isNotEmpty()) {
+                    if (isBoUnstackEnabled && ratesProcessorParam.boPromoCode.isNotEmpty()) {
                         val logisticPromo =
-                            shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == boPromoCode && !it.disabled }
+                            shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == ratesProcessorParam.boPromoCode && !it.disabled }
                         if (logisticPromo != null) {
                             for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                                 if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
@@ -370,13 +356,13 @@ class CheckoutShippingProcessor @Inject constructor(
                                                 val courierItemData =
                                                     generateCourierItemDataWithScheduleDelivery(
                                                         false,
-                                                        selectedServiceId,
-                                                        selectedSpId,
+                                                        ratesProcessorParam.selectedServiceId,
+                                                        ratesProcessorParam.selectedSpId,
                                                         shippingCourierUiModel,
                                                         shippingRecommendationData,
                                                         logisticPromo,
-                                                        validationMetadata,
-                                                        isDisableChangeCourier
+                                                        schellyProcessorParam.validationMetadata,
+                                                        ratesProcessorParam.isDisableChangeCourier
                                                     )
                                                 return@withContext RatesResult(
                                                     courierItemData,
@@ -397,7 +383,7 @@ class CheckoutShippingProcessor @Inject constructor(
                                     shippingCourierUiModel.isSelected = false
                                 }
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
+                                    if (shippingCourierUiModel.productData.shipperProductId == ratesProcessorParam.selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
                                         if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                             throw MessageErrorException(
                                                 shippingCourierUiModel.productData.error.errorMessage
@@ -406,13 +392,13 @@ class CheckoutShippingProcessor @Inject constructor(
                                             val courierItemData =
                                                 generateCourierItemDataWithScheduleDelivery(
                                                     false,
-                                                    selectedServiceId,
-                                                    selectedSpId,
+                                                    ratesProcessorParam.selectedServiceId,
+                                                    ratesProcessorParam.selectedSpId,
                                                     shippingCourierUiModel,
                                                     shippingRecommendationData,
                                                     null,
-                                                    validationMetadata,
-                                                    isDisableChangeCourier
+                                                    schellyProcessorParam.validationMetadata,
+                                                    ratesProcessorParam.isDisableChangeCourier
                                                 )
                                             if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
@@ -434,7 +420,7 @@ class CheckoutShippingProcessor @Inject constructor(
                         }
 
                         // corner case auto selection if BE default duration failed
-                        if (isAutoCourierSelection || isDisableChangeCourier) {
+                        if (ratesProcessorParam.isAutoCourierSelection || ratesProcessorParam.isDisableChangeCourier) {
                             val shippingDuration =
                                 shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error.errorId.isEmpty() && it.serviceData.error.errorMessage.isEmpty() }
                             if (shippingDuration != null) {
@@ -446,13 +432,13 @@ class CheckoutShippingProcessor @Inject constructor(
                                     val courierItemData =
                                         generateCourierItemDataWithScheduleDelivery(
                                             false,
-                                            selectedServiceId,
-                                            selectedSpId,
+                                            ratesProcessorParam.selectedServiceId,
+                                            ratesProcessorParam.selectedSpId,
                                             shippingCourier,
                                             shippingRecommendationData,
                                             null,
-                                            validationMetadata,
-                                            isDisableChangeCourier
+                                            schellyProcessorParam.validationMetadata,
+                                            ratesProcessorParam.isDisableChangeCourier
                                         )
                                     val shouldValidatePromo =
                                         courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
@@ -483,18 +469,17 @@ class CheckoutShippingProcessor @Inject constructor(
     }
 
     suspend fun getScheduleDelivery(
-        schellyParam: ScheduleDeliveryParam,
-        validationMetadata: String
+        schellyProcessorParam: LogisticProcessorGetSchellyParam
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
-                val schellyResponse = scheduleDeliveryUseCase(schellyParam)
+                val schellyResponse = scheduleDeliveryUseCase(schellyProcessorParam.schellyParam)
                 val schellyData =
                     schellyResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
                 val courierItemData =
                     shippingCourierConverter.schellyToCourierItemData(
                         schellyData,
-                        validationMetadata
+                        schellyProcessorParam.validationMetadata
                     )
                 val schellyHasSchedule =
                     courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true
@@ -592,29 +577,25 @@ class CheckoutShippingProcessor @Inject constructor(
     }
 
     suspend fun getRatesWithBoCode(
-        ratesParam: RatesParam,
-        selectedServiceId: Int,
-        selectedSpId: Int,
-        isTradeInDropOff: Boolean,
-        promoCode: String
+        ratesProcessorParam: LogisticProcessorGetRatesParam
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
-                var shippingRecommendationData = if (isTradeInDropOff) {
-                    ratesApiUseCase(ratesParam)
+                var shippingRecommendationData = if (ratesProcessorParam.isTradeInDropOff) {
+                    ratesApiUseCase(ratesProcessorParam.ratesParam)
                 } else {
-                    ratesUseCase(ratesParam)
+                    ratesUseCase(ratesProcessorParam.ratesParam)
                 }
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
-                    ratesParam.shopShipments,
-                    selectedSpId,
-                    selectedServiceId
+                    ratesProcessorParam.ratesParam.shopShipments,
+                    ratesProcessorParam.selectedSpId,
+                    ratesProcessorParam.selectedServiceId
                 )
                 var errorReason = "rates invalid data"
                 if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.listLogisticPromo.isNotEmpty()) {
                     val logisticPromo =
-                        shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == promoCode && !it.disabled }
+                        shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == ratesProcessorParam.boPromoCode && !it.disabled }
                     if (logisticPromo != null) {
                         for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                             if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
@@ -622,18 +603,11 @@ class CheckoutShippingProcessor @Inject constructor(
                                     shippingCourierUiModel.isSelected = false
                                 }
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    if (isTradeInDropOff || shippingCourierUiModel.productData.shipperProductId == selectedSpId && shippingCourierUiModel.productData.shipperId == selectedServiceId) {
+                                    if (ratesProcessorParam.isTradeInDropOff || shippingCourierUiModel.productData.shipperProductId == ratesProcessorParam.selectedSpId && shippingCourierUiModel.productData.shipperId == ratesProcessorParam.selectedServiceId) {
                                         if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                             throw MessageErrorException(
                                                 shippingCourierUiModel.productData.error.errorMessage
                                             )
-//                                            return@withContext RatesResult(
-//                                                courier = null,
-//                                                couriers = listOf(),
-//                                                ratesError = MessageErrorException(
-//                                                    shippingCourierUiModel.productData.error.errorMessage
-//                                                )
-//                                            )
                                         } else {
                                             shippingCourierUiModel.isSelected = true
                                             val courierItemData =
@@ -714,4 +688,22 @@ data class RatesResult(
     val courier: CourierItemData?,
     val couriers: List<ShippingCourierUiModel>,
     val ratesError: Throwable? = null
+)
+
+data class LogisticProcessorGetRatesParam(
+    val ratesParam: RatesParam,
+    val selectedServiceId: Int,
+    val selectedSpId: Int,
+    val boPromoCode: String,
+    val shouldResetCourier: Boolean,
+    val validationMetadata: String,
+    val isDisableChangeCourier: Boolean,
+    val currentServiceId: Int?,
+    val isAutoCourierSelection: Boolean,
+    val isTradeInDropOff: Boolean
+)
+
+data class LogisticProcessorGetSchellyParam(
+    val schellyParam: ScheduleDeliveryParam,
+    val validationMetadata: String
 )

@@ -15,7 +15,6 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.request.EditPinpointParam
 import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
-import com.tokopedia.logisticcart.scheduledelivery.domain.entity.request.ScheduleDeliveryParam
 import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetScheduleDeliveryCoroutineUseCase
@@ -33,6 +32,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.logisticcart.shipping.processor.LogisticProcessorGetRatesParam
+import com.tokopedia.logisticcart.shipping.processor.LogisticProcessorGetSchellyParam
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesCoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -301,19 +302,83 @@ class CheckoutLogisticProcessor @Inject constructor(
         return ratesParamBuilder.build()
     }
 
-    fun getSchellyParam(
-        ratesParam: RatesParam,
+    fun getSchellyProcessorParam(
+        orderModel: CheckoutOrderModel,
+        orderProducts: List<CheckoutProductModel>,
+        address: RecipientAddressModel,
+        isTradeIn: Boolean,
+        isTradeInDropOff: Boolean,
+        codData: CodModel?,
+        cartDataForRates: String,
+        pslCode: String,
+        useMvc: Boolean,
+        promo: CheckoutPromoModel,
+        // specific schelly
         fullfilmentId: String,
-        // todo orderModel.isRecommendScheduleDelivery
         recommend: Boolean,
-        // todo orderModel.startDate
         startDate: String
-    ): ScheduleDeliveryParam {
-        return schellyMapper.map(
-            ratesParam,
+    ): LogisticProcessorGetSchellyParam {
+        val ratesGeneralParam = getRatesParam(
+            orderModel,
+            orderProducts,
+            address,
+            isTradeIn,
+            isTradeInDropOff,
+            codData,
+            cartDataForRates,
+            pslCode,
+            useMvc,
+            promo
+        )
+        val schellyParam = schellyMapper.map(
+            ratesGeneralParam,
             fullfilmentId,
             startDate,
             recommend
+        )
+
+        return LogisticProcessorGetSchellyParam(
+            schellyParam = schellyParam,
+            validationMetadata = orderModel.validationMetadata
+        )
+    }
+
+    fun getRatesProcessorParam(
+        order: CheckoutOrderModel,
+        orderProducts: List<CheckoutProductModel>,
+        address: RecipientAddressModel,
+        isTradeIn: Boolean,
+        isTradeInDropOff: Boolean,
+        codData: CodModel?,
+        cartDataForRates: String,
+        pslCode: String,
+        useMvc: Boolean,
+        promo: CheckoutPromoModel
+    ): LogisticProcessorGetRatesParam {
+        val ratesParam = getRatesParam(
+            order,
+            orderProducts,
+            address,
+            isTradeIn,
+            isTradeInDropOff,
+            codData,
+            cartDataForRates,
+            pslCode,
+            useMvc,
+            promo
+        )
+        return LogisticProcessorGetRatesParam(
+            ratesParam,
+            order.shippingId,
+            order.spId,
+            order.boCode,
+            order.shouldResetCourier,
+            order.validationMetadata,
+            order.isDisableChangeCourier,
+            order.shipment.courierItemData?.serviceId,
+            order.isAutoCourierSelection,
+            // todo
+            isTradeInDropOff = false
         )
     }
 
@@ -381,7 +446,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                     )
                                                 return@withContext RatesResult(
                                                     courierItemData,
-                                                    generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                                    generateCheckoutOrderInsuranceFromCourier(
+                                                        courierItemData,
+                                                        orderModel
+                                                    ),
                                                     shippingDurationUiModel.shippingCourierViewModelList
                                                 )
                                             }
@@ -444,7 +512,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                             }
                                             return@withContext RatesResult(
                                                 courierItemData,
-                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                                generateCheckoutOrderInsuranceFromCourier(
+                                                    courierItemData,
+                                                    orderModel
+                                                ),
                                                 shippingDurationUiModel.shippingCourierViewModelList
                                             )
                                         }
@@ -477,7 +548,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     }
                                     return@withContext RatesResult(
                                         courierItemData,
-                                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                        generateCheckoutOrderInsuranceFromCourier(
+                                            courierItemData,
+                                            orderModel
+                                        ),
                                         shippingDuration.shippingCourierViewModelList
                                     )
                                 }
@@ -843,7 +917,8 @@ class CheckoutLogisticProcessor @Inject constructor(
                         orderModel.validationMetadata
                     )
                 handleSyncShipmentCartItemModel(courierItemData, orderModel)
-                val schellyHasSchedule = courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true
+                val schellyHasSchedule =
+                    courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true
                 val schellyUnavailable = courierItemData.scheduleDeliveryUiModel?.available == false
                 if (schellyHasSchedule || schellyUnavailable) {
                     return@withContext RatesResult(
@@ -1041,7 +1116,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                 )
                                             return@withContext RatesResult(
                                                 courierItemData,
-                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                                generateCheckoutOrderInsuranceFromCourier(
+                                                    courierItemData,
+                                                    orderModel
+                                                ),
                                                 shippingDurationUiModel.shippingCourierViewModelList
                                             )
                                         }
