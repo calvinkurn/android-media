@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.destination
 
+import android.os.Looper
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,8 +23,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.mockkObject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -48,7 +51,7 @@ class HotelDestinationViewModelTest {
     private val graphqlRepository = mockk<GraphqlRepository>()
     private val hotelDestinationMapper = mockk<HotelDestinationMapper>()
 
-    private val fusedLocationProviderClient = mockk<FusedLocationProviderClient>()
+    private val fusedLocationProviderClient = mockk<FusedLocationProviderClient>(relaxed = true)
 
     @RelaxedMockK
     lateinit var getPropertyPopularUseCase: GetPropertyPopularUseCase
@@ -338,8 +341,14 @@ class HotelDestinationViewModelTest {
         // given
         coEvery { fusedLocationProviderClient.requestLocationUpdates(any(), any(), any()) } throws SecurityException()
 
+//        mockkObject(Looper::class)
+
+        // Mock the behavior of Looper.myLooper()
+        val mockLooper = mockk<Looper>()
+//        coEvery { Looper.myLooper() } returns mockLooper
+
         // when
-        hotelDestinationViewModel.getLocationFromUpdates(fusedLocationProviderClient)
+        hotelDestinationViewModel.getLocationFromUpdates(fusedLocationProviderClient, mockLooper)
 
         // then
         assert(hotelDestinationViewModel.longLat.value == null)

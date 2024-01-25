@@ -98,7 +98,7 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-    fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
+    fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient,looper: Looper? = Looper.myLooper() ) {
         locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
@@ -123,7 +123,7 @@ class HotelDestinationViewModel @Inject constructor(
         }
 
         try {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper()!!)
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, looper!!)
         } catch (e: SecurityException) {
             e.printStackTrace()
         }
