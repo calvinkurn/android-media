@@ -25,7 +25,7 @@ private const val click_iklan_toko = "click - iklan toko"
 class TopAdsAutoPsTypeSelectionFragment: BaseDaggerFragment() {
 
     private var binding: FragmentTopadsAutopsTypeSelectionBinding? = null
-    private lateinit var userSession: UserSessionInterface
+    private var userSession: UserSessionInterface? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,8 +85,8 @@ class TopAdsAutoPsTypeSelectionFragment: BaseDaggerFragment() {
                 )
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(
                     click_iklan_toko,
-                    "{${userSession.shopId}}",
-                    userSession.userId
+                    "{${userSession?.shopId}}",
+                    userSession?.userId
                 )
                 if (!source.isNullOrEmpty()){
                     intent.putExtra(TopAdsCommonConstant.SOURCE_PACKAGE, source)

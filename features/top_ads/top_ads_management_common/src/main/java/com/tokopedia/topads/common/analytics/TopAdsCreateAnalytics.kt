@@ -235,7 +235,7 @@ class TopAdsCreateAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(map)
     }
 
-    fun sendHeadlineCreatFormClickEvent(eventAction: String, eventLabel: String, userId: String) {
+    fun sendHeadlineCreatFormClickEvent(eventAction: String, eventLabel: String, userId: String?) {
         val map = mapOf(
                 Event.KEY to KEY_EVENT_CLICK_ADS_CREATE,
                 Category.KEY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
