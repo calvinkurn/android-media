@@ -66,15 +66,15 @@ class PartialButtonActionView private constructor(
     private var tokonowButtonData: TokoNowButtonData? = null
 
     private val containerTokonowVar =
-        view.findViewById<ConstraintLayout>(com.tokopedia.product.detail.R.id.tokonow_button_container)
-    private val btnTokonowVar = view.findViewById<UnifyButton>(com.tokopedia.product.detail.R.id.btn_atc_tokonow_variant)
-    private val txtTotalStockTokonowVar = view.findViewById<Typography>(com.tokopedia.product.detail.R.id.txt_total_quantity)
-    private val dividerTokonow = view.findViewById<View>(com.tokopedia.product.detail.R.id.divider_button_quantity)
-    private val txtProductNameTokonowVar = view.findViewById<Typography>(com.tokopedia.product.detail.R.id.txt_product_name)
+        view.findViewById<ConstraintLayout>(productdetailR.id.tokonow_button_container)
+    private val btnTokonowVar = view.findViewById<UnifyButton>(productdetailR.id.btn_atc_tokonow_variant)
+    private val txtTotalStockTokonowVar = view.findViewById<Typography>(productdetailR.id.txt_total_quantity)
+    private val dividerTokonow = view.findViewById<View>(productdetailR.id.divider_button_quantity)
+    private val txtProductNameTokonowVar = view.findViewById<Typography>(productdetailR.id.txt_product_name)
 
-    private val icDeleteNonVar = view.findViewById<IconUnify>(com.tokopedia.product.detail.R.id.btn_delete_tokonow_non_var)
-    private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(com.tokopedia.product.detail.R.id.qty_tokonow_non_var)
-    private val btnChat = view.findViewById<UnifyButton>(com.tokopedia.product.detail.R.id.btn_topchat)
+    private val icDeleteNonVar = view.findViewById<IconUnify>(productdetailR.id.btn_delete_tokonow_non_var)
+    private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(productdetailR.id.qty_tokonow_non_var)
+    private val btnChat = view.findViewById<UnifyButton>(productdetailR.id.btn_topchat)
 
     companion object {
         fun build(view: View, buttonListener: PartialButtonActionListener) =
