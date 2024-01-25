@@ -175,15 +175,7 @@ open class BaseCheckoutViewModelTest {
             dispatchers
         )
         logisticProcessor = CheckoutLogisticProcessor(
-            pinpointUseCase,
-            ratesUseCase,
-            ratesApiUseCase,
-            ratesWithScheduleUseCase,
-            ratesResponseStateConverter,
-            shippingCourierConverter,
-            scheduleDeliveryUseCase,
-            scheduleDeliveryMapper,
-            dispatchers
+            scheduleDeliveryMapper
         )
         viewModel = CheckoutViewModel(
             CheckoutCartProcessor(

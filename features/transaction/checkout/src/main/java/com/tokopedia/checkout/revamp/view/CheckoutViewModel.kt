@@ -175,6 +175,8 @@ class CheckoutViewModel @Inject constructor(
 
     private var isPromoRevamp: Boolean? = null
 
+    private var isBoUnstackEnabled: Boolean = false
+
     var isCartCheckoutRevamp: Boolean = false
     var usePromoEntryPointNewInterface: Boolean = false
 
@@ -240,6 +242,8 @@ class CheckoutViewModel @Inject constructor(
                         codData = saf.cartShipmentAddressFormData.cod
                         campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
                         logisticCartProcessor.isBoUnstackEnabled =
+                            saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
+                        isBoUnstackEnabled =
                             saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
                         summariesAddOnUiModel =
                             ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(saf.cartShipmentAddressFormData.listSummaryAddons)
@@ -1107,7 +1111,7 @@ class CheckoutViewModel @Inject constructor(
 
             // handle error
             val ratesError = result?.ratesError
-            val boPromoCode = logisticProcessor.getBoPromoCode(order)
+            val boPromoCode = getBoPromoCode(order)
             if (ratesError != null) {
                 if (ratesError is MessageErrorException) {
                     CheckoutLogger.logOnErrorLoadCourierNew(
@@ -1252,7 +1256,7 @@ class CheckoutViewModel @Inject constructor(
             val ratesError = result?.ratesError
             if (ratesError != null) {
                 if (ratesError is MessageErrorException) {
-                    val boPromoCode = logisticProcessor.getBoPromoCode(order)
+                    val boPromoCode = getBoPromoCode(order)
                     CheckoutLogger.logOnErrorLoadCourierNew(
                         ratesError,
                         order,
@@ -1376,7 +1380,7 @@ class CheckoutViewModel @Inject constructor(
             val ratesError = result?.ratesError
             if (ratesError != null) {
                 if (ratesError is MessageErrorException) {
-                    val boPromoCode = logisticProcessor.getBoPromoCode(order)
+                    val boPromoCode = getBoPromoCode(order)
                     CheckoutLogger.logOnErrorLoadCourierNew(
                         ratesError,
                         order,
@@ -1526,6 +1530,15 @@ class CheckoutViewModel @Inject constructor(
                 else -> false
             }
         )
+    }
+
+    private fun getBoPromoCode(
+        shipmentCartItemModel: CheckoutOrderModel
+    ): String {
+        if (isBoUnstackEnabled) {
+            return shipmentCartItemModel.boCode
+        }
+        return ""
     }
 
     fun generateValidateUsePromoRequest(list: List<CheckoutItem>? = null): ValidateUsePromoRequest {
@@ -2577,7 +2590,7 @@ class CheckoutViewModel @Inject constructor(
             } else {
                 // handle error
                 val ratesError = result?.ratesError
-                val boPromoCode = logisticProcessor.getBoPromoCode(order)
+                val boPromoCode = getBoPromoCode(order)
                 if (ratesError != null) {
                     CheckoutLogger.logOnErrorLoadCourierNew(
                         ratesError,
