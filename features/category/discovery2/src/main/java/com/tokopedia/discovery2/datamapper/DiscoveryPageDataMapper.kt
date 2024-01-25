@@ -146,10 +146,6 @@ class DiscoveryPageDataMapper(
                 parseProductVerticalList(component, false)
             )
 
-            ComponentNames.ContentCard.componentName -> listComponents.addAll(
-                parseProductVerticalList(component, false)
-            )
-
             ComponentNames.ShopCardInfinite.componentName -> listComponents.addAll(
                 parseProductVerticalList(component, component.areFiltersApplied())
             )
@@ -640,17 +636,6 @@ class DiscoveryPageDataMapper(
                             }
                         }
                     )
-                    if (component.name == ComponentNames.ContentCard.componentName) {
-                        if ((component.data?.size?.rem(2) ?: 0) != 0) {
-                            listComponents.addAll(
-                                handleProductState(
-                                    component,
-                                    ComponentNames.ContentCardEmptyState.componentName,
-                                    queryParameterMap
-                                )
-                            )
-                        }
-                    }
                 }
                 if (component.properties?.index != null &&
                     component.properties?.index!! > Int.ZERO &&
