@@ -38,6 +38,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
+
+private const val potentialImpressionFormat = "%,.0f"
 class AutoPsViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSession,
@@ -163,7 +165,7 @@ class AutoPsViewModel @Inject constructor(
     }
 
     fun getPotentialImpression(budget: Int): String {
-        return String.format("%,.0f", (budget / lowClickDivider).toDouble())
+        return String.format(potentialImpressionFormat, (budget / lowClickDivider).toDouble())
     }
 
     fun checkDeposits(): Boolean {

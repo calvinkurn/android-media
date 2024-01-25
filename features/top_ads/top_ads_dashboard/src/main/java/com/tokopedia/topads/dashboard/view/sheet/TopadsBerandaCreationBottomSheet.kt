@@ -100,7 +100,7 @@ class TopadsBerandaCreationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setManualProductsView() {
-        if (productCount > 0) {
+        if (productCount > Int.ZERO) {
             binding?.createProduct?.productCount?.text = HtmlCompat.fromHtml(
                 String.format(
                     getString(topadsdashboardR.string.topads_product_advertised_count),

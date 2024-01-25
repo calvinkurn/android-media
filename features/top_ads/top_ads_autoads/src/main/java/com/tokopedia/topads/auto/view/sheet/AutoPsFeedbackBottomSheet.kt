@@ -108,7 +108,7 @@ class AutoPsFeedbackBottomSheet : BottomSheetUnify(), View.OnClickListener {
 
     private fun updateSumbitBtnState() {
         binding?.submitCta?.isEnabled =
-            getCheckList().isNotEmpty() || rating > 0 || !(binding?.feedback?.editText?.text.isNullOrEmpty())
+            getCheckList().isNotEmpty() || rating > Int.ZERO || !(binding?.feedback?.editText?.text.isNullOrEmpty())
     }
 
     private fun getRatingDrawableList(): List<Drawable?> {

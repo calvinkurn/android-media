@@ -452,12 +452,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun expandAccordian(accordianData: Group?){
-        accordianData?.let {
-            if (it.isVisible)
-                it.gone()
-            else
-                it.show()
-        }
+        accordianData?.let { it.showWithCondition(!it.isVisible) }
     }
 
     private fun setClick() {

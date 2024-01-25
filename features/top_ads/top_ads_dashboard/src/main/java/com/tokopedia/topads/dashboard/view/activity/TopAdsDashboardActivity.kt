@@ -390,7 +390,7 @@ class TopAdsDashboardActivity :
         val bundle = intent.extras
         when {
             bundle?.getInt(
-                TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, 0
+                TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, Int.ZERO
             ) == PARAM_AUTOADS_BUDGET ->
                 Toaster.build(
                     this.findViewById(android.R.id.content),
@@ -399,7 +399,7 @@ class TopAdsDashboardActivity :
                     Toaster.TYPE_NORMAL
                 ).show()
 
-            bundle?.getInt(TopAdsCommonConstant.TOPADS_AUTOPS_ON, 0) == PARAM_AUTOPS_ON ->
+            bundle?.getInt(TopAdsCommonConstant.TOPADS_AUTOPS_ON, Int.ZERO) == PARAM_AUTOPS_ON ->
                 Toaster.build(
                     this.findViewById(android.R.id.content),
                     getString(R.string.topads_auto_ps_turn_on_msg),
@@ -409,7 +409,7 @@ class TopAdsDashboardActivity :
                 ).show()
 
             bundle?.getInt(
-                TopAdsCommonConstant.TOPADS_AUTOPS_OFF, 0
+                TopAdsCommonConstant.TOPADS_AUTOPS_OFF, Int.ZERO
             ) == PARAM_AUTOPS_OFF ->
                 Toaster.build(
                     this.findViewById(android.R.id.content),

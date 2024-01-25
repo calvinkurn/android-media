@@ -11,6 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.dashboard.R
@@ -97,10 +98,7 @@ class TopAdsAutoPsTypeSelectionFragment: BaseDaggerFragment() {
 
     private fun expandAccordian(accordianData: Group?){
         accordianData?.let {
-            if (it.isVisible)
-                it.gone()
-            else
-                it.show()
+            it.showWithCondition(!it.isVisible)
         }
     }
 

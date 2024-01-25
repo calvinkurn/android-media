@@ -204,19 +204,5 @@
             android:text="0"
             android:layout_marginTop="4dp"/>
 
-<!--        <androidx.constraintlayout.widget.Group-->
-<!--            android:id="@+id/product_statistics_group"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:constraint_referenced_ids="tampil_count,klik_count,total_terjual_count,pendapatan_count,pengeluaran_count,efektivitas_iklan_count"-->
-<!--            android:visibility="invisible"/>-->
-
-<!--        <androidx.constraintlayout.widget.Group-->
-<!--            android:id="@+id/product_statistics_loader_group"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:constraint_referenced_ids="tampil_count_loader,klik_count_loader,total_terjual_count_loader,pendapatan_count_loader,pengeluaran_count_loader,efektivitas_iklan_count_loader"-->
-<!--            android:visibility="visible"/>-->
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
