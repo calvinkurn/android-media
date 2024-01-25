@@ -14,7 +14,13 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
     private lateinit var listener: ReceiveSMSListener
 
     fun register(context: Context, listener: ReceiveSMSListener) {
-        Toast.makeText(context, "registered", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "registered", Toast.LENGTH_SHORT).show()
+        val a = AppSignatureHelper(context)
+        val sigs = a.appSignatures
+        sigs.forEach {
+            Toast.makeText(context, "sig: $it", Toast.LENGTH_SHORT).show()
+            println("hahaha $it")
+        }
         this.listener = listener
         val filter = IntentFilter()
         filter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION)
