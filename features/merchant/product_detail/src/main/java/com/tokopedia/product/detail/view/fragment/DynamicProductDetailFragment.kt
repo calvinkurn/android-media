@@ -677,7 +677,7 @@ open class DynamicProductDetailFragment :
 
     private fun getPrefetchData(): ProductDetailPrefetch.Data? {
         val context = context ?: return null
-        val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
+        val cacheManager = SaveInstanceCacheManager(context.applicationContext, prefetchCacheId)
         return cacheManager.get(
             ProductDetailPrefetch.Data::class.java.simpleName,
             ProductDetailPrefetch.Data::class.java
