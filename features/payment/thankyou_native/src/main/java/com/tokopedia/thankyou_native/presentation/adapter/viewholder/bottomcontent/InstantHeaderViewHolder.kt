@@ -40,9 +40,14 @@ class InstantHeaderViewHolder(
         binding?.secondaryButton?.shouldShowWithAction(!data.shouldHideSecondaryButton) {
             binding?.secondaryButton?.text = data.secondaryButtonText
         }
-
         binding?.cardContainer?.setOnClickListener {
             listener.onSeeDetailInvoice()
+        }
+        binding?.primaryButton?.setOnClickListener {
+            listener.onPrimaryButtonClick()
+        }
+        binding?.secondaryButton?.setOnClickListener {
+            listener.onSecondaryButtonClick()
         }
         setUpTotalDeduction(data)
     }

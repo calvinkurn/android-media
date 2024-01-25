@@ -21,10 +21,9 @@
         android:id="@+id/header_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
         android:alpha="0.0"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/thankpage_header_bg"/>
+        app:srcCompat="@drawable/typ_header"/>
 
     <FrameLayout
         android:id="@+id/thank_parent_view"
