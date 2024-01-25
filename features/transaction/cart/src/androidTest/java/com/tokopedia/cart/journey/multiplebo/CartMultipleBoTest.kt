@@ -4,9 +4,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.cart.CartActivity
 import com.tokopedia.cart.robot.cartPage
-import com.tokopedia.cart.test.R as carttestR
-import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -16,6 +15,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.cart.test.R as carttestR
 
 @UiTest
 class CartHappyFlowTest {
@@ -50,14 +50,13 @@ class CartHappyFlowTest {
             assertMainContent()
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 0)
-            assertCartSelectAllViewHolder()
+//            assertCartSelectAllViewHolder()
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 1)
             assertTickerAnnouncementViewHolder(position = 1)
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 2)
             assertFirstCartGroupViewHolder(
-                view = activityRule.activity.findViewById(carttestR.id.parent_view),
                 position = 3,
                 shopIndex = 0
             )

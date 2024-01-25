@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view
+package com.tokopedia.cart.view.customview
 
 import android.content.Context
 import android.util.AttributeSet
@@ -54,7 +54,8 @@ class BmGmWidgetView @JvmOverloads constructor(
     init {
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.BmGmWidgetView)
         try {
-            state = State.fromId(styledAttributes.getInteger(R.styleable.BmGmWidgetView_stateTicker, 0))
+            state =
+                State.fromId(styledAttributes.getInteger(R.styleable.BmGmWidgetView_stateTicker, 0))
             title = styledAttributes.getString(R.styleable.BmGmWidgetView_title) ?: ""
             urlLeftIcon = styledAttributes.getString(R.styleable.BmGmWidgetView_icon_left) ?: ""
             urlRightIcon = styledAttributes.getString(R.styleable.BmGmWidgetView_icon_right) ?: ""
