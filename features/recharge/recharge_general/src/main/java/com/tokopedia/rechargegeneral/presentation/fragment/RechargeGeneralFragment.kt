@@ -203,7 +203,7 @@ class RechargeGeneralFragment :
     private var actionButtonEnquiry: MutableState<(() -> Unit)> = mutableStateOf({})
     private var isLoadingButtonEnquiry: MutableState<Boolean> = mutableStateOf(false)
     private var visibilityButtonEnquiry: MutableState<Boolean> = mutableStateOf(false)
-    private var variantButtonEnquiry: MutableState<ButtonVariant> = mutableStateOf(ButtonVariant.GHOST)
+    private var variantButtonEnquiry: MutableState<ButtonVariant> = mutableStateOf(ButtonVariant.FILLED)
     private var viewEnquiry: View? = null
 
     private var isEnableButtonSecondary : MutableState<Boolean> = mutableStateOf(false)
@@ -211,7 +211,7 @@ class RechargeGeneralFragment :
     private var actionButtonSecondary: MutableState<(() -> Unit)> = mutableStateOf({})
     private var isLoadingButtonSecondary: MutableState<Boolean> = mutableStateOf(false)
     private var visibilityButtonSecondary: MutableState<Boolean> = mutableStateOf(false)
-    private var variantButtonSecondary: MutableState<ButtonVariant> = mutableStateOf(ButtonVariant.GHOST)
+    private var variantButtonSecondary: MutableState<ButtonVariant> = mutableStateOf(ButtonVariant.FILLED)
     private var viewSecondary: View? = null
 
     override fun onUpdateMultiCheckout() {
@@ -405,6 +405,8 @@ class RechargeGeneralFragment :
             })
             isEnableButtonEnquiry.value = false
             isEnableButtonSecondary.value = false
+            binding?.rechargeGeneralEnquiryButtonCompose?.isEnabled = false
+            binding?.rechargeGeneralSecondaryButtonCompose?.isEnabled = false
 
             rechargeGeneralEnquiryButtonCompose.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -425,6 +427,7 @@ class RechargeGeneralFragment :
             }
 
             rechargeGeneralSecondaryButtonCompose.apply {
+                hide()
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     viewSecondary = LocalView.current
@@ -1019,7 +1022,9 @@ class RechargeGeneralFragment :
         binding?.run {
             operatorClusterSelect.hide()
             operatorSelect.hide()
+            rechargeGeneralEnquiryButtonCompose.hide()
             visibilityButtonEnquiry.value = false
+            rechargeGeneralSecondaryButtonCompose.hide()
             visibilityButtonSecondary.value = false
         }
     }
@@ -1033,6 +1038,7 @@ class RechargeGeneralFragment :
 
     override fun loadData() {
         binding?.run {
+            rechargeGeneralEnquiryButtonCompose.show()
             visibilityButtonEnquiry.value = true
             loadingView.show()
         }
@@ -1074,6 +1080,7 @@ class RechargeGeneralFragment :
 
     override fun onTextChangeInput() {
         isEnableButtonEnquiry.value = false
+        binding?.rechargeGeneralEnquiryButtonCompose?.isEnabled = false
     }
 
     override fun onCustomInputClick(
@@ -1103,6 +1110,8 @@ class RechargeGeneralFragment :
         binding?.run {
             isEnableButtonEnquiry.value = validateEnquiry()
             isEnableButtonSecondary.value = validateEnquiry()
+            binding?.rechargeGeneralEnquiryButtonCompose?.isEnabled = validateEnquiry()
+            binding?.rechargeGeneralSecondaryButtonCompose?.isEnabled = validateEnquiry()
             if (enquiryLabel.isNotEmpty()) titleButtonEnquiry.value = enquiryLabel
         }
     }
@@ -1145,6 +1154,7 @@ class RechargeGeneralFragment :
     private fun processRightButton(rightButton: RechargeGeneralDynamicField.Item,
                                    coachMarkList: ArrayList<CoachMark2Item>) {
         if (rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty() && rightButton.style.isNotEmpty()) {
+            binding?.rechargeGeneralEnquiryButtonCompose?.show()
             visibilityButtonEnquiry.value = true
             titleButtonEnquiry.value = rightButton.text
             variantButtonEnquiry.value =
@@ -1168,6 +1178,7 @@ class RechargeGeneralFragment :
     private fun processLeftButton(leftButton: RechargeGeneralDynamicField.Item,
                                   coachMarkList: ArrayList<CoachMark2Item>) {
         if (leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.style.isNotEmpty()) {
+            binding?.rechargeGeneralSecondaryButtonCompose?.show()
             visibilityButtonSecondary.value = true
             titleButtonSecondary.value = leftButton.text
             variantButtonSecondary.value =
@@ -1186,6 +1197,7 @@ class RechargeGeneralFragment :
                 }
             }
         } else {
+            binding?.rechargeGeneralSecondaryButtonCompose?.show()
             visibilityButtonSecondary.value = false
         }
     }
