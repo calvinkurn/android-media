@@ -771,13 +771,66 @@ class DiscoveryPageDataMapper(
 
         val shouldSupportFestive = componentsItem?.find { !it.isBackgroundPresent } == null
 
+        markTargetedFST(componentsItem)
+
         if (!shouldSupportFestive) {
             componentsItem?.let {
-                listComponents.addAll(getSectionComponentList(it, component.position + 1))
+                listComponents.addAll(
+                    getSectionComponentList(it.filter { !it.isTargetedTabComponent }, component.position + 1)
+                )
             }
+        } else {
+            val updatedComponents = parseFestiveFlashSaleTab(componentsItem?.filter { !it.isTargetedTabComponent })
+
+            if (updatedComponents.isNotEmpty()) listComponents.first().setComponentsItem(updatedComponents)
         }
 
         return listComponents
+    }
+
+    private fun markTargetedFST(componentsItem: List<ComponentsItem>?) {
+        val flashSaleTab = componentsItem
+            ?.find {
+                it.name == ComponentNames.FlashSaleTokoTab.componentName
+            }
+
+        if (flashSaleTab != null) {
+            val targetedComponentId = flashSaleTab.data?.firstOrNull()?.targetComponentId.orEmpty()
+            val index = componentsItem.indexOfFirst {
+                it.name == ComponentNames.ProductCardCarousel.componentName &&
+                    it.id == targetedComponentId
+            }
+
+            componentsItem[index].isTargetedTabComponent = true
+        }
+    }
+
+    private fun parseFestiveFlashSaleTab(componentsItem: List<ComponentsItem>?): List<ComponentsItem> {
+        val flashSaleTab = componentsItem
+            ?.find {
+                it.name == ComponentNames.FlashSaleTokoTab.componentName
+            }
+
+        val updatedComponentItems = mutableListOf<ComponentsItem>()
+
+        flashSaleTab?.let {
+            val parsedTab = parseTab(it, it.position)
+
+            componentsItem.forEach { component ->
+                val isFSTComponent = component.name == ComponentNames.FlashSaleTokoTab.componentName
+
+                when {
+                    isFSTComponent -> {
+                        updatedComponentItems.addAll(parsedTab)
+                    }
+                    else -> {
+                        updatedComponentItems.add(component)
+                    }
+                }
+            }
+        }
+
+        return updatedComponentItems
     }
 
     private fun getSectionComponentList(
