@@ -15,7 +15,7 @@ data class PromoCatalogResponse(
     ) {
         data class Result(
             @SerializedName("productID")
-            val productID: Int = 0,
+            val productID: String = "",
             @SerializedName("widgetList")
             val widgetList: List<Widget> = listOf()
         ) {
@@ -33,7 +33,7 @@ data class PromoCatalogResponse(
                     @SerializedName("componentType")
                     val componentType: String = "",
                     @SerializedName("id")
-                    val id: Int = 0
+                    val id: String = ""
                 ) {
                     data class Attribute(
                         @SerializedName("type")
