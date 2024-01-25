@@ -62,13 +62,17 @@ class GroupProductTickerMapper @Inject constructor() {
             }
         }.toList()
 
+        val offerMessage = tiers.filterIsInstance<BmgmMiniCartVisitable.TierUiModel>().map {
+            it.tierMessage
+        }
+
         return data.copy(
             tiers = finalTiers,
             finalPrice = finalPrice,
             priceBeforeBenefit = finalPrice,
             isTierAchieved = bmgmData.isTierAchieved,
             offerJsonData = bmgmData.offerJsonData,
-            offerMessage = bmgmData.offerMessage
+            offerMessage = offerMessage
         )
     }
 

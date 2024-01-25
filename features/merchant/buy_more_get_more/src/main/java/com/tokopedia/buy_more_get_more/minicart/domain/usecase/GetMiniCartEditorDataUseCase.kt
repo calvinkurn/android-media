@@ -31,7 +31,10 @@ class GetMiniCartEditorDataUseCase @Inject constructor(
     }
 
     private fun getMiniCartEditorData(data: BmgmMiniCartDataUiModel): BmgmMiniCartDataUiModel {
-        return data.copy(tiers = getItems(data))
+        val offerMessages = data.tiers.filterIsInstance<BmgmMiniCartVisitable.TierUiModel>().map {
+            it.tierMessage
+        }
+        return data.copy(tiers = getItems(data), offerMessage = offerMessages)
     }
 
     private fun getItems(miniCartData: BmgmMiniCartDataUiModel): List<BmgmMiniCartVisitable> {
