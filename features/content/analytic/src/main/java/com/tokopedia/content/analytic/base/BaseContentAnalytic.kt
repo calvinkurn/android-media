@@ -43,6 +43,7 @@ abstract class BaseContentAnalytic {
         eventLabel: String,
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
+        customFields: Map<String, String> = emptyMap(),
     ) {
         sendEvent(
             event = Event.viewContentIris,
@@ -50,6 +51,7 @@ abstract class BaseContentAnalytic {
             eventLabel = eventLabel,
             mainAppTrackerId = mainAppTrackerId,
             sellerAppTrackerId = sellerAppTrackerId,
+            customFields = customFields,
         )
     }
 
@@ -58,6 +60,7 @@ abstract class BaseContentAnalytic {
         eventLabel: String,
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
+        customFields: Map<String, String> = emptyMap(),
     ) {
         sendEvent(
             event = Event.clickContent,
@@ -65,6 +68,7 @@ abstract class BaseContentAnalytic {
             eventLabel = eventLabel,
             mainAppTrackerId = mainAppTrackerId,
             sellerAppTrackerId = sellerAppTrackerId,
+            customFields = customFields,
         )
     }
 
@@ -72,6 +76,7 @@ abstract class BaseContentAnalytic {
         screenName: String,
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
+        customFields: Map<String, String> = emptyMap(),
     ) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
             screenName,
@@ -80,7 +85,7 @@ abstract class BaseContentAnalytic {
                 Key.businessUnit to businessUnit,
                 Key.currentSite to currentSite,
                 Key.sessionIris to sessionIris,
-            )
+            ) + customFields
         )
     }
 
@@ -133,6 +138,7 @@ abstract class BaseContentAnalytic {
         eventLabel: String,
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
+        customFields: Map<String, String> = emptyMap(),
     ) {
         sendGeneral(
             Tracker.Builder()
@@ -145,11 +151,16 @@ abstract class BaseContentAnalytic {
                 )
                 .setEventCategory(eventCategory)
                 .setBusinessUnit(businessUnit)
+                .apply {
+                    customFields.forEach {
+                        setCustomProperty(it.key, it.value)
+                    }
+                }
         )
     }
 
     private fun sendGeneral(
-        trackerBuilder: Tracker.Builder
+        trackerBuilder: Tracker.Builder,
     ) {
         trackerBuilder
             .setCurrentSite(currentSite)
