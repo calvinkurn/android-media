@@ -142,7 +142,7 @@ object BmgmMiniCartTracker {
     fun sendClickHadiahEntryEvent(
         offerId: String, warehouseId: String, shopId: String, userId: String
     ) {
-        val eventLabel = "$offerId - $offerId - bottomsheet"
+        val eventLabel = "$offerId - $warehouseId - bottomsheet"
         Tracker.Builder()
             .setEvent(CLICK_EVENT)
             .setEventAction("click hadiah entry")
