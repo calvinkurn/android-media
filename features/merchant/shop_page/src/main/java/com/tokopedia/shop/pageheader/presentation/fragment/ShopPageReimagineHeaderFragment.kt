@@ -1274,6 +1274,7 @@ class ShopPageReimagineHeaderFragment :
         if (hasPrefetchData) {
             renderPrefetchData(prefetchData)
             setViewState(VIEW_CONTENT)
+            scrollToTopButton?.gone()
         } else {
             setViewState(VIEW_LOADING)
         }
