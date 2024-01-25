@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.csat_rating.R as csat_ratingR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CsatBottomsheet :
     BottomSheetUnify(),
@@ -50,6 +52,14 @@ class CsatBottomsheet :
         csat_ratingR.drawable.emoji_active_3,
         csat_ratingR.drawable.emoji_active_4,
         csat_ratingR.drawable.emoji_active_5,
+    )
+
+    private val captionColors = listOf(
+        unifyprinciplesR.color.Unify_RN500,
+        unifyprinciplesR.color.Unify_YN500,
+        unifyprinciplesR.color.Unify_YN300,
+        unifyprinciplesR.color.Unify_GN500,
+        unifyprinciplesR.color.Unify_GN500,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +118,7 @@ class CsatBottomsheet :
 
     private fun renderEmojis(context: Context, csatModel: CsatModel) {
         viewBinding?.csatCaption?.text = csatModel.selectedPoint.caption
+        viewBinding?.csatCaption?.setTextColor(ContextCompat.getColor(context, captionColors[csatModel.selectedPoint.score - 1]))
         viewBinding?.csatEmoji?.removeAllViews()
 
         csatModel.points.forEach { pointUiModel ->
