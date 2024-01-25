@@ -588,8 +588,9 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev == curr || curr == ProfileUiModel.Empty) return
 
+        val userName = if (curr.username.isEmpty()) "" else getString(R.string.up_username_template, curr.username)
         mainBinding.headerProfile.title = curr.name
-        mainBinding.headerProfile.subtitle = if (curr.username.isEmpty()) "" else "@${curr.username}"
+        mainBinding.headerProfile.subtitle = userName
         mainBinding.headerProfile.visible()
 
         binding.viewFlipper.displayedChild = PAGE_CONTENT
@@ -607,10 +608,8 @@ class UserProfileFragment @Inject constructor(
         setProfileImg(curr)
 
         with(mainBinding) {
-            textUserName.shouldShowWithAction(curr.username.isNotBlank()) {
-                textUserName.text = getString(R.string.up_username_template, curr.username)
-            }
             textDisplayName.text = curr.name
+            textUserName.text = userName
             setProfileBadge(curr.badges)
             layoutUserProfileStats.textContentCount.text = curr.stats.totalPostFmt
             layoutUserProfileStats.textReviewCount.text = curr.stats.totalReviewFmt
@@ -880,16 +879,12 @@ class UserProfileFragment @Inject constructor(
         text = getString(R.string.up_btn_text_following)
         buttonVariant = UnifyButton.Variant.GHOST
         buttonType = UnifyButton.Type.ALTERNATE
-
-        activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_FOLLOWED)
     }
 
     private fun buttonActionUIUnFollow() = with(mainBinding.btnAction) {
         text = getString(R.string.up_btn_text_follow)
         buttonVariant = UnifyButton.Variant.FILLED
         buttonType = UnifyButton.Type.MAIN
-
-        activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_NOT_FOLLOWED)
     }
 
     private fun buttonActionUIEditProfile() = with(mainBinding.btnAction) {
@@ -1368,23 +1363,11 @@ class UserProfileFragment @Inject constructor(
     companion object {
         const val PAGE_NAME_PROFILE = "UserProfile"
         const val FEATURE_SHARE = "share"
-        const val EXTRA_DISPLAY_NAME = "display_name"
-        const val EXTRA_TOTAL_FOLLOWERS = "total_followers"
-        const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
-        const val EXTRA_USER_NAME = "user_name"
-        const val EXTRA_USER_ID = "userid"
-        const val EXTRA_PROFILE_USER_ID = "profileUserid"
-        const val EXTRA_IS_FOLLOWERS = "is_followers"
         const val APPLINK_MENU = "tokopedia://navigation/main"
         const val REQUEST_CODE_PLAY_ROOM = 123
         const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
         const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
         const val REQUEST_CODE_EDIT_PROFILE = 2423
-        const val REQUEST_CODE_USER_PROFILE = 99
-        const val EXTRA_POSITION_OF_PROFILE = "profile_position"
-        const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
-        const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
-        const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
 
         const val LOADING = -94567
         const val PAGE_CONTENT = 0
