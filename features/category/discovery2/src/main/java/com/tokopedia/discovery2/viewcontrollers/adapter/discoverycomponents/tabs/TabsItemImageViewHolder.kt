@@ -135,17 +135,13 @@ class TabsItemImageViewHolder(
     }
 
     private fun setFontWeight(isSelected: Boolean) {
-        try {
-            val type = if (isSelected) {
-                Typography.BOLD
-            } else {
-                Typography.REGULAR
-            }
-
-            tabTitleView.weightType = type
-        } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+        val type = if (isSelected) {
+            Typography.BOLD
+        } else {
+            Typography.REGULAR
         }
+
+        tabTitleView.setWeight(type)
     }
     //endregion
 
