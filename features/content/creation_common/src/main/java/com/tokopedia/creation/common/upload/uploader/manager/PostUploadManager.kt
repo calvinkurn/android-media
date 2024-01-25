@@ -9,6 +9,8 @@ import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.CreationUploadSuccessData
+import com.tokopedia.creation.common.upload.uploader.notification.PostUploadNotificationManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -19,9 +21,10 @@ import dagger.assisted.AssistedInject
 class PostUploadManager @AssistedInject constructor(
     @ApplicationContext private val appContext: Context,
     @Assisted private val uploadData: CreationUploadData.Post,
+    private val notificationManager: PostUploadNotificationManager,
     private val submitPostUseCase: SubmitPostUseCase,
     private val sellerAppReviewHelper: FeedSellerAppReviewHelper,
-) : CreationUploadManager(null) {
+) : CreationUploadManager(notificationManager) {
 
     @AssistedFactory
     interface Factory {
@@ -42,7 +45,7 @@ class PostUploadManager @AssistedInject constructor(
 
             var uploadedMedia = 0
 
-            submitPostUseCase.execute(
+            val submitPostData = submitPostUseCase.execute(
                 id = viewModel.postId,
                 type = viewModel.authorType,
                 token = viewModel.token,
@@ -67,7 +70,17 @@ class PostUploadManager @AssistedInject constructor(
 
             addFlagOnCreatePostSuccess()
 
-            broadcastComplete(uploadData)
+            val successData = CreationUploadSuccessData.Post(
+                activityId = submitPostData.feedContentSubmit.meta.content.activityID
+            )
+
+            val updatedUploadData = uploadData.copy(
+                activityId = successData.activityId
+            )
+
+            broadcastUpdateData(updatedUploadData)
+
+            broadcastComplete(updatedUploadData, successData)
 
             CreationUploadExecutionResult.Success
         } catch (throwable: Throwable) {
