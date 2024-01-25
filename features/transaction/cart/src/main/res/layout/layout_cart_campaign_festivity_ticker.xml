@@ -3,44 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="20dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgCampaignCountdown"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_cart_campaign_festivity_ticker_widget_countdown"
-        android:paddingStart="8dp"
+        android:layout_height="20dp"
+        android:paddingStart="6dp"
         android:paddingTop="4dp"
-        android:paddingEnd="8dp"
+        android:paddingEnd="6dp"
         android:paddingBottom="4dp"
-        android:textColor="@color/Unify_RN500"
-        android:translationX="-4dp"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@+id/cl_campaign_ticker"
+        app:layout_constraintStart_toEndOf="@+id/clCampaignTicker"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"
-        tools:text="23 : 59 : 59" />
+        tools:text="23 : 59 : 59"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_campaign_ticker"
+        android:id="@+id/clCampaignTicker"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="20dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tpgCampaignCountdown"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:background="@color/Unify_YN700">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iuCampaignLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="4dp"
+            android:adjustViewBounds="true"
+            android:maxWidth="128dp"
+            android:maxHeight="12dp"
             app:layout_constrainedHeight="true"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -48,30 +53,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="0"
-            app:unify_image_type="rect" />
+            app:unify_image_type="rect"
+            tools:visibility="gone" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iuCampaignIcon"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:layout_marginStart="6dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgCampaignLabel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="6dp"
             android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:lines="1"
+            android:maxWidth="114dp"
             android:textColor="@color/Unify_Static_White"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -79,9 +86,11 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@+id/iuCampaignIcon"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="6dp"
             app:typographyType="small"
             app:typographyWeight="bold"
-            tools:text="Kejar Diskon Spesial" />
+            tools:text="Kejar Diskon Spesial"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

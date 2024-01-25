@@ -30,6 +30,7 @@ import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
+import com.tokopedia.cartrevamp.view.customview.HexColor
 import com.tokopedia.cartrevamp.view.uimodel.CartCampaignModel
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
@@ -146,7 +147,7 @@ class CartItemViewHolder(
         renderProductAction(data)
         renderBmGmOfferTicker(data)
         renderProductTagInfo(data)
-        renderCartCampaignFestivityTicker()
+        renderCartCampaignFestivityTicker(data)
     }
 
     private fun initSwipeLayout(data: CartItemHolderData) {
@@ -1875,37 +1876,92 @@ class CartItemViewHolder(
         }
     }
 
-    fun enableCampaignLogoImage(): Boolean {
+    private fun enableCampaignLogoTicker(): Boolean {
         return true
     }
 
-    fun renderCartCampaignFestivityTicker() {
+    private fun renderCartCampaignFestivityTicker(
+        data: CartItemHolderData
+    ) {
         // TODO: Implement real data
-        val data = CartCampaignModel(
-            logoUrl = "test",
-            iconUrl = "https://images.tokopedia.net/img/official_store/badge_os128.png",
-            text = "Kejar Diskon Spesial",
-            backgroundGradientStartColor = "#1675AE",
-            backgroundGradientEndColor = "#47DB6D",
-            endTimestamp = 1705046177000
-        )
-        if (data.logoUrl.isNotBlank() && enableCampaignLogoImage()) {
-            binding.cartCampaignTicker.hideTextTicker()
-            binding.cartCampaignTicker.showLogoTicker(data.logoUrl)
+        val tickerData = if (bindingAdapterPosition == 3) {
+            CartCampaignModel(
+                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
+//            logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
+                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
+                text = "Kejar Diskon",
+                backgroundGradientStartColor = "#FFF5F6",
+                backgroundGradientEndColor = "#FFF5F6",
+                endTimestamp = 1706512702000
+            )
+        } else if (bindingAdapterPosition == 6) {
+            CartCampaignModel(
+//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
+            logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
+                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
+                text = "Kejar Diskon",
+                backgroundGradientStartColor = "#FFF5F6",
+                backgroundGradientEndColor = "#FFF5F6",
+                endTimestamp = 1706512702000
+            )
+        } else if (bindingAdapterPosition == 7) {
+            CartCampaignModel(
+//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
+//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
+                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
+                text = "Kejaran Diskon di Tokopedia Panjang Sekali",
+                backgroundGradientStartColor = "#FFF5F6",
+                backgroundGradientEndColor = "#FFF5F6",
+                endTimestamp = 1706512702000
+            )
+        } else if (bindingAdapterPosition == 10) {
+            CartCampaignModel(
+//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
+//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
+                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
+                text = "Kejaran Diskon di Tokopedia Panjang Sekali",
+                backgroundGradientStartColor = "#FFF5F6",
+                backgroundGradientEndColor = "#FFF5F6",
+//                endTimestamp = 1706512702000
+            )
+        } else if (bindingAdapterPosition == 11) {
+            CartCampaignModel(
+//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
+//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
+//                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
+                text = "Kejaran Diskon",
+                backgroundGradientStartColor = "#FFF5F6",
+                backgroundGradientEndColor = "#FFF5F6",
+//                endTimestamp = 1706512702000
+            )
         } else {
-            binding.cartCampaignTicker.hideLogoTicker()
-            binding.cartCampaignTicker.showTextTicker(
-                iconUrl = data.iconUrl,
-                text = data.text,
-                backgroundGradientStartHexColor = data.backgroundGradientStartColor,
-                backgroundGradientEndHexColor = data.backgroundGradientEndColor
+            CartCampaignModel(
+//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
+//            logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
+                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
+//                text = "Kejar Diskon",
+                backgroundGradientStartColor = "#FFF5F6",
+                backgroundGradientEndColor = "#FFF5F6",
+                endTimestamp = 1706512702000
             )
         }
-        val remainingTimeMillis = data.endTimestamp - System.currentTimeMillis()
-        if (remainingTimeMillis > 0) {
-            binding.cartCampaignTicker.showCountdown(remainingTimeMillis)
+        if (tickerData.logoUrl.isNotBlank() && enableCampaignLogoTicker()) {
+            binding.cartCampaignTicker.showLogoTicker(
+                logoUrl = tickerData.logoUrl,
+                backgroundColorStart = HexColor("#004B40"),
+                backgroundColorEnd = HexColor("#009245")
+            )
+        } else if (tickerData.text.isNotBlank()) {
+            val remainingTimeMillis = tickerData.endTimestamp - System.currentTimeMillis()
+            binding.cartCampaignTicker.showTextTicker(
+                text = tickerData.text,
+                backgroundColor = HexColor("#FFF5F6"),
+                iconUrl = tickerData.iconUrl,
+                textColor = HexColor("#D72C2C"),
+                remainingTimeMillis = remainingTimeMillis
+            )
         } else {
-            binding.cartCampaignTicker.hideCountdown()
+            binding.cartCampaignTicker.hideTicker()
         }
     }
 
