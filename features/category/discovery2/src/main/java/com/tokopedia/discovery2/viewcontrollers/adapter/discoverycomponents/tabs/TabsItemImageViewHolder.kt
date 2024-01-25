@@ -120,7 +120,7 @@ class TabsItemImageViewHolder(
             val colorResId = if (item.isSelected) {
                 unifyprinciplesR.color.Unify_GN500
             } else {
-                unifyprinciplesR.color.Unify_NN400
+                unifyprinciplesR.color.Unify_NN950
             }
 
             tabTitleView.setTextColor(
