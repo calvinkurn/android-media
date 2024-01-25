@@ -1,27 +1,27 @@
-package com.tokopedia.chatbot.chatbot2.csat.view.model
+package com.tokopedia.chatbot.chatbot2.csat.domain.model
 
-data class CsatUiModel(
+data class CsatModel(
     var title: String = "",
-    var points: List<PointUiModel> = emptyList(),
+    var points: MutableList<PointModel> = mutableListOf(),
+    var selectedPoint: PointModel = PointModel(),
+    var otherReason: String = ""
 )
 
-data class PointUiModel(
+data class PointModel(
     var score: Int = 0,
     var caption: String = "",
     var reasonTitle: String = "",
     var reasons: List<String> = emptyList(),
-    var otherReasonTitle: String = "",
-    var otherReason: String = "",
     var selectedReasons: List<String> = emptyList(),
-    var isSelected: Boolean = false
+    var otherReasonTitle: String = ""
 )
 
-val dummyData = CsatUiModel(
+val dummyData = CsatModel(
     title = "Gimana pengalamanmu dengan Toko Care?",
-    points = listOf(
-        PointUiModel(
+    points = mutableListOf(
+        PointModel(
             score = 1,
-            caption = "Tidak Memuaskan",
+            caption = "Sangat Tidak Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
                 "Tokopedia Care susah diakses",
@@ -29,9 +29,9 @@ val dummyData = CsatUiModel(
             ),
             otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?"
         ),
-        PointUiModel(
+        PointModel(
             score = 2,
-            caption = "Tidak Memuaskan",
+            caption = "Tidak Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
                 "Tokopedia Care susah diakses",
@@ -39,20 +39,19 @@ val dummyData = CsatUiModel(
             ),
             otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?"
         ),
-        PointUiModel(
+        PointModel(
             score = 3,
-            caption = "Tidak Memuaskan",
+            caption = "Kurang Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
                 "Tokopedia Care susah diakses",
                 "Jawaban TANYA (Virtual Assistant) tidak membantu"
             ),
             otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?",
-            isSelected = true
         ),
-        PointUiModel(
+        PointModel(
             score = 4,
-            caption = "Tidak Memuaskan",
+            caption = "Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
                 "Tokopedia Care susah diakses",
@@ -60,9 +59,9 @@ val dummyData = CsatUiModel(
             ),
             otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?"
         ),
-        PointUiModel(
+        PointModel(
             score = 5,
-            caption = "Tidak Memuaskan",
+            caption = "Sangat Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
                 "Tokopedia Care susah diakses",
@@ -70,5 +69,15 @@ val dummyData = CsatUiModel(
             ),
             otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?"
         )
+    ),
+    selectedPoint = PointModel(
+        score = 4,
+        caption = "Puas",
+        reasonTitle = "Apa yang menurut kamu kurang?",
+        reasons = listOf(
+            "Tokopedia Care susah diakses",
+            "Jawaban TANYA (Virtual Assistant) tidak membantu"
+        ),
+        otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?"
     )
 )

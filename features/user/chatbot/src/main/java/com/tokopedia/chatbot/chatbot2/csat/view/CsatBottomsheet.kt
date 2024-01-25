@@ -9,22 +9,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.csat.di.CsatComponent
 import com.tokopedia.chatbot.chatbot2.csat.di.DaggerCsatComponent
-import com.tokopedia.chatbot.chatbot2.csat.view.model.CsatUiModel
-import com.tokopedia.chatbot.chatbot2.csat.view.model.PointUiModel
-import com.tokopedia.chatbot.chatbot2.csat.view.model.dummyData
+import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
+import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
+import com.tokopedia.chatbot.chatbot2.csat.domain.model.dummyData
 import com.tokopedia.chatbot.databinding.BottomsheetCsatBinding
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.csat_rating.R as csat_ratingR
@@ -34,9 +32,9 @@ class CsatBottomsheet :
     HasComponent<CsatComponent> {
 
     @Inject
-    lateinit var userSession: UserSessionInterface
+    lateinit var viewModel: CsatViewModel
 
-    private var viewBinding: BottomsheetCsatBinding? = null
+    private var viewBinding by autoClearedNullable<BottomsheetCsatBinding>()
 
     private val inactiveEmojiDrawables = listOf(
         csat_ratingR.drawable.emoji_inactive_1,
@@ -67,7 +65,8 @@ class CsatBottomsheet :
     ): View? {
         viewBinding = BottomsheetCsatBinding.inflate(LayoutInflater.from(context))
         initializeBottomSheet()
-        observeData()
+        viewModel.initializeData(dummyData)
+        observeViewModel()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -84,50 +83,45 @@ class CsatBottomsheet :
         showHeader = false
         clearContentPadding = true
         showKnob = true
-        customPeekHeight = (getScreenHeight() / 2).toDp()
+        isFullpage = true
         setChild(viewBinding?.root)
     }
 
-    private fun observeData() {
-        // Todo : observe from view model
-        context?.let {
-            renderCsat(it, dummyData)
+    private fun observeViewModel() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.csatDataStateFlow.collectLatest { csatModel ->
+                context?.let { context ->
+                    renderCsat(context, csatModel)
+                }
+            }
         }
     }
 
-    private fun renderCsat(context: Context, data: CsatUiModel) {
-        viewBinding?.csatTitle?.text = data.title
-        renderEmojis(context, data)
-        if (data.points.isNotEmpty()) {
-            renderReasons(data.points.first())
-            renderOtherReason(data.points.first())
+    private fun renderCsat(context: Context, csatModel: CsatModel) {
+        viewBinding?.csatTitle?.text = csatModel.title
+        renderEmojis(context, csatModel)
+        if (csatModel.points.isNotEmpty()) {
+            renderReasons(csatModel)
+            renderOtherReason(csatModel)
         }
     }
 
-    private fun renderEmojis(context: Context, csatUiModel: CsatUiModel) {
-        viewBinding?.csatCaption?.text = ""
-        viewBinding?.csatCaption?.invisible()
-
+    private fun renderEmojis(context: Context, csatModel: CsatModel) {
+        viewBinding?.csatCaption?.text = csatModel.selectedPoint.caption
         viewBinding?.csatEmoji?.removeAllViews()
 
-        val selectedScore = csatUiModel.points.firstOrNull { it.isSelected }?.score ?: 0
-        csatUiModel.points.forEach { pointUiModel ->
-            val emojiImageUnify = getEmojiImageUnify(context, pointUiModel, selectedScore)
+        csatModel.points.forEach { pointUiModel ->
+            val emojiImageUnify = getEmojiImageUnify(context, pointUiModel, csatModel.selectedPoint.score)
             emojiImageUnify.setOnClickListener {
-                // viewModel.setSelectedPoint ... then re render
+                viewModel.setSelectedScore(pointUiModel)
             }
-
             viewBinding?.csatEmoji?.addView(emojiImageUnify)
-            if (pointUiModel.isSelected) {
-                viewBinding?.csatCaption?.text = pointUiModel.caption
-                viewBinding?.csatCaption?.show()
-            }
         }
     }
 
     private fun getEmojiImageUnify(
         context: Context,
-        point: PointUiModel,
+        point: PointModel,
         selectedScore: Int
     ): ImageUnify {
         val imageLayoutParams = LinearLayout.LayoutParams(
@@ -144,7 +138,7 @@ class CsatBottomsheet :
         return imageUnify
     }
 
-    private fun mapDrawable(point: PointUiModel, selectedScore: Int): Int {
+    private fun mapDrawable(point: PointModel, selectedScore: Int): Int {
         return try {
             if (point.score > selectedScore) {
                 inactiveEmojiDrawables[point.score - 1]
@@ -157,14 +151,14 @@ class CsatBottomsheet :
         }
     }
 
-    private fun renderReasons(data: PointUiModel) {
-        viewBinding?.csatReasonTitle?.text = data.reasonTitle
+    private fun renderReasons(csatModel: CsatModel) {
+        viewBinding?.csatReasonTitle?.text = csatModel.title
         viewBinding?.csatRvReasons
     }
 
-    private fun renderOtherReason(data: PointUiModel) {
-        viewBinding?.csatOtherReasonTitle?.text = data.otherReasonTitle
-        viewBinding?.csatOtherReason?.setMessage(data.otherReason)
+    private fun renderOtherReason(csatModel: CsatModel) {
+        viewBinding?.csatOtherReasonTitle?.text = csatModel.selectedPoint.otherReasonTitle
+        viewBinding?.csatOtherReason?.setMessage(csatModel.otherReason)
     }
 
     override fun getComponent(): CsatComponent {
