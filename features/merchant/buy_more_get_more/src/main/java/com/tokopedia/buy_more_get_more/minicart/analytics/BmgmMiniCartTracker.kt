@@ -135,4 +135,25 @@ object BmgmMiniCartTracker {
             .build()
             .send()
     }
+
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4448
+    // Tracker ID: 49753
+    fun sendClickHadiahEntryEvent(
+        offerId: String, warehouseId: String, shopId: String, userId: String
+    ) {
+        val eventLabel = "$offerId - $offerId - bottomsheet"
+        Tracker.Builder()
+            .setEvent(CLICK_EVENT)
+            .setEventAction("click hadiah entry")
+            .setEventCategory("olp bmgm")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "49753")
+            .setBusinessUnit(BUSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
 }
