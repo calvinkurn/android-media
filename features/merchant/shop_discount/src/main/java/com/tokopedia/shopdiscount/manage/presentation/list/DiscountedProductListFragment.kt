@@ -319,8 +319,8 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
 
     private fun showBottomSheetOptOutReason(data: ShopDiscountManageProductSubsidyUiModel) {
         val bottomSheet = ShopDiscountSubsidyOptOutReasonBottomSheet.newInstance(data)
-        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
-            onOptOutProductSubsidyBottomSheetSuccess(mode, listProductId, optOutSuccessMessage, data)
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { dataModel, optOutSuccessMessage ->
+            onOptOutProductSubsidyBottomSheetSuccess(data, optOutSuccessMessage)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -808,28 +808,24 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         data: ShopDiscountManageProductSubsidyUiModel,
     ) {
         val bottomSheet = ShopDiscountOptOutMultipleProductSubsidyBottomSheet.newInstance(data)
-        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { dataModel, optOutSuccessMessage ->
             onOptOutProductSubsidyBottomSheetSuccess(
-                mode,
-                listProductId,
-                optOutSuccessMessage,
-                data
+                data,
+                optOutSuccessMessage
             )
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun onOptOutProductSubsidyBottomSheetSuccess(
-        mode: String,
-        listProductId: List<String>,
-        optOutSuccessMessage: String,
-        data: ShopDiscountManageProductSubsidyUiModel
+        data: ShopDiscountManageProductSubsidyUiModel,
+        optOutSuccessMessage: String
     ) {
         this.optOutSuccessMessage = optOutSuccessMessage
-        when(mode){
+        when(data.mode){
             ShopDiscountManageDiscountMode.DELETE -> {
                 showLoaderDialog()
-                viewModel.deleteDiscount(discountStatusId, listProductId)
+                viewModel.deleteDiscount(discountStatusId, data.getListProductIdVariantNonSubsidy())
             }
             ShopDiscountManageDiscountMode.UPDATE -> {
                 if(data.isAllSelectedProductFullSubsidy()){
@@ -838,7 +834,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 }else {
                     val requestId = generateRequestId()
                     viewModel.setRequestId(requestId)
-                    reserveProduct(requestId, listProductId)
+                    reserveProduct(requestId, data.getListProductParentIdWithNonSubsidyVariant())
                 }
             }
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
@@ -857,12 +853,10 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         data: ShopDiscountManageProductSubsidyUiModel
     ) {
         val bottomSheet = ShopDiscountOptOutSingleProductSubsidyBottomSheet.newInstance(data)
-        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { dataModel, optOutSuccessMessage ->
             onOptOutProductSubsidyBottomSheetSuccess(
-                mode,
-                listProductId,
-                optOutSuccessMessage,
-                data
+                data,
+                optOutSuccessMessage
             )
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 import com.tokopedia.shopdiscount.subsidy.domain.DoOptOutSubsidyUseCase
 import com.tokopedia.shopdiscount.subsidy.domain.SubsidyEngineGetSellerOutReasonListUseCase
 import com.tokopedia.shopdiscount.subsidy.model.mapper.DoOptOutSubsidyRequestMapper
@@ -55,13 +56,20 @@ class ShopDiscountOptOutReasonBottomSheetViewModel @Inject constructor(
         return subsidyEngineGetSellerOutReasonListUseCase.executeOnBackground()
     }
 
-    fun doOptOutProductSubsidy(listEventId: List<String>, selectedReason: String) {
+    fun doOptOutProductSubsidy(
+        selectedProductToOptOut: MutableList<ShopDiscountProductDetailUiModel.ProductDetailData>,
+        listEventId: List<String>,
+        selectedReason: String
+    ) {
         launchCatchError(dispatcherProvider.io, block = {
             val response = doOptOutReasonListResponse(listEventId, selectedReason)
             if (response.isSuccess) {
+                selectedProductToOptOut.forEach { productDetailData ->
+                    productDetailData.isSubsidy = false
+                }
                 _doOptOutSubsidyResultLiveData.postValue(Success(true))
             } else {
-                _doOptOutSubsidyResultLiveData.postValue(Fail(MessageErrorException("Failed to opt out subsidy")))
+                _doOptOutSubsidyResultLiveData.postValue(Fail(MessageErrorException()))
             }
         }) {
             _doOptOutSubsidyResultLiveData.postValue(Fail(it))

@@ -51,7 +51,7 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
     }
 
     private var viewBinding by autoClearedNullable<LayoutBottomSheetShopDiscountChooseProductSubsidyToOptOutBinding>()
-    private var onDismissBottomSheetAfterFinishActionListener: ((String, List<String>, String) -> Unit)? =
+    private var onDismissBottomSheetAfterFinishActionListener: ((ShopDiscountManageProductSubsidyUiModel, String) -> Unit)? =
         null
     private val rv: RecyclerView?
         get() = viewBinding?.rvSubsidyProductList
@@ -122,7 +122,7 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
         )
     }
 
-    fun setOnDismissBottomSheetAfterFinishActionListener(listener: (String, List<String>, String) -> Unit) {
+    fun setOnDismissBottomSheetAfterFinishActionListener(listener: (ShopDiscountManageProductSubsidyUiModel, String) -> Unit) {
         onDismissBottomSheetAfterFinishActionListener = listener
     }
 
@@ -172,11 +172,7 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
                     isEnabled = true
                     setOnClickListener {
                         sendClickCtaOptOutVariantTracker()
-                        onDismissBottomSheetAfterFinishActionListener?.invoke(
-                            data.mode,
-                            data.getListProductParentId(),
-                            ""
-                        )
+                        onDismissBottomSheetAfterFinishActionListener?.invoke(data, "")
                         dismiss()
                     }
                     text = if (data.mode == ShopDiscountManageDiscountMode.UPDATE) {
@@ -218,12 +214,8 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
 
     private fun showBottomSheetOptOutReason(data: ShopDiscountManageProductSubsidyUiModel) {
         val bottomSheet = ShopDiscountSubsidyOptOutReasonBottomSheet.newInstance(data)
-        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
-            onDismissBottomSheetAfterFinishActionListener?.invoke(
-                mode,
-                listProductId,
-                optOutSuccessMessage
-            )
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { dataModel, optOutSuccessMessage ->
+            onDismissBottomSheetAfterFinishActionListener?.invoke(dataModel, optOutSuccessMessage)
             dismiss()
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)

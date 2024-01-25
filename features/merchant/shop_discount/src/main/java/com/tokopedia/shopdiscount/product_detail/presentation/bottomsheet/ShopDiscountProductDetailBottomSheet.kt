@@ -359,35 +359,34 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         data: ShopDiscountManageProductSubsidyUiModel,
     ) {
         val bottomSheet = ShopDiscountOptOutMultipleProductSubsidyBottomSheet.newInstance(data)
-        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
-            onOptOutProductSubsidyBottomSheetSuccess(mode, listProductId, optOutSuccessMessage)
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { dataModel, optOutSuccessMessage ->
+            onOptOutProductSubsidyBottomSheetSuccess(dataModel, optOutSuccessMessage)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun showBottomSheetOptOutReason(data: ShopDiscountManageProductSubsidyUiModel) {
         val bottomSheet = ShopDiscountSubsidyOptOutReasonBottomSheet.newInstance(data)
-        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
-            onOptOutProductSubsidyBottomSheetSuccess(mode, listProductId, optOutSuccessMessage)
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { dataModel, optOutSuccessMessage ->
+            onOptOutProductSubsidyBottomSheetSuccess(dataModel, optOutSuccessMessage)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun onOptOutProductSubsidyBottomSheetSuccess(
-        mode: String,
-        listProductId: List<String>,
+        dataModel: ShopDiscountManageProductSubsidyUiModel,
         optOutSuccessMessage: String
     ) {
         this.optOutSuccessMessage = optOutSuccessMessage
-        when (mode) {
+        when (dataModel.mode) {
             ShopDiscountManageDiscountMode.DELETE -> {
                 showLoading()
-                deleteSelectedProductDiscount(listProductId.firstOrNull().orEmpty())
+                deleteSelectedProductDiscount(dataModel.getListProductIdVariantNonSubsidy().firstOrNull().orEmpty())
             }
 
             ShopDiscountManageDiscountMode.UPDATE -> {
-                val selectedProductId = if (listProductId.size == Int.ONE) {
-                    listProductId.firstOrNull().orEmpty()
+                val selectedProductId = if (dataModel.getListProductIdVariant().size == Int.ONE) {
+                    dataModel.getListProductIdVariant().firstOrNull().orEmpty()
                 } else {
                     ""
                 }
@@ -524,8 +523,8 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         data: ShopDiscountManageProductSubsidyUiModel
     ) {
         val bottomSheet = ShopDiscountOptOutSingleProductSubsidyBottomSheet.newInstance(data)
-        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
-            onOptOutProductSubsidyBottomSheetSuccess(mode, listProductId, optOutSuccessMessage)
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { dataModel, optOutSuccessMessage ->
+            onOptOutProductSubsidyBottomSheetSuccess(dataModel, optOutSuccessMessage)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }

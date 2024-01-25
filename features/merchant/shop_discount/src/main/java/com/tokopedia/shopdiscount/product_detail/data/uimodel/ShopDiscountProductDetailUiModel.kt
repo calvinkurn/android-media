@@ -32,7 +32,7 @@ data class ShopDiscountProductDetailUiModel(
         val isVariant: Boolean = false,
         val maxOrder: Int = 0,
         val parentId: String = "",
-        val isSubsidy: Boolean = false,
+        var isSubsidy: Boolean = false,
         val subsidyStatusText: String = "",
         val productRule: ShopDiscountProductRuleUiModel = ShopDiscountProductRuleUiModel(),
         val subsidyInfo: ShopDiscountSubsidyInfoUiModel = ShopDiscountSubsidyInfoUiModel(),

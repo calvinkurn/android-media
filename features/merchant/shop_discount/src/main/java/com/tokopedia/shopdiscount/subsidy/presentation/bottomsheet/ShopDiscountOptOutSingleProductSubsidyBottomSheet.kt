@@ -39,7 +39,7 @@ class ShopDiscountOptOutSingleProductSubsidyBottomSheet : BottomSheetUnify() {
     }
 
     private var viewBinding by autoClearedNullable<LayoutBottomSheetShopDiscountDisableEditDeleteSubsidyProductBinding>()
-    private var onDismissBottomSheetAfterFinishActionListener: ((String, List<String>, String) -> Unit)? =
+    private var onDismissBottomSheetAfterFinishActionListener: ((ShopDiscountManageProductSubsidyUiModel, String) -> Unit)? =
         null
     private val textDescription: Typography?
         get() = viewBinding?.textDescription
@@ -94,7 +94,7 @@ class ShopDiscountOptOutSingleProductSubsidyBottomSheet : BottomSheetUnify() {
         )
     }
 
-    fun setOnDismissBottomSheetAfterFinishActionListener(listener: (String, List<String>, String) -> Unit) {
+    fun setOnDismissBottomSheetAfterFinishActionListener(listener: (ShopDiscountManageProductSubsidyUiModel, String) -> Unit) {
         onDismissBottomSheetAfterFinishActionListener = listener
     }
 
@@ -122,12 +122,8 @@ class ShopDiscountOptOutSingleProductSubsidyBottomSheet : BottomSheetUnify() {
 
     private fun showBottomSheetOptOutReason() {
         val bottomSheet = ShopDiscountSubsidyOptOutReasonBottomSheet.newInstance(data)
-        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
-            onDismissBottomSheetAfterFinishActionListener?.invoke(
-                mode,
-                listProductId,
-                optOutSuccessMessage
-            )
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { data, optOutSuccessMessage ->
+            onDismissBottomSheetAfterFinishActionListener?.invoke(data, optOutSuccessMessage)
             dismiss()
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)

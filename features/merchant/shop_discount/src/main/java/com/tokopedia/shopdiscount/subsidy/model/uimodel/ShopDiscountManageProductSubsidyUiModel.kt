@@ -16,8 +16,8 @@ data class ShopDiscountManageProductSubsidyUiModel(
     val selectedProductToOptOut: MutableList<ShopDiscountProductDetailUiModel.ProductDetailData> = mutableListOf(),
 ) : Parcelable {
 
-    fun getListProductParentId(): List<String> {
-        return listProductDetailData.map {
+    fun getListProductParentIdWithNonSubsidyVariant(): List<String> {
+        return listProductDetailData.filter { !it.isSubsidy }.map {
             if (it.parentId == Int.ZERO.toString()) {
                 it.productId
             } else {
@@ -61,6 +61,20 @@ data class ShopDiscountManageProductSubsidyUiModel(
     fun isAllSelectedProductFullSubsidy(): Boolean {
         return selectedProductToOptOut.allCheckEmptyList {
             ShopDiscountSubsidyInfoUiModel.getSubsidyType(it.subsidyInfo.subsidyType.value) == ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL
+        }
+    }
+
+    fun getListProductIdVariantNonSubsidy(): List<String> {
+        return listProductDetailData.filter {
+            !it.isSubsidy
+        }.map {
+            it.productId
+        }
+    }
+
+    fun getListProductIdVariant(): List<String> {
+        return listProductDetailData.map {
+            it.productId
         }
     }
 }

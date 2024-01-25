@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSubsidyOptOutReasonBinding
@@ -59,7 +60,7 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
     private val rvAdapter: ShopDiscountOptOutReasonAdapter by lazy {
         ShopDiscountOptOutReasonAdapter(this)
     }
-    private var onDismissBottomSheetAfterFinishActionListener: ((String, List<String>, String) -> Unit)? =
+    private var onDismissBottomSheetAfterFinishActionListener: ((ShopDiscountManageProductSubsidyUiModel, String) -> Unit)? =
         null
 
     @Inject
@@ -91,7 +92,7 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
         }
     }
 
-    fun setOnDismissBottomSheetAfterFinishActionListener(listener: (String, List<String>, String) -> Unit) {
+    fun setOnDismissBottomSheetAfterFinishActionListener(listener: (ShopDiscountManageProductSubsidyUiModel, String) -> Unit) {
         onDismissBottomSheetAfterFinishActionListener = listener
     }
 
@@ -168,15 +169,18 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
 
     private fun onSuccessDoOptOutSubsidy() {
         onDismissBottomSheetAfterFinishActionListener?.invoke(
-            data.mode,
-            data.getListProductParentId(),
+            data,
             "Produkmu berhasil keluar dari subsidi"
         )
         dismiss()
     }
 
     private fun onFailDoOptOutSubsidy(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        val errorMessage = if (throwable is MessageErrorException) {
+            getString(R.string.sd_subsidy_opt_out_reason_fail_message)
+        } else {
+            ErrorHandler.getErrorMessage(context, throwable)
+        }
         view?.rootView?.showError(errorMessage)
     }
 
@@ -227,6 +231,7 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
     private fun doOptOutProductSubsidy() {
         showLoadingButtonSubmit()
         viewModel.doOptOutProductSubsidy(
+            data.selectedProductToOptOut,
             data.getSelectedProductToOptOutEventId(),
             rvAdapter.getSelectedReason(),
         )
