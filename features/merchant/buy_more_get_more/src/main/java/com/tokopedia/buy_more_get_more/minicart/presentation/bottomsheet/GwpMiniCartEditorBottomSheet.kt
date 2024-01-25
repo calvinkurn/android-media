@@ -156,10 +156,10 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
 
         BmgmMiniCartTracker.sendClickHadiahEntryEvent(
-            selectedOfferId.toString(),
-            warehouseId.toString(),
-            shopId,
-            userId
+            offerId = selectedOfferId.toString(),
+            warehouseId = warehouseId.toString(),
+            shopId = shopId,
+            userId = userId
         )
     }
 
@@ -214,7 +214,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
                         openCartPage()
                     }
 
-                    else -> {}/* no-op */
+                    else -> {} /* no-op */
                 }
             }
         }
