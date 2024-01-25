@@ -60,6 +60,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -206,7 +207,9 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         try {
             if(isAutoPsWhitelisted())
                 presenter.getAutoAdsStatus(requireContext().resources, ::setAutoAds)
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
     }
 
     private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {

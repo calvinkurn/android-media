@@ -25,7 +25,7 @@ data class GetVariantByIdResponse(
 
 data class GetVariantByIdInput(
     @SerializedName("shopId")
-    val shopId: Int,
+    val shopId: Long,
     @SerializedName("clientId")
-    val clientId: Int
+    val clientId: Long
 ) {}
