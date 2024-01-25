@@ -1,5 +1,6 @@
 package com.tokopedia.top_ads_on_boarding.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -26,6 +27,7 @@ class OnboardingFaqListAdapter :
         )
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun onAccordianItemClicked(id : Int){
         currentList.map { it.isExpanded = it.id == id && !it.isExpanded }
         notifyDataSetChanged()

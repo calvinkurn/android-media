@@ -206,9 +206,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         try {
             if(isAutoPsWhitelisted())
                 presenter.getAutoAdsStatus(requireContext().resources, ::setAutoAds)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { }
     }
 
     private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {

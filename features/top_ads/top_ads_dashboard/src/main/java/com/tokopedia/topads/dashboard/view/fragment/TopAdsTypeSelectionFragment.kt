@@ -20,7 +20,7 @@ private const val click_iklan_toko = "click - iklan toko"
 class TopAdsTypeSelectionFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsTypeSelectionBinding? = null
-    private lateinit var userSession: UserSessionInterface
+    private var userSession: UserSessionInterface? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,8 +55,8 @@ class TopAdsTypeSelectionFragment : BaseDaggerFragment() {
             binding?.topadsAdCard2?.root?.setOnClickListener {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(
                     click_iklan_toko,
-                    "{${userSession.shopId}}",
-                    userSession.userId)
+                    "{${userSession?.shopId}}",
+                    userSession?.userId)
                 RouteManager.route(context,
                     ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
             }
