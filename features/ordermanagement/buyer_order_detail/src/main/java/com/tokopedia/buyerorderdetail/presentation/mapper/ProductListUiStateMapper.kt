@@ -1116,7 +1116,7 @@ object ProductListUiStateMapper {
                         )
                     }.orEmpty()
                 ).also { addOnSummaryUiModel ->
-                    addOnSummaryUiModel.isExpand = !addOnsExpandableState.contains(addOnIdentifier)
+                    addOnSummaryUiModel.isExpand = addOnsExpandableState.contains(addOnIdentifier)
                 }
             },
             impressHolder = ImpressHolder().apply { if (warrantyClaimButtonImpressed) invoke() }
