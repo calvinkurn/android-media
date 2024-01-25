@@ -72,13 +72,13 @@ internal class LabelOverlay(view: View) {
     ) {
         imageView.show()
 
-        loadImage(imageView, marginStartPx, hasStockInfo, imageUrl)
-
         val lp = imageView.layoutParams as? MarginLayoutParams ?: marginLayoutParams()
         lp.width = widthPx
         lp.marginStart = marginStartPx
 
         imageView.layoutParams = lp
+
+        loadImage(imageView, marginStartPx, hasStockInfo, imageUrl)
     }
 
     private fun loadImage(

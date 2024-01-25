@@ -98,6 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:adjustViewBounds="true"
+                android:scaleType="fitXY"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
@@ -107,6 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:adjustViewBounds="true"
+                android:scaleType="fitXY"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
@@ -116,6 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:adjustViewBounds="true"
+                android:scaleType="fitXY"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
