@@ -1393,7 +1393,7 @@ class CheckoutViewModel @Inject constructor(
                     ratesError.message?.let {
                         pageState.value = CheckoutPageState.AkamaiRatesError(it)
                     }
-                } else if (ratesError.message == "racing condition against epharmacy validation") {
+                } else if (order.shouldResetCourier) {
                     order.shouldResetCourier = false
                 }
             }
