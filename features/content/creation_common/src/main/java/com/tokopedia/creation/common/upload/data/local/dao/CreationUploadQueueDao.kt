@@ -37,6 +37,12 @@ interface CreationUploadQueueDao {
         progress: Int,
         uploadStatus: String,
     )
+
+    @Query("UPDATE $CREATION_UPLOAD_QUEUE SET data = :data WHERE queue_id = :queueId")
+    suspend fun updateData(
+        queueId: Int,
+        data: String
+    )
 }
 
 private const val GET_TOP_QUEUE_QUERY = "SELECT * FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp ASC LIMIT 1"

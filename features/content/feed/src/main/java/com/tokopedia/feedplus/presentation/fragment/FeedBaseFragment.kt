@@ -530,7 +530,17 @@ class FeedBaseFragment :
                                     is CreationUploadData.Post -> {
                                         showNormalToaster(
                                             getString(R.string.feed_upload_content_success),
-                                            duration = Toaster.LENGTH_LONG
+                                            duration = Toaster.LENGTH_LONG,
+                                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                                            actionListener = {
+                                                val intent = RouteManager.getIntent(
+                                                    context,
+                                                    ApplinkConst.FEED_RELEVANT_POST,
+                                                    uploadData.activityId,
+                                                )
+
+                                                router.route(requireActivity(), intent)
+                                            }
                                         )
                                     }
 
