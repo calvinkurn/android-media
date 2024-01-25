@@ -308,7 +308,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
@@ -373,8 +372,6 @@ open class DynamicProductDetailFragment :
     companion object {
 
         private const val DEBOUNCE_CLICK = 750
-        private const val TOOLBAR_TRANSITION_START = 10
-        private const val TOOLBAR_TRANSITION_RANGES = 50
         private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
 
         fun newInstance(
@@ -612,31 +609,6 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    private val scrollListener by lazy {
-        navToolbar?.let {
-            NavRecyclerViewScrollListener(
-                navToolbar = it,
-                startTransitionPixel = TOOLBAR_TRANSITION_START,
-                toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANGES,
-                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                    override fun onAlphaChanged(offsetAlpha: Float) {
-                    }
-
-                    override fun onSwitchToDarkToolbar() {
-                        setupToolbarWithStatusBarDark()
-                    }
-
-                    override fun onSwitchToLightToolbar() {
-                        setupToolbarWithStatusBarLight()
-                    }
-
-                    override fun onYposChanged(yOffset: Int) {
-                    }
-                }
-            )
-        }
-    }
-
     private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
         ProductMediaRecomBottomSheetManager(childFragmentManager, this)
     }
@@ -659,7 +631,6 @@ open class DynamicProductDetailFragment :
         initBtnAction()
 
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
-        setupToolbarState()
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
@@ -4620,46 +4591,6 @@ open class DynamicProductDetailFragment :
             com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
         }
         return ContextCompat.getColor(requireContext(), unifyColor)
-    }
-
-    private fun setupToolbarState() {
-        setupToolbarWithStatusBarDark()
-        addRecyclerViewScrollListener()
-    }
-
-    private fun setupToolbarWithStatusBarLight() {
-        disableFitsSystemWindows()
-
-        navToolbar?.setupToolbarWithStatusBar(
-            requireActivity(),
-            NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT
-        )
-    }
-
-    private fun setupToolbarWithStatusBarDark() {
-        disableFitsSystemWindows()
-
-        navToolbar?.setupToolbarWithStatusBar(
-            requireActivity(),
-            NavToolbar.Companion.StatusBar.STATUS_BAR_DARK
-        )
-    }
-
-    private fun disableFitsSystemWindows() {
-        binding?.apply {
-            containerDynamicProductDetail.fitsSystemWindows = false
-            containerDynamicProductDetail.requestApplyInsets()
-        }
-    }
-
-    /**
-     * add [NavRecyclerViewScrollListener] to set toolbar transparent transition
-     * active when [RollenceKey.PdpToolbar.transparent]
-     */
-    private fun addRecyclerViewScrollListener() {
-        scrollListener?.let {
-            getRecyclerView()?.addOnScrollListener(it)
-        }
     }
 
     private fun getLocalSearchApplink(): String {
