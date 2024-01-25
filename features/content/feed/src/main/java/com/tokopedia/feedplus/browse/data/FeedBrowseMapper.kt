@@ -82,7 +82,6 @@ class FeedBrowseMapper @Inject constructor() {
                         nextCursor = "",
                         source = item.type.removePrefix("$PREFIX_STORY_GROUPS_WIDGET:")
                     )
-                    null
                 } else {
                     null
                 }
@@ -241,7 +240,7 @@ class FeedBrowseMapper @Inject constructor() {
     companion object {
         private const val PREFIX_SLOT_WIDGET = "browse_channel_slot"
         private const val PREFIX_RECOMMENDATION_WIDGET = "browse_widget_recommendation"
-        private const val PREFIX_STORY_GROUPS_WIDGET = "browse_story_groups"
+        private const val PREFIX_STORY_GROUPS_WIDGET = "browse_story_group"
 
         /**
          * Recommendation Identifier

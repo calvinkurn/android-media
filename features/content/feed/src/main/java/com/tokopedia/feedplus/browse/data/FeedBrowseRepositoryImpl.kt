@@ -84,21 +84,21 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
             val response = feedXHomeUseCase(
                 feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
             )
-//            mapper.mapSlotsResponse(response).ifEmpty {
-//                error("no slots available")
-//            }
-
-            listOf(
-                FeedBrowseSlotUiModel.StoryGroups(
-                    slotId = "story_slot",
-                    title = "",
-                    storyList = emptyList(),
-                    nextCursor = "",
-                    source = "browse-page"
-                )
-            ) + mapper.mapSlotsResponse(response).ifEmpty {
+            mapper.mapSlotsResponse(response).ifEmpty {
                 error("no slots available")
             }
+
+//            listOf(
+//                FeedBrowseSlotUiModel.StoryGroups(
+//                    slotId = "story_slot",
+//                    title = "",
+//                    storyList = emptyList(),
+//                    nextCursor = "",
+//                    source = "browse-page"
+//                )
+//            ) + mapper.mapSlotsResponse(response).ifEmpty {
+//                error("no slots available")
+//            }
         }
     }
 
