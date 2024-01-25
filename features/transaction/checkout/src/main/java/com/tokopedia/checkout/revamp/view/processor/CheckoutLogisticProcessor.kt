@@ -304,7 +304,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     fun getSchellyProcessorParam(
         orderModel: CheckoutOrderModel,
-        orderProducts: List<CheckoutProductModel>,
+        orderProducts: List<CheckoutItem>,
         address: RecipientAddressModel,
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,
@@ -345,7 +345,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     fun getRatesProcessorParam(
         order: CheckoutOrderModel,
-        orderProducts: List<CheckoutProductModel>,
+        orderProducts: List<CheckoutItem>,
         address: RecipientAddressModel,
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,
@@ -377,8 +377,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             order.isDisableChangeCourier,
             order.shipment.courierItemData?.serviceId,
             order.isAutoCourierSelection,
-            // todo
-            isTradeInDropOff = false
+            isTradeInDropOff = isTradeInDropOff
         )
     }
 

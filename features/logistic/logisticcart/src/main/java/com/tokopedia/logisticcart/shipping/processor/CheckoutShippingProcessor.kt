@@ -65,6 +65,20 @@ class CheckoutShippingProcessor @Inject constructor(
         }
     }
 
+    suspend fun getRatesGeneral(
+        ratesProcessorParam: LogisticProcessorGetRatesParam
+    ): RatesResult? {
+        return if (ratesProcessorParam.isTradeInDropOff) {
+            getRatesTradeInDropOff(
+                ratesProcessorParam
+            )
+        } else {
+            getRates(
+                ratesProcessorParam
+            )
+        }
+    }
+
     private fun generateUpdatePinpointParam(
         addressLatitude: String,
         addressLongitude: String,
@@ -86,7 +100,7 @@ class CheckoutShippingProcessor @Inject constructor(
         return UpdatePinpointParam(input = params)
     }
 
-    suspend fun getRates(
+    private suspend fun getRates(
         param: LogisticProcessorGetRatesParam
     ): RatesResult? {
         return withContext(dispatchers.io) {
@@ -230,6 +244,71 @@ class CheckoutShippingProcessor @Inject constructor(
                     null,
                     emptyList(),
                     ratesError = t
+                )
+            }
+        }
+    }
+
+    private suspend fun getRatesTradeInDropOff(
+        ratesProcessorParam: LogisticProcessorGetRatesParam
+    ): RatesResult? {
+        return withContext(dispatchers.io) {
+            try {
+                var shippingRecommendationData = ratesApiUseCase(ratesProcessorParam.ratesParam)
+                shippingRecommendationData = ratesResponseStateConverter.fillState(
+                    shippingRecommendationData,
+                    ratesProcessorParam.ratesParam.shopShipments,
+                    ratesProcessorParam.selectedSpId,
+                    ratesProcessorParam.selectedServiceId
+                )
+                val boPromoCode = ""
+                var errorReason = "rates invalid data"
+                if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
+                    for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
+                        if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
+                            for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
+                                shippingCourierUiModel.isSelected = false
+                            }
+                            val shippingCourierUiModel =
+                                shippingDurationUiModel.shippingCourierViewModelList.first()
+                            if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
+                                throw MessageErrorException(
+                                    shippingCourierUiModel.productData.error.errorMessage
+                                )
+                            } else {
+                                val courierItemData = generateCourierItemData(
+                                    false,
+                                    ratesProcessorParam.selectedSpId,
+                                    shippingCourierUiModel,
+                                    shippingRecommendationData,
+                                    null,
+                                    ratesProcessorParam.validationMetadata,
+                                    ratesProcessorParam.isDisableChangeCourier
+                                )
+                                if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                    // courier should only be used with BO, but no BO code found
+                                    throw MessageErrorException("rates ui hidden but no promo")
+                                }
+                                shippingCourierUiModel.isSelected = true
+                                return@withContext RatesResult(
+                                    courierItemData,
+                                    shippingDurationUiModel.shippingCourierViewModelList
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    errorReason = "rates empty data"
+                }
+                throw MessageErrorException(
+                    errorReason
+                )
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return@withContext RatesResult(
+                    null,
+                    emptyList(),
+                    t
                 )
             }
         }
