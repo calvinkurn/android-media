@@ -9,4 +9,5 @@
     <color name="dms_static_white">#FFFFFF</color>
     <color name="dms_static_black">#000000</color>
     <color name="dms_loading_state_bg_color">#1ADEDEDF</color>
+    <color name="dms_pd_sub_title_text_color">#04837E</color>
 </resources>

@@ -12,13 +12,15 @@ import com.tokopedia.shop.databinding.ItemShopHomeBmsmWidgetPdBinding
 import com.tokopedia.shop.home.view.model.ShopBmsmWidgetGwpUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetDependencyProvider
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetEventListener
+import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
+import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopBmsmWidgetPdViewHolder(
     itemView: View,
     private val provider: BmsmWidgetDependencyProvider,
     private val listener: BmsmWidgetEventListener,
-    private val isOverrideTheme: Boolean
+    private val patternColorType: String
 ): AbstractViewHolder<ShopBmsmWidgetGwpUiModel>(itemView)  {
 
     companion object {
@@ -27,42 +29,75 @@ class ShopBmsmWidgetPdViewHolder(
     }
 
     private val binding: ItemShopHomeBmsmWidgetPdBinding? by viewBinding()
+    private var isBmsmWidgetAlreadyLoaded = false
 
     override fun bind(element: ShopBmsmWidgetGwpUiModel) {
-        binding?.apply {
-            tpgTitle.apply {
-                text = element.header.title
-                val textColor = if (isOverrideTheme && element.header.colorSchema.listColorSchema.isNotEmpty()){
-                    element.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-                } else {
-                    ContextCompat.getColor(context, R.color.dms_static_black)
+        if (!isBmsmWidgetAlreadyLoaded) {
+            binding?.apply {
+                tpgTitle.apply {
+                    text = element.header.title
+                    setTextColor(getTextColor(element))
                 }
-                setTextColor(textColor)
-            }
-            tpgSubTitle.apply {
-                showWithCondition(element.data.size == Int.ONE)
-                text = element.data.firstOrNull()?.offerName
-            }
-            widgetBmsm.apply {
-                setupWidget(
-                    provider,
-                    element.data,
-                    isOverrideTheme,
-                    element.header.colorSchema
-                )
-                setOnSuccessAtcListener { product ->
-                    listener.onBmsmWidgetSuccessAtc(product)
+                tpgSubTitle.apply {
+                    showWithCondition(element.data.size == Int.ONE)
+                    text = element.data.firstOrNull()?.offerName
+                    setTextColor(getTextColor(element))
                 }
-                setOnErrorAtcListener { errorMsg ->
-                    listener.onBmsmWidgetErrorAtc(errorMsg)
-                }
-                setOnNavigateToOlpListener { applink ->
-                    listener.onBmsmWidgetNavigateToOlp(applink)
-                }
-                setOnProductCardClicked { product ->
-                    listener.onBmsmWidgetProductClicked(product)
+                widgetBmsm.apply {
+                    setupWidget(
+                        provider = provider,
+                        offerList = element.data,
+                        colorThemeConfiguration = getColorThemeConfiguration(element),
+                        patternColorType = ColorType.values().firstOrNull { value ->
+                            value.type == patternColorType
+                        } ?: ColorType.LIGHT
+                    )
+                    setOnSuccessAtcListener { product ->
+                        listener.onBmsmWidgetSuccessAtc(product)
+                    }
+                    setOnErrorAtcListener { errorMsg ->
+                        listener.onBmsmWidgetErrorAtc(errorMsg)
+                    }
+                    setOnNavigateToOlpListener { applink ->
+                        listener.onBmsmWidgetNavigateToOlp(applink)
+                    }
+                    setOnProductCardClicked { product ->
+                        listener.onBmsmWidgetProductClicked(product)
+                    }
+                    setOnWidgetVisible {
+                        isBmsmWidgetAlreadyLoaded = true
+                    }
                 }
             }
         }
+    }
+
+    private fun getColorThemeConfiguration(element: ShopBmsmWidgetGwpUiModel): BmsmWidgetColorThemeConfig {
+        val colorThemeConfiguration = if (element.isFestivity) {
+            BmsmWidgetColorThemeConfig.FESTIVITY
+        } else {
+            if (element.header.isOverrideTheme) {
+                BmsmWidgetColorThemeConfig.REIMAGINE
+            } else {
+                BmsmWidgetColorThemeConfig.DEFAULT
+            }
+        }
+        return colorThemeConfiguration
+    }
+
+    private fun getTextColor(element: ShopBmsmWidgetGwpUiModel): Int {
+        val textColor =  when (getColorThemeConfiguration(element)) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(itemView.context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.LIGHT.type) {
+                    ContextCompat.getColor(itemView.context, R.color.dms_static_black)
+                } else {
+                    ContextCompat.getColor(itemView.context, R.color.dms_static_white)
+                }
+            }
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(itemView.context, R.color.dms_static_black)
+        }
+
+        return textColor
     }
 }

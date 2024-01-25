@@ -10,6 +10,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWi
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder.BmsmProductListViewHolder
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder.BmsmSeeAllProductViewHolder
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder.BmsmSingleProductListViewHolder
+import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder.BmsmTwoProductListViewHolder
 
 class BmsmWidgetProductListAdapter(private val listener: BmsmWidgetItemEventListener) :
     ListAdapter<Product, RecyclerView.ViewHolder>(ProductListAdapterDiffCallback.ProductListDiffCallback) {
@@ -28,6 +29,7 @@ class BmsmWidgetProductListAdapter(private val listener: BmsmWidgetItemEventList
         return when {
             currentList.size == SINGLE_ITEM_VIEW -> SINGLE_ITEM_VIEW
             position == SEE_ALL_PRODUCT_CARD_POSITION -> SEE_ALL_ITEM_VIEW
+            currentList.size == TWO_ITEM_VIEW -> TWO_ITEM_VIEW
             else -> DEFAULT_ITEM_VIEW
         }
     }
@@ -48,11 +50,17 @@ class BmsmWidgetProductListAdapter(private val listener: BmsmWidgetItemEventList
                 )
             }
 
+            TWO_ITEM_VIEW -> {
+                BmsmTwoProductListViewHolder(
+                    parent.inflateLayout(R.layout.item_bmsm_widget_two_product_list_item),
+                    listener
+                )
+            }
+
             else -> {
                 val itemView = parent.inflateLayout(R.layout.item_bmsm_widget_product_list)
                 BmsmProductListViewHolder(
                     itemView,
-                    itemView.measuredWidth,
                     listener
                 )
             }
@@ -64,10 +72,8 @@ class BmsmWidgetProductListAdapter(private val listener: BmsmWidgetItemEventList
         when (getItemViewType(position)) {
             SINGLE_ITEM_VIEW -> (holder as BmsmSingleProductListViewHolder).bind(getItem(position))
             SEE_ALL_ITEM_VIEW -> (holder as BmsmSeeAllProductViewHolder).bind(getItem(position))
-            else -> (holder as BmsmProductListViewHolder).bind(
-                getItem(position),
-                itemCount == TWO_ITEM_VIEW
-            )
+            TWO_ITEM_VIEW -> (holder as BmsmTwoProductListViewHolder).bind(getItem(position))
+            else -> (holder as BmsmProductListViewHolder).bind(getItem(position))
         }
     }
 
