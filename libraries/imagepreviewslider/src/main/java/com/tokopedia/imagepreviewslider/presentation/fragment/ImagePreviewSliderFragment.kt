@@ -3,18 +3,18 @@ package com.tokopedia.imagepreviewslider.presentation.fragment
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.viewpager.widget.ViewPager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.list.adapter.TouchImageAdapter
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.R
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.imagepreviewslider.presentation.adapter.ImagePreviewSliderAdapter
+import com.tokopedia.imagepreviewslider.presentation.adapter.SpaceItemDecoration
+import com.tokopedia.imagepreviewslider.presentation.adapter.TouchImageAdapter
 import com.tokopedia.imagepreviewslider.presentation.adapter.TouchImageListenerAdapter
 import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
 import kotlinx.android.synthetic.main.fragment_image_preview_slider.*
@@ -47,7 +47,7 @@ class ImagePreviewSliderFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_image_preview_slider, container, false)
+        inflater.inflate(R.layout.fragment_image_preview_slider, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,11 +69,12 @@ class ImagePreviewSliderFragment : BaseDaggerFragment() {
         (activity as ImagePreviewSliderActivity).supportActionBar?.title = title
         (activity as ImagePreviewSliderActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as ImagePreviewSliderActivity).supportActionBar?.setBackgroundDrawable(
-                ColorDrawable(Color.argb(180,0,0,0)))
+            ColorDrawable(Color.argb(180, 0, 0, 0))
+        )
     }
 
     fun setupMainImage() {
-        val mainImageAdapter = TouchImageListenerAdapter(context!!, imageUrls)
+        val mainImageAdapter = TouchImageListenerAdapter(requireContext(), imageUrls)
         mainImageAdapter.SetonImageStateChangeListener(object : TouchImageAdapter.OnImageStateChange {
             override fun OnStateDefault() {
                 view_pager.SetAllowPageSwitching(true)
@@ -84,7 +85,6 @@ class ImagePreviewSliderFragment : BaseDaggerFragment() {
                 } else {
                     overlayState = true
                 }
-
             }
 
             override fun OnStateZoom() {
@@ -92,7 +92,6 @@ class ImagePreviewSliderFragment : BaseDaggerFragment() {
                 allowToggleOverlay = false
                 toggleOverlay(false)
             }
-
         })
         mainImageAdapter.setOnImageClickListener(object : TouchImageListenerAdapter.ImageClickListener {
             override fun onImageClicked(position: Int) {
@@ -105,7 +104,7 @@ class ImagePreviewSliderFragment : BaseDaggerFragment() {
 
         view_pager.adapter = mainImageAdapter
         view_pager.currentItem = imagePosition
-        view_pager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener(){
+        view_pager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 (rv_image_list.adapter as ImagePreviewSliderAdapter).setSelectedImage(position)
                 updateImagePosition(position)
@@ -157,17 +156,19 @@ class ImagePreviewSliderFragment : BaseDaggerFragment() {
         const val ARG_IMAGE_POSITION = "arg_image_position"
         const val IMAGE_SLIDER_DIVIDER_SIZE = 32
 
-        fun createInstance (title: String,
-                            imageUrls: ArrayList<String>,
-                            imageThumbnailUrls: ArrayList<String>,
-                            imagePosition: Int): ImagePreviewSliderFragment =
-                ImagePreviewSliderFragment().also {
-                    it.arguments = Bundle().apply {
-                        putString(ARG_TITLE, title)
-                        putStringArrayList(ARG_IMAGE_URLS, imageUrls)
-                        putStringArrayList(ARG_IMAGE_THUMBNAIL_URLS, imageThumbnailUrls)
-                        putInt(ARG_IMAGE_POSITION, imagePosition)
-                    }
+        fun createInstance(
+            title: String,
+            imageUrls: ArrayList<String>,
+            imageThumbnailUrls: ArrayList<String>,
+            imagePosition: Int
+        ): ImagePreviewSliderFragment =
+            ImagePreviewSliderFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(ARG_TITLE, title)
+                    putStringArrayList(ARG_IMAGE_URLS, imageUrls)
+                    putStringArrayList(ARG_IMAGE_THUMBNAIL_URLS, imageThumbnailUrls)
+                    putInt(ARG_IMAGE_POSITION, imagePosition)
                 }
+            }
     }
 }

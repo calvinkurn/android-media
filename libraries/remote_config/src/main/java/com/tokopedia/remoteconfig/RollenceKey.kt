@@ -79,6 +79,11 @@ object RollenceKey {
     // For You Rollence
     const val FOR_YOU_FEATURE_FLAG = "foryou_feature_flag"
 
+    // Explore Category Experiment
+    const val EXPLORE_CATEGORY_DEFAULT = "control_variant"
+    const val EXPLORE_CATEGORY_EXP = "GetJelajah"
+    const val JELAJAH_REVAMP = "JelajahRevamp"
+
     // PDP
     const val PDP_PREFETCH = "prefetch_pdp_android"
     const val PDP_PREFETCH_ENABLE = "variant_prefetch"
@@ -134,4 +139,6 @@ object RollenceKey {
     const val SEARCH_3_PRODUCT_CARD_VAR_1B = "var_1b"
     const val SEARCH_3_PRODUCT_CARD_VAR_2A = "var_2a"
     const val SEARCH_3_PRODUCT_CARD_VAR_2B = "var_2b"
+
+    const val ANDROID_INTERNAL_TEST = "android_internal"
 }

@@ -17,6 +17,7 @@ android {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
         testInstrumentationRunnerArguments clearPackageData: 'true'
+        consumerProguardFiles 'proguard-rules.pro'
     }
 
     buildFeatures {

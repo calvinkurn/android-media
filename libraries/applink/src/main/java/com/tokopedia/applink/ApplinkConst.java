@@ -461,19 +461,8 @@ public interface ApplinkConst {
     String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
     String DEALS_CATEGORY = "tokopedia://deals/category/page";
 
-    String SALAM_UMRAH_ORDER_DETAIL = "tokopedia://order-details/umroh";
-    String SALAM_UMRAH = "tokopedia://s/umroh";
-    String SALAM_UMRAH_SEARCH = "tokopedia://s/umroh/search";
-    String SALAM_UMRAH_PACKET = "tokopedia://s/umroh/paket/{category_id}";
-    String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
-    String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
-    String SALAM_UMRAH_SHOP_ID = "7298319";
-    String SALAM_UMRAH_SHOP = "tokopedia://shop/" + SALAM_UMRAH_SHOP_ID;
     String THANK_YOU_PAGE_NATIVE = "tokopedia://payment/thankyou";
     String THANKYOU_PAGE_NATIVE = "tokopedia://payment/thankyou?payment_id={payment_id}&merchant={merchant_code}";
-
-    String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
-    String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
 
     String MERCHANT_VOUCHER_LIST = "tokopedia://merchant-voucher/list";
 

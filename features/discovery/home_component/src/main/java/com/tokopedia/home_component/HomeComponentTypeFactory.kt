@@ -25,6 +25,7 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 
@@ -59,4 +60,5 @@ interface HomeComponentTypeFactory {
     fun type(bestSellerDataModel: BestSellerDataModel): Int = 0
     fun type(specialReleaseDataModel: SpecialReleaseRevampDataModel): Int = 0
     fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int = 0
+    fun type(lego3AutoModel: Lego3AutoModel): Int = 0
 }

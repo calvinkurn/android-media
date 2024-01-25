@@ -4,17 +4,18 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.databinding.ItemShopFeaturedShowcaseBinding
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.model.FeaturedShowcaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Rafli Syam on 09/03/2021
@@ -22,8 +23,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopPageFeaturedShowcaseViewHolder(
     itemView: View,
     private val listener: ShopPageFeaturedShowcaseListener,
-    private val shouldForceToLightMode: Boolean,
-    private val colorSchema: ShopPageColorSchema
+    private val shouldForceToLightMode: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -83,7 +83,10 @@ class ShopPageFeaturedShowcaseViewHolder(
             
             viewBinding?.container?.setCardBackgroundColor(cardBackgroundColor)
             
-            val showcaseTextColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+            val showcaseTextColor = MethodChecker.getColor(
+                viewBinding?.container?.context ?: return,
+                unifyprinciplesR.color.Unify_Static_Black
+            )
             viewBinding?.tvShowcaseName?.setTextColor(showcaseTextColor)
         }
     }

@@ -114,10 +114,12 @@ class CreationUploaderWorker(
 
                     when (result) {
                         is CreationUploadExecutionResult.Success -> {
-                            launchCatchError(coroutineDispatcher, block = {
-                                queueRepository.delete(data.queueId)
-                            }) {
-                                logger.sendLog(result.toString(), it)
+                            withContext(coroutineDispatcher) {
+                                try {
+                                    queueRepository.delete(data.queueId)
+                                } catch (throwable: Throwable) {
+                                    logger.sendLog(result.toString(), throwable)
+                                }
                             }
                         }
                         is CreationUploadExecutionResult.Error -> {
