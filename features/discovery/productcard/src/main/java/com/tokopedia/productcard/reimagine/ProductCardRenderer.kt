@@ -48,7 +48,7 @@ internal class ProductCardRenderer(
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by view.lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by view.lazyView<ImageView?>(R.id.productCardImage)
-    private val labelOverlay = LabelOverlay(view)
+    private val labelOverlay = LabelOverlay(view, type)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val labelPreventiveOverlay by view.lazyView<Typography?>(R.id.productCardLabelPreventiveOverlay)
     private val labelPreventiveBlock by view.lazyView<Typography?>(R.id.productCardLabelPreventiveBlock)
@@ -358,7 +358,7 @@ internal class ProductCardRenderer(
         val cardConstraintLayout = cardConstraintLayout ?: return
 
         view.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
-            AddToCartButton(cardConstraintLayout, type.bottomViewId())
+            AddToCartButton(cardConstraintLayout, type.addToCartConstraints())
         }
     }
 

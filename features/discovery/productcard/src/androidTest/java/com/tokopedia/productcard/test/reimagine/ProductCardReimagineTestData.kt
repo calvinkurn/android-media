@@ -707,6 +707,7 @@ private fun overlay(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
+        isAds = true,
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
@@ -714,6 +715,7 @@ private fun overlay(): ProductCardReimagineMatcher {
         R.id.productCardOverlay1 to isDisplayed(),
         R.id.productCardOverlay2 to isDisplayed(),
         R.id.productCardOverlay3 to isDisplayed(),
+        R.id.productCardAds to isDisplayed(),
         R.id.productCardName to isDisplayedWithText(model.name),
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
