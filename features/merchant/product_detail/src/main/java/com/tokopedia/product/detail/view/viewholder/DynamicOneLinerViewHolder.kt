@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
@@ -33,7 +34,7 @@ class DynamicOneLinerViewHolder(
         when (status) {
             STATUS_SHOW -> {
                 itemView.setLayoutHeight(LayoutParams.WRAP_CONTENT)
-                renderContent(this, getComponentTrackData(element))
+                renderContent(this, element.name, getComponentTrackData(element))
                 impressComponent(element)
             }
 
@@ -45,6 +46,7 @@ class DynamicOneLinerViewHolder(
 
     private fun renderContent(
         data: DynamicOneLinerDataModel.Data,
+        name: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) = with(binding) {
         configPadding(binding, data)
@@ -61,10 +63,6 @@ class DynamicOneLinerViewHolder(
 
         val url = data.applink
         dynamicOneLinerIconRight.showIfWithBlock(url.isNotEmpty()) {
-            itemView.setOnClickListener {
-                listener.onClickDynamicOneLiner(data.text, url, componentTrackDataModel)
-            }
-
             val chainStyle = when (data.chevronPos) {
                 CHEVRON_POS_FOLLOW -> ConstraintSet.CHAIN_PACKED
                 CHEVRON_POS_END -> ConstraintSet.CHAIN_SPREAD_INSIDE
@@ -80,8 +78,29 @@ class DynamicOneLinerViewHolder(
             }
         }
 
+        setupClick(
+            url = url,
+            name = name,
+            text = data.text,
+            componentTrackDataModel = componentTrackDataModel
+        )
         dynamicOneLinerSeparatorTop.showWithCondition(data.shouldShowSeparatorTop)
         dynamicOneLinerSeparatorBottom.showWithCondition(data.shouldShowSeparatorBottom)
+    }
+
+    private fun setupClick(
+        url: String,
+        name: String,
+        text: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        if (url.isNotEmpty() || name == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_PROMO) {
+            itemView.setOnClickListener {
+                listener.onClickDynamicOneLiner(text, url, componentTrackDataModel)
+            }
+        } else {
+            itemView.setOnClickListener(null)
+        }
     }
 
     private fun configPadding(

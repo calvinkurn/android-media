@@ -62,7 +62,5 @@ class ProductPriceViewHolder(
                 )
             )
         )
-
-        callback.event(GoToApplink(applink))
     }
 }

@@ -7,7 +7,7 @@ data class PromoPriceStyle(
     @SerializedName("iconURL")
     @Expose
     val iconUrl: String = "",
-    @SerializedName("productId")
+    @SerializedName("productID")
     @Expose
     val productId: String = "",
     @SerializedName("color")
