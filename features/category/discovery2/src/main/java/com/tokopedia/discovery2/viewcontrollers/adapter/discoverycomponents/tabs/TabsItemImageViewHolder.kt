@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.Typography as RTypography
 
@@ -70,6 +71,7 @@ class TabsItemImageViewHolder(
                 tabIconView.hide()
                 setTabText(name)
                 setFontColor(item)
+                setFontWeight(item.isSelected)
             }
         }
     }
@@ -127,6 +129,20 @@ class TabsItemImageViewHolder(
                     colorResId
                 )
             )
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
+    }
+
+    private fun setFontWeight(isSelected: Boolean) {
+        try {
+            val type = if (isSelected) {
+                Typography.BOLD
+            } else {
+                Typography.REGULAR
+            }
+
+            tabTitleView.weightType = type
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
         }
