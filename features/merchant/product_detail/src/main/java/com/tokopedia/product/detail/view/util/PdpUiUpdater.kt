@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -289,10 +288,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         stockWording = data.stock.stockWording,
         isVariant = data.variant.isVariant,
         productName = data.name,
-        labelIcons = listOf(
-            LabelIcons(iconURL = "https://png.pngtree.com/background/20210710/original/pngtree-grassland-landscape-green-fresh-banner-picture-image_992136.jpg"),
-            LabelIcons(iconURL = "https://thumbs.dreamstime.com/b/river-landscape-banner-vector-illustration-beautiful-panoramic-94641813.jpg")
-        ),
+        labelIcons = data.labelIcons,
         isProductActive = basic.isActive()
     ).apply {
         price = price.updatePriceFmt()
