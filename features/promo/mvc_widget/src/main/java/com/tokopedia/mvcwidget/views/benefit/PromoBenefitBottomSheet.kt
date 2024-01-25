@@ -12,8 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +31,7 @@ import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.mvcwidget.trackers.PromoBenefitAnalytics
 import com.tokopedia.mvcwidget.utils.getUnifyColorFromHex
 import com.tokopedia.mvcwidget.utils.setAttribute
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -54,10 +57,10 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setStyle(
-//            DialogFragment.STYLE_NORMAL,
-//            unifycomponentsR.style.UnifyBottomSheetOverlapStyle
-//        )
+        setStyle(
+            DialogFragment.STYLE_NORMAL,
+            unifycomponentsR.style.UnifyBottomSheetOverlapStyle
+        )
         val baseAppComponent = (activity?.application as BaseMainApplication).baseAppComponent
         DaggerMvcComponent.builder()
             .baseAppComponent(baseAppComponent)
