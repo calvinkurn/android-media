@@ -5,15 +5,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.toAnnotatedString
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 @Composable
 fun CampaignName(
@@ -36,15 +41,26 @@ fun CampaignName(
                     .wrapContentWidth()
             )
         } else {
+            val htmlLink = rememberHtmlLink(text = title)
+
             NestTypography(
-                text = title,
+                text = htmlLink.toAnnotatedString(),
                 textStyle = NestTheme.typography.display3.copy(
                     fontWeight = FontWeight.Bold,
-                    color = textColor
+                    color = textColor,
+                    textAlign = TextAlign.Left
                 ),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
         }
+    }
+}
+
+@Composable
+internal fun rememberHtmlLink(text: String) = run {
+    val context = LocalContext.current
+    remember(text) {
+        HtmlLinkHelper(context, text).spannedString ?: ""
     }
 }
