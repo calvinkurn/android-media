@@ -74,7 +74,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         const val NEW_APPENDED_SHOWCASE_PRODUCT = "appended_product_list"
         const val DEFAULT_SHOWCASE_ID = "0"
         const val ERROR_TOASTER = Toaster.TYPE_ERROR
-
     }
 
     @Inject
@@ -192,10 +191,10 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     override fun getComponent(): ShopShowcaseAddComponent? {
         return activity?.run {
             DaggerShopShowcaseAddComponent
-                    .builder()
-                    .shopShowcaseAddModule(ShopShowcaseAddModule())
-                    .shopShowcaseComponent(ShopShowcaseInstance.getComponent(application))
-                    .build()
+                .builder()
+                .shopShowcaseAddModule(ShopShowcaseAddModule())
+                .shopShowcaseComponent(ShopShowcaseInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -206,8 +205,8 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     override fun setupDeleteCounter(firstDeletedItem: ShowcaseProduct) {
         counterProductImage?.loadImage(firstDeletedItem.productImageUrl)
         counterProductText?.text = context?.getString(
-                R.string.deleted_product_counter_text,
-                getDeletedProductSize().toString()
+            R.string.deleted_product_counter_text,
+            getDeletedProductSize().toString()
         )
     }
 
@@ -225,6 +224,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         showcaseAddAdapter?.deleteSelectedProduct(position)
         tracking.addShowcaseClickDeleteButtonProductCard(shopId, shopType, isActionEdit)
         showSelectedProductList()
+        // TODO: Update flag delete product here
     }
 
     override fun showChooseProduct() {
@@ -272,7 +272,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun initView() {
         showSoftKeyboard()
-        if(!isActionEdit) {
+        if (!isActionEdit) {
             showChooseProduct()
         }
         observeCreateShopShowcase()
@@ -291,7 +291,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     private fun initListener() {
-
         /**
          * Listener for action text "Selesai" on toolbar is clicked
          */
@@ -313,6 +312,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     }
                     return false
                 }
+                // TODO: Update flag etalase_name_change if there is any changes on etalase name input
             })
 
             addTextChangedListener(object : TextWatcher {
@@ -353,8 +353,8 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         chooseProductText?.setOnClickListener {
             tracking.addShowcaseClickChooseProductText(shopId, shopType, isActionEdit)
             showChooseProductConfirmDialog()
+            // TODO: Update flag product addition after add product success
         }
-
     }
 
     /**
@@ -501,7 +501,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     }
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -511,47 +511,37 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         observe(shopShowcaseAddViewModel.listOfResponse) {
             val responseList = it
             if (responseList.size > 2) {
-
                 val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
                 val appendShowcaseProductResult = responseList[1] as Result<AppendShowcaseProductResponse>
                 val removeShowcaseProductResult = responseList[2] as Result<RemoveShowcaseProductResponse>
 
                 if (updateShowcaseNameResult is Success) {
-
-                    if(updateShowcaseNameResult.data.success == true) {
-
-                        if (appendShowcaseProductResult is Success) {
+                    if (updateShowcaseNameResult.data.success == true) {
+                        if (appendShowcaseProductResult is Success) { // ----> Problem here
 
                             // check if append new showcase product is success
                             if (appendShowcaseProductResult.data.status) {
-
                                 if (removeShowcaseProductResult is Success) {
-
                                     // check if remove showcase product is success
                                     if (removeShowcaseProductResult.data.status) {
-
                                         // everything is fine, navigate back to showcase list
                                         tracking.onFinishCreateOrUpdateShowcase(shopId, shopType, true)
                                         val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
                                         intent.putExtra(ShopShowcaseParamConstant.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
                                         activity?.setResult(Activity.RESULT_OK, intent)
                                         activity?.finish()
-
                                     } else {
                                         // Show error remove showcase product
                                         tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
                                         showUnifyToaster(removeShowcaseProductResult.data.header.reason)
                                     }
-
                                 }
-
                             } else {
                                 // Show error append new showcase product
                                 tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
                                 showUnifyToaster(appendShowcaseProductResult.data.header.reason)
                             }
                         }
-
                     } else {
                         // Show error update name failed
                         tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
@@ -576,7 +566,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     showSelectedProductList()
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -584,8 +574,11 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun observeLoaderState() {
         observe(shopShowcaseAddViewModel.loaderState) {
-            if (it) showLoader()
-            else hideLoader()
+            if (it) {
+                showLoader()
+            } else {
+                hideLoader()
+            }
         }
     }
 
@@ -655,5 +648,4 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         KeyboardHandler.hideSoftKeyboard(activity)
         textShowcaseName?.textFieldInput?.clearFocus()
     }
-
 }
