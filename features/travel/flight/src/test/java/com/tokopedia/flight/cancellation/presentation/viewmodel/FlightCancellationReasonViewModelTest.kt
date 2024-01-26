@@ -166,8 +166,8 @@ class FlightCancellationReasonViewModelTest {
         viewModel.onNextButtonClicked()
 
         // then
-        viewModel.canNavigateToNextStep.value!!.first shouldBe true
-        viewModel.canNavigateToNextStep.value!!.second shouldBe true
+        viewModel.canNavigateToNextStep.value?.first shouldBe true
+        viewModel.canNavigateToNextStep.value?.second shouldBe true
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason shouldBe ""
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId shouldBe "1"
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.attachmentList.size shouldBe 3
