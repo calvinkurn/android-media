@@ -26,7 +26,6 @@ import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
-import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
@@ -178,9 +177,6 @@ class DigitalPDPDataPlanFragment :
 
     @Inject
     lateinit var performanceMonitoring: DigitalPDPDataPlanPerformanceCallback
-
-    @Inject
-    lateinit var contactDataSource: ContactDataSource
 
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
@@ -815,7 +811,7 @@ class DigitalPDPDataPlanFragment :
                     arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT)
                 )
                 return if (hasContactPermission) {
-                    val contacts = contactDataSource.getContactList()
+                    val contacts = viewModel.getContactList()
                     contacts
                 } else {
                     mutableListOf()

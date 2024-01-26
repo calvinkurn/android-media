@@ -610,7 +610,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT)
                 )
                 return if (hasContactPermission) {
-                    val contacts = contactDataSource.getContactList()
+                    val contacts = getContactList()
                     contacts
                 } else {
                     mutableListOf()

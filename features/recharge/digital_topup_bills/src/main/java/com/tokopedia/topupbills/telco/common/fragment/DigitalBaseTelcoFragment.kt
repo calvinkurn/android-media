@@ -26,7 +26,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
@@ -93,9 +92,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
-
-    @Inject
-    lateinit var contactDataSource: ContactDataSource
 
     protected var loyaltyStatus = ""
 

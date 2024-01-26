@@ -18,12 +18,11 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
-import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
-import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -136,7 +135,6 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
             onLoadingAtc(false)
         }
-
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
             when {
@@ -470,6 +468,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 topupBillsViewModel.createCatalogPluginParams(operatorId, categoryId)
             )
         }
+    }
+
+    fun getContactList(): MutableList<TopupBillsContact> {
+        return topupBillsViewModel.getContactList()
     }
 
     fun getFavoriteNumbers(categoryId: Int) {

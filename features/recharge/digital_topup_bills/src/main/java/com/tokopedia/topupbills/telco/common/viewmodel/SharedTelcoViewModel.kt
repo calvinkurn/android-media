@@ -99,6 +99,8 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
+    fun
+
     companion object {
         const val KEY_MENU_ID = "menuID"
         const val EXP_TIME = 10

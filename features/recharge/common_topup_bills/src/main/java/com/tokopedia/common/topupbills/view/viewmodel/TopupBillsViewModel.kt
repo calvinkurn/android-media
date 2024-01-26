@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -14,6 +15,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
@@ -51,6 +53,7 @@ class TopupBillsViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
     private val rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase,
+    private val contactDataSource: ContactDataSource,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -263,6 +266,10 @@ class TopupBillsViewModel @Inject constructor(
         }) {
             _expressCheckoutData.postValue(Fail(it))
         }
+    }
+
+    fun getContactList(): MutableList<TopupBillsContact> {
+        return contactDataSource.getContactList()
     }
 
     fun createEnquiryParams(

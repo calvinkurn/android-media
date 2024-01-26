@@ -2,11 +2,13 @@ package com.tokopedia.common.topupbills
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -69,10 +71,13 @@ class CommonTopupBillsViewModelTest {
     @RelaxedMockK
     lateinit var rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase
 
+    @RelaxedMockK
+    lateinit var contactDataSource: ContactDataSource
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, testCoroutineRule.dispatchers)
+        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, contactDataSource, testCoroutineRule.dispatchers)
     }
 
     @Test
@@ -416,7 +421,7 @@ class CommonTopupBillsViewModelTest {
 
     @Test
     fun createExpressCheckoutFieldParam_expressCheckoutInputNotEmpty_isCalled() {
-        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, testCoroutineRule.dispatchers), recordPrivateCalls = true)
+        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, contactDataSource, testCoroutineRule.dispatchers), recordPrivateCalls = true)
 
         every { topupBillsViewModelSpyk["createExpressCheckoutFieldParam"](allAny<String>(), allAny<String>()) } returns mapOf<String, String>()
 
@@ -498,5 +503,21 @@ class CommonTopupBillsViewModelTest {
         testCoroutineRule.coroutineDispatcher.advanceTimeBy(1_000L)
 
         verify { digitalCheckVoucherUseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun getContactList_returnsCorrectContactData() {
+        val fakeContacts = mutableListOf(
+            TopupBillsContact("Tokopedia", "081234567890"),
+            TopupBillsContact("GoTo", "085600001111")
+        )
+
+        every { contactDataSource.getContactList() } returns fakeContacts
+
+        val actualContacts = topupBillsViewModel.getContactList()
+
+        verify { contactDataSource.getContactList() }
+
+        Assert.assertEquals(fakeContacts, actualContacts)
     }
 }
