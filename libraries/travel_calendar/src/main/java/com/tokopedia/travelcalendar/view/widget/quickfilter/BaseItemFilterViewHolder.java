@@ -1,4 +1,4 @@
-package com.tokopedia.design.quickfilter;
+package com.tokopedia.travelcalendar.view.widget.quickfilter;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;

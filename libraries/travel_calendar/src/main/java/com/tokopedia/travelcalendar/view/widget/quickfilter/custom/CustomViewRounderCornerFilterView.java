@@ -1,4 +1,4 @@
-package com.tokopedia.design.quickfilter.custom;
+package com.tokopedia.travelcalendar.view.widget.quickfilter.custom;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import android.util.AttributeSet;
 
 import com.tokopedia.design.R;
-import com.tokopedia.design.quickfilter.QuickFilterItem;
-import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.travelcalendar.view.widget.quickfilter.QuickFilterItem;
+import com.tokopedia.travelcalendar.view.widget.quickfilter.QuickSingleFilterView;
 
 import java.util.List;
 

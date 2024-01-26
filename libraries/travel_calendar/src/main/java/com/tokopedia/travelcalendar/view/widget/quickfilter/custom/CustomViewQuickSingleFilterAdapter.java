@@ -1,12 +1,12 @@
-package com.tokopedia.design.quickfilter.custom;
+package com.tokopedia.travelcalendar.view.widget.quickfilter.custom;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.design.R;
-import com.tokopedia.design.quickfilter.QuickSingleFilterAdapter;
-import com.tokopedia.design.quickfilter.QuickSingleFilterListener;
+import com.tokopedia.travelcalendar.view.widget.quickfilter.QuickSingleFilterAdapter;
+import com.tokopedia.travelcalendar.view.widget.quickfilter.QuickSingleFilterListener;
 
 /**
  * Created by nabillasabbaha on 11/22/17.

@@ -2,12 +2,12 @@ package com.tokopedia.imagepreview.imagesecure
 
 import com.tokopedia.utils.image.ImageProcessingUtil.getBitmapFromPath
 import android.view.ViewGroup
-import com.tokopedia.design.image.TouchImageView
 import android.text.TextUtils
 import android.view.View
 import android.webkit.URLUtil
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
+import com.tokopedia.imagepreview.utils.TouchImageView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadSecureImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
@@ -45,13 +45,16 @@ class TouchImageAdapterKt(
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val imageView = TouchImageView(container.context) { stateSize: Float ->
-            if (stateSize <= 1) {
-                imageStateChangeListener?.onStateDefault()
-            } else {
-                imageStateChangeListener?.onStateZoom()
+        val imageView =
+            TouchImageView(
+                container.context
+            ) { stateSize: Float ->
+                if (stateSize <= 1) {
+                    imageStateChangeListener?.onStateDefault()
+                } else {
+                    imageStateChangeListener?.onStateZoom()
+                }
             }
-        }
         handleLoadImage(container, position, imageView)
         return imageView
     }

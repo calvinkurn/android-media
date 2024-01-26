@@ -26,7 +26,7 @@
             app:tabTextAppearance="@style/Tabs.Secondary"
             app:tabTextColor="@color/Unify_NN950_32" />
 
-        <com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView
+        <com.tokopedia.travelcalendar.view.widget.quickfilter.custom.CustomViewQuickFilterView
             android:id="@+id/quick_filter_months"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -10,12 +10,12 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionModel
@@ -63,7 +63,7 @@ class PollAdapter(private val contentPosition: Int,
         private val percentLayout: LinearLayout = itemView.findViewById(R.id.percentLayout)
         private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
         private val tvOption: TextView = itemView.findViewById(R.id.option)
-        private val imageView: SquareImageView = itemView.findViewById(R.id.imageView)
+        private val imageView: AppCompatImageView = itemView.findViewById(R.id.imageView)
 
         fun bind(element: PollContentOptionModel) {
             val context = itemView.context

@@ -1,4 +1,4 @@
-package com.tokopedia.design.quickfilter;
+package com.tokopedia.travelcalendar.view.widget.quickfilter;
 
 import android.graphics.drawable.GradientDrawable;
 import androidx.core.content.ContextCompat;

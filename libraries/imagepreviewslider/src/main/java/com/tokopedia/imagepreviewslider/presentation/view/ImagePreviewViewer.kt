@@ -5,7 +5,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stfalcon.imageviewer.StfalconImageViewer
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
+import com.tokopedia.imagepreviewslider.presentation.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.presentation.adapter.ImagePreviewSliderAdapter
 import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
 import com.tokopedia.kotlin.extensions.view.loadImage

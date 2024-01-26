@@ -1,4 +1,4 @@
-package com.tokopedia.design.bottomsheet;
+package com.tokopedia.referral.view.bottomsheet;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.tokopedia.referral.R;
+
 import androidx.core.content.ContextCompat;
 
 import androidx.appcompat.widget.TintContextWrapper;
@@ -18,8 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.tokopedia.design.R;
 
 /**
  * Created by nabillasabbaha on 9/6/17.

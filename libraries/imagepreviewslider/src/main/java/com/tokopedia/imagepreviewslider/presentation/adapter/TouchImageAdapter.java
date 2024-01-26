@@ -1,4 +1,8 @@
-package com.tokopedia.design.list.adapter;
+package com.tokopedia.imagepreviewslider.presentation.adapter;
+
+import static com.tokopedia.abstraction.common.utils.image.ImageHandler.LoadImage;
+import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_HEIGHT;
+import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_WIDTH;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,15 +14,10 @@ import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.bumptech.glide.Glide;
-import com.tokopedia.design.R;
-import com.tokopedia.design.image.TouchImageView;
+import com.tokopedia.imagepreviewslider.presentation.view.TouchImageView;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
-
-import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_HEIGHT;
-import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_WIDTH;
 
 public class TouchImageAdapter extends PagerAdapter {
     public interface OnImageStateChange {
@@ -60,7 +59,7 @@ public class TouchImageAdapter extends PagerAdapter {
         });
         String thumbnail = FileLoc.get(position);
         if (URLUtil.isNetworkUrl(thumbnail)) {
-            loadImage(imageView, thumbnail);
+            LoadImage(imageView, thumbnail);
         } else {
             loadImageFromFile(context, imageView, thumbnail);
         }
@@ -73,18 +72,6 @@ public class TouchImageAdapter extends PagerAdapter {
         if (!TextUtils.isEmpty(thumbnail)) {
             Bitmap bitmap = ImageProcessingUtil.getBitmapFromPath(thumbnail, DEF_WIDTH, DEF_HEIGHT, false);
             imageView.setImageBitmap(bitmap);
-        }
-    }
-
-    public void loadImage(ImageView imageview, String url) {
-        if (imageview.getContext() != null) {
-            Glide.with(imageview.getContext())
-                    .load(url)
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
-                    .error(R.drawable.error_drawable)
-                    .into(imageview);
         }
     }
 

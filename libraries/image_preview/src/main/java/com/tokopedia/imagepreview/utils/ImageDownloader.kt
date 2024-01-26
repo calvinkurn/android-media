@@ -22,6 +22,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
+import com.tokopedia.resources.common.R as resourcescommonR
 
 class ImageDownloader(
     private val context: Context,
@@ -186,7 +187,7 @@ class ImageDownloader(
     private fun getLargeTokopediaIcon(): Bitmap {
         return BitmapFactory.decodeResource(
             context.resources,
-            com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp
+            resourcescommonR.drawable.ic_big_notif_customerapp
         )
     }
 

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.design.quickfilter.QuickSingleFilterView
+    <com.tokopedia.travelcalendar.view.widget.quickfilter.QuickSingleFilterView
         android:id="@+id/quick_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,14 +1,10 @@
-package com.tokopedia.design.quickfilter.custom;
+package com.tokopedia.travelcalendar.view.widget.quickfilter.custom;
 
 import android.view.View;
 
-import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.travelcalendar.view.widget.quickfilter.QuickFilterItem;
 
-/**
- * Created by nabillasabbaha on 11/22/17.
- */
-
-public class CustomViewQuickFilterItem extends QuickFilterItem {
+public class CustomViewRoundedQuickFilterItem extends QuickFilterItem {
 
     private View selectedView;
     private View defaultView;

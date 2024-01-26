@@ -2,8 +2,7 @@ package com.tokopedia.imagepreviewslider.presentation.adapter
 
 import android.content.Context
 import android.view.ViewGroup
-import com.tokopedia.design.image.TouchImageView
-import com.tokopedia.design.list.adapter.TouchImageAdapter
+import com.tokopedia.imagepreviewslider.presentation.view.TouchImageView
 import java.util.*
 
 class TouchImageListenerAdapter(context: Context, FileLoc: ArrayList<String>) : TouchImageAdapter(context, FileLoc) {

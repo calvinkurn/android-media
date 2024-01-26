@@ -83,7 +83,7 @@
                 app:srcCompat="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_label_code_promo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

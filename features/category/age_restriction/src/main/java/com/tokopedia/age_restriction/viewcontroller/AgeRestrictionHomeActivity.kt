@@ -12,14 +12,13 @@ import com.tokopedia.age_restriction.viewmodel.ARHomeViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.design.dialog.AccessRequestDialogFragment
-import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.track.TrackApp
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import kotlinx.android.synthetic.main.age_restriction_home_activity.*
 import javax.inject.Inject
 
-class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessRequestListener {
+class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(),
+    IAccessRequestListener {
 
     private lateinit var arHomeViewModel: ARHomeViewModel
     private var notAdult = 11

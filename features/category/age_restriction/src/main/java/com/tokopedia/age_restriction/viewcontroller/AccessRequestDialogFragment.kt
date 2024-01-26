@@ -1,4 +1,4 @@
-package com.tokopedia.design.dialog
+package com.tokopedia.age_restriction.viewcontroller
 
 import android.app.Activity
 import android.app.Dialog
@@ -13,7 +13,7 @@ import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.tokopedia.design.R
+import com.tokopedia.age_restriction.R
 
 class AccessRequestDialogFragment : DialogFragment() {
     private var layoutResId = R.layout.permission_fragment
@@ -82,7 +82,7 @@ class AccessRequestDialogFragment : DialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         if (!fromClickButtons) {
-            if (activity != null) activity!!.finish()
+            if (activity != null) activity?.finish()
         }
     }
 

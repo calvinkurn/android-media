@@ -28,15 +28,18 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.design.component.ticker.TouchViewPager
-import com.tokopedia.design.list.adapter.TouchImageAdapter
+import com.tokopedia.imagepreview.imagesecure.TouchImageAdapterKt
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 import java.util.*
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.abstraction.R as abstractionR
 
 @Deprecated("Do not use this class",
     ReplaceWith("Please use ImageSecurePreviewActivity")
@@ -44,7 +47,7 @@ import java.util.*
 open class ImagePreviewActivity : BaseSimpleActivity() {
     private var title: String? = null
     private var description: String? = null
-    private var adapter: TouchImageAdapter? = null
+    private var adapter: TouchImageAdapterKt? = null
     var fileLocations: ArrayList<String>? = null
     private var imageDescriptions: ArrayList<String>? = null
     var position = 0
@@ -90,13 +93,14 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
     }
 
     open fun setupAdapter() {
-        adapter = TouchImageAdapter(this@ImagePreviewActivity, fileLocations)
-        adapter?.SetonImageStateChangeListener(object : TouchImageAdapter.OnImageStateChange {
-            override fun OnStateDefault() {
-                viewPager.SetAllowPageSwitching(true);
+        adapter = TouchImageAdapterKt(fileLocations, UserSession(this), false)
+        adapter?.setOnImageStateChangeListener(object : TouchImageAdapterKt.OnImageStateChange {
+            override fun onStateDefault() {
+                viewPager.SetAllowPageSwitching(true)
             }
-            override fun OnStateZoom() {
-                viewPager.SetAllowPageSwitching(false);
+
+            override fun onStateZoom() {
+                viewPager.SetAllowPageSwitching(false)
             }
         })
         viewPager.adapter = adapter
@@ -159,9 +163,9 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 ANDROID_GENERAL_CHANNEL)
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(R.string.download_in_process))
-                .setSmallIcon(com.tokopedia.design.R.drawable.ic_stat_notify_white)
+                .setSmallIcon(resourcescommonR.drawable.ic_status_bar_notif_customerapp)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                    com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp))
+                    resourcescommonR.drawable.ic_big_notif_customerapp))
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(notificationId, notificationBuilder.build())
@@ -246,7 +250,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         notificationManager.notify(notificationId, notificationBuilder.build())
         Toaster.make(findViewById<View>(android.R.id.content), getString(R.string.download_failed),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(
-                com.tokopedia.abstraction.R.string.title_ok))
+                abstractionR.string.title_ok))
     }
 
     override fun getNewFragment(): Fragment? {

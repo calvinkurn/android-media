@@ -10,11 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.list.adapter.TouchImageAdapter
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
+import com.tokopedia.imagepreviewslider.presentation.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.R
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.imagepreviewslider.presentation.adapter.ImagePreviewSliderAdapter
+import com.tokopedia.imagepreviewslider.presentation.adapter.TouchImageAdapter
 import com.tokopedia.imagepreviewslider.presentation.adapter.TouchImageListenerAdapter
 import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
 import kotlinx.android.synthetic.main.fragment_image_preview_slider.*
@@ -73,7 +73,7 @@ class ImagePreviewSliderFragment : BaseDaggerFragment() {
     }
 
     fun setupMainImage() {
-        val mainImageAdapter = TouchImageListenerAdapter(context!!, imageUrls)
+        val mainImageAdapter = TouchImageListenerAdapter(context ?: return, imageUrls)
         mainImageAdapter.SetonImageStateChangeListener(object : TouchImageAdapter.OnImageStateChange {
             override fun OnStateDefault() {
                 view_pager.SetAllowPageSwitching(true)

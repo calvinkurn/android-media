@@ -5,9 +5,9 @@ import com.google.android.material.tabs.TabLayout
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.quickfilter.QuickFilterItem
-import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
-import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView
+import com.tokopedia.travelcalendar.view.widget.quickfilter.QuickFilterItem
+import com.tokopedia.travelcalendar.view.widget.quickfilter.custom.CustomViewQuickFilterItem
+import com.tokopedia.travelcalendar.view.widget.quickfilter.custom.CustomViewQuickFilterView
 import com.tokopedia.travelcalendar.R
 import com.tokopedia.travelcalendar.view.CALENDAR_MMMM
 import com.tokopedia.travelcalendar.view.CALENDAR_YYYY
@@ -160,7 +160,8 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
     }
 
     private fun convertQuickFilterItems(month: Int, monthName: String): CustomViewQuickFilterItem {
-        val quickFilterItem = CustomViewQuickFilterItem()
+        val quickFilterItem =
+            CustomViewQuickFilterItem()
         quickFilterItem.name = monthName
         quickFilterItem.type = month.toString()
         quickFilterItem.isSelected = false

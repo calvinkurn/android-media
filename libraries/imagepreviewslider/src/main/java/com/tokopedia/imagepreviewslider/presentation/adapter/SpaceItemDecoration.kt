@@ -1,4 +1,4 @@
-package com.tokopedia.design.list.adapter
+package com.tokopedia.imagepreviewslider.presentation.adapter
 
 import android.graphics.Rect
 import androidx.recyclerview.widget.LinearLayoutManager
