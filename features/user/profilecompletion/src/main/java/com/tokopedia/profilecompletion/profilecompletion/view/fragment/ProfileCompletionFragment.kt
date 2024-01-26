@@ -33,8 +33,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addpin.data.StatusPinData
-import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
+import com.tokopedia.profilecompletion.settingprofile.addpin.data.StatusPinData
+import com.tokopedia.profilecompletion.settingprofile.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profilecompletion.ProfileCompletionNewConstants
 import com.tokopedia.profilecompletion.profilecompletion.data.ProfileCompletionDataView
