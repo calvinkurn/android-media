@@ -231,11 +231,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
         val giftProducts = selectedTier?.products.orEmpty()
         giftListAdapter.submit(giftProducts)
 
-        val ribbonText = if (source == PageSource.CART) {
-            context?.getString(R.string.gwp_gift_ribbon_text_your_reward)
-        } else {
-            context?.getString(R.string.gwp_gift_ribbon_text_selected)
-        }
+        val ribbonText =  context?.getString(R.string.gwp_gift_ribbon_text_selected)
         giftListAdapter.setRibbonText(ribbonText.orEmpty())
     }
 
