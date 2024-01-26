@@ -47,6 +47,7 @@ class ComparisonViewHolder(
         private const val DEFAULT_LINE_COUNT = 1
         private const val DEFAULT_CHAR_WIDTH = 15
         private const val DEFAULT_TITLE_CHAR_WIDTH = 20
+        private const val DEFAULT_TITLE_CATEGORY_CHAR_WIDTH = 29
         private const val TOP_SPEC_MARGIN = 16
         private const val WIDE_WIDTH_ITEM_COUNT = 2
         private const val NORMAL_WIDTH_DP_VALUE = 148
@@ -183,7 +184,7 @@ class ComparisonViewHolder(
                 ceil((line.length * DEFAULT_CHAR_WIDTH) / textAreaWidth).toInt()
             }
             val categoryLines = comparisonSpec.specCategoryTitle.split("\n").sumOf { line ->
-                ceil((line.length * DEFAULT_TITLE_CHAR_WIDTH) / textAreaWidth).toInt()
+                ceil((line.length * DEFAULT_TITLE_CATEGORY_CHAR_WIDTH) / textAreaWidth).toInt()
             }
             if (rowsHeight.getOrNull(index) != null) {
                 if (lines > rowsHeight[index]) rowsHeight[index] = lines
