@@ -347,16 +347,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 }
             }
 
-            override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+            override fun onClickAutoComplete(isFavoriteNumber: Boolean) {
                 inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-                if (isFavoriteContact) {
-                    topupAnalytics.clickFavoriteContactAutoComplete(
+                if (isFavoriteNumber) {
+                    topupAnalytics.clickFavoriteNumberAutoComplete(
                         categoryId,
                         operatorName,
                         userSession.userId
                     )
                 } else {
-                    topupAnalytics.clickFavoriteNumberAutoComplete(
+                    topupAnalytics.clickFavoriteContactAutoComplete(
                         categoryId,
                         operatorName,
                         userSession.userId

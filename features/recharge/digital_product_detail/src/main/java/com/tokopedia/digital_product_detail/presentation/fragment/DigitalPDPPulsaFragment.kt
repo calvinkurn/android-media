@@ -1520,17 +1520,17 @@ class DigitalPDPPulsaFragment :
     //endregion
 
     //region ClientNumberAutoCompleteListener
-    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
+    override fun onClickAutoComplete(autoCompleteItem: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (favorite.name.isNotEmpty()) {
-            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
+        if (autoCompleteItem.isFavoriteNumber) {
+            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId
             )
         } else {
-            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
+            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,

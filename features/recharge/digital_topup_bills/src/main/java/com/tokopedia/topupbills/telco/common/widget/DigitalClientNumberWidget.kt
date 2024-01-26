@@ -158,7 +158,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
                 val item = autoCompleteAdapter.getItem(position)
                 if (item is TopupBillsAutoCompleteContactModel) {
                     setContactName(item.name)
-                    listener.onClickAutoComplete(item.name.isNotEmpty())
+                    listener.onClickAutoComplete(item.isFavoriteNumber)
                 }
             }
         }
@@ -269,9 +269,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     ) {
         autoCompleteAdapter.updateItems(
             CommonTopupBillsDataMapper
-                .mapSeamlessFavNumberItemToContactDataView(favoriteSuggestions).toMutableList(),
+                .mapSeamlessFavNumberItemToContactDataView(favoriteSuggestions, isFavoriteNumber = true).toMutableList(),
             CommonTopupBillsDataMapper
-                .mapSeamlessFavNumberItemToContactDataView(contactSuggestions).toMutableList()
+                .mapSeamlessFavNumberItemToContactDataView(contactSuggestions, isFavoriteNumber = false).toMutableList()
         )
     }
 
@@ -360,7 +360,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
         fun onClickClearInput()
         fun onShowFilterChip(isLabeled: Boolean)
         fun onClickFilterChip(isLabeled: Boolean)
-        fun onClickAutoComplete(isFavoriteContact: Boolean)
+        fun onClickAutoComplete(isFavoriteNumber: Boolean)
         fun onUserManualType()
     }
 

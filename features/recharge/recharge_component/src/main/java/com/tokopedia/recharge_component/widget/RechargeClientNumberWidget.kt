@@ -236,10 +236,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     ) {
         autoCompleteAdapter?.updateItems(
             favoriteSuggestions.map {
-                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
+                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber, isFavoriteNumber = true)
             }.toMutableList(),
             contactSuggestions.map {
-                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
+                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber, isFavoriteNumber = false)
             }.toMutableList()
         )
     }
