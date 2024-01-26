@@ -28,6 +28,7 @@ import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope
@@ -471,6 +472,7 @@ class PlayShortsViewModel @Inject constructor(
             _uploadState.update { PlayShortsUploadUiState.Loading }
 
             saveTag()
+            updateStatus(PlayChannelStatusType.Queue)
             uploadMedia()
 
             _uploadState.update { PlayShortsUploadUiState.Success }
@@ -624,6 +626,16 @@ class PlayShortsViewModel @Inject constructor(
         )
 
         creationUploader.upload(uploadData)
+    }
+
+    private suspend fun updateStatus(
+        status: PlayChannelStatusType
+    ) {
+        repo.updateStatus(
+            creationId = shortsId,
+            authorId = selectedAccount.id,
+            status = status,
+        )
     }
 
     companion object {
