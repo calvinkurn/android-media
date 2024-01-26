@@ -4,7 +4,6 @@
     android:id="@+id/master_product_card_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="4dp"
     app:reimagine="true"
     app:reimagine_template="listCarousel"
     app:useCompatPadding="true" />
