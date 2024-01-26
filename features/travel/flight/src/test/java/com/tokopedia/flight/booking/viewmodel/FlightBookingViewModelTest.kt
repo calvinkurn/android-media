@@ -2086,7 +2086,7 @@ class FlightBookingViewModelTest {
     }
 
     @Test
-    fun getCart_returnFailLoadingFalse() {
+    fun getCart_returnFailErrorVerify() {
         //given
         val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val fakeVerifyGqlInterface = FlightDummyGqlInterfaceImpl()
@@ -2176,39 +2176,8 @@ class FlightBookingViewModelTest {
             mapOf(),
             false
         )
-        val responseVerify = hashMapOf<Type, Any>(
-            FlightVerify.Response::class.java to FlightVerify.Response(
-                FlightVerify.FlightVerifyMetaAndData(
-                    data = FlightVerify(
-                        arrayListOf(
-                            FlightVerify.FlightVerifyCart(
-                                metaData = FlightVerify.CartMetaData(
-                                    "",
-                                    "dummyInvoiceId"
-                                )
-                            )
-                        ),
-                        promo = FlightVerify.Promo(
-                            code = "DUMMY"
-                        )
-                    ),
-                    meta = FlightVerify.Meta(
-                        needRefresh = false
-                    )
-                )
-            )
-        )
-        val gqlResponseVerify = GraphqlResponse(responseVerify, mapOf<Type, List<GraphqlError>>(), false)
         //when
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { gqlResponse }
-        coEvery { graphqlRepository.response(listOf(
-            GraphqlRequest(
-                "",
-                FlightVerify.Response::class.java,
-                variables = mapOf("data" to bookingVerifyParam),
-                shouldThrow = true
-            )
-        ), any()) } coAnswers { gqlResponseVerify }
         viewModel.getCart(
             fakeGqlInterface,
             cartId,
@@ -2220,8 +2189,7 @@ class FlightBookingViewModelTest {
         )
 
         //then
-        //TODO Need Check
-        Assert.assertEquals(viewModel.isStillLoading, false)
-
+        assertEquals(viewModel.isStillLoading, false)
+        assert(viewModel.flightVerifyResult.value is Fail)
     }
 }
