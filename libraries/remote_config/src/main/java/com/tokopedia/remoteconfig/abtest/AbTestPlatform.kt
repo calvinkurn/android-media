@@ -126,7 +126,7 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
     }
 
     /**
-     * call this function if you want to set custom id value
+     * Call this function if you want to set custom id value. Can be shopId, userId, etc
      */
     fun setId(id: String) {
         this.id = id
