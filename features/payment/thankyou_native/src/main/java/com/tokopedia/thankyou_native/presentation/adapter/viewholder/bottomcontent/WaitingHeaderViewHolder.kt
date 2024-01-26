@@ -1,18 +1,25 @@
 package com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent
 
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.databinding.ThankWaitingHeaderBinding
 import com.tokopedia.thankyou_native.presentation.adapter.model.WaitingHeaderUiModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
 import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListener
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class WaitingHeaderViewHolder(
-    view: View,
+    private val view: View,
     private val listener: HeaderListener
 ): AbstractViewHolder<WaitingHeaderUiModel>(view) {
 
@@ -30,7 +37,11 @@ class WaitingHeaderViewHolder(
         binding?.accountId?.text = data.accountId
         binding?.accountImage?.setImageUrl(data.accountImage)
         binding?.amountLabel?.text = data.amountLabel
-        binding?.amount?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.amount, false)
+        if (data.highlightLastThreeDigits) {
+            highlightLastThreeDigits(data.amount.toString())
+        } else {
+            binding?.amount?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.amount, false)
+        }
         binding?.info?.setText(data.note)
         binding?.primaryButton?.shouldShowWithAction(!data.shouldHidePrimaryButton) {
             binding?.primaryButton?.text = data.primaryButtonText
@@ -52,6 +63,33 @@ class WaitingHeaderViewHolder(
         }
         binding?.seeDetailBtn?.setOnClickListener {
             listener.onSeeDetailInvoice()
+        }
+    }
+
+    private fun highlightLastThreeDigits(amountStr: String) {
+        view.context?.let {
+            binding?.amount?.setTextColor(
+                ContextCompat.getColor(
+                    it,
+                    unifyprinciplesR.color.Unify_NN950_96
+                )
+            )
+            val spannable =
+                SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
+            if (amountStr.length > DeferredPaymentFragment.HIGHLIGHT_DIGIT_COUNT) {
+                val startIndex = spannable.length - DeferredPaymentFragment.HIGHLIGHT_DIGIT_COUNT
+                spannable.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            it,
+                            unifyprinciplesR.color.Unify_GN500
+                        )
+                    ),
+                    startIndex, spannable.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            binding?.amount?.text = spannable
         }
     }
 

@@ -261,6 +261,8 @@ open class ThankYouBaseFragment :
             ProcessingPaymentPage -> { thanksPageDataViewModel.addBottomContentWidget(ProcessingHeaderUiModel.create(thanksPageData, context)) }
             else -> {}
         }
+
+        thanksPageDataViewModel.addBottomContentWidget(DividerUiModel())
     }
 
     private fun getFeatureRecommendationData() {

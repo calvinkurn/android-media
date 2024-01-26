@@ -37,6 +37,7 @@ class BottomContentFactory(
             InstantHeaderViewHolder.LAYOUT_ID -> return InstantHeaderViewHolder(parent, headerListener)
             WaitingHeaderViewHolder.LAYOUT_ID -> return WaitingHeaderViewHolder(parent, headerListener)
             ProcessingHeaderViewHolder.LAYOUT_ID -> return ProcessingHeaderViewHolder(parent, headerListener)
+            DividerViewHolder.LAYOUT_ID -> return DividerViewHolder(parent)
         }
         return super.createViewHolder(parent, type)
     }
@@ -75,6 +76,10 @@ class BottomContentFactory(
 
     fun type(processingHeaderUiModel: ProcessingHeaderUiModel): Int {
         return ProcessingHeaderViewHolder.LAYOUT_ID
+    }
+
+    fun type(dividerUiModel: DividerUiModel): Int {
+        return DividerViewHolder.LAYOUT_ID
     }
 
     override fun type(flashSaleWidgetModel: ShopFlashSaleWidgetDataModel): Int {

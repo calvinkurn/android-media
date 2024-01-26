@@ -28,7 +28,8 @@ data class WaitingHeaderUiModel(
     val shouldHidePrimaryButton: Boolean,
     val primaryButtonText: String,
     val shouldHideSecondaryButton: Boolean,
-    val secondaryButtonText: String
+    val secondaryButtonText: String,
+    val highlightLastThreeDigits: Boolean,
 ) : Visitable<BottomContentFactory> {
 
     override fun type(typeFactory: BottomContentFactory): Int {
@@ -66,7 +67,8 @@ data class WaitingHeaderUiModel(
                 thanksPageData.configFlagData?.shouldHideHomeButton == true,
                 primaryButtonText.orEmpty(),
                 false,
-                secondaryButtonText.orEmpty()
+                secondaryButtonText.orEmpty(),
+                PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType) == BankTransfer
             )
         }
     }
