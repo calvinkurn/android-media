@@ -15,7 +15,7 @@ typealias FlattenParam = VideoFlattenRepositoryImpl.Param
 
 interface VideoFlattenRepository {
 
-    fun flatten(param: FlattenParam): Flow<String>
+    fun flatten(param: FlattenParam, fileNameAppendix: String): Flow<String>
     fun isFlattenOngoing(): Boolean
     fun cancel()
 }
@@ -27,7 +27,7 @@ class VideoFlattenRepositoryImpl @Inject constructor(
 
     private var executionId = 0L
 
-    override fun flatten(param: FlattenParam): Flow<String> {
+    override fun flatten(param: FlattenParam, fileNameAppendix: String): Flow<String> {
         return callbackFlow {
             // this resized ratio will be used both canvas image and video output
             val metadata = metadataExtractorRepository.extract(param.videoPath)
@@ -37,16 +37,19 @@ class VideoFlattenRepositoryImpl @Inject constructor(
             val textCanvasPath = imageSaveRepository.saveBitmap(param.canvasTextBitmap, canvasSize)
             if (textCanvasPath.isEmpty()) trySend("")
 
+            val outputPath = flattenResultFilePath(fileNameAppendix)
+
             val command = createFfmpegParam(
                 textCanvasPath,
                 param.videoPath,
                 param.isRemoveAudio,
-                canvasSize
+                canvasSize,
+                outputPath
             )
 
             executionId = FFmpeg.executeAsync(command) { _, returnCode ->
                 if (returnCode == Config.RETURN_CODE_SUCCESS) {
-                    trySend(flattenResultFilePath())
+                    trySend(outputPath)
                 } else {
                     trySend("")
                 }
@@ -74,7 +77,8 @@ class VideoFlattenRepositoryImpl @Inject constructor(
         textPath: String,
         videoPath: String,
         isRemoveAudio: Boolean,
-        canvasSize: CanvasSize
+        canvasSize: CanvasSize,
+        outputPath: String
     ): String {
         val (width, height) = canvasSize
 
@@ -88,7 +92,7 @@ class VideoFlattenRepositoryImpl @Inject constructor(
         val filter = "$portraitSize:$aspectRatioDisabled,$blackCanvas"
         val removeAudioCommand = if (isRemoveAudio) "-an" else ""
 
-        return "-i \"$videoPath\" -i \"$textPath\" -filter_complex \"$filter\" -c:a copy -f mp4 $removeAudioCommand -y ${flattenResultFilePath()}"
+        return "-i \"$videoPath\" -i \"$textPath\" -filter_complex \"$filter\" -c:a copy -f mp4 $removeAudioCommand -y $outputPath"
     }
 
     private fun newRes(width: Int): CanvasSize {
@@ -100,7 +104,15 @@ class VideoFlattenRepositoryImpl @Inject constructor(
 
     private fun cacheDir() = FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path
 
-    private fun flattenResultFilePath() = cacheDir() + "final_result.mp4"
+    private fun flattenResultFilePath(fileNameAppendix: String): String {
+        return cacheDir() + if (fileNameAppendix.isEmpty()) {
+            // no appendix value, will reuse file to reduce size
+            "/$VIDEO_RESULT_BASE_FILENAME.mp4"
+        } else {
+            // with appendix value, will generate new file each export if appendix value is unique each export
+            "/${VIDEO_RESULT_BASE_FILENAME}_$fileNameAppendix.mp4"
+        }
+    }
 
     data class Param(
         val videoPath: String,
@@ -110,6 +122,7 @@ class VideoFlattenRepositoryImpl @Inject constructor(
 
     companion object {
         private const val CACHE_FOLDER = "Tokopedia"
+        private const val VIDEO_RESULT_BASE_FILENAME = "stories_editor_result"
 
         private const val MAX_WIDTH = 720
         private const val MIN_WIDTH = 480

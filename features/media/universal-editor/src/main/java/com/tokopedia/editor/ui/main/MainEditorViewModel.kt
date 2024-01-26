@@ -155,7 +155,7 @@ class MainEditorViewModel @Inject constructor(
 
         viewModelScope.launch {
             videoFlattenRepository
-                .flatten(param)
+                .flatten(param, fileNameAppendix = paramFetcher.get().custom.videoFileResultAppendix)
                 .flowOn(dispatchers.computation)
                 .collect {
                     setAction(MainEditorEffect.HideLoading)
