@@ -18,56 +18,56 @@ class TestBottomNavActivity: AppCompatActivity() {
         menu.add(BottomMenu(
                 id = 0,
                 title = resources.getString(com.tokopedia.navigation.R.string.home),
-                animName = com.tokopedia.navigation.R.raw.bottom_nav_home,
-                animToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_home_to_enabled,
-                animDarkName = com.tokopedia.navigation.R.raw.bottom_nav_home_dark,
-                animDarkToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_home_to_enabled_dark,
-                imageName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_active,
-                imageEnabledName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_enabled,
+                animActive = com.tokopedia.navigation.R.raw.bottom_nav_home,
+                animInactive = com.tokopedia.navigation.R.raw.bottom_nav_home_to_enabled,
+                animActiveDark = com.tokopedia.navigation.R.raw.bottom_nav_home_dark,
+                animInactiveDark = com.tokopedia.navigation.R.raw.bottom_nav_home_to_enabled_dark,
+                imageActive = com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_active,
+                imageInactive = com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_enabled,
                 activeButtonColor =com.tokopedia.navigation.R.color.navigation_dms_color_active_bottom_nav,
                 useBadge = true,
-                animSpeed = 1f,
-                animToEnabledSpeed = 3f))
+                animActiveSpeed = 1f,
+                animInactiveSpeed = 3f))
         menu.add(BottomMenu(
                 id = 1,
                 title = resources.getString(com.tokopedia.navigation.R.string.feed),
-                animName = com.tokopedia.navigation.R.raw.bottom_nav_feed,
-                animToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_feed_to_enabled,
-                animDarkName = com.tokopedia.navigation.R.raw.bottom_nav_feed_dark,
-                animDarkToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_feed_to_enabled_dark,
-                imageName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_active,
-                imageEnabledName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_enabled,
+                animActive = com.tokopedia.navigation.R.raw.bottom_nav_feed,
+                animInactive = com.tokopedia.navigation.R.raw.bottom_nav_feed_to_enabled,
+                animActiveDark = com.tokopedia.navigation.R.raw.bottom_nav_feed_dark,
+                animInactiveDark = com.tokopedia.navigation.R.raw.bottom_nav_feed_to_enabled_dark,
+                imageActive = com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_active,
+                imageInactive = com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_enabled,
                 activeButtonColor = com.tokopedia.navigation.R.color.navigation_dms_color_active_bottom_nav,
                 useBadge = true,
-                animSpeed = 1f,
-                animToEnabledSpeed = 3f))
+                animActiveSpeed = 1f,
+                animInactiveSpeed = 3f))
         menu.add(BottomMenu(
                 id = 2,
                 title = resources.getString(com.tokopedia.navigation.R.string.official),
-                animName = com.tokopedia.navigation.R.raw.bottom_nav_official,
-                animToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_os_to_enabled,
-                animDarkName = com.tokopedia.navigation.R.raw.bottom_nav_official_dark,
-                animDarkToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_os_to_enabled_dark,
-                imageName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_active,
-                imageEnabledName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_enabled,
+                animActive = com.tokopedia.navigation.R.raw.bottom_nav_official,
+                animInactive = com.tokopedia.navigation.R.raw.bottom_nav_os_to_enabled,
+                animActiveDark = com.tokopedia.navigation.R.raw.bottom_nav_official_dark,
+                animInactiveDark = com.tokopedia.navigation.R.raw.bottom_nav_os_to_enabled_dark,
+                imageActive = com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_active,
+                imageInactive = com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_enabled,
                 activeButtonColor = com.tokopedia.navigation.R.color.navigation_dms_color_active_bottom_nav_os,
                 useBadge = true,
-                animSpeed = 1f,
-                animToEnabledSpeed = 3f))
+                animActiveSpeed = 1f,
+                animInactiveSpeed = 3f))
         menu.add(
             BottomMenu(
                 id = 3,
                 title = resources.getString(R.string.uoh),
-                animName = R.raw.bottom_nav_transaction,
-                animToEnabledName = R.raw.bottom_nav_transaction_to_enabled,
-                animDarkName = R.raw.bottom_nav_transaction_dark,
-                animDarkToEnabledName = R.raw.bottom_nav_transaction_to_enabled_dark,
-                imageName = R.drawable.ic_bottom_nav_uoh_active,
-                imageEnabledName = R.drawable.ic_bottom_nav_uoh_enabled,
+                animActive = R.raw.bottom_nav_transaction,
+                animInactive = R.raw.bottom_nav_transaction_to_enabled,
+                animActiveDark = R.raw.bottom_nav_transaction_dark,
+                animInactiveDark = R.raw.bottom_nav_transaction_to_enabled_dark,
+                imageActive = R.drawable.ic_bottom_nav_uoh_active,
+                imageInactive = R.drawable.ic_bottom_nav_uoh_enabled,
                 activeButtonColor = com.tokopedia.unifyprinciples.R.color.Unify_G500,
                 useBadge = true,
-                animSpeed = 1f,
-                animToEnabledSpeed = 3f
+                animActiveSpeed = 1f,
+                animInactiveSpeed = 3f
             )
         )
         bottomNav.setMenu(menu)
