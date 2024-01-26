@@ -3,9 +3,11 @@ package com.tokopedia.topupbills.telco.common.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -26,6 +28,7 @@ import javax.inject.Inject
  */
 class SharedTelcoViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
+    private val contactDataSource: ContactDataSource,
     val dispatcher: CoroutineDispatcher
 ) :
     BaseViewModel(dispatcher) {
@@ -101,6 +104,10 @@ class SharedTelcoViewModel @Inject constructor(
         }) {
             _catalogPrefixSelect.postValue(Fail(it))
         }
+    }
+
+    fun getContactList(): MutableList<TopupBillsContact> {
+        return contactDataSource.getContactList()
     }
 
     companion object {

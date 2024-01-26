@@ -18,7 +18,6 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
-import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
@@ -468,10 +467,6 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 topupBillsViewModel.createCatalogPluginParams(operatorId, categoryId)
             )
         }
-    }
-
-    fun getContactList(): MutableList<TopupBillsContact> {
-        return topupBillsViewModel.getContactList()
     }
 
     fun getFavoriteNumbers(categoryId: Int) {

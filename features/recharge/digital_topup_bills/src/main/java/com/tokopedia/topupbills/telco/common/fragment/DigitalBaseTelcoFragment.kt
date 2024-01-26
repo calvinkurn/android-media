@@ -16,6 +16,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
@@ -419,6 +420,10 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     fun sendImpressionRecents() {
         viewModel.setRecentsImpression()
+    }
+
+    fun getContactList(): MutableList<TopupBillsContact> {
+        return viewModel.getContactList()
     }
 
     override fun onMenuDetailError(error: Throwable) {
