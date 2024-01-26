@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.csat.view
 
+import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
@@ -32,6 +33,58 @@ class CsatViewModel @Inject constructor(
             it.copy(
                 selectedPoint = pointModel
             )
+        }
+    }
+
+    fun selectSelectedReason(reason: String) {
+        _csatDataStateFlow.value.selectedReasons.let {
+            if (!it.contains(reason)) {
+                it.add(reason)
+            }
+        }
+
+        _csatDataStateFlow.value.selectedReasons.forEach {
+            Log.d("Irfan", it)
+        }
+        updateButton()
+    }
+
+    fun unselectSelectedReason(reason: String) {
+        _csatDataStateFlow.value.selectedReasons.let {
+            if (it.contains(reason)) {
+                it.remove(reason)
+            }
+        }
+
+        _csatDataStateFlow.value.selectedReasons.forEach {
+            Log.d("Irfan", it)
+        }
+        updateButton()
+    }
+
+    fun setOtherReason(otherReason: String) {
+        val minimumOtherReasonChar = 30
+        if (otherReason.length < minimumOtherReasonChar) {
+            _csatDataStateFlow.value.isOtherReasonError = true
+        } else {
+            _csatDataStateFlow.value.otherReason = otherReason
+        }
+        Log.d("Irfan", _csatDataStateFlow.value.otherReason)
+        updateButton()
+    }
+
+    private fun updateButton() {
+        val minimumOtherReasonChar = 30
+        _csatDataStateFlow.value.let {
+            if (it.selectedReasons.isEmpty() || it.otherReason.length < minimumOtherReasonChar) {
+                _csatDataStateFlow.update {
+                    it.copy(isButtonEnabled = false)
+                }
+            } else {
+                _csatDataStateFlow.update {
+                    it.copy(isButtonEnabled = true)
+                }
+            }
         }
     }
 

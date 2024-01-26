@@ -22,7 +22,7 @@
             tools:text="Gimana pengalamanmu dengan Tokopedia TokopediaTokopediaTokopedia Care?" />
 
         <LinearLayout
-            android:id="@+id/csat_emoji"
+            android:id="@+id/csat_emoji_container"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
@@ -40,7 +40,7 @@
             android:gravity="center_horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/csat_emoji"
+            app:layout_constraintTop_toBottomOf="@+id/csat_emoji_container"
             app:typographyType="display_2"
             app:typographyWeight="bold"
             tools:text="Tidak Puas" />
@@ -64,14 +64,13 @@
             app:typographyWeight="bold"
             tools:text="Apa yang bikin kamu kecewa?" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/csat_rv_reasons"
+        <LinearLayout
+            android:id="@+id/csat_reason_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/csat_reason_title"
-            tools:itemCount="4"
-            tools:listitem="@layout/item_csat_reason" />
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/csat_reason_title" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/csat_other_reason_title"
@@ -79,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/csat_rv_reasons"
+            app:layout_constraintTop_toBottomOf="@+id/csat_reason_container"
             app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Gimana kami bisa memperbaikinya?" />
@@ -98,6 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
+            android:text="Kirim"
             app:layout_constraintTop_toBottomOf="@+id/csat_other_reason"
             tools:layout_editor_absoluteX="16dp" />
 

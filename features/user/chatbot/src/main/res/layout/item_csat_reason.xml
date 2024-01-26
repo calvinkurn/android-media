@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-        android:id="@+id/checkboxUnify"
+        android:id="@+id/csat_reason_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -14,11 +16,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/csat_other_reason_title"
+        android:id="@+id/csat_reason_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/checkboxUnify"
-        app:layout_constraintTop_toBottomOf="@+id/csat_rv_reasons"
+        app:layout_constraintStart_toEndOf="@+id/csat_reason_checkbox"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_2"
         tools:text="Gimana kami bisa memperbaikinya memperbaikinya memperbaikinya memperbaikinya?" />
 

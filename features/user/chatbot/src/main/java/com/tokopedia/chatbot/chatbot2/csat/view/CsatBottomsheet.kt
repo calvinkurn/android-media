@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,8 +21,11 @@ import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.dummyData
 import com.tokopedia.chatbot.databinding.BottomsheetCsatBinding
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -110,27 +114,31 @@ class CsatBottomsheet :
     private fun renderCsat(context: Context, csatModel: CsatModel) {
         viewBinding?.csatTitle?.text = csatModel.title
         renderEmojis(context, csatModel)
-        if (csatModel.points.isNotEmpty()) {
-            renderReasons(csatModel)
-            renderOtherReason(csatModel)
-        }
+        renderReasons(csatModel)
+        renderOtherReason(csatModel)
     }
 
     private fun renderEmojis(context: Context, csatModel: CsatModel) {
         viewBinding?.csatCaption?.text = csatModel.selectedPoint.caption
-        viewBinding?.csatCaption?.setTextColor(ContextCompat.getColor(context, captionColors[csatModel.selectedPoint.score - 1]))
-        viewBinding?.csatEmoji?.removeAllViews()
+        viewBinding?.csatCaption?.setTextColor(
+            ContextCompat.getColor(
+                context,
+                captionColors[csatModel.selectedPoint.score - 1]
+            )
+        )
+        viewBinding?.csatEmojiContainer?.removeAllViews()
 
         csatModel.points.forEach { pointUiModel ->
-            val emojiImageUnify = getEmojiImageUnify(context, pointUiModel, csatModel.selectedPoint.score)
+            val emojiImageUnify =
+                getEmojiLayout(context, pointUiModel, csatModel.selectedPoint.score)
             emojiImageUnify.setOnClickListener {
                 viewModel.setSelectedScore(pointUiModel)
             }
-            viewBinding?.csatEmoji?.addView(emojiImageUnify)
+            viewBinding?.csatEmojiContainer?.addView(emojiImageUnify)
         }
     }
 
-    private fun getEmojiImageUnify(
+    private fun getEmojiLayout(
         context: Context,
         point: PointModel,
         selectedScore: Int
@@ -164,12 +172,31 @@ class CsatBottomsheet :
 
     private fun renderReasons(csatModel: CsatModel) {
         viewBinding?.csatReasonTitle?.text = csatModel.title
-        viewBinding?.csatRvReasons
+        viewBinding?.csatReasonContainer?.removeAllViews()
+        csatModel.selectedPoint.reasons.forEach { reason ->
+            val reasonLayout = layoutInflater.inflate(R.layout.item_csat_reason, null)
+            reasonLayout.findViewById<Typography>(R.id.csat_reason_title).text = reason
+            reasonLayout.findViewById<CheckboxUnify>(R.id.csat_reason_checkbox)
+                .setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (isChecked) {
+                        viewModel.selectSelectedReason(reason)
+                    } else {
+                        viewModel.unselectSelectedReason(reason)
+                    }
+                }
+            viewBinding?.csatReasonContainer?.addView(reasonLayout)
+        }
     }
 
     private fun renderOtherReason(csatModel: CsatModel) {
         viewBinding?.csatOtherReasonTitle?.text = csatModel.selectedPoint.otherReasonTitle
-        viewBinding?.csatOtherReason?.setMessage(csatModel.otherReason)
+        viewBinding?.csatOtherReason?.setCounter(csatModel.selectedPoint.maximumOtherReasonChar)
+        viewBinding?.csatOtherReason?.minLine = 4
+        viewBinding?.csatOtherReason?.setLabel("Tulis detailnya di sini, ya..")
+        viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.selectedPoint.minimumOtherReasonChar} karakter")
+        viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
+            viewModel.setOtherReason(it.toString())
+        }
     }
 
     override fun getComponent(): CsatComponent {

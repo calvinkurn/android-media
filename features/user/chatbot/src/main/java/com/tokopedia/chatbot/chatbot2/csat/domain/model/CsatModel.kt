@@ -4,7 +4,10 @@ data class CsatModel(
     var title: String = "",
     var points: MutableList<PointModel> = mutableListOf(),
     var selectedPoint: PointModel = PointModel(),
-    var otherReason: String = ""
+    var selectedReasons: MutableList<String> = mutableListOf(),
+    var otherReason: String = "",
+    var isOtherReasonError: Boolean = false,
+    var isButtonEnabled: Boolean = false
 )
 
 data class PointModel(
@@ -12,18 +15,22 @@ data class PointModel(
     var caption: String = "",
     var reasonTitle: String = "",
     var reasons: List<String> = emptyList(),
-    var selectedReasons: List<String> = emptyList(),
-    var otherReasonTitle: String = ""
+    var otherReasonTitle: String = "",
+    var minimumOtherReasonChar: Int = 0,
+    var maximumOtherReasonChar: Int = 0
 )
 
-val dummyData = CsatModel(
-    title = "Gimana pengalamanmu dengan Toko Care?",
+var dummyData = CsatModel(
+    title = "Gimana pengalamanmu dengan Tokopedia Care?",
     points = mutableListOf(
         PointModel(
             score = 1,
             caption = "Sangat Tidak Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
+                "Reason 1",
+                "Reason 11",
+                "Reason 111",
                 "Tokopedia Care susah diakses",
                 "Jawaban TANYA (Virtual Assistant) tidak membantu"
             ),
@@ -34,6 +41,12 @@ val dummyData = CsatModel(
             caption = "Tidak Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
+                "Reason 2",
+                "Reason 22",
+                "Reason 222",
+                "Reason 2",
+                "Reason 22",
+                "Reason 222",
                 "Tokopedia Care susah diakses",
                 "Jawaban TANYA (Virtual Assistant) tidak membantu"
             ),
@@ -44,6 +57,15 @@ val dummyData = CsatModel(
             caption = "Kurang Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
+                "Reason 3",
+                "Reason 33",
+                "Reason 333",
+                "Reason 3",
+                "Reason 33",
+                "Reason 333",
+                "Reason 3",
+                "Reason 33",
+                "Reason 333",
                 "Tokopedia Care susah diakses",
                 "Jawaban TANYA (Virtual Assistant) tidak membantu"
             ),
@@ -54,6 +76,18 @@ val dummyData = CsatModel(
             caption = "Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
+                "Reason 4",
+                "Reason 44",
+                "Reason 444",
+                "Reason 4444",
+                "Reason 44444",
+                "Reason 444444",
+                "Reason 4444444",
+                "Reason 44444444",
+                "Reason 444444444",
+                "Reason 4444444444",
+                "Reason 44444444444",
+                "Reason 444444444444",
                 "Tokopedia Care susah diakses",
                 "Jawaban TANYA (Virtual Assistant) tidak membantu"
             ),
@@ -64,6 +98,18 @@ val dummyData = CsatModel(
             caption = "Sangat Puas",
             reasonTitle = "Apa yang menurut kamu kurang?",
             reasons = listOf(
+                "Reason 5",
+                "Reason 55",
+                "Reason 555",
+                "Reason 5",
+                "Reason 55",
+                "Reason 555",
+                "Reason 5",
+                "Reason 55",
+                "Reason 555",
+                "Reason 5",
+                "Reason 55",
+                "Reason 555",
                 "Tokopedia Care susah diakses",
                 "Jawaban TANYA (Virtual Assistant) tidak membantu"
             ),
@@ -71,13 +117,18 @@ val dummyData = CsatModel(
         )
     ),
     selectedPoint = PointModel(
-        score = 4,
-        caption = "Puas",
+        score = 1,
+        caption = "Sangat Tidak Puas",
         reasonTitle = "Apa yang menurut kamu kurang?",
         reasons = listOf(
+            "Reason 1",
+            "Reason 11",
+            "Reason 111",
             "Tokopedia Care susah diakses",
             "Jawaban TANYA (Virtual Assistant) tidak membantu"
         ),
-        otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?"
+        otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?",
+        minimumOtherReasonChar = 30,
+        maximumOtherReasonChar = 1500
     )
 )
