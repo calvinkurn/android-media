@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.domain
+package com.tokopedia.shareexperience.domain.util
 
 object ShareExConstants {
     object RemoteConfigKey {

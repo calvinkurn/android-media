@@ -3,20 +3,17 @@ package com.tokopedia.shareexperience.ui.view
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.os.Bundle
-import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingOverlayBinding
-import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import com.tokopedia.shareexperience.domain.util.ShareExResult
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -29,7 +26,7 @@ class ShareExLoadingDialog(
     private val id: String,
     private val pageTypeEnum: ShareExPageTypeEnum,
     private val onResult: (ShareExResult<ShareExBottomSheetModel>) -> Unit
-): Dialog(context, R.style.CustomDialogTheme) {
+) : Dialog(context, R.style.CustomDialogTheme) {
 
     private val weakContext = WeakReference(context)
     private var _binding: ShareexperienceLoadingOverlayBinding? = null

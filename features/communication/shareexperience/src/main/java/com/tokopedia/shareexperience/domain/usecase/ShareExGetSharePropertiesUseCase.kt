@@ -1,10 +1,10 @@
 package com.tokopedia.shareexperience.domain.usecase
 
-import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExShopBottomSheetRequest
+import com.tokopedia.shareexperience.domain.util.ShareExResult
 import kotlinx.coroutines.flow.Flow
 
 interface ShareExGetSharePropertiesUseCase {

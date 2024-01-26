@@ -7,8 +7,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.ShareExWrapperResponseDto
 import com.tokopedia.shareexperience.data.mapper.ShareExPropertyMapper
 import com.tokopedia.shareexperience.data.query.ShareExGetSharePropertiesQuery
-import com.tokopedia.shareexperience.domain.ShareExResult
-import com.tokopedia.shareexperience.domain.asFlowResult
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetWrapperRequest
@@ -16,6 +14,8 @@ import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDis
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExShopBottomSheetRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
+import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.shareexperience.domain.util.asFlowResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn

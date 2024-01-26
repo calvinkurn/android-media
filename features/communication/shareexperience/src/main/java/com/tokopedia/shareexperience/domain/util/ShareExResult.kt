@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.domain
+package com.tokopedia.shareexperience.domain.util
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

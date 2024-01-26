@@ -5,9 +5,9 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shareexperience.domain.ShareExResult
-import com.tokopedia.shareexperience.domain.asFlowResult
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetDownloadedImageUseCase
+import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.shareexperience.domain.util.asFlowResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ShareExGetDownloadedImageUseCaseImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dispatchers: CoroutineDispatchers
-): ShareExGetDownloadedImageUseCase {
+) : ShareExGetDownloadedImageUseCase {
 
     override suspend fun downloadImage(imageUrl: String): Flow<ShareExResult<Uri>> {
         return flow {

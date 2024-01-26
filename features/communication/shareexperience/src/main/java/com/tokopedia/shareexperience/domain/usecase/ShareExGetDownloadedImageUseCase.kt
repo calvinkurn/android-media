@@ -1,7 +1,7 @@
 package com.tokopedia.shareexperience.domain.usecase
 
 import android.net.Uri
-import com.tokopedia.shareexperience.domain.ShareExResult
+import com.tokopedia.shareexperience.domain.util.ShareExResult
 import kotlinx.coroutines.flow.Flow
 
 interface ShareExGetDownloadedImageUseCase {

@@ -6,8 +6,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGeneratorWrapperResponseDto
 import com.tokopedia.shareexperience.data.query.ShareExImageGeneratorQuery
-import com.tokopedia.shareexperience.domain.ShareExResult
-import com.tokopedia.shareexperience.domain.asFlowResult
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
 import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
@@ -15,6 +13,8 @@ import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareEx
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorWrapperRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetGeneratedImageUseCase
+import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.shareexperience.domain.util.asFlowResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn

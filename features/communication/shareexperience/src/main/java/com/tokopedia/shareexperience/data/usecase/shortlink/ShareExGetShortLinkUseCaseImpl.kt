@@ -1,11 +1,6 @@
 package com.tokopedia.shareexperience.data.usecase.shortlink
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_DESCRIPTION_RAW
-import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_IMAGE_URL_RAW
-import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_TITLE_RAW
-import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkValue.SOURCE_SHARING
-import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkFallbackPriorityEnum
 import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkAdditionalParamRequest
@@ -17,6 +12,11 @@ import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.Share
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetAffiliateLinkUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetBranchLinkUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetShortLinkUseCase
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.ShortLinkKey.OG_DESCRIPTION_RAW
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.ShortLinkKey.OG_IMAGE_URL_RAW
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.ShortLinkKey.OG_TITLE_RAW
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.ShortLinkValue.SOURCE_SHARING
+import com.tokopedia.shareexperience.domain.util.ShareExResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest

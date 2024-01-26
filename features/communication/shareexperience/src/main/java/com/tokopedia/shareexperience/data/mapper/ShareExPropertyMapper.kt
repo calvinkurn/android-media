@@ -5,7 +5,6 @@ import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateEligibil
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorArgResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
-import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExFeatureEnum
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
@@ -15,6 +14,7 @@ import com.tokopedia.shareexperience.domain.model.property.ShareExBottomSheetPag
 import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
+import com.tokopedia.shareexperience.domain.util.ShareExConstants
 import javax.inject.Inject
 
 class ShareExPropertyMapper @Inject constructor(

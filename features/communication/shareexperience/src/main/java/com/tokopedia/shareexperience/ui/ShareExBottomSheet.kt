@@ -19,11 +19,11 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shareexperience.data.analytic.ShareExAnalytics
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
-import com.tokopedia.shareexperience.domain.ShareExConstants.DefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.DefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
 import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExBottomSheetSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
