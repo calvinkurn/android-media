@@ -3581,22 +3581,26 @@ open class DynamicProductDetailFragment :
     }
 
     private fun initNavigationTab(data: ProductInfoP2UiData) {
-        val items = data.navBar.items.map { item ->
-            NavigationTab.Item(item.title, item.componentName) {
-                adapter.getComponentPositionByName(item.componentName)
-            }
-        }
-
         val navigation = binding?.pdpNavigation
-        getRecyclerView()?.let { recyclerView ->
-            if (items.isEmpty()) {
-                navigation?.stop(recyclerView)
-            } else {
-                val offsetY = navToolbar?.height.orZero()
-                navigation?.start(recyclerView, items, this, offsetY = offsetY)
+
+        if (isTabletMode()) {
+            navigation?.hide()
+        } else {
+            val items = data.navBar.items.map { item ->
+                NavigationTab.Item(item.title, item.componentName) {
+                    adapter.getComponentPositionByName(item.componentName)
+                }
+            }
+
+            getRecyclerView()?.let { recyclerView ->
+                if (items.isEmpty()) {
+                    navigation?.stop(recyclerView)
+                } else {
+                    val offsetY = navToolbar?.height.orZero()
+                    navigation?.start(recyclerView, items, this, offsetY = offsetY)
+                }
             }
         }
-        navigation?.hide()
     }
 
     override fun onButtonFollowNplClick() {
