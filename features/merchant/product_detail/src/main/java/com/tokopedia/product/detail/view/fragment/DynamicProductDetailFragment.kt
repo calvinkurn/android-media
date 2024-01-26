@@ -6376,7 +6376,9 @@ open class DynamicProductDetailFragment :
 
     private fun initializeShareEx() {
         if (isUsingShareEx()) {
-            shareExInitializer = ShareExInitializer(this)
+            context?.let {
+                shareExInitializer = ShareExInitializer(it)
+            }
         }
     }
 
