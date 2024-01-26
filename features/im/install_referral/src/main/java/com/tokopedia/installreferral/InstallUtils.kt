@@ -20,6 +20,7 @@ object InstallUtils {
 
     val IRIS_ANALYTICS_EVENT_KEY = "event"
     val IRIS_ANALYTICS_APP_INSTALL = "appInstall"
+    val REFERRER = "referrer"
     val INSTALL_REFERRAL_ACTION="com.android.vending.INSTALL_REFERRER"
 
 
@@ -49,10 +50,11 @@ object InstallUtils {
     }
 
 
-    fun sendIrisInstallEvent(context: Context?) {
+    fun sendIrisInstallEvent(context: Context?, installReferrer: String?) {
         if(context!= null) {
             val map = HashMap<String, Any>()
             map[InstallUtils.IRIS_ANALYTICS_EVENT_KEY] = InstallUtils.IRIS_ANALYTICS_APP_INSTALL
+            map[REFERRER] = installReferrer?: ""
             IrisAnalytics.getInstance(context).sendEvent(map)
         }
     }

@@ -65,7 +65,8 @@ object AddToCartBaseAnalytics {
         level2Name: String,
         level3Id: String,
         level3Name: String,
-        userId: String
+        userId: String,
+        shopName: String
     ) {
         try {
             val splitCategory = catLvl1.split(CATEGORY_SPLITTER)
@@ -92,6 +93,7 @@ object AddToCartBaseAnalytics {
                 this.sku = productId
                 // contentId value is stringify array of productId
                 this.contentId = JSONArray().put(productId).toString()
+                this.shopName = shopName.ifBlank { VALUE_NONE_OTHER }
             }
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, data))
         } catch (t: Throwable) {

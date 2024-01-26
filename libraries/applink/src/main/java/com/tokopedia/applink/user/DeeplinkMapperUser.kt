@@ -19,7 +19,6 @@ object DeeplinkMapperUser {
     const val KEY_ROLLENCE_PROFILE_MANAGEMENT_M2 = "M2_Profile_Mgmt"
     const val ROLLENCE_GOTO_KYC_MA = "goto_kyc_apps"
     const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
-    const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
     const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
     const val KEY_SCP_DEBUG = "key_force_scp"
     const val PREF_SCP_DEBUG = "scp_goto_login_and"
@@ -44,7 +43,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getProfileApplink()
             deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
-            deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
+            deeplink == ApplinkConst.PRIVACY_CENTER -> ApplinkConstInternalUserPlatform.PRIVACY_CENTER
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
             deeplink == ApplinkConst.LOGIN -> getLoginApplink()
             deeplink == ApplinkConst.REGISTER_INIT -> getRegisterApplink()
@@ -155,20 +154,6 @@ object DeeplinkMapperUser {
         } else {
             true
         }
-    }
-
-    private fun getApplinkPrivacyCenter(): String {
-        return if (isRollencePrivacyCenterActivated()) {
-            ApplinkConstInternalUserPlatform.PRIVACY_CENTER
-        } else {
-            ApplinkConsInternalHome.HOME_NAVIGATION
-        }
-    }
-
-    fun isRollencePrivacyCenterActivated(): Boolean {
-        return getAbTestPlatform()
-            .getString(ROLLENCE_PRIVACY_CENTER)
-            .isNotEmpty()
     }
 
     fun getRegisteredUserNavigation(deeplink: String): String {

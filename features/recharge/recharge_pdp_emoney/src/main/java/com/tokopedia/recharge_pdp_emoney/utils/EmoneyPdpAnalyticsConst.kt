@@ -23,7 +23,6 @@ object EmoneyPdpAnalyticsConst {
         const val CLICK_UPDATE_SALDO = "click update saldo"
         const val CLICK_LIHAT_DETAIL = "click lihat detail"
         const val CLICK_X_BUTTON_CARD_NUMBER = "click x button card number"
-        const val CLICK_CAMERA_ICON = "click camera icon"
         const val INPUT_CARD_NUMBER = "input card number"
         const val CLICK_ORDER_LIST_SECTION = "click order list section"
         const val CLICK_PROMO_SECTION = "click promo section"
