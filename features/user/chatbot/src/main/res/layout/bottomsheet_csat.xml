@@ -93,7 +93,7 @@
             app:layout_constraintTop_toBottomOf="@+id/csat_other_reason_title" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/csat_button_send"
+            android:id="@+id/csat_button_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"

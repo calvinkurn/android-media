@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
+import com.tokopedia.chatbot.chatbot2.csat.domain.model.SubmitButtonState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,13 +18,16 @@ class CsatViewModel @Inject constructor(
     private val _csatDataStateFlow = MutableStateFlow(CsatModel())
     val csatDataStateFlow = _csatDataStateFlow.asStateFlow()
 
+    private val _submitButtonStateFlow = MutableStateFlow(SubmitButtonState())
+    val submitButtonStateFlow = _submitButtonStateFlow.asStateFlow()
 
     fun initializeData(csatModel: CsatModel) {
         _csatDataStateFlow.update {
             it.copy(
                 title = csatModel.title,
                 points = csatModel.points,
-                selectedPoint = csatModel.selectedPoint
+                selectedPoint = csatModel.selectedPoint,
+                selectedReasons = mutableListOf()
             )
         }
     }
@@ -31,7 +35,8 @@ class CsatViewModel @Inject constructor(
     fun setSelectedScore(pointModel: PointModel) {
         _csatDataStateFlow.update {
             it.copy(
-                selectedPoint = pointModel
+                selectedPoint = pointModel,
+                selectedReasons = mutableListOf()
             )
         }
     }
@@ -46,7 +51,6 @@ class CsatViewModel @Inject constructor(
         _csatDataStateFlow.value.selectedReasons.forEach {
             Log.d("Irfan", it)
         }
-        updateButton()
     }
 
     fun unselectSelectedReason(reason: String) {
@@ -59,30 +63,30 @@ class CsatViewModel @Inject constructor(
         _csatDataStateFlow.value.selectedReasons.forEach {
             Log.d("Irfan", it)
         }
-        updateButton()
     }
 
     fun setOtherReason(otherReason: String) {
-        val minimumOtherReasonChar = 30
-        if (otherReason.length < minimumOtherReasonChar) {
-            _csatDataStateFlow.value.isOtherReasonError = true
-        } else {
-            _csatDataStateFlow.value.otherReason = otherReason
-        }
+        _csatDataStateFlow.value.otherReason = otherReason
         Log.d("Irfan", _csatDataStateFlow.value.otherReason)
-        updateButton()
     }
 
-    private fun updateButton() {
+    fun updateButton() {
         val minimumOtherReasonChar = 30
-        _csatDataStateFlow.value.let {
-            if (it.selectedReasons.isEmpty() || it.otherReason.length < minimumOtherReasonChar) {
-                _csatDataStateFlow.update {
-                    it.copy(isButtonEnabled = false)
+        _csatDataStateFlow.value.let { csatModel ->
+            val isSelectedReasonsEmpty = csatModel.selectedReasons.isEmpty()
+            val isOtherReasonNotSatisfied =
+                csatModel.otherReason.isNotBlank() && csatModel.otherReason.length < minimumOtherReasonChar
+            if (isSelectedReasonsEmpty || isOtherReasonNotSatisfied) {
+                _submitButtonStateFlow.update {
+                    it.copy(
+                        isEnabled = false
+                    )
                 }
             } else {
-                _csatDataStateFlow.update {
-                    it.copy(isButtonEnabled = true)
+                _submitButtonStateFlow.update {
+                    it.copy(
+                        isEnabled = true
+                    )
                 }
             }
         }

@@ -5,9 +5,7 @@ data class CsatModel(
     var points: MutableList<PointModel> = mutableListOf(),
     var selectedPoint: PointModel = PointModel(),
     var selectedReasons: MutableList<String> = mutableListOf(),
-    var otherReason: String = "",
-    var isOtherReasonError: Boolean = false,
-    var isButtonEnabled: Boolean = false
+    var otherReason: String = ""
 )
 
 data class PointModel(
@@ -18,6 +16,10 @@ data class PointModel(
     var otherReasonTitle: String = "",
     var minimumOtherReasonChar: Int = 0,
     var maximumOtherReasonChar: Int = 0
+)
+
+data class SubmitButtonState(
+    var isEnabled: Boolean = false
 )
 
 var dummyData = CsatModel(

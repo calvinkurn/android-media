@@ -19,6 +19,7 @@ import com.tokopedia.chatbot.chatbot2.csat.di.CsatComponent
 import com.tokopedia.chatbot.chatbot2.csat.di.DaggerCsatComponent
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
+import com.tokopedia.chatbot.chatbot2.csat.domain.model.SubmitButtonState
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.dummyData
 import com.tokopedia.chatbot.databinding.BottomsheetCsatBinding
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -106,7 +107,14 @@ class CsatBottomsheet :
             viewModel.csatDataStateFlow.collectLatest { csatModel ->
                 context?.let { context ->
                     renderCsat(context, csatModel)
+                    viewModel.updateButton()
                 }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.submitButtonStateFlow.collectLatest {
+                renderButtonState(it)
             }
         }
     }
@@ -183,6 +191,7 @@ class CsatBottomsheet :
                     } else {
                         viewModel.unselectSelectedReason(reason)
                     }
+                    viewModel.updateButton()
                 }
             viewBinding?.csatReasonContainer?.addView(reasonLayout)
         }
@@ -196,7 +205,12 @@ class CsatBottomsheet :
         viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.selectedPoint.minimumOtherReasonChar} karakter")
         viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
             viewModel.setOtherReason(it.toString())
+            viewModel.updateButton()
         }
+    }
+
+    private fun renderButtonState(state: SubmitButtonState) {
+        viewBinding?.csatButtonSubmit?.isEnabled = state.isEnabled
     }
 
     override fun getComponent(): CsatComponent {
