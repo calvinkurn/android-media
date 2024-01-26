@@ -17,7 +17,7 @@ class BuyerRequestCancelRespondListenerImpl: IBuyerRequestCancelRespondListener 
 
     override fun onBuyerRequestCancelRespondRejectOrder(reasonBuyer: String) {
         SomAnalytics.eventClickButtonTolakPesananPopup(
-            _mediator.getBuyerRequestCancelRespondOrderStatusCodeString(),
+            _mediator.getBuyerRequestCancelRespondOrderStatusCode().toString(),
             _mediator.getBuyerRequestCancelRespondOrderStatusText()
         )
         val orderRejectRequest = SomRejectRequestParam(
@@ -31,9 +31,13 @@ class BuyerRequestCancelRespondListenerImpl: IBuyerRequestCancelRespondListener 
 
     override fun onBuyerRequestCancelRespondRejectCancelRequest() {
         SomAnalytics.eventClickButtonTolakPesananPopup(
-            _mediator.getBuyerRequestCancelRespondOrderStatusCodeString(),
+            _mediator.getBuyerRequestCancelRespondOrderStatusCode().toString(),
             _mediator.getBuyerRequestCancelRespondOrderStatusText()
         )
         _mediator.getBuyerRequestCancelRespondViewModel().rejectCancelOrder(_mediator.getBuyerRequestCancelRespondOrderId(), _mediator.getBuyerRequestCancelRespondOrderInvoice())
+    }
+
+    override fun onBuyerRequestCancelRespondDismissed() {
+        // noop
     }
 }

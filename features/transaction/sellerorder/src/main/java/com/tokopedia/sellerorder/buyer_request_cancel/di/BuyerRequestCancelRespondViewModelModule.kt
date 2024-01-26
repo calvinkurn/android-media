@@ -9,10 +9,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-/**
- * Created by fwidjaja on 2019-09-30.
- */
-
 @Module
 abstract class BuyerRequestCancelRespondViewModelModule {
     @BuyerRequestCancelRespondScope

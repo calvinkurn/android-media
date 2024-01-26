@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -41,7 +42,9 @@ import javax.inject.Inject
 
 class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
     IBuyerRequestCancelRespondListener.Mediator,
-    IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl() {
+    IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl(),
+    IBuyerRequestCancelRespondBottomSheetManager.Mediator,
+    IBuyerRequestCancelRespondBottomSheetManager by BuyerRequestCancelRespondBottomSheetManagerImpl() {
 
     companion object {
         private const val SCREEN_NAME = "buyer-request-cancel-respond"
@@ -69,7 +72,8 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
         savedInstanceState: Bundle?
     ): View? {
         createView(inflater, container)
-        setupBottomSheet()
+        registerBuyerRequestCancelRespondBottomSheet(this, this, this)
+        showBuyerRequestCancelRespondBottomSheet()
         return binding?.root
     }
 
@@ -91,20 +95,44 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
             ?.inject(this)
     }
 
+    override fun onBuyerRequestCancelRespondDismissed() {
+        finishActivity()
+    }
+
+    override fun getBottomSheetContainer(): CoordinatorLayout? {
+        return binding?.root
+    }
+
     override fun getBuyerRequestCancelRespondOrderId(): String {
-        return getOrderId()
+        return activity?.intent?.getStringExtra(INTENT_PARAM_ORDER_ID) ?: Int.ZERO.toString()
     }
 
     override fun getBuyerRequestCancelRespondOrderInvoice(): String {
         return String.EMPTY
     }
 
-    override fun getBuyerRequestCancelRespondOrderStatusCodeString(): String {
-        return getOrderStatusCode().toString()
+    override fun getBuyerRequestCancelRespondOrderStatusCode(): Int {
+        return activity?.intent?.getIntExtra(INTENT_PARAM_ORDER_STATUS_CODE, 0).orZero()
     }
 
     override fun getBuyerRequestCancelRespondOrderStatusText(): String {
-        return getOrderStatusText()
+        return activity?.intent?.getStringExtra(INTENT_PARAM_ORDER_STATUS_TEXT).orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondL2CancellationReason(): String {
+        return activity?.intent?.getStringExtra(INTENT_PARAM_ORDER_L2_CANCELLATION_REASON).orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondDescription(): String {
+        return activity?.intent?.getStringExtra(INTENT_PARAM_DESCRIPTION).orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondPrimaryTextButton(): String {
+        return activity?.intent?.getStringExtra(INTENT_PARAM_PRIMARY_BUTTON_TEXT).orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondSecondaryTextButton(): String {
+        return activity?.intent?.getStringExtra(INTENT_PARAM_SECONDARY_BUTTON_TEXT).orEmpty()
     }
 
     override fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel {
@@ -113,50 +141,6 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
 
     private fun createView(inflater: LayoutInflater, container: ViewGroup?) {
         binding = FragmentBuyerRequestCancelRespondBinding.inflate(inflater, container, false)
-    }
-
-    private fun setupBottomSheet() {
-        binding?.run {
-            bottomSheet = bottomSheet?.apply {
-                setupBuyerRequestCancelBottomSheet(
-                    buyerRequestCancelRespondBottomSheet = this,
-                    orderStatusCode = getOrderStatusCode(),
-                    reason = getCancellationReason(),
-                    description = getDescription(),
-                    primaryButtonText = getPrimaryButtonText(),
-                    secondaryButtonText = getSecondaryButtonText()
-                )
-            } ?: BuyerRequestCancelRespondBottomSheet(root.context).apply {
-                setupBuyerRequestCancelBottomSheet(
-                    buyerRequestCancelRespondBottomSheet = this,
-                    orderStatusCode = getOrderStatusCode(),
-                    reason = getCancellationReason(),
-                    description = getDescription(),
-                    primaryButtonText = getPrimaryButtonText(),
-                    secondaryButtonText = getSecondaryButtonText()
-                )
-            }
-            bottomSheet?.setOnDismiss { finishActivity() }
-            bottomSheet?.init(root)
-            bottomSheet?.show()
-        }
-    }
-
-    private fun setupBuyerRequestCancelBottomSheet(
-        buyerRequestCancelRespondBottomSheet: BuyerRequestCancelRespondBottomSheet,
-        orderStatusCode: Int = 0,
-        reason: String = "",
-        description: String,
-        primaryButtonText: String,
-        secondaryButtonText: String
-    ) {
-        buyerRequestCancelRespondBottomSheet.apply {
-            registerBuyerRequestCancelRespondListenerMediator(this@BuyerRequestCancelRespondFragment)
-            setListener(this@BuyerRequestCancelRespondFragment)
-            init(reason, orderStatusCode, description, primaryButtonText, secondaryButtonText)
-            hideKnob()
-            showCloseButton()
-        }
     }
 
     private fun observeAcceptOrderResult() {
@@ -205,40 +189,12 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun getOrderId(): String {
-        return activity?.intent?.getStringExtra(INTENT_PARAM_ORDER_ID) ?: Int.ZERO.toString()
-    }
-
-    private fun getOrderStatusCode(): Int {
-        return activity?.intent?.getIntExtra(INTENT_PARAM_ORDER_STATUS_CODE, 0).orZero()
-    }
-
-    private fun getOrderStatusText(): String {
-        return activity?.intent?.getStringExtra(INTENT_PARAM_ORDER_STATUS_TEXT).orEmpty()
-    }
-
-    private fun getCancellationReason(): String {
-        return activity?.intent?.getStringExtra(INTENT_PARAM_ORDER_L2_CANCELLATION_REASON).orEmpty()
-    }
-
-    private fun getDescription(): String {
-        return activity?.intent?.getStringExtra(INTENT_PARAM_DESCRIPTION).orEmpty()
-    }
-
-    private fun getPrimaryButtonText(): String {
-        return activity?.intent?.getStringExtra(INTENT_PARAM_PRIMARY_BUTTON_TEXT).orEmpty()
-    }
-
-    private fun getSecondaryButtonText(): String {
-        return activity?.intent?.getStringExtra(INTENT_PARAM_SECONDARY_BUTTON_TEXT).orEmpty()
-    }
-
     private fun onSuccessRespond(message: String) {
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
             putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_SUCCESS, true)
             putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_MESSAGE, message)
         })
-        finishActivity()
+        bottomSheet?.dismiss()
     }
 
     private fun onErrorRespond(message: String, crashlyticsMessage: String) {

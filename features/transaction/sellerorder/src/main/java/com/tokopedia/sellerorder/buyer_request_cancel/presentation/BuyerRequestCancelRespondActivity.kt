@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.buyer_request_cancel.presentation
 
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -14,7 +16,15 @@ class BuyerRequestCancelRespondActivity : BaseSimpleActivity(), HasComponent<Buy
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        handleDimming()
+        adjustOrientation()
+        adjustDimming()
+    }
+
+    override fun getComponent(): BuyerRequestCancelRespondComponent {
+        return DaggerBuyerRequestCancelRespondComponent
+            .builder()
+            .somComponent(SomComponentInstance.getSomComponent(application))
+            .build()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -33,7 +43,7 @@ class BuyerRequestCancelRespondActivity : BaseSimpleActivity(), HasComponent<Buy
         return BuyerRequestCancelRespondFragment()
     }
 
-    private fun handleDimming() {
+    private fun adjustDimming() {
         try {
             window.setDimAmount(0f)
         } catch (th: Throwable) {
@@ -41,10 +51,9 @@ class BuyerRequestCancelRespondActivity : BaseSimpleActivity(), HasComponent<Buy
         }
     }
 
-    override fun getComponent(): BuyerRequestCancelRespondComponent {
-        return DaggerBuyerRequestCancelRespondComponent
-            .builder()
-            .somComponent(SomComponentInstance.getSomComponent(application))
-            .build()
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 }
