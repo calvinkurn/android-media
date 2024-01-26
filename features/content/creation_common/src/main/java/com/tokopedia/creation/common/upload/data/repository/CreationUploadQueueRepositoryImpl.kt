@@ -74,6 +74,17 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateData(queueId: Int, data: String) {
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase
+                .creationUploadQueueDao()
+                .updateData(
+                    queueId,
+                    data,
+                )
+        }
+    }
+
     private suspend fun <T> lockAndSwitchContext(dispatchers: CoroutineDispatchers, onExecute: suspend () -> T): T {
         return mutex.withLock {
             withContext(dispatchers.io) {
