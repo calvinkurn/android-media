@@ -10,6 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,16 +33,20 @@ import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import kotlinx.coroutines.delay
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * @author by astidhiyaa on 22/01/24
  */
 @Composable
-fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight) { //change into FeedCardModel
+fun FeedProductHighlight(
+    product: ContentTaggedProductUiModel = productHighlight,
+    isVisible: Boolean
+) { //change into FeedCardModel
     NestTheme {
         AnimatedVisibility(
-            visible = true, //TODO: Adjust visibility
+            visible = isVisible,
             enter = slideInVertically(),
             exit = slideOutVertically()
         ) {
@@ -100,8 +109,8 @@ fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight
                     text = "+",
                     variant = ButtonVariant.FILLED,
                     size = ButtonSize.SMALL,
-                    trailingIcon = unifycomponentsR.drawable.iconunify_cart ,
-                    onClick = {  },
+                    trailingIcon = unifycomponentsR.drawable.iconunify_cart,
+                    onClick = { },
                     modifier = Modifier.constrainAs(btnAtc) {
                         width = Dimension.fillToConstraints
                         end.linkTo(parent.end)
@@ -125,20 +134,29 @@ fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight
 }
 
 @Composable
-fun ProductTagItems(products: List<FeedCardProductModel>,
-                    totalProducts: Int) {
-
+fun ProductTagItems(
+    products: List<FeedCardProductModel>,
+    totalProducts: Int
+) {
     Column {
-        FeedProductLabel(products = products, totalProducts = totalProducts)
-        //Add launched effect with delay, add variable remember
-        FeedProductHighlight()
+        var needToBeShown by remember { mutableStateOf(false) }
+        LaunchedEffect(key1 = needToBeShown, block = {
+            delay(3000L)
+            needToBeShown = true
+        })
+        FeedProductLabel(
+            products = products,
+            totalProducts = totalProducts,
+            isVisible = !needToBeShown
+        )
+        FeedProductHighlight(isVisible = needToBeShown)
     }
 }
 
 @Preview
 @Composable
 internal fun ProductHighlightPreview() {
-    FeedProductHighlight()
+    FeedProductHighlight(isVisible = true)
 }
 
 /**
