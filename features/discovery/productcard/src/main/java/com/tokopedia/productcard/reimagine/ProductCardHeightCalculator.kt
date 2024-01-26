@@ -41,7 +41,7 @@ internal fun productCardGridCarouselHeight(
         productImageWidth,
         gridCarouselCardPaddingBottom(context),
         stockInfoHeight(context, productCardModel),
-        gridCarouselNameHeight(context, productCardModel),
+        gridCarouselNameHeight(context),
         priceSectionHeight(context, productCardModel),
         discountSectionBelowPriceHeight(context, productCardModel),
         benefitSectionHeight(context, productCardModel),
@@ -64,13 +64,9 @@ internal fun productCardGridCarouselHeight(
 private fun gridCarouselCardPaddingBottom(context: Context?) =
     context.getPixel(productcardR.dimen.product_card_reimagine_carousel_padding_bottom)
 
-private fun gridCarouselNameHeight(context: Context?, productCardModel: ProductCardModel): Int {
-    val nameLineHeight = productcardR.dimen.product_card_reimagine_name_1_line_height
-
-    return context.getPixel(productcardR.dimen.product_card_reimagine_name_image_margin_top)
-        .plus(context.getPixel(nameLineHeight))
-        .plus(labelAssignedValueAdditionalHeight(context, productCardModel))
-}
+private fun gridCarouselNameHeight(context: Context?): Int =
+    context.getPixel(productcardR.dimen.product_card_reimagine_name_image_margin_top)
+        .plus(context.getPixel(productcardR.dimen.product_card_reimagine_name_1_line_height))
 
 private fun compatPaddingTopBottomMargin(useCompatPadding: Boolean, context: Context?) =
     if (useCompatPadding)
@@ -110,7 +106,7 @@ internal fun productCardListCarouselHeight(
     val productCardStockInfoHeight = stockInfoHeight(context, productCardModel)
 
     val productCardComponentHeightList = listOf(
-        listCarouselNameHeight(context, productCardModel),
+        listCarouselNameHeight(context),
         priceSectionHeight(context, productCardModel),
         discountSectionBelowPriceHeight(context, productCardModel),
         benefitSectionHeight(context, productCardModel),
@@ -135,14 +131,8 @@ internal fun productCardListCarouselHeight(
     return productCardHeight
 }
 
-private fun listCarouselNameHeight(context: Context?, productCardModel: ProductCardModel) =
+private fun listCarouselNameHeight(context: Context?) =
     context.getPixel(productcardR.dimen.product_card_reimagine_name_2_line_height)
-        .plus(labelAssignedValueAdditionalHeight(context, productCardModel))
-
-private fun labelAssignedValueAdditionalHeight(context: Context?, productCardModel: ProductCardModel) =
-    if (productCardModel.labelAssignedValue() != null)
-        context.getPixel(productcardR.dimen.product_card_reimagine_label_assigned_value_additional_height)
-    else 0
 
 private fun stockInfoHeight(context: Context?, productCardModel: ProductCardModel) =
     if (productCardModel.stockInfo() != null)

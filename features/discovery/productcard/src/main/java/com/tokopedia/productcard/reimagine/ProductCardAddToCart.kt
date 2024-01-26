@@ -21,7 +21,6 @@ internal data class AddToCartConstraints(
     @IdRes val end: Int,
     @IdRes val bottom: Int,
 )
-
 internal fun AddToCartButton(
     constraintLayout: ConstraintLayout,
     addToCartConstraints: AddToCartConstraints,
@@ -41,8 +40,8 @@ internal fun AddToCartButton(
             addToCartConstraints.bottom,
             BOTTOM,
         )
-        connect(R.id.productCardAddToCart, START, addToCartConstraints.start, END)
-        connect(R.id.productCardAddToCart, END, addToCartConstraints.end, START)
+        connect(R.id.productCardAddToCart, START, addToCartConstraints.start, START)
+        connect(R.id.productCardAddToCart, END, addToCartConstraints.end, END)
     }
 
     return addToCartButton

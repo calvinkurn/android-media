@@ -2,12 +2,10 @@ package com.tokopedia.productcard.reimagine
 
 import android.graphics.PorterDuff
 import android.text.Spannable
-import android.text.SpannableString
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
@@ -25,7 +23,6 @@ import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.LabelGroupStyle.TEXT_COLOR
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup.Style
-import com.tokopedia.productcard.reimagine.assignedvalue.renderProductNameWithAssignedValue
 import com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
 import com.tokopedia.productcard.reimagine.overlay.LabelOverlay
 import com.tokopedia.productcard.reimagine.ribbon.RibbonView
@@ -53,6 +50,7 @@ internal class ProductCardRenderer(
     private val labelPreventiveOverlay by view.lazyView<Typography?>(R.id.productCardLabelPreventiveOverlay)
     private val labelPreventiveBlock by view.lazyView<Typography?>(R.id.productCardLabelPreventiveBlock)
     private val nameText by lazyThreadSafetyNone { initNameText() }
+    private val labelAssignedValue by view.lazyView<ImageView?>(R.id.productCardLabelAssignedValue)
     private val priceText by view.lazyView<Typography?>(R.id.productCardPrice)
     private val nettPriceIcon by view.lazyView<ImageView?>(R.id.productCardNettPriceIcon)
     private val nettPriceText by view.lazyView<Typography?>(R.id.productCardNettPrice)
@@ -68,9 +66,7 @@ internal class ProductCardRenderer(
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
 
     private fun initNameText(): Typography? =
-        view.findViewById<Typography?>(R.id.productCardName).also {
-            it.setSpannableFactory(SPANNABLE_FACTORY)
-        }
+        view.findViewById<Typography?>(R.id.productCardName)
 
     fun setProductModel(productCardModel: ProductCardModel) {
         renderImage(productCardModel)
@@ -79,6 +75,7 @@ internal class ProductCardRenderer(
         renderLabelPreventiveOverlay(productCardModel)
         renderLabelPreventiveBlock(productCardModel)
         renderName(productCardModel)
+        renderLabelAssignedValue(productCardModel)
         renderPrice(productCardModel)
         renderNettPrice(productCardModel)
         renderSlashedPrice(productCardModel)
@@ -171,14 +168,27 @@ internal class ProductCardRenderer(
         nameText?.background = nameTextBackground(isSafeProduct)
         nameText?.shouldShowWithAction(productCardModel.name.isNotEmpty()) {
             if (isSafeProduct) {
-                it.setText(SpannableString(""), TextView.BufferType.SPANNABLE)
+                it.text = ""
                 it.contentDescription = ""
             } else {
-                val name = MethodChecker.fromHtml(productCardModel.name).toString()
-                it.renderProductNameWithAssignedValue(productCardModel, name)
+                val originalName = MethodChecker.fromHtml(productCardModel.name).toString()
                 it.contentDescription =
-                    context.getString(R.string.content_desc_textViewProductName) + " " + name
+                    context.getString(R.string.content_desc_textViewProductName) + " " + originalName
+
+                val imageURL = productCardModel.labelAssignedValue()?.imageUrl ?: ""
+                val renderName = (if (imageURL.isNotBlank()) " ".repeat(15) else "") + originalName
+                it.text = renderName
             }
+        }
+    }
+
+    private fun renderLabelAssignedValue(productCardModel: ProductCardModel) {
+        val productName = productCardModel.name
+        val imageURL = productCardModel.labelAssignedValue()?.imageUrl ?: ""
+        val hasLabelAssignedValue = productName.isNotBlank() && imageURL.isNotBlank()
+
+        labelAssignedValue.shouldShowWithAction(hasLabelAssignedValue) {
+            it.loadImage(imageURL)
         }
     }
 

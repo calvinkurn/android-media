@@ -448,6 +448,7 @@ private fun labelAssignedValue(): ProductCardReimagineMatcher {
     val matcher = mapOf<Int, Matcher<View?>>(
         R.id.productCardImage to isDisplayed(),
         R.id.productCardName to isDisplayedContainingText(model.name),
+        R.id.productCardLabelAssignedValue to isDisplayed(),
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
