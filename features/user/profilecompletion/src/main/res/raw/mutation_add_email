@@ -1,7 +1,0 @@
-mutation add_email($email: String!, $otpCode: String!, $validateToken: String) {
-  userProfileCompletionUpdate(email: $email, otpCode: $otpCode, validateToken: $validateToken) {
-    isSuccess
-    emailMessage
-    completionScore
-  }
-}
