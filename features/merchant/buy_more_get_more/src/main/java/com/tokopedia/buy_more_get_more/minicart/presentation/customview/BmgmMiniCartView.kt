@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -130,10 +131,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     fun fetchData(
-        shopIds: List<Long>,
-        offerIds: List<Long>,
-        offerJsonData: String,
-        warehouseIds: List<Long>
+        shopIds: List<Long>, offerIds: List<Long>, offerJsonData: String, warehouseIds: List<Long>
     ) {
         this.param = MiniCartParam(
             shopIds = shopIds,
@@ -315,8 +313,8 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private fun showPriceSummary(data: BmgmMiniCartDataUiModel) {
         binding?.bmsmMiniCartView?.run {
-            val shouldShowSlashPrice = data.priceBeforeBenefit != data.finalPrice
-                    && offerType == OfferType.PROGRESSIVE_DISCOUNT
+            val shouldShowSlashPrice =
+                data.priceBeforeBenefit != data.finalPrice && offerType == OfferType.PROGRESSIVE_DISCOUNT
             initSummaryView(shouldShowSlashPrice)
             visible()
             refresh(
@@ -341,8 +339,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 overridePrimaryButtonAction = true,
                 overridePrimaryButtonWording = context.getString(R.string.bmsm_check_cart),
                 page = MiniCartAnalytics.Page.BMSM_OLP_PAGE
-            ),
-            listener
+            ), listener
         )
     }
 
@@ -374,8 +371,36 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             if (itemDecorationCount == Int.ZERO) {
                 addItemDecoration(BmgmMiniCartItemDecoration())
             }
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
+                override fun scrollHorizontallyBy(
+                    dx: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?
+                ): Int {
+                    showGwpGifts(this)
+                    return super.scrollHorizontallyBy(dx, recycler, state)
+                }
+            }
             adapter = miniCartAdapter
+        }
+    }
+
+    private fun showGwpGifts(layoutManager: LinearLayoutManager) {
+        if (offerType == OfferType.GIFT_WITH_PURCHASE) {
+            val giftList = miniCartAdapter.data
+                .filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
+
+            if (giftList.isNotEmpty()) {
+                val firstCompleteVisible = layoutManager.findFirstCompletelyVisibleItemPosition()
+                val firstItem = miniCartAdapter.data.getOrNull(firstCompleteVisible)
+                val shouldGiftVisible = firstItem !is BmgmMiniCartVisitable.GwpGiftWidgetUiModel
+                if (shouldGiftVisible) {
+                    giftList.firstOrNull()?.also { gift ->
+                        binding?.stickyGiftView?.submitList(gift)
+                    }
+                    binding?.stickyGiftView?.visible()
+                } else {
+                    binding?.stickyGiftView?.gone()
+                }
+            }
         }
     }
 
@@ -386,10 +411,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         val userId = userSession.get().userId
 
         BmgmMiniCartTracker.sendClickCekKeranjangEvent(
-            offerId = offerId,
-            warehouseId = warehouseId,
-            shopId = shopId,
-            userId = userId
+            offerId = offerId, warehouseId = warehouseId, shopId = shopId, userId = userId
         )
     }
 

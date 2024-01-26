@@ -41,6 +41,20 @@
         tools:listitem="@layout/item_bmgm_mini_cart_bundled_product"
         tools:visibility="visible" />
 
+    <com.tokopedia.buy_more_get_more.minicart.presentation.customview.StickyGiftView
+        android:id="@+id/stickyGiftView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN50"
+        android:paddingStart="16dp"
+        android:paddingEnd="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/rvBmgmMiniCart"
+        app:layout_constraintEnd_toEndOf="@+id/rvBmgmMiniCart"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@+id/rvBmgmMiniCart"
+        app:layout_constraintTop_toTopOf="@+id/rvBmgmMiniCart" />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/errorStateGroup"
         android:layout_width="wrap_content"
@@ -118,5 +132,5 @@
         android:background="@color/Unify_Background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

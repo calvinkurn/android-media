@@ -30,12 +30,22 @@ class GetGroupProductTickerUseCase @Inject constructor(
         shopIds: List<Long>,
         newQty: Int = -1
     ): BmgmMiniCartDataUiModel {
-        val param = createParameter(product, data, shopIds, newQty)
-        val response = getGroupProductTickerUseCase.get().invoke(param)
-        return mapper.get().mapToUiModel(data, product, response, newQty)
+        try {
+            val param = createParameter(product, data, shopIds, newQty)
+            val response = getGroupProductTickerUseCase.get().invoke(param)
+            val errorMessage = response.getGroupProductTicker.errorMessage.firstOrNull()
+            if (errorMessage.isNullOrBlank()) {
+                throw RuntimeException(errorMessage)
+            } else {
+                return mapper.get().mapToUiModel(data, product, response, newQty)
+            }
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     companion object {
+
         private fun createParameter(
             product: BmgmMiniCartVisitable.ProductUiModel,
             data: BmgmMiniCartDataUiModel,
