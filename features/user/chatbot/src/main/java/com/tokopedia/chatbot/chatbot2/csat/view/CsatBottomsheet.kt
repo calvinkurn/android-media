@@ -22,7 +22,6 @@ import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.SubmitButtonState
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.dummyData
 import com.tokopedia.chatbot.databinding.BottomsheetCsatBinding
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -48,7 +47,7 @@ class CsatBottomsheet :
         csat_ratingR.drawable.emoji_inactive_2,
         csat_ratingR.drawable.emoji_inactive_3,
         csat_ratingR.drawable.emoji_inactive_4,
-        csat_ratingR.drawable.emoji_inactive_5,
+        csat_ratingR.drawable.emoji_inactive_5
     )
 
     private val activeEmojiDrawables = listOf(
@@ -56,7 +55,7 @@ class CsatBottomsheet :
         csat_ratingR.drawable.emoji_active_2,
         csat_ratingR.drawable.emoji_active_3,
         csat_ratingR.drawable.emoji_active_4,
-        csat_ratingR.drawable.emoji_active_5,
+        csat_ratingR.drawable.emoji_active_5
     )
 
     private val captionColors = listOf(
@@ -64,7 +63,7 @@ class CsatBottomsheet :
         unifyprinciplesR.color.Unify_YN500,
         unifyprinciplesR.color.Unify_YN300,
         unifyprinciplesR.color.Unify_GN500,
-        unifyprinciplesR.color.Unify_GN500,
+        unifyprinciplesR.color.Unify_GN500
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -199,10 +198,10 @@ class CsatBottomsheet :
 
     private fun renderOtherReason(csatModel: CsatModel) {
         viewBinding?.csatOtherReasonTitle?.text = csatModel.selectedPoint.otherReasonTitle
-        viewBinding?.csatOtherReason?.setCounter(csatModel.selectedPoint.maximumOtherReasonChar)
+        viewBinding?.csatOtherReason?.setCounter(csatModel.maximumOtherReasonChar)
         viewBinding?.csatOtherReason?.minLine = 4
         viewBinding?.csatOtherReason?.setLabel("Tulis detailnya di sini, ya..")
-        viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.selectedPoint.minimumOtherReasonChar} karakter")
+        viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.minimumOtherReasonChar} karakter")
         viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
             viewModel.setOtherReason(it.toString())
             viewModel.updateButton()
@@ -229,5 +228,4 @@ class CsatBottomsheet :
             return bottomSheet
         }
     }
-
 }

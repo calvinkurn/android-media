@@ -2,6 +2,8 @@ package com.tokopedia.chatbot.chatbot2.csat.domain.model
 
 data class CsatModel(
     var title: String = "",
+    var minimumOtherReasonChar: Int = 0,
+    var maximumOtherReasonChar: Int = 0,
     var points: MutableList<PointModel> = mutableListOf(),
     var selectedPoint: PointModel = PointModel(),
     var selectedReasons: MutableList<String> = mutableListOf(),
@@ -13,9 +15,7 @@ data class PointModel(
     var caption: String = "",
     var reasonTitle: String = "",
     var reasons: List<String> = emptyList(),
-    var otherReasonTitle: String = "",
-    var minimumOtherReasonChar: Int = 0,
-    var maximumOtherReasonChar: Int = 0
+    var otherReasonTitle: String = ""
 )
 
 data class SubmitButtonState(
@@ -24,6 +24,8 @@ data class SubmitButtonState(
 
 var dummyData = CsatModel(
     title = "Gimana pengalamanmu dengan Tokopedia Care?",
+    minimumOtherReasonChar = 30,
+    maximumOtherReasonChar = 1500,
     points = mutableListOf(
         PointModel(
             score = 1,
@@ -71,7 +73,7 @@ var dummyData = CsatModel(
                 "Tokopedia Care susah diakses",
                 "Jawaban TANYA (Virtual Assistant) tidak membantu"
             ),
-            otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?",
+            otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?"
         ),
         PointModel(
             score = 4,
@@ -129,8 +131,6 @@ var dummyData = CsatModel(
             "Tokopedia Care susah diakses",
             "Jawaban TANYA (Virtual Assistant) tidak membantu"
         ),
-        otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?",
-        minimumOtherReasonChar = 30,
-        maximumOtherReasonChar = 1500
+        otherReasonTitle = "Ada kendala waktu kamu pakai layanan Tokopedia Care?"
     )
 )
