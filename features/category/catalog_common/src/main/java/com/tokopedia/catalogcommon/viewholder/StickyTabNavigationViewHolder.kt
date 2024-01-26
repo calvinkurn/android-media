@@ -50,14 +50,15 @@ class StickyTabNavigationViewHolder(
             if (catalogTabsUnify.tabCount == Int.ZERO) {
                 element?.content?.forEachIndexed { index, item ->
                     val customText = LayoutInflater.from(itemView.context)
-                        .inflate(R.layout.custom_tab_text, null) as LinearLayout
-                    val textView = customText.findViewById<Typography>(R.id.tab_item_text_id)
-                    textView.setText(item.title)
+                        .inflate(R.layout.item_tab_menu, null) as LinearLayout
+                    val textView = customText.findViewById<Typography>(R.id.tvText)
+                    textView.text = item.title
                     textView.setLineSpacing(4f, 1f)
                     catalogTabsUnify.addTab(catalogTabsUnify.newTab().setCustomView(customText))
                 }
             }
             catalogTabsUnify.getTabAt(element?.currentSelectTab.orZero())?.select()
+
             catalogTabsUnify.tabMode = TabLayout.MODE_FIXED
             catalogTabsUnify.isTabIndicatorFullWidth = false
             catalogTabsUnify.tabRippleColor = null

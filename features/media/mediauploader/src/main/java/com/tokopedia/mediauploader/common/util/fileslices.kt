@@ -3,22 +3,43 @@ package com.tokopedia.mediauploader.common.util
 import java.io.File
 import java.io.FileInputStream
 
+private var tempByteArray: Array<ByteArray?> = arrayOf()
+
 fun File.slice(
     partNumber: Int,
     chunkSize: Int,
-): ByteArray? {
-    if (partNumber < 0) return null
-    if (chunkSize < 0) return null
+    reuseSlot: Int?,
+    slotSize: Int
+): Pair<Int, ByteArray?>? {
+    synchronized(this){
+        if (partNumber < 0) return null
+        if (chunkSize < 0) return null
+        if (tempByteArray.isEmpty()) {
+            tempByteArray = Array(slotSize + 1) { null }
+        }
 
-    val inputStream = FileInputStream(this)
-    val byteArray = ByteArray(chunkSize)
+        val inputStream = FileInputStream(this)
+        val offset = (partNumber - 1) * chunkSize
+        inputStream.skip(offset.toLong())
 
-    val offset = (partNumber - 1) * chunkSize
-    inputStream.skip(offset.toLong())
+        val tempIndex = if (reuseSlot != null && tempByteArray[reuseSlot] != null) {
+            inputStream.read(tempByteArray[reuseSlot], 0, chunkSize)
+            reuseSlot
+        } else {
+            val slotIndex = partNumber - 1
+            tempByteArray[slotIndex] = ByteArray(chunkSize)
+            inputStream.read(tempByteArray[slotIndex], 0, chunkSize)
+            slotIndex
+        }
 
-    inputStream.read(byteArray, 0, chunkSize)
+        inputStream.close()
 
-    return byteArray
+        return Pair(tempIndex, tempByteArray[tempIndex])
+    }
+}
+
+fun clearFileSliceStorage() {
+    tempByteArray = arrayOf()
 }
 
 fun ByteArray.trimLastZero(): ByteArray {

@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -62,6 +64,7 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -192,6 +195,8 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TOKOFOOD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
+import com.tokopedia.unifyorderhistory.util.UohDataHelper
+import com.tokopedia.unifyorderhistory.util.UohRollenceUtil
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
@@ -220,17 +225,14 @@ import java.util.*
 import javax.inject.Inject
 import com.tokopedia.atc_common.R as atc_commonR
 
-/**
- * Created by fwidjaja on 29/06/20.
- */
 @Keep
 open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var uohItemAdapter: UohItemAdapter
-    private lateinit var userSession: UserSession
-    private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
+    private var uohItemAdapter: UohItemAdapter? = null
+    private var userSession: UserSession? = null
+    private var scrollRecommendationListener: EndlessRecyclerViewScrollListener? = null
     private var refreshHandler: RefreshHandler? = null
     private var paramUohOrder = UohListParam()
     private var orderList: UohListOrder.UohOrders = UohListOrder.UohOrders()
@@ -278,10 +280,12 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
     private var _listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
     private var _atcVerticalCategory = ""
-    private lateinit var trackingQueue: TrackingQueue
+    private var trackingQueue: TrackingQueue? = null
     private var _buttonAction = ""
     private var _atcOccParams: AddToCartOccMultiRequestParams? = null
     private val impressedUUIDs = mutableListOf<String>()
+    private val impressedBuyAgainItems = mutableListOf<String>()
+    private var isBuyAgainWidgetImpressed = false
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -301,6 +305,43 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         ViewModelProvider(this, viewModelFactory)[ScpRewardsMedalTouchPointViewModel::class.java]
     }
 
+    private var loginActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (userSession?.isLoggedIn == true) {
+                onResultFromLogin(result.resultCode)
+            }
+        }
+
+    private var reviewActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromReview(result.resultCode, result.data)
+        }
+
+    private var bulkReviewActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromBulkReview(result.resultCode, result.data)
+        }
+
+    private var cancelOrderActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromCancelOrder(result.resultCode, result.data)
+        }
+
+    private var extendOrderActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromExtendOrder(result.data)
+        }
+
+    private var partialOrderFulfillmentActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromPartialOrderFulfillment(result.resultCode, result.data)
+        }
+
+    private var openOrderActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            onResultFromOpenOrder()
+        }
+
     companion object {
         const val PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
         const val PARAM_HOME = "home"
@@ -311,14 +352,12 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         private var CATEGORIES_TOKOFOOD = ""
         private var CATEGORIES_PLUS = ""
 
-        private val CATEGORY_GROUP_MP = "belanja"
-        private val CATEGORY_GROUP_RECHARGE = "recharge"
-        private val CATEGORY_GROUP_TRAVEL = "travel"
-        private val CATEGORY_GROUP_INVESTMENT = "investment"
-        private val CATEGORY_GROUP_TOKONOW = "tokonow"
-        private val CATEGORY_GROUP_GOTO_PLUS = "goto_plus"
-        private val CATEGORY_GROUP_TOKOFOOD = "tokofood"
-        private val CATEGORY_GROUP_OTHER = "other"
+        private const val CATEGORY_GROUP_MP = "belanja"
+        private const val CATEGORY_GROUP_RECHARGE = "recharge"
+        private const val CATEGORY_GROUP_TRAVEL = "travel"
+        private const val CATEGORY_GROUP_INVESTMENT = "investment"
+        private const val CATEGORY_GROUP_GOTO_PLUS = "goto_plus"
+        private const val CATEGORY_GROUP_TOKOFOOD = "tokofood"
         private const val SOURCE_NAME = "order_history_list_page"
 
         @JvmStatic
@@ -339,9 +378,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val URL_IMG_EMPTY_ORDER_LIST = TokopediaImageUrl.URL_IMG_EMPTY_ORDER_LIST
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
         const val CREATE_REVIEW_MESSAGE = "create_review_message"
-        const val CREATE_REVIEW_REQUEST_CODE = 200
-        const val BULK_REVIEW_REQUEST_CODE = 201
-        const val REQUEST_CODE_LOGIN = 288
         const val MIN_KEYWORD_CHARACTER_COUNT = 3
         const val LABEL_0 = 0
         const val LABEL_1 = 1
@@ -349,18 +385,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val LABEL_3 = 3
         const val STATUS_600 = 600
         const val STATUS_200 = 200
-        const val UOH_CANCEL_ORDER = 300
         const val LABEL_HELP_LINK = "Bantuan"
-        const val MINUS_30 = -30
         const val MINUS_90 = -90
         private const val MIN_30_DAYS = -30
         const val INSTANT_CANCEL_BUYER_REQUEST = 100
         const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
         const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
         const val RESULT_CODE_SUCCESS = 1
-        const val EXTEND_ORDER_REQUEST_CODE = 400
-        const val OPEN_ORDER_REQUEST_CODE = 500
-        const val POF_REQUEST_CODE = 600
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -395,10 +426,18 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun checkLogin() {
-        if (userSession.isLoggedIn) {
+        if (userSession?.isLoggedIn == true) {
             loadFilters()
         } else {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            loginActivityResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        }
+    }
+
+    private fun onResultFromLogin(resultCode: Int) {
+        if (resultCode == Activity.RESULT_OK) {
+            loadFilters()
+        } else {
+            activity?.finish()
         }
     }
 
@@ -409,99 +448,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         currPage = 1
         currRecommendationListPage = 1
         loadOrderHistoryList("")
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN) {
-            if (resultCode == Activity.RESULT_OK) {
-                loadFilters()
-            } else {
-                activity?.finish()
-            }
-        } else if ((requestCode == CREATE_REVIEW_REQUEST_CODE)) {
-            if (resultCode == Activity.RESULT_OK) {
-                onSuccessCreateReview(data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
-            } else if (resultCode == Activity.RESULT_FIRST_USER) {
-                onFailCreateReview(data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
-            } else {
-                onCancelCreateReview()
-            }
-            currIndexNeedUpdate = -1
-            orderIdNeedUpdated = ""
-        } else if (requestCode == BULK_REVIEW_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
-            } else {
-                onCancelCreateReview()
-            }
-            currIndexNeedUpdate = -1
-            orderIdNeedUpdated = ""
-        } else if (requestCode == UOH_CANCEL_ORDER) {
-            if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
-                val resultMsg = data?.getStringExtra(RESULT_MSG_INSTANT_CANCEL)
-                val result = data?.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1)
-                if (result == RESULT_CODE_SUCCESS) {
-                    if (resultMsg != null) {
-                        uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
-                        showToaster(resultMsg, Toaster.TYPE_NORMAL)
-                        loadOrderHistoryList(orderIdNeedUpdated)
-                    }
-                }
-            } else {
-                loadFilters()
-            }
-        } else if (requestCode == EXTEND_ORDER_REQUEST_CODE) {
-            val isOrderExtend = data?.getBooleanExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_ORDER_EXTENDED, true)
-            if (isOrderExtend == true) {
-                // order extended
-                uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
-                loadOrderHistoryList(orderIdNeedUpdated)
-            } else {
-                // order not extended
-                resetFilter()
-                currIndexNeedUpdate = -1
-                orderIdNeedUpdated = ""
-                refreshHandler?.startRefresh()
-                scrollRecommendationListener.resetState()
-            }
-            val toasterMessage = data?.getStringExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_MESSAGE)
-            if (!toasterMessage.isNullOrBlank()) {
-                val toasterType = data.getIntExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, Toaster.TYPE_NORMAL)
-                showToaster(toasterMessage, toasterType)
-            }
-        } else if (requestCode == POF_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
-                loadOrderHistoryList(orderIdNeedUpdated)
-            } else {
-                resetFilter()
-                currIndexNeedUpdate = -1
-                orderIdNeedUpdated = ""
-                refreshHandler?.startRefresh()
-                scrollRecommendationListener.resetState()
-            }
-
-            val toasterMessage = data?.getStringExtra(ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE)
-            if (!toasterMessage.isNullOrBlank()) {
-                showToaster(toasterMessage, Toaster.TYPE_NORMAL)
-            }
-        } else if (requestCode == OPEN_ORDER_REQUEST_CODE) {
-            if (currIndexNeedUpdate > -1 && orderIdNeedUpdated.isNotEmpty()) {
-                val item = uohItemAdapter.listTypeData.getOrNull(currIndexNeedUpdate)
-                if (item != null &&
-                    item.typeLayout == UohConsts.TYPE_ORDER_LIST &&
-                    item.dataObject is UohListOrder.UohOrders.Order &&
-                    item.dataObject.orderUUID == orderIdNeedUpdated
-                ) {
-                    uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
-                    loadOrderHistoryList(orderIdNeedUpdated)
-                    return
-                }
-            }
-            currIndexNeedUpdate = -1
-            orderIdNeedUpdated = ""
-        }
     }
 
     private fun loadFilters() {
@@ -534,6 +480,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         observeUohPmsCounter()
         observingUohItemDelay()
         observeScpToaster()
+        observingBuyAgain()
+        observingAtcBuyAgain()
     }
 
     private fun observeTdnBanner() {
@@ -542,6 +490,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 is Success -> {
                     tdnBanner = it.data
                 }
+
                 is Fail -> {
                 }
             }
@@ -556,14 +505,14 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         dataObject = it.data,
                         typeLayout = UohConsts.TYPE_PMS_BUTTON
                     )
-                    uohItemAdapter.appendPmsButton(data) { position ->
+                    uohItemAdapter?.appendPmsButton(data) { position ->
                         binding?.rvOrderList?.smoothScrollToPosition(position)
                     }
                 } else {
-                    uohItemAdapter.removePmsButton()
+                    uohItemAdapter?.removePmsButton()
                 }
             } else {
-                uohItemAdapter.removePmsButton()
+                uohItemAdapter?.removePmsButton()
             }
         }
     }
@@ -588,9 +537,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             view?.let { view -> context?.let { context -> UohUtils.hideKeyBoard(context, view) } }
                             triggerSearch()
                         }
+
                         searchQuery.length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
                             showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
                         }
+
                         else -> {
                             view?.let { context?.let { _ -> uohNavtoolbar.hideKeyboard() } }
                             triggerSearch()
@@ -644,8 +595,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             resetFilter()
             paramUohOrder.searchableText = keyword
             refreshHandler?.startRefresh()
-            scrollRecommendationListener.resetState()
-            userSession.userId?.let { UohAnalytics.submitSearch(keyword, it) }
+            scrollRecommendationListener?.resetState()
+            userSession?.userId?.let { UohAnalytics.submitSearch(keyword, it) }
         }
     }
 
@@ -653,7 +604,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         val glm = GridLayoutManager(activity, 2)
         glm.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when (uohItemAdapter.getItemViewType(position)) {
+                return when (uohItemAdapter?.getItemViewType(position)) {
                     UohItemAdapter.LAYOUT_EMPTY_STATE -> 2
                     UohItemAdapter.LAYOUT_RECOMMENDATION_LIST -> 1
                     else -> 2
@@ -680,7 +631,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 visible()
                 layoutManager = glm
                 adapter = uohItemAdapter
-                addOnScrollListener(scrollRecommendationListener)
+                scrollRecommendationListener?.let { addOnScrollListener(it) }
             }
         }
     }
@@ -695,7 +646,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
         uohListViewModel.loadOrderList(paramUohOrder)
         if (!paramUohOrder.hasActiveFilter()) {
-            uohListViewModel.loadPmsCounter(userSession.shopId)
+            userSession?.shopId?.let { uohListViewModel.loadPmsCounter(it) }
+        }
+    }
+
+    private fun loadBuyAgainWidget() {
+        if (UohRollenceUtil.isEnableBuyAgainWidget()) {
+            uohListViewModel.loadBuyAgain()
         }
     }
 
@@ -721,6 +678,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     setDefaultDatesForDatePicker()
                     initialLoadOrderHistoryList()
                 }
+
                 is Fail -> {
                     showToaster(
                         ErrorHandler.getErrorMessage(context, it.throwable),
@@ -732,7 +690,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun observingOrderHistory() {
-        if (orderIdNeedUpdated.isEmpty() && !onLoadMore) uohItemAdapter.showLoader()
+        if (orderIdNeedUpdated.isEmpty() && !onLoadMore) uohItemAdapter?.showLoader()
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
@@ -740,7 +698,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         globalErrorUoh.gone()
                         rvOrderList.visible()
                     }
-                    if (currPage == 1) impressedUUIDs.clear()
+                    if (currPage == 1) {
+                        impressedUUIDs.clear()
+                        impressedBuyAgainItems.clear()
+                        isBuyAgainWidgetImpressed = false
+                    }
                     refreshHandler?.finishRefresh()
                     orderList = it.data
                     if (orderList.orders.isNotEmpty()) {
@@ -755,7 +717,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                             true
                                         )
                                     ) {
-                                        uohItemAdapter.updateDataAtIndex(
+                                        uohItemAdapter?.updateDataAtIndex(
                                             currIndexNeedUpdate,
                                             orderList.orders[i]
                                         )
@@ -773,6 +735,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     }
                 }
+
                 is Fail -> {
                     refreshHandler?.finishRefresh()
                     val errorType = when (it.throwable) {
@@ -805,9 +768,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             when (it) {
                 is Success -> {
                     if (it.data.second > -1 && it.data.first.uohOrders.orders.isNotEmpty()) {
-                        uohItemAdapter.updateDataAtIndex(it.data.second, it.data.first.uohOrders.orders[0])
+                        uohItemAdapter?.updateDataAtIndex(it.data.second, it.data.first.uohOrders.orders[0])
                     }
                 }
+
                 is Fail -> {
                     val errorType = when (it.throwable) {
                         is MessageErrorException -> null
@@ -858,9 +822,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         showFinishOrderToaster()
                     }
                 }
+
                 is Error -> {
                     showFinishOrderToaster()
                 }
+
                 else -> {}
             }
         }
@@ -876,6 +842,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         renderEmptyList()
                     }
                 }
+
                 is Fail -> {}
             }
         }
@@ -908,6 +875,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     }
                 }
+
                 is Fail -> {
                     responseFinishOrder.message.firstOrNull()?.let { errorMessage ->
                         showToaster(errorMessage, Toaster.TYPE_ERROR)
@@ -933,7 +901,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         if (_buttonAction == GQL_MP_ATC_REDIRECTION) {
                             val intent = RouteManager.getIntent(context, ApplinkConst.CART)
                             product?.cartId?.let { cartId ->
-                                intent.putExtra(Transaction.EXTRA_CART_ID, cartId.toString())
+                                intent.putExtra(Transaction.EXTRA_CART_ID, cartId)
                             }
                             startActivity(intent)
                         }
@@ -945,10 +913,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 arrayListProducts.add(
                                     ECommerceAdd.Add.Products(
                                         name = product.productName,
-                                        id = product.productId.toString(),
+                                        id = product.productId,
                                         price = product.productPrice.toString(),
                                         quantity = product.qty.toString(),
-                                        dimension79 = product.shopId.toString()
+                                        dimension79 = product.shopId
                                     )
                                 )
                             }
@@ -956,7 +924,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             if (_buttonAction == GQL_MP_ATC || _buttonAction.isEmpty()) {
                                 UohAnalytics.clickBeliLagiOnOrderCardMP(
                                     "",
-                                    userSession.userId,
+                                    userSession?.userId ?: "",
                                     arrayListProducts,
                                     _atcVerticalCategory,
                                     result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
@@ -966,7 +934,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                     EVENT_LABEL_CART_REDIRECTION,
                                     arrayListProducts,
                                     result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString(),
-                                    userSession.userId,
+                                    userSession?.userId ?: "",
                                     _atcVerticalCategory
                                 )
                             }
@@ -976,10 +944,53 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         UohAnalytics.sendViewErrorToasterBeliLagiEvent()
                     }
                 }
+
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)
                         ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                     UohAnalytics.sendViewErrorToasterBeliLagiEvent()
+                }
+            }
+        }
+    }
+
+    private fun observingAtcBuyAgain() {
+        uohListViewModel.atcBuyAgainResult.observe(viewLifecycleOwner) { result ->
+            when (result.atcResponse) {
+                is Success -> {
+                    if (result.atcResponse.data.atcMulti.buyAgainData.success == 1) {
+                        val product = result.atcResponse.data.atcMulti.buyAgainData.listProducts.getOrNull(0)
+                        val intent = RouteManager.getIntent(context, ApplinkConst.CART)
+                        product?.cartId?.let { cartId ->
+                            intent.putExtra(Transaction.EXTRA_CART_ID, cartId)
+                            UohAnalytics.sendClickBeliLagiButtonOnBuyAgainWidgetEvent(
+                                result.recommItem,
+                                userSession?.userId ?: "",
+                                result.index,
+                                cartId
+                            )
+                        }
+                        startActivity(intent)
+                    } else {
+                        var errorMessage = ""
+                        if (result.atcResponse.data.atcMulti.errorMessage.isNotEmpty()) {
+                            errorMessage = result.atcResponse.data.atcMulti.errorMessage
+                        } else if (result.atcResponse.data.atcMulti.buyAgainData.message.isNotEmpty()) {
+                            errorMessage = result.atcResponse.data.atcMulti.buyAgainData.message.firstOrNull() ?: ""
+                        }
+
+                        if (errorMessage.isEmpty()) {
+                            context?.getString(R.string.fail_cancellation)
+                                ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                        } else {
+                            showToaster(errorMessage, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+
+                is Fail -> {
+                    context?.getString(R.string.fail_cancellation)
+                        ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
         }
@@ -993,10 +1004,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
                     UohAnalytics.sendClickBeliLagiOccButtonEvent(
                         _atcOccParams,
-                        userSession.userId,
+                        userSession?.userId ?: "",
                         _atcVerticalCategory
                     )
                 }
+
                 is Fail -> {
                     showToaster(getErrorMessage(it.throwable), Toaster.TYPE_ERROR)
                     UohAnalytics.sendViewErrorToasterBeliLagiEvent()
@@ -1039,6 +1051,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     }
                 }
+
                 is Fail -> {
                     showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
                 }
@@ -1065,6 +1078,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     }
                 }
+
                 is Fail -> {
                     showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
                 }
@@ -1091,6 +1105,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     }
                 }
+
                 is Fail -> {
                     showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
                 }
@@ -1112,6 +1127,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         )
                     }
                 }
+
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)
                         ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
@@ -1142,6 +1158,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
                     }
                 }
+
                 is Fail -> {
                     context?.also { ctx ->
                         val throwable = it.throwable
@@ -1164,6 +1181,18 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
+    private fun observingBuyAgain() {
+        uohListViewModel.buyAgainWidgetResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    renderBuyAgain(it.data)
+                }
+
+                is Fail -> {}
+            }
+        }
+    }
+
     private fun renderChipsFilter(
         filterDataList: List<UohFilterCategory.UohFilterCategoryData.FilterV2>,
         categoryDataList: List<UohFilterCategory.UohFilterCategoryData.Category>
@@ -1178,105 +1207,126 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     paramUohOrder.createTimeStart = ""
                     paramUohOrder.createTimeEnd = ""
                 }
+
                 PARAM_E_TIKET -> {
                     status = E_TIKET
                     statusLabel = status
                     paramUohOrder.createTimeStart = ""
                     paramUohOrder.createTimeEnd = ""
                 }
+
                 PARAM_SEMUA_TRANSAKSI -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                 }
+
                 PARAM_MARKETPLACE -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                 }
+
                 PARAM_MARKETPLACE_DALAM_PROSES -> {
                     status = DALAM_PROSES
                     statusLabel = TRANSAKSI_BERLANGSUNG
                     paramUohOrder.verticalCategory = CATEGORIES_MP
                 }
+
                 PARAM_UOH_WAITING_CONFIRMATION -> {
                     status = STATUS_MENUNGGU_KONFIRMASI
                     statusLabel = MENUNGGU_KONFIRMASI
                     paramUohOrder.verticalCategory = CATEGORIES_MP
                 }
+
                 PARAM_UOH_PROCESSED -> {
                     status = STATUS_DIPROSES
                     statusLabel = DIPROSES
                     paramUohOrder.verticalCategory = CATEGORIES_MP
                 }
+
                 PARAM_UOH_SENT -> {
                     status = STATUS_DIKIRIM
                     statusLabel = DIKIRIM
                     paramUohOrder.verticalCategory = CATEGORIES_MP
                 }
+
                 PARAM_UOH_DELIVERED -> {
                     status = STATUS_TIBA_DI_TUJUAN
                     statusLabel = TIBA_DI_TUJUAN
                     paramUohOrder.verticalCategory = CATEGORIES_MP
                 }
+
                 PARAM_DIGITAL -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = CATEGORIES_DIGITAL
                 }
+
                 PARAM_EVENTS -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_EVENTS
                 }
+
                 PARAM_DEALS -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
                 }
+
                 PARAM_PESAWAT -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_FLIGHT
                 }
+
                 PARAM_TRAIN -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAIN
                 }
+
                 PARAM_GIFTCARDS -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_GIFTCARD
                 }
+
                 PARAM_INSURANCE -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_INSURANCE
                 }
+
                 PARAM_MODALTOKO -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MODALTOKO
                 }
+
                 PARAM_HOTEL -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
                 }
+
                 PARAM_TRAVEL_ENTERTAINMENT -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = CATEGORIES_TRAVELENT
                 }
+
                 PARAM_TOKOFOOD -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TOKOFOOD
                 }
+
                 PARAM_PLUS -> {
                     status = ""
                     statusLabel = ALL_STATUS_TRANSACTION
                     paramUohOrder.verticalCategory = VERTICAL_CATEGORY_PLUS
                 }
+
                 PARAM_UOH_ONGOING -> {
                     status = DALAM_PROSES
                     statusLabel = TRANSAKSI_BERLANGSUNG
@@ -1357,22 +1407,27 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     CATEGORIES_MP = category.value
                     titleMP = category.label
                 }
+
                 category.categoryGroup.equals(CATEGORY_GROUP_RECHARGE, true) -> {
                     CATEGORIES_DIGITAL = category.value
                     titleDigital = category.label
                 }
+
                 category.categoryGroup.equals(CATEGORY_GROUP_TRAVEL, true) -> {
                     CATEGORIES_TRAVELENT = category.value
                     titleTravel = category.label
                 }
+
                 category.categoryGroup.equals(CATEGORY_GROUP_INVESTMENT, true) -> {
                     CATEGORIES_KEUANGAN = category.value
                     titleInvestment = category.label
                 }
+
                 category.categoryGroup.equals(CATEGORY_GROUP_TOKOFOOD, true) -> {
                     CATEGORIES_TOKOFOOD = category.value
                     titleTokofood = category.label
                 }
+
                 category.categoryGroup.equals(CATEGORY_GROUP_GOTO_PLUS, true) -> {
                     CATEGORIES_PLUS = category.value
                     titlePlus = category.label
@@ -1483,8 +1538,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
                     resetFilter()
                     refreshHandler?.startRefresh()
-                    scrollRecommendationListener.resetState()
-                    userSession.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
+                    scrollRecommendationListener?.resetState()
+                    userSession?.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
                 }
             }
         }
@@ -1559,11 +1614,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
                 }
 
-                userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
+                userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
 
                 isFirstLoad = false
                 refreshHandler?.startRefresh()
-                scrollRecommendationListener.resetState()
+                scrollRecommendationListener?.resetState()
             }
 
             override fun showDatePicker(flag: String) {
@@ -1619,6 +1674,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             tempStartDate = ""
                             tempEndDate = ""
                         }
+
                         label.toIntOrZero() == LABEL_1 -> {
                             filterDateBottomSheet.hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS)
@@ -1626,6 +1682,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             tempStartDate = startDate.toString()
                             tempEndDate = endDate
                         }
+
                         label.toIntOrZero() == LABEL_2 -> {
                             filterDateBottomSheet.hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_90)
@@ -1633,6 +1690,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             tempStartDate = startDate.toString()
                             tempEndDate = endDate
                         }
+
                         label.toIntOrZero() == LABEL_3 -> {
                             var start = GregorianCalendar()
                             var end = GregorianCalendar()
@@ -1645,7 +1703,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     }
                 }
-                userSession.userId?.let { UohAnalytics.clickDateFilterChips(it) }
+                userSession?.userId?.let { UohAnalytics.clickDateFilterChips(it) }
             }
         })
         filterDateBottomSheet.show(childFragmentManager)
@@ -1684,11 +1742,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     chipStatus?.title = ALL_STATUS
                     labelTrackingStatus = ALL_STATUS
                 }
-                userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
+                userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
 
                 isFirstLoad = false
                 refreshHandler?.startRefresh()
-                scrollRecommendationListener.resetState()
+                scrollRecommendationListener?.resetState()
             }
 
             override fun showDatePicker(flag: String) {}
@@ -1699,7 +1757,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 tempFilterStatusKey = label
                 tempFilterStatusLabel = value
                 paramUohOrder.status = label
-                userSession.userId?.let { UohAnalytics.clickStatusFilterChips(it) }
+                userSession?.userId?.let { UohAnalytics.clickStatusFilterChips(it) }
             }
         })
         filterStatusBottomSheet.show(childFragmentManager)
@@ -1785,11 +1843,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     chipCategoryProduct?.title = ALL_PRODUCTS
                     labelTrackingCategory = ALL_PRODUCTS
                 }
-                userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
+                userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
 
                 isFirstLoad = false
                 refreshHandler?.startRefresh()
-                scrollRecommendationListener.resetState()
+                scrollRecommendationListener?.resetState()
             }
 
             override fun showDatePicker(flag: String) {}
@@ -1804,7 +1862,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 } else {
                     paramUohOrder.verticalCategory = label
                 }
-                userSession.userId?.let { UohAnalytics.clickCategoryFilterChips(it) }
+                userSession?.userId?.let { UohAnalytics.clickCategoryFilterChips(it) }
             }
         })
         filterProductBottomSheet.show(childFragmentManager)
@@ -1854,26 +1912,27 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
 
         if (!onLoadMore) {
-            uohItemAdapter.addList(listOrder)
-            scrollRecommendationListener.resetState()
+            uohItemAdapter?.addList(listOrder)
+            scrollRecommendationListener?.resetState()
 
             if (!paramUohOrder.hasActiveFilter()) {
                 uohListViewModel.getUohPmsCounterResult.value?.let {
                     if (it is Success && it.data.notifications.buyerOrderStatus.paymentStatus > 0) {
                         val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
-                        uohItemAdapter.appendPmsButton(data) { position ->
+                        uohItemAdapter?.appendPmsButton(data) { position ->
                             binding?.rvOrderList?.smoothScrollToPosition(position)
                         }
                     } else {
-                        uohItemAdapter.removePmsButton()
+                        uohItemAdapter?.removePmsButton()
                     }
                 }
+                loadBuyAgainWidget()
             } else {
-                uohItemAdapter.removePmsButton()
+                uohItemAdapter?.removePmsButton()
             }
         } else {
-            uohItemAdapter.appendList(listOrder)
-            scrollRecommendationListener.updateStateAfterGetData()
+            uohItemAdapter?.appendList(listOrder)
+            scrollRecommendationListener?.updateStateAfterGetData()
         }
     }
 
@@ -1896,6 +1955,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         )
                     }
                 }
+
                 paramUohOrder.status.isNotEmpty() || paramUohOrder.verticalCategory.isNotEmpty() -> {
                     emptyStatus = activity?.resources?.let { resource ->
                         UohEmptyState(
@@ -1907,6 +1967,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         )
                     }
                 }
+
                 else -> {
                     if (!paramUohOrder.hasActiveFilter()) {
                         val uohPmsCounterResult = uohListViewModel.getUohPmsCounterResult.value
@@ -1941,13 +2002,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 if (index == TDN_INDEX) listRecomm.add(UohTypeData(tdnBanner, UohConsts.TDN_BANNER))
                 listRecomm.add(UohTypeData(recommendationItem, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
-            uohItemAdapter.addList(listRecomm)
+            uohItemAdapter?.addList(listRecomm)
         } else {
             recommendationList.firstOrNull()?.recommendationItemList?.forEach {
                 listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
-            uohItemAdapter.appendList(listRecomm)
-            scrollRecommendationListener.updateStateAfterGetData()
+            uohItemAdapter?.appendList(listRecomm)
+            scrollRecommendationListener?.updateStateAfterGetData()
         }
     }
 
@@ -2001,21 +2062,24 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 message,
                 Toaster.LENGTH_SHORT,
                 type,
-                CTA_ATC,
-                View.OnClickListener {
-                    RouteManager.route(context, ApplinkConst.CART)
-                    userSession.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }
-                }
-            ).show()
+                CTA_ATC
+            ) {
+                RouteManager.route(context, ApplinkConst.CART)
+                userSession?.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }
+            }.show()
         }
     }
 
-    override fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order, orderIndex: Int) {
+    override fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order) {
         val kebabMenuBottomSheet = UohKebabMenuBottomSheet.newInstance()
         if (kebabMenuBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         val kebabMenuAdapter = UohBottomSheetKebabMenuAdapter()
-        kebabMenuAdapter._orderIndex = orderIndex
+        val orderIndex =
+            uohItemAdapter?.listTypeData?.let { UohDataHelper.getIndexUohItemByUuid(it, order.orderUUID) }
+        if (orderIndex != null) {
+            kebabMenuAdapter._orderIndex = orderIndex
+        }
         kebabMenuAdapter.addList(order)
 
         kebabMenuBottomSheet.setAdapter(kebabMenuAdapter)
@@ -2041,7 +2105,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             currIndexNeedUpdate = orderIndex
                             orderIdNeedUpdated = orderData.orderUUID
                             orderData.metadata.dotMenus.forEach {
-                                if (it.label.equals(LABEL_HELP_LINK)) {
+                                if (it.label == LABEL_HELP_LINK) {
                                     helpLinkUrl = it.webURL
                                 }
                             }
@@ -2059,7 +2123,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 putExtra(PARAM_SOURCE_UOH, true)
                                 putExtra(PARAM_HELP_LINK_URL, helpLinkUrl)
                             }
-                            startActivityForResult(intentCancelOrder, UOH_CANCEL_ORDER)
+                            cancelOrderActivityResult.launch(intentCancelOrder)
                         } else {
                             val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
                                 dotMenu.webURL
@@ -2079,11 +2143,12 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                         val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
                                         val invoiceId = flightQueryParam.invoiceId
                                         uohListViewModel.doFlightResendEmail(invoiceId, email)
-                                        userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
+                                        userSession?.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
                                     }
                                 })
                                 sendEmailBottomSheet.show(childFragmentManager)
                             }
+
                             dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
                                 val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
                                 if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
@@ -2094,28 +2159,33 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                         val invoiceId = trainQueryParam.invoiceId
                                         val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
                                         uohListViewModel.doTrainResendEmail(param)
-                                        userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
+                                        userSession?.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
                                     }
                                 })
                                 sendEmailBottomSheet.show(childFragmentManager)
                             }
+
                             dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
                                 doChatSeller(dotMenu.appURL, orderData)
                             }
+
                             dotMenu.actionType.equals(GQL_MP_ATC, true) -> {
                                 atc(orderData)
                             }
+
                             dotMenu.actionType.equals(GQL_MP_OCC, true) -> {
                                 atcOcc(orderData)
                             }
+
                             dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                                 orderIdNeedUpdated = orderData.orderUUID
                                 doFinishOrder(
-                                    orderIndex,
+                                    orderData.orderUUID,
                                     orderData.verticalStatus,
                                     orderData.verticalID
                                 )
                             }
+
                             dotMenu.actionType.equals(GQL_TRACK, true) -> {
                                 val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(
                                     REPLACE_ORDER_ID,
@@ -2123,60 +2193,90 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 )
                                 RouteManager.route(context, applinkTrack)
                             }
+
                             dotMenu.actionType.equals(GQL_LS_LACAK, true) -> {
                                 val linkUrl = dotMenu.appURL
                                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                             }
+
                             dotMenu.actionType.equals(GQL_MP_EXTEND, true) -> {
                                 goToOrderExtension(order, index)
                             }
+
                             dotMenu.actionType.equals(GQL_MP_POF, true) -> {
                                 goToPartialOrderFulfillment(order, index)
                             }
                         }
                     }
-                    userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
+                    userSession?.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         })
         kebabMenuBottomSheet.show(childFragmentManager)
-        userSession.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
+        userSession?.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
-    private fun doFinishOrder(index: Int, status: String, verticalId: String) {
-        val finishOrderBottomSheet = UohFinishOrderBottomSheet.newInstance(index, status, verticalId)
+    private fun onResultFromCancelOrder(resultCode: Int, data: Intent?) {
+        if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
+            val resultMsg = data?.getStringExtra(RESULT_MSG_INSTANT_CANCEL)
+            val result = data?.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1)
+            if (result == RESULT_CODE_SUCCESS) {
+                if (resultMsg != null) {
+                    uohItemAdapter?.showLoaderAtIndex(currIndexNeedUpdate)
+                    showToaster(resultMsg, Toaster.TYPE_NORMAL)
+                    loadOrderHistoryList(orderIdNeedUpdated)
+                }
+            }
+        } else {
+            loadFilters()
+        }
+    }
+
+    private fun doFinishOrder(uuid: String, status: String, verticalId: String) {
+        val finishOrderBottomSheet = UohFinishOrderBottomSheet.newInstance(uuid, status, verticalId)
         if (finishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         finishOrderBottomSheet.setListener(object : UohFinishOrderBottomSheet.UohFinishOrderBottomSheetListener {
-            override fun onClickFinishOrder(index: Int, status: String, orderId: String) {
+            override fun onClickFinishOrder(uuid: String, status: String, orderId: String) {
                 finishOrderBottomSheet.dismiss()
-                currIndexNeedUpdate = index
-                uohItemAdapter.showLoaderAtIndex(index)
+                val orderIndex =
+                    uohItemAdapter?.let {
+                        it.listTypeData.let { listData ->
+                            UohDataHelper.getIndexUohItemByUuid(
+                                listData,
+                                uuid
+                            )
+                        }
+                    }
+                if (orderIndex != null) {
+                    currIndexNeedUpdate = orderIndex
+                    uohItemAdapter?.showLoaderAtIndex(orderIndex)
+                }
 
                 var actionStatus = ""
                 if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
 
-                val paramFinishOrder = userSession.userId?.let { it1 ->
+                val paramFinishOrder = userSession?.userId?.let { it1 ->
                     UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
                 }
                 if (paramFinishOrder != null) {
                     uohListViewModel.doFinishOrder(paramFinishOrder)
                 }
-                userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
+                userSession?.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
             }
 
             override fun onClickAjukanKomplain(orderId: String) {
                 finishOrderBottomSheet.dismiss()
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
-                userSession.userId?.let { userId -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(userId) }
+                userSession?.userId?.let { userId -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(userId) }
             }
         })
         finishOrderBottomSheet.show(childFragmentManager)
     }
 
-    override fun onListItemClicked(order: UohListOrder.UohOrders.Order, index: Int) {
+    override fun onListItemClicked(order: UohListOrder.UohOrders.Order) {
         try {
             val detailUrl = order.metadata.detailURL
             if (detailUrl.appURL.isEmpty()) {
@@ -2189,13 +2289,17 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
                 }
 
-                currIndexNeedUpdate = index
+                val orderIndex =
+                    uohItemAdapter?.listTypeData?.let { UohDataHelper.getIndexUohItemByUuid(it, order.orderUUID) }
+                if (orderIndex != null) {
+                    currIndexNeedUpdate = orderIndex
+                }
                 orderIdNeedUpdated = order.orderUUID
 
                 // analytics
                 var jsonArray = JsonArray()
                 if (order.metadata.listProducts.isNotEmpty()) {
-                    jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
+                    jsonArray = JsonParser.parseString(order.metadata.listProducts).asJsonArray
                 }
                 val arrayListProducts = arrayListOf<ECommerceClick.Products>()
                 var i = 0
@@ -2213,49 +2317,74 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             id = eeProductId,
                             price = eeProductPrice,
                             list = "/order list - ${order.verticalCategory}",
-                            position = index.toString()
+                            position = orderIndex.toString()
                         )
                     )
                     i++
                 }
 
-                userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+                userSession?.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
 
                 // requested as old flow (from old order list)
                 UohAnalytics.orderDetailOpenScreenEvent()
-
-                startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
+                openOrderActivityResult.launch(intent)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
+    private fun onResultFromOpenOrder() {
+        if (currIndexNeedUpdate > -1 && orderIdNeedUpdated.isNotEmpty()) {
+            val item = uohItemAdapter?.listTypeData?.getOrNull(currIndexNeedUpdate)
+            if (item != null &&
+                item.typeLayout == UohConsts.TYPE_ORDER_LIST &&
+                item.dataObject is UohListOrder.UohOrders.Order &&
+                item.dataObject.orderUUID == orderIdNeedUpdated
+            ) {
+                uohItemAdapter?.showLoaderAtIndex(currIndexNeedUpdate)
+                loadOrderHistoryList(orderIdNeedUpdated)
+                return
+            }
+        }
+        currIndexNeedUpdate = -1
+        orderIdNeedUpdated = ""
+    }
+
     override fun onActionButtonClicked(
         order: UohListOrder.UohOrders.Order,
-        index: Int,
         buttonIndex: Int
     ) {
         try {
             order.metadata.buttons.getOrNull(buttonIndex)?.let { button ->
                 _buttonAction = button.actionType
                 if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                    handleRouting(button.appURL, index, order)
+                    handleRouting(button.appURL, order)
                 } else {
+                    val orderIndex = uohItemAdapter?.listTypeData?.let {
+                        UohDataHelper.getIndexUohItemByUuid(
+                            it,
+                            order.orderUUID
+                        )
+                    }
                     when {
                         button.actionType.equals(GQL_FINISH_ORDER, true) -> {
                             orderIdNeedUpdated = order.orderUUID
-                            doFinishOrder(index, order.verticalStatus, order.verticalID)
+                            doFinishOrder(order.orderUUID, order.verticalStatus, order.verticalID)
                         }
+
                         button.actionType.equals(GQL_MP_ATC, true) -> {
                             atc(order)
                         }
+
                         button.actionType.equals(GQL_MP_ATC_REDIRECTION, true) -> {
                             atc(order)
                         }
+
                         button.actionType.equals(GQL_MP_OCC, true) -> {
                             atcOcc(order)
                         }
+
                         button.actionType.equals(GQL_TRACK, true) -> {
                             val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(
                                 REPLACE_ORDER_ID,
@@ -2263,41 +2392,54 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             )
                             RouteManager.route(context, applinkTrack)
                         }
+
                         button.actionType.equals(GQL_LS_FINISH, true) -> {
                             orderIdNeedUpdated = order.orderUUID
                             val lsFinishOrderBottomSheet =
-                                UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
+                                UohLsFinishOrderBottomSheet.newInstance(order.orderUUID, order.verticalID)
                             if (lsFinishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
                             lsFinishOrderBottomSheet.setListener(object : UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
-                                override fun onClickLsFinishOrder(index: Int, orderId: String) {
-                                    currIndexNeedUpdate = index
-                                    uohItemAdapter.showLoaderAtIndex(index)
-                                    uohListViewModel.doLsPrintFinishOrder(orderId)
+                                override fun onClickLsFinishOrder(uuid: String, orderId: String) {
+                                    if (orderIndex != null) {
+                                        currIndexNeedUpdate = orderIndex
+                                        uohItemAdapter?.showLoaderAtIndex(orderIndex)
+                                        uohListViewModel.doLsPrintFinishOrder(orderId)
+                                    }
                                 }
                             })
                             lsFinishOrderBottomSheet.show(childFragmentManager)
                         }
+
                         button.actionType.equals(GQL_LS_LACAK, true) -> {
                             val linkUrl = button.appURL
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                         }
+
                         button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
-                            currIndexNeedUpdate = index
-                            orderIdNeedUpdated = order.orderUUID
-                            if (order.verticalID.isNotEmpty()) {
-                                uohListViewModel.doRechargeSetFail(order.verticalID.toIntOrZero())
+                            if (orderIndex != null) {
+                                currIndexNeedUpdate = orderIndex
+                                orderIdNeedUpdated = order.orderUUID
+                                if (order.verticalID.isNotEmpty()) {
+                                    uohListViewModel.doRechargeSetFail(order.verticalID.toIntOrZero())
+                                }
                             }
                         }
+
                         button.actionType.equals(GQL_MP_EXTEND, true) -> {
-                            goToOrderExtension(order, index)
+                            if (orderIndex != null) {
+                                goToOrderExtension(order, orderIndex)
+                            }
                         }
+
                         button.actionType.equals(GQL_MP_POF, true) -> {
-                            goToPartialOrderFulfillment(order, index)
+                            if (orderIndex != null) {
+                                goToPartialOrderFulfillment(order, orderIndex)
+                            }
                         }
                     }
                 }
-                userSession.userId?.let { userId ->
+                userSession?.userId?.let { userId ->
                     val eventLabel = if (button.label.contains(other = UohConsts.ULAS_LABEL, ignoreCase = true)) {
                         UohConsts.EVENT_LABEL_ULAS_BUTTON
                     } else {
@@ -2318,8 +2460,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     override fun onEmptyResultResetBtnClicked() {
         resetFilter()
         refreshHandler?.startRefresh()
-        scrollRecommendationListener.resetState()
-        userSession.userId?.let { UohAnalytics.clickResetFilterOnEmptyFilterResult(it) }
+        scrollRecommendationListener?.resetState()
+        userSession?.userId?.let { UohAnalytics.clickResetFilterOnEmptyFilterResult(it) }
     }
 
     override fun onTickerDetailInfoClicked(url: String) {
@@ -2334,19 +2476,30 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    override fun trackViewOrderCard(order: UohListOrder.UohOrders.Order, index: Int) {
+    override fun trackViewOrderCard(order: UohListOrder.UohOrders.Order) {
         var jsonArray = JsonArray()
         if (order.metadata.listProducts.isNotEmpty()) {
-            jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
+            jsonArray = JsonParser.parseString(order.metadata.listProducts).asJsonArray
         }
-        userSession.userId?.let { userId ->
-            trackingQueue?.let { UohAnalytics.viewOrderCard(it, order, userId, jsonArray, index.toString()) }
+
+        val orderIndex =
+            uohItemAdapter?.listTypeData?.let { UohDataHelper.getIndexUohItemByUuid(it, order.orderUUID) }
+        trackingQueue?.let {
+            userSession?.userId?.let { userId ->
+                UohAnalytics.viewOrderCard(
+                    it,
+                    order,
+                    userId,
+                    jsonArray,
+                    orderIndex.toString()
+                )
+            }
         }
     }
 
     override fun onMulaiBelanjaBtnClicked() {
         RouteManager.route(context, ApplinkConst.HOME)
-        userSession.userId?.let { UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(it) }
+        userSession?.userId?.let { UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(it) }
     }
 
     override fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int) {
@@ -2362,8 +2515,16 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
-        userSession.userId?.let { userId ->
-            trackingQueue?.let { UohAnalytics.productViewRecommendation(it, userId, recommendationItem, topAds, index.toString()) }
+        trackingQueue?.let {
+            userSession?.userId?.let { userId ->
+                UohAnalytics.productViewRecommendation(
+                    it,
+                    userId,
+                    recommendationItem,
+                    topAds,
+                    index.toString()
+                )
+            }
         }
     }
 
@@ -2374,7 +2535,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
 
-        userSession.userId?.let {
+        userSession?.userId?.let {
             UohAnalytics.productClickRecommendation(
                 ECommerceClick.Products(
                     name = productName,
@@ -2437,7 +2598,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        userSession.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
+        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
@@ -2452,13 +2613,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    override fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String) {
+    override fun onReviewRatingClicked(order: UohListOrder.UohOrders.Order, appLink: String) {
         UohAnalytics.clickPrimaryButtonOnOrderCard(
             verticalLabel = order.verticalCategory,
             primaryButton = UohConsts.EVENT_LABEL_STAR_RATING,
-            userId = userSession.userId
+            userId = userSession?.userId ?: ""
         )
-        handleRouting(appLink, index, order)
+        handleRouting(appLink, order)
     }
 
     override fun onReviewRatingImpressed(
@@ -2470,6 +2631,35 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
+    override fun onChevronBuyAgainWidgetClicked(applink: String) {
+        UohAnalytics.sendClickLihatSemuaArrowButtonOnBuyAgainWidgetEvent()
+        RouteManager.route(context, applink)
+    }
+
+    override fun onSeeAllCardClicked(applink: String) {
+        UohAnalytics.sendClickLihatSemuaButtonOnBuyAgainWidgetEvent()
+        RouteManager.route(context, applink)
+    }
+
+    override fun onProductCardClicked(recommendationItem: RecommendationItem, index: Int) {
+        UohAnalytics.sendClickProductOnBuyAgainWidgetEvent(recommendationItem, userSession?.userId ?: "", index)
+        RouteManager.route(context, recommendationItem.appUrl)
+    }
+
+    override fun onBuyAgainWidgetButtonClicked(recommendationItem: RecommendationItem, index: Int) {
+        atcBuyAgainWidget(recommendationItem, index)
+    }
+
+    override fun onBuyAgainItemScrolled(recommendationItem: RecommendationItem, index: Int) {
+        if (!isBuyAgainProductImpressed(recommendationItem.productId.toString())) {
+            UohAnalytics.sendImpressionProductOnBuyAgainWidgetEvent(recommendationItem, userSession?.userId ?: "", index)
+        }
+    }
+
+    override fun onImpressBuyAgainWidget() {
+        if (!isBuyAgainWidgetImpressed) UohAnalytics.sendViewBuyAgainWidgetOnOrderListEvent()
+    }
+
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
         var invoiceCode = ""
         var invoiceUrl = ""
@@ -2479,8 +2669,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
 
         try {
-            val parser = JsonParser()
-            val queryParams: JsonObject = parser.parse(order.metadata.queryParams).asJsonObject
+            val queryParams: JsonObject = JsonParser.parseString(order.metadata.queryParams).asJsonObject
             invoiceCode = queryParams.get(QUERY_PARAM_INVOICE).asString
             invoiceUrl = queryParams.get(QUERY_PARAM_INVOICE_URL).asString
         } catch (e: Exception) {
@@ -2507,7 +2696,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         _listParamAtcMulti.clear()
         if (orderData.metadata.listProducts.isNotEmpty()) {
             _atcVerticalCategory = orderData.verticalCategory
-            val jsonArray: JsonArray = JsonParser().parse(orderData.metadata.listProducts).asJsonArray
+            val jsonArray: JsonArray = JsonParser.parseString(orderData.metadata.listProducts).asJsonArray
             for (x in 0 until jsonArray.size()) {
                 val objParam = jsonArray.get(x).asJsonObject
                 _listParamAtcMulti.add(
@@ -2525,7 +2714,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             }
 
             uohListViewModel.doAtcMulti(
-                userSession.userId ?: "",
+                userSession?.userId ?: "",
                 GraphqlHelper.loadRawString(
                     activity?.resources,
                     atc_commonR.raw.mutation_add_to_cart_multi
@@ -2534,6 +2723,30 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 _atcVerticalCategory
             )
         }
+    }
+
+    private fun atcBuyAgainWidget(recommItem: RecommendationItem, index: Int) {
+        uohListViewModel.doAtcBuyAgain(
+            userSession?.userId ?: "",
+            GraphqlHelper.loadRawString(
+                activity?.resources,
+                atc_commonR.raw.mutation_add_to_cart_multi
+            ),
+            arrayListOf(
+                AddToCartMultiParam(
+                    productId = recommItem.productId.toString(),
+                    productName = recommItem.name,
+                    productPrice = recommItem.price.toDoubleOrZero(),
+                    qty = recommItem.minOrder,
+                    shopId = recommItem.shopId.toString(),
+                    custId = userSession?.userId ?: "",
+                    warehouseId = recommItem.warehouseId.toString(),
+                    shopName = recommItem.shopName
+                )
+            ),
+            recommItem,
+            index
+        )
     }
 
     private fun atcOcc(orderData: UohListOrder.UohOrders.Order) {
@@ -2546,46 +2759,82 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    private fun handleRouting(applink: String, index: Int, order: UohListOrder.UohOrders.Order) {
+    private fun handleRouting(applink: String, order: UohListOrder.UohOrders.Order) {
+        val orderIndex = uohItemAdapter?.listTypeData?.let { UohDataHelper.getIndexUohItemByUuid(it, order.orderUUID) }
         if (applink.contains(CREATE_REVIEW_APPLINK)) {
-            startActivityForResult(
+            reviewActivityResult.launch(
                 RouteManager.getIntent(
                     context,
                     URLDecoder.decode(applink, UohConsts.UTF_8)
-                ),
-                CREATE_REVIEW_REQUEST_CODE
+                )
             )
-            currIndexNeedUpdate = index
+            if (orderIndex != null) {
+                currIndexNeedUpdate = orderIndex
+            }
             orderIdNeedUpdated = order.orderUUID
         } else if (applink.startsWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW)) {
-            startActivityForResult(
+            bulkReviewActivityResult.launch(
                 RouteManager.getIntent(
                     context,
                     URLDecoder.decode(applink, UohConsts.UTF_8)
-                ),
-                BULK_REVIEW_REQUEST_CODE
+                )
             )
-            currIndexNeedUpdate = index
+            if (orderIndex != null) {
+                currIndexNeedUpdate = orderIndex
+            }
             orderIdNeedUpdated = order.orderUUID
         } else {
             RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))
         }
     }
 
+    private fun onResultFromReview(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                onSuccessCreateReview(
+                    data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession?.name)
+                )
+            }
+            Activity.RESULT_FIRST_USER -> {
+                onFailCreateReview(
+                    data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review)
+                )
+            }
+            else -> {
+                onCancelCreateReview()
+            }
+        }
+        currIndexNeedUpdate = -1
+        orderIdNeedUpdated = ""
+    }
+
+    private fun onResultFromBulkReview(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            onSuccessCreateReview(
+                data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE)
+                    ?: getString(R.string.uoh_review_create_success_toaster, userSession?.name)
+            )
+        } else {
+            onCancelCreateReview()
+        }
+        currIndexNeedUpdate = -1
+        orderIdNeedUpdated = ""
+    }
+
     private fun onSuccessCreateReview(message: String) {
         view?.let { Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.uoh_review_oke)).show() }
-        uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+        uohItemAdapter?.showLoaderAtIndex(currIndexNeedUpdate)
         loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
     }
 
     private fun onFailCreateReview(errorMessage: String) {
         view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke)).show() }
-        uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+        uohItemAdapter?.showLoaderAtIndex(currIndexNeedUpdate)
         loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
     }
 
     private fun onCancelCreateReview() {
-        uohItemAdapter.resetReviewRatingWidgetAtIndex(orderIdNeedUpdated)
+        uohItemAdapter?.resetReviewRatingWidgetAtIndex(orderIdNeedUpdated)
     }
 
     private fun goToOrderExtension(order: UohListOrder.UohOrders.Order, index: Int) {
@@ -2599,7 +2848,28 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         } ?: return
         orderIdNeedUpdated = order.orderUUID
         currIndexNeedUpdate = index
-        startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
+        extendOrderActivityResult.launch(intent)
+    }
+
+    private fun onResultFromExtendOrder(data: Intent?) {
+        val isOrderExtend = data?.getBooleanExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_ORDER_EXTENDED, true)
+        if (isOrderExtend == true) {
+            // order extended
+            uohItemAdapter?.showLoaderAtIndex(currIndexNeedUpdate)
+            loadOrderHistoryList(orderIdNeedUpdated)
+        } else {
+            // order not extended
+            resetFilter()
+            currIndexNeedUpdate = -1
+            orderIdNeedUpdated = ""
+            refreshHandler?.startRefresh()
+            scrollRecommendationListener?.resetState()
+        }
+        val toasterMessage = data?.getStringExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_MESSAGE)
+        if (!toasterMessage.isNullOrBlank()) {
+            val toasterType = data.getIntExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, Toaster.TYPE_NORMAL)
+            showToaster(toasterMessage, toasterType)
+        }
     }
 
     private fun goToPartialOrderFulfillment(order: UohListOrder.UohOrders.Order, index: Int) {
@@ -2611,7 +2881,25 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         val intent = RouteManager.getIntentNoFallback(context, appLink) ?: return
         orderIdNeedUpdated = order.orderUUID
         currIndexNeedUpdate = index
-        startActivityForResult(intent, POF_REQUEST_CODE)
+        partialOrderFulfillmentActivityResult.launch(intent)
+    }
+
+    private fun onResultFromPartialOrderFulfillment(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            uohItemAdapter?.showLoaderAtIndex(currIndexNeedUpdate)
+            loadOrderHistoryList(orderIdNeedUpdated)
+        } else {
+            resetFilter()
+            currIndexNeedUpdate = -1
+            orderIdNeedUpdated = ""
+            refreshHandler?.startRefresh()
+            scrollRecommendationListener?.resetState()
+        }
+
+        val toasterMessage = data?.getStringExtra(ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE)
+        if (!toasterMessage.isNullOrBlank()) {
+            showToaster(toasterMessage, Toaster.TYPE_NORMAL)
+        }
     }
 
     private fun showFinishOrderToaster() {
@@ -2634,6 +2922,37 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         } else {
             impressedUUIDs.add(orderUUID)
             false
+        }
+    }
+
+    private fun isBuyAgainProductImpressed(productId: String): Boolean {
+        return if (impressedBuyAgainItems.contains(productId)) {
+            true
+        } else {
+            impressedBuyAgainItems.add(productId)
+            false
+        }
+    }
+
+    private fun renderBuyAgain(data: List<RecommendationWidget>) {
+        data.firstOrNull().run {
+            if (this != null && this.recommendationItemList.isNotEmpty()) {
+                val buyAgainWidget = RecommendationWidget(
+                    title = this.title,
+                    recommendationItemList = this.recommendationItemList,
+                    seeMoreAppLink = this.seeMoreAppLink
+                )
+                uohItemAdapter?.addBuyAgainWidget(UohTypeData(buyAgainWidget, UohConsts.TYPE_BUY_AGAIN))
+                restoreScrollPositionAfterAdAdded()
+            }
+        }
+    }
+
+    private fun restoreScrollPositionAfterAdAdded() {
+        val layoutManager = binding?.rvOrderList?.layoutManager as LinearLayoutManager
+        val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+        if (firstVisibleItemPosition == 0) {
+            layoutManager.scrollToPosition(0)
         }
     }
 

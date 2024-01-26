@@ -1,9 +1,5 @@
 package com.tokopedia.imagepreviewslider.presentation.adapter;
 
-import static com.tokopedia.abstraction.common.utils.image.ImageHandler.LoadImage;
-import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_HEIGHT;
-import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_WIDTH;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
@@ -13,11 +9,13 @@ import android.webkit.URLUtil;
 import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
-
-import com.tokopedia.imagepreviewslider.presentation.view.TouchImageView;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_HEIGHT;
+import static com.tokopedia.utils.image.ImageProcessingUtil.DEF_WIDTH;
 
 public class TouchImageAdapter extends PagerAdapter {
     public interface OnImageStateChange {
@@ -28,14 +26,14 @@ public class TouchImageAdapter extends PagerAdapter {
 
     private Context context;
     private ArrayList<String> FileLoc;
-    private OnImageStateChange ImageStateChangeListener;
+    private TouchImageAdapter.OnImageStateChange ImageStateChangeListener;
 
     public TouchImageAdapter(Context context, ArrayList<String> FileLoc) {
         this.context = context;
         this.FileLoc = FileLoc;
     }
 
-    public void SetonImageStateChangeListener(OnImageStateChange Listener) {
+    public void SetonImageStateChangeListener(TouchImageAdapter.OnImageStateChange Listener) {
         ImageStateChangeListener = Listener;
     }
 
@@ -59,7 +57,7 @@ public class TouchImageAdapter extends PagerAdapter {
         });
         String thumbnail = FileLoc.get(position);
         if (URLUtil.isNetworkUrl(thumbnail)) {
-            LoadImage(imageView, thumbnail);
+            JvmMediaLoader.loadImage(imageView, thumbnail);
         } else {
             loadImageFromFile(context, imageView, thumbnail);
         }

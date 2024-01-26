@@ -16,6 +16,7 @@ import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
@@ -69,6 +70,8 @@ class CatalogToolbar : Toolbar {
     var moreMenuButton: IconUnify? = null
     var shareButton: IconUnify? = null
     var searchButton: IconUnify? = null
+    var reloadButton: IconUnify? = null
+    var editButton: IconUnify? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
@@ -99,6 +102,8 @@ class CatalogToolbar : Toolbar {
         moreMenuButton = findViewById(R.id.more_menu)
         shareButton = findViewById(R.id.share)
         searchButton = findViewById(R.id.search)
+        reloadButton = findViewById(R.id.reload_option)
+        editButton = findViewById(R.id.edit)
         navigationIcon = backIconWhite
         setupIconRedirection()
     }
@@ -119,6 +124,7 @@ class CatalogToolbar : Toolbar {
     private fun refreshViews() {
         tpgTitle?.text = title
         tpgSubTitle?.text = subTitle
+        tpgSubTitle?.showWithCondition(subTitle.isNotEmpty())
     }
 
     fun setColors(@ColorInt color: Int) {
@@ -127,6 +133,8 @@ class CatalogToolbar : Toolbar {
         applyIconUnifyColor(moreMenuButton?.drawable ?: return, color)
         applyIconUnifyColor(shareButton?.drawable ?: return, color)
         applyIconUnifyColor(searchButton?.drawable ?: return, color)
+        applyIconUnifyColor(reloadButton?.drawable ?: return, color)
+        applyIconUnifyColor(editButton?.drawable ?: return, color)
         tpgTitle?.setTextColor(color)
     }
 

@@ -5,11 +5,14 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stfalcon.imageviewer.StfalconImageViewer
-import com.tokopedia.imagepreviewslider.presentation.adapter.SpaceItemDecoration
+import com.tokopedia.imagepreviewslider.R
 import com.tokopedia.imagepreviewslider.presentation.adapter.ImagePreviewSliderAdapter
+import com.tokopedia.imagepreviewslider.presentation.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.view_image_overlay.view.*
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 2019-12-16
@@ -29,7 +32,6 @@ class ImagePreviewViewer {
 
     private lateinit var overlayView: ImageOverlayView
 
-
     companion object {
         @JvmStatic
         val instance by lazy { ImagePreviewViewer() }
@@ -46,11 +48,9 @@ class ImagePreviewViewer {
     }
 
     private fun setupOverlayView(title: String = "", imageList: List<String>? = null, context: Context?, index: Int) {
-
         overlayView = ImageOverlayView(context).apply {
-
             val overlayBackButton = btn_arrow_back
-            overlayBackButton.setBackgroundResource(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
+            overlayBackButton.setBackgroundResource(resourcescommonR.drawable.ic_system_action_back_grayscale_24)
             overlayBackButton.setOnClickListener {
                 viewer.close()
             }
@@ -63,9 +63,12 @@ class ImagePreviewViewer {
                 setHasFixedSize(true)
                 imagePreviewLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = imagePreviewLayoutManager
-                imagePreviewSliderAdapter = ImagePreviewSliderAdapter(imageList?.toMutableList()
+                imagePreviewSliderAdapter = ImagePreviewSliderAdapter(
+                    imageList?.toMutableList()
                         ?: mutableListOf(),
-                        index, imageSliderListener)
+                    index,
+                    imageSliderListener
+                )
                 adapter = imagePreviewSliderAdapter
 
                 val dividerItemDecoration = SpaceItemDecoration(20, LinearLayoutManager.HORIZONTAL)
@@ -79,22 +82,22 @@ class ImagePreviewViewer {
     private fun startViewer(imageList: List<String>?, imageViewTransitionFrom: ImageView?, context: Context?, index: Int) {
         context?.let {
             viewer = StfalconImageViewer.Builder<String>(context, imageList, ::loadImages)
-                    .withBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96))
-                    .withStartPosition(index)
-                    .withTransitionFrom(imageViewTransitionFrom)
-                    .withImageChangeListener {
-                        overlayView.updateImageIndexPosition(it, imageList)
-                        imagePreviewLayoutManager.smoothScrollToPosition(rvImageList, RecyclerView.State(), it)
-                        imagePreviewSliderAdapter.setSelectedImage(it)
-                    }
-                    .withOverlayView(overlayView)
-                    .show()
+                .withBackgroundColor(androidx.core.content.ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Static_Black_96))
+                .withStartPosition(index)
+                .withTransitionFrom(imageViewTransitionFrom)
+                .withImageChangeListener {
+                    overlayView.updateImageIndexPosition(it, imageList)
+                    imagePreviewLayoutManager.smoothScrollToPosition(rvImageList, RecyclerView.State(), it)
+                    imagePreviewSliderAdapter.setSelectedImage(it)
+                }
+                .withOverlayView(overlayView)
+                .show()
         }
     }
 
     private fun loadImages(imageView: ImageView?, imageList: String?) {
         imageView?.let {
-            it.loadImage(imageList ?: "", com.tokopedia.design.R.drawable.ic_loading_image)
+            it.loadImage(imageList ?: "", R.drawable.ic_loading_image)
         }
     }
 }
