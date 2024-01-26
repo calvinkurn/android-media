@@ -30,7 +30,6 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUi
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewDescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -214,25 +213,25 @@ class ReviewParentContentViewHolder(
     private fun prepareVideoPlayerIfNeeded(media: List<ReviewMediaUiModel>) {
         if (mVideoPlayer != null) return
 
-        val videoPosition = media.indexOfFirst { it.type == MediaType.Video }
-        if (videoPosition < 0) return
+        media.forEachIndexed { index, reviewMediaUiModel ->
+            if (reviewMediaUiModel.type != MediaType.Video) return@forEachIndexed
+            val data = media[index]
+            val videoUrl = data.url
 
-        val data = media[videoPosition]
-        val videoUrl = data.url
-
-        val instance = videoPlayerManager.occupy(
-            String.format(
-                REVIEW_CONTENT_VIDEO_KEY_REF,
-                videoUrl
+            val instance = videoPlayerManager.occupy(
+                String.format(
+                    REVIEW_CONTENT_VIDEO_KEY_REF,
+                    videoUrl
+                )
             )
-        )
-        val videoPlayer = mVideoPlayer ?: instance
-        mVideoPlayer = videoPlayer
-        mVideoPlayer?.start(
-            videoUrl = videoUrl,
-            isMute = false,
-            playWhenReady = false
-        )
+            val videoPlayer = mVideoPlayer ?: instance
+            mVideoPlayer = videoPlayer
+            mVideoPlayer?.start(
+                videoUrl = videoUrl,
+                isMute = false,
+                playWhenReady = false
+            )
+        }
     }
 
     private fun setupPageControlMedia(mediaSize: Int) = with(binding.pcReviewContent) {

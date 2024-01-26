@@ -5,29 +5,39 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.databinding.ItemProductContentImageBinding
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class ProductContentImageViewHolder(
-    private val binding: ItemProductContentImageBinding,
+    private val binding: ItemProductContentImageBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(content: ProductContentUiModel) {
-        binding.ivProductContentImage.loadImageWithoutPlaceholder(content.url) {
+        showLoading()
+        renderImage(content.url)
+    }
+
+    private fun renderImage(imageUrl: String) = with(binding.ivProductContentImage) {
+        loadImageWithoutPlaceholder(imageUrl) {
             listener(
-                onSuccess = { _, _ ->
-                    hideLoading()
-                },
+                onSuccess = { _, _ -> hideLoading() },
                 onError = { hideLoading() }
             )
+        }
+    }
+
+    private fun showLoading() {
+        binding.apply {
+            ivProductContentImage.invisible()
+            loaderImage.show()
         }
     }
 
     private fun hideLoading() {
         binding.apply {
             ivProductContentImage.show()
-            loaderImage.hide()
+            loaderImage.invisible()
         }
     }
 
@@ -38,7 +48,7 @@ class ProductContentImageViewHolder(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
-                ),
+                )
             )
     }
 }
