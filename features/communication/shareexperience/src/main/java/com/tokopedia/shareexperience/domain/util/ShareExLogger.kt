@@ -12,6 +12,7 @@ object ShareExLogger {
     private const val STACKTRACE_KEY = "stacktrace"
     private const val EXTRAS_KEY = "extras"
     private const val DESCRIPTION_KEY = "description"
+
     fun logExceptionToServerLogger(
         throwable: Throwable,
         deviceId: String,
