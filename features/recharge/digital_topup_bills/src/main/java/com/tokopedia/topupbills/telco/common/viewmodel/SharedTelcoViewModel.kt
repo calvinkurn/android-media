@@ -24,9 +24,11 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                               val dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+class SharedTelcoViewModel @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    val dispatcher: CoroutineDispatcher
+) :
+    BaseViewModel(dispatcher) {
 
     private val _recommendation = MutableLiveData<List<TopupBillsRecommendation>>()
     val recommendations: LiveData<List<TopupBillsRecommendation>>
@@ -87,9 +89,11 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogPrefixSelect::class.java, mapParam)
-                graphqlRepository.response(listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
+                graphqlRepository.response(
+                    listOf(graphqlRequest),
+                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build()
+                )
             }.getSuccessData<TelcoCatalogPrefixSelect>()
 
             delay(DELAY_TIME)
@@ -99,12 +103,9 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun
-
     companion object {
         const val KEY_MENU_ID = "menuID"
         const val EXP_TIME = 10
         const val DELAY_TIME = 200L
     }
-
 }
