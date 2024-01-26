@@ -130,7 +130,7 @@ fun ProductTagItems(products: List<FeedCardProductModel>,
 
     Column {
         FeedProductLabel(products = products, totalProducts = totalProducts)
-        //Add launched effect with delay, add variable remembr
+        //Add launched effect with delay, add variable remember
         FeedProductHighlight()
     }
 }
