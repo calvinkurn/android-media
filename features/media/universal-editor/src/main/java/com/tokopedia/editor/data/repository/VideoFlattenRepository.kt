@@ -5,6 +5,7 @@ import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.FFmpeg
 import com.tokopedia.editor.analytics.EditorLogger
 import com.tokopedia.editor.data.model.CanvasSize
+import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.utils.file.FileUtil
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -102,15 +103,13 @@ class VideoFlattenRepositoryImpl @Inject constructor(
         return CanvasSize(scaledWidth, scaledHeight)
     }
 
-    private fun cacheDir() = FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path
-
     private fun flattenResultFilePath(fileNameAppendix: String): String {
-        return cacheDir() + if (fileNameAppendix.isEmpty()) {
+        return getEditorCacheFolderPath() + if (fileNameAppendix.isEmpty()) {
             // no appendix value, will reuse file to reduce size
-            "/$VIDEO_RESULT_BASE_FILENAME.mp4"
+            "$VIDEO_RESULT_BASE_FILENAME.mp4"
         } else {
             // with appendix value, will generate new file each export if appendix value is unique each export
-            "/${VIDEO_RESULT_BASE_FILENAME}_$fileNameAppendix.mp4"
+            "${VIDEO_RESULT_BASE_FILENAME}_$fileNameAppendix.mp4"
         }
     }
 
@@ -121,7 +120,6 @@ class VideoFlattenRepositoryImpl @Inject constructor(
     )
 
     companion object {
-        private const val CACHE_FOLDER = "Tokopedia"
         private const val VIDEO_RESULT_BASE_FILENAME = "stories_editor_result"
 
         private const val MAX_WIDTH = 720
