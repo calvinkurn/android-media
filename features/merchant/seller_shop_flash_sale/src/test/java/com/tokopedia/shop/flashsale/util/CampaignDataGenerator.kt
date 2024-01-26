@@ -1,7 +1,6 @@
 package com.tokopedia.shop.flashsale.util
 
 import com.tokopedia.campaign.data.response.RollenceGradualRollout
-import com.tokopedia.campaign.usecase.RolloutFeatureVariantsUseCase
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction.Submit
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction.Update
@@ -24,7 +23,7 @@ import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetada
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase.Param
-import java.util.Date
+import java.util.*
 import com.tokopedia.shop.flashsale.domain.entity.CampaignBanner.Product as BannerProduct
 import com.tokopedia.shop.flashsale.domain.entity.CampaignBanner.Shop as BannerShop
 
@@ -103,18 +102,6 @@ object CampaignDataGenerator {
         showTeaser = campaignData.useUpcomingWidget,
         packageId = campaignData.packageInfo.packageId,
         isOosImprovement = campaignData.isOosImprovement
-    )
-
-    fun generateRollenceGradualRolloutParam(
-        rev: Int,
-        client_id: Int,
-        shopId: String,
-        iris_session_id: String
-    ): RolloutFeatureVariantsUseCase.Param = RolloutFeatureVariantsUseCase.Param(
-        rev = rev,
-        client_id = client_id,
-        id = shopId,
-        iris_session_id = iris_session_id
     )
 
     fun generateCampaignCreationResult(

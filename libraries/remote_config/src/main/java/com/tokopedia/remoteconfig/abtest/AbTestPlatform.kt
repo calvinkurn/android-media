@@ -26,6 +26,7 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
     private lateinit var userSession: UserSession
     private lateinit var irisSession: IrisSession
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
+    private var id: String = ""
 
     init {
         userSession = UserSession(context)
@@ -124,6 +125,13 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
         }
     }
 
+    /**
+     * call this function if you want to set custom id value
+     */
+    fun setId(id: String) {
+        this.id = id
+    }
+
     override fun fetch(listener: RemoteConfig.Listener?) {
         // Get existing revision for next Gql request
         val revision = sharedPreferences.getInt(REVISION, 0)
@@ -132,11 +140,15 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
         val payloads = HashMap<String, Any>()
         payloads[REVISION] = revision
         payloads[CLIENTID] = ANDROID_CLIENTID
-        if (userSession.isLoggedIn) {
-            payloads[ID] = userSession.userId
+        if (id.isNotEmpty()) {
+            payloads[ID] = id
         } else {
-            if (handleDeviceIdless()) { return }
-            payloads[ID] = userSession.deviceId
+            if (userSession.isLoggedIn) {
+                payloads[ID] = userSession.userId
+            } else {
+                if (handleDeviceIdless()) { return }
+                payloads[ID] = userSession.deviceId
+            }
         }
         payloads[IRIS_SESSION_ID] = irisSession.getSessionId()
 
