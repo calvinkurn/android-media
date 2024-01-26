@@ -12,11 +12,19 @@ import androidx.constraintlayout.widget.ConstraintSet.TOP
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.productcard.R as productcardR
+
+internal data class AddToCartConstraints(
+    @IdRes val start: Int,
+    @IdRes val top: Int,
+    @IdRes val end: Int,
+    @IdRes val bottom: Int,
+)
 
 internal fun AddToCartButton(
     constraintLayout: ConstraintLayout,
-    @IdRes constraintTopToBottomId: Int,
+    addToCartConstraints: AddToCartConstraints,
 ): UnifyButton {
     val context = constraintLayout.context
     val addToCartButton = AddToCartButton(context)
@@ -26,11 +34,15 @@ internal fun AddToCartButton(
     constraintLayout.applyConstraintSet {
         val marginTop =
             context.getPixel(productcardR.dimen.product_card_reimagine_button_atc_margin_top)
-
-        connect(R.id.productCardAddToCart, START, PARENT_ID, START)
-        connect(R.id.productCardAddToCart, TOP, constraintTopToBottomId, BOTTOM, marginTop)
-        connect(R.id.productCardAddToCart, END, PARENT_ID, END)
-        connect(R.id.productCardAddToCart, BOTTOM, PARENT_ID, BOTTOM)
+        connect(R.id.productCardAddToCart, TOP, addToCartConstraints.top, BOTTOM, marginTop)
+        connect(
+            R.id.productCardAddToCart,
+            BOTTOM,
+            addToCartConstraints.bottom,
+            BOTTOM,
+        )
+        connect(R.id.productCardAddToCart, START, addToCartConstraints.start, END)
+        connect(R.id.productCardAddToCart, END, addToCartConstraints.end, START)
     }
 
     return addToCartButton
@@ -45,6 +57,8 @@ private fun AddToCartButton(context: Context) = UnifyButton(context).apply {
 }
 
 private fun layoutParams(context: Context) = LayoutParams(
-    0, // Match constraint for constraint layout
+    LayoutParams.MATCH_CONSTRAINT,
     context.getPixel(R.dimen.product_card_reimagine_button_atc_height)
-)
+).apply {
+    verticalBias = 1f
+}

@@ -93,7 +93,6 @@ internal class ReimagineGridCarouselViewStrategy(
         stockInfo.render(productCardModel)
 
         renderGuidelineContent(productCardModel)
-        setContainerProductHeightCard(productCardModel)
         renderOutlineProductCard(productCardModel)
 
         CompatPaddingUtils(productCardView, useCompatPadding, productCardModel).updatePadding()
@@ -123,16 +122,6 @@ internal class ReimagineGridCarouselViewStrategy(
 
     private fun renderOutlineProductCard(productCardModel: ProductCardModelReimagine) {
         productCardOutlineCard?.showWithCondition(productCardModel.isInBackground)
-    }
-
-    private fun setContainerProductHeightCard(productCardModel: ProductCardModelReimagine) {
-        val contextResource = context?.resources
-        val dimensMarginBottom =
-            contextResource?.getDimensionPixelSize(R.dimen.product_card_reimagine_carousel_padding_bottom) ?: 0
-        val isInBackground = productCardModel.isInBackground
-        val marginBottom = if (isInBackground) 0 else dimensMarginBottom
-
-        cardConstraintLayout?.setPadding(0,0,0, marginBottom)
     }
 
     override fun recycle() { }

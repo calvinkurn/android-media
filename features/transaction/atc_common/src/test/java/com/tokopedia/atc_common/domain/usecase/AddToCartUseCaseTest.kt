@@ -103,7 +103,8 @@ class AddToCartUseCaseTest {
             AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
             AddToCartBaseAnalytics.sendBranchIoTracking(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(),
+                any(), any(), any()
             )
         }
 
@@ -147,7 +148,8 @@ class AddToCartUseCaseTest {
             AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
             AddToCartBaseAnalytics.sendBranchIoTracking(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(),
+                any(), any(), any()
             )
         }
 

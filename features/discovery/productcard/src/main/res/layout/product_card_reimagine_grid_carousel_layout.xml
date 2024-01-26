@@ -22,8 +22,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id='@+id/productCardConstraintLayout'
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/product_card_reimagine_carousel_padding_bottom">
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/productCardGuidelineOutlineCard"
@@ -192,6 +191,13 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_end="0dp" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/productCardGuidelineBottomContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="@dimen/product_card_reimagine_carousel_padding_bottom" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardName"
                 android:layout_width="0dp"
@@ -350,6 +356,7 @@
                 android:layout_height="@dimen/product_card_reimagine_label_offer_height"
                 android:layout_marginTop="@dimen/product_card_reimagine_label_offer_margin_top"
                 android:layout_marginStart="4dp"
+                app:layout_goneMarginStart="0dp"
                 android:background="@drawable/product_card_reimagine_label_background"
                 android:ellipsize="end"
                 android:gravity="center"

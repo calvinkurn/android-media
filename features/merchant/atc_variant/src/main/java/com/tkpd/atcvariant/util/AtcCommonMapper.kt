@@ -47,7 +47,8 @@ object AtcCommonMapper {
         shippingMinPrice: Double,
         userId: String,
         showQtyEditor: Boolean,
-        selectedStock: Int
+        selectedStock: Int,
+        shopName: String
     ): Any {
         return when (actionButtonCart) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
@@ -66,6 +67,7 @@ object AtcCommonMapper {
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
+                    this.shopName = shopName
                 }
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
@@ -82,6 +84,7 @@ object AtcCommonMapper {
                             productName = selectedChild?.name ?: ""
                             category = categoryName
                             price = selectedChild?.finalPrice?.toString() ?: ""
+                            this.shopName = shopName
                         }
                     ),
                     userId = userId,

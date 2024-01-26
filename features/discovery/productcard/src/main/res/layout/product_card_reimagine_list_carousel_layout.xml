@@ -37,26 +37,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible"/>
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/productCardAds"
-                android:contentDescription="@string/content_desc_textTopAds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="4dp"
-                android:paddingHorizontal="2dp"
-                android:text="@string/product_card_topads"
-                android:textColor="@color/product_card_dms_ad_color"
-                android:shadowColor="@color/Unify_NN950_44"
-                android:shadowDy="1"
-                android:shadowRadius="2"
-                app:layout_constraintEnd_toEndOf="@id/productCardImage"
-                app:layout_constraintBottom_toBottomOf="@id/productCardImage"
-                app:typographyType="small"
-                app:typographyWeight="bold"
-                tools:visibility="visible"/>
-
             <ImageView
                 android:id="@+id/productCardOverlay3"
                 android:layout_width="wrap_content"
@@ -86,6 +66,26 @@
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
                 app:layout_constraintStart_toStartOf="@id/productCardImage"
                 app:layout_constraintBottom_toBottomOf="@id/productCardImage" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productCardAds"
+                android:contentDescription="@string/content_desc_textTopAds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                android:paddingHorizontal="2dp"
+                android:text="@string/product_card_topads"
+                android:textColor="@color/product_card_dms_ad_color"
+                android:shadowColor="@color/Unify_NN950_44"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                app:layout_constraintEnd_toEndOf="@id/productCardImage"
+                app:layout_constraintBottom_toBottomOf="@id/productCardImage"
+                app:typographyType="small"
+                app:typographyWeight="bold"
+                tools:visibility="visible"/>
 
             <View
                 android:id="@+id/productCardStockInfoBackground"

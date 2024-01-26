@@ -28,6 +28,7 @@ internal val productCardReimagineCarouselGridTestData =
         overlayWithStockInfo(),
         itemInBackground(),
         itemInBackgroundHasRibbonAndSlashedPriceInline(),
+        itemInBackgroundAtc(),
     )
 
 private fun stockInfoTersedia(): ProductCardReimagineMatcher {
@@ -553,4 +554,57 @@ private fun itemInBackgroundHasRibbonAndSlashedPriceInline(): ProductCardReimagi
     )
 
     return Triple(model, matcher, "Item in Background, Slashed Price Inline")
+}
+
+private fun itemInBackgroundAtc(): ProductCardReimagineMatcher {
+    val reimagineProductOffers = labelGroupProductOffers()
+    val reimagineBenefitLabel = labelGroupBenefit()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name paling panjang"
+    )
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        labelGroupList = listOf(
+            reimagineBenefitLabel,
+            reimagineCredibilityLabel,
+            reimagineProductOffers
+        ),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        isInBackground = true,
+        hasAddToCart = true,
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardLabelOffer to isDisplayedWithText(reimagineProductOffers.title),
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+        R.id.productCardOutline to isDisplayed(),
+        R.id.productCardAddToCart to isDisplayed(),
+    )
+
+    return Triple(model, matcher, "Item In Background with ATC")
 }
