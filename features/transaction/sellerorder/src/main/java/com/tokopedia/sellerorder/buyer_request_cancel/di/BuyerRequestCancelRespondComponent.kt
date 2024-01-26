@@ -4,10 +4,6 @@ import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestC
 import com.tokopedia.sellerorder.common.di.SomComponent
 import dagger.Component
 
-/**
- * Created by fwidjaja on 2019-09-30.
- */
-
 @BuyerRequestCancelRespondScope
 @Component(
     modules = [BuyerRequestCancelRespondViewModelModule::class],

@@ -14,6 +14,7 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailProductBun
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By @ilhamsuaib on 05/07/21
@@ -54,7 +55,7 @@ class SomDetailProductBundleCardViewHolder(
             setRecycledViewPool(recyclerViewSharedPool)
             adapter = productAdapter
             if (itemDecorationCount == 0) {
-                val margins = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.spacing_lvl4).toInt()
+                val margins = context.resources.getDimension(unifycomponentsR.dimen.spacing_lvl4).toInt()
                 addItemDecoration(
                     RecyclerViewItemDivider(
                         divider = MethodChecker.getDrawable(context, R.drawable.som_detail_product_bundling_product_divider),

@@ -3,21 +3,20 @@ package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondBottomSheet
-import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondListener
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondBottomSheetManager
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
-import com.tokopedia.sellerorder.common.presenter.model.PopUp
-import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.sellerorder.orderextension.presentation.bottomsheet.SomBottomSheetOrderExtensionRequest
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 
-class BottomSheetManager(private val view: ViewGroup, private val fragmentManager: FragmentManager) {
+class BottomSheetManager(
+    private val view: ViewGroup,
+    private val fragmentManager: FragmentManager,
+    buyerRequestCancelRespondBottomSheetManager: IBuyerRequestCancelRespondBottomSheetManager
+): IBuyerRequestCancelRespondBottomSheetManager by buyerRequestCancelRespondBottomSheetManager {
     private var secondaryBottomSheet: SomDetailSecondaryActionBottomSheet? = null
-    private var orderRequestCancelBottomSheet: BuyerRequestCancelRespondBottomSheet? = null
     private var somRejectReasonBottomSheet: SomRejectReasonBottomSheet? = null
     private var somProductEmptyBottomSheet: SomBottomSheetProductEmpty? = null
     private var somShopClosedBottomSheet: SomBottomSheetShopClosed? = null
@@ -70,28 +69,6 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
     ) {
         bottomSheetChangeAwb?.run {
             setListener(listener)
-            init(view)
-        }
-    }
-
-    private fun createSomOrderRequestCancelBottomSheet(): BuyerRequestCancelRespondBottomSheet {
-        return BuyerRequestCancelRespondBottomSheet(view.context)
-    }
-
-    private fun reInitSomOrderRequestCancelBottomSheet(
-        listener: IBuyerRequestCancelRespondListener,
-        orderDetail: SomDetailOrder.GetSomDetail?,
-        popUp: PopUp
-    ) {
-        orderRequestCancelBottomSheet?.run {
-            setListener(listener)
-            init(
-                Utils.getL2CancellationReason(orderDetail?.buyerRequestCancel?.reason.orEmpty()),
-                orderDetail?.statusCode.orZero(),
-                popUp.body,
-                popUp.getPrimaryButton()?.displayName.orEmpty(),
-                popUp.getSecondaryButton()?.displayName.orEmpty()
-            )
             init(view)
         }
     }
@@ -257,17 +234,6 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
         bottomSheetChangeAwb?.show()
     }
 
-    fun showSomOrderRequestCancelBottomSheet(
-        button: SomDetailOrder.GetSomDetail.Button,
-        orderDetail: SomDetailOrder.GetSomDetail?,
-        listener: IBuyerRequestCancelRespondListener
-    ) {
-        orderRequestCancelBottomSheet = orderRequestCancelBottomSheet
-            ?: createSomOrderRequestCancelBottomSheet()
-        reInitSomOrderRequestCancelBottomSheet(listener, orderDetail, button.popUp)
-        orderRequestCancelBottomSheet?.show()
-    }
-
     fun showSomBottomSheetProductEmpty(
         rejectReason: SomReasonRejectData.Data.SomRejectReason,
         orderDetail: SomDetailOrder.GetSomDetail?,
@@ -362,7 +328,7 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
 
     fun clearViewBindings() {
         secondaryBottomSheet?.clearViewBinding()
-        orderRequestCancelBottomSheet?.clearViewBinding()
+        bottomSheetBuyerRequestCancelRespond?.clearViewBinding()
         somRejectReasonBottomSheet?.clearViewBinding()
         somProductEmptyBottomSheet?.clearViewBinding()
         somShopClosedBottomSheet?.clearViewBinding()
@@ -377,7 +343,7 @@ class BottomSheetManager(private val view: ViewGroup, private val fragmentManage
     fun dismissBottomSheets(): Boolean {
         var bottomSheetDismissed = false
         bottomSheetDismissed = secondaryBottomSheet?.dismiss() == true || bottomSheetDismissed
-        bottomSheetDismissed = orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetBuyerRequestCancelRespond?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = somRejectReasonBottomSheet?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = somProductEmptyBottomSheet?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = somShopClosedBottomSheet?.dismiss() == true || bottomSheetDismissed

@@ -7,12 +7,17 @@ interface IBuyerRequestCancelRespondListener {
     fun onBuyerRequestCancelRespondAcceptOrder()
     fun onBuyerRequestCancelRespondRejectOrder(reasonBuyer: String)
     fun onBuyerRequestCancelRespondRejectCancelRequest()
+    fun onBuyerRequestCancelRespondDismissed()
 
     interface Mediator {
         fun getBuyerRequestCancelRespondOrderId(): String
         fun getBuyerRequestCancelRespondOrderInvoice(): String
-        fun getBuyerRequestCancelRespondOrderStatusCodeString(): String
+        fun getBuyerRequestCancelRespondOrderStatusCode(): Int
         fun getBuyerRequestCancelRespondOrderStatusText(): String
+        fun getBuyerRequestCancelRespondL2CancellationReason(): String
+        fun getBuyerRequestCancelRespondDescription(): String
+        fun getBuyerRequestCancelRespondPrimaryTextButton(): String
+        fun getBuyerRequestCancelRespondSecondaryTextButton(): String
         fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel
     }
 }

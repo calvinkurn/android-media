@@ -19,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,7 +67,9 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondBottomSheetManagerImpl
 import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondListenerImpl
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondBottomSheetManager
 import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondListener
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
@@ -189,7 +192,9 @@ open class SomDetailFragment :
     SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener,
     SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener,
     IBuyerRequestCancelRespondListener.Mediator,
-    IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl() {
+    IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl(),
+    IBuyerRequestCancelRespondBottomSheetManager.Mediator,
+    IBuyerRequestCancelRespondBottomSheetManager by BuyerRequestCancelRespondBottomSheetManagerImpl() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -233,7 +238,17 @@ open class SomDetailFragment :
         ViewModelProvider(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
     protected val bottomSheetManager by lazy {
-        view?.let { if (it is ViewGroup) BottomSheetManager(it, childFragmentManager) else null }
+        view?.let {
+            if (it is ViewGroup) {
+                BottomSheetManager(
+                    view = it,
+                    fragmentManager = childFragmentManager,
+                    buyerRequestCancelRespondBottomSheetManager = this
+                )
+            } else {
+                null
+            }
+        }
     }
 
     private fun createChatIcon(context: Context): IconUnify {
@@ -465,7 +480,7 @@ open class SomDetailFragment :
     }
 
     private fun setupMediators() {
-        registerBuyerRequestCancelRespondListenerMediator(this)
+        registerBuyerRequestCancelRespondBottomSheet(this, this, this)
     }
 
     private fun observingDetail() {
@@ -1818,6 +1833,10 @@ open class SomDetailFragment :
         }
     }
 
+    override fun getBottomSheetContainer(): CoordinatorLayout? {
+        return view as? CoordinatorLayout
+    }
+
     override fun getBuyerRequestCancelRespondOrderId(): String {
         return orderId
     }
@@ -1826,12 +1845,28 @@ open class SomDetailFragment :
         return String.EMPTY
     }
 
-    override fun getBuyerRequestCancelRespondOrderStatusCodeString(): String {
-        return detailResponse?.statusCode.orZero().toString()
+    override fun getBuyerRequestCancelRespondOrderStatusCode(): Int {
+        return detailResponse?.statusCode.orZero()
     }
 
     override fun getBuyerRequestCancelRespondOrderStatusText(): String {
         return detailResponse?.statusText.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondL2CancellationReason(): String {
+        return Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty())
+    }
+
+    override fun getBuyerRequestCancelRespondDescription(): String {
+        return detailResponse?.button?.firstOrNull()?.popUp?.body.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondPrimaryTextButton(): String {
+        return detailResponse?.button?.firstOrNull()?.popUp?.getPrimaryButton()?.displayName.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondSecondaryTextButton(): String {
+        return detailResponse?.button?.firstOrNull()?.popUp?.getSecondaryButton()?.displayName.orEmpty()
     }
 
     override fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel {
