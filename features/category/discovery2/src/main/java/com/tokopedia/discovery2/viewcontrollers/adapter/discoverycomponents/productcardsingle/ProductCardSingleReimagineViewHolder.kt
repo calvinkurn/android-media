@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.LocalLoad
+import timber.log.Timber
 
 class ProductCardSingleReimagineViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -91,6 +92,7 @@ class ProductCardSingleReimagineViewHolder(itemView: View, val fragment: Fragmen
                 }
                 backgroundImage.show()
             } catch (e: Exception) {
+                Timber.d(e)
                 backgroundImage.hide()
             }
         } else {
