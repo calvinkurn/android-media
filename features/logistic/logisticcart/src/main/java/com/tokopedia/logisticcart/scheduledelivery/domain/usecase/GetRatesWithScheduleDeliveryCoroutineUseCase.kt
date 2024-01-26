@@ -2,8 +2,8 @@ package com.tokopedia.logisticcart.scheduledelivery.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.entity.request.ScheduleDeliveryParam
 import com.tokopedia.logisticcart.scheduledelivery.domain.entity.response.ScheduleDeliveryRatesResponse
-import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesCoroutineUseCase
@@ -14,15 +14,14 @@ import javax.inject.Inject
 class GetRatesWithScheduleDeliveryCoroutineUseCase @Inject constructor(
     private val getRatesCoroutineUseCase: GetRatesCoroutineUseCase,
     private val getScheduleDeliveryUseCase: GetScheduleDeliveryCoroutineUseCase,
-    private val mapper: ScheduleDeliveryMapper,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Pair<RatesParam, String>, ShippingRecommendationData>(dispatcher.io) {
+) : CoroutineUseCase<Pair<RatesParam, ScheduleDeliveryParam>, ShippingRecommendationData>(dispatcher.io) {
 
-    override suspend fun execute(params: Pair<RatesParam, String>): ShippingRecommendationData {
+    override suspend fun execute(params: Pair<RatesParam, ScheduleDeliveryParam>): ShippingRecommendationData {
         return coroutineScope {
             val shippingRecommendationData = ShippingRecommendationData()
             val ratesResponse = async { getRatesCoroutineUseCase(params.first) }
-            val schellyResponse = async { getScheduleDeliveryUseCase(mapper.map(params.first, params.second)) }
+            val schellyResponse = async { getScheduleDeliveryUseCase(params.second) }
             shippingRecommendationData.combine(ratesResponse.await(), schellyResponse.await())
             return@coroutineScope shippingRecommendationData
         }

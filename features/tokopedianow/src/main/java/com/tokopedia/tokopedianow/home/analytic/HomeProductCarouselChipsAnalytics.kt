@@ -33,6 +33,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_56
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.track.TrackAppUtils.EVENT
@@ -119,7 +120,8 @@ class HomeProductCarouselChipsAnalytics(
                 productId = productId,
                 productName = productCard.name,
                 price = productCard.price.filter { it.isDigit() }.toLongOrZero(),
-                productCategory = product.categoryBreadcrumbs
+                productCategory = product.categoryBreadcrumbs,
+                warehouseId = product.productCardModel.warehouseId
             ).apply {
                 putString(KEY_DIMENSION_40, itemList)
                 putString(KEY_DIMENSION_84, channelId)
@@ -160,7 +162,8 @@ class HomeProductCarouselChipsAnalytics(
                 productId = productId,
                 productName = productCard.name,
                 price = productCard.price.filter { it.isDigit() }.toLongOrZero(),
-                productCategory = product.categoryBreadcrumbs
+                productCategory = product.categoryBreadcrumbs,
+                warehouseId = product.productCardModel.warehouseId
             ).apply {
                 putString(KEY_DIMENSION_40, itemList)
                 putString(KEY_DIMENSION_84, channelId)
@@ -206,7 +209,8 @@ class HomeProductCarouselChipsAnalytics(
                 productId = productId,
                 productName = productCard.name,
                 price = productCard.price.filter { it.isDigit() }.toLongOrZero(),
-                productCategory = product.categoryBreadcrumbs
+                productCategory = product.categoryBreadcrumbs,
+                warehouseId = product.productCardModel.warehouseId
             ).apply {
                 putString(KEY_DIMENSION_40, itemList)
                 putString(KEY_DIMENSION_45, cartId)
@@ -285,7 +289,8 @@ class HomeProductCarouselChipsAnalytics(
         price: Long = 0L,
         productBrand: String = "",
         productCategory: String = "",
-        productVariant: String = ""
+        productVariant: String = "",
+        warehouseId: String = ""
     ): Bundle {
         return Bundle().apply {
             if (index.isNotBlank()) {
@@ -297,6 +302,7 @@ class HomeProductCarouselChipsAnalytics(
             putString(KEY_ITEM_NAME, productName)
             putString(KEY_ITEM_VARIANT, productVariant)
             putLong(KEY_PRICE, price)
+            putString(KEY_DIMENSION_56, warehouseId)
         }
     }
 }

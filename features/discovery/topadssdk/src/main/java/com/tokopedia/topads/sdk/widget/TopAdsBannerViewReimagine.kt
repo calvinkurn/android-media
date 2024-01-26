@@ -122,7 +122,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                             shop_badge.hide()
                         }
                     }
-                    findViewById<TextView>(R.id.shop_name)?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
+                    findViewById<TextView>(R.id.topAdsShopName)?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
                     findViewById<Typography>(R.id.description)?.text = cpmData.cpm.cpmShop.slogan
 
                     shopDetail.setOnClickListener {

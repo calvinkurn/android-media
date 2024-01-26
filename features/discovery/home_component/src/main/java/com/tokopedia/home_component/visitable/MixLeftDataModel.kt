@@ -1,18 +1,22 @@
 package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
-import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
-import com.tokopedia.analytics.performance.perf.LoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 
 data class MixLeftDataModel(
         val channelModel: ChannelModel,
         val isCache: Boolean = false
-): HomeComponentVisitable,  LoadableComponent by BlocksLoadableComponent(
+): HomeComponentVisitable, HasChannelModel, LoadableComponent by BlocksLoadableComponent(
     { channelModel.channelGrids.size > 3 },
     "HomeMixLeft"
 ) {
+
+    override val model: ChannelModel
+        get() = channelModel
+
     override fun visitableId(): String? {
         return channelModel.id
     }

@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.common.view.customview.bannerhotspot.ImageHotspotView
@@ -36,6 +37,10 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
     }
 
     private fun setupImageBannerHotspotData(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data) {
+        val isShowIntroAnimation = widgetUiModel?.isShowIntroAnimation
+        if (widgetUiModel?.isShowIntroAnimation == true && bindingAdapterPosition == Int.ZERO) {
+            widgetUiModel.isShowIntroAnimation = false
+        }
         imageBannerHotspot.setData(
             ImageHotspotData(
                 imageBannerUrl = uiModel.imageUrl,
@@ -50,7 +55,8 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
                 }
             ),
             listenerBubbleView = this,
-            ratio = ratio
+            ratio = ratio,
+            isShowIntroAnimation = isShowIntroAnimation.orFalse()
         )
     }
 
@@ -60,7 +66,7 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
         index: Int
     ) {
         widgetUiModel?.let {
-            it.data.firstOrNull()?.let { bannerItemUiModel ->
+            it.data.getOrNull(bindingAdapterPosition)?.let { bannerItemUiModel ->
                 listener?.onClickProductBannerHotspot(
                     it,
                     bannerItemUiModel,

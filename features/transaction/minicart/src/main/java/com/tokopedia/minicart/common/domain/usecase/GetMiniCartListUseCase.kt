@@ -174,6 +174,10 @@ class GetMiniCartListUseCase @Inject constructor(
                           initial_price
                           product_price
                           product_information
+                          product_tag_info {
+                            message
+                            icon_url
+                          }
                           product_notes
                           product_min_order
                           product_max_order

@@ -21,6 +21,18 @@
         app:use_controller="false" />
 
     <include
+        android:id="@+id/container_feed_live_end"
+        layout="@layout/layout_feed_post_live_end"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <include
         android:id="@+id/overlay_top"
         layout="@layout/layout_feed_top_overlay"
         android:layout_width="0dp"
@@ -156,8 +168,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
-        app:layout_constraintTop_toBottomOf="@id/layout_author_info"
-        >
+        app:layout_constraintTop_toBottomOf="@id/layout_author_info">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_feed_caption"
@@ -167,8 +178,7 @@
             android:scrollbars="none"
             android:textColor="@color/Unify_Static_White"
             app:typographyType="paragraph_2"
-            tools:text="Post Caption"
-            />
+            tools:text="Post Caption" />
 
     </com.tokopedia.feedplus.presentation.customview.FeedCaptionFadingLayout>
 

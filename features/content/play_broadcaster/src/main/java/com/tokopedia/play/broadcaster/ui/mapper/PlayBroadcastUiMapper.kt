@@ -276,14 +276,12 @@ class PlayBroadcastUiMapper @Inject constructor(
         coverUrl: String,
         date: String,
         duration: String,
-        isEligiblePostVideo: Boolean,
         author: ContentAccountUiModel,
     ) = ChannelSummaryUiModel(
         title = title,
         coverUrl = coverUrl,
         date = date,
         duration = duration,
-        isEligiblePostVideo = isEligiblePostVideo,
         author = author,
     )
 

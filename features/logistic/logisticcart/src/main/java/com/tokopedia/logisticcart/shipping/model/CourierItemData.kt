@@ -68,7 +68,10 @@ data class CourierItemData(
     var benefitClass: String = "",
     var shippingSubsidy: Long = 0,
     var boCampaignId: Long = 0,
-    var scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null
+    var scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null,
+    // new OFOC
+    var boOrderMessage: String = "",
+    var courierOrderMessage: String = ""
 ) : Parcelable, ShipmentOptionData {
 
     val selectedShipper: SelectedShipperModel

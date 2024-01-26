@@ -34,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -59,7 +58,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 /**
  * Created by Rafli Syam on 29/04/2021
@@ -370,42 +368,21 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     }
 
     private fun setAllAccordionsItemViewCustomHeight() {
-        opsHourAccordion?.accordionData?.forEachIndexed { index, accordionDataUnify ->
-            val contentViewHeight = when (
-                OperationalHoursUtil.generateDatetime(
-                    currentSetShopOperationalHourList[index].startTime,
-                    currentSetShopOperationalHourList[index].endTime,
-                    currentSetShopOperationalHourList[index].status
-                )
-            ) {
-                OperationalHoursUtil.ALL_DAY -> ACCORDION_ITEM_VIEW_24_HOURS_HEIGHT
-                OperationalHoursUtil.HOLIDAY_CAN_ATC -> ACCORDION_ITEM_VIEW_WEEKLY_HOLIDAY_CAN_ATC_HEIGHT
-                OperationalHoursUtil.HOLIDAY_CANNOT_ATC -> ACCORDION_ITEM_VIEW_WEEKLY_HOLIDAY_CANNOT_ATC_HEIGHT
-                else -> {
-                    if (index == DEFAULT_FIRST_INDEX) {
-                        ACCORDION_ITEM_VIEW_CUSTOM_HOURS_HEIGHT_FOR_MONDAY
-                    } else {
-                        ACCORDION_ITEM_VIEW_CUSTOM_HOURS_HEIGHT_BESIDE_MONDAY
-                    }
-                }
-            }
+        opsHourAccordion?.accordionData?.forEachIndexed { _, accordionDataUnify ->
             accordionDataUnify.apply {
-                val viewContext = expandableView.context
                 val accordionItemViewLayoutParams = expandableView.layoutParams
-                val density = viewContext?.resources?.displayMetrics?.density.orZero()
-                accordionItemViewLayoutParams?.height = (density * contentViewHeight).roundToInt()
+                accordionItemViewLayoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 expandableView.layoutParams = accordionItemViewLayoutParams
             }
         }
     }
 
-    private fun setItemAccordionViewCustomHeightByPosition(position: Int, customHeight: Float) {
+    private fun setItemAccordionViewCustomHeightByPosition(position: Int) {
         // update child view
         (opsHourAccordion?.getChildAt(position) as AccordionItemUnify).accordionContent.apply {
             val viewContext = this.context
             val accordionItemViewLayoutParams = this.layoutParams
-            val density = viewContext?.resources?.displayMetrics?.density.orZero()
-            accordionItemViewLayoutParams?.height = (density * customHeight).roundToInt()
+            accordionItemViewLayoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             this.layoutParams = accordionItemViewLayoutParams
         }
 
@@ -413,8 +390,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         opsHourAccordion?.accordionData?.get(position)?.apply {
             val viewContext = expandableView.context
             val accordionItemViewLayoutParams = expandableView.layoutParams
-            val density = viewContext?.resources?.displayMetrics?.density.orZero()
-            accordionItemViewLayoutParams?.height = (density * customHeight).roundToInt()
+            accordionItemViewLayoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             expandableView.layoutParams = accordionItemViewLayoutParams
         }
     }
@@ -535,7 +511,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MAX_END_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].status = OperationalHoursUtil.CAN_ATC_STATUS
-                        setItemAccordionViewCustomHeightByPosition(currentExpandedAccordionPosition, ACCORDION_ITEM_VIEW_24_HOURS_HEIGHT)
+                        setItemAccordionViewCustomHeightByPosition(currentExpandedAccordionPosition)
                     }
 
                     HOLIDAY_CAN_ATC_OPTION_ID -> {
@@ -555,7 +531,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].status = OperationalHoursUtil.CAN_ATC_STATUS
-                        setItemAccordionViewCustomHeightByPosition(currentExpandedAccordionPosition, ACCORDION_ITEM_VIEW_WEEKLY_HOLIDAY_CAN_ATC_HEIGHT)
+                        setItemAccordionViewCustomHeightByPosition(currentExpandedAccordionPosition)
                     }
 
                     HOLIDAY_CANNOT_ATC_OPTION_ID -> {
@@ -575,7 +551,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].status = OperationalHoursUtil.CANNOT_ATC_STATUS
-                        setItemAccordionViewCustomHeightByPosition(currentExpandedAccordionPosition, ACCORDION_ITEM_VIEW_WEEKLY_HOLIDAY_CANNOT_ATC_HEIGHT)
+                        setItemAccordionViewCustomHeightByPosition(currentExpandedAccordionPosition)
                     }
 
                     CHOOSE_TIME_OPTION_ID -> {
@@ -599,7 +575,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         } else {
                             ACCORDION_ITEM_VIEW_CUSTOM_HOURS_HEIGHT_BESIDE_MONDAY
                         }
-                        setItemAccordionViewCustomHeightByPosition(currentExpandedAccordionPosition, contentHeight)
+                        setItemAccordionViewCustomHeightByPosition(currentExpandedAccordionPosition)
                     }
                 }
                 updateAccordionDescriptionByPosition(

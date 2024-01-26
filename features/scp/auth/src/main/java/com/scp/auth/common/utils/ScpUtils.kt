@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.scp.auth.GotoSdk
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.logger.ServerLogger
@@ -18,11 +19,37 @@ object ScpUtils {
     private const val ROLLENCE_KEY_SCP_LOGIN = "scp_goto_login_and"
     private const val ROLLENCE_KEY_PROGRESSIVE_SIGNUP = "and_prog_sign_up_sso"
 
+    fun Context.getIsEnableSharedPrefScpLogin(): Boolean {
+        val sharedPref = getSharedPreferences(
+            DeeplinkMapperUser.PREF_SCP_DEBUG,
+            Context.MODE_PRIVATE
+        )
+        return sharedPref.getBoolean(
+            DeeplinkMapperUser.KEY_SCP_DEBUG,
+            false
+        )
+    }
+
+    fun Context.setIsEnableSharedPrefScpLogin(state: Boolean) {
+        val sharedPref = getSharedPreferences(
+            DeeplinkMapperUser.PREF_SCP_DEBUG,
+            Context.MODE_PRIVATE
+        )
+        val editor = sharedPref.edit().putBoolean(DeeplinkMapperUser.KEY_SCP_DEBUG, state)
+        editor.apply()
+    }
+
+    fun isForceScpLoginForDebug(context: Context) : Boolean {
+        return GlobalConfig.isAllowDebuggingTools() &&
+            GlobalConfig.isSellerApp().not() &&
+            context.getIsEnableSharedPrefScpLogin()
+    }
+
     fun isGotoLoginEnabled(): Boolean {
-        return RemoteConfigInstance.getInstance()
+        return (RemoteConfigInstance.getInstance()
             .abTestPlatform
             .getString(ROLLENCE_KEY_SCP_LOGIN)
-            .isNotEmpty() && GlobalConfig.isSellerApp().not()
+            .isNotEmpty() && GlobalConfig.isSellerApp().not()) || isForceScpLoginForDebug(RemoteConfigInstance.getInstance().abTestPlatform.context)
     }
 
     fun isProgressiveSignupEnabled(): Boolean {

@@ -5,7 +5,7 @@
 
     <application>
         <activity
-            android:name=".home.ui.activity.DealsHomeActivity"
+            android:name=".ui.home.ui.activity.DealsHomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"
@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.deals.search.ui.activity.DealsSearchActivity"
+            android:name="com.tokopedia.deals.ui.search.ui.activity.DealsSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:exported="false">
@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".category.ui.activity.DealsCategoryActivity"
+            android:name=".ui.category.DealsCategoryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"
@@ -58,7 +58,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".brand.ui.activity.DealsBrandActivity"
+            android:name=".ui.brand.DealsBrandActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.White"
@@ -76,7 +76,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".brand_detail.ui.activity.DealsBrandDetailActivity"
+            android:name=".ui.brand_detail.DealsBrandDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.White"
@@ -94,7 +94,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".pdp.ui.activity.DealsPDPActivity"
+            android:name=".ui.pdp.ui.activity.DealsPDPActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.White"
@@ -112,7 +112,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".checkout.ui.activity.DealsCheckoutActivity"
+            android:name=".ui.checkout.ui.activity.DealsCheckoutActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.White">

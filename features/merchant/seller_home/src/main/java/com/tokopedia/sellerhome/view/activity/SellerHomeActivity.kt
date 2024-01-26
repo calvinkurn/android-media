@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
@@ -26,13 +25,16 @@ import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.internal_review.factory.createReviewHelper
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -59,6 +61,7 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
 import com.tokopedia.sellerhome.di.component.DaggerHomeDashboardComponent
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
+import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
@@ -68,6 +71,7 @@ import com.tokopedia.sellerhome.view.viewhelper.SellerHomeOnApplyInsetsListener
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -75,15 +79,18 @@ import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationLis
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
-    SomListLoadTimeMonitoringActivity, HasComponent<HomeDashboardComponent> {
+open class SellerHomeActivity :
+    BaseActivity(),
+    SellerHomeFragment.Listener,
+    IBottomClickListener,
+    SomListLoadTimeMonitoringActivity,
+    HasComponent<HomeDashboardComponent> {
 
     companion object {
-        @JvmStatic
-        fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
         private const val BOTTOM_NAV_ENTER_ANIM_DURATION = 4f
@@ -111,14 +118,14 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
+    private val homeViewModel by lazy { viewModelProvider[SellerHomeActivityViewModel::class.java] }
     private val sellerHomeRouter by lazy { applicationContext as? SellerHomeRouter }
 
     private val menu = mutableListOf<BottomMenu>()
 
     private var canExitApp = false
     private var lastProductManagePage = PageFragment(FragmentType.PRODUCT)
-    private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
+    private var lastSomTab = PageFragment(FragmentType.ORDER) // by default show tab "Semua Pesanan"
     private var navigator: SellerHomeNavigator? = null
     private val accelerometerOrientationListener: AccelerometerOrientationListener by lazy {
         AccelerometerOrientationListener(contentResolver) {
@@ -127,7 +134,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private var statusBarCallback: StatusBarCallback? = null
-    private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
     private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
     private var binding: ActivitySahSellerHomeBinding? = null
     private val wearSharedPreference: SharedPreferences by lazy {
@@ -169,6 +175,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     override fun getComponent(): HomeDashboardComponent {
         return DaggerHomeDashboardComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .sellerHomeModule(SellerHomeModule(this))
             .build()
     }
 
@@ -203,6 +210,11 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleAppLink(intent)
+
+        if (navigator?.isHomePageSelected().orFalse()) {
+            handleSellerPersona(intent)
+            handleToaster(intent)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -241,8 +253,11 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         navigator?.cleanupNavigator()
+        navigator = null
+        binding = null
+        otherMenuFragmentChangeCallback = null
+        super.onDestroy()
     }
 
     override fun menuClicked(position: Int, id: Int): Boolean {
@@ -278,7 +293,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     override fun menuReselected(position: Int, id: Int) {
-
     }
 
     override fun initSomListLoadTimeMonitoring() {
@@ -290,10 +304,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
-    }
-
-    fun attachSellerHomeFragmentChangeCallback(callback: FragmentChangeCallback) {
-        sellerHomeFragmentChangeCallback = callback
     }
 
     fun attachOtherMenuFragmentChangeCallback(callback: FragmentChangeCallback) {
@@ -476,7 +486,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun setCurrentFragmentType(@FragmentType pageType: Int) {
-        sellerHomeFragmentChangeCallback?.setCurrentFragmentType(pageType)
         otherMenuFragmentChangeCallback?.setCurrentFragmentType(pageType)
     }
 
@@ -519,7 +528,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                         SellerHomeErrorHandler.SELLER_HOME_TAG,
                         it.throwable,
                         SellerHomeErrorHandler.SHOP_INFO,
-                        SellerHomeErrorHandler.SHOP_INFO,
+                        SellerHomeErrorHandler.SHOP_INFO
                     )
                     navigator?.run {
                         if (isHomePageSelected()) {
@@ -746,7 +755,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                             this@SellerHomeActivity,
                             resources.getString(R.string.wearos_toast_install),
                             Toast.LENGTH_LONG
-                            ).show()
+                        ).show()
                     }
                     setSecondaryCTAClickListener {
                         dialog.dismiss()
@@ -765,5 +774,35 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER
         )
         DFInstaller.installOnBackground(this.application, moduleNameList, "Seller Home")
+    }
+
+    private fun handleToaster(intent: Intent?) {
+        val uri = intent?.data ?: return
+        val message = uri.getQueryParameter(
+            SellerHomeApplinkConst.TOASTER_MESSAGE
+        ).orEmpty()
+        val actionText = uri.getQueryParameter(SellerHomeApplinkConst.TOASTER_CTA)
+            .orEmpty()
+        if (message.isBlank()) return
+
+        val view = binding?.sahContainer ?: return
+        Handler(Looper.getMainLooper()).postDelayed({
+            Toaster.toasterCustomBottomHeight = dpToPx(88).toInt()
+            Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                actionText
+            ).show()
+        }, TimeUnit.SECONDS.toMillis(1))
+    }
+
+    private fun handleSellerPersona(intent: Intent?) {
+        val uri = intent?.data ?: return
+        val checkPersonaBtmSheet = uri.getBooleanQueryParameter(SellerHomeApplinkConst.IS_PERSONA, false)
+        if (checkPersonaBtmSheet.orFalse()) {
+            navigator?.getHomeFragment()?.refreshPersona()
+        }
     }
 }

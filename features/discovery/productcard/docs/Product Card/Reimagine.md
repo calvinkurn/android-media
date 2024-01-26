@@ -115,6 +115,17 @@ Label Assigned Value is rendered below Product Image if `labelGroupList` contain
 ## How to
 To implement Product Card Reimagine, choose a template that you needed, and implement the class mentioned above in your XML. After that, create an instance of `ProductCardModel` and call `setProductModel`.
 
+### Migration from old Product Card
+All components from Product Card Reimagine exists in package `com.tokopedia.productcard.reimagine`.
+
+If you are using `com.tokopedia.productcard.ProductCardGridView` for a vertical scrolling Recycler View, you can replace it with `com.tokopedia.productcard.reimagine.ProductCardGridView`. 
+If you are using it for horizontal scrolling Recycler View, you can replace it with `com.tokopedia.productcard.reimagine.ProductCardGridCarouselView`.
+
+For the data, please use `com.tokopedia.productcard.reimagine.ProductCardModel`.
+Similar as before, you can use function `setProductModel` to set the Product Card data.
+1. Some property names in `ProductCardModel` are simplified, such as `productImageUrl` to `imageUrl`, and `productName` to `name`. Please refer to the Description above for more details.
+2. Shop Badge is now a single instance instead of a List. Please refer here for more details on rendering [Shop Badge](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2369978785/Reimagine#Shop-Badge).
+
 
 ## Action Items
 
