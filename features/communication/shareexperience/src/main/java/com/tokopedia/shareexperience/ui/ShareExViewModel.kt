@@ -60,7 +60,7 @@ import javax.inject.Inject
 class ShareExViewModel @Inject constructor(
     private val getSharePropertiesUseCase: ShareExGetSharePropertiesUseCase,
     private val getGeneratedImageUseCase: ShareExGetGeneratedImageUseCase,
-    private val generateShortLinkUseCase: ShareExGetShortLinkUseCase,
+    private val getShortLinkUseCase: ShareExGetShortLinkUseCase,
     private val getDownloadedImageUseCase: ShareExGetDownloadedImageUseCase,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
@@ -82,6 +82,7 @@ class ShareExViewModel @Inject constructor(
      * Ui state for image generator
      */
     private val _imageGeneratorUiState = MutableStateFlow(ShareExImageGeneratorUiState())
+    val imageGeneratorModel = _imageGeneratorUiState.asStateFlow()
 
     /**
      * Ui state for open channel (app) intent
@@ -174,7 +175,7 @@ class ShareExViewModel @Inject constructor(
                             chipPosition = 0 // default
                         )
                     }
-                    is ShareExResult.Error, ShareExResult.Loading -> Unit
+                    else -> Unit
                 }
             }
     }
@@ -377,7 +378,7 @@ class ShareExViewModel @Inject constructor(
         channelItemModel: ShareExChannelItemModel,
         imageType: ShareExImageTypeEnum
     ) {
-        generateShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest { (apiType, result) ->
+        getShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest { (apiType, result) ->
             when (result) {
                 is ShareExResult.Success -> {
                     downloadImageAndShare(shortLinkRequest, channelItemModel, result.data, imageType)
