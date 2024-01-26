@@ -51,7 +51,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.FilterTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.MilestoneItemRewardUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -60,6 +59,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -67,6 +67,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FilterTabBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.HtmlMetaBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -135,15 +136,18 @@ class StatisticFragment :
         private const val TICKER_NAME = "statistic_page_ticker"
         private const val KEY_STATISTIC_PAGE = "statistic_page_source"
         private const val KEY_SHOULD_LOAD_DATA_ON_CREATE = "key_should_load_data_on_create"
+        private const val KEY_SELECTED_TABLE_WIDGET_SORT = "key_selected_table_widget_sort"
 
         fun newInstance(
             page: StatisticPageUiModel,
-            shouldLoadDataOnCreate: Boolean
+            shouldLoadDataOnCreate: Boolean,
+            selectedTableWidgetSort: String
         ): StatisticFragment {
             return StatisticFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(KEY_STATISTIC_PAGE, page)
                     putBoolean(KEY_SHOULD_LOAD_DATA_ON_CREATE, shouldLoadDataOnCreate)
+                    putString(KEY_SELECTED_TABLE_WIDGET_SORT, selectedTableWidgetSort)
                 }
             }
         }
@@ -205,6 +209,7 @@ class StatisticFragment :
 
     // format should be : widgetType-widgetId, ex: section-109
     private var selectedWidget: String = ""
+    private var selectedTableWidgetSort: String = ""
     private val dateFilterImpressHolder = ImpressHolder()
     private val otherMenuImpressHolder = ImpressHolder()
 
@@ -224,10 +229,11 @@ class StatisticFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statisticPage = getPageFromArgs()
+        selectedTableWidgetSort = getTableWidgetSortFromArgs()
         loadInitialLayoutData(savedInstanceState) {
             statisticPage?.let { page ->
                 startLayoutNetworkPerformanceMonitoring()
-                mViewModel.getWidgetLayout(page.pageSource)
+                mViewModel.getWidgetLayout(page.pageSource, selectedTableWidgetSort)
                 mViewModel.getTickers(page.tickerPageName)
             }
         }
@@ -638,18 +644,27 @@ class StatisticFragment :
         rejectedOrderRateCoachMark.show()
     }
 
-    override fun sendMilestoneRewardImpressionEvent(
-        reward: MilestoneItemRewardUiModel,
-        position: Int
-    ) {
-        // NO-OP
+    override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        StatisticTracker.sendTableMetaLabelClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            meta.title,
+            meta.productId
+        )
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+            setOnCloseButtonClicked(::onHtmlMetaBottomSheetCloseClicked)
+        }.show(fm)
     }
 
-    override fun sendMilestoneRewardActionClickedListener(
-        reward: MilestoneItemRewardUiModel,
-        position: Int
-    ) {
-        // NO-OP
+    override fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+            setOnCloseButtonClicked(::onHtmlMetaBottomSheetCloseClicked)
+        }.show(fm)
     }
 
     fun setSelectedWidget(widget: String) {
@@ -700,6 +715,10 @@ class StatisticFragment :
 
     private fun getPageFromArgs(): StatisticPageUiModel? {
         return arguments?.getParcelable(KEY_STATISTIC_PAGE)
+    }
+
+    private fun getTableWidgetSortFromArgs(): String {
+        return arguments?.getString(KEY_SELECTED_TABLE_WIDGET_SORT).orEmpty()
     }
 
     private fun setDefaultDynamicParameter() {
@@ -1168,7 +1187,7 @@ class StatisticFragment :
 
         globalErrorStc.gone()
         statisticPage?.let {
-            mViewModel.getWidgetLayout(it.pageSource)
+            mViewModel.getWidgetLayout(it.pageSource, selectedTableWidgetSort)
         }
     }
 
@@ -1443,5 +1462,23 @@ class StatisticFragment :
                 }
             }
         }
+    }
+
+    private fun goToHtmlMetaLink(
+        bottomSheetTitle: String,
+        appLink: String
+    ) {
+        StatisticTracker.sendTableMetaMoreBottomSheetClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            bottomSheetTitle
+        )
+        RouteManager.route(context, appLink)
+    }
+
+    private fun onHtmlMetaBottomSheetCloseClicked(bottomSheetTitle: String) {
+        StatisticTracker.sendTableCloseBottomSheetClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            bottomSheetTitle
+        )
     }
 }

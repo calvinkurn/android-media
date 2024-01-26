@@ -297,10 +297,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         } returns true
 
         every {
-            DeeplinkMapperUser.isRollencePrivacyCenterActivated()
-        } returns true
-
-        every {
             DeeplinkMapperUser.isRollenceGotoKycActivated()
         } returns true
 
@@ -324,10 +320,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     fun `SA df_kyc_funnel`() {
         every {
             DeeplinkMapperUser.isProfileManagementM2Activated()
-        } returns true
-
-        every {
-            DeeplinkMapperUser.isRollencePrivacyCenterActivated()
         } returns true
 
         every {
