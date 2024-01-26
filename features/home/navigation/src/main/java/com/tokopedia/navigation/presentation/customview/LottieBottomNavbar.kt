@@ -711,15 +711,7 @@ class LottieBottomNavbar : LinearLayout {
             titleList[position].invalidate()
 
             if (isDeviceAnimationDisabled()) {
-                val pairSelectedItem = iconList[selectedItem ?: 0]
-                menu[selectedItem ?: 0].imageInactive?.let {
-                    pairSelectedItem.first.setImageResource(it)
-                }
-
-                val pairNewItem = iconList[position]
-                menu[position].imageActive?.let {
-                    pairNewItem.first.setImageResource(it)
-                }
+                setIconWhenAnimationDisabled(selectedItem, position)
                 return
             }
 
@@ -764,15 +756,7 @@ class LottieBottomNavbar : LinearLayout {
         // when device animation disabled, only use image resource to prevent stackoverflow error
         // https://github.com/airbnb/lottie-android/issues/1534
         if (isDeviceAnimationDisabled()) {
-            val pairSelectedItem = iconList[selectedItem ?: 0]
-            menu[selectedItem ?: 0].imageInactive?.let {
-                pairSelectedItem.first.setImageResource(it)
-            }
-
-            val pairNewItem = iconList[newPosition ?: 0]
-            menu[newPosition ?: 0].imageActive?.let {
-                pairNewItem.first.setImageResource(it)
-            }
+            setIconWhenAnimationDisabled(selectedItem, newPosition)
             return
         }
 
@@ -854,6 +838,34 @@ class LottieBottomNavbar : LinearLayout {
         titleList[newPosition].invalidate()
 
         selectedItem = newPosition
+    }
+
+    private fun setIconWhenAnimationDisabled(
+        selectedItem: Int?,
+        newPosition: Int,
+    ) {
+        selectedItem?.let { selectedPos ->
+            val pairSelectedItem = iconList[selectedPos]
+            val menu = menu[selectedPos]
+            menu.imageInactive?.let {
+                pairSelectedItem.first.setImageResource(it)
+            }
+            titleList[selectedPos].setTextColor(buttonColor)
+        }
+
+        newPosition.let { newPos ->
+            val pairNewItem = iconList[newPos]
+            val menu = menu[newPos]
+            val image = if(isForYouToHomeSelected) {
+                menu.imageActive
+            } else menu.getImageJumperIfAny()
+            image?.let {
+                pairNewItem.first.setImageResource(it)
+            }
+            val activeColor =
+                ContextCompat.getColor(modeAwareContext, menu.activeButtonColor)
+            titleList[newPos].setTextColor(activeColor)
+        }
     }
 
     private fun setTitleIconHomeOrForYou(newPosition: Int) {
@@ -964,7 +976,11 @@ data class BottomMenu(
     val useBadge: Boolean = true,
     val animActiveSpeed: Float = 1f,
     val animInactiveSpeed: Float = 1f
-)
+) {
+    fun getImageJumperIfAny(): Int? {
+        return iconJumper?.jumperImageName ?: imageActive
+    }
+}
 
 data class IconJumper(
     val initialTitle: String,
