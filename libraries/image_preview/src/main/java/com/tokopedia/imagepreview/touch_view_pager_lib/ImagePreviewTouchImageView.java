@@ -625,6 +625,7 @@ public class ImagePreviewTouchImageView extends androidx.appcompat.widget.AppCom
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
                         setState(State.NONE);
+                        v.performClick();
                         break;
                 }
             }
@@ -912,14 +913,8 @@ public class ImagePreviewTouchImageView extends androidx.appcompat.widget.AppCom
         }
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
     private void compatPostOnAnimation(Runnable runnable) {
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-            postOnAnimation(runnable);
-
-        } else {
-            postDelayed(runnable, 1000/60);
-        }
+        postOnAnimation(runnable);
     }
 
     private void printMatrixInfo() {

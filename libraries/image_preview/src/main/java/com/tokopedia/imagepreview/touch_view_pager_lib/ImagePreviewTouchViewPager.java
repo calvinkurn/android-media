@@ -1,5 +1,6 @@
 package com.tokopedia.imagepreview.touch_view_pager_lib;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -108,6 +109,7 @@ public class ImagePreviewTouchViewPager extends ViewPager {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent arg0) {
         if(AllowPageSwitching) {
