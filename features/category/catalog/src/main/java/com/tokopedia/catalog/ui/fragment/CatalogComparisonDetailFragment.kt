@@ -54,7 +54,7 @@ class CatalogComparisonDetailFragment :
         const val ARG_PARAM_CATALOG_ID = "catalogId"
         const val ARG_PARAM_CATEGORY_ID = "categoryId"
         const val ARG_PARAM_COMPARE_CATALOG_ID = "compareCatalogId"
-
+        const val TOTAL_MINIMUM_SIZE_COMPARE_ID = 2
         fun newInstance(
             catalogId: String,
             categoryId: String,
@@ -140,8 +140,11 @@ class CatalogComparisonDetailFragment :
                 errorMessage,
                 duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR,
-                actionText = if (it is InvalidCatalogComparisonException) ""
-                    else getString(R.string.catalog_retry_action)
+                actionText = if (it is InvalidCatalogComparisonException) {
+                    ""
+                } else {
+                    getString(R.string.catalog_retry_action)
+                }
             ) {
                 changeComparison(compareCatalogIds)
             }.show()
@@ -242,7 +245,13 @@ class CatalogComparisonDetailFragment :
             compareCatalogIds = requireArguments().getStringArrayList(ARG_PARAM_COMPARE_CATALOG_ID).orEmpty()
             getComparison(catalogId, compareCatalogIds)
         }
-        val label = "$catalogId | compared catalog id: ${compareCatalogIds.joinToString()}"
+        val comparedId = if (compareCatalogIds.size >= TOTAL_MINIMUM_SIZE_COMPARE_ID) {
+            compareCatalogIds.slice(Int.ONE until compareCatalogIds.size).joinToString(",")
+        } else {
+            String.EMPTY
+        }
+
+        val label = "$catalogId | compared catalog id: $comparedId"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = CatalogTrackerConstant.EVENT_VIEW_PG_IRIS,
             action = CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON_DETAIL,

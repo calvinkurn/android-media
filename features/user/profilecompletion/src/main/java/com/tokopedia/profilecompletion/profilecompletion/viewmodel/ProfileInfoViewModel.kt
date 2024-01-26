@@ -11,8 +11,8 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.profilecompletion.domain.UserProfileCompletionUseCase
 import com.tokopedia.profilecompletion.profilecompletion.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.profilecompletion.data.UploadProfilePictureResult
-import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase.Companion.PARAM_UPLOAD_ID
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.usecase.SaveProfilePictureUseCase
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.usecase.SaveProfilePictureUseCase.Companion.PARAM_UPLOAD_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

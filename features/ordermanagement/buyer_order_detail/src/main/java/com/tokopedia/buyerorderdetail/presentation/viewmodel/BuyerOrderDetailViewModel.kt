@@ -236,7 +236,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
                     AddToCartParamsMapper.mapSingleAddToCartParams(
                         product = product,
                         shopId = getShopId(),
-                        userId = getUserId()
+                        userId = getUserId(),
+                        shopName = getShopName()
                     )
                 )
                 ).let { result ->
@@ -262,7 +263,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             val params = AddToCartParamsMapper.mapMultiAddToCartParams(
                 buyerOrderDetailDataRequestState = buyerOrderDetailDataRequestState.value,
                 shopId = getShopId(),
-                userId = getUserId()
+                userId = getUserId(),
+                shopName = getShopName()
             )
             if (params.isNotEmpty()) {
                 _multiAtcResult.value = mapMultiATCResult(
@@ -423,7 +425,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
             }
 
             OrderOneTimeEvent.Empty -> {
-                //noop
+                // noop
             }
         }
     }
@@ -470,7 +472,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 getBuyerOrderDetailDataRequestState,
                 epharmacyInfoUiState.value
             )
-        } catch (e:Throwable) {
+        } catch (e: Throwable) {
+            Timber.d(e)
             EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel())
         }
     }
