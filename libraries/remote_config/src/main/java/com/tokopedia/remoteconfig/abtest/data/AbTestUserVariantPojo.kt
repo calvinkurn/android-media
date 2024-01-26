@@ -1,15 +1,15 @@
-package com.tokopedia.shop.common.remoteconfig.data
+package com.tokopedia.remoteconfig.abtest.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ShopAbTestVariantPojo (
+data class AbTestUserVariantPojo (
         @SerializedName("RolloutUserVariant")
         @Expose
-        var dataRollout: ShopRolloutFeatureVariants = ShopRolloutFeatureVariants()
+        var dataRollout: RolloutUserVariants = RolloutUserVariants()
 )
 
-data class ShopRolloutFeatureVariants (
+data class RolloutUserVariants (
         @SerializedName("featureVariants")
         @Expose
         var featureVariants: List<ShopFeatureVariant>? = ArrayList(),

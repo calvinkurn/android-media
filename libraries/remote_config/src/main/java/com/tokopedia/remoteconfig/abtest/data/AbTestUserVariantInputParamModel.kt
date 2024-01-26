@@ -1,9 +1,9 @@
-package com.tokopedia.shop.common.remoteconfig.data
+package com.tokopedia.remoteconfig.abtest.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ShopAbTestInputParamModel(
+data class AbTestUserVariantInputParamModel(
         @SerializedName("listExpName")
         @Expose
         val listExpName: List<String> = listOf(),
