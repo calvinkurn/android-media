@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.ButtonSize
@@ -32,7 +34,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
  * @author by astidhiyaa on 22/01/24
  */
 @Composable
-fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight) {
+fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight) { //change into FeedCardModel
     NestTheme {
         AnimatedVisibility(
             visible = true, //TODO: Adjust visibility
@@ -119,6 +121,17 @@ fun FeedProductHighlight(product: ContentTaggedProductUiModel = productHighlight
                         })
             }
         }
+    }
+}
+
+@Composable
+fun ProductTagItems(products: List<FeedCardProductModel>,
+                    totalProducts: Int) {
+
+    Column {
+        FeedProductLabel(products = products, totalProducts = totalProducts)
+        //Add launched effect with delay, add variable remembr
+        FeedProductHighlight()
     }
 }
 

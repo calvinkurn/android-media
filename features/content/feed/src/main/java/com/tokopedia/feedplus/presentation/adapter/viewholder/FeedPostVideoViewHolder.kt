@@ -378,7 +378,7 @@ class FeedPostVideoViewHolder(
 
     private fun bindProductTag(data: FeedCardVideoContentModel) {
         binding.productTagView.setContent {
-            FeedProductLabel(products = data.products, totalProducts = data.totalProducts)
+            ProductTagItems(products = data.products, totalProducts = data.totalProducts)
         }
 
         productButtonView.bindData(
