@@ -145,10 +145,16 @@ fun FeedProductHighlight(
 @Composable
 fun ProductTagItems(
     products: List<FeedCardProductModel>,
-    totalProducts: Int
+    totalProducts: Int,
+    key: String
 ) {
     Column {
         var needToBeShown by remember { mutableStateOf(false) }
+        LaunchedEffect(key1 = key, block = {
+            delay(5000L)
+            needToBeShown = true
+        }) //TODO: need to re-launch every recycled
+
         FeedProductLabel(
             products = products,
             totalProducts = totalProducts,
@@ -158,10 +164,5 @@ fun ProductTagItems(
         FeedProductHighlight(product = highlightedProduct, isVisible = needToBeShown) {
             needToBeShown = false
         }
-
-        LaunchedEffect(key1 = needToBeShown, block = {
-            delay(5000L)
-            needToBeShown = true
-        }) //TODO: changed key to relaunch
     }
 }
