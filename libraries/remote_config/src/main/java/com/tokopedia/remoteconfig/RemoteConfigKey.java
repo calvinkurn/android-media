@@ -322,4 +322,6 @@ public class RemoteConfigKey {
   
     public static final String ANDROID_CHATBOT_SECURE_IMAGE = "android_chatbot_secure_image";
 
+    public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
+
 }

@@ -218,6 +218,7 @@ class ShopHomeViewModelTest {
 
     private val mockExtParam = "fs_widget%3D23600"
     private val mockShopId = "1234"
+    private val mockShopName = "shop a"
     private val mockCampaignId = "123"
     private val mockPage = 2
     private val mockProductPerPage = 10
@@ -532,6 +533,7 @@ class ShopHomeViewModelTest {
                 displayedPrice = mockDisplayedPrice
             },
             mockShopId,
+            mockShopName,
             onSuccessAddToCart,
             {}
         )
@@ -548,6 +550,7 @@ class ShopHomeViewModelTest {
         viewModel.addProductToCartOcc(
             ShopHomeProductUiModel(),
             mockShopId,
+            mockShopName,
             {},
             onErrorAddToCart
         )
@@ -561,6 +564,7 @@ class ShopHomeViewModelTest {
         viewModel.addProductToCartOcc(
             ShopHomeProductUiModel(),
             mockShopId,
+            mockShopName,
             {},
             onErrorAddToCart
         )
