@@ -34,7 +34,7 @@ class GetGroupProductTickerUseCase @Inject constructor(
             val param = createParameter(product, data, shopIds, newQty)
             val response = getGroupProductTickerUseCase.get().invoke(param)
             val errorMessage = response.getGroupProductTicker.errorMessage.firstOrNull()
-            if (errorMessage.isNullOrBlank()) {
+            if (!errorMessage.isNullOrBlank()) {
                 throw RuntimeException(errorMessage)
             } else {
                 return mapper.get().mapToUiModel(data, product, response, newQty)
