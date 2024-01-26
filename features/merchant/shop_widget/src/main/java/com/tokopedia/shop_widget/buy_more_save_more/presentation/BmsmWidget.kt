@@ -25,6 +25,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWi
 import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
 import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
 import com.tokopedia.shop_widget.databinding.LayoutBmsmCustomViewBinding
+import com.tokopedia.unifycomponents.R.*
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
@@ -58,6 +59,7 @@ class BmsmWidget : ConstraintLayout {
     private var onProductClicked: (Product) -> Unit = {}
     private var onWidgetVisible: () -> Unit = {}
     private var tabTotalWidth = 0
+    private var colorSchema: ShopPageColorSchema = ShopPageColorSchema()
     private var colorThemeConfiguration: BmsmWidgetColorThemeConfig = BmsmWidgetColorThemeConfig.DEFAULT
     private var patternColorType: ColorType = ColorType.LIGHT
 
@@ -86,9 +88,11 @@ class BmsmWidget : ConstraintLayout {
     fun setupWidget(
         provider: BmsmWidgetDependencyProvider,
         offerList: List<OfferingInfoByShopIdUiModel>,
+        colorSchema: ShopPageColorSchema,
         colorThemeConfiguration: BmsmWidgetColorThemeConfig,
         patternColorType: ColorType
     ) {
+        this.colorSchema = colorSchema
         this.patternColorType = patternColorType
         this.colorThemeConfiguration = colorThemeConfiguration
         setupTabs(provider, offerList)
@@ -188,7 +192,7 @@ class BmsmWidget : ConstraintLayout {
         val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
         tabTitle?.apply {
             typeface = Typography.getFontType(context, true, Typography.DISPLAY_3)
-            setTextColor(getTextColor())
+            setTextColor(getActiveTabTextColor())
             invalidate()
         }
     }
@@ -197,7 +201,7 @@ class BmsmWidget : ConstraintLayout {
         val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
         tabTitle?.apply {
             typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
-            setTextColor(getTextColor())
+            setTextColor(getInActiveTabTextColor())
             invalidate()
         }
     }
@@ -273,14 +277,29 @@ class BmsmWidget : ConstraintLayout {
         this.onWidgetVisible = onWidgetVisible
     }
 
-    private fun getTextColor(): Int{
+    private fun getActiveTabTextColor(): Int{
         val textColor = when (colorThemeConfiguration) {
             BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
             BmsmWidgetColorThemeConfig.REIMAGINE -> {
-                if (patternColorType == ColorType.LIGHT) {
-                    ContextCompat.getColor(context, R.color.dms_static_black)
+                if (colorSchema.listColorSchema.isNotEmpty()) {
+                    colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
                 } else {
-                    ContextCompat.getColor(context, R.color.dms_static_white)
+                    ContextCompat.getColor(context, color.Unify_NN950)
+                }
+            }
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_static_black)
+        }
+        return textColor
+    }
+
+    private fun getInActiveTabTextColor(): Int{
+        val textColor = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (colorSchema.listColorSchema.isNotEmpty()) {
+                    colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+                } else {
+                    ContextCompat.getColor(context, color.Unify_NN950)
                 }
             }
             BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_static_black)

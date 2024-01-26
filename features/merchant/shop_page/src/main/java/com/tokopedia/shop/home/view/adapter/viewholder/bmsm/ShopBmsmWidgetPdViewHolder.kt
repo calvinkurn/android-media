@@ -14,6 +14,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWi
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetEventListener
 import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
 import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
+import com.tokopedia.unifycomponents.R.*
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopBmsmWidgetPdViewHolder(
@@ -47,6 +48,7 @@ class ShopBmsmWidgetPdViewHolder(
                     setupWidget(
                         provider = provider,
                         offerList = element.data,
+                        colorSchema = element.header.colorSchema,
                         colorThemeConfiguration = getColorThemeConfiguration(element),
                         patternColorType = ColorType.values().firstOrNull { value ->
                             value.type == patternColorType
@@ -89,10 +91,10 @@ class ShopBmsmWidgetPdViewHolder(
         val textColor =  when (getColorThemeConfiguration(element)) {
             BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(itemView.context, R.color.dms_static_white)
             BmsmWidgetColorThemeConfig.REIMAGINE -> {
-                if (patternColorType == ColorType.LIGHT.type) {
-                    ContextCompat.getColor(itemView.context, R.color.dms_static_black)
+                if (element.header.colorSchema.listColorSchema.isNotEmpty()) {
+                    element.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
                 } else {
-                    ContextCompat.getColor(itemView.context, R.color.dms_static_white)
+                    ContextCompat.getColor(itemView.context, color.Unify_NN950)
                 }
             }
             BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(itemView.context, R.color.dms_static_black)
