@@ -31,6 +31,7 @@ import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithSc
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.processor.CheckoutShippingProcessor
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesCoroutineUseCase
 import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
@@ -149,6 +150,8 @@ open class BaseCheckoutViewModelTest {
 
     lateinit var logisticProcessor: CheckoutLogisticProcessor
 
+    lateinit var logisticCartProcessor: CheckoutShippingProcessor
+
     lateinit var promoProcessor: CheckoutPromoProcessor
 
     lateinit var viewModel: CheckoutViewModel
@@ -177,6 +180,16 @@ open class BaseCheckoutViewModelTest {
         logisticProcessor = CheckoutLogisticProcessor(
             scheduleDeliveryMapper
         )
+        logisticCartProcessor = CheckoutShippingProcessor(
+            pinpointUseCase,
+            ratesUseCase,
+            ratesApiUseCase,
+            ratesWithScheduleUseCase,
+            ratesResponseStateConverter,
+            shippingCourierConverter,
+            scheduleDeliveryUseCase,
+            dispatchers
+        )
         viewModel = CheckoutViewModel(
             CheckoutCartProcessor(
                 getShipmentAddressFormV4UseCase,
@@ -187,6 +200,7 @@ open class BaseCheckoutViewModelTest {
                 dispatchers
             ),
             logisticProcessor,
+            logisticCartProcessor,
             promoProcessor,
             CheckoutAddOnProcessor(
                 prescriptionIdsUseCase,

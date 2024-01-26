@@ -26,8 +26,6 @@ class CheckoutLogisticProcessor @Inject constructor(
     private val schellyMapper: ScheduleDeliveryMapper
 ) {
 
-    var isBoUnstackEnabled = false
-
     fun getProductForRatesRequest(orderProducts: List<CheckoutProductModel>): ArrayList<Product> {
         val products = arrayListOf<Product>()
         for (cartItemModel in orderProducts) {
