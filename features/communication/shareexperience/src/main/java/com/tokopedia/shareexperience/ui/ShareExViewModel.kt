@@ -26,6 +26,7 @@ import com.tokopedia.shareexperience.domain.usecase.ShareExGetGeneratedImageUseC
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetShortLinkUseCase
 import com.tokopedia.shareexperience.domain.util.ShareExConstants
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
@@ -137,6 +138,11 @@ class ShareExViewModel @Inject constructor(
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
+                ShareExLogger.logExceptionToServerLogger(
+                    throwable = throwable,
+                    deviceId = userSession.deviceId,
+                    description = ::getShareBottomSheetData.name
+                )
             }
         }
     }
@@ -274,6 +280,11 @@ class ShareExViewModel @Inject constructor(
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
+                ShareExLogger.logExceptionToServerLogger(
+                    throwable = throwable,
+                    deviceId = userSession.deviceId,
+                    description = ::generateLink.name
+                )
                 updateIntentUiStateWithDefaultUrl(
                     channelItemModel,
                     bottomSheetArgs?.defaultUrl ?: "",
@@ -491,6 +502,11 @@ class ShareExViewModel @Inject constructor(
             }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+            ShareExLogger.logExceptionToServerLogger(
+                throwable = throwable,
+                deviceId = userSession.deviceId,
+                description = ::generateImageFlow.name
+            )
             flow {
                 emit(
                     ShareExImageGeneratorModel(

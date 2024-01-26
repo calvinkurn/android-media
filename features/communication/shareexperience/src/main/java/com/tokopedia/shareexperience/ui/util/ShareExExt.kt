@@ -5,6 +5,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import com.tokopedia.shareexperience.R
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
+import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 
 fun Activity.getStringExtraFromIntentOrQuery(key: String): String? {
@@ -41,6 +43,11 @@ fun Context.copyTextToClipboard(text: String): Boolean {
         true
     } catch (throwable: Throwable) {
         Timber.d(throwable)
+        ShareExLogger.logExceptionToServerLogger(
+            throwable = throwable,
+            deviceId = UserSession(this).deviceId,
+            description = ::copyTextToClipboard.name
+        )
         false
     }
 }

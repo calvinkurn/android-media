@@ -17,6 +17,7 @@ import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateEligibilityRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.ShareExBottomSheet
 import com.tokopedia.shareexperience.ui.listener.ShareExBottomSheetListener
@@ -25,10 +26,12 @@ import com.tokopedia.shareexperience.ui.model.arg.ShareExInitializerArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExInitializationUiState
 import com.tokopedia.shareexperience.ui.view.ShareExLoadingDialog
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -48,6 +51,9 @@ class ShareExInitializer(
         addObserver(context)
         initInjector()
     }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var useCase: ShareExGetAffiliateEligibilityUseCase
@@ -85,6 +91,7 @@ class ShareExInitializer(
         weakContext.get()?.let {
             val lifecycleScope = (it as? LifecycleOwner)?.lifecycleScope
             lifecycleScope?.launch {
+                UUID.randomUUID()
                 try {
                     /**
                      * Add more checker and args here if needed
@@ -102,6 +109,11 @@ class ShareExInitializer(
                     }
                 } catch (throwable: Throwable) {
                     arg.onError(throwable)
+                    ShareExLogger.logExceptionToServerLogger(
+                        throwable = throwable,
+                        deviceId = userSession.deviceId,
+                        description = ::additionalCheck.name
+                    )
                 }
             }
         }

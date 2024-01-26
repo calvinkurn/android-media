@@ -24,6 +24,7 @@ import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.util.ShareExConstants.DefaultValue.DEFAULT_TITLE
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
 import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExBottomSheetSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
@@ -39,6 +40,7 @@ import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import com.tokopedia.shareexperience.ui.util.ShareExMediaCleanupStorageWorker
 import com.tokopedia.shareexperience.ui.util.copyTextToClipboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -58,6 +60,9 @@ class ShareExBottomSheet :
 
     @Inject
     lateinit var analytics: ShareExAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var viewBinding by autoClearedNullable<ShareexperienceBottomSheetBinding>()
     private val adapter by lazy {
@@ -306,6 +311,11 @@ class ShareExBottomSheet :
             startActivity(intent)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+            ShareExLogger.logExceptionToServerLogger(
+                throwable = throwable,
+                deviceId = userSession.deviceId,
+                description = ::navigateWithIntent.name
+            )
         }
     }
 

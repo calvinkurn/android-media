@@ -16,6 +16,8 @@ import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
 import com.tokopedia.shareexperience.domain.util.ShareExConstants
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
+import com.tokopedia.user.session.UserSessionInterface
 import org.json.JSONArray
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,7 +25,8 @@ import javax.inject.Inject
 class ShareExChannelMapper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val resourceProvider: ShareExResourceProvider,
-    private val remoteConfig: RemoteConfig
+    private val remoteConfig: RemoteConfig,
+    private val userSession: UserSessionInterface
 ) {
 
     fun generateSocialMediaChannel(): ShareExChannelModel {
@@ -71,6 +74,11 @@ class ShareExChannelMapper @Inject constructor(
             resolveInfoList.isNotEmpty()
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+            ShareExLogger.logExceptionToServerLogger(
+                throwable = throwable,
+                deviceId = userSession.deviceId,
+                description = ::isAppInstalled.name
+            )
             false
         }
     }
@@ -85,6 +93,11 @@ class ShareExChannelMapper @Inject constructor(
             JSONArray(socialMediaOrdering).toArray()
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+            ShareExLogger.logExceptionToServerLogger(
+                throwable = throwable,
+                deviceId = userSession.deviceId,
+                description = ::getSocialMediaOrderingArray.name
+            )
             arrayOf()
         }
     }

@@ -13,7 +13,9 @@ import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -82,6 +84,13 @@ class ShareExLoadingDialog(
                     }
                 } catch (throwable: Throwable) {
                     Timber.d(throwable)
+                    weakContext.get()?.let { context ->
+                        ShareExLogger.logExceptionToServerLogger(
+                            throwable = throwable,
+                            deviceId = UserSession(context).deviceId,
+                            description = ::fetchBottomSheetData.name
+                        )
+                    }
                     onResult(ShareExResult.Error(throwable))
                 }
             }
