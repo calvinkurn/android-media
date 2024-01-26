@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -33,6 +34,7 @@ import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadMana
 import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission.isAllPermissionNotGranted
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.APK_URL
 import com.tokopedia.appdownloadmanager_common.presentation.viewmodel.DownloadManagerViewModel
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
@@ -72,56 +74,62 @@ class AppDownloadingBottomSheet :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val composeView = ComposeView(inflater.context).apply {
-            setContent {
-                val downloadingUiState by viewModel.downloadingUiState.collectAsStateWithLifecycle()
+        activity?.let {
+            val composeView = ComposeView(it).apply {
+                setContent {
+                    NestTheme {
+                        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
-                when (downloadingUiState) {
-                    is DownloadingUiState.Onboarding -> {
-                        DownloadManagerOnboardingScreen(
-                            downloadManagerUpdateModel = downloadManagerUpdateModel,
-                            onDownloadClick = {
-                                activity?.let { mActivity ->
-                                    if (isAllPermissionNotGranted(mActivity)) {
-                                        requestPermissions(
-                                            AppDownloadManagerPermission.requiredPermissions,
-                                            AppDownloadManagerPermission.PERMISSIONS_REQUEST_EXTERNAL_STORAGE
-                                        )
-                                    } else {
-                                        startDownloadingAndChangeState()
+                        val downloadingUiState by viewModel.downloadingUiState.collectAsStateWithLifecycle()
+
+                        when (downloadingUiState) {
+                            is DownloadingUiState.Onboarding -> {
+                                DownloadManagerOnboardingScreen(
+                                    downloadManagerUpdateModel = downloadManagerUpdateModel,
+                                    onDownloadClick = {
+                                        activity?.let { mActivity ->
+                                            if (isAllPermissionNotGranted(mActivity)) {
+                                                requestPermissions(
+                                                    AppDownloadManagerPermission.requiredPermissions,
+                                                    AppDownloadManagerPermission.PERMISSIONS_REQUEST_EXTERNAL_STORAGE
+                                                )
+                                            } else {
+                                                startDownloadingAndChangeState()
+                                            }
+                                        }
                                     }
-                                }
+                                )
                             }
-                        )
-                    }
 
-                    is DownloadingUiState.Downloading -> {
-                        val apkUrl = APK_URL.format(
-                            appBetaVersionInfoModel?.versionName,
-                            appBetaVersionInfoModel?.versionCode
-                        )
-                        viewModel.startDownload(apkUrl)
+                            is DownloadingUiState.Downloading -> {
+                                val apkUrl = APK_URL.format(
+                                    appBetaVersionInfoModel?.versionName,
+                                    appBetaVersionInfoModel?.versionCode
+                                )
+                                viewModel.startDownload(apkUrl)
 
-                        AppDownloadingState(
-                            viewModel = viewModel,
-                            appDownloadingUiEvent = ::onDownloadingUiEvent
-                        )
-                    }
+                                AppDownloadingState(
+                                    viewModel = viewModel,
+                                    appDownloadingUiEvent = ::onDownloadingUiEvent
+                                )
+                            }
 
-                    is DownloadingUiState.InSufficientSpace -> {
-                        AppDownloadInsufficientSpaceScreen(onTryAgainClicked = {
-                            viewModel.updateDownloadingState()
-                        }, onGoToStorageClicked = {
-                                goToStorageSettings()
-                            })
+                            is DownloadingUiState.InSufficientSpace -> {
+                                AppDownloadInsufficientSpaceScreen(onTryAgainClicked = {
+                                    viewModel.updateDownloadingState()
+                                }, onGoToStorageClicked = {
+                                        goToStorageSettings()
+                                    })
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        showKnob = true
-        showCloseIcon = false
-        setChild(composeView)
+            showKnob = true
+            showCloseIcon = false
+            setChild(composeView)
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

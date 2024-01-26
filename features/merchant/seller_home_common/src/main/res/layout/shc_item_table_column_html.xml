@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingStart="4dp"
+    android:paddingLeft="4dp"
+    android:paddingEnd="4dp"
+    android:paddingRight="4dp"
+    android:paddingVertical="6dp"
     android:gravity="center_vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTableColumnHtml"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/shc_dimen_6dp"
-        android:layout_marginBottom="@dimen/shc_dimen_6dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:paddingStart="4dp"
-        android:paddingLeft="4dp"
-        android:paddingEnd="4dp"
-        android:paddingRight="4dp"
         android:textColor="@color/Unify_NN900"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvTableColumnHtmlDesc"
         app:typographyType="body_3"
         tools:text="Text Of Table" />
-</LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTableColumnHtmlDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN700_68"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginTop="4dp"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="paragraph_3"
+        app:layout_constraintTop_toBottomOf="@id/tvTableColumnHtml"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="SKU: 123456"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
