@@ -230,8 +230,7 @@ class FeedPostImageViewHolder(
         }
 
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
-
-        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -411,9 +410,12 @@ class FeedPostImageViewHolder(
             element.media[index].let {
                 if (it.tagging.isNotEmpty()) {
                     if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
-                        binding.setupProductLabel(listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]), element.totalProducts)
+                        setupProductLabel(
+                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
+                            element.totalProducts
+                        )
                     } else {
-                        binding.setupProductLabel(element.products, element.totalProducts)
+                        setupProductLabel(element.products, element.totalProducts)
                     }
                 } else {
                     binding.productTagView.gone()
@@ -505,7 +507,7 @@ class FeedPostImageViewHolder(
             } else {
                 model.products
             }
-        binding.setupProductLabel(products, model.totalProducts)
+        setupProductLabel(products, model.totalProducts)
         productButtonView.bindData(
             postId = model.id,
             author = model.author,
@@ -690,8 +692,13 @@ class FeedPostImageViewHolder(
         }
     }
 
-    private fun ItemFeedPostBinding.setupProductLabel(products: List<FeedCardProductModel>, totalProducts : Int) {
+    private fun setupProductLabel(products: List<FeedCardProductModel>, totalProducts: Int) {
 //        binding.productTagView.setContent { FeedProductLabel(products = products, totalProducts = totalProducts) }
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        binding.productTagView.disposeComposition()
     }
 
     companion object {

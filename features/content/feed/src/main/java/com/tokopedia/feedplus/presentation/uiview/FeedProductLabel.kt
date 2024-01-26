@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
@@ -30,6 +29,8 @@ import com.tokopedia.nest.principles.ui.NestTheme
 /**
  * @author by astidhiyaa on 24/01/24
  */
+
+//listener: FeedListener,
 @Composable
 fun FeedProductLabel(
     products: List<FeedCardProductModel>,
@@ -64,11 +65,11 @@ fun FeedProductLabel(
                     .wrapContentWidth()
                     .height(28.dp)
                     .shadow(elevation = 16.dp)
-                    .alpha(0.8f)
+                    .alpha(0.7f)
                     .background(
                         colorResource(id = R.color.feed_dms_tag_product_background),
                         RoundedCornerShape(4.dp)
-                    ),
+                    ), //Add listener
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
@@ -77,7 +78,7 @@ fun FeedProductLabel(
                     colorLightEnable = NestTheme.colors.NN._0,
                     colorNightEnable = NestTheme.colors.NN._0,
                     modifier = Modifier
-                        .size(20.dp)
+                        .size(24.dp)
                         .padding(4.dp)
                         .background(colorResource(id = R.color.feed_dms_tag_product_icon_background)),
                 )
@@ -94,10 +95,4 @@ fun FeedProductLabel(
             }
         }
     }
-}
-
-@Preview
-@Composable
-internal fun ProductLabelPreview() {
-    //FeedProductLabel()
 }
