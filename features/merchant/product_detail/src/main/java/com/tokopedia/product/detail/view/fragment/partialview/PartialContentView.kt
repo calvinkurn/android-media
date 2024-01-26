@@ -183,13 +183,56 @@ class PartialContentView(
         }
         textView.text = stringBuilder
 
-        labelIcons.reversed().forEach {
-            loadIcon(url = it.iconURL, onSuccess = { resource ->
+        processLabelIcons(stringBuilder = stringBuilder, labelIcons = labelIcons)
+    }
+
+    private fun processLabelIcons(
+        stringBuilder: SpannableStringBuilder,
+        labelIcons: List<LabelIcons>
+    ) {
+        val drawablePlaceholder = Pair<Drawable?, Boolean>(null, false)
+        val mapIcons = labelIcons
+            .associate { it.iconURL to drawablePlaceholder }
+            .toMutableMap()
+
+        prepareLoadIcons(mapIcons = mapIcons, placeholder = drawablePlaceholder, stringBuilder)
+    }
+
+    private fun prepareLoadIcons(
+        mapIcons: MutableMap<String, Pair<Drawable?, Boolean>>,
+        placeholder: Pair<Drawable?, Boolean>,
+        stringBuilder: SpannableStringBuilder
+    ) {
+        mapIcons.keys.forEach { url ->
+            loadIcon(url = url) {
+                val icon = mapIcons[url] ?: placeholder
+                mapIcons[url] = icon.copy(this, true)
+                renderLabelIcons(stringBuilder = stringBuilder, mapIcons = mapIcons)
+            }
+        }
+    }
+
+    private fun renderLabelIcons(
+        stringBuilder: SpannableStringBuilder,
+        mapIcons: MutableMap<String, Pair<Drawable?, Boolean>>
+    ) {
+        val textView = binding.productName
+        // ensure all icons has loaded
+        val allIconsLoaded = mapIcons.values.all { it.second }
+
+        if (!allIconsLoaded) return
+
+        mapIcons.values
+            // reversed this, because each logo put from index 0 always
+            .reversed()
+            .asSequence()
+            .map { it.first }
+            .filterNotNull()
+            .forEach { resource ->
                 resource.resizeLabelIconSpec()
                 stringBuilder.setLabelIconSpan(drawable = resource)
                 textView.text = stringBuilder
-            })
-        }
+            }
     }
 
     private fun Drawable.resizeLabelIconSpec() {
@@ -206,17 +249,19 @@ class PartialContentView(
         setSpan(imageSpan, Int.ZERO, Int.ONE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
-    private fun loadIcon(url: String, onSuccess: (resource: Drawable) -> Unit) {
+    private inline fun loadIcon(url: String, crossinline onLoaded: Drawable?.() -> Unit) {
         glideApp.load(url)
             .into(object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,
                     transition: Transition<in Drawable>?
                 ) {
-                    onSuccess(resource)
+                    onLoaded(resource)
                 }
 
-                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    onLoaded(null)
+                }
             })
     }
 
