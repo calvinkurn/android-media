@@ -27,7 +27,10 @@ class CsatViewModel @Inject constructor(
                 title = csatModel.title,
                 points = csatModel.points,
                 selectedPoint = csatModel.selectedPoint,
-                selectedReasons = mutableListOf()
+                selectedReasons = csatModel.selectedReasons,
+                otherReason = csatModel.otherReason,
+                minimumOtherReasonChar = csatModel.minimumOtherReasonChar,
+                maximumOtherReasonChar = csatModel.maximumOtherReasonChar
             )
         }
     }
@@ -91,5 +94,4 @@ class CsatViewModel @Inject constructor(
             }
         }
     }
-
 }

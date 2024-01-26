@@ -178,7 +178,7 @@ class CsatBottomsheet :
     }
 
     private fun renderReasons(csatModel: CsatModel) {
-        viewBinding?.csatReasonTitle?.text = csatModel.title
+        viewBinding?.csatReasonTitle?.text = csatModel.selectedPoint.reasonTitle
         viewBinding?.csatReasonContainer?.removeAllViews()
         csatModel.selectedPoint.reasons.forEach { reason ->
             val reasonLayout = layoutInflater.inflate(R.layout.item_csat_reason, null)
@@ -203,6 +203,7 @@ class CsatBottomsheet :
         viewBinding?.csatOtherReason?.setLabel("Tulis detailnya di sini, ya..")
         viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.minimumOtherReasonChar} karakter")
         viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
+            // todo : add debounce
             viewModel.setOtherReason(it.toString())
             viewModel.updateButton()
         }

@@ -2,12 +2,12 @@ package com.tokopedia.chatbot.chatbot2.csat.domain.model
 
 data class CsatModel(
     var title: String = "",
-    var minimumOtherReasonChar: Int = 0,
-    var maximumOtherReasonChar: Int = 0,
     var points: MutableList<PointModel> = mutableListOf(),
     var selectedPoint: PointModel = PointModel(),
     var selectedReasons: MutableList<String> = mutableListOf(),
-    var otherReason: String = ""
+    var otherReason: String = "",
+    var minimumOtherReasonChar: Int = 0,
+    var maximumOtherReasonChar: Int = 0
 )
 
 data class PointModel(
@@ -22,7 +22,7 @@ data class SubmitButtonState(
     var isEnabled: Boolean = false
 )
 
-var dummyData = CsatModel(
+val dummyData = CsatModel(
     title = "Gimana pengalamanmu dengan Tokopedia Care?",
     minimumOtherReasonChar = 30,
     maximumOtherReasonChar = 1500,
