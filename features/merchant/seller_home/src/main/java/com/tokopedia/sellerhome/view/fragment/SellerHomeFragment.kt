@@ -125,6 +125,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.FeedbackLoopOptionUiMod
 import com.tokopedia.sellerhomecommon.presentation.model.LastUpdatedDataInterface
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneItemRewardUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -136,6 +137,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RewardDetailUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
@@ -150,7 +152,9 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiMode
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FeedbackLoopOptionsBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.HtmlMetaBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostMoreOptionBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.RewardDetailBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.UnificationTabBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
@@ -604,7 +608,6 @@ class SellerHomeFragment :
     }
 
     override fun onMilestoneMissionActionClickedListener(
-        element: MilestoneWidgetUiModel,
         mission: BaseMilestoneMissionUiModel,
         missionPosition: Int
     ) {
@@ -635,6 +638,30 @@ class SellerHomeFragment :
         }
 
         SellerHomeTracking.sendMilestoneMissionCtaClickEvent(mission, missionPosition)
+    }
+
+    override fun sendMilestoneRewardImpressionEvent(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
+        SellerHomeTracking.sendMilestoneRewardImpressionEvent(reward, position)
+    }
+
+    override fun sendMilestoneRewardActionClickedListener(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
+        activity?.let {
+            if (reward.buttonApplink.isBlank()) {
+                reward.rewardDetailUiModel?.let { uiModel ->
+                    showRewardDetailBottomSheet(uiModel)
+                }
+            } else {
+                val intent = RouteManager.getIntent(it, reward.buttonApplink)
+                it.startActivityForResult(intent, REQ_CODE_MILESTONE_WIDGET)
+            }
+        }
+        SellerHomeTracking.sendMilestoneRewardClickEvent(reward, position)
     }
 
     override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {
@@ -702,6 +729,14 @@ class SellerHomeFragment :
 
     override fun sendTableSeeMoreClickEvent(element: TableWidgetUiModel, isEmpty: Boolean) {
         SellerHomeTracking.sendTableSeeMoreClickEvent(element, isEmpty)
+    }
+
+    override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+        }.show(fm)
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
@@ -803,6 +838,14 @@ class SellerHomeFragment :
                 showUnificationCoachMarkWhenVisible()
             }
         }
+    }
+
+    override fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+        }.show(fm)
     }
 
     override fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
@@ -1537,8 +1580,8 @@ class SellerHomeFragment :
     private fun showPersonaBottomSheet(personaStatus: Int) {
         activity?.let {
             val shouldShowBottomSheet = sharedPref.shouldShowPersonaHomePopup(
-                    userSession.userId
-                ) && isFromPersona
+                userSession.userId
+            ) && isFromPersona
 
             if (shouldShowBottomSheet) {
                 runCatching {
@@ -2037,7 +2080,8 @@ class SellerHomeFragment :
                         subTitleTextColor = unifyprinciplesR.color.Unify_NN950_68
                     }
                     return@map it.copy(
-                        titleTextColorId = titleTextColor, subTitleTextColorId = subTitleTextColor
+                        titleTextColorId = titleTextColor,
+                        subTitleTextColorId = subTitleTextColor
                     )
                 }
                 return@map it
@@ -2251,9 +2295,11 @@ class SellerHomeFragment :
 
     private fun <D : BaseDataUiModel> handleShopShareMilestoneWidget(widget: BaseWidgetUiModel<D>) {
         if (widget is MilestoneWidgetUiModel) {
-            val shareMission = widget.data?.milestoneMissions?.firstOrNull {
-                return@firstOrNull it.missionButton.urlType == BaseMilestoneMissionUiModel.UrlType.SHARE
-            }
+            val shareMission =
+                widget.data?.milestoneMissions?.filterIsInstance<BaseMilestoneMissionUiModel>()
+                    ?.firstOrNull {
+                        return@firstOrNull it.missionButton.urlType == BaseMilestoneMissionUiModel.UrlType.SHARE
+                    }
             val isShareMissionAvailable = !shareMission?.missionCompletionStatus.orFalse()
             if (isShareMissionAvailable) {
                 sellerHomeViewModel.getShopInfoById()
@@ -2924,6 +2970,19 @@ class SellerHomeFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun goToHtmlMetaLink(
+        bottomSheetTitle: String,
+        appLink: String
+    ) {
+        RouteManager.route(context, appLink)
+    }
+
+    private fun showRewardDetailBottomSheet(uiModel: RewardDetailUiModel) {
+        context?.let {
+            RewardDetailBottomSheet.createInstance(it, uiModel).show(childFragmentManager)
         }
     }
 

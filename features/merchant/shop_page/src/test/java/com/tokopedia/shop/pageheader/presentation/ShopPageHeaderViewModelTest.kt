@@ -187,6 +187,7 @@ class ShopPageHeaderViewModelTest {
             addressWidgetData,
             mockExtParam,
             mockShopHomeTabName,
+            "LTE",
             mapOf(),
             false
         )
@@ -216,6 +217,7 @@ class ShopPageHeaderViewModelTest {
             widgetUserAddressLocalData = addressWidgetData,
             extParam = mockExtParam,
             tabName = mockShopHomeTabName,
+            "LTE",
             mapOf(),
             false
         )
@@ -254,6 +256,7 @@ class ShopPageHeaderViewModelTest {
             addressWidgetData,
             mockExtParam,
             mockShopHomeTabName,
+            "LTE",
             mapOf(),
             false
         )
@@ -271,6 +274,7 @@ class ShopPageHeaderViewModelTest {
             addressWidgetData,
             mockExtParam,
             mockShopHomeTabName,
+            "LTE",
             mapOf(),
             false
         )
@@ -290,6 +294,7 @@ class ShopPageHeaderViewModelTest {
             addressWidgetData,
             mockExtParam,
             mockShopHomeTabName,
+            "LTE",
             mapOf(),
             false
         )

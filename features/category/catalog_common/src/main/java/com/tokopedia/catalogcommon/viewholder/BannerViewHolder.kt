@@ -31,5 +31,6 @@ class BannerViewHolder(
             (layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = element.ratio.ratioName
         }
         bannerListener?.onBannerThreeByFourImpression(element.ratio.ratioName)
+        bannerListener?.onBannerImpression(element)
     }
 }

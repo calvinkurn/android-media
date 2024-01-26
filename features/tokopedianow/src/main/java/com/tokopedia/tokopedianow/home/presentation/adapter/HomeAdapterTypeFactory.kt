@@ -46,6 +46,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendation
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseProductViewHolder.TokoNowRepurchaseProductListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder.TokoNowRepurchaseListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
@@ -114,7 +115,8 @@ class HomeAdapterTypeFactory(
     private val bannerComponentListener: BannerComponentListener? = null,
     private val homeProductRecomOocListener: TokoNowRecommendationCarouselListener? = null,
     private val homeProductRecomListener: HomeProductRecomListener? = null,
-    private val tokoNowRepurchaseListener: TokoNowRepurchaseProductListener? = null,
+    private val tokoNowRepurchaseProductListener: TokoNowRepurchaseProductListener? = null,
+    private val tokoNowRepurchaseListener: TokoNowRepurchaseListener? = null,
     private val homeSharingEducationListener: HomeSharingListener? = null,
     private val homeEducationalInformationListener: HomeEducationalInformationListener? = null,
     private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener? = null,
@@ -197,7 +199,12 @@ class HomeAdapterTypeFactory(
         return when (type) {
             // region Common TokoNow Component
             TokoNowCategoryMenuViewHolder.LAYOUT -> TokoNowCategoryMenuViewHolder(view, tokoNowCategoryMenuListener)
-            TokoNowRepurchaseViewHolder.LAYOUT -> TokoNowRepurchaseViewHolder(view, tokoNowRepurchaseListener, tokoNowView)
+            TokoNowRepurchaseViewHolder.LAYOUT -> TokoNowRepurchaseViewHolder(
+                view,
+                tokoNowRepurchaseProductListener,
+                tokoNowRepurchaseListener,
+                tokoNowView
+            )
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowView, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)

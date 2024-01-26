@@ -57,6 +57,9 @@ object RollenceKey {
     const val CART_CHECKOUT_NEW = "cart_checkout_new"
     const val PROMO_ENTRY_POINT_IMPROVEMENT = "promowidget_cartco"
     const val PROMO_ENTRY_POINT_NEW = "new_promowidget"
+    const val UOH_BUY_AGAIN_WIDGET = "buyagain_uoh"
+    const val UOH_BUY_AGAIN_WIDGET_CONTROL = "without_buyagain_uoh"
+    const val UOH_BUY_AGAIN_WIDGET_VARIANT = "with_buyagain_uoh"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -75,6 +78,11 @@ object RollenceKey {
 
     // For You Rollence
     const val FOR_YOU_FEATURE_FLAG = "foryou_feature_flag"
+
+    // Explore Category Experiment
+    const val EXPLORE_CATEGORY_DEFAULT = "control_variant"
+    const val EXPLORE_CATEGORY_EXP = "GetJelajah"
+    const val JELAJAH_REVAMP = "JelajahRevamp"
 
     // PDP
     const val PDP_PREFETCH = "prefetch_pdp_android"
@@ -131,4 +139,6 @@ object RollenceKey {
     const val SEARCH_3_PRODUCT_CARD_VAR_1B = "var_1b"
     const val SEARCH_3_PRODUCT_CARD_VAR_2A = "var_2a"
     const val SEARCH_3_PRODUCT_CARD_VAR_2B = "var_2b"
+
+    const val ANDROID_INTERNAL_TEST = "android_internal"
 }

@@ -145,9 +145,9 @@ class DiscoveryViewModel @Inject constructor(
         get() = _addToCartActionNonVariant
     private val _addToCartActionNonVariant = MutableLiveData<DiscoATCRequestParams>()
 
-    val bmGmDataList: LiveData<Pair<Int, List<String>>>
+    val bmGmDataList: LiveData<Pair<BmGmDataParam, List<String>>>
         get() = _bmGmDataList
-    private val _bmGmDataList = MutableLiveData<Pair<Int, List<String>>>()
+    private val _bmGmDataList = MutableLiveData<Pair<BmGmDataParam, List<String>>>()
 
     private val _scrollState = MutableLiveData<ScrollData>()
     val scrollState: LiveData<ScrollData> = _scrollState
@@ -316,7 +316,7 @@ class DiscoveryViewModel @Inject constructor(
                 )
             )
             executeGetMiniCartUseCase {
-                _bmGmDataList.postValue(Pair(bmGmDataParam.parentPosition, it.bmgmData.offerMessage))
+                _bmGmDataList.postValue(Pair(bmGmDataParam, it.bmgmData.offerMessage))
             }
         }) {
             _miniCart.postValue(Fail(it))

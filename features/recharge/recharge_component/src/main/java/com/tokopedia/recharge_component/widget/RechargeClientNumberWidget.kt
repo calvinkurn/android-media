@@ -14,7 +14,6 @@ import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginTop
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
@@ -43,6 +42,8 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.common.topupbills.R as commontopupbillsR
 
 /**
  * @author by misael on 05/01/22
@@ -151,9 +152,9 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         }
 
         val emptyStateUnitRes = when (inputFieldType) {
-            InputFieldType.Listrik -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_meter
-            InputFieldType.Telco -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp
-            else -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp
+            InputFieldType.Listrik -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_meter
+            InputFieldType.Telco -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_hp
+            else -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_hp
         }
 
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
@@ -183,7 +184,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
                 chipImageResource = getIconUnifyDrawable(
                     context,
                     IconUnify.VIEW_LIST,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
                 )
                 setOnClickListener {
                     mFilterChipListener?.onClickIcon(true)

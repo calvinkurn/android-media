@@ -1467,9 +1467,9 @@ open class ProductManageFragment :
         var sortOption = selectedFilter?.sortOption
 
         filterTab?.getSelectedFilter()?.let {
-            if (it.name == FilterTabUiModel.FilterId.isProductArchival.name){
+            if (it.name == FilterTabUiModel.FilterId.isProductArchival.name) {
                 filterOptions.add(FilterByCondition.ProductArchival)
-            }else{
+            } else {
                 filterOptions.add(FilterByStatus(it))
             }
         }
@@ -2124,7 +2124,7 @@ open class ProductManageFragment :
 
     override fun onClickContactCsButton(product: ProductUiModel) {
         when {
-            product.isArchived || product.isInGracePeriod  -> {
+            product.isArchived || product.isInGracePeriod -> {
                 showProductArchivalBottomSheet(product.id, product.isInGracePeriod, product.isArchived)
             }
             product.isViolation() -> {
@@ -2185,9 +2185,9 @@ open class ProductManageFragment :
         } else {
             val isPowerMerchantOrOfficialStore = viewModel.isPowerMerchant() || isOfficialStore
             productManageBottomSheet?.show(
-                childFragmentManager,
-                product,
-                isPowerMerchantOrOfficialStore
+                fm = childFragmentManager,
+                product = product,
+                isPowerMerchantOrOfficialStore = isPowerMerchantOrOfficialStore
             )
         }
     }
@@ -3376,7 +3376,7 @@ open class ProductManageFragment :
         inGracePeriod: Boolean,
         archived: Boolean
     ) {
-        ProductArchivalBottomSheet.createInstance(productId,archived, inGracePeriod) {
+        ProductArchivalBottomSheet.createInstance(productId, archived, inGracePeriod) {
             showErrorToast(it)
         }.show(childFragmentManager)
     }

@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhome.stub.di.component
 
-import android.app.Application
+import android.content.Context
 import com.tokopedia.sellerhome.stub.di.module.AppModuleStub
 
 /**
@@ -11,10 +11,10 @@ object BaseAppComponentStubInstance {
 
     private lateinit var baseAppComponentStub: BaseAppComponentStub
 
-    fun getBaseAppComponentStub(application: Application): BaseAppComponentStub {
+    fun getBaseAppComponentStub(context: Context): BaseAppComponentStub {
         if (!::baseAppComponentStub.isInitialized) {
             baseAppComponentStub = DaggerBaseAppComponentStub.builder()
-                .appModuleStub(AppModuleStub(application))
+                .appModuleStub(AppModuleStub(context))
                 .build()
         }
 

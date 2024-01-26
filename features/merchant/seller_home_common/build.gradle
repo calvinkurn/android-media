@@ -52,6 +52,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     if(rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)

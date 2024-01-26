@@ -3,8 +3,10 @@ package com.tokopedia.creation.common.upload.data.repository
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
+import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -19,6 +21,12 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
     private val gson: Gson,
     private val creationUploadQueueDatabase: CreationUploadQueueDatabase,
 ) : CreationUploadQueueRepository {
+
+    override fun observeTopQueue(): Flow<CreationUploadQueueEntity?> {
+        return creationUploadQueueDatabase
+            .creationUploadQueueDao()
+            .observeTopQueue()
+    }
 
     override suspend fun insert(data: CreationUploadData) {
         lockAndSwitchContext(dispatchers) {
@@ -62,6 +70,17 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
                     queueId,
                     progress,
                     uploadStatus
+                )
+        }
+    }
+
+    override suspend fun updateData(queueId: Int, data: String) {
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase
+                .creationUploadQueueDao()
+                .updateData(
+                    queueId,
+                    data,
                 )
         }
     }

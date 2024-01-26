@@ -31,5 +31,5 @@ class DigitalPDPPulsaStartupBenchmark(startupMode: StartupMode) : BaseStartupBen
         )
     }
 
-    override fun traceName(): String = "plt_pdp_pulsa_page"
+    override fun traceName(): String = "plt_pdp_data_plan_page"
 }
