@@ -213,15 +213,16 @@ class WishlistCollectionViewModelTest {
                 updateWishlistCollectionUseCase
             )
         )
-        val badgesUrl = arrayListOf<String>()
-        badgesUrl.add("url")
+        val badges = arrayListOf<RecommendationItem.Badge>()
+        badges.add(RecommendationItem.Badge("loren", "url"))
+        badges.add(RecommendationItem.Badge("ipsum", "url"))
 
         val listRecommLabel = arrayListOf<RecommendationLabel>()
         listRecommLabel.add(RecommendationLabel(title = "test", imageUrl = "testUrl"))
 
-        val recommItem1 = RecommendationItem(name = "recomm1", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
-        val recommItem2 = RecommendationItem(name = "recomm2", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
-        val recommItem3 = RecommendationItem(name = "recomm3", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
+        val recommItem1 = RecommendationItem(name = "recomm1", badges = badges, labelGroupList = listRecommLabel)
+        val recommItem2 = RecommendationItem(name = "recomm2", badges = badges, labelGroupList = listRecommLabel)
+        val recommItem3 = RecommendationItem(name = "recomm3", badges = badges, labelGroupList = listRecommLabel)
         listRecommendationItem = listOf(recommItem1, recommItem2, recommItem3)
 
         recommendationWidget = RecommendationWidget(
