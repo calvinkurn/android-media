@@ -221,6 +221,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             loadingStateGroup.visible()
             bmsmMiniCartView.gone()
             rvBmgmMiniCart.gone()
+            stickyGiftView.gone()
             tvBmgmCartDiscount.gone()
         }
     }
@@ -233,6 +234,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         dismissMiniCartLoadingState()
         binding?.run {
             errorStateGroup.visible()
+            stickyGiftView.gone()
             rvBmgmMiniCart.gone()
             tvBmgmCartDiscount.gone()
             bmsmMiniCartView.gone()
@@ -303,9 +305,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 val gifts =
                     allProducts.filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
                 submitList(gifts)
-                setOnItemClickedListener {
-                    setOnItemClickedListener()
-                }
+                setOnItemClickedListener(::setOnItemClickedListener)
                 isVisible = gifts.isNotEmpty()
             }
         }
