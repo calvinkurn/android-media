@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -30,6 +29,7 @@ import com.tokopedia.buy_more_get_more.minicart.domain.model.MiniCartParam
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.BmgmMiniCartAdapter
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.diffutil.MiniCartDiffUtilCallback
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.itemdecoration.BmgmMiniCartItemDecoration
+import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.itemdecoration.GwpMiniCartItemDecoration
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmState
@@ -37,6 +37,7 @@ import com.tokopedia.buy_more_get_more.minicart.presentation.model.getProductLis
 import com.tokopedia.buy_more_get_more.minicart.presentation.viewmodel.BmgmMiniCartViewModel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -275,18 +276,44 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     private fun setupTiersApplied(data: BmgmMiniCartDataUiModel) {
-        binding?.run {
-            rvBmgmMiniCart.visible()
+        binding?.rvBmgmMiniCart?.run {
+            if (itemDecorationCount == Int.ZERO) {
+                val decoration = if (offerType == OfferType.PROGRESSIVE_DISCOUNT) {
+                    BmgmMiniCartItemDecoration()
+                } else {
+                    GwpMiniCartItemDecoration()
+                }
+                addItemDecoration(decoration)
+            }
 
             if (data.tiers.isNotEmpty()) {
                 setupMessageWithAnimation(data.offerMessage)
-                rvBmgmMiniCart.visible()
+                visible()
             } else {
-                tvBmgmCartDiscount.gone()
-                rvBmgmMiniCart.gone()
+                binding?.tvBmgmCartDiscount?.gone()
+                gone()
             }
+        }
 
-            updateItemList(data.getProductList())
+        binding?.stickyGiftView?.run {
+            if (offerType == OfferType.PROGRESSIVE_DISCOUNT) {
+                updateItemList(data.getProductList())
+                gone()
+            } else {
+                val allProducts = data.getProductList()
+                val atcProducts = allProducts.filter {
+                    it !is BmgmMiniCartVisitable.GwpGiftWidgetUiModel
+                }
+                updateItemList(atcProducts)
+
+                val gifts =
+                    allProducts.filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
+                submitList(gifts)
+                setOnItemClickedListener {
+                    setOnItemClickedListener()
+                }
+                isVisible = gifts.isNotEmpty()
+            }
         }
     }
 
@@ -368,39 +395,8 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private fun setupRecyclerView() {
         binding?.rvBmgmMiniCart?.run {
-            if (itemDecorationCount == Int.ZERO) {
-                addItemDecoration(BmgmMiniCartItemDecoration())
-            }
-            layoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
-                override fun scrollHorizontallyBy(
-                    dx: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?
-                ): Int {
-                    showGwpGifts(this)
-                    return super.scrollHorizontallyBy(dx, recycler, state)
-                }
-            }
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = miniCartAdapter
-        }
-    }
-
-    private fun showGwpGifts(layoutManager: LinearLayoutManager) {
-        if (offerType == OfferType.GIFT_WITH_PURCHASE) {
-            val giftList = miniCartAdapter.data
-                .filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
-
-            if (giftList.isNotEmpty()) {
-                val firstCompleteVisible = layoutManager.findFirstCompletelyVisibleItemPosition()
-                val firstItem = miniCartAdapter.data.getOrNull(firstCompleteVisible)
-                val shouldGiftVisible = firstItem !is BmgmMiniCartVisitable.GwpGiftWidgetUiModel
-                if (shouldGiftVisible) {
-                    giftList.firstOrNull()?.also { gift ->
-                        binding?.stickyGiftView?.submitList(gift)
-                    }
-                    binding?.stickyGiftView?.visible()
-                } else {
-                    binding?.stickyGiftView?.gone()
-                }
-            }
         }
     }
 

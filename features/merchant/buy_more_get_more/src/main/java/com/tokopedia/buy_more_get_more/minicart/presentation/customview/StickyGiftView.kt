@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.BmgmMiniCartAdapter
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.diffutil.MiniCartDiffUtilCallback
+import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.itemdecoration.BmgmMiniCartItemDecoration
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartVisitable
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 /**
  * Created by @ilhamsuaib on 26/01/24.
@@ -28,18 +30,20 @@ class StickyGiftView(
         this.onItemClicked = onItemClicked
     }
 
-    fun submitList(item: BmgmMiniCartVisitable.GwpGiftWidgetUiModel) {
-        val newList = listOf(item)
+    fun submitList(items: List<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>) {
         val oldList = stickyAdapter.data.toList()
-        val diffCallback = MiniCartDiffUtilCallback(oldList, newList)
+        val diffCallback = MiniCartDiffUtilCallback(oldList, items)
         val diffUtil = DiffUtil.calculateDiff(diffCallback)
         stickyAdapter.data.clear()
-        stickyAdapter.data.addAll(newList)
+        stickyAdapter.data.addAll(items)
         diffUtil.dispatchUpdatesTo(stickyAdapter)
     }
 
     private fun setupRecyclerView(miniCartAdapter: BmgmMiniCartAdapter) {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         adapter = miniCartAdapter
+        if (itemDecorationCount == Int.ZERO) {
+            addItemDecoration(BmgmMiniCartItemDecoration())
+        }
     }
 }

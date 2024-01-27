@@ -103,4 +103,13 @@ sealed interface BmgmMiniCartVisitable : BaseMiniCartVisitable {
             return typeFactory.type(this)
         }
     }
+
+    object DividerUiModel : BmgmMiniCartVisitable {
+
+        override fun getItemId(): String = "item_divider"
+
+        override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
 }

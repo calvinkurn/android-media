@@ -62,6 +62,9 @@ private fun getGiftWithPurchaseItems(detail: BmgmMiniCartDataUiModel): List<Bmgm
         val productImage = giftPlaceholder?.productImage.orEmpty()
         items.add(BmgmMiniCartVisitable.GwpGiftPlaceholder(productImage))
     }
+    if (tierProducts.isNotEmpty()) {
+        items.add(BmgmMiniCartVisitable.DividerUiModel)
+    }
     tierProducts.forEach { product ->
         repeat(product.quantity) {
             items.add(product)

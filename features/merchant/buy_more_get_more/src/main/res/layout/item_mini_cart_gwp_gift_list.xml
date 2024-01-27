@@ -27,22 +27,4 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/endBarrier"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:barrierDirection="end"
-        app:constraint_referenced_ids="miniCartRibbonView, rvMiniCartGiftList" />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:layout_width="1dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:background="@color/Unify_NN200"
-        app:layout_constraintBottom_toBottomOf="@+id/rvMiniCartGiftList"
-        app:layout_constraintStart_toEndOf="@+id/endBarrier"
-        app:layout_constraintTop_toTopOf="@+id/rvMiniCartGiftList" />
 </androidx.constraintlayout.widget.ConstraintLayout>

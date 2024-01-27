@@ -99,7 +99,7 @@ class MiniCartEditorViewModel @Inject constructor(
                 getGroupProductTickerOnProductRemoved(product)
             }.onFailure { t ->
                 dismissPartialLoadingState()
-                emitEffect(MiniCartEditorEffect.OnRemoveFailed(t.message))
+                emitEffect(MiniCartEditorEffect.OnRemoveFailed(t))
             }
         }
     }

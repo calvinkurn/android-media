@@ -42,6 +42,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.v2.MiniCartV2Widget
 import com.tokopedia.minicart.v2.MiniCartV2WidgetListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
@@ -196,7 +197,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.effect.collect {
                 when (it) {
-                    is MiniCartEditorEffect.OnRemoveFailed -> showErrorToaster(it.message.orEmpty())
+                    is MiniCartEditorEffect.OnRemoveFailed -> showErrorToaster(it.throwable)
                     is MiniCartEditorEffect.DismissBottomSheet -> dismiss()
                 }
             }
@@ -230,7 +231,8 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         RouteManager.route(context, ApplinkConst.CART)
     }
 
-    private fun showErrorToaster(message: String) {
+    private fun showErrorToaster(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, throwable)
         if (message.isNotBlank()) {
             val anchor = view?.rootView ?: return
             Toaster.build(anchor, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
