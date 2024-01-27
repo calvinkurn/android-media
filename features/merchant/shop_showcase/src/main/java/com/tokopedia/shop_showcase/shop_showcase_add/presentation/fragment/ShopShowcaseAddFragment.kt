@@ -510,6 +510,28 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun observeUpdateShopShowcase() {
         observe(shopShowcaseAddViewModel.listOfResponse) {
             val responseList = it
+
+            // TODO: Need to validate these cases to performs correct UI state
+            // 1. Etalase name change
+            // 2. Etalase name change + Append product list
+            // 3. Etalase name change + Remove product from list
+
+            val updateShowcaseNameResult = responseList.filterIsInstance<Result<UpdateShopShowcaseResponse>>()
+            val appendShowcaseProductResult = responseList.filterIsInstance<Result<AppendShowcaseProductResponse>>()
+            val removeShowcaseProductResult = responseList.filterIsInstance<Result<RemoveShowcaseProductResponse>>()
+
+            if (updateShowcaseNameResult.isNotEmpty()) {
+            } else {
+            }
+
+            if (appendShowcaseProductResult.isNotEmpty()) {
+            } else {
+            }
+
+            if (removeShowcaseProductResult.isNotEmpty()) {
+            } else {
+            }
+
             if (responseList.size > 2) {
                 val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
                 val appendShowcaseProductResult = responseList[1] as Result<AppendShowcaseProductResponse>
