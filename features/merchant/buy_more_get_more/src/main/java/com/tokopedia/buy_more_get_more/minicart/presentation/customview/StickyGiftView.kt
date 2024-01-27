@@ -19,6 +19,10 @@ class StickyGiftView(
     context: Context, attrs: AttributeSet?
 ) : RecyclerView(context, attrs) {
 
+    init {
+        overScrollMode = OVER_SCROLL_NEVER
+    }
+
     private var onItemClicked: (() -> Unit)? = null
 
     private val stickyAdapter by lazy {
