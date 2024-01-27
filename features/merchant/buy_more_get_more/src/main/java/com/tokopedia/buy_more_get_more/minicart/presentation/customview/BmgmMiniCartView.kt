@@ -29,7 +29,6 @@ import com.tokopedia.buy_more_get_more.minicart.domain.model.MiniCartParam
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.BmgmMiniCartAdapter
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.diffutil.MiniCartDiffUtilCallback
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.itemdecoration.BmgmMiniCartItemDecoration
-import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.itemdecoration.GwpMiniCartItemDecoration
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmState
@@ -278,12 +277,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     private fun setupTiersApplied(data: BmgmMiniCartDataUiModel) {
         binding?.rvBmgmMiniCart?.run {
             if (itemDecorationCount == Int.ZERO) {
-                val decoration = if (offerType == OfferType.PROGRESSIVE_DISCOUNT) {
-                    BmgmMiniCartItemDecoration()
-                } else {
-                    GwpMiniCartItemDecoration()
-                }
-                addItemDecoration(decoration)
+                addItemDecoration(BmgmMiniCartItemDecoration(offerType))
             }
 
             if (data.tiers.isNotEmpty()) {
