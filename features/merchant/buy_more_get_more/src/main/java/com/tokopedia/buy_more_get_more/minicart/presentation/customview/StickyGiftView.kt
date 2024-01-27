@@ -17,13 +17,16 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 
 class StickyGiftView(
     context: Context, attrs: AttributeSet?
-) : RecyclerView(context, attrs), BmgmMiniCartAdapter.Listener {
+) : RecyclerView(context, attrs) {
 
-    private val stickyAdapter by lazy { BmgmMiniCartAdapter(this).also(::setupRecyclerView) }
     private var onItemClicked: (() -> Unit)? = null
 
-    override fun setOnItemClickedListener() {
-        onItemClicked?.invoke()
+    private val stickyAdapter by lazy {
+        BmgmMiniCartAdapter(object : BmgmMiniCartAdapter.Listener {
+            override fun setOnItemClickedListener() {
+                onItemClicked?.invoke()
+            }
+        }).also(::setupRecyclerView)
     }
 
     fun setOnItemClickedListener(onItemClicked: () -> Unit) {
