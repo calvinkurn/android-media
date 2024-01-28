@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
@@ -149,7 +150,7 @@ class ShareExViewModel @Inject constructor(
     }
 
     private fun handleFirstLoadBottomSheetModel(
-        bottomSheetModel: ShareExBottomSheetModel,
+        bottomSheetModel: ShareExBottomSheetModel, // args model
         selectedChip: String
     ) {
         val chipPosition = bottomSheetModel.getSelectedChipPosition(selectedChip).orZero()
@@ -162,22 +163,18 @@ class ShareExViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getDefaultBottomSheetModel(throwable: Throwable, defaultUrl: String) {
-        getSharePropertiesUseCase.getDefaultData()
-            .collectLatest {
-                when (it) {
-                    is ShareExResult.Success -> {
-                        val uiResult = it.data.mapError(defaultUrl, throwable)
-                        updateBottomSheetUiState(
-                            title = it.data.title,
-                            uiModelList = uiResult,
-                            bottomSheetModel = it.data,
-                            chipPosition = 0 // default
-                        )
-                    }
-                    else -> Unit
-                }
-            }
+    private fun getDefaultBottomSheetModel(throwable: Throwable, defaultUrl: String) {
+        val defaultShareProperties = getSharePropertiesUseCase.getDefaultData()
+        bottomSheetArgs = bottomSheetArgs?.copy(
+            bottomSheetModel = defaultShareProperties
+        )
+        val uiResult = defaultShareProperties.mapError(defaultUrl, throwable)
+        updateBottomSheetUiState(
+            title = defaultShareProperties.title,
+            uiModelList = uiResult,
+            bottomSheetModel = defaultShareProperties,
+            chipPosition = 0 // default
+        )
     }
 
     private fun updateShareBottomSheetBody(
@@ -288,7 +285,7 @@ class ShareExViewModel @Inject constructor(
                 )
                 updateIntentUiStateWithDefaultUrl(
                     channelItemModel,
-                    bottomSheetArgs?.defaultUrl ?: "",
+                    bottomSheetArgs?.defaultUrl.toEmptyStringIfNull(),
                     throwable
                 )
             }
@@ -308,7 +305,7 @@ class ShareExViewModel @Inject constructor(
             isLoading = false,
             error = throwable,
             isAffiliateError = false,
-            imageType = ShareExImageTypeEnum.DEFAULT
+            imageType = ShareExImageTypeEnum.NO_IMAGE
         )
     }
 
@@ -541,24 +538,23 @@ class ShareExViewModel @Inject constructor(
         messageWithUrl: String,
         imageUri: Uri?
     ): Intent {
-        val intent = Intent().apply {
-            action = channelItemModel.actionIntent
-            type = channelItemModel.mimeType.textType
-            if (channelItemModel.packageName.isNotBlank()) {
-                setPackage(channelItemModel.packageName)
-            }
-            putExtra(Intent.EXTRA_TEXT, messageWithUrl)
-            if (imageUri != null) {
-                when (channelItemModel.mimeType) {
-                    ShareExMimeTypeEnum.IMAGE -> {
-                        setDataAndType(imageUri, channelItemModel.mimeType.textType)
-                        putExtra(Intent.EXTRA_STREAM, imageUri)
-                    }
-                    ShareExMimeTypeEnum.ALL -> putExtra(Intent.EXTRA_STREAM, imageUri)
-                    else -> Unit
+        val intent = Intent()
+        intent.action = channelItemModel.actionIntent
+        intent.type = channelItemModel.mimeType.textType
+        if (channelItemModel.packageName.isNotBlank()) {
+            intent.setPackage(channelItemModel.packageName)
+        }
+        intent.putExtra(Intent.EXTRA_TEXT, messageWithUrl)
+        if (imageUri != null) {
+            when (channelItemModel.mimeType) {
+                ShareExMimeTypeEnum.IMAGE -> {
+                    intent.setDataAndType(imageUri, channelItemModel.mimeType.textType)
+                    intent.putExtra(Intent.EXTRA_STREAM, imageUri)
                 }
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                ShareExMimeTypeEnum.ALL -> intent.putExtra(Intent.EXTRA_STREAM, imageUri)
+                else -> Unit
             }
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         return intent
     }

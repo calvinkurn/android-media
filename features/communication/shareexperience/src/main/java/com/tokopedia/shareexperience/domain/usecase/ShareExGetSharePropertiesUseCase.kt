@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ShareExGetSharePropertiesUseCase {
     suspend fun getData(params: ShareExBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>>
-    fun getDefaultData(): Flow<ShareExResult<ShareExBottomSheetModel>>
+    fun getDefaultData(): ShareExBottomSheetModel
 }
