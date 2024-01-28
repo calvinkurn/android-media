@@ -310,4 +310,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND = "android_main_app_enable_disco_shop_offer_hero_brand";
 
     public static final String ANDROID_ENABLE_AUTO_TOPADS_WD_RECOMMENDATION = "android_enable_auto_topads_wd_recommendation";
+
+    public static final String ANDROID_ENABLE_THANKYOUPAGE_V2 = "android_enable_new_thankyoupage";
 }

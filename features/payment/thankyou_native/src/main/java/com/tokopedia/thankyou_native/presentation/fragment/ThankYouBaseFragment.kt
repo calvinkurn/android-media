@@ -12,6 +12,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -26,6 +28,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -64,7 +67,6 @@ import com.tokopedia.thankyou_native.helper.attachTopAdsHeadlinesView
 import com.tokopedia.thankyou_native.helper.getTopAdsHeadlinesView
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
-import com.tokopedia.thankyou_native.presentation.activity.IS_V2
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.adapter.BottomContentAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
@@ -150,6 +152,7 @@ open class ThankYouBaseFragment :
 
     lateinit var thanksPageData: ThanksPageData
     private var isWidgetOrderingEnabled: Boolean = true
+    private var isV2Enabled: Boolean = true
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -187,6 +190,9 @@ open class ThankYouBaseFragment :
             if (it.containsKey(ARG_IS_WIDGET_ORDERING_ENABLED)) {
                 isWidgetOrderingEnabled = it.getBoolean(ARG_IS_WIDGET_ORDERING_ENABLED)
             }
+            if (it.containsKey(ARG_IS_V2_ENABLED)) {
+                isV2Enabled = it.getBoolean(ARG_IS_V2_ENABLED)
+            }
         }
         activity?.apply {
             digitalRecomTrackingQueue = TrackingQueue(this)
@@ -209,6 +215,7 @@ open class ThankYouBaseFragment :
         } else {
             getBottomContentRecyclerView()?.layoutManager = LinearLayoutManager(context)
             getBottomContentRecyclerView()?.adapter = bottomContentAdapter
+            getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
 
             bindThanksPageDataToUI(thanksPageData)
             addHeader()
@@ -229,7 +236,7 @@ open class ThankYouBaseFragment :
     }
 
     private fun startAnimate() {
-        if (!IS_V2) return
+        if (!isV2Enabled) return
 
         (activity as ThankYouPageActivity).globalNabToolbar.alpha = 0f
         (activity as ThankYouPageActivity).globalNabToolbar.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
@@ -238,7 +245,11 @@ open class ThankYouBaseFragment :
         getBottomContentRecyclerView()?.animate()?.alpha(1f)?.setDuration(UnifyMotion.T5)?.start()
         getBottomContentRecyclerView()?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                (activity as ThankYouPageActivity).lottieSuccess.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F
+                if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == InstantPaymentPage) {
+                    (activity as ThankYouPageActivity).lottieSuccess.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F
+                } else {
+                    (activity as ThankYouPageActivity).header_background.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F
+                }
                 if (recyclerView.computeVerticalScrollOffset() < 5.toPx()) {
                     (activity as ThankYouPageActivity).toolbarBackground.hide()
                 } else {
@@ -253,7 +264,7 @@ open class ThankYouBaseFragment :
     }
 
     private fun addHeader() {
-        if (!IS_V2) return
+        if (!isV2Enabled) return
 
         when(PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             WaitingPaymentPage -> thanksPageDataViewModel.addBottomContentWidget(WaitingHeaderUiModel.create(thanksPageData, context))
@@ -383,7 +394,8 @@ open class ThankYouBaseFragment :
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
                 thanksPageDataViewModel.getThanksPageData(
                     it.getString(ARG_PAYMENT_ID, ""),
-                    it.getString(ARG_MERCHANT, "")
+                    it.getString(ARG_MERCHANT, ""),
+                    isV2Enabled
                 )
             }
         }
@@ -1054,6 +1066,7 @@ open class ThankYouBaseFragment :
 
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         const val ARG_IS_WIDGET_ORDERING_ENABLED = "arg_is_enabled_ordering_enabled"
+        const val ARG_IS_V2_ENABLED = "arg_is_v2_enabled"
 
         /* Constant for toads headlines widget*/
         const val TOP_ADS_SRC = "thank_you_page"
@@ -1073,11 +1086,13 @@ open class ThankYouBaseFragment :
             bundle: Bundle,
             thanksPageData: ThanksPageData,
             isWidgetOrderingEnabled: Boolean,
+            isV2Enabled: Boolean
         ): ThankYouBaseFragment = ThankYouBaseFragment().apply {
             bundle.let {
                 arguments = bundle
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
                 bundle.putBoolean(ARG_IS_WIDGET_ORDERING_ENABLED, isWidgetOrderingEnabled)
+                bundle.putBoolean(ARG_IS_V2_ENABLED, isV2Enabled)
             }
         }
     }

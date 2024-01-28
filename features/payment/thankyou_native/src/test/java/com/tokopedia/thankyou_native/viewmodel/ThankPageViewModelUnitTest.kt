@@ -98,7 +98,7 @@ class ThankPageViewModelUnitTest {
             secondArg<(ThanksPageData) -> Unit>().invoke(thankPageData)
         }
 
-        viewModel.getThanksPageData("", "")
+        viewModel.getThanksPageData("", "", false)
         Assert.assertEquals(
             (viewModel.thanksPageDataResultLiveData.value as Success).data,
             thankPageData
@@ -124,7 +124,7 @@ class ThankPageViewModelUnitTest {
             thirdArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        viewModel.getThanksPageData("", "")
+        viewModel.getThanksPageData("", "", false)
         Assert.assertEquals(
             (viewModel.thanksPageDataResultLiveData.value as Fail).throwable,
             mockThrowable
@@ -138,7 +138,7 @@ class ThankPageViewModelUnitTest {
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getThanksPageData("", "")
+        viewModel.getThanksPageData("", "", false)
         Assert.assertEquals(
             (viewModel.thanksPageDataResultLiveData.value as Fail).throwable,
             mockThrowable

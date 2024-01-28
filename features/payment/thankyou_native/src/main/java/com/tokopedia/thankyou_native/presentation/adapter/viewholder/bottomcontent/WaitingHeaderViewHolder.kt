@@ -35,10 +35,13 @@ class WaitingHeaderViewHolder(
         binding?.headerTimer?.targetDate = cal
         binding?.accountIdLabel?.text = data.accountIdLabel
         binding?.accountId?.text = data.accountId
+        binding?.bankBranch?.shouldShowWithAction(data.bankBranch.isNotEmpty()) {
+            binding?.bankBranch?.text = getString(R.string.thank_bank_branch, data.bankBranch)
+        }
         binding?.accountImage?.setImageUrl(data.accountImage)
         binding?.amountLabel?.text = data.amountLabel
         if (data.highlightLastThreeDigits) {
-            highlightLastThreeDigits(data.amount.toString())
+            highlightLastThreeDigits(CurrencyFormatUtil.convertPriceValueToIdrFormat(data.amount, false))
         } else {
             binding?.amount?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.amount, false)
         }
@@ -75,7 +78,7 @@ class WaitingHeaderViewHolder(
                 )
             )
             val spannable =
-                SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
+                SpannableString(amountStr)
             if (amountStr.length > DeferredPaymentFragment.HIGHLIGHT_DIGIT_COUNT) {
                 val startIndex = spannable.length - DeferredPaymentFragment.HIGHLIGHT_DIGIT_COUNT
                 spannable.setSpan(

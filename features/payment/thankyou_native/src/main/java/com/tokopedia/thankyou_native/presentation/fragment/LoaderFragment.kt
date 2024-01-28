@@ -3,11 +3,14 @@ package com.tokopedia.thankyou_native.presentation.fragment
 import android.animation.Animator
 import android.animation.Animator.AnimatorListener
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +19,9 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.LottieTask
+import com.airbnb.lottie.model.KeyPath
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -35,7 +40,6 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
-import com.tokopedia.thankyou_native.presentation.activity.IS_V2
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
@@ -52,6 +56,8 @@ class LoaderFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     var lottieTask: LottieTask<LottieComposition>? = null
+
+    private var isV2Enabled: Boolean = true
 
     private val thanksPageDataViewModel: ThanksPageDataViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -100,8 +106,12 @@ class LoaderFragment : BaseDaggerFragment() {
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
                 thanksPageDataViewModel.getThanksPageData(
                     it.getString(ARG_PAYMENT_ID, ""),
-                    it.getString(ARG_MERCHANT, "")
+                    it.getString(ARG_MERCHANT, ""),
+                    isV2Enabled
                 )
+            }
+            if (it.containsKey(ThankYouBaseFragment.ARG_IS_V2_ENABLED)) {
+                isV2Enabled = it.getBoolean(ThankYouBaseFragment.ARG_IS_V2_ENABLED)
             }
         }
     }
@@ -156,13 +166,18 @@ class LoaderFragment : BaseDaggerFragment() {
             callback?.onInvalidThankYouPage()
             return
         } else {
-            if (!IS_V2) {
+            if (!isV2Enabled) {
                 callback?.onThankYouPageDataLoaded(thanksPageData)
                 return
             }
+
             if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == InstantPaymentPage) {
                 val lottie = (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess)
                 lottie.visible()
+                context?.let {
+                    lottie.setAnimationTint(arrayOf("white BG"), ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
+                    lottie.setAnimationTint(arrayOf("White Solid 2"), ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
+                }
                 lottie.playAnimation()
                 lottie.addAnimatorListener(object: AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
@@ -170,7 +185,6 @@ class LoaderFragment : BaseDaggerFragment() {
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-//                    (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess).animate().alpha(0f).setDuration(UnifyMotion.T5).start()
                         callback?.onThankYouPageDataLoaded(thanksPageData)
                     }
 
@@ -183,6 +197,8 @@ class LoaderFragment : BaseDaggerFragment() {
                     }
                 })
             } else {
+                callback?.onThankYouPageDataLoaded(thanksPageData)
+
                 val header = (activity as ThankYouPageActivity).findViewById<ImageView>(R.id.header_background)
                 if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == ProcessingPaymentPage) {
                     context?.let {
@@ -190,14 +206,13 @@ class LoaderFragment : BaseDaggerFragment() {
                     }
                 }
                 header.animate().alpha(1f).setDuration(UnifyMotion.T5).setInterpolator(UnifyMotion.EASE_OUT).start()
-                callback?.onThankYouPageDataLoaded(thanksPageData)
             }
         }
     }
 
     private fun showLoaderView() {
-        loaderAnimation.showWithCondition(IS_V2)
-        if (IS_V2) return
+        loaderAnimation.showWithCondition(isV2Enabled)
+        if (isV2Enabled) return
 
         tvWaitForMinute.visible()
         tvProcessingPayment.visible()
@@ -208,7 +223,7 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun showSuccessLottie() {
-        if (!IS_V2) return
+        if (!isV2Enabled) return
 
         lottieTask = prepareSuccessLottieTask()
         addLottieAnimationToView()
@@ -281,5 +296,17 @@ class LoaderFragment : BaseDaggerFragment() {
         }
     }
 
+}
+
+fun LottieAnimationView.setAnimationTint(itemsToTint: Array<String>?, @ColorInt color: Int) {
+    if (itemsToTint == null) {
+        //un-tint
+        addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER) { null }
+        return
+    }
+    addValueCallback(
+        KeyPath(*itemsToTint,"**" ),
+        LottieProperty.COLOR_FILTER
+    ) { PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP) }
 }
 

@@ -30,6 +30,7 @@ data class WaitingHeaderUiModel(
     val shouldHideSecondaryButton: Boolean,
     val secondaryButtonText: String,
     val highlightLastThreeDigits: Boolean,
+    val bankBranch: String,
 ) : Visitable<BottomContentFactory> {
 
     override fun type(typeFactory: BottomContentFactory): Int {
@@ -54,7 +55,7 @@ data class WaitingHeaderUiModel(
             val secondaryButtonText = if (thanksPageData.customDataMessage?.titleOrderButton.isNullOrEmpty()) context?.getString(R.string.thank_see_payment_methods) else thanksPageData.customDataMessage?.titleOrderButton
 
             return WaitingHeaderUiModel(
-                "Bayar Sebelum",
+                "Bayar sebelum",
                 thanksPageData.expireTimeStr,
                 thanksPageData.expireTimeUnix - System.currentTimeMillis() / 1000,
                 accountIdLabel,
@@ -68,7 +69,8 @@ data class WaitingHeaderUiModel(
                 primaryButtonText.orEmpty(),
                 false,
                 secondaryButtonText.orEmpty(),
-                PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType) == BankTransfer
+                PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType) == BankTransfer,
+                thanksPageData.additionalInfo.bankBranch
             )
         }
     }

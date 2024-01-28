@@ -38,7 +38,6 @@ import com.tokopedia.thankyou_native.domain.usecase.ThankYouTopAdsViewModelUseCa
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageMapperUseCase
 import com.tokopedia.thankyou_native.domain.usecase.TopTickerUseCase
-import com.tokopedia.thankyou_native.presentation.activity.IS_V2
 import com.tokopedia.thankyou_native.presentation.adapter.model.BannerWidgetModel
 import com.tokopedia.thankyou_native.presentation.adapter.model.DigitalRecommendationWidgetModel
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
@@ -113,9 +112,9 @@ class ThanksPageDataViewModel @Inject constructor(
             orderWidget(_bottomContentVisitableList.value.orEmpty())
         }
 
-    fun getThanksPageData(paymentId: String, merchant: String) {
+    fun getThanksPageData(paymentId: String, merchant: String, isV2Enabled: Boolean) {
         thanksPageDataUseCase.cancelJobs()
-        if (IS_V2) {
+        if (isV2Enabled) {
             thanksPageDataV2UseCase.getThankPageData(
                 ::onThanksPageDataSuccess,
                 ::onThanksPageDataError,
