@@ -21,8 +21,6 @@ class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-    override fun getApplink(): String = APPLINK
-
     override fun getMockModelConfig(): MockModelConfig = DigitalPDPDataPlanMockConfig()
 
     private fun stubIntent() {
@@ -130,6 +128,8 @@ class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
     }
 
     private fun interactWithFavoriteChip() {
+        clientNumberWidget_clearText()
+
         favoriteChips_clickChip_withText("Danur rrrr")
         favoriteChips_clickChip_withText("08121111112")
     }
@@ -143,8 +143,8 @@ class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
 
         Thread.sleep(4000)
         clientNumberWidget_clickClearIcon()
-        clientNumberWidget_typeNumber("0812")
-        autoComplete_clickItem_withText("08121111112")
+        clientNumberWidget_typeNumber("Jessica")
+        autoComplete_clickItem_withText("Jessica")
         Espresso.closeSoftKeyboard()
     }
 
