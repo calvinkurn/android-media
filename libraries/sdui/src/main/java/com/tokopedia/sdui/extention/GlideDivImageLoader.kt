@@ -33,23 +33,23 @@ class GlideDivImageLoader(
         }
 
         // load result will be handled by RequestListener to get dataSource
-        Glide.with(context).asBitmap().load(imageUri)
+        Glide.with(context.applicationContext).asBitmap().load(imageUri)
             .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
             .listener(BitmapRequestListener(callback, imageUri))
             .into(target)
 
         return LoadReference {
-            Glide.with(context).clear(target)
+            Glide.with(context.applicationContext).clear(target)
         }
     }
 
     override fun loadImage(imageUrl: String, imageView: ImageView): LoadReference {
         val imageUri = Uri.parse(imageUrl)
 
-        Glide.with(context).asBitmap().load(imageUri).into(imageView)
+        Glide.with(context.applicationContext).asBitmap().load(imageUri).into(imageView)
 
         return LoadReference {
-            Glide.with(context).clear(imageView)
+            Glide.with(context.applicationContext).clear(imageView)
         }
     }
 
@@ -62,10 +62,10 @@ class GlideDivImageLoader(
         }
 
         // load result will be handled by RequestListener to get dataSource
-        Glide.with(context).asGif().listener(GifImageRequestListener(callback, imageUri)).load(imageUri).into(target)
+        Glide.with(context.applicationContext).asGif().listener(GifImageRequestListener(callback, imageUri)).load(imageUri).into(target)
 
         return LoadReference {
-            Glide.with(context).clear(target)
+            Glide.with(context.applicationContext).clear(target)
         }
     }
 

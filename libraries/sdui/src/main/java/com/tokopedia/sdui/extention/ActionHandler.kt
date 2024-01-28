@@ -7,6 +7,7 @@ import com.tokopedia.sdui.utils.DivActionUtils
 import com.tokopedia.track.TrackApp
 import com.yandex.div.core.DivActionHandler
 import com.yandex.div.core.DivViewFacade
+import com.yandex.div.json.expressions.ExpressionResolver
 import com.yandex.div2.DivAction
 import com.yandex.div2.DivSightAction
 import org.json.JSONObject
@@ -27,7 +28,8 @@ class ActionHandler(private val contextDivAction: Context?,
         const val KEY_TRACKING_DATA = "tracking_data"
     }
     override fun handleAction(action: DivAction, view: DivViewFacade): Boolean {
-        RouteManager.route(contextDivAction, getApplink(parseClickActionUrl(action.url?.rawValue.toString())))
+        RouteManager.route(contextDivAction, getApplink(
+            parseClickActionUrl(action.url?.evaluate(view.expressionResolver).toString())))
         if(sduiTrackingInterface != null) {
             sduiTrackingInterface.onViewClick(action.payload)
         }else {
