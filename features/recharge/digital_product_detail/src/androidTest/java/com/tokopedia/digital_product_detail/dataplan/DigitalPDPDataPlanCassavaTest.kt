@@ -129,9 +129,10 @@ class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
 
     private fun interactWithFavoriteChip() {
         clientNumberWidget_clearText()
-
-        favoriteChips_clickChip_withText("Danur rrrr")
+        Thread.sleep(1000)
         favoriteChips_clickChip_withText("08121111112")
+        Thread.sleep(1000)
+        favoriteChips_clickChip_withText("Danur rrrr")
     }
 
     private fun interactWithAutoComplete() {
