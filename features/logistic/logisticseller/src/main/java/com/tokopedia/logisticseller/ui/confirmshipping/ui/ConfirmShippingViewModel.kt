@@ -19,18 +19,19 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-11-15.
  */
-class ConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                                   private val somGetConfirmShippingResultUseCase: GetConfirmShippingResultUseCase,
-                                                   private val somGetCourierListUseCase: GetCourierListUseCase,
-                                                   private val somChangeCourierUseCase: ChangeCourierUseCase
+class ConfirmShippingViewModel @Inject constructor(
+    dispatcher: CoroutineDispatchers,
+    private val somGetConfirmShippingResultUseCase: GetConfirmShippingResultUseCase,
+    private val somGetCourierListUseCase: GetCourierListUseCase,
+    private val somChangeCourierUseCase: ChangeCourierUseCase
 ) : BaseViewModel(dispatcher.io) {
 
     private val _confirmShippingResult = MutableLiveData<Result<SomConfirmShipping.Data.MpLogisticConfirmShipping>>()
     val confirmShippingResult: LiveData<Result<SomConfirmShipping.Data.MpLogisticConfirmShipping>>
         get() = _confirmShippingResult
 
-    private val _courierListResult = MutableLiveData<Result<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>>()
-    val courierListResult: LiveData<Result<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>>
+    private val _courierListResult = MutableLiveData<Result<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment>>()
+    val courierListResult: LiveData<Result<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment>>
         get() = _courierListResult
 
     private val _changeCourierResult = MutableLiveData<Result<SomChangeCourier.Data>>()
@@ -41,23 +42,23 @@ class ConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatch
         launchCatchError(block = {
             _confirmShippingResult.postValue(Success(somGetConfirmShippingResultUseCase.execute(orderId, shippingRef)))
         }, onError = {
-            _confirmShippingResult.postValue(Fail(it))
-        })
+                _confirmShippingResult.postValue(Fail(it))
+            })
     }
 
-    fun getCourierList() {
+    fun getCourierList(deliveryId: String) {
         launchCatchError(block = {
-            _courierListResult.postValue(Success(somGetCourierListUseCase.execute()))
+            _courierListResult.postValue(Success(somGetCourierListUseCase.execute(deliveryId)))
         }, onError = {
-            _courierListResult.postValue(Fail(it))
-        })
+                _courierListResult.postValue(Fail(it))
+            })
     }
 
     fun changeCourier(orderId: String, shippingRef: String, agencyId: Long, spId: Long) {
         launchCatchError(block = {
             _changeCourierResult.postValue(Success(somChangeCourierUseCase.execute(orderId, shippingRef, agencyId, spId)))
         }, onError = {
-            _changeCourierResult.postValue(Fail(it))
-        })
+                _changeCourierResult.postValue(Fail(it))
+            })
     }
 }
