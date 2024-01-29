@@ -14,6 +14,4 @@ interface HomeRecommendationTypeFactory {
     fun type(dataModel: HomeRecommendationPlayWidgetUiModel): Int
     fun type(dataModel: HomeRecommendationBannerTopAdsUiModel): Int
     fun type(dataModel: HomeRecommendationButtonRetryUiModel): Int
-
-    fun type(dataModel: RecomEntityCardUiModel): Int
 }

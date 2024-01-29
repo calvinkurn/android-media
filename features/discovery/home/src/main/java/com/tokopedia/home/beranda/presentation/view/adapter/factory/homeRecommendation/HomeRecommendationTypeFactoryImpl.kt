@@ -9,13 +9,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.getLayout
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
+import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.foryou.recomcard.RecomEntityCardViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.recomcard.RecomEntityModel
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 
 class HomeRecommendationTypeFactoryImpl(
     private val topAdsBannerClickListener: TopAdsBannerClickListener,
     private val homeRecommendationListener: HomeRecommendationListener,
     private val homeRecommendationVideoWidgetManager: HomeRecommendationVideoWidgetManager
-) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
+) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory, ForYouRecommendationTypeFactory {
     override fun type(dataModel: HomeRecommendationItemDataModel): Int {
         return dataModel.getLayout()
     }
@@ -60,7 +63,7 @@ class HomeRecommendationTypeFactoryImpl(
         return HomeRecommendationButtonRetryViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: RecomEntityCardUiModel): Int {
+    override fun type(model: RecomEntityModel): Int {
         return RecomEntityCardViewHolder.LAYOUT
     }
 
@@ -71,10 +74,7 @@ class HomeRecommendationTypeFactoryImpl(
                 homeRecommendationListener
             )
 
-            RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(
-                parent,
-                homeRecommendationListener
-            )
+            RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(parent, homeRecommendationListener)
 
             HomeRecommendationItemListViewHolder.LAYOUT -> HomeRecommendationItemListViewHolder(
                 parent,

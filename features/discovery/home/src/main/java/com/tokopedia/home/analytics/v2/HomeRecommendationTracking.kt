@@ -21,9 +21,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
+import com.tokopedia.recommendation_widget_common.widget.foryou.recomcard.RecomEntityModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -302,7 +302,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun sendClickEntityCardTracking(
-        recomEntityCardUiModel: RecomEntityCardUiModel,
+        model: RecomEntityModel,
         position: Int,
         userId: String
     ) {
@@ -312,7 +312,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             putString(Category.KEY, Category.HOMEPAGE)
             putString(
                 Label.KEY,
-                "${recomEntityCardUiModel.layoutCard} - ${recomEntityCardUiModel.layoutItem} - ${recomEntityCardUiModel.title}"
+                "${model.layoutCard} - ${model.layoutItem} - ${model.title}"
             )
             putString(
                 TrackerId.KEY,
@@ -333,16 +333,16 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                     Bundle().also {
                         it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
                         it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
-                        it.putString(Promotion.ITEM_ID, recomEntityCardUiModel.id)
+                        it.putString(Promotion.ITEM_ID, model.id)
                         it.putString(
                             Promotion.ITEM_NAME,
                             ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
                                 creativeSlot,
                                 RECOMMENDATION_CARD_FOR_YOU,
-                                recomEntityCardUiModel.categoryId,
-                                recomEntityCardUiModel.layoutCard,
-                                recomEntityCardUiModel.layoutItem,
-                                recomEntityCardUiModel.title
+                                model.categoryId,
+                                model.layoutCard,
+                                model.layoutItem,
+                                model.title
                             )
                         )
                     }
@@ -485,7 +485,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun getImpressEntityCardTracking(
-        recomEntityCardUiModel: RecomEntityCardUiModel,
+        model: RecomEntityModel,
         position: Int,
         userId: String
     ): HashMap<String, Any> {
@@ -493,10 +493,10 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         val itemName = ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
             creativeSlot,
             RECOMMENDATION_CARD_FOR_YOU,
-            recomEntityCardUiModel.categoryId,
-            recomEntityCardUiModel.layoutCard,
-            recomEntityCardUiModel.layoutItem,
-            recomEntityCardUiModel.title
+            model.categoryId,
+            model.layoutCard,
+            model.layoutItem,
+            model.title
         )
 
         return DataLayer.mapOf(
@@ -507,7 +507,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             Category.KEY,
             Category.HOMEPAGE,
             Label.KEY,
-            "${recomEntityCardUiModel.layoutCard} - ${recomEntityCardUiModel.layoutItem} - ${recomEntityCardUiModel.title}",
+            "${model.layoutCard} - ${model.layoutItem} - ${model.title}",
             BusinessUnit.KEY,
             BusinessUnit.DEFAULT,
             CurrentSite.KEY,
@@ -521,7 +521,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                         mapOf(
                             Promotion.CREATIVE_NAME to CustomAction.FOR_YOU_CREATIVE_NAME,
                             Promotion.CREATIVE_SLOT to creativeSlot,
-                            Items.ITEM_ID to recomEntityCardUiModel.id,
+                            Items.ITEM_ID to model.id,
                             Items.ITEM_NAME to itemName
                         )
                     )
