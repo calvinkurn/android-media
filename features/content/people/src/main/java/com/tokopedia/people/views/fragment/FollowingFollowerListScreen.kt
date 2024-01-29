@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -43,8 +40,9 @@ internal fun FollowingFollowerListScreen(
     profileName: String,
     totalFollowersFmt: String,
     totalFollowingsFmt: String,
+    onBackClicked: () -> Unit,
     followListViewModel: (FollowListType) -> FollowListViewModel,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(0)
     val coroutineScope = rememberCoroutineScope()
@@ -53,7 +51,7 @@ internal fun FollowingFollowerListScreen(
         modifier.background(NestTheme.colors.NN._0)
     ) {
         NestHeader(
-            type = NestHeaderType.SingleLine(title = profileName),
+            type = NestHeaderType.SingleLine(title = profileName, onBackClicked = onBackClicked),
             modifier = Modifier.fillMaxWidth()
         )
         NestTabs(
@@ -67,7 +65,7 @@ internal fun FollowingFollowerListScreen(
                         counter = -1,
                         dotted = false,
                         showNewLabel = false,
-                        enabled = true,
+                        enabled = true
                     ),
                     TabConfig(
                         iconConfig = TabConfig.IconConfig.NoIcon,
@@ -75,7 +73,7 @@ internal fun FollowingFollowerListScreen(
                         counter = -1,
                         dotted = false,
                         showNewLabel = false,
-                        enabled = true,
+                        enabled = true
                     )
                 ).toImmutableList(),
                 onTabClicked = {
@@ -108,12 +106,11 @@ internal fun FollowingFollowerListScreen(
             }
         }
     }
-
 }
 
 @Composable
 internal fun FollowListScreen(
-    viewModel: FollowListViewModel,
+    viewModel: FollowListViewModel
 ) {
     val context = LocalContext.current
 

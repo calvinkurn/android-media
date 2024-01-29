@@ -103,6 +103,10 @@ internal class FollowerFollowingListingFragment @Inject constructor(
         }
     }
 
+    private fun onNavigationBackClicked() {
+        activity?.onBackPressed()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -121,6 +125,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                         profileName = uiState.profileName,
                         totalFollowersFmt = uiState.totalFollowersFmt,
                         totalFollowingsFmt = uiState.totalFollowingsFmt,
+                        onBackClicked = ::onNavigationBackClicked,
                         followListViewModel = { type ->
                             ViewModelProvider(
                                 { followListViewModelStoreProvider.getOrCreateViewModelStore(type) },
@@ -134,7 +139,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                                 }
                             )[FollowListViewModel::class.java]
                         },
-                        Modifier.fillMaxSize(),
+                        Modifier.fillMaxSize()
                     )
                 }
             }
