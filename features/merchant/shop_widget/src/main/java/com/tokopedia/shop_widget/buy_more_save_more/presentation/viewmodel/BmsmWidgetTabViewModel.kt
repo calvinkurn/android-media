@@ -1,6 +1,5 @@
 package com.tokopedia.shop_widget.buy_more_save_more.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -107,6 +106,11 @@ class BmsmWidgetTabViewModel @Inject constructor(
         }
 
         if (!currentState.isNeedToRefreshOfferingData) {
+            _uiState.update {
+                it.copy(
+                    isShowLoading = false
+                )
+            }
             _productList.postValue(
                 defaultOfferingData.toProductListUiModel().take(BmsmWidgetTabFragment.PAGE_SIZE)
             )
