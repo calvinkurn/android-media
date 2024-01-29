@@ -126,6 +126,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                         totalFollowersFmt = uiState.totalFollowersFmt,
                         totalFollowingsFmt = uiState.totalFollowingsFmt,
                         onBackClicked = ::onNavigationBackClicked,
+                        initialSelectedTabType = if (selectedTab == EXTRA_FOLLOWING) FollowListType.Following else FollowListType.Follower,
                         followListViewModel = { type ->
                             ViewModelProvider(
                                 { followListViewModelStoreProvider.getOrCreateViewModelStore(type) },
@@ -139,7 +140,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                                 }
                             )[FollowListViewModel::class.java]
                         },
-                        Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             }

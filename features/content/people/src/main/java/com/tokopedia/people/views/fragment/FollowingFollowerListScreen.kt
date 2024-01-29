@@ -42,9 +42,12 @@ internal fun FollowingFollowerListScreen(
     totalFollowingsFmt: String,
     onBackClicked: () -> Unit,
     followListViewModel: (FollowListType) -> FollowListViewModel,
+    initialSelectedTabType: FollowListType,
     modifier: Modifier = Modifier
 ) {
-    val pagerState = rememberPagerState(0)
+    val pagerState = rememberPagerState(
+        if (initialSelectedTabType == FollowListType.Follower) 0 else 1
+    )
     val coroutineScope = rememberCoroutineScope()
 
     Column(
