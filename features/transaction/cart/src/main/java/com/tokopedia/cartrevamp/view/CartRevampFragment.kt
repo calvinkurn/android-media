@@ -79,7 +79,6 @@ import com.tokopedia.cartrevamp.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
 import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.cartrevamp.view.decorator.CartItemDecoration
-import com.tokopedia.cartrevamp.view.di.DaggerCartRevampComponent
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.BmGmTickerRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
