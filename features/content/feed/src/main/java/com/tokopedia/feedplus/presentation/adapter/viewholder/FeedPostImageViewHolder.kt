@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.util.extension.changeConstraint
 import kotlinx.coroutines.*
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -139,11 +140,11 @@ class FeedPostImageViewHolder(
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
                 binding.root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
             indicatorFeedContent.inactiveColor = ContextCompat.getColor(
                 binding.root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
+                unifyprinciplesR.color.Unify_Static_White_44
             )
 
             rvFeedPostImageContent.layoutManager = layoutManager
@@ -230,7 +231,7 @@ class FeedPostImageViewHolder(
         }
 
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
-        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -412,10 +413,11 @@ class FeedPostImageViewHolder(
                     if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
                         setupProductLabel(
                             listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
-                            element.totalProducts
+                            element.totalProducts,
+                            element.id
                         )
                     } else {
-                        setupProductLabel(element.products, element.totalProducts)
+                        setupProductLabel(element.products, element.totalProducts, element.id)
                     }
                 } else {
                     binding.productTagView.gone()
@@ -507,7 +509,7 @@ class FeedPostImageViewHolder(
             } else {
                 model.products
             }
-        setupProductLabel(products, model.totalProducts)
+        setupProductLabel(products, model.totalProducts, model.id)
         productButtonView.bindData(
             postId = model.id,
             author = model.author,
@@ -622,9 +624,7 @@ class FeedPostImageViewHolder(
                 }
             }
         }
-
-        //TODO: check
-        //productTagView.showIfPossible()
+        binding.productTagView.rootView.show()
         productButtonView.showIfPossible()
     }
 
@@ -692,8 +692,8 @@ class FeedPostImageViewHolder(
         }
     }
 
-    private fun setupProductLabel(products: List<FeedCardProductModel>, totalProducts: Int) {
-//        binding.productTagView.setContent { FeedProductLabel(products = products, totalProducts = totalProducts) }
+    private fun setupProductLabel(products: List<FeedCardProductModel>, totalProducts: Int, id: String) {
+        binding.productTagView.setContent { ProductTagItems(products = products, totalProducts = totalProducts, key = id) }
     }
 
     override fun onViewRecycled() {

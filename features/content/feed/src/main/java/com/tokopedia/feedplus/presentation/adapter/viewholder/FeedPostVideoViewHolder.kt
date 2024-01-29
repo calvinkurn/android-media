@@ -78,7 +78,6 @@ class FeedPostVideoViewHolder(
         listener,
         captionViewListener
     )
-//    private val productTagView = FeedProductTagView(binding.productTagView, listener)
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
@@ -207,7 +206,7 @@ class FeedPostVideoViewHolder(
             postGestureDetector.onTouchEvent(motionEvent)
         }
 
-        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -377,10 +376,6 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindProductTag(data: FeedCardVideoContentModel) {
-        binding.productTagView.setContent {
-            ProductTagItems(products = data.products, totalProducts = data.totalProducts, key = data.id)
-        }
-
         productButtonView.bindData(
             postId = data.id,
             author = data.author,
@@ -545,6 +540,7 @@ class FeedPostVideoViewHolder(
         listener.onWatchPostVideo(element, trackerModel)
         onScrolling(false)
         productButtonView.playProductIconAnimation()
+        binding.productTagView.setContent { ProductTagItems(products = element.products, totalProducts = element.totalProducts, key = element.id) }
     }
 
     private fun onNotSelected() {

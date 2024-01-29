@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import android.content.Context
+import android.util.AttributeSet
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -83,7 +86,8 @@ fun FeedProductHighlight(
                         end.linkTo(btnClose.start, 4.dp)
                     })
                 //Product Original Price
-                val originalPrice = if (product.isDiscount) product.priceOriginalFmt else product.priceFmt
+                val originalPrice =
+                    if (product.isDiscount) product.priceOriginalFmt else product.priceFmt
                 NestTypography(
                     text = originalPrice,
                     textStyle = NestTheme.typography.heading3.copy(
@@ -146,14 +150,15 @@ fun FeedProductHighlight(
 fun ProductTagItems(
     products: List<FeedCardProductModel>,
     totalProducts: Int,
-    key: String
+    key: String,
 ) {
+    var needToBeShown by remember { mutableStateOf(false) }
+
     Column {
-        var needToBeShown by remember { mutableStateOf(false) }
         LaunchedEffect(key1 = key, block = {
             delay(5000L)
             needToBeShown = true
-        }) //TODO: need to re-launch every recycled
+        })
 
         FeedProductLabel(
             products = products,
