@@ -13,7 +13,6 @@ import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
@@ -42,7 +41,6 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.common.topupbills.R as commontopupbillsR
 
 /**
@@ -161,6 +159,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
             context,
             R.layout.item_recharge_client_number_auto_complete,
             mutableListOf(),
+            mutableListOf(),
             context.getString(emptyStateUnitRes),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
@@ -183,8 +182,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
                 chipType = ChipsUnify.TYPE_ALTERNATE
                 chipImageResource = getIconUnifyDrawable(
                     context,
-                    IconUnify.VIEW_LIST,
-                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
+                    IconUnify.VIEW_LIST
                 )
                 setOnClickListener {
                     mFilterChipListener?.onClickIcon(true)
@@ -232,10 +230,16 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         setSortFilterChip(favoriteChips)
     }
 
-    fun setAutoCompleteList(suggestions: List<RechargeClientNumberAutoCompleteModel>) {
+    fun setAutoCompleteList(
+        favoriteSuggestions: List<RechargeClientNumberAutoCompleteModel>,
+        contactSuggestions: List<RechargeClientNumberAutoCompleteModel>
+    ) {
         autoCompleteAdapter?.updateItems(
-            suggestions.map {
-                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
+            favoriteSuggestions.map {
+                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber, isFavoriteNumber = true)
+            }.toMutableList(),
+            contactSuggestions.map {
+                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber, isFavoriteNumber = false)
             }.toMutableList()
         )
     }
