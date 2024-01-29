@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.GqlParam
  * Created By : Jonathan Darwin on December 14, 2023
  */
 data class CheckProductCustomVideoResponse(
-    @SerializedName("broadcasterCheckProductCustomVideo")
+    @SerializedName("broadcasterCheckPDPCustomVideo")
     val data: Data = Data()
 ) {
 
