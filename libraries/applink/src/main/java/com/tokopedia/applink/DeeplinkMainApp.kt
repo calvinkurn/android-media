@@ -612,7 +612,7 @@ object DeeplinkMainApp {
             DLP.startsWith("see-all-category") { _: String ->
                 ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
             },
-            DLP.startsWith("shopping-list") {  _: String ->
+            DLP.startsWith("list-belanja") {  _: String ->
                 ApplinkConstInternalTokopediaNow.SHOPPING_LIST
             }
         ),

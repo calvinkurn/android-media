@@ -122,11 +122,6 @@ internal class NavToolbarIconAdapter(
         notifyItemChanged(position)
     }
 
-    fun removeIcon(position: Int) {
-        iconConfig.iconList.removeAt(position)
-        notifyItemChanged(position)
-    }
-
     fun setIconCounter(iconId: Int, counter: Int) {
         val selectedIcon = this.iconConfig.iconList.find { it.id == iconId }
         val selectedIconPosition = this.iconConfig.iconList.indexOf(selectedIcon)

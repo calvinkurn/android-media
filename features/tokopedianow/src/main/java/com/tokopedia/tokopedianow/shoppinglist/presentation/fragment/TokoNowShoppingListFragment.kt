@@ -20,22 +20,16 @@ import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefres
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
-import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
-import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowShoppingListBinding
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListContextModule
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
@@ -43,13 +37,6 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShop
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapterTypeFactory
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
-import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
-import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.LinkProperties
-import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
@@ -59,9 +46,7 @@ import com.tokopedia.searchbar.R as searchbarR
 class TokoNowShoppingListFragment :
     Fragment(),
     TokoNowView,
-    TokoNowChooseAddressWidgetListener,
-    ScreenShotListener,
-    ShareBottomsheetListener
+    TokoNowChooseAddressWidgetListener
 {
     companion object {
         private const val PAGE_NAME = "Toko Now Shopping List"
@@ -89,15 +74,8 @@ class TokoNowShoppingListFragment :
         )
     }
 
-    private val userId: String
-        get() = viewModel.getUserId()
-
     private var binding
         by autoClearedNullable<FragmentTokopedianowShoppingListBinding>()
-
-    private var shareTokoNow: ShareTokonow? = null
-    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var screenshotDetector: ScreenshotDetector? = null
 
     /**
      * -- internal variable section --
@@ -112,11 +90,6 @@ class TokoNowShoppingListFragment :
     /**
      * -- override function section --
      */
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        shareTokoNow = createShareTokoNow()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTokopedianowShoppingListBinding.inflate(inflater, container, false)
@@ -141,44 +114,6 @@ class TokoNowShoppingListFragment :
 
         loadFirstPage()
     }
-
-    override fun onResume() {
-        super.onResume()
-        screenshotDetector?.start()
-    }
-
-    override fun onStop() {
-        SharingUtil.clearState(screenshotDetector)
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        SharingUtil.clearState(screenshotDetector)
-        super.onDestroy()
-    }
-
-    override fun screenShotTaken(path: String) {
-        updateShareHomeData(
-            isScreenShot = true,
-            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title_ss).orEmpty()
-        )
-
-        showUniversalShareBottomSheet(shareTokoNow, path)
-    }
-
-    override fun onShareOptionClicked(shareModel: ShareModel) {
-        TokoNowUniversalShareUtil.shareOptionRequest(
-            shareModel = shareModel,
-            shareTokoNowData = shareTokoNow,
-            activity = activity,
-            view = view,
-            onSuccess = {
-                universalShareBottomSheet?.dismiss()
-            }
-        )
-    }
-
-    override fun onCloseOptionClicked() { /* do nothing */ }
 
     /**
      * -- private function section --
@@ -213,11 +148,11 @@ class TokoNowShoppingListFragment :
         context?.apply {
             viewModel.headerModel = HeaderModel(
                 pageTitle = getString(R.string.tokopedianow_shopping_list_page_title),
-                pageTitleColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_NN0),
+                pageTitleColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Static_White),
                 ctaText = getString(R.string.tokopedianow_shopping_list_repurchase),
-                ctaTextColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_NN0),
+                ctaTextColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Static_White),
                 ctaChevronIsShown = true,
-                ctaChevronColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_NN0),
+                ctaChevronColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Static_White),
                 backgroundGradientColor = TokoNowHeaderUiModel.GradientColor(
                     startColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_GN500),
                     endColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_GN400)
@@ -240,26 +175,10 @@ class TokoNowShoppingListFragment :
             setToolbarPageName(PAGE_NAME)
             setIcon(
                 IconBuilder()
-                    .addShare()
                     .addCart()
                     .addNavGlobal()
             )
             bringToFront()
-        }
-    }
-
-    private fun shareClicked(shareTokoNow: ShareTokonow?) {
-        if (SharingUtil.isCustomSharingEnabled(context)) {
-            showUniversalShareBottomSheet(
-                shareTokoNow = shareTokoNow
-            )
-        } else {
-            LinkerManager.getInstance().executeShareRequest(
-                TokoNowUniversalShareUtil.shareRequest(
-                    context = context,
-                    shareTokonow = shareTokoNow
-                )
-            )
         }
     }
 
@@ -285,48 +204,17 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun createShareTokoNow(): ShareTokonow {
-        return ShareTokonow(
-            thumbNailImage = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
-            ogImageUrl = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
-            linkerType = LinkerData.NOW_TYPE
-        )
-    }
+    private fun IconBuilder.addNavGlobal(): IconBuilder = addIcon(
+        iconId = IconList.ID_NAV_GLOBAL,
+        disableRouteManager = false,
+        disableDefaultGtmTracker = false
+    ) { /* nothing to do */ }
 
-    private fun showUniversalShareBottomSheet(shareTokoNow: ShareTokonow?, path: String? = null) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            setFeatureFlagRemoteConfigKey()
-            enableDefaultShareIntent()
-            path?.let {
-                setImageOnlySharingOption(true)
-                setScreenShotImagePath(path)
-            }
-            init(this@TokoNowShoppingListFragment)
-            setUtmCampaignData(
-                pageName = "Tokonow",
-                userId = userId.getOrDefaultZeroString(),
-                pageIdConstituents = shareTokoNow?.pageIdConstituents.orEmpty(),
-                feature = "share"
-            )
-            setMetaData(
-                tnTitle = shareTokoNow?.thumbNailTitle.orEmpty(),
-                tnImage = shareTokoNow?.thumbNailImage.orEmpty()
-            )
-
-            // set the Image Url of the Image that represents page
-            setLinkProperties(
-                LinkProperties(
-                    ogImageUrl = shareTokoNow?.ogImageUrl.orEmpty()
-                )
-            )
-        }
-        universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
-    }
-
-    private fun updateShareHomeData(isScreenShot: Boolean, thumbNailTitle: String) {
-        shareTokoNow?.isScreenShot = isScreenShot
-        shareTokoNow?.thumbNailTitle = thumbNailTitle
-    }
+    private fun IconBuilder.addCart(): IconBuilder = addIcon(
+        iconId = IconList.ID_CART,
+        disableRouteManager = false,
+        disableDefaultGtmTracker = true
+    ) { /* nothing to do */ }
 
     /**
      * -- internal function section --
@@ -335,30 +223,6 @@ class TokoNowShoppingListFragment :
     internal fun switchToDarkStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToDarkToolbar()
 
     internal fun switchToLightStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToLightToolbar()
-
-    internal fun IconBuilder.addNavGlobal(): IconBuilder = addIcon(
-        iconId = IconList.ID_NAV_GLOBAL,
-        disableRouteManager = false,
-        disableDefaultGtmTracker = false
-    ) { /* nothing to do */ }
-
-    internal fun IconBuilder.addCart(): IconBuilder = addIcon(
-        iconId = IconList.ID_CART,
-        disableRouteManager = false,
-        disableDefaultGtmTracker = true
-    ) { /* nothing to do */ }
-
-    internal fun IconBuilder.addShare() = addIcon(
-        iconId = IconList.ID_SHARE,
-        disableRouteManager = false,
-        disableDefaultGtmTracker = false
-    ) {
-        updateShareHomeData(
-            isScreenShot = false,
-            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title).orEmpty()
-        )
-        shareClicked(shareTokoNow)
-    }
 
     internal fun NavToolbar.setBackButtonColor(color: Int) {
         context?.let {
@@ -397,7 +261,6 @@ class TokoNowShoppingListFragment :
                     navToolbar.setBackButtonColor(if (navToolbar.context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)
                     switchToLightStatusBar()
                     navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
-                    navToolbar.removeShareIconView()
                 }
 
                 override fun onYposChanged(yOffset: Int) { /* nothing to do */ }
@@ -412,12 +275,6 @@ class TokoNowShoppingListFragment :
                     }
                     navToolbar.setToolbarTitle(String.EMPTY)
                     navToolbar.hideShadow()
-                    navToolbar.setIcon(
-                        IconBuilder()
-                            .addShare()
-                            .addCart()
-                            .addNavGlobal()
-                    )
                 }
             }
         )

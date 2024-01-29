@@ -274,7 +274,7 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_HOME, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_SEARCH, DF_TOKOPEDIA_NOW)
         assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE, DF_TOKOPEDIA_NOW)
-//        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.SHOPPING_LIST, DF_TOKOPEDIA_NOW)
+        assertEqualDeepLinkMA(ApplinkConst.TokopediaNow.SHOPPING_LIST, DF_TOKOPEDIA_NOW)
     }
 
     @Test
