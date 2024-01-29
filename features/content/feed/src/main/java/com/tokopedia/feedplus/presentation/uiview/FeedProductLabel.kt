@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.uiview
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,7 @@ fun FeedProductLabel(
     products: List<FeedCardProductModel>,
     totalProducts: Int,
     isVisible: Boolean,
+    onClick: () -> Unit
 ) {
     val ctx = LocalContext.current
     val wording: String = when {
@@ -61,6 +63,8 @@ fun FeedProductLabel(
     AnimatedVisibility(visible = isVisible) {
         NestTheme {
             Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .wrapContentWidth()
                     .height(28.dp)
@@ -69,9 +73,8 @@ fun FeedProductLabel(
                     .background(
                         colorResource(id = R.color.feed_dms_tag_product_background),
                         RoundedCornerShape(4.dp)
-                    ), //Add listener
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+                    )
+                    .clickable { onClick() },
             ) {
                 NestIcon(
                     iconId = IconUnify.SHOPPING_BAG,

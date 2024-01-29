@@ -137,4 +137,6 @@ interface FeedListener {
     )
 
     fun onCommentClick(trackerModel: FeedTrackerDataModel?, contentId: String, isPlayContent: Boolean, rowNumber: Int)
+
+    fun addToCartHighlight(product: FeedCardProductModel, campaign: FeedCardCampaignModel, position: Int)
 }

@@ -2209,6 +2209,24 @@ class FeedFragment :
         feedAnalytics = feedFactory.create(userSession, feedEntrySource)
     }
 
+    override fun addToCartHighlight(product: FeedCardProductModel, campaign: FeedCardCampaignModel, position: Int) {
+        val taggedProduct = MapperProductsToXProducts.transform(product, campaign, ContentTaggedProductUiModel.SourceType.Organic)
+
+        if (!checkForFollowerBottomSheet(
+                currentTrackerData?.activityId ?: "",
+                position,
+                when (taggedProduct.campaign.status) {
+                    is ContentTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is ContentTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    else -> FeedCardCampaignModel.NO
+                },
+                taggedProduct.campaign.isExclusiveForMember
+            ) {}
+        ) {
+            checkAddToCartAction(taggedProduct)
+        }
+    }
+
     companion object {
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bs"
 

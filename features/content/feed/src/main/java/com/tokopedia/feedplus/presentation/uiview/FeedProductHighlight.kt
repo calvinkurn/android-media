@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.presentation.uiview
 
-import android.content.Context
-import android.util.AttributeSet
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -20,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -47,7 +44,8 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 fun FeedProductHighlight(
     product: FeedCardProductModel,
     isVisible: Boolean,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onAtcClick: (FeedCardProductModel) -> Unit
 ) {
     NestTheme {
         AnimatedVisibility(
@@ -60,6 +58,9 @@ fun FeedProductHighlight(
                     .fillMaxWidth()
                     .background(color = Color(0xB22E3137), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp)
+                    .clickable {
+                        onAtcClick(product)
+                    }
             ) {
                 val (image, title, ogPrice, discountedPrice, btnAtc, btnClose) = createRefs()
                 //Product Image
@@ -151,6 +152,8 @@ fun ProductTagItems(
     products: List<FeedCardProductModel>,
     totalProducts: Int,
     key: String,
+    onAtcClick: (FeedCardProductModel) -> Unit,
+    onProductLabelClick: () -> Unit,
 ) {
     var needToBeShown by remember { mutableStateOf(false) }
 
@@ -163,11 +166,16 @@ fun ProductTagItems(
         FeedProductLabel(
             products = products,
             totalProducts = totalProducts,
-            isVisible = !needToBeShown
+            isVisible = !needToBeShown,
+            onClick = onProductLabelClick
         )
         val highlightedProduct = products.firstOrNull() ?: return
-        FeedProductHighlight(product = highlightedProduct, isVisible = needToBeShown) {
-            needToBeShown = false
-        }
+        FeedProductHighlight(
+            product = highlightedProduct,
+            isVisible = needToBeShown,
+            onClose = { needToBeShown = false },
+            onAtcClick = {
+                onAtcClick
+            })
     }
 }

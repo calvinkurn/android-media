@@ -540,7 +540,22 @@ class FeedPostVideoViewHolder(
         listener.onWatchPostVideo(element, trackerModel)
         onScrolling(false)
         productButtonView.playProductIconAnimation()
-        binding.productTagView.setContent { ProductTagItems(products = element.products, totalProducts = element.totalProducts, key = element.id) }
+        binding.productTagView.setContent { ProductTagItems(products = element.products, totalProducts = element.totalProducts, key = element.id, onAtcClick = {
+            listener.addToCartHighlight(it, element.campaign ,absoluteAdapterPosition)
+        }, onProductLabelClick = {
+            listener.onProductTagViewClicked(
+                element.id,
+                element.author,
+                element.type,
+                element.followers.isFollowed,
+                element.campaign,
+                element.hasVoucher,
+                element.products,
+                element.totalProducts,
+                trackerModel,
+                absoluteAdapterPosition
+            )
+        })}
     }
 
     private fun onNotSelected() {
