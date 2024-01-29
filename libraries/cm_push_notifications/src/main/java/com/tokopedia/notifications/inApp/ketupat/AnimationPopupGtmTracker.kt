@@ -53,7 +53,7 @@ class AnimationPopupGtmTracker {
         )
     }
 
-    fun sendCtaButtonImpressionEvent(scratchCardId: String, catalogSlug: String, catalogId: String) {
+    fun sendCtaButtonImpressionEvent(scratchCardId: String, catalogSlug: List<String>, catalogId: List<String>) {
         eventLabel = "{direct_reward_id: $scratchCardId, catalog_slug:$catalogSlug, catalog_id:$catalogId}"
         createMapAndSendEvent(
             VIEW_LG_IRIS,
@@ -63,7 +63,7 @@ class AnimationPopupGtmTracker {
         )
     }
 
-    fun sendCtaButtonClickEvent(scratchCardId: String, catalogSlug: String, catalogId: String) {
+    fun sendCtaButtonClickEvent(scratchCardId: String, catalogSlug: List<String>, catalogId: List<String>) {
         eventLabel = "{direct_reward_id: $scratchCardId, catalog_slug:$catalogSlug, catalog_id:$catalogId}"
         createMapAndSendEvent(
             CLICK_LG_IRIS,
