@@ -1,6 +1,6 @@
 @file:SuppressLint("EntityFieldAnnotation")
 
-package com.tokopedia.recommendation_widget_common.widget.foryou.recomcard
+package com.tokopedia.recommendation_widget_common.widget.foryou.entity
 
 import android.annotation.SuppressLint
 import android.content.Context

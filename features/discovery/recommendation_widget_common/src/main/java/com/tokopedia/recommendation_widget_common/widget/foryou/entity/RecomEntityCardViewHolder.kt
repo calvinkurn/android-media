@@ -1,22 +1,23 @@
-package com.tokopedia.recommendation_widget_common.widget.foryou.recomcard
+package com.tokopedia.recommendation_widget_common.widget.foryou.entity
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetEntityCardBinding
+import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecomEntityCardViewHolder constructor(
     view: View,
     private val listener: Listener
-) : AbstractViewHolder<RecomEntityModel>(view) {
+) : BaseForYouViewHolder<RecomEntityModel>(
+    view,
+    RecomEntityModel::class.java
+) {
 
     private val binding: RecommendationWidgetEntityCardBinding? by viewBinding()
 
-    override fun bind(element: RecomEntityModel?) {
-        if (element == null) return
-
+    override fun bind(element: RecomEntityModel) {
         binding?.view?.setListener(object : RecomEntityCardView.Listener {
             override fun onEntityCardClickListener(item: RecomEntityModel) {
                 listener.onEntityCardClickListener(item, bindingAdapterPosition)

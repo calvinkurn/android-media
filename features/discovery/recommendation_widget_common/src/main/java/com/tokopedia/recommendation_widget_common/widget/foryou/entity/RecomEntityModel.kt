@@ -1,11 +1,11 @@
 @file:SuppressLint("EntityFieldAnnotation")
 
-package com.tokopedia.recommendation_widget_common.widget.foryou.recomcard
+package com.tokopedia.recommendation_widget_common.widget.foryou.entity
 
 import android.annotation.SuppressLint
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
 
 data class RecomEntityModel(
     val id: String,
@@ -18,13 +18,21 @@ data class RecomEntityModel(
     val imageUrl: String,
     val backgroundColor: List<String>,
     val labelState: LabelState
-) : ImpressHolder(), Visitable<ForYouRecommendationTypeFactory> {
+) : ImpressHolder(), ForYouRecommendationVisitable {
 
     data class LabelState(
         val iconUrl: String,
         val title: String,
         val textColor: String
     )
+
+    override fun areItemsTheSame(other: Any): Boolean {
+        return other is RecomEntityModel && other.id == id
+    }
+
+    override fun areContentsTheSame(other: Any): Boolean {
+        return other == this
+    }
 
     override fun type(typeFactory: ForYouRecommendationTypeFactory): Int {
         return typeFactory.type(this)
