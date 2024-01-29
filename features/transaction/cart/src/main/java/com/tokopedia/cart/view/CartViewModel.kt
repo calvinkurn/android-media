@@ -727,7 +727,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest) {
-        _globalEvent.value = CartGlobalEvent.ItemLoading(false)
+        _cartProgressLoading.value = true
         viewModelScope.launchCatchError(
             context = dispatchers.io,
             block = {
@@ -746,7 +746,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun doClearRedPromosBeforeGoToPromo(clearPromoRequest: ClearPromoRequest) {
-        _globalEvent.value = CartGlobalEvent.ItemLoading(true)
+        _cartProgressLoading.value = true
         viewModelScope.launchCatchError(
             context = dispatchers.io,
             block = {
