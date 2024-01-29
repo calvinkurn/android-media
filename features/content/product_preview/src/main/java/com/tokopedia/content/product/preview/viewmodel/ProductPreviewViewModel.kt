@@ -26,7 +26,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.UpdateReviewPosition
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.state.ProductReviewUiState
-import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -43,18 +43,18 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 class ProductPreviewViewModel @AssistedInject constructor(
-    @Assisted private val param: EntrySource,
+    @Assisted private val productPreviewSourceModel: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
     private val userSessionInterface: UserSessionInterface
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(param: EntrySource): ProductPreviewViewModel
+        fun create(productPreviewSourceModel: ProductPreviewSourceModel): ProductPreviewViewModel
     }
 
-    val productData: ProductUiModel
-        get() = param.productUiModel
+    val productPreviewSource: ProductPreviewSourceModel
+        get() = productPreviewSourceModel
 
     private val _productContentState = MutableStateFlow(ProductUiModel.Empty)
     private val _reviewContentState = MutableStateFlow(ReviewUiModel.Empty)
@@ -106,14 +106,20 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun handleInitializeProductMainData() {
-        _productContentState.value = _productContentState.value.copy(
-            content = param.productUiModel.content
-        )
+        when (val source = productPreviewSource.productPreviewSource) {
+            is ProductPreviewSourceModel.ProductSourceData -> {
+                _productContentState.value = _productContentState.value.copy(
+                    productList = source.productList
+                )
+            }
+
+            else -> return
+        }
     }
 
     private fun handleFetchMiniInfo() {
         viewModelScope.launchCatchError(block = {
-            _bottomNavContentState.value = repo.getProductMiniInfo(param.productUiModel.productId)
+            _bottomNavContentState.value = repo.getProductMiniInfo(productPreviewSource.productId)
         }) {
             // TODO: what happen when fail fetching bottom nav info?
         }
@@ -122,7 +128,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun handleProductSelected(position: Int) {
         _productContentState.update { productUiModel ->
             productUiModel.copy(
-                content = productUiModel.content.mapIndexed { index, content ->
+                productList = productUiModel.productList.mapIndexed { index, content ->
                     content.copy(selected = index == position)
                 }
             )
@@ -140,7 +146,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             _reviewContentState.update { review -> review.copy(reviewPaging = ReviewPaging.Load) }
         }
         viewModelScope.launchCatchError(block = {
-            val response = repo.getReview(param.productUiModel.productId, page)
+            val response = repo.getReview(productPreviewSource.productId, page)
             val newList = buildList {
                 if (_reviewContentState.value.reviewContent.isNotEmpty()) {
                     addAll(_reviewContentState.value.reviewContent + response.reviewContent)
@@ -163,7 +169,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             viewModelScope.launchCatchError(
                 block = {
                     val result = repo.addToCart(
-                        param.productUiModel.productId,
+                        productPreviewSource.productId,
                         model.title,
                         model.shop.id,
                         model.price.finalPrice.toDoubleOrZero()
@@ -195,7 +201,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         requiredLogin(model) {
             viewModelScope.launchCatchError(
                 block = {
-                    val result = repo.remindMe(param.productUiModel.productId)
+                    val result = repo.remindMe(productPreviewSource.productId)
 
                     if (result.isSuccess) {
                         _uiEvent.emit(
@@ -321,5 +327,4 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }
         }
     }
-
 }

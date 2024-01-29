@@ -2317,7 +2317,7 @@ open class DynamicProductDetailFragment :
         val productId = productId ?: return
         val intent = ProductPreviewActivity.createIntent(
             context = requireActivity(),
-            productContentData = DynamicProductDetailMapper.mapProductDetailToProductPreview(
+            productPreviewSourceModel = DynamicProductDetailMapper.mapProductDetailToProductPreview(
                 productId = productId,
                 data = data,
                 position = position,

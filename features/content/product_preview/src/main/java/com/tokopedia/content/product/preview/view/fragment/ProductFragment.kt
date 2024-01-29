@@ -132,12 +132,12 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, currState) ->
                 renderContent(
-                    prevState?.productUiModel?.content,
-                    currState.productUiModel.content
+                    prevState?.productUiModel?.productList,
+                    currState.productUiModel.productList
                 )
                 renderIndicator(
-                    prevState?.productUiModel?.content,
-                    currState.productUiModel.content
+                    prevState?.productUiModel?.productList,
+                    currState.productUiModel.productList
                 )
             }
         }

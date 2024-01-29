@@ -19,22 +19,21 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
-import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
+import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.emptyProduct
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.withProduct
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.productReviewTab
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
-import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -54,17 +53,17 @@ class ProductPreviewFragment @Inject constructor(
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        val productPreviewData: ProductUiModel by lazyThreadSafetyNone {
+        val productPreviewSourceModel: ProductPreviewSourceModel by lazyThreadSafetyNone {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arguments?.getParcelable(
-                    PRODUCT_DATA,
-                    ProductUiModel::class.java
+                    PRODUCT_PREVIEW_SOURCE,
+                    ProductPreviewSourceModel::class.java
                 )
             } else {
-                arguments?.getParcelable(PRODUCT_DATA)
-            } ?: ProductUiModel.Empty
+                arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
+            } ?: ProductPreviewSourceModel.Empty
         }
-        viewModelFactory.create(EntrySource(productPreviewData))
+        viewModelFactory.create(productPreviewSourceModel)
     }
 
     private var _binding: FragmentProductPreviewBinding? = null
@@ -126,16 +125,20 @@ class ProductPreviewFragment @Inject constructor(
             adapter = pagerAdapter
         }
 
-        if (viewModel.productData.content.isEmpty()) {
-            layoutProductPreviewTab.tvProductTabTitle.gone()
-            layoutProductPreviewTab.tvReviewTabTitle.gone()
-            layoutProductPreviewTab.viewTabIndicator.gone()
-            pagerAdapter.insertFragment(emptyProduct)
-        } else {
-            layoutProductPreviewTab.tvProductTabTitle.visible()
-            layoutProductPreviewTab.tvReviewTabTitle.visible()
-            layoutProductPreviewTab.viewTabIndicator.visible()
-            pagerAdapter.insertFragment(withProduct)
+        when (viewModel.productPreviewSource.productPreviewSource) {
+            is ProductPreviewSourceModel.ProductSourceData -> {
+                layoutProductPreviewTab.tvProductTabTitle.visible()
+                layoutProductPreviewTab.tvReviewTabTitle.visible()
+                layoutProductPreviewTab.viewTabIndicator.visible()
+                pagerAdapter.insertFragment(productReviewTab)
+            }
+            is ProductPreviewSourceModel.ReviewSourceData -> {
+                layoutProductPreviewTab.tvProductTabTitle.gone()
+                layoutProductPreviewTab.tvReviewTabTitle.gone()
+                layoutProductPreviewTab.viewTabIndicator.gone()
+                pagerAdapter.insertFragment(reviewTab)
+            }
+            else -> return@with
         }
     }
 
@@ -251,7 +254,7 @@ class ProductPreviewFragment @Inject constructor(
                 context = requireContext(),
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
                 shopId = model.shop.id,
-                productId = viewModel.productData.productId,
+                productId = viewModel.productPreviewSource.productId,
                 startActivitResult = { intent, _ -> startActivity(intent) }
             )
         } else {

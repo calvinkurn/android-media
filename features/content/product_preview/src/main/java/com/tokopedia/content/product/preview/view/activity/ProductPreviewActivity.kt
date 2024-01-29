@@ -9,10 +9,10 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.product.preview.databinding.ActivityProductPreviewBinding
 import com.tokopedia.content.product.preview.di.ProductPreviewInjector
-import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
+import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
+import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import javax.inject.Inject
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
@@ -77,11 +77,11 @@ class ProductPreviewActivity : BaseActivity() {
     companion object {
         fun createIntent(
             context: Context,
-            productContentData: ProductUiModel
+            productPreviewSourceModel: ProductPreviewSourceModel
         ): Intent {
             val intent = Intent(context, ProductPreviewActivity::class.java)
             val bundle = Bundle()
-            bundle.putParcelable(PRODUCT_DATA, productContentData)
+            bundle.putParcelable(PRODUCT_PREVIEW_SOURCE, productPreviewSourceModel)
             intent.putExtras(bundle)
             return intent
         }

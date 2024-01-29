@@ -8,7 +8,7 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
+import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -1108,24 +1108,26 @@ object DynamicProductDetailMapper {
         position: Int = 0,
         videoLastDuration: Long = 0L,
         videoTotalDuration: Long = 0L
-    ): ProductUiModel {
-        return ProductUiModel(
+    ): ProductPreviewSourceModel {
+        return ProductPreviewSourceModel(
             productId = productId,
-            content = data.data.getGalleryItems().mapIndexed { index, item ->
-                ProductContentUiModel(
-                    contentId = item.id,
-                    selected = index == position,
-                    type = when (item.type) {
-                        ProductDetailGallery.Item.Type.Video -> MediaType.Video
-                        ProductDetailGallery.Item.Type.Image -> MediaType.Image
-                        else -> MediaType.Unknown
-                    },
-                    url = item.url,
-                    thumbnailUrl = item.thumbnailUrl,
-                    videoLastDuration = videoLastDuration,
-                    videoTotalDuration = videoTotalDuration
-                )
-            }
+            productPreviewSource = ProductPreviewSourceModel.ProductSourceData(
+                productList = data.data.getGalleryItems().mapIndexed { index, item ->
+                    ProductContentUiModel(
+                        contentId = item.id,
+                        selected = index == position,
+                        type = when (item.type) {
+                            ProductDetailGallery.Item.Type.Video -> MediaType.Video
+                            ProductDetailGallery.Item.Type.Image -> MediaType.Image
+                            else -> MediaType.Unknown
+                        },
+                        url = item.url,
+                        thumbnailUrl = item.thumbnailUrl,
+                        videoLastDuration = videoLastDuration,
+                        videoTotalDuration = videoTotalDuration
+                    )
+                }
+            )
         )
     }
 }
