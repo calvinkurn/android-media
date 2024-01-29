@@ -27,9 +27,7 @@ class GetProductUseCase @Inject constructor(
         val errors: List<GraphqlError>? = graphqlResponse.getError(GetProductV3Response::class.java)
         if (errors.isNullOrEmpty()) {
             val data = graphqlResponse.getData<GetProductV3Response>(GetProductV3Response::class.java)
-            if (data.product.productType == PRODUCT_TYPE_MERCHANDISE ||
-                data.product.productType == PRODUCT_TYPE_SAMPLE
-            ) {
+            if (data.product.productID == INVALID_PRODUCT_ID) {
                 throw AddEditProductUnsellableException()
             }
             return data.product
@@ -42,8 +40,7 @@ class GetProductUseCase @Inject constructor(
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_OPTIONS = "options"
         private const val OPERATION_NAME = "getProductV3"
-        private const val PRODUCT_TYPE_MERCHANDISE = "MERCHANDISE"
-        private const val PRODUCT_TYPE_SAMPLE = "SAMPLE"
+        private const val INVALID_PRODUCT_ID = "0"
         private val OPERATION_PARAM = """
             ${'$'}productID: String!,${'$'}options: OptionV3!
         """.trimIndent()
@@ -69,7 +66,6 @@ class GetProductUseCase @Inject constructor(
                     mustInsurance
                     sku
                     hasDTStock
-                    productType
                     category{
                       id
                       name
