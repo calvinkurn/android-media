@@ -798,10 +798,12 @@ class DiscoveryPageDataMapper(
             val targetedComponentId = flashSaleTab.data?.firstOrNull()?.targetComponentId.orEmpty()
             val index = componentsItem.indexOfFirst {
                 it.name == ComponentNames.ProductCardCarousel.componentName &&
-                    it.id == targetedComponentId
+                    (it.id == targetedComponentId || it.dynamicOriginalId == targetedComponentId)
             }
 
-            componentsItem[index].isTargetedTabComponent = true
+            if (index != -1) {
+                componentsItem[index].isTargetedTabComponent = true
+            }
         }
     }
 
