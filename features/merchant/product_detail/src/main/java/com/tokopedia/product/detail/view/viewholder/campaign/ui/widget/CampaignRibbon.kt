@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -41,6 +42,7 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.upcoming.
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
@@ -228,7 +230,7 @@ class CampaignRibbon @JvmOverloads constructor(
             }
         } else {
             // if thematic have value, render thematic instead of slash price
-            renderThematicCampaignRibbon(onGoingData.thematicCampaign)
+            renderThematicCampaign(onGoingData.thematicCampaign)
         }
     }
 

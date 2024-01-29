@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +48,7 @@ fun ThematicCampaign(
             CampaignImage(
                 url = superGraphicUrl,
                 alignment = Alignment.CenterEnd,
+                contentScale = ContentScale.FillHeight,
                 modifier = Modifier
                     .height(32.dp)
                     .wrapContentWidth()
