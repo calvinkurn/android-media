@@ -167,8 +167,6 @@ public class CMInAppManager implements CmInAppListener,
     public boolean existsActiveInAppCampaign(String name, boolean isActivity){
         AtomicBoolean activityValidInAppCampaign = new AtomicBoolean(false);
         InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
-                .clearExpiredInApp();
-        InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
                 .getInAppData(name, isActivity, inAppList ->
                         activityValidInAppCampaign.set(canShowInApp((List<CMInApp>) inAppList))
                 );

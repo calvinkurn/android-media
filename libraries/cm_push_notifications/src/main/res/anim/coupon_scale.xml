@@ -4,6 +4,7 @@
     android:fillAfter="true">
 
     <scale
+        android:startOffset="1000"
         android:fromXScale="0"
         android:toXScale="1"
         android:fromYScale="0"

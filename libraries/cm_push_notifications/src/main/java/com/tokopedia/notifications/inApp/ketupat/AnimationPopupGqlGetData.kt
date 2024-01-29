@@ -46,14 +46,15 @@ class AnimationPopupGqlGetData: CoroutineScope {
 
     fun getAnimationScratchPopupData(
         onSuccess: (GamiScratchCardPreEvaluate) -> Unit,
-        onError: (Throwable) -> Unit
+        onError: (Throwable) -> Unit,
+        pageSource: String
     ) {
         try {
             getScratchPopupUseCase().getAnimationPopupData({
                 onSuccess(it)
             }, {
                 onError(it)
-            })
+            }, pageSource)
 
         } catch (_: Exception) {
         }

@@ -199,7 +199,7 @@ class CrackCouponHandler(
             if (rewardSoundManager == null) {
                 rewardSoundManager = AudioFactory.createAudio(it)
             }
-            rewardSoundManager?.playAudio(R.raw.gf_giftbox_prize)
+            rewardSoundManager?.playAudio(url)
         }
     }
 

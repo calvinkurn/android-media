@@ -71,6 +71,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
+
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime

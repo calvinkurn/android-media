@@ -75,14 +75,18 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    open fun getScratchCardData(activity: Activity) {
+    open fun getScratchCardData(activity: Activity,
+                                pageSource: String = "tokopedia-home-page",
+                                ketupatSlashCallBack: KetupatSlashCallBack? = null) {
         val userSession = createUserSession(activity)
         if (userSession.isLoggedIn) {
             AnimationPopupGqlGetData().getAnimationScratchPopupData({
                 it.popUpContent?.let { popup ->
-                    showLottiePopup(activity, getSlugData(it), popup, getScratchCardIdData(it))
+                    if(popup.isShown == true) {
+                        showLottiePopup(activity, getSlugData(it), popup, getScratchCardIdData(it))
+                    }
                 }
-            }, {})
+            }, {}, pageSource)
         }
     }
 
@@ -90,7 +94,8 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         activity: Activity,
         slug: String?,
         popUpContent: PopUpContent,
-        scratchCardId: String
+        scratchCardId: String,
+        ketupatSlashCallBack: KetupatSlashCallBack? = null
     ) {
         try {
             val currentActivity: WeakReference<Activity> =

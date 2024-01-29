@@ -17,12 +17,13 @@ class AnimationScratchPopupUseCase @Inject constructor(graphqlRepository: Graphq
 
     fun getAnimationPopupData(
         onSuccess: (GamiScratchCardPreEvaluate) -> Unit,
-        onError: (Throwable) -> Unit
+        onError: (Throwable) -> Unit,
+        pageSource: String
     ) {
         try {
             this.setTypeClass(AnimationScratchPopupResponse::class.java)
             this.setGraphqlQuery(GetAnimationPopupDataGQLQuery())
-            this.setRequestParams(getRequestParams())
+            this.setRequestParams(getRequestParams(pageSource))
             this.execute(
                 { result ->
                     if (result.gamiScratchCardPreEvaluate.resultStatus?.code == "200") {
@@ -39,10 +40,10 @@ class AnimationScratchPopupUseCase @Inject constructor(graphqlRepository: Graphq
         }
     }
 
-    private fun getRequestParams(): HashMap<String, Any> {
+    private fun getRequestParams(pageSource: String): HashMap<String, Any> {
         val requestParams = HashMap<String, Any>()
         requestParams[SLUG] = ""
-        requestParams[SOURCE] = "tokopedia-home-page"
+        requestParams[SOURCE] = pageSource
         return requestParams
     }
 

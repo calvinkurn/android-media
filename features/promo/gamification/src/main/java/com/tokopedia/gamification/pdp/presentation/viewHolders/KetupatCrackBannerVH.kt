@@ -1,12 +1,17 @@
 package com.tokopedia.gamification.pdp.presentation.viewHolders
 
+import android.app.Activity
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.pdp.data.GamificationAnalytics
+import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.notifications.inApp.ketupat.ActivityLifecycleHandler
+import com.tokopedia.notifications.inApp.ketupat.KetupatSlashCallBack
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -19,6 +24,29 @@ class KetupatCrackBannerVH(itemView: View) :
         @JvmField
         @LayoutRes
         var LAYOUT = gamificationR.layout.ketupat_crack_banner
+    }
+
+    fun showKetupatPopUp(activity: Activity,
+                         crackData: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem?,
+                         scratchCardId: String){
+        //show pop up and pass the callback for tracking slash
+        var activityLifecycleHandler: ActivityLifecycleHandler = ActivityLifecycleHandler()
+        activityLifecycleHandler.getScratchCardData(activity,
+            "scratch-card-landing-page",
+            object : KetupatSlashCallBack {
+                override fun ketuPatSlashed() {
+                    //change button state
+                    itemView.findViewById<ImageUnify>(gamificationR.id.crack_icon_img)
+                        ?.setImageUrl(crackData?.assets?.find { it?.key == "IMAGE_ICON_OPENED" }?.value.toString())
+                    itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
+                        crackData?.text?.find { it?.key == "OPENED" }?.value
+                    itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).hide()
+                    GamificationAnalytics.sendClickClaimButtonEvent(
+                        "direct_reward_id: $scratchCardId", "gamification",
+                        "tokopediamarketplace"
+                    )
+                }
+            })
     }
 
     override fun bind(element: KetupatCrackBannerVHModel?) {
@@ -48,15 +76,7 @@ class KetupatCrackBannerVH(itemView: View) :
             }
             itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).apply {
                 this.setOnClickListener {
-                    itemView.findViewById<ImageUnify>(gamificationR.id.crack_icon_img)
-                        ?.setImageUrl(crackData?.assets?.find { it?.key == "IMAGE_ICON_OPENED" }?.value.toString())
-                    itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
-                        crackData?.text?.find { it?.key == "OPENED" }?.value
-                    this.hide()
-                    GamificationAnalytics.sendClickClaimButtonEvent(
-                        "direct_reward_id: $scratchCardId", "gamification",
-                        "tokopediamarketplace"
-                    )
+                    showKetupatPopUp((context as Activity), crackData, scratchCardId)
                 }
             }
             crackData?.cta?.get(0)?.imageURL?.let {

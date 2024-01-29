@@ -36,8 +36,11 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private var crackCouponHandler = CrackCouponHandler(binding, layoutInflater, animationPopupGtmTracker, activity)
     private var slug: String? = ""
     private var scratchCardId: String = ""
+    private var ketupatSlashCallBack: KetupatSlashCallBack? = null
 
-    open fun loadLottieAnimation(slug: String?, popUpContent: PopUpContent, scratchCardId: String) {
+    open fun loadLottieAnimation(slug: String?, popUpContent: PopUpContent,
+                                 scratchCardId: String,
+                                 ketupatSlashCallBack: KetupatSlashCallBack? = null) {
         try {
         loadAnimationFromURl(popUpContent)
             this.slug = slug
@@ -46,6 +49,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
             binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
             onCloseClick(binding.root)
             onParentContainerClick(binding.root)
+            this.ketupatSlashCallBack = ketupatSlashCallBack
             animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
         } catch (e: Exception) {
             ServerLogger.log(
@@ -102,6 +106,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
                 mdisp.getSize(mdispSize)
                 val isSliced = myGestureListener.getSlicePercent(it.x, it.y, it1.x, it1.y, mdispSize.x, mdispSize.y, direction)
                 if (isSliced && !crackCouponHandler.isCouponCracked()) {
+                    ketupatSlashCallBack?.ketuPatSlashed()
                     crackCouponHandler.getCouponData(slug, direction)
                     binding.loaderCoupon.visible()
                     binding.lottieViewPopup.pauseAnimation()

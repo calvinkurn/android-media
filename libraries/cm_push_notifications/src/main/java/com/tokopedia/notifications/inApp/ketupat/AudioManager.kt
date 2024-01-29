@@ -33,7 +33,6 @@ class AudioManager(var mContext: Context) {
             }
         }
     }
-
     fun playAudio(resId: Int, isLoop: Boolean = false) {
         if (resId <= 0) {
             throw IllegalArgumentException("Please provide correct audio file")
