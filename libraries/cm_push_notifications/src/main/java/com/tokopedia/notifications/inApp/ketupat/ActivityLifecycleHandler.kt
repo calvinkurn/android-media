@@ -83,7 +83,8 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
             AnimationPopupGqlGetData().getAnimationScratchPopupData({
                 it.popUpContent?.let { popup ->
                     if(popup.isShown == true) {
-                        showLottiePopup(activity, getSlugData(it), popup, getScratchCardIdData(it))
+                        showLottiePopup(activity, getSlugData(it), popup,
+                            getScratchCardIdData(it), ketupatSlashCallBack)
                     }
                 }
             }, {}, pageSource)
