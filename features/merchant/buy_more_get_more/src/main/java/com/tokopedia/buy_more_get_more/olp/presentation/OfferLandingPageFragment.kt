@@ -258,8 +258,8 @@ class OfferLandingPageFragment :
                     }
                 }
 
-                else -> {
-                    setViewState(VIEW_ERROR, getErrorCodeFromThrowable(offerInfoForBuyer.toString().toIntOrZero()))
+                is Fail -> {
+                    setViewState(VIEW_ERROR, getErrorCodeFromThrowable(offerInfoForBuyer.throwable.localizedMessage.toIntOrZero()))
                 }
             }
         }
