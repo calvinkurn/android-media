@@ -53,11 +53,12 @@ class BmsmWidget : ConstraintLayout {
 
     private var binding: LayoutBmsmCustomViewBinding? = null
 
-    private var onSuccessAtc: (AddToCartDataModel) -> Unit = {}
+    private var onSuccessAtc: (String, String, AddToCartDataModel) -> Unit = { _, _, _ -> }
     private var onErrorAtc: (String) -> Unit = {}
-    private var onNavigateToOlp: (String) -> Unit = {}
-    private var onProductClicked: (Product) -> Unit = {}
-    private var onWidgetVisible: () -> Unit = {}
+    private var onNavigateToOlp: (String, String, String) -> Unit = {_, _, _ ->  }
+    private var onProductClicked: (String, String, Product) -> Unit = {_, _, _ ->  }
+    private var onWidgetVisible: (String) -> Unit = {}
+    private var onTabSelected: (OfferingInfoByShopIdUiModel) -> Unit = {}
     private var tabTotalWidth = 0
     private var colorSchema: ShopPageColorSchema = ShopPageColorSchema()
     private var colorThemeConfiguration: BmsmWidgetColorThemeConfig = BmsmWidgetColorThemeConfig.DEFAULT
@@ -143,15 +144,19 @@ class BmsmWidget : ConstraintLayout {
                 val tabWidth =
                     (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
                 tabTotalWidth += tabWidth
+                handleTabChange(tabBmsmWidget, offerList[currentPosition])
+                applyTabRuleWidth(offerList, tabBmsmWidget)
             }
-            handleTabChange(tabBmsmWidget)
-            applyTabRuleWidth(offerList, tabBmsmWidget)
         }
     }
 
-    private fun handleTabChange(tabsUnify: TabsUnify) {
+    private fun handleTabChange(
+        tabsUnify: TabsUnify,
+        offering: OfferingInfoByShopIdUiModel
+    ) {
         tabsUnify.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                onTabSelected.invoke(offering)
                 tab?.selectTab()
             }
 
@@ -230,20 +235,32 @@ class BmsmWidget : ConstraintLayout {
             )
 
             fragment.apply {
-                setOnSuccessAtcListener {
-                    onSuccessAtc.invoke(it)
+                setOnSuccessAtcListener { offerId, offerType, product ->
+                    onSuccessAtc.invoke(
+                        offerId,
+                        offerType,
+                        product
+                    )
                 }
                 setOnErrorAtcListener {
                     onErrorAtc.invoke(it)
                 }
-                setOnNavigateToOlpListener {
-                    onNavigateToOlp.invoke(it)
+                setOnNavigateToOlpListener { offerId, offerType, product ->
+                    onNavigateToOlp.invoke(
+                        offerId,
+                        offerType,
+                        product
+                    )
                 }
-                setOnProductCardClicked {
-                    onProductClicked.invoke(it)
+                setOnProductCardClicked { offerId, offerType, product ->
+                    onProductClicked.invoke(
+                        offerId,
+                        offerType,
+                        product
+                    )
                 }
-                setOnWidgetVisible {
-                    onWidgetVisible.invoke()
+                setOnWidgetVisible { offerId ->
+                    onWidgetVisible.invoke(offerId)
                 }
             }
 
@@ -257,7 +274,7 @@ class BmsmWidget : ConstraintLayout {
         binding?.vpBmsmWidget?.isUserInputEnabled = false
     }
 
-    fun setOnSuccessAtcListener(onSuccessAtc: (AddToCartDataModel) -> Unit) {
+    fun setOnSuccessAtcListener(onSuccessAtc: (String, String, AddToCartDataModel) -> Unit) {
         this.onSuccessAtc = onSuccessAtc
     }
 
@@ -265,16 +282,20 @@ class BmsmWidget : ConstraintLayout {
         this.onErrorAtc = onErrorAtc
     }
 
-    fun setOnNavigateToOlpListener(onNavigateToOlp: (String) -> Unit) {
+    fun setOnNavigateToOlpListener(onNavigateToOlp: (String, String, String) -> Unit) {
         this.onNavigateToOlp = onNavigateToOlp
     }
 
-    fun setOnProductCardClicked(onProductClicked: (Product) -> Unit) {
+    fun setOnProductCardClicked(onProductClicked: (String, String, Product) -> Unit) {
         this.onProductClicked = onProductClicked
     }
 
-    fun setOnWidgetVisible(onWidgetVisible: () -> Unit) {
+    fun setOnWidgetVisible(onWidgetVisible: (String) -> Unit) {
         this.onWidgetVisible = onWidgetVisible
+    }
+
+    fun setOnTabSelected(onTabSelected: (OfferingInfoByShopIdUiModel) -> Unit) {
+        this.onTabSelected = onTabSelected
     }
 
     private fun getActiveTabTextColor(): Int{

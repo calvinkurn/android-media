@@ -142,11 +142,11 @@ class BmsmWidgetTabFragment :
 
     private var productListAdapter = BmsmWidgetProductListAdapter(this@BmsmWidgetTabFragment)
 
-    private var onSuccessAtc: (AddToCartDataModel) -> Unit = {}
+    private var onSuccessAtc: (String, String, AddToCartDataModel) -> Unit = { _, _, _ -> }
     private var onErrorAtc: (String) -> Unit = {}
-    private var onNavigateToOlp: (String) -> Unit = {}
-    private var onProductCardClicked: (Product) -> Unit = {}
-    private var onWidgetVisible: () -> Unit = {}
+    private var onNavigateToOlp: (String, String, String) -> Unit = {_, _, _ ->  }
+    private var onProductCardClicked: (String, String, Product) -> Unit = {_, _, _ ->  }
+    private var onWidgetVisible: (String) -> Unit = {}
     private val isLogin: Boolean
         get() = viewModel.isLogin
     private val currentState: BmsmWidgetUiState
@@ -187,7 +187,7 @@ class BmsmWidgetTabFragment :
         setupErrorSection()
         setupProductList()
         setupObserver()
-        onWidgetVisible.invoke()
+        onWidgetVisible.invoke(currentState.offeringInfo.offerings.firstOrNull()?.id.toString())
     }
 
     override fun onResume() {
@@ -208,11 +208,19 @@ class BmsmWidgetTabFragment :
     }
 
     override fun onProductCardClicked(product: Product) {
-        onProductCardClicked.invoke(product)
+        onProductCardClicked.invoke(
+            currentState.offerIds.firstOrNull().toString(),
+            offerTypeId.toString(),
+            product
+        )
     }
 
     override fun onNavigateToOlp() {
-        onNavigateToOlp.invoke(currentState.offeringInfo.offerings.firstOrNull()?.olpAppLink.orEmpty())
+        onNavigateToOlp.invoke(
+            currentState.offerIds.firstOrNull().toString(),
+            offerTypeId.toString(),
+            currentState.offeringInfo.offerings.firstOrNull()?.olpAppLink.orEmpty()
+        )
     }
 
     private fun setupObserver() {
@@ -241,7 +249,11 @@ class BmsmWidgetTabFragment :
                         onErrorAtc.invoke(atc.data.getAtcErrorMessage().orEmpty())
                     } else {
                         getOfferingData()
-                        onSuccessAtc.invoke(atc.data)
+                        onSuccessAtc.invoke(
+                            currentState.offerIds.firstOrNull().toString(),
+                            offerTypeId.toString(),
+                            atc.data
+                        )
                     }
                 }
 
@@ -337,7 +349,11 @@ class BmsmWidgetTabFragment :
     private fun setupOlpNavigation() {
         binding?.apply {
             iconChevron.setOnClickListener {
-                onNavigateToOlp.invoke(currentState.offeringInfo.offerings.firstOrNull()?.olpAppLink.orEmpty())
+                onNavigateToOlp.invoke(
+                    currentState.offerIds.firstOrNull().toString(),
+                    offerTypeId.toString(),
+                    currentState.offeringInfo.offerings.firstOrNull()?.olpAppLink.orEmpty()
+                )
             }
         }
     }
@@ -556,7 +572,7 @@ class BmsmWidgetTabFragment :
         return textColor
     }
 
-    fun setOnSuccessAtcListener(onSuccessAtc: (AddToCartDataModel) -> Unit) {
+    fun setOnSuccessAtcListener(onSuccessAtc: (String, String, AddToCartDataModel) -> Unit) {
         this.onSuccessAtc = onSuccessAtc
     }
 
@@ -564,15 +580,15 @@ class BmsmWidgetTabFragment :
         this.onErrorAtc = onErrorAtc
     }
 
-    fun setOnNavigateToOlpListener(onNavigateToOlp: (String) -> Unit) {
+    fun setOnNavigateToOlpListener(onNavigateToOlp: (String, String, String) -> Unit) {
         this.onNavigateToOlp = onNavigateToOlp
     }
 
-    fun setOnProductCardClicked(onProductCardClicked: (Product) -> Unit) {
+    fun setOnProductCardClicked(onProductCardClicked: (String, String, Product) -> Unit) {
         this.onProductCardClicked = onProductCardClicked
     }
 
-    fun setOnWidgetVisible(onWidgetVisible: () -> Unit) {
+    fun setOnWidgetVisible(onWidgetVisible: (String) -> Unit) {
         this.onWidgetVisible = onWidgetVisible
     }
 

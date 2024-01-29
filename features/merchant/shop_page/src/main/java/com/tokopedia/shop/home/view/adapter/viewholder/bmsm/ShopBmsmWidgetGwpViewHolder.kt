@@ -54,20 +54,43 @@ class ShopBmsmWidgetGwpViewHolder(
                             value.type == patternColorType
                         } ?: ColorType.LIGHT
                     )
-                    setOnSuccessAtcListener { product ->
-                        listener.onBmsmWidgetSuccessAtc(product)
+                    setOnSuccessAtcListener { offerId, offerType, product ->
+                        listener.onBmsmWidgetSuccessAtc(
+                            offerId,
+                            offerType,
+                            product.data.productId,
+                            product)
                     }
                     setOnErrorAtcListener { errorMsg ->
                         listener.onBmsmWidgetErrorAtc(errorMsg)
                     }
-                    setOnNavigateToOlpListener { applink ->
-                        listener.onBmsmWidgetNavigateToOlp(applink)
+                    setOnNavigateToOlpListener { offerId, offerType, applink ->
+                        listener.onBmsmWidgetNavigateToOlp(
+                            offerId,
+                            offerType,
+                            applink,
+                            adapterPosition
+                        )
                     }
-                    setOnProductCardClicked { product ->
-                        listener.onBmsmWidgetProductClicked(product)
+                    setOnProductCardClicked { offerId, offerType, product ->
+                        listener.onBmsmWidgetProductClicked(
+                            offerId,
+                            offerType,
+                            product)
                     }
-                    setOnWidgetVisible {
+                    setOnWidgetVisible { offerId ->
+                        listener.onImpressBmsmWidget(
+                            offerId,
+                            adapterPosition
+                        )
                         isBmsmWidgetAlreadyLoaded = true
+                    }
+                    setOnTabSelected { offering ->
+                        listener.onSelectTabBmsmWidget(
+                            offering.offerId.toString(),
+                            offering.offerType.toString(),
+                            adapterPosition
+                        )
                     }
                 }
             }
