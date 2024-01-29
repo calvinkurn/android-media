@@ -613,12 +613,12 @@ class LottieBottomNavbar : LinearLayout {
     private fun getIconTitle(index: Int, bottomMenu: BottomMenu): String? {
         return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
-                bottomMenu.iconJumper?.initialTitle
+                bottomMenu.title
             } else {
                 if (selectedItem == Int.ZERO) {
                     bottomMenu.iconJumper?.jumperTitle
                 } else {
-                    bottomMenu.iconJumper?.initialTitle
+                    bottomMenu.title
                 }
             }
         } else {
@@ -645,7 +645,7 @@ class LottieBottomNavbar : LinearLayout {
     private fun getNewImageName(index: Int, bottomMenu: BottomMenu): Int? {
         return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
-                bottomMenu.iconJumper?.initialImageName
+                bottomMenu.imageActive
             } else {
                 bottomMenu.iconJumper?.jumperImageName
             }
@@ -704,7 +704,7 @@ class LottieBottomNavbar : LinearLayout {
 
             // update title based on home header or for you section
             titleList[position].text = if (isForYouToHomeSelected) {
-                menu[position].iconJumper?.initialTitle.orEmpty()
+                menu[position].title.orEmpty()
             } else {
                 menu[position].iconJumper?.jumperTitle.orEmpty()
             }
@@ -874,13 +874,13 @@ class LottieBottomNavbar : LinearLayout {
             val iconTitle = when {
                 newPosition == Int.ZERO -> {
                     if (isForYouToHomeSelected) {
-                        menu.getOrNull(newPosition)?.iconJumper?.initialTitle
+                        menu.getOrNull(newPosition)?.title
                     } else {
                         menu.getOrNull(newPosition)?.iconJumper?.jumperTitle
                     }
                 }
 
-                selectedItem == Int.ZERO -> menu.getOrNull(selectedItem.orZero())?.iconJumper?.initialTitle
+                selectedItem == Int.ZERO -> menu.getOrNull(selectedItem.orZero())?.title
                 else -> return
             }
 
@@ -983,9 +983,7 @@ data class BottomMenu(
 }
 
 data class IconJumper(
-    val initialTitle: String,
     val jumperTitle: String,
-    val initialImageName: Int? = null,
     val jumperImageName: Int? = null,
     val initialToJumperAnimName: Int? = null,
     val idleAnimName: Int? = null,

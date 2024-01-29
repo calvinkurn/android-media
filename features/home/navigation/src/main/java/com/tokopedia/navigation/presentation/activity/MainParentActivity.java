@@ -1406,9 +1406,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private IconJumper getForYouIconJumper() {
         return new IconJumper(
-                getResources().getString(R.string.home),
                 getResources().getString(R.string.for_you),
-                R.drawable.ic_bottom_nav_home_active,
                 R.drawable.ic_bottom_nav_home_for_you_active,
                 R.raw.bottom_nav_home_to_thumb,
                 R.raw.bottom_nav_thumb_idle,
@@ -1418,9 +1416,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private IconJumper getSREIconJumper() {
         return new IconJumper(
-                getResources().getString(R.string.home),
                 getResources().getString(R.string.for_you),
-                R.drawable.ic_bottom_nav_home_active,
                 R.drawable.ic_bottom_nav_home_sre,
                 R.raw.bottom_nav_home_to_sre,
                 R.raw.bottom_nav_sre_idle,
