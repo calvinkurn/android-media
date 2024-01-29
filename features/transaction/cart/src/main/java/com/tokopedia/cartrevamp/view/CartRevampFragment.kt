@@ -66,7 +66,6 @@ import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartFragment
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
-import com.tokopedia.cart.view.di.DaggerCartRevampComponent
 import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
@@ -79,6 +78,7 @@ import com.tokopedia.cartrevamp.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
 import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.cartrevamp.view.decorator.CartItemDecoration
+import com.tokopedia.cartrevamp.view.di.DaggerCartRevampComponent
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.BmGmTickerRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
