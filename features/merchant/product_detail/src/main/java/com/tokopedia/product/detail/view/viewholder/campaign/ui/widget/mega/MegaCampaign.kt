@@ -9,13 +9,14 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignImage
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignName
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTitle
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.campaignBackgroundColor
 
 /**
@@ -51,11 +52,12 @@ fun MegaCampaign(
                 }
         )
 
-        CampaignName(
+        CampaignTitle(
             title = title,
             logoUrl = logoUrl,
             logoHeight = 16.dp,
             textColor = NestNN.light._950,
+            fontWeight = FontWeight.Normal,
             modifier = Modifier
                 .wrapContentWidth()
                 .constrainAs(logo) {

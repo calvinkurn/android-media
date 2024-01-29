@@ -21,12 +21,13 @@ import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 @Composable
-fun CampaignName(
+fun CampaignTitle(
     title: String,
     logoUrl: String,
     modifier: Modifier = Modifier,
     logoHeight: Dp = 16.dp,
-    textColor: Color = Color.White
+    textColor: Color = Color.White,
+    fontWeight: FontWeight = FontWeight.Bold
 ) {
     Row(
         modifier = modifier,
@@ -46,7 +47,7 @@ fun CampaignName(
             NestTypography(
                 text = htmlLink.toAnnotatedString(),
                 textStyle = NestTheme.typography.display3.copy(
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = fontWeight,
                     color = textColor,
                     textAlign = TextAlign.Left
                 ),

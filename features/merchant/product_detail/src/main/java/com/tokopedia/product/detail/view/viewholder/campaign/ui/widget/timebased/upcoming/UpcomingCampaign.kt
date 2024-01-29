@@ -17,8 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignName
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTimer
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTitle
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.PaymentSpecific
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.RemindMeButton
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.campaignBackgroundColor
@@ -68,7 +68,7 @@ private fun UpcomingContent(
             modifier = Modifier.weight(1f, true),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            CampaignName(title = uiModel.title, uiModel.logoUrl, logoHeight = 14.dp)
+            CampaignTitle(title = uiModel.title, uiModel.logoUrl, logoHeight = 14.dp)
 
             UpcomingCountDown(uiModel, onTimerFinish)
         }

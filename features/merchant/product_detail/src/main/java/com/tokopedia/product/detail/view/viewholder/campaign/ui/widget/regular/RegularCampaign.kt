@@ -8,11 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignName
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTitle
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.campaignBackgroundColor
 
 /**
@@ -33,7 +34,13 @@ fun RegularCampaign(
             .campaignBackgroundColor(colorString = backgroundColorString)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        CampaignName(title = title, logoUrl = logoUrl, logoHeight = 14.dp, textColor = NestNN.light._950)
+        CampaignTitle(
+            title = title,
+            logoUrl = logoUrl,
+            logoHeight = 14.dp,
+            textColor = NestNN.light._950,
+            fontWeight = FontWeight.Normal
+        )
     }
 }
 
