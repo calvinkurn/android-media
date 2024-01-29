@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.ongoing
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,8 +23,7 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTitle
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.PaymentSpecific
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.campaignBackgroundColor
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.secondToMs
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.upcoming.secondToMs
 
 /**
  * Created by yovi.putra on 19/12/23"

@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget.timebased.upcoming
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.upcoming
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,11 +19,8 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTimer
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTitle
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.PaymentSpecific
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.RemindMeButton
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.campaignBackgroundColor
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.secondToMs
 
 /**
  * Created by yovi.putra on 19/12/23"
@@ -36,30 +33,11 @@ fun UpcomingCampaign(
     onTimerFinish: () -> Unit,
     onClickRemindMe: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .campaignBackgroundColor(colorString = uiModel.backgroundColorString)
-    ) {
-        UpcomingContent(uiModel, onTimerFinish, onClickRemindMe)
-
-        if (uiModel.paymentSpecific.isNotBlank()) {
-            PaymentSpecific(description = uiModel.paymentSpecific)
-        }
-    }
-}
-
-@Composable
-private fun UpcomingContent(
-    uiModel: UpcomingCampaignComposeUiModel,
-    onTimerFinish: () -> Unit,
-    onClickRemindMe: () -> Unit
-) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .campaignBackgroundColor(colorString = uiModel.backgroundColorString)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -117,20 +95,19 @@ fun UpcomingCampaignPreview() {
         endTimeUnix = 1704187685,
         timerLabel = "Akan datang",
         labelButton = "Ingatkan saya",
-        paymentSpecific = "",
         backgroundColorString = ""
     )
     NestTheme {
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            UpcomingCampaign(data.copy(logoUrl = ""), onTimerFinish = {}, onClickRemindMe = {})
             UpcomingCampaign(data, onTimerFinish = {}, onClickRemindMe = {})
-            UpcomingCampaign(data.copy(paymentSpecific = "Khusus pembayaran OVO"), onTimerFinish = {}, onClickRemindMe = {})
             UpcomingCampaign(
                 data.copy(logoUrl = "", showRemainderButton = false),
                 onTimerFinish = {},
                 onClickRemindMe = {}
             )
             UpcomingCampaign(
-                data.copy(paymentSpecific = "Khusus pembayaran OVO", showRemainderButton = false),
+                data.copy(showRemainderButton = false),
                 onTimerFinish = {},
                 onClickRemindMe = {}
             )

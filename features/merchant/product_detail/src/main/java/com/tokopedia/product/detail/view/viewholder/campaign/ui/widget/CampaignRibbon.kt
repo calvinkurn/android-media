@@ -36,8 +36,8 @@ import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType3LayoutB
 import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.util.setContentUi
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.ongoing.OngoingCampaignComposeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.upcoming.UpcomingCampaignComposeUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -560,20 +560,12 @@ class CampaignRibbon @JvmOverloads constructor(
     }
 
     private fun renderThematicCampaignCompose(thematic: ThematicCampaign) {
-        val type = if (thematic.isMegaType) {
-            CampaignType.Mega(
-                title = thematic.campaignName,
-                logoUrl = thematic.campaignLogo,
-                superGraphicUrl = thematic.superGraphicURL,
-                backgroundColorString = thematic.background
-            )
-        } else {
-            CampaignType.Regular(
-                title = thematic.campaignName,
-                logoUrl = thematic.campaignLogo,
-                backgroundColorString = thematic.background
-            )
-        }
+        val type = CampaignType.Thematic(
+            title = thematic.campaignName,
+            logoUrl = thematic.campaignLogo,
+            superGraphicUrl = thematic.superGraphicURL,
+            backgroundColorString = thematic.background
+        )
 
         _campaignTypeState.value = type
     }

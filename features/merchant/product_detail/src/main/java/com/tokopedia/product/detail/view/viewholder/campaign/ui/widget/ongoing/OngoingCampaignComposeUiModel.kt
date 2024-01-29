@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.ongoing
 
 import androidx.compose.runtime.Immutable
 

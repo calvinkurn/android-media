@@ -1,9 +1,10 @@
-package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.mega
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.thematic
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
@@ -25,11 +26,11 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component
  **/
 
 @Composable
-fun MegaCampaign(
+fun ThematicCampaign(
     title: String,
     logoUrl: String,
-    superGraphicUrl: String,
-    backgroundColorString: String
+    backgroundColorString: String,
+    superGraphicUrl: String = ""
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -38,24 +39,28 @@ fun MegaCampaign(
             .campaignBackgroundColor(colorString = backgroundColorString)
     ) {
         val (logo, superGraphic) = createRefs()
+        val isMegaThematic = superGraphicUrl.isNotBlank()
+        val logoTitleHeight = if (isMegaThematic) 16.dp else 14.dp
 
-        CampaignImage(
-            url = superGraphicUrl,
-            alignment = Alignment.CenterEnd,
-            modifier = Modifier
-                .height(32.dp)
-                .wrapContentWidth()
-                .constrainAs(superGraphic) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.end)
-                }
-        )
+        if (isMegaThematic) {
+            CampaignImage(
+                url = superGraphicUrl,
+                alignment = Alignment.CenterEnd,
+                modifier = Modifier
+                    .height(32.dp)
+                    .wrapContentWidth()
+                    .constrainAs(superGraphic) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.end)
+                    }
+            )
+        }
 
         CampaignTitle(
             title = title,
             logoUrl = logoUrl,
-            logoHeight = 16.dp,
+            logoHeight = logoTitleHeight,
             textColor = NestNN.light._950,
             fontWeight = FontWeight.Normal,
             modifier = Modifier
@@ -63,8 +68,9 @@ fun MegaCampaign(
                 .constrainAs(logo) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start, margin = 16.dp)
+                    start.linkTo(parent.start)
                 }
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         )
     }
 }
@@ -72,23 +78,29 @@ fun MegaCampaign(
 @Preview
 @Composable
 fun MegaCampaignPreview() {
-    val logoUrl =
+    val logoUrl = "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_f563497d-22f9-4295-ae71-423a35af5476.jpg"
+    val superGraphicUrl =
         "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_f563497d-22f9-4295-ae71-423a35af5476.jpg"
     NestTheme {
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            MegaCampaign(
+            ThematicCampaign(
                 title = "Ramadhan Extra",
                 logoUrl = logoUrl,
-                superGraphicUrl = logoUrl,
+                superGraphicUrl = superGraphicUrl,
                 backgroundColorString = "16754E, 47DB6D"
             )
 
-            MegaCampaign(
+            ThematicCampaign(
                 title = "Ramadhan Extra",
                 logoUrl = "",
-                superGraphicUrl = logoUrl,
+                superGraphicUrl = superGraphicUrl,
                 backgroundColorString = "16754E, 47DB6D"
             )
+
+            ThematicCampaign(title = "Serbu Offial Store", logoUrl = logoUrl, backgroundColorString = "DDD8FF, 47DB6D")
+            ThematicCampaign(title = "Serbu Offial Store", logoUrl = "", backgroundColorString = "DDD8FF")
+            ThematicCampaign(title = "Serbu Offial Store", logoUrl = logoUrl, backgroundColorString = "   DDD8FF")
+            ThematicCampaign(title = "Serbu Offial Store", logoUrl = logoUrl, backgroundColorString = "DDD8FF, 47DB6D,DDD8FF,")
         }
     }
 }

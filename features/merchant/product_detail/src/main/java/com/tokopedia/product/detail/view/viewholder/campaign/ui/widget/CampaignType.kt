@@ -2,12 +2,11 @@ package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.mega.MegaCampaign
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.regular.RegularCampaign
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
-import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.OngoingCampaign
-import com.tokopedia.product.detail.view.widget.timebased.upcoming.UpcomingCampaign
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.ongoing.OngoingCampaign
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.ongoing.OngoingCampaignComposeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.thematic.ThematicCampaign
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.upcoming.UpcomingCampaign
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.upcoming.UpcomingCampaignComposeUiModel
 
 /**
  * Created by yovi.putra on 21/12/23"
@@ -44,30 +43,17 @@ sealed interface CampaignType {
         )
     }
 
-    data class Mega(
+    data class Thematic(
         val title: String,
         val logoUrl: String,
         val superGraphicUrl: String,
         val backgroundColorString: String
     ) : CampaignType {
         @Composable
-        override fun Content() = MegaCampaign(
+        override fun Content() = ThematicCampaign(
             title = title,
             logoUrl = logoUrl,
             superGraphicUrl = superGraphicUrl,
-            backgroundColorString = backgroundColorString
-        )
-    }
-
-    data class Regular(
-        val title: String,
-        val logoUrl: String,
-        val backgroundColorString: String
-    ) : CampaignType {
-        @Composable
-        override fun Content() = RegularCampaign(
-            title = title,
-            logoUrl = logoUrl,
             backgroundColorString = backgroundColorString
         )
     }
