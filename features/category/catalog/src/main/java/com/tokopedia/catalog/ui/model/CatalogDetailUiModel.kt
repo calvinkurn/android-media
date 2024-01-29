@@ -11,14 +11,29 @@ data class CatalogDetailUiModel(
     val shareProperties: ShareProperties = ShareProperties()
 )
 
-data class PriceCtaProperties (
+data class PriceCtaProperties(
     val catalogId: String = "",
-    val departmentId : String = "",
-    val brand : String = "",
+    val departmentId: String = "",
+    val brand: String = "",
     val price: String = "",
     val productName: String = "",
     val bgColor: Int = 0,
     val textColor: Int = 0
+)
+
+data class PriceCtaSellerOfferingProperties(
+    val catalogId: String = "",
+    val productId: String = "",
+    val shopName: String = "",
+    val price: String = "",
+    val slashPrice: String = "",
+    val shopRating: String = "",
+    val sold: Int = 0,
+    val textColor: Int = 0,
+    val iconColor: Int = 0,
+    val bgColor: Int = 0,
+    val bgColorAtc: Int = 0
+
 )
 
 data class NavigationProperties(

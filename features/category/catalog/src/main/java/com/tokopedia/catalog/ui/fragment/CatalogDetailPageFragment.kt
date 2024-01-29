@@ -8,9 +8,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -143,10 +145,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.usecase.detail.InvalidCatalogComparisonException
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.android.synthetic.main.activity_catalog_detail_page.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.debounce
@@ -328,7 +333,8 @@ class CatalogDetailPageFragment :
             if (!comparedCatalogId.isNullOrEmpty()) changeComparison(comparedCatalogId)
         }
         if (requestCode == CATALOG_CAMPARE_SWITCHING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val newComparedCatalogId = data?.getStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID)
+            val newComparedCatalogId =
+                data?.getStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID)
             if (!newComparedCatalogId.isNullOrEmpty()) changeComparison(newComparedCatalogId)
         }
     }
@@ -387,10 +393,12 @@ class CatalogDetailPageFragment :
                     smoothScroller.targetPosition = newAnchorPosition
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }
+
                 (widgetAdapter.findNavigationCount().dec()) -> {
                     smoothScroller.targetPosition = anchorToPosition
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }
+
                 else -> {
                     smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
                     layoutManager?.startSmoothScroll(smoothScroller)
@@ -421,7 +429,8 @@ class CatalogDetailPageFragment :
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
-                binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
+//                binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
+                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaProperties)
                 widgetAdapter.addWidget(it.data.widgets)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
@@ -464,9 +473,11 @@ class CatalogDetailPageFragment :
                 is UnknownHostException -> {
                     getString(R.string.catalog_error_message_no_connection)
                 }
+
                 is InvalidCatalogComparisonException -> {
                     getString(R.string.catalog_error_message_inactive, it.invalidCatalogCount)
                 }
+
                 else -> {
                     ErrorHandler.getErrorMessage(requireView().context, it)
                 }
@@ -525,7 +536,7 @@ class CatalogDetailPageFragment :
                 val bannerRect = Rect()
                 layoutManager.findViewByPosition(Int.ZERO)?.getGlobalVisibleRect(bannerRect)
                 val scrollProgress = Int.ONE - if (bannerRect.height()
-                    .isMoreThanZero() && bannerHeight.isMoreThanZero()
+                        .isMoreThanZero() && bannerHeight.isMoreThanZero()
                 ) {
                     bannerRect.height() / bannerHeight.toFloat()
                 } else {
@@ -587,37 +598,42 @@ class CatalogDetailPageFragment :
 
     // Call this methods if you want to override the CTA & Price widget's theme
     private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaWidget(properties: PriceCtaProperties) {
-        containerPriceCta.setBackgroundColor(properties.bgColor)
-        tgpCatalogName.setTextColor(properties.textColor)
-        tgpPriceRanges.setTextColor(properties.textColor)
+        icCtaNormal.root.show()
+        icCtaSellerOffering.root.gone()
+        icCtaNormal.apply {
+            containerPriceCta.setBackgroundColor(properties.bgColor)
+            tgpCatalogName.setTextColor(properties.textColor)
+            tgpPriceRanges.setTextColor(properties.textColor)
 
-        tgpCatalogName.text = properties.productName
-        tgpPriceRanges.text = properties.price
+            tgpCatalogName.text = properties.productName
+            tgpPriceRanges.text = properties.price
 
-        btnProductList.setOnClickListener {
-            val catalogProductList =
-                Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
-                    .buildUpon()
-                    .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
-                    .appendQueryParameter(
-                        QUERY_PRODUCT_SORTING_STATUS,
-                        productSortingStatus.toString()
-                    )
-                    .appendPath(title).toString()
+            btnProductList.setOnClickListener {
+                val catalogProductList =
+                    Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
+                        .buildUpon()
+                        .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
+                        .appendQueryParameter(
+                            QUERY_PRODUCT_SORTING_STATUS,
+                            productSortingStatus.toString()
+                        )
+                        .appendPath(title).toString()
 
-            RouteManager.getIntent(context, catalogProductList).apply {
-                putExtra(EXTRA_CATALOG_URL, catalogUrl)
-                startActivity(this)
+                RouteManager.getIntent(context, catalogProductList).apply {
+                    putExtra(EXTRA_CATALOG_URL, catalogUrl)
+                    startActivity(this)
+                }
+
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = EVENT_VIEW_CLICK_PG,
+                    action = EVENT_ACTION_SEE_OPTIONS,
+                    category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                    labels = catalogId,
+                    trackerId = TRACKER_ID_CLICK_BUTTON_CHOOSE
+                )
             }
-
-            CatalogReimagineDetailAnalytics.sendEvent(
-                event = EVENT_VIEW_CLICK_PG,
-                action = EVENT_ACTION_SEE_OPTIONS,
-                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-                labels = catalogId,
-                trackerId = TRACKER_ID_CLICK_BUTTON_CHOOSE
-            )
         }
+
 
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_PG_IRIS,
@@ -626,6 +642,21 @@ class CatalogDetailPageFragment :
             labels = catalogId,
             trackerId = TRACKER_ID_IMPRESSION_PRICE
         )
+    }
+
+
+    private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaSellerOfferingWidget(properties: PriceCtaProperties) {
+        icCtaNormal.root.gone()
+        icCtaSellerOffering.root.show()
+        icCtaSellerOffering.apply {
+            containerPriceCta.setBackgroundColor(properties.bgColor)
+            ctaAtc.setPrice("Rp5.000.000")
+            ctaAtc.setSlashPrice("Rp4.000.000")
+            ctaAtc.setShopName("Samsung")
+            ctaAtc.setBadge("https://images.tokopedia.net/img/official_store_badge.png")
+            ctaAtc.setSold("24+ Terjual")
+            ctaAtc.setRating("5.0")
+        }
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.showPageError(throwable: Throwable) {
@@ -877,7 +908,10 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun onTopFeatureImpression(items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>, widgetName: String) {
+    override fun onTopFeatureImpression(
+        items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>,
+        widgetName: String
+    ) {
         val list = arrayListOf<HashMap<String, String>>()
         for (index in items.indices) {
             val promotions = hashMapOf<String, String>()
@@ -929,7 +963,10 @@ class CatalogDetailPageFragment :
 
         Intent(activity ?: return, CatalogSwitchingComparisonActivity::class.java).apply {
             putExtra(CatalogSwitchingComparisonFragment.ARG_CATALOG_ID, catalogId)
-            putStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID, catalogComparedId)
+            putStringArrayListExtra(
+                CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID,
+                catalogComparedId
+            )
             putExtra(CatalogSwitchingComparisonFragment.ARG_EXTRA_CATALOG_BRAND, brand)
             putExtra(CatalogSwitchingComparisonFragment.ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
             startActivityForResult(this, CATALOG_CAMPARE_SWITCHING_REQUEST_CODE)
@@ -1015,7 +1052,8 @@ class CatalogDetailPageFragment :
                 promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
                 promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.inc().toString()
                 promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
-                promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
+                promotions[CatalogTrackerConstant.KEY_ITEM_NAME] =
+                    EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
                 list.add(promotions)
             }
         } else {
@@ -1023,7 +1061,8 @@ class CatalogDetailPageFragment :
                 columnedInfoUiModel.widgetContentThreeColumn[index].rowData.forEachIndexed { subindex, pair ->
                     val promotions = hashMapOf<String, String>()
                     promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
-                    promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = "${index.inc()}.${subindex.inc()}"
+                    promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] =
+                        "${index.inc()}.${subindex.inc()}"
                     promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
                     promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = pair.second
                     list.add(promotions)
