@@ -45,11 +45,11 @@ data class WaitingHeaderUiModel(
             val accountIdLabel = when (PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)) {
                 VirtualAccount -> {
                     if (thanksPageData.gatewayName == DeferredPaymentFragment.GATEWAY_KLIK_BCA)
-                        context?.getString(R.string.thank_klikBCA_virtual_account_tag)
+                        context?.getString(R.string.thank_klikBCA_virtual_account_tag).orEmpty()
                     else if (thanksPageData.gatewayName == JENIUS)
-                        context?.getString(R.string.cashtag)
+                        context?.getString(R.string.cashtag).orEmpty()
                     else
-                        context?.getString(R.string.thank_virtual_account_tag)
+                        context?.getString(R.string.thank_virtual_account_tag).orEmpty()
                 }
                 Retail -> "Kode Bayar"
                 BankTransfer -> "Nomor Rekening"
