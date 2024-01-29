@@ -194,7 +194,7 @@ internal class CategoryInspirationFragment @Inject constructor(
         setupView()
         observe()
 
-        if (savedInstanceState == null) {
+        if (activity?.lastNonConfigurationInstance == null) {
             viewModel.onAction(CategoryInspirationAction.Init)
         }
     }
