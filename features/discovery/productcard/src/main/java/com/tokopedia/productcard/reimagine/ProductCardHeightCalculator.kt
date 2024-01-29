@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.reimagine
 
 import android.content.Context
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineDispatcher
@@ -116,10 +117,12 @@ internal fun productCardListCarouselHeight(
     )
 
     val productCardComponentHeight = productCardComponentHeightList.sum()
-    val productCardHeight = maxOf(
+    val productCardContentHeight = maxOf(
         productCardImageHeight + productCardStockInfoHeight,
         productCardComponentHeight
     )
+    val productCardHeight =
+        productCardContentHeight + listCardPaddingInBackground(productCardModel, context)
 
     Timber.d(
         "Product Card Components Height List: %s; Total Component Height: %s; Final Height: %s",
@@ -130,6 +133,11 @@ internal fun productCardListCarouselHeight(
 
     return productCardHeight
 }
+
+private fun listCardPaddingInBackground(productCardModel: ProductCardModel, context: Context?) =
+    if (productCardModel.isInBackground)
+        context.getPixel(R.dimen.product_card_reimagine_content_guideline_padding_in_background) * 2
+    else 0
 
 private fun listCarouselNameHeight(context: Context?) =
     context.getPixel(productcardR.dimen.product_card_reimagine_name_2_line_height)

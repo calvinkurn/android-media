@@ -112,9 +112,6 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
             Toast.makeText(itemView.context, toastMessage, Toast.LENGTH_SHORT).show()
         }
 
-        fun recycle() {
-        }
-
         private fun setBackgroundContainer(productCardModel: ProductCardModel, view: View) {
             val contextResource = view.context
             if(productCardModel.isInBackground) {
@@ -122,6 +119,9 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
             } else {
                 view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_NN0))
             }
+        }
+
+        fun recycle() {
         }
     }
 }

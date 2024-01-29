@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.annotation.IdRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
 import androidx.core.view.updateLayoutParams
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -23,6 +21,7 @@ import com.tokopedia.productcard.reimagine.ProductCardRenderer
 import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType.GridCarousel
 import com.tokopedia.productcard.reimagine.lazyView
+import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -40,11 +39,9 @@ internal class ReimagineGridCarouselViewStrategy(
     private val stockInfo = ProductCardStockInfo(productCardView)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
-    private val productCardOutlineCard by lazyView<View?>(R.id.productCardOutline)
-    private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageView?>(R.id.productCardImage)
-    private val productCardGuidelineStartContent by lazyView<Guideline?>(R.id.productCardGuidelineStartContent)
-    private val productCardGuidelineEndContent by lazyView<Guideline?>(R.id.productCardGuidelineEndContent)
+    private val guidelineStart by lazyView<Guideline?>(R.id.productCardGuidelineStartContent)
+    private val guidelineEnd by lazyView<Guideline?>(R.id.productCardGuidelineEndContent)
 
     val additionalMarginStart: Int
         get() = cardContainer?.marginStart ?: 0
@@ -59,7 +56,8 @@ internal class ReimagineGridCarouselViewStrategy(
         cardContainer?.run {
             updateLayoutParams { height = MATCH_PARENT }
             elevation = 0f
-            radius = 0f
+            radius = context.getPixel(R.dimen.product_card_reimagine_image_radius).toFloat()
+            cornerRadius = 0f
 
             setCardUnifyBackgroundColor(
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
@@ -92,13 +90,12 @@ internal class ReimagineGridCarouselViewStrategy(
 
         stockInfo.render(productCardModel)
 
-        renderGuidelineContent(productCardModel)
-        renderOutlineProductCard(productCardModel)
+        renderContentPadding(productCardModel)
 
         CompatPaddingUtils(productCardView, useCompatPadding, productCardModel).updatePadding()
     }
 
-    private fun renderGuidelineContent(productCardModel: ProductCardModelReimagine) {
+    private fun renderContentPadding(productCardModel: ProductCardModelReimagine) {
         if (productCardModel.isInBackground) {
             setGuidelineItemInBackground()
         } else {
@@ -107,21 +104,16 @@ internal class ReimagineGridCarouselViewStrategy(
     }
 
     private fun setGuidelineItemNotInBackground() {
-        productCardGuidelineStartContent?.setGuidelineBegin(0)
-        productCardGuidelineEndContent?.setGuidelineEnd(0)
+        guidelineStart?.setGuidelineBegin(0)
+        guidelineEnd?.setGuidelineEnd(0)
     }
 
     private fun setGuidelineItemInBackground() {
-        val contextResource = context?.resources
         val dimensGuideline =
-            contextResource?.getDimensionPixelSize(R.dimen.product_card_reimagine_content_guideline_pading_in_background)
+            context?.getPixel(R.dimen.product_card_reimagine_content_guideline_padding_in_background)
                 ?: 0
-        productCardGuidelineStartContent?.setGuidelineBegin(dimensGuideline)
-        productCardGuidelineEndContent?.setGuidelineEnd(dimensGuideline)
-    }
-
-    private fun renderOutlineProductCard(productCardModel: ProductCardModelReimagine) {
-        productCardOutlineCard?.showWithCondition(productCardModel.isInBackground)
+        guidelineStart?.setGuidelineBegin(dimensGuideline)
+        guidelineEnd?.setGuidelineEnd(dimensGuideline)
     }
 
     override fun recycle() { }

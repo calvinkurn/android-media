@@ -22,8 +22,26 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id='@+id/productCardConstraintLayout'
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/product_card_reimagine_carousel_padding_bottom">
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/productCardGuidelineOutlineCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.35" />
+
+            <View
+                android:id="@+id/productCardOutline"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/product_card_outline_item"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/productCardGuidelineOutlineCard"
+                tools:visibility="visible" />
 
             <android.widget.Space
                 android:id="@+id/productCardMediaAnchor"
@@ -47,9 +65,10 @@
                 android:scaleType="centerCrop"
                 android:visibility="visible"
                 app:layout_constraintDimensionRatio="H,1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
+                app:layout_constraintTop_toTopOf="@id/productCardMediaAnchor"
+                app:layout_constraintEnd_toEndOf="@id/productCardMediaAnchor"
+                app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor"
                 tools:visibility="visible"/>
 
             <com.tokopedia.video_widget.VideoPlayerView
@@ -60,9 +79,10 @@
                 android:gravity="center"
                 android:visibility="gone"
                 app:layout_constraintDimensionRatio="H,1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
+                app:layout_constraintTop_toTopOf="@id/productCardMediaAnchor"
+                app:layout_constraintEnd_toEndOf="@id/productCardMediaAnchor"
+                app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
 
             <ImageView
                 android:id="@+id/productCardOverlay3"
@@ -133,9 +153,9 @@
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
                 android:background="@drawable/product_card_reimagine_label_preventive_overlay_background"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
+                app:layout_constraintTop_toTopOf="@id/productCardMediaAnchor"
+                app:layout_constraintEnd_toEndOf="@id/productCardMediaAnchor"
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="PreOrder"
@@ -147,14 +167,35 @@
                 android:layout_height="0dp"
                 android:gravity="center"
                 android:background="@drawable/product_card_reimagine_label_preventive_block_background"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
+                app:layout_constraintTop_toTopOf="@id/productCardMediaAnchor"
+                app:layout_constraintEnd_toEndOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
                 tools:text="PreOrder"
                 tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/productCardGuidelineStartContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="0dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/productCardGuidelineEndContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="0dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/productCardGuidelineBottomContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="@dimen/product_card_reimagine_carousel_padding_bottom" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardName"
@@ -164,8 +205,8 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/productCardGuidelineEndContent"
+                app:layout_constraintStart_toStartOf="@id/productCardGuidelineStartContent"
                 app:layout_constraintTop_toBottomOf="@id/productCardMediaAnchor"
                 app:typographyType="paragraph_3"
                 tools:text="Product Name"
@@ -186,7 +227,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/product_card_reimagine_price_margin_top"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/productCardGuidelineStartContent"
                 app:layout_constraintTop_toBottomOf="@id/productCardName">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -260,7 +301,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/productCardSlashedPrice"
                 app:layout_constraintStart_toEndOf="@+id/productCardSlashedPrice"
                 app:layout_constraintTop_toTopOf="@+id/productCardSlashedPrice"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/productCardGuidelineEndContent"
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="10%" />
@@ -274,7 +315,7 @@
                 android:background="@drawable/product_card_reimagine_label_background"
                 android:layout_marginTop="@dimen/product_card_reimagine_label_benefit_margin_top"
                 app:layout_constraintTop_toBottomOf="@id/productCardPriceContainer"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="@id/productCardGuidelineStartContent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardLabelOffer"
@@ -294,7 +335,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintTop_toBottomOf="@id/productCardPriceContainer"
                 app:layout_constraintStart_toEndOf="@id/productCardLabelBenefit"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/productCardGuidelineEndContent"
                 tools:text="Beli 3 Diskon 10%" />
 
             <androidx.constraintlayout.widget.Barrier
@@ -309,9 +350,9 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/product_card_reimagine_credibility_height"
                 android:layout_marginTop="@dimen/product_card_reimagine_credibility_margin_top"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/productCardGuidelineStartContent"
                 app:layout_constraintTop_toBottomOf="@id/productCardBarrierLabelBenefitBMSM"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/productCardGuidelineEndContent"
                 app:layout_constraintHorizontal_bias="0">
 
                 <com.tokopedia.iconunify.IconUnify
@@ -364,9 +405,9 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/product_card_reimagine_shop_section_height"
                 android:layout_marginTop="@dimen/product_card_reimagine_shop_section_margin_top"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/productCardGuidelineStartContent"
                 app:layout_constraintTop_toBottomOf="@id/productCardCredibility"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/productCardGuidelineEndContent"
                 app:layout_constraintHorizontal_bias="0"
                 android:gravity="center_vertical">
 
@@ -404,8 +445,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/productCardGuidelineBottomContent"
+                app:layout_constraintEnd_toEndOf="@id/productCardGuidelineEndContent"
                 app:srcCompat="@drawable/product_card_ic_three_dots" />
 
             <androidx.constraintlayout.widget.Group

@@ -12,11 +12,11 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
@@ -42,6 +42,7 @@ internal class ProductCardRenderer(
 
     private val context = view.context
 
+    private val outlineView by view.lazyView<View?>(R.id.productCardOutline)
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by view.lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by view.lazyView<ImageView?>(R.id.productCardImage)
@@ -49,7 +50,7 @@ internal class ProductCardRenderer(
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val labelPreventiveOverlay by view.lazyView<Typography?>(R.id.productCardLabelPreventiveOverlay)
     private val labelPreventiveBlock by view.lazyView<Typography?>(R.id.productCardLabelPreventiveBlock)
-    private val nameText by lazyThreadSafetyNone { initNameText() }
+    private val nameText by view.lazyView<Typography?>(R.id.productCardName)
     private val labelAssignedValue by view.lazyView<ImageView?>(R.id.productCardLabelAssignedValue)
     private val priceText by view.lazyView<Typography?>(R.id.productCardPrice)
     private val nettPriceIcon by view.lazyView<ImageView?>(R.id.productCardNettPriceIcon)
@@ -65,10 +66,9 @@ internal class ProductCardRenderer(
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
 
-    private fun initNameText(): Typography? =
-        view.findViewById<Typography?>(R.id.productCardName)
-
     fun setProductModel(productCardModel: ProductCardModel) {
+        renderOutline(productCardModel)
+        renderCardContainer(productCardModel)
         renderImage(productCardModel)
         renderOverlay(productCardModel)
         renderAds(productCardModel)
@@ -87,6 +87,17 @@ internal class ProductCardRenderer(
         renderRibbon(productCardModel)
         renderSafeContent(productCardModel)
         renderAddToCart(productCardModel)
+    }
+
+    private fun renderOutline(productCardModel: ProductCardModel) {
+        outlineView?.showWithCondition(productCardModel.isInBackground)
+    }
+
+    private fun renderCardContainer(productCardModel: ProductCardModel) {
+        cardContainer?.layoutParams = cardContainer?.layoutParams?.apply {
+            val marginLayoutParams = this as? ViewGroup.MarginLayoutParams
+            marginLayoutParams?.marginStart = type.cardContainerMarginStart(productCardModel)
+        }
     }
 
     private fun renderImage(productCardModel: ProductCardModel) {
@@ -346,18 +357,16 @@ internal class ProductCardRenderer(
     }
 
     private fun renderRibbon(productCardModel: ProductCardModel) {
-        val labelRibbon = productCardModel.ribbon()
+        ribbon?.render(productCardModel.ribbon())
 
-        ribbon?.render(labelRibbon)
+        val ribbonMargin = type.ribbonMargin(productCardModel)
 
-        val marginStart =
-            if (labelRibbon != null) ribbon?.additionalMarginStart() ?: 0
-            else 0
-
-        cardContainer?.layoutParams = cardContainer?.layoutParams?.apply {
-            val marginLayoutParams = this as? ViewGroup.MarginLayoutParams
-            marginLayoutParams?.marginStart = marginStart
-        }
+        ribbon?.setMargin(
+            left = ribbonMargin.start,
+            top = ribbonMargin.top,
+            right = 0,
+            bottom = 0,
+        )
     }
 
     private fun renderSafeContent(productCardModel: ProductCardModel) {
