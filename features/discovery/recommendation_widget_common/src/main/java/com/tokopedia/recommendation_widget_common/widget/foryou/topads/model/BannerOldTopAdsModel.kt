@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.foryou.topads
+package com.tokopedia.recommendation_widget_common.widget.foryou.topads.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory

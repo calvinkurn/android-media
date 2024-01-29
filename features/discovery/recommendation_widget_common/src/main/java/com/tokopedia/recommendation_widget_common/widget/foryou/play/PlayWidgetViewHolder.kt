@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
-import com.tokopedia.play.widget.ui.PlaybackException
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetPlayRecomBinding
 import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
@@ -13,7 +12,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class PlayWidgetViewHolder constructor(
     view: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val playListener: PlayVideoWidgetView.Listener
 ) : BaseForYouViewHolder<PlayWidgetModel>(
     view,
     PlayWidgetModel::class.java
@@ -22,13 +22,9 @@ class PlayWidgetViewHolder constructor(
     private val binding: WidgetPlayRecomBinding? by viewBinding()
 
     init {
-        binding?.homeRecomPlayWidgetVideo?.setListener(object : PlayVideoWidgetView.Listener {
+        binding?.homeRecomPlayWidgetVideo?.setListener(object : PlayVideoWidgetView.Listener by playListener {
             override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) {
                 binding?.homeRecomPlayWidgetVideo?.resetPlaybackPosition()
-            }
-
-            override fun onVideoError(view: PlayVideoWidgetView, error: PlaybackException) {
-                // no op
             }
         })
     }

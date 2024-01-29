@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.foryou.topads
+package com.tokopedia.recommendation_widget_common.widget.foryou.topads.viewholder
 
 import android.graphics.drawable.Drawable
 import android.view.View
@@ -18,6 +18,8 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.recommendation_widget_common.databinding.WidgetBannerOldTopadsBinding
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.topads.BannerTopAdsListener
+import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL

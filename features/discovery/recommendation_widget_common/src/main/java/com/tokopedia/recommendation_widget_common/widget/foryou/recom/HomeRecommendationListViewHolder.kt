@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouRecomListBinding
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.HomeRecommendationListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationListViewHolder constructor(

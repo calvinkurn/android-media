@@ -2,11 +2,11 @@ package com.tokopedia.recommendation_widget_common.widget.foryou.recom
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouRecomGridBinding
 import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.HomeRecommendationListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationGridViewHolder constructor(
