@@ -72,7 +72,7 @@ ext {
     playServiceMeasurementBase = '20.0.1'
     playServiceMeasurementApi = '20.0.1'
     playCastVersion = '21.0.1'
-    bomVersion = '26.2.0'
+    bomVersion = '29.0.3'
     firebasePerfVersion = '20.3.3'
     firebaseRemoteConfigVersion = '21.4.0'
 
