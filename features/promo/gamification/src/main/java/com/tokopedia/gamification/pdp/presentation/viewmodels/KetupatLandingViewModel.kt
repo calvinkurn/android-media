@@ -20,6 +20,7 @@ import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.Ketupat
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatRedirectionBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import kotlinx.coroutines.async
@@ -131,7 +132,7 @@ class KetupatLandingViewModel @Inject constructor(
             data.scratchCard?.let { KetupatCrackBannerVHModel(crack!!, it) }
                 ?.let { tempList.add(it) }
         }
-        if (referral != null) {
+        if (referral != null && referralTimeData.value?.gameReferralEventContent?.eventContent?.remainingTime.orZero() > 0) {
             referralTimeData.value?.let {
                 data.scratchCard?.let { scratchCard -> KetupatReferralBannerVHModel(referral!!, it, scratchCard) }
             }?.let { tempList.add(it) }

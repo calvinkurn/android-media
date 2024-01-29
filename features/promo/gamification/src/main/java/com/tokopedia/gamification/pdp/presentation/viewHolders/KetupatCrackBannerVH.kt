@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
+import com.tokopedia.gamification.pdp.presentation.activities.KetupatLandingActivity
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.notifications.inApp.ketupat.ActivityLifecycleHandler
@@ -41,6 +43,9 @@ class KetupatCrackBannerVH(itemView: View) :
                     itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
                         crackData?.text?.find { it?.key == "OPENED" }?.value
                     itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).hide()
+
+                    itemView.findViewById<Typography>(gamificationR.id.more_info_btn).setBackground(itemView.context.getResources().getDrawable(gamificationR.drawable.rect_stroke_white_solid))
+
                     GamificationAnalytics.sendClickClaimButtonEvent(
                         "direct_reward_id: $scratchCardId", "gamification",
                         "tokopediamarketplace"
@@ -61,8 +66,8 @@ class KetupatCrackBannerVH(itemView: View) :
                 ?.setImageUrl(crackData?.assets?.find { it?.key == "IMAGE_ICON" }?.value.toString())
             itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
                 crackData?.text?.find { it?.key == "DEFAULT" }?.value
-            itemView.findViewById<UnifyButton>(gamificationR.id.more_info_btn).apply {
-                text = "Baca Cara Main"
+            itemView.findViewById<Typography>(gamificationR.id.more_info_btn).apply {
+                text = crackData?.cta?.find { it?.type == "redirection" }?.text
                 this.setOnClickListener {
                     RouteManager.route(
                         context,

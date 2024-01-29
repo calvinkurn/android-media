@@ -74,22 +74,21 @@
                 app:layout_constraintTop_toBottomOf="@+id/crack_img_text"
                 tools:src="@color/red_50" />
 
-            <com.tokopedia.unifycomponents.UnifyButton
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/more_info_btn"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginBottom="28dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@id/layout_background"
                 app:layout_constraintEnd_toEndOf="@id/layout_background"
                 app:layout_constraintStart_toStartOf="@id/layout_background"
                 app:layout_constraintTop_toBottomOf="@+id/open_btn_bg"
-                app:typographyType="heading_3"
+                app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                app:unifyButtonVariant="ghost"
-                app:unifyButtonInvers="true"
-                app:unifyButtonSize="medium"
                 tools:text="123456789" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -126,7 +126,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                 infiniteRecommendationManager?.adapter?.let {
                     concatAdapter.addAdapter(it)
                 }
-                val requestParam = GetRecommendationRequestParam()
+                val requestParam = GetRecommendationRequestParam(pageName = "gami_direct_reward")
                 infiniteRecommendationManager?.requestParam = requestParam
                 infiniteRecommendationManager?.fetchRecommendation().apply {
                     GamificationAnalytics.sendImpressProductRecommendationSectionEvent("direct_reward_id: $scratchCardId")
