@@ -44,14 +44,28 @@ class ShopShowcaseAddViewModel @Inject constructor(
     private val _selectedProductList = MutableLiveData<Result<List<ShowcaseProduct>>>()
     private val _loaderState = MutableLiveData<Boolean>()
     private val _listOfResponse = MutableLiveData<MutableList<Any>>()
+    private val _listOfUpdateShowcaseNameResponse = MutableLiveData<MutableList<Any>>()
+    private val _listOfAppendResponse = MutableLiveData<MutableList<Any>>()
+    private val _listOfRemoveResponse = MutableLiveData<MutableList<Any>>()
+    private val _listOfUpdateShowcaseResponse = MutableLiveData<Result<UpdateShopShowcaseResponse>>()
+    private val _listOfAppendProductShowcaseResponse = MutableLiveData<Result<AppendShowcaseProductResponse>>()
+    private val _listOfRemovedProductShowcaseResponse = MutableLiveData<Result<RemoveShowcaseProductResponse>>()
 
     val createShopShowcase: LiveData<Result<AddShopShowcaseResponse>> get() = _createShopShowcase
     val selectedProductList: LiveData<Result<List<ShowcaseProduct>>> get() = _selectedProductList
     val loaderState: LiveData<Boolean> get() = _loaderState
     val listOfResponse: LiveData<MutableList<Any>> get() = _listOfResponse
+
+    val listOfUpdateShowcaseNameResponse: LiveData<MutableList<Any>> get() = _listOfUpdateShowcaseNameResponse
+    val listOfAppendResponse: LiveData<MutableList<Any>> get() = _listOfAppendResponse
+    val listOfRemoveResponse: LiveData<MutableList<Any>> get() = _listOfRemoveResponse
+
     private val updateShopShowcase: LiveData<Result<UpdateShopShowcaseResponse>> get() = _updateShopShowcase
     private val appendNewShowcaseProduct: LiveData<Result<AppendShowcaseProductResponse>> get() = _appendNewShowcaseProduct
     private val removeShowcaseProduct: LiveData<Result<RemoveShowcaseProductResponse>> get() = _removeShowcaseProduct
+//    private val listOfUpdateShowcaseResponse: LiveData<Result<UpdateShopShowcaseResponse>> get() = _listOfUpdateShowcaseResponse
+//    private val listOfAppendProductShowcaseResponse: LiveData<Result<AppendShowcaseProductResponse>> get() = _listOfAppendProductShowcaseResponse
+//    private val listOfRemovedProductShowcaseResponse: LiveData<Result<RemoveShowcaseProductResponse>> get() = _listOfRemovedProductShowcaseResponse
 
     fun addShopShowcase(data: AddShopShowcaseParam) {
         launchCatchError(block = {
@@ -75,6 +89,98 @@ class ShopShowcaseAddViewModel @Inject constructor(
         }, onError = {
                 _selectedProductList.value = Fail(it)
             })
+    }
+
+    fun updateShowcaseName(data: UpdateShopShowcaseParam) {
+        launch(block = {
+            showLoader()
+            val listOfResponse: MutableList<Any> = mutableListOf()
+
+            // Update showcase name
+            asyncCatchError(
+                block = {
+                    executeUpdateShopShowcase(data)
+                },
+                onError = {
+                    _updateShopShowcase.postValue(Fail(it))
+                }
+            ).await().let {
+                listOfResponse.add(updateShopShowcase.value as Result<UpdateShopShowcaseResponse>)
+            }
+
+            _listOfUpdateShowcaseNameResponse.value = listOfResponse
+            hideLoader()
+        })
+    }
+
+    fun updateShowcaseAppendProduct(data: UpdateShopShowcaseParam, newAppendedProduct: AppendShowcaseProductParam) {
+        launch(block = {
+            showLoader()
+            val listOfResponse: MutableList<Any> = mutableListOf()
+
+            // Update showcase name
+            asyncCatchError(
+                block = {
+                    executeUpdateShopShowcase(data)
+                },
+                onError = {
+                    _updateShopShowcase.postValue(Fail(it))
+                }
+            ).await().let {
+                listOfResponse.add(updateShopShowcase.value as Result<UpdateShopShowcaseResponse>)
+            }
+
+            // Update append product
+            if (newAppendedProduct.listAppended.size.isMoreThanZero()) {
+                asyncCatchError(
+                    block = {
+                        executeAppendNewShowcaseProduct(newAppendedProduct)
+                    },
+                    onError = {
+                        _appendNewShowcaseProduct.postValue(Fail(it))
+                    }
+                ).await().let {
+                    listOfResponse.add(appendNewShowcaseProduct.value as Result<AppendShowcaseProductResponse>)
+                }
+            }
+
+            _listOfAppendResponse.value = listOfResponse
+            hideLoader()
+        })
+    }
+
+    fun updateShowcaseRemoveProduct(data: UpdateShopShowcaseParam, removedProduct: RemoveShowcaseProductParam) {
+        launch(block = {
+            showLoader()
+            val listOfResponse: MutableList<Any> = mutableListOf()
+
+            // Update showcase name
+            asyncCatchError(
+                block = {
+                    executeUpdateShopShowcase(data)
+                },
+                onError = {
+                    _updateShopShowcase.postValue(Fail(it))
+                }
+            ).await().let {
+                listOfResponse.add(updateShopShowcase.value as Result<UpdateShopShowcaseResponse>)
+            }
+
+            // Update remove product
+            asyncCatchError(
+                block = {
+                    executeRemoveShowcaseProduct(removedProduct)
+                },
+                onError = {
+                    _removeShowcaseProduct.postValue(Fail(it))
+                }
+            ).await().let {
+                listOfResponse.add(removeShowcaseProduct.value as Result<RemoveShowcaseProductResponse>)
+            }
+
+            _listOfRemoveResponse.value = listOfResponse
+            hideLoader()
+        })
     }
 
     fun updateShopShowcase(
