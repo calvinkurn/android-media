@@ -28,12 +28,13 @@ data class PriceCtaSellerOfferingProperties(
     val price: String = "",
     val slashPrice: String = "",
     val shopRating: String = "",
-    val sold: Int = 0,
+    val sold: String = "0",
+    val badge: String = "",
     val textColor: Int = 0,
     val iconColor: Int = 0,
     val bgColor: Int = 0,
-    val bgColorAtc: Int = 0
-
+    val bgColorAtc: Int = 0,
+    val isDarkTheme: Boolean = false
 )
 
 data class NavigationProperties(

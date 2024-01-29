@@ -8,11 +8,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -101,6 +99,7 @@ import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Compani
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
+import com.tokopedia.catalog.ui.model.PriceCtaSellerOfferingProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalog.util.CatalogShareUtil
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
@@ -145,8 +144,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.usecase.detail.InvalidCatalogComparisonException
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -430,7 +427,7 @@ class CatalogDetailPageFragment :
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
 //                binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
-                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaProperties)
+//                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaProperties)
                 widgetAdapter.addWidget(it.data.widgets)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
@@ -536,7 +533,7 @@ class CatalogDetailPageFragment :
                 val bannerRect = Rect()
                 layoutManager.findViewByPosition(Int.ZERO)?.getGlobalVisibleRect(bannerRect)
                 val scrollProgress = Int.ONE - if (bannerRect.height()
-                        .isMoreThanZero() && bannerHeight.isMoreThanZero()
+                    .isMoreThanZero() && bannerHeight.isMoreThanZero()
                 ) {
                     bannerRect.height() / bannerHeight.toFloat()
                 } else {
@@ -634,7 +631,6 @@ class CatalogDetailPageFragment :
             }
         }
 
-
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_PG_IRIS,
             action = EVENT_ACTION_IMPRESSION_PRICE_BOTTOM_SHEET,
@@ -644,18 +640,18 @@ class CatalogDetailPageFragment :
         )
     }
 
-
-    private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaSellerOfferingWidget(properties: PriceCtaProperties) {
+    private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaSellerOfferingWidget(properties: PriceCtaSellerOfferingProperties) {
         icCtaNormal.root.gone()
         icCtaSellerOffering.root.show()
         icCtaSellerOffering.apply {
             containerPriceCta.setBackgroundColor(properties.bgColor)
-            ctaAtc.setPrice("Rp5.000.000")
-            ctaAtc.setSlashPrice("Rp4.000.000")
-            ctaAtc.setShopName("Samsung")
-            ctaAtc.setBadge("https://images.tokopedia.net/img/official_store_badge.png")
-            ctaAtc.setSold("24+ Terjual")
-            ctaAtc.setRating("5.0")
+            ctaAtc.setPrice(properties.price)
+            ctaAtc.setSlashPrice(properties.slashPrice)
+            ctaAtc.setShopName(properties.shopName)
+            ctaAtc.setBadge(properties.badge)
+            ctaAtc.setSold(properties.sold)
+            ctaAtc.setRating(properties.shopRating)
+            ctaAtc.setTheme(properties.isDarkTheme)
         }
     }
 
