@@ -3,7 +3,7 @@ package com.tokopedia.recommendation_widget_common.widget.foryou.entity
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetEntityCardBinding
+import com.tokopedia.recommendation_widget_common.databinding.WidgetRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -15,7 +15,7 @@ class RecomEntityCardViewHolder constructor(
     RecomEntityModel::class.java
 ) {
 
-    private val binding: RecommendationWidgetEntityCardBinding? by viewBinding()
+    private val binding: WidgetRecomEntityCardBinding? by viewBinding()
 
     override fun bind(element: RecomEntityModel) {
         binding?.view?.setListener(object : RecomEntityCardView.Listener {
@@ -38,6 +38,6 @@ class RecomEntityCardViewHolder constructor(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.recommendation_widget_entity_card
+        val LAYOUT = R.layout.widget_recom_entity_card
     }
 }

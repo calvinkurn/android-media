@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.recommendation_widget_common.widget.foryou.recomcard.RecomEntityCardView
+    <com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityCardView
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
