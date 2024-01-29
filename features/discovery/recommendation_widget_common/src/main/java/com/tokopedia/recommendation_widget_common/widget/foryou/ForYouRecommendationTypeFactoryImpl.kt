@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.play.widget.ui.PlayVideoWidgetView
 import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityCardViewHolder
@@ -15,13 +16,17 @@ import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecomm
 import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationListener
 import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationUtil.getLayout
+import com.tokopedia.recommendation_widget_common.widget.foryou.topads.BannerOldTopAdsModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.topads.BannerOldTopAdsViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.topads.BannerTopAdsListener
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.BannerTopAdsModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.BannerTopAdsViewHolder
 
 class ForYouRecommendationTypeFactoryImpl constructor(
     private val listener: HomeRecommendationListener,
-    private val topAdsListener: BannerTopAdsViewHolder.Listener,
+    private val topAdsListener: BannerTopAdsListener,
     private val playListener: PlayWidgetViewHolder.Listener,
+    private val playWidgetListener: PlayVideoWidgetView.Listener,
     private val bannerListener: BannerRecommendationViewHolder.Listener,
     private val entityListener: RecomEntityCardViewHolder.Listener
 ) : BaseAdapterTypeFactory(), ForYouRecommendationTypeFactory {
@@ -29,6 +34,8 @@ class ForYouRecommendationTypeFactoryImpl constructor(
     override fun type(model: HomeRecommendationModel) = model.getLayout()
 
     override fun type(model: BannerTopAdsModel) = BannerTopAdsViewHolder.LAYOUT
+
+    override fun type(model: BannerOldTopAdsModel) = BannerOldTopAdsViewHolder.LAYOUT
 
     override fun type(model: PlayWidgetModel) = PlayWidgetViewHolder.LAYOUT
 
@@ -41,7 +48,8 @@ class ForYouRecommendationTypeFactoryImpl constructor(
             HomeRecommendationGridViewHolder.LAYOUT -> HomeRecommendationGridViewHolder(parent, listener)
             HomeRecommendationListViewHolder.LAYOUT -> HomeRecommendationListViewHolder(parent, listener)
             BannerTopAdsViewHolder.LAYOUT -> BannerTopAdsViewHolder(parent, topAdsListener)
-            PlayWidgetViewHolder.LAYOUT -> PlayWidgetViewHolder(parent, playListener)
+            BannerOldTopAdsViewHolder.LAYOUT -> BannerOldTopAdsViewHolder(parent, topAdsListener)
+            PlayWidgetViewHolder.LAYOUT -> PlayWidgetViewHolder(parent, playListener, playWidgetListener)
             BannerRecommendationViewHolder.LAYOUT -> BannerRecommendationViewHolder(parent, bannerListener)
             RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(parent, entityListener)
             else -> super.createViewHolder(parent, type)

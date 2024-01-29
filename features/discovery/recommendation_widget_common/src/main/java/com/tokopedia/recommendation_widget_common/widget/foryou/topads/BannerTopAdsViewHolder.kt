@@ -17,7 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class BannerTopAdsViewHolder constructor(
     view: View,
-    private val listener: Listener
+    private val listener: BannerTopAdsListener
 ) : BaseForYouViewHolder<BannerTopAdsModel>(
     view,
     BannerTopAdsModel::class.java
@@ -57,7 +57,7 @@ class BannerTopAdsViewHolder constructor(
 
     private fun setBannerTopAdsImpressionListener(
         recommendationBannerTopAdsUiModel: BannerTopAdsModel,
-        listener: Listener
+        listener: BannerTopAdsListener
     ) {
         itemView.addOnImpressionListener(
             recommendationBannerTopAdsUiModel,
@@ -110,11 +110,6 @@ class BannerTopAdsViewHolder constructor(
                 })
             }
         }
-    }
-
-    interface Listener {
-        fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int)
-        fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int)
     }
 
     companion object {
