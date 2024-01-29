@@ -35,7 +35,8 @@ class FlashSaleTokoTabViewHolder(
         super.onViewAttachedToWindow()
 
         viewModel?.getTabLiveData()?.observe(fragment.viewLifecycleOwner) { components ->
-            tab.setShopTabs(components.mapToShopTabDataModel(), this)
+            val isFestiveApplied = viewModel?.component?.isBackgroundPresent ?: false
+            tab.setShopTabs(components.mapToShopTabDataModel(isFestiveApplied), this)
         }
     }
 
