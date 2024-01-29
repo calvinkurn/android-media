@@ -75,6 +75,7 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
         assertEquals(widget.binding?.lblCodFreeShipping?.visibility, visibility)
         assertEquals(widget.binding?.lblCodFreeShipping?.text, text)
     }
+
     fun assertBebasOngkirShippingLogoLabel(visibility: Int) {
         assertEquals(widget.binding?.imgLogoFreeShipping?.visibility, visibility)
     }
@@ -101,11 +102,36 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
         )
     }
 
-    // todo
-    fun assertSchellyShippingVisible() {
+    fun assertErrorPinpointVisible(text: CharSequence) {
+        assertEquals(widget.binding?.layoutStateHasSelectedSingleShipping?.visibility, View.VISIBLE)
+        assertEquals(widget.binding?.labelSingleShippingEta?.text, text)
+    }
+
+    fun assertUnavailableCourierLayoutVisible() {
         assertEquals(
             View.VISIBLE,
-            widget.binding?.shippingNowWidget?.visibility
+            widget.binding?.layoutStateFailedShipping?.visibility
+        )
+    }
+
+    fun assertEmptyCourierLayoutVisible() {
+        assertEquals(
+            View.VISIBLE,
+            widget.binding?.layoutStateNoSelectedShipping?.visibility
+        )
+    }
+
+    fun assertLoadingVisible() {
+        assertEquals(
+            View.VISIBLE,
+            widget.binding?.purchasePlatformPartialShimmeringList?.root?.visibility
+        )
+    }
+
+    fun assertSafErrorLayoutVisible() {
+        assertEquals(
+            View.VISIBLE,
+            widget.binding?.layoutStateHasErrorShipping?.visibility
         )
     }
 
