@@ -33,15 +33,6 @@ import kotlin.test.assertEquals
 
 class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
 
-    private val dummyChannel = ShareExChannelItemModel(
-        channelEnum = ShareExChannelEnum.OTHERS,
-        mimeType = ShareExMimeTypeEnum.TEXT,
-        packageName = "dummyPackage"
-    )
-
-    private val dummyUrl = "https://www.tokopedia.com"
-    private val dummyShortLink = "https://tokopedia.link"
-
     @Test
     fun `generate affiliate link, get short link`() {
         runTest {
@@ -115,6 +106,12 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 emit(ShareExResult.Loading)
                 emit(ShareExResult.Success(mockUri))
             }
+
+            val dummyChannel = ShareExChannelItemModel(
+                channelEnum = ShareExChannelEnum.OTHERS,
+                mimeType = ShareExMimeTypeEnum.ALL,
+                packageName = "dummyPackage"
+            )
 
             viewModel.channelIntentUiState.test {
                 // When
@@ -207,6 +204,12 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 emit(ShareExResult.Loading)
                 emit(ShareExResult.Success(mockUri))
             }
+
+            val dummyChannel = ShareExChannelItemModel(
+                channelEnum = ShareExChannelEnum.OTHERS,
+                mimeType = ShareExMimeTypeEnum.IMAGE,
+                packageName = "dummyPackage"
+            )
 
             viewModel.channelIntentUiState.test {
                 // When

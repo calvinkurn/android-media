@@ -5,6 +5,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
+import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetDownloadedImageUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetGeneratedImageUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
@@ -55,6 +58,13 @@ abstract class ShareExViewModelTestFixture {
 
     protected val dummyThrowable = Throwable("Oops!")
     protected val dummyIdentifier = "testId"
+    protected val dummyChannel = ShareExChannelItemModel(
+        channelEnum = ShareExChannelEnum.OTHERS,
+        mimeType = ShareExMimeTypeEnum.TEXT,
+        packageName = "dummyPackage"
+    )
+    protected val dummyUrl = "https://www.tokopedia.com"
+    protected val dummyShortLink = "https://tokopedia.link"
 
     @Before
     fun setup() {
