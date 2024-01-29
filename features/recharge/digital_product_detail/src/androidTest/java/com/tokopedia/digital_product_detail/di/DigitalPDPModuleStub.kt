@@ -9,11 +9,11 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.source.ContactDataSource
-import com.tokopedia.common.topupbills.data.source.ContactDataSourceImpl
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.ContactDataSourceStub
 import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPDataPlanPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPPulsaPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
@@ -30,12 +30,8 @@ import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 
-/**
- * @author by firmanda on 04/01/21
- */
-
 @Module
-class DigitalPDPModule {
+class DigitalPDPModuleStub {
 
     @DigitalPDPScope
     @Provides
@@ -129,7 +125,8 @@ class DigitalPDPModule {
     @DigitalPDPScope
     @DigitalAddToCartQualifier
     fun provideRestRepository(@DigitalAddToCartQualifier interceptors: ArrayList<Interceptor>,
-                              @ApplicationContext context: Context): RestRepository {
+                              @ApplicationContext context: Context
+    ): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
@@ -160,6 +157,6 @@ class DigitalPDPModule {
     @Provides
     @DigitalPDPScope
     fun provideContactDataSource(@ApplicationContext context: Context): ContactDataSource {
-        return ContactDataSourceImpl(context.contentResolver)
+        return ContactDataSourceStub()
     }
 }

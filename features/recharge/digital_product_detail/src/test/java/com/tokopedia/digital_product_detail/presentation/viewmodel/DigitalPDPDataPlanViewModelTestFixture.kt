@@ -2,6 +2,7 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteGroupModel
@@ -47,10 +48,13 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     @RelaxedMockK
     lateinit var repo: DigitalPDPTelcoRepository
 
+    @RelaxedMockK
+    lateinit var contactDataSource: ContactDataSource
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = DigitalPDPDataPlanViewModel(repo, testCoroutineRule.dispatchers)
+        viewModel = DigitalPDPDataPlanViewModel(repo, contactDataSource, testCoroutineRule.dispatchers)
     }
 
     protected fun onGetMenuDetail_thenReturn(response: MenuDetailModel) {

@@ -111,6 +111,9 @@ dependencies {
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

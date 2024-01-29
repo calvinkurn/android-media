@@ -3,9 +3,11 @@ package com.tokopedia.topupbills.telco.common.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -24,9 +26,12 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                               val dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+class SharedTelcoViewModel @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val contactDataSource: ContactDataSource,
+    val dispatcher: CoroutineDispatcher
+) :
+    BaseViewModel(dispatcher) {
 
     private val _recommendation = MutableLiveData<List<TopupBillsRecommendation>>()
     val recommendations: LiveData<List<TopupBillsRecommendation>>
@@ -87,9 +92,11 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogPrefixSelect::class.java, mapParam)
-                graphqlRepository.response(listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
+                graphqlRepository.response(
+                    listOf(graphqlRequest),
+                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build()
+                )
             }.getSuccessData<TelcoCatalogPrefixSelect>()
 
             delay(DELAY_TIME)
@@ -99,10 +106,13 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
+    fun getContactList(): MutableList<TopupBillsContact> {
+        return contactDataSource.getContactList()
+    }
+
     companion object {
         const val KEY_MENU_ID = "menuID"
         const val EXP_TIME = 10
         const val DELAY_TIME = 200L
     }
-
 }
