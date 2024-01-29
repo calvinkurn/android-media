@@ -151,7 +151,7 @@ class MainActivity : BaseActivity() {
         if (model.value.applink.isNotBlank()) {
             RouteManager.route(this, model.value.applink)
         } else {
-            startActivity(Intent(this, MainParentActivity::class.java))
+            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
         }
     }
 

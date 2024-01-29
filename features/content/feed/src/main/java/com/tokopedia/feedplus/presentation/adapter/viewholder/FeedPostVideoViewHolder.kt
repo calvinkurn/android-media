@@ -511,7 +511,7 @@ class FeedPostVideoViewHolder(
             btnDisableClearMode.hide()
         }
 
-        //productTagView.showIfPossible()
+        binding.productTagView.rootView.show()
         productButtonView.showIfPossible()
     }
 
