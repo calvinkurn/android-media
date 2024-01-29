@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouErrorBinding
-import com.tokopedia.recommendation_widget_common.widget.foryou.HomeRecommendationListener
+import com.tokopedia.recommendation_widget_common.widget.foryou.ParentRecommendationListener
 import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.ErrorStateModel
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -14,7 +14,7 @@ import java.net.UnknownHostException
 
 class ErrorStateViewHolder constructor(
     view: View,
-    private val listener: HomeRecommendationListener
+    private val listener: ParentRecommendationListener
 ) : AbstractViewHolder<ErrorStateModel>(view) {
 
     private val binding = WidgetForYouErrorBinding.bind(itemView)

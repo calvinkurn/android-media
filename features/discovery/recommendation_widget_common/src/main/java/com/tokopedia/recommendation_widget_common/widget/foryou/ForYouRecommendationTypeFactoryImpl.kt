@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRec
 import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityCardViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayVideoWidgetManager
 import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationGridViewHolder
@@ -26,21 +27,22 @@ import com.tokopedia.recommendation_widget_common.widget.foryou.state.viewholder
 import com.tokopedia.recommendation_widget_common.widget.foryou.state.viewholder.LoadMoreStateViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.state.viewholder.RetryButtonStateViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.state.viewholder.ShimmeringStateViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.viewholder.BannerOldTopAdsViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.BannerTopAdsListener
+import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.HeadlineTopAdsModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.topads.viewholder.BannerOldTopAdsViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.viewholder.BannerTopAdsViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.viewholder.HeadlineTopAdsViewHolder
 
 class ForYouRecommendationTypeFactoryImpl constructor(
-    private val listener: HomeRecommendationListener,
+    private val listener: ParentRecommendationListener,
     private val topAdsListener: BannerTopAdsListener,
     private val playListener: PlayWidgetViewHolder.Listener,
     private val playWidgetListener: PlayVideoWidgetView.Listener,
     private val bannerListener: BannerRecommendationViewHolder.Listener,
-    private val entityListener: RecomEntityCardViewHolder.Listener
+    private val entityListener: RecomEntityCardViewHolder.Listener,
+    private val playVideoWidgetManager: PlayVideoWidgetManager
 ) : BaseAdapterTypeFactory(), ForYouRecommendationTypeFactory {
 
     override fun type(model: HomeRecommendationModel) = model.getLayout()
@@ -72,7 +74,7 @@ class ForYouRecommendationTypeFactoryImpl constructor(
             // components
             HomeRecommendationGridViewHolder.LAYOUT -> HomeRecommendationGridViewHolder(parent, listener)
             HomeRecommendationListViewHolder.LAYOUT -> HomeRecommendationListViewHolder(parent, listener)
-            PlayWidgetViewHolder.LAYOUT -> PlayWidgetViewHolder(parent, playListener, playWidgetListener)
+            PlayWidgetViewHolder.LAYOUT -> PlayWidgetViewHolder(parent, playVideoWidgetManager, playListener, playWidgetListener)
             BannerRecommendationViewHolder.LAYOUT -> BannerRecommendationViewHolder(parent, bannerListener)
             RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(parent, entityListener)
 

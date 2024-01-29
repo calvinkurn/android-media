@@ -10,40 +10,40 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory
-import com.tokopedia.recommendation_widget_common.widget.foryou.recomcard.RecomEntityCardViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.recomcard.RecomEntityModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityCardViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 
 class HomeRecommendationTypeFactoryImpl(
     private val topAdsBannerClickListener: TopAdsBannerClickListener,
     private val homeRecommendationListener: HomeRecommendationListener,
     private val homeRecommendationVideoWidgetManager: HomeRecommendationVideoWidgetManager
-) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory, ForYouRecommendationTypeFactory {
-    override fun type(dataModel: HomeRecommendationItemDataModel): Int {
+) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
+    override fun type(dataModel: HomeRecommendationItemDataModel): Int { // ✅
         return dataModel.getLayout()
     }
 
-    override fun type(dataModel: HomeRecommendationLoading): Int {
+    override fun type(dataModel: HomeRecommendationLoading): Int { // ✅
         return HomeRecommendationLoadingViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationEmpty): Int {
+    override fun type(dataModel: HomeRecommendationEmpty): Int { // ✅
         return EmptyViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationError): Int {
+    override fun type(dataModel: HomeRecommendationError): Int { // ✅
         return HomeRecommendationErrorViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: BannerRecommendationDataModel): Int {
+    override fun type(dataModel: BannerRecommendationDataModel): Int { // ✅
         return HomeBannerFeedViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationLoadMore): Int {
+    override fun type(dataModel: HomeRecommendationLoadMore): Int { // ✅
         return HomeRecommendationLoadingMoreViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationBannerTopAdsOldDataModel): Int {
+    override fun type(dataModel: HomeRecommendationBannerTopAdsOldDataModel): Int { // ✅
         return HomeRecommendationBannerTopAdsOldViewHolder.LAYOUT
     }
 
@@ -51,20 +51,16 @@ class HomeRecommendationTypeFactoryImpl(
         return HomeRecommendationHeadlineTopAdsViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationPlayWidgetUiModel): Int {
+    override fun type(dataModel: HomeRecommendationPlayWidgetUiModel): Int { // ✅
         return HomeRecommendationPlayWidgetViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationBannerTopAdsUiModel): Int {
+    override fun type(dataModel: HomeRecommendationBannerTopAdsUiModel): Int { // ✅
         return HomeRecommendationBannerTopAdsViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationButtonRetryUiModel): Int {
+    override fun type(dataModel: HomeRecommendationButtonRetryUiModel): Int { // ✅
         return HomeRecommendationButtonRetryViewHolder.LAYOUT
-    }
-
-    override fun type(model: RecomEntityModel): Int {
-        return RecomEntityCardViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {

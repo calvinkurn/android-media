@@ -6,18 +6,18 @@ import com.tokopedia.home.beranda.domain.gql.recommendationcard.AdsBanner
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.PlayVideoWidgetResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BaseHomeRecommendationVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.LAYOUT_NAME_LIST
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
+import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import dagger.Lazy
@@ -33,7 +33,7 @@ class HomeRecommendationCardMapper @Inject constructor(
         pageNumber: Int
     ): HomeRecommendationDataModel {
         val homeRecommendationTypeFactoryImplList =
-            mutableListOf<BaseHomeRecommendationVisitable>()
+            mutableListOf<ForYouRecommendationVisitable>()
 
         getHomeRecommendationCard.recommendationCards.forEachIndexed { index, card ->
             when (card.layout) {
@@ -66,7 +66,7 @@ class HomeRecommendationCardMapper @Inject constructor(
 
                         adsBannerItemResponse?.let { bannerItemResponse ->
                             homeRecommendationTypeFactoryImplList.add(
-                                HomeRecommendationBannerTopAdsUiModel(
+                                BannerTopAdsModel(
                                     layoutCard = card.layout,
                                     layoutItem = card.layoutTracker,
                                     categoryId = card.categoryID,
@@ -113,8 +113,8 @@ class HomeRecommendationCardMapper @Inject constructor(
         layoutCard: String,
         layoutTracker: String,
         playVideoWidgetResponse: PlayVideoWidgetResponse
-    ): HomeRecommendationPlayWidgetUiModel {
-        return HomeRecommendationPlayWidgetUiModel(
+    ): PlayWidgetModel {
+        return PlayWidgetModel(
             cardId = cardId,
             appLink = playVideoWidgetResponse.link.applink,
             playVideoWidgetUiModel = PlayVideoWidgetUiModel(
@@ -130,7 +130,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                 isAutoPlay = playVideoWidgetResponse.basic.autoPlay,
                 shopAppLink = playVideoWidgetResponse.author.appLink
             ),
-            playVideoTrackerUiModel = HomeRecommendationPlayWidgetUiModel.HomeRecommendationPlayVideoTrackerUiModel(
+            playVideoTrackerUiModel = PlayWidgetModel.PlayVideoTrackerUiModel(
                 videoType = playVideoWidgetResponse.basic.type.text,
                 partnerId = playVideoWidgetResponse.author.id,
                 playChannelId = playVideoWidgetResponse.contentOriginID,
@@ -147,8 +147,8 @@ class HomeRecommendationCardMapper @Inject constructor(
 
     private fun mapToEntityCardRecommendationCard(
         recommendationCard: RecommendationCard
-    ): RecomEntityCardUiModel {
-        return RecomEntityCardUiModel(
+    ): RecomEntityModel {
+        return RecomEntityModel(
             id = recommendationCard.id,
             layoutCard = recommendationCard.layout,
             layoutItem = recommendationCard.layoutTracker,
@@ -158,7 +158,7 @@ class HomeRecommendationCardMapper @Inject constructor(
             subTitle = recommendationCard.subtitle,
             imageUrl = recommendationCard.imageUrl,
             backgroundColor = recommendationCard.gradientColor,
-            labelState = RecomEntityCardUiModel.LabelState(
+            labelState = RecomEntityModel.LabelState(
                 iconUrl = recommendationCard.label.imageUrl,
                 title = recommendationCard.label.title,
                 textColor = recommendationCard.label.textColor
@@ -219,10 +219,10 @@ class HomeRecommendationCardMapper @Inject constructor(
         index: Int,
         cardTotal: Int,
         tabName: String
-    ): HomeRecommendationItemDataModel {
+    ): HomeRecommendationModel {
         val productCard = mapToProductCardModel(recommendationCard)
 
-        return HomeRecommendationItemDataModel(
+        return HomeRecommendationModel(
             productCard,
             recommendationCard.mapToHomeRecommendationProductItem(),
             pageName,

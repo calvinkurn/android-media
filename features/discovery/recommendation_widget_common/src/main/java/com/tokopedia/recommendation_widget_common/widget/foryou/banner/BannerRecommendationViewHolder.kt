@@ -29,11 +29,6 @@ class BannerRecommendationViewHolder constructor(
     private fun setBannerOnClickListener(element: BannerRecommendationModel) {
         binding.bannerImageView.setOnClickListener {
             listener.onBannerClick(element)
-//            HomePageTracking.eventClickOnBannerFeed(
-//                element,
-//                element.tabName
-//            )
-//            RouteManager.route(itemView.context, element.applink)
         }
     }
 

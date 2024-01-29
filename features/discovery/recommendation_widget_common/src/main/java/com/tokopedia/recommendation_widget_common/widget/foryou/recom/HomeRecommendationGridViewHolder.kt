@@ -6,12 +6,12 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouRecomGridBinding
 import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.HomeRecommendationListener
+import com.tokopedia.recommendation_widget_common.widget.foryou.ParentRecommendationListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationGridViewHolder constructor(
     view: View,
-    private val listener: HomeRecommendationListener
+    private val listener: ParentRecommendationListener
 ) : BaseForYouViewHolder<HomeRecommendationModel>(
     view,
     HomeRecommendationModel::class.java

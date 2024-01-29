@@ -17,13 +17,13 @@ import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.T
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_47716
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_48661
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_48662
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
-import com.tokopedia.recommendation_widget_common.widget.foryou.recomcard.RecomEntityModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -87,7 +87,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductClickNonLogin(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: HomeRecommendationModel
     ) = BaseTrackerBuilder().constructBasicProductClick(
         event = Event.PRODUCT_CLICK,
         eventCategory = Category.HOMEPAGE,
@@ -103,7 +103,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductClickLogin(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: HomeRecommendationModel
     ) = BaseTrackerBuilder().constructBasicProductClick(
         event = Event.PRODUCT_CLICK,
         eventCategory = Category.HOMEPAGE,
@@ -119,7 +119,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductClickLoginTopAds(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: HomeRecommendationModel
     ) = BaseTrackerBuilder().constructBasicProductClick(
         event = Event.PRODUCT_CLICK,
         eventCategory = Category.HOMEPAGE,
@@ -135,7 +135,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductClickNonLoginTopAds(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: HomeRecommendationModel
     ) = BaseTrackerBuilder().constructBasicProductClick(
         event = Event.PRODUCT_CLICK,
         eventCategory = Category.HOMEPAGE,
@@ -151,7 +151,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductViewLogin(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: HomeRecommendationModel
     ) = BaseTrackerBuilder().constructBasicProductView(
         event = Event.PRODUCT_VIEW,
         eventCategory = Category.HOMEPAGE,
@@ -167,7 +167,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductViewLoginTopAds(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: HomeRecommendationModel
     ) = BaseTrackerBuilder().constructBasicProductView(
         event = Event.PRODUCT_VIEW,
         eventCategory = Category.HOMEPAGE,
@@ -183,7 +183,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductViewNonLogin(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: HomeRecommendationModel
     ) = BaseTrackerBuilder().constructBasicProductView(
         event = Event.PRODUCT_VIEW,
         eventCategory = Category.HOMEPAGE,
@@ -199,7 +199,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductViewNonLoginTopAds(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: HomeRecommendationModel
     ) = BaseTrackerBuilder().constructBasicProductView(
         event = Event.PRODUCT_VIEW,
         eventCategory = Category.HOMEPAGE,
@@ -249,7 +249,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             "$productId - $tabName"
         )
 
-    fun getBannerRecommendation(bannerRecommendationDataModel: BannerRecommendationDataModel): Map<String, Any> {
+    fun getBannerRecommendation(bannerRecommendationDataModel: BannerRecommendationModel): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicPromotionView(
             event = Event.PROMO_VIEW,
@@ -355,7 +355,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
     }
 
     fun sendClickVideoRecommendationCardTracking(
-        homeRecomPlayWidgetUiModel: HomeRecommendationPlayWidgetUiModel,
+        homeRecomPlayWidgetUiModel: PlayWidgetModel,
         position: Int,
         userId: String
     ) {
@@ -424,7 +424,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
     }
 
     fun getImpressPlayVideoWidgetTracking(
-        homeRecomPlayWidgetUiModel: HomeRecommendationPlayWidgetUiModel,
+        homeRecomPlayWidgetUiModel: PlayWidgetModel,
         position: Int,
         userId: String
     ): HashMap<String, Any> {
@@ -536,7 +536,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun getImpressBannerTopAdsTracking(
-        homeTopAdsRecommendationBannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
+        homeTopAdsRecommendationBannerTopAdsUiModel: BannerTopAdsModel,
         position: Int,
         userId: String
     ): Map<String, Any> {
@@ -575,7 +575,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun sendClickBannerTopAdsTracking(
-        bannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
+        bannerTopAdsUiModel: BannerTopAdsModel,
         position: Int,
         userId: String
     ) {
@@ -627,7 +627,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
-    private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) =
+    private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationModel) =
         Product(
             id = homeRecommendationItemDataModel.recommendationProductItem.id,
             name = homeRecommendationItemDataModel.recommendationProductItem.name,
@@ -642,7 +642,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             isTopAds = null
         )
 
-    private fun mapToPromoTracking(bannerRecommendationDataModel: BannerRecommendationDataModel) =
+    private fun mapToPromoTracking(bannerRecommendationDataModel: BannerRecommendationModel) =
         Promotion(
             id = bannerRecommendationDataModel.id.toString(),
             name = CustomAction.BANNER_FIELD.format(bannerRecommendationDataModel.tabName),

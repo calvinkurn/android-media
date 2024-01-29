@@ -12,6 +12,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class PlayWidgetViewHolder constructor(
     view: View,
+    manager: PlayVideoWidgetManager,
     private val listener: Listener,
     private val playListener: PlayVideoWidgetView.Listener
 ) : BaseForYouViewHolder<PlayWidgetModel>(
@@ -22,6 +23,8 @@ class PlayWidgetViewHolder constructor(
     private val binding: WidgetPlayRecomBinding? by viewBinding()
 
     init {
+        manager.bind(binding?.homeRecomPlayWidgetVideo)
+
         binding?.homeRecomPlayWidgetVideo?.setListener(object : PlayVideoWidgetView.Listener by playListener {
             override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) {
                 binding?.homeRecomPlayWidgetVideo?.resetPlaybackPosition()
