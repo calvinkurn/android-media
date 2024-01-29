@@ -41,8 +41,8 @@ fun ThematicCampaign(
             .campaignBackgroundColor(colorString = backgroundColorString)
     ) {
         val (logo, superGraphic) = createRefs()
-        val isMegaThematic = superGraphicUrl.isNotBlank()
-        val logoTitleHeight = if (isMegaThematic) 16.dp else 14.dp
+        val isMegaThematic = remember(superGraphicUrl) { superGraphicUrl.isNotBlank() }
+        val logoTitleHeight = remember(isMegaThematic) { if (isMegaThematic) 16.dp else 14.dp }
 
         if (isMegaThematic) {
             CampaignImage(
