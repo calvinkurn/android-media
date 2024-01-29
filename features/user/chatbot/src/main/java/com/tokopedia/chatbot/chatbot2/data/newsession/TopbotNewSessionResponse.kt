@@ -10,6 +10,10 @@ data class TopBotNewSessionResponse(
         @SerializedName("isNewSession")
         val isNewSession: Boolean,
         @SerializedName("isTypingBlocked")
-        val isTypingBlocked: Boolean
+        val isTypingBlocked: Boolean,
+        @SerializedName("isSlowMode")
+        var isSlowMode: Boolean,
+        @SerializedName("slowModeDurationInSeconds")
+        var slowModeDurationInSeconds: Int
     )
 }

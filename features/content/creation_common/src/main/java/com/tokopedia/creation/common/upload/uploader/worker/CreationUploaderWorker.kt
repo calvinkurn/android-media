@@ -103,7 +103,7 @@ class CreationUploaderWorker(
 
                     when (result) {
                         is CreationUploadExecutionResult.Success -> {
-                            launch(coroutineDispatcher) {
+                            withContext(coroutineDispatcher) {
                                 queueRepository.delete(data.queueId)
                             }
                         }

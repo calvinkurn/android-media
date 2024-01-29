@@ -4,11 +4,9 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 
 const val IMG_URL_REGULAR_MERCHANT_POPUP = TokopediaImageUrl.IMG_URL_REGULAR_MERCHANT_POPUP
 const val IMG_URL_POWER_MERCHANT_IDLE_POPUP = TokopediaImageUrl.IMG_URL_POWER_MERCHANT_IDLE_POPUP
-const val GM_TITLE = "Power Merchant"
 const val PATTERN_DATE_SHOP_INFO = "yyyy-MM-dd"
 const val NEW_SELLER_DAYS = 90
 const val START_TENURE_EIGHTY_THREE = 83
-const val TRANSITION_PERIOD = "transition_period"
 const val ZERO_NUMBER = 0
 const val ONE_NUMBER = 1
 const val TWO_NUMBER = 2
