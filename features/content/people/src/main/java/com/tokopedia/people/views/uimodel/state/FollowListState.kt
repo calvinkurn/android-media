@@ -8,14 +8,16 @@ data class FollowListState(
     val followList: List<PeopleUiModel>,
     val hasNextPage: Boolean,
     val result: Result<Unit>?,
-    val isLoading: Boolean
+    val isLoading: Boolean,
+    val countFmt: String,
 ) {
     companion object {
         val Empty = FollowListState(
             followList = emptyList(),
             hasNextPage = false,
             result = Result.success(),
-            isLoading = false
+            isLoading = false,
+            countFmt = "",
         )
     }
 }

@@ -50,6 +50,8 @@ internal fun FollowListScreen(
     onFollowClicked: (PeopleUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LogCompositions(tag = "FollowList", msg = "Recompose the follow list screen")
+
     val listState = rememberLazyListState()
 
     LazyColumn(modifier, listState) {

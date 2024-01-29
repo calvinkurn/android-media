@@ -20,11 +20,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private typealias ResultWithCursor<T> = Pair<Result<T>, String>
+private data class PerPageResult(
+    val result: Result<List<PeopleUiModel>>,
+    val cursor: String,
+    val total: String?,
+)
 internal class FollowListViewModel @AssistedInject constructor(
     @Assisted private val type: FollowListType,
     @Assisted private val profileIdentifier: String,
-    private val userRepo: UserFollowRepository
+    private val userFollowRepo: UserFollowRepository
 ) : ViewModel() {
 
     @AssistedFactory
@@ -36,18 +40,21 @@ internal class FollowListViewModel @AssistedInject constructor(
     private val _nextCursor = MutableStateFlow<String?>(null)
     private val _isLoading = MutableStateFlow(false)
     private val _result = MutableStateFlow<Result<Unit>?>(null)
+    private val _countFmt = MutableStateFlow("")
 
     val state = combine(
         _followList,
         _nextCursor,
         _result,
-        _isLoading
-    ) { followList, nextCursor, result, isLoading ->
+        _isLoading,
+        _countFmt,
+    ) { followList, nextCursor, result, isLoading, countFmt ->
         FollowListState(
             followList = followList,
             hasNextPage = nextCursor == null || nextCursor.isNotBlank(),
             result = result,
-            isLoading = isLoading
+            isLoading = isLoading,
+            countFmt = countFmt,
         )
     }.stateIn(
         viewModelScope,
@@ -84,35 +91,51 @@ internal class FollowListViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun getFollowers(cursor: String): ResultWithCursor<List<PeopleUiModel>> {
+    private suspend fun getFollowers(cursor: String): PerPageResult {
         var nextCursor = cursor
         return try {
             var result: FollowListUiModel.Follower
 
             do {
-                result = userRepo.getFollowers(profileIdentifier, nextCursor, 10)
+                result = userFollowRepo.getFollowers(profileIdentifier, nextCursor, 10)
                 nextCursor = result.nextCursor
             } while (result.followers.isEmpty() && nextCursor.isNotEmpty())
 
-            Result.success(result.followers) to nextCursor
+            PerPageResult(
+                Result.success(result.followers),
+                nextCursor,
+                result.total.totalFollowers,
+            )
         } catch (e: Throwable) {
-            Result.failure<List<PeopleUiModel>>(e) to nextCursor
+            PerPageResult(
+                Result.failure(e),
+                nextCursor,
+                null
+            )
         }
     }
 
-    private suspend fun getFollowings(cursor: String): ResultWithCursor<List<PeopleUiModel>> {
+    private suspend fun getFollowings(cursor: String): PerPageResult {
         var nextCursor = cursor
         return try {
             var result: FollowListUiModel.Following
 
             do {
-                result = userRepo.getFollowing(profileIdentifier, nextCursor, 10)
+                result = userFollowRepo.getFollowing(profileIdentifier, nextCursor, 10)
                 nextCursor = result.nextCursor
             } while (result.followingList.isEmpty() && nextCursor.isNotEmpty())
 
-            Result.success(result.followingList) to nextCursor
+            PerPageResult(
+                Result.success(result.followingList),
+                nextCursor,
+                result.total.totalFollowing,
+            )
         } catch (e: Throwable) {
-            Result.failure<List<PeopleUiModel>>(e) to nextCursor
+            PerPageResult(
+                Result.failure(e),
+                nextCursor,
+                null
+            )
         }
     }
 
@@ -121,12 +144,15 @@ internal class FollowListViewModel @AssistedInject constructor(
 
         _isLoading.value = true
         viewModelScope.launch {
-            val (result, nextCursor) = when (type) {
+            val (result, nextCursor, total) = when (type) {
                 FollowListType.Follower -> getFollowers(cursor)
                 FollowListType.Following -> getFollowings(cursor)
             }
             _result.value = result.onSuccess { followList -> _followList.update { it + followList } }.map {}
             _nextCursor.value = nextCursor
+            if (total != null) {
+                _countFmt.value = total
+            }
             _isLoading.value = false
         }
     }
@@ -134,7 +160,7 @@ internal class FollowListViewModel @AssistedInject constructor(
     private fun followUser(user: PeopleUiModel.UserUiModel) {
         viewModelScope.launch {
             val shouldFollow = !user.isFollowed
-            val result = userRepo.followUser(user.encryptedId, shouldFollow)
+            val result = userFollowRepo.followUser(user.encryptedId, shouldFollow)
             if (result !is MutationUiModel.Success) return@launch
 
             _followList.update {
@@ -150,7 +176,7 @@ internal class FollowListViewModel @AssistedInject constructor(
     private fun followShop(shop: PeopleUiModel.ShopUiModel) {
         viewModelScope.launch {
             val shouldFollow = !shop.isFollowed
-            val result = userRepo.followShop(shop.id, ShopFollowAction.getActionByState(!shouldFollow))
+            val result = userFollowRepo.followShop(shop.id, ShopFollowAction.getActionByState(!shouldFollow))
             if (result !is MutationUiModel.Success) return@launch
 
             _followList.update {

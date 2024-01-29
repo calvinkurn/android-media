@@ -4,8 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -18,28 +26,37 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFollowFollowingParentContentBinding
 import com.tokopedia.people.databinding.UpFollowFollowingParentShimmerBinding
 import com.tokopedia.people.databinding.UpFragmentFollowerFollowingListingBinding
 import com.tokopedia.people.utils.withCache
+import com.tokopedia.people.viewmodels.FollowListViewModel
+import com.tokopedia.people.viewmodels.FollowListViewModelStoreProvider
+import com.tokopedia.people.viewmodels.FollowerFollowingListAction
+import com.tokopedia.people.viewmodels.FollowerFollowingListViewModel
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_ACTIVE_TAB
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.FollowListUiModel
+import com.tokopedia.people.views.uimodel.action.FollowListAction
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.LoadingState
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.people.R as peopleR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class FollowerFollowingListingFragment @Inject constructor(
+internal class FollowerFollowingListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
+    private val followListVMFactory: FollowListViewModel.Factory,
+    private val followerFollowingListVMFactory: FollowerFollowingListViewModel.Factory,
     private var userProfileTracker: UserProfileTracker
 ) : TkpdBaseV4Fragment() {
 
@@ -56,6 +73,19 @@ class FollowerFollowingListingFragment @Inject constructor(
     private val viewModel: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[FollowerFollowingViewModel::class.java]
     }
+
+    @Suppress("UNCHECKED_CAST")
+    private val profileViewModel by viewModels<FollowerFollowingListViewModel> {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val vm = followerFollowingListVMFactory.create(userId)
+                vm onAction FollowerFollowingListAction.Init
+                return vm as T
+            }
+        }
+    }
+
+    private val followListViewModelStoreProvider by viewModels<FollowListViewModelStoreProvider>()
 
     private val userId: String
         get() = arguments?.getString(EXTRA_USERNAME).orEmpty()
@@ -79,7 +109,36 @@ class FollowerFollowingListingFragment @Inject constructor(
         savedInstanceState: Bundle?
     ): View {
         _binding = UpFragmentFollowerFollowingListingBinding.inflate(inflater, container, false)
-        return binding.root
+//        return binding.root
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
+            setContent {
+                val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+
+                NestTheme {
+                    FollowingFollowerListScreen(
+                        profileName = uiState.profileName,
+                        totalFollowersFmt = uiState.totalFollowersFmt,
+                        totalFollowingsFmt = uiState.totalFollowingsFmt,
+                        followListViewModel = { type ->
+                            ViewModelProvider(
+                                { followListViewModelStoreProvider.getOrCreateViewModelStore(type) },
+                                object : ViewModelProvider.Factory {
+                                    @Suppress("UNCHECKED_CAST")
+                                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                                        val vm = followListVMFactory.create(type, userId)
+                                        vm.onAction(FollowListAction.Init)
+                                        return vm as T
+                                    }
+                                }
+                            )[FollowListViewModel::class.java]
+                        },
+                        Modifier.fillMaxSize(),
+                    )
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
