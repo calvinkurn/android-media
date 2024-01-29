@@ -104,7 +104,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-
+    implementation projectOrAar(rootProject.ext.libraries.sdui)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime

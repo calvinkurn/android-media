@@ -17,8 +17,10 @@ import java.lang.IllegalArgumentException
 import java.net.URI
 
 
-class ActionHandler(private val contextDivAction: Context?,
-                    private val sduiTrackingInterface: SDUITrackingInterface? = null): DivActionHandler() {
+class ActionHandler(
+    private val contextDivAction: Context?,
+    private val sduiTrackingInterface: SDUITrackingInterface? = null
+) : DivActionHandler() {
 
     object APPLINK {
         const val HOST_ROUTE = "route"
@@ -27,6 +29,7 @@ class ActionHandler(private val contextDivAction: Context?,
         const val IDENTIFIER_APPLINK = "applink="
         const val KEY_TRACKING_DATA = "tracking_data"
     }
+
     override fun handleAction(action: DivAction, view: DivViewFacade): Boolean {
         RouteManager.route(contextDivAction, getApplink(
             parseClickActionUrl(action.url?.evaluate(view.expressionResolver).toString())))
@@ -49,9 +52,9 @@ class ActionHandler(private val contextDivAction: Context?,
 
     override fun handleAction(action: DivSightAction, view: DivViewFacade): Boolean {
         //Send impression tracker
-        if(sduiTrackingInterface != null) {
+        if (sduiTrackingInterface != null) {
             sduiTrackingInterface.onViewVisible(action.payload)
-        }else {
+        } else {
             sendTracker(action.payload)
         }
         return super.handleAction(action, view)

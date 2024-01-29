@@ -324,4 +324,6 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG = "android_internal_nakama_version_dialog_config";
 
+    public static final String ANDROID_ENABLE_SDUI_CAMPAIGN_WIDGET_HOME = "android_home_enable_sdui";
+
 }

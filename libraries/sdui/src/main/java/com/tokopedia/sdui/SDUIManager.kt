@@ -29,7 +29,7 @@ class SDUIManager : SDUIinterface {
     override fun initSDUI(context: Context,
                           sduiTrackingInterface: SDUITrackingInterface?) {
         this.context = context
-        initDivKit(context)
+        initDivKit(context, sduiTrackingInterface)
     }
 
     private fun initDivKit(context: Context,

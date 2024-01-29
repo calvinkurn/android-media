@@ -630,7 +630,7 @@ class HomeAdapterFactory(
                 )
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
-            OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view)
+            OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, campaignWidgetComponentListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
