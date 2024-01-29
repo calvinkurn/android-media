@@ -12,6 +12,8 @@ import com.tokopedia.thankyou_native.data.mapper.Retail
 import com.tokopedia.thankyou_native.data.mapper.VirtualAccount
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
+import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
+import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment.Companion.JENIUS
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 
 data class WaitingHeaderUiModel(
@@ -41,9 +43,14 @@ data class WaitingHeaderUiModel(
         fun create(thanksPageData: ThanksPageData, context: Context?): WaitingHeaderUiModel {
 
             val accountIdLabel = when (PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)) {
-                VirtualAccount -> "Nomor Virtual Account"
-                KlikBCA -> "User ID KlikBCA"
-                Jenius -> "Cashtag"
+                VirtualAccount -> {
+                    if (thanksPageData.gatewayName == DeferredPaymentFragment.GATEWAY_KLIK_BCA)
+                        context?.getString(R.string.thank_klikBCA_virtual_account_tag)
+                    else if (thanksPageData.gatewayName == JENIUS)
+                        context?.getString(R.string.cashtag)
+                    else
+                        context?.getString(R.string.thank_virtual_account_tag)
+                }
                 Retail -> "Kode Bayar"
                 BankTransfer -> "Nomor Rekening"
                 else -> "Nomor Virtual Account"

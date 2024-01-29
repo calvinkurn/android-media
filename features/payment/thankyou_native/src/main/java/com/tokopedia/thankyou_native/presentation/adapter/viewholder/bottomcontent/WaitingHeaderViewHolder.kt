@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
 import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListener
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
@@ -36,7 +37,7 @@ class WaitingHeaderViewHolder(
         binding?.accountIdLabel?.text = data.accountIdLabel
         binding?.accountId?.text = data.accountId
         binding?.bankBranch?.shouldShowWithAction(data.bankBranch.isNotEmpty()) {
-            binding?.bankBranch?.text = getString(R.string.thank_bank_branch, data.bankBranch)
+            binding?.bankBranch?.text = HtmlLinkHelper(view.context, getString(R.string.thank_bank_branch, data.bankBranch)).spannedString
         }
         binding?.accountImage?.setImageUrl(data.accountImage)
         binding?.amountLabel?.text = data.amountLabel

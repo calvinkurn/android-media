@@ -43,6 +43,8 @@ data class ThanksPageData(
     val howToPay: String?,
     @SerializedName("how_to_pay_applink")
     val howToPayAPP: String?,
+    @SerializedName("whitelisted_rba")
+    val whitelistedRBA: Boolean,
     @SerializedName("payment_type")
     val paymentType: String,
     @SerializedName("expire_time_str")

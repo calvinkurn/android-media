@@ -5,6 +5,8 @@ import android.view.View
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.BankTransfer
+import com.tokopedia.thankyou_native.data.mapper.InstantPaymentPage
+import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.data.mapper.Retail
 import com.tokopedia.thankyou_native.data.mapper.VirtualAccount
@@ -53,32 +55,51 @@ class HeaderListenerImpl(
     override fun onPrimaryButtonClick() {
         thanksPageData.customDataAppLink?.let {
             if (it.home.isNullOrBlank()) {
-                onDialogRedirectListener.refreshThanksPageData()
+                onDialogRedirectListener.gotoHomePage()
             } else {
                 onDialogRedirectListener.launchApplink(it.home)
             }
         } ?: run {
-            onDialogRedirectListener.refreshThanksPageData()
+            onDialogRedirectListener.gotoHomePage()
         }
     }
 
     override fun onSecondaryButtonClick() {
-        onDialogRedirectListener.openHowToPay()
+        if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == InstantPaymentPage) {
+            onDialogRedirectListener.gotoOrderList(thanksPageData.customDataAppLink?.order.orEmpty())
+        } else {
+            onDialogRedirectListener.refreshThanksPageData()
+        }
     }
 
     private fun showToastCopySuccessFully() {
         rootView?.let {
-            val toasterMessage = when (PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)) {
-                is BankTransfer -> context?.getString(R.string.thankyou_bank_account_copied)
-                is VirtualAccount -> if (thanksPageData.gatewayName == DeferredPaymentFragment.GATEWAY_KLIK_BCA)
-                    context?.getString(R.string.thankyou_klikbca_virtual_account_copied)
-                else
-                    context?.getString(R.string.thankyou_virtual_account_copied)
-                is Retail -> context?.getString(R.string.thankyou_retail_account_copied)
-                else -> ""
+            val toasterMsg = when (PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)) {
+                VirtualAccount -> {
+                    if (thanksPageData.gatewayName == DeferredPaymentFragment.GATEWAY_KLIK_BCA)
+                        context?.getString(R.string.thank_klikBCA_virtual_account_tag)
+                    else if (thanksPageData.gatewayName == DeferredPaymentFragment.JENIUS)
+                        context?.getString(R.string.cashtag)
+                    else
+                        context?.getString(R.string.thank_virtual_account_tag)
+                }
+                Retail -> "Kode Bayar"
+                BankTransfer -> "Nomor Rekening"
+                else -> "Nomor Virtual Account"
             }
-            if (toasterMessage?.isNotBlank() == true)
-                Toaster.make(it, toasterMessage, Toaster.LENGTH_SHORT)
+
+            val finalToasterMsg = toasterMsg + context?.getString(R.string.copy_success)
+
+            if (finalToasterMsg?.isNotBlank() == true)
+                Toaster.make(it, finalToasterMsg, Toaster.LENGTH_SHORT)
+        }
+    }
+
+    private fun showToastAmountSuccessfully() {
+        rootView?.let {
+            val finalToasterMsg = context?.getString(R.string.total_tagihan_successfully_copied)
+
+            Toaster.make(it, finalToasterMsg.orEmpty(), Toaster.LENGTH_SHORT)
         }
     }
 }

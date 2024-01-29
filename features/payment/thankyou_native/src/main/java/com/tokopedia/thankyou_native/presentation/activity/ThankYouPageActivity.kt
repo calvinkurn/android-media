@@ -453,7 +453,7 @@ class ThankYouPageActivity :
         return try {
             val remoteConfig = FirebaseRemoteConfigImpl(this)
             return remoteConfig.getBoolean(ANDROID_ENABLE_THANKYOUPAGE_V2, true)
-        } catch (e: Exception) {
+        } catch (ignore: Exception) {
             false
         }
     }

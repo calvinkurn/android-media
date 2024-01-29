@@ -103,15 +103,15 @@ class LoaderFragment : BaseDaggerFragment() {
     private fun loadThankPageData() {
         globalError.gone()
         arguments?.let {
+            if (it.containsKey(ThankYouBaseFragment.ARG_IS_V2_ENABLED)) {
+                isV2Enabled = it.getBoolean(ThankYouBaseFragment.ARG_IS_V2_ENABLED)
+            }
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
                 thanksPageDataViewModel.getThanksPageData(
                     it.getString(ARG_PAYMENT_ID, ""),
                     it.getString(ARG_MERCHANT, ""),
                     isV2Enabled
                 )
-            }
-            if (it.containsKey(ThankYouBaseFragment.ARG_IS_V2_ENABLED)) {
-                isV2Enabled = it.getBoolean(ThankYouBaseFragment.ARG_IS_V2_ENABLED)
             }
         }
     }
@@ -203,6 +203,10 @@ class LoaderFragment : BaseDaggerFragment() {
                 if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == ProcessingPaymentPage) {
                     context?.let {
                         header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_TN50))
+                    }
+                } else {
+                    context?.let {
+                        header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_YN50))
                     }
                 }
                 header.animate().alpha(1f).setDuration(UnifyMotion.T5).setInterpolator(UnifyMotion.EASE_OUT).start()
