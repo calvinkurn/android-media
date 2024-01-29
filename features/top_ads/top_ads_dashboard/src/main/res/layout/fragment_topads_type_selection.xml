@@ -3,11 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:viewBindingIgnore="true"
     android:orientation="vertical"
     android:background="@color/Unify_Background">
-
-    <include layout="@layout/partial_base_toolbar" />
 
     <include
         android:id="@+id/topads_ad_card1"
