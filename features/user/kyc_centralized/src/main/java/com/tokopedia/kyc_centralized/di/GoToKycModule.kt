@@ -34,6 +34,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -186,6 +187,9 @@ open class GoToKycModule {
         val customKycConfigs = gson.parseDataFromString(
             kycConfigString,
             UnifiedKycConfigs::class.java
+        )?.copy(
+            uploadSelfieSecondImageEnabled = RemoteConfigInstance.getInstance()
+                .abTestPlatform.getString(KEY_UPLOAD_SELFIE).isNotEmpty()
         )
 
         val customAuroraConfigs = gson.parseDataFromString(
@@ -252,5 +256,6 @@ open class GoToKycModule {
         private const val NET_RETRY = 3
         private const val sharedPreferenceName = "kyc_centralized"
         private const val clickstreamEndPoint = "/api/v1/events"
+        private const val KEY_UPLOAD_SELFIE = "goto_kyc_selfie_and"
     }
 }
