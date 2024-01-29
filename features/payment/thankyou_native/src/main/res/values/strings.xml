@@ -19,6 +19,7 @@
     <string name="thank_see_detail">Lihat Detail</string>
     <string name="thank_see_payment_methods">Lihat Cara Bayar</string>
     <string name="thank_bank_branch"><![CDATA[Atas nama <b>%s</b>]]></string>
+    <string name="thank_pay_before">Bayar Sebelum</string>
 
     <string name="thank_virtual_account_tag">Nomor Virtual Account</string>
     <string name="thank_klikBCA_virtual_account_tag">User ID KlikBCA</string>
@@ -54,6 +55,7 @@
 
 
     <string name="thank_total_pay">Total Bayar</string>
+    <string name="thank_pay_method">Metode Bayar</string>
     <string name="thank_total_pay_rp">Total Bayar %s</string>
     <string name="thank_type_of_payment">Jenis Pembayaran</string>
     <string name="thank_payment_in_progress">Pembayaran sedang diproses</string>
@@ -119,6 +121,7 @@
 
     <string name="thankyou_bank_account_copied">Nomor Rekening berhasil disalin</string>
     <string name="thankyou_retail_account_copied">Kode Bayar sudah berhasil disalin</string>
+    <string name="thankyou_retail_account_label">Kode Bayar</string>
     <string name="thank_cod_payment_successful">Pesananmu akan segera diproses</string>
     <string name="thank_cod_payment_check_order">Siapkan uang tunai dan bayar lewat kurir saat menerima barang.</string>
     <string name="thankyou_klikbca_virtual_account_copied">User ID KlikBCA berhasil disalin</string>

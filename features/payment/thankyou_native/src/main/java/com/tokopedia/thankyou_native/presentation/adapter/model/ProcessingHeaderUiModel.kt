@@ -53,10 +53,10 @@ data class ProcessingHeaderUiModel(
             return ProcessingHeaderUiModel(
                 title.orEmpty(),
                 description.orEmpty(),
-                "Metode Bayar",
+                context?.getString(R.string.thank_pay_method).orEmpty(),
                 thanksPageData.gatewayName,
                 thanksPageData.gatewayImage,
-                "Total Bayar",
+                context?.getString(R.string.thank_total_pay).orEmpty(),
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.amount, false),
                 installment.orEmpty(),
                 note.orEmpty().toList(),

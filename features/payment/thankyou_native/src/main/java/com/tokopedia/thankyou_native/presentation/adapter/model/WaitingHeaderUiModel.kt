@@ -40,6 +40,7 @@ data class WaitingHeaderUiModel(
     }
 
     companion object {
+        private const val BANK_TRANSFER = "BANKTRANSFER"
         fun create(thanksPageData: ThanksPageData, context: Context?): WaitingHeaderUiModel {
 
             val accountIdLabel = when (PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)) {
@@ -51,9 +52,9 @@ data class WaitingHeaderUiModel(
                     else
                         context?.getString(R.string.thank_virtual_account_tag).orEmpty()
                 }
-                Retail -> "Kode Bayar"
-                BankTransfer -> "Nomor Rekening"
-                else -> "Nomor Virtual Account"
+                Retail -> context?.getString(R.string.thankyou_retail_account_label).orEmpty()
+                BankTransfer -> context?.getString(R.string.thank_account_number).orEmpty()
+                else -> context?.getString(R.string.thank_virtual_account_tag).orEmpty()
             }
 
             val note = Gson().fromJson(thanksPageData.customDataMessage?.customNotes, Array<String>::class.java)
@@ -62,16 +63,16 @@ data class WaitingHeaderUiModel(
             val secondaryButtonText = if (thanksPageData.customDataMessage?.titleOrderButton.isNullOrEmpty()) context?.getString(R.string.thank_see_payment_methods) else thanksPageData.customDataMessage?.titleOrderButton
 
             return WaitingHeaderUiModel(
-                "Bayar sebelum",
+                context?.getString(R.string.thank_pay_before).orEmpty(),
                 thanksPageData.expireTimeStr,
                 thanksPageData.expireTimeUnix - System.currentTimeMillis() / 1000,
                 accountIdLabel,
                 thanksPageData.additionalInfo.accountDest,
                 thanksPageData.gatewayImage,
-                "Total Tagihan",
+                context?.getString(R.string.thank_invoice_total_bill).orEmpty(),
                 thanksPageData.amount,
                 note.orEmpty().toList(),
-                thanksPageData.paymentType == "BANKTRANSFER",
+                thanksPageData.paymentType == BANK_TRANSFER,
                 thanksPageData.configFlagData?.shouldHideHomeButton == true,
                 primaryButtonText.orEmpty(),
                 false,

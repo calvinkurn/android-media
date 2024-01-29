@@ -16,6 +16,7 @@ import com.tokopedia.thankyou_native.domain.usecase.GyroEngineMapperUseCase
 import com.tokopedia.thankyou_native.domain.usecase.GyroEngineRequestUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThankYouTopAdsViewModelUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
+import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataV2UseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageMapperUseCase
 import com.tokopedia.thankyou_native.domain.usecase.TopTickerUseCase
 import com.tokopedia.thankyou_native.presentation.adapter.model.BannerWidgetModel
@@ -51,6 +52,7 @@ class ThankPageViewModelUnitTest {
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
     private val thankPageUseCase = mockk<ThanksPageDataUseCase>(relaxed = true)
+    private val thankPageUseCaseV2 = mockk<ThanksPageDataV2UseCase>(relaxed = true)
     private val thanksPageMapperUseCase = mockk<ThanksPageMapperUseCase>(relaxed = true)
     private val gyroEngineRequestUseCase = mockk<GyroEngineRequestUseCase>(relaxed = true)
     private val gyroEngineMapperUseCase = mockk<GyroEngineMapperUseCase>(relaxed = true)
@@ -66,6 +68,7 @@ class ThankPageViewModelUnitTest {
     fun setUp() {
         viewModel = ThanksPageDataViewModel(
             thankPageUseCase,
+            thankPageUseCaseV2,
             thanksPageMapperUseCase,
             gyroEngineRequestUseCase,
             walletBalanceUseCase,
