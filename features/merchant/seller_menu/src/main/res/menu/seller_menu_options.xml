@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_inbox"
-        android:icon="@drawable/ic_system_action_inbox_grey_24"
+        android:icon="@drawable/ic_seller_menu_inbox"
         android:title="@string/seller_menu_inbox"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_notification"
-        android:icon="@drawable/ic_system_action_notification_normal_24"
+        android:icon="@drawable/ic_seller_menu_notif"
         android:title="@string/seller_menu_notifications"
         app:showAsAction="ifRoom" />
 </menu>
