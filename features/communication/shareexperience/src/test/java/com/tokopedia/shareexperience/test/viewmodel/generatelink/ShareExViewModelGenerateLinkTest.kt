@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.test.viewmodel
+package com.tokopedia.shareexperience.test.viewmodel.generatelink
 
 import android.net.Uri
 import app.cash.turbine.test
@@ -257,7 +257,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 throwable = null
             )
 
-            mockUriBuilder()
+            mockUriBuilder(query = "testQuery")
 
             coEvery {
                 getGeneratedImageUseCase.getData(any(), any())
@@ -343,7 +343,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 throwable = null
             )
 
-            mockUriBuilder()
+            mockUriBuilder(mockUriDetails = false, query = "")
 
             coEvery {
                 getGeneratedImageUseCase.getData(any(), any())

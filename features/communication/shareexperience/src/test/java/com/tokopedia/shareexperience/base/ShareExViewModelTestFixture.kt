@@ -73,22 +73,34 @@ abstract class ShareExViewModelTestFixture {
         )
     }
 
-    protected fun mockUriBuilder() {
+    protected fun mockUriBuilder(
+        mockUriDetails: Boolean = true,
+        query: String? = null
+    ) {
         val mockUri = mockk<Uri>(relaxed = true)
 
         // Mock behavior for Uri.parse
         every { Uri.parse(any()) } returns mockUri
 
         // Mock the scheme, authority, and path to return specific values
-        every { mockUri.scheme } returns "http"
-        every { mockUri.authority } returns "example.com"
-        every { mockUri.path } returns "/path/to/resource"
+        if (mockUriDetails) {
+            every { mockUri.scheme } returns "http"
+            every { mockUri.authority } returns "example.com"
+            every { mockUri.path } returns "/path/to/resource"
+        } else {
+            every { mockUri.scheme } returns null
+            every { mockUri.authority } returns null
+            every { mockUri.path } returns null
+        }
+
+        every { mockUri.query } returns query
 
         // Mock the Uri.Builder constructor
         mockkConstructor(Uri.Builder::class)
-        every { anyConstructed<Uri.Builder>().scheme(any()) } returns mockk(relaxed = true)
-        every { anyConstructed<Uri.Builder>().authority(any()) } returns mockk(relaxed = true)
-        every { anyConstructed<Uri.Builder>().path(any()) } returns mockk(relaxed = true)
+        every { anyConstructed<Uri.Builder>().scheme(any()) } returns mockk()
+        every { anyConstructed<Uri.Builder>().authority(any()) } returns mockk()
+        every { anyConstructed<Uri.Builder>().path(any()) } returns mockk()
+        every { anyConstructed<Uri.Builder>().build() } returns mockUri
     }
 
     @After
