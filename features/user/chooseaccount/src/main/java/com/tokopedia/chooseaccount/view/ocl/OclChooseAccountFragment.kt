@@ -132,6 +132,7 @@ class OclChooseAccountFragment : BaseDaggerFragment(), OclChooseAccountListener 
         }
 
         viewModel.navigateToSuccessPage.observe(viewLifecycleOwner) {
+            refreshRolloutVariant()
             OclTracker.sendClickOnOneClickLoginEvent(OclTracker.LABEL_SUCCESS)
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
