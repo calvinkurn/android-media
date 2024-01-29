@@ -68,7 +68,7 @@ class ShareExViewModelUpdateShareBodyTest : ShareExViewModelTestFixture() {
                 )
                 assertEquals(1, secondPage.chipPosition)
 
-                cancelAndConsumeRemainingEvents()
+                expectNoEvents()
             }
         }
     }

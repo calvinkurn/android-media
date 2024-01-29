@@ -141,7 +141,7 @@ class ShareExViewModelUpdateShareImageTest : ShareExViewModelTestFixture() {
                 assertEquals(null, updatedValue.sourceId)
                 assertEquals(null, updatedValue.args?.size)
 
-                cancelAndConsumeRemainingEvents()
+                expectNoEvents()
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.shareexperience.test.viewmodel
 
+import android.net.Uri
 import app.cash.turbine.test
 import com.tokopedia.shareexperience.base.ShareExViewModelTestFixture
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
@@ -7,28 +8,445 @@ import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
+import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
+import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExBottomSheetPageModel
+import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
+import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
+import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
+import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkFallbackPriorityEnum
+import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.ShareExAction
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
 
+    private val dummyChannel = ShareExChannelItemModel(
+        channelEnum = ShareExChannelEnum.OTHERS,
+        mimeType = ShareExMimeTypeEnum.TEXT,
+        packageName = "dummyPackage"
+    )
+
+    private val dummyUrl = "https://www.tokopedia.com"
+    private val dummyShortLink = "https://tokopedia.link"
+
+    @Test
+    fun `generate affiliate link, get short link`() {
+        runTest {
+            // Given
+            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
+                identifier = dummyIdentifier,
+                pageTypeEnum = ShareExPageTypeEnum.PDP,
+                defaultUrl = "",
+                trackerArg = ShareExTrackerArg(),
+                bottomSheetModel = ShareExBottomSheetModel(
+                    title = "testTitle",
+                    subtitle = "testSubtitle",
+                    bottomSheetPage = ShareExBottomSheetPageModel(
+                        listChip = listOf(),
+                        listShareProperty = listOf(
+                            ShareExPropertyModel(
+                                affiliate = ShareExAffiliateModel(
+                                    eligibility = ShareExAffiliateEligibilityModel(true)
+                                ),
+                                linkProperties = ShareExLinkProperties(
+                                    androidUrl = dummyUrl,
+                                    iosUrl = dummyUrl,
+                                    desktopUrl = dummyUrl
+                                ),
+                                imageGenerator = ShareExImageGeneratorPropertyModel(
+                                    sourceId = "testSourceId",
+                                    args = mapOf("test" to "test")
+                                )
+                            )
+                        )
+                    )
+                ),
+                throwable = null
+            )
+
+            mockUriBuilder()
+
+            coEvery {
+                getGeneratedImageUseCase.getData(any(), any())
+            } returns flow {
+                emit(ShareExResult.Loading)
+                emit(
+                    ShareExResult.Success(
+                        ShareExImageGeneratorModel(
+                            imageUrl = "testImageUrl",
+                            imageTypeEnum = ShareExImageTypeEnum.CONTEXTUAL_IMAGE
+                        )
+                    )
+                )
+            }
+
+            coEvery {
+                getShortLinkUseCase.getShortLink(any())
+            } returns flow {
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Loading))
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Success(dummyShortLink)))
+            }
+
+            val mockUri: Uri = mockk(relaxed = true)
+            coEvery {
+                getDownloadedImageUseCase.downloadImage(any())
+            } returns flow {
+                emit(ShareExResult.Loading)
+                emit(ShareExResult.Success(mockUri))
+            }
+
+            viewModel.channelIntentUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(ShareExAction.InitializePage)
+                viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
+
+                // Then
+                skipItems(1) // initial
+                assertLoadingImageGenerator(awaitItem())
+                assertLoadingLinkGenerator(awaitItem())
+
+                val updatedValue = awaitItem()
+                assert(updatedValue.intent != null)
+                assertEquals(dummyShortLink, updatedValue.message)
+                assertEquals(dummyShortLink, updatedValue.shortLink)
+                assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
+                assertEquals(false, updatedValue.isLoading)
+                assert(updatedValue.error == null)
+                assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
+                assertEquals(false, updatedValue.isAffiliateError)
+
+                expectNoEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `generate branch link, get short link`() {
+        runTest {
+            // Given
+            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
+                identifier = dummyIdentifier,
+                pageTypeEnum = ShareExPageTypeEnum.PDP,
+                defaultUrl = "",
+                trackerArg = ShareExTrackerArg(),
+                bottomSheetModel = ShareExBottomSheetModel(
+                    title = "testTitle",
+                    subtitle = "testSubtitle",
+                    bottomSheetPage = ShareExBottomSheetPageModel(
+                        listChip = listOf(),
+                        listShareProperty = listOf(
+                            ShareExPropertyModel(
+                                affiliate = ShareExAffiliateModel(
+                                    eligibility = ShareExAffiliateEligibilityModel(false)
+                                ),
+                                linkProperties = ShareExLinkProperties(
+                                    androidUrl = dummyUrl,
+                                    iosUrl = dummyUrl,
+                                    desktopUrl = dummyUrl
+                                ),
+                                imageGenerator = ShareExImageGeneratorPropertyModel(
+                                    sourceId = "testSourceId",
+                                    args = mapOf()
+                                )
+                            )
+                        )
+                    )
+                ),
+                throwable = null
+            )
+
+            mockUriBuilder()
+
+            coEvery {
+                getGeneratedImageUseCase.getData(any(), any())
+            } returns flow {
+                emit(ShareExResult.Loading)
+                emit(
+                    ShareExResult.Success(
+                        ShareExImageGeneratorModel(
+                            imageUrl = "testImageUrl",
+                            imageTypeEnum = ShareExImageTypeEnum.CONTEXTUAL_IMAGE
+                        )
+                    )
+                )
+            }
+
+            coEvery {
+                getShortLinkUseCase.getShortLink(any())
+            } returns flow {
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.BRANCH, ShareExResult.Loading))
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.BRANCH, ShareExResult.Success(dummyShortLink)))
+            }
+
+            val mockUri: Uri = mockk(relaxed = true)
+            coEvery {
+                getDownloadedImageUseCase.downloadImage(any())
+            } returns flow {
+                emit(ShareExResult.Loading)
+                emit(ShareExResult.Success(mockUri))
+            }
+
+            viewModel.channelIntentUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(ShareExAction.InitializePage)
+                viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
+
+                // Then
+                skipItems(1) // initial
+                assertLoadingImageGenerator(awaitItem())
+                assertLoadingLinkGenerator(awaitItem())
+
+                val updatedValue = awaitItem()
+                assert(updatedValue.intent != null)
+                assertEquals(dummyShortLink, updatedValue.message)
+                assertEquals(dummyShortLink, updatedValue.shortLink)
+                assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
+                assertEquals(false, updatedValue.isLoading)
+                assert(updatedValue.error == null)
+                assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
+                assertEquals(false, updatedValue.isAffiliateError)
+
+                expectNoEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `generate affiliate link without image generator, get short link`() {
+        runTest {
+            // Given
+            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
+                identifier = dummyIdentifier,
+                pageTypeEnum = ShareExPageTypeEnum.PDP,
+                defaultUrl = "",
+                trackerArg = ShareExTrackerArg(),
+                bottomSheetModel = ShareExBottomSheetModel(
+                    title = "testTitle",
+                    subtitle = "testSubtitle",
+                    bottomSheetPage = ShareExBottomSheetPageModel(
+                        listChip = listOf(),
+                        listShareProperty = listOf(
+                            ShareExPropertyModel(
+                                affiliate = ShareExAffiliateModel(
+                                    eligibility = ShareExAffiliateEligibilityModel(true)
+                                ),
+                                linkProperties = ShareExLinkProperties(
+                                    androidUrl = dummyUrl,
+                                    iosUrl = dummyUrl,
+                                    desktopUrl = dummyUrl
+                                ),
+                                imageGenerator = null
+                            )
+                        )
+                    )
+                ),
+                throwable = null
+            )
+
+            mockUriBuilder()
+
+            coEvery {
+                getGeneratedImageUseCase.getData(any(), any())
+            } returns flow {
+                emit(ShareExResult.Loading)
+                emit(
+                    ShareExResult.Success(
+                        ShareExImageGeneratorModel(
+                            imageUrl = "testImageUrl",
+                            imageTypeEnum = ShareExImageTypeEnum.DEFAULT
+                        )
+                    )
+                )
+            }
+
+            coEvery {
+                getShortLinkUseCase.getShortLink(any())
+            } returns flow {
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Loading))
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Success(dummyShortLink)))
+            }
+
+            val mockUri: Uri = mockk(relaxed = true)
+            coEvery {
+                getDownloadedImageUseCase.downloadImage(any())
+            } returns flow {
+                emit(ShareExResult.Loading)
+                emit(ShareExResult.Success(mockUri))
+            }
+
+            viewModel.channelIntentUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(ShareExAction.InitializePage)
+                viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
+
+                // Then
+                skipItems(1) // initial
+                assertLoadingImageGenerator(awaitItem())
+                assertLoadingLinkGenerator(awaitItem())
+
+                val updatedValue = awaitItem()
+                assert(updatedValue.intent != null)
+                assertEquals(dummyShortLink, updatedValue.message)
+                assertEquals(dummyShortLink, updatedValue.shortLink)
+                assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
+                assertEquals(false, updatedValue.isLoading)
+                assert(updatedValue.error == null)
+                assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
+                assertEquals(false, updatedValue.isAffiliateError)
+
+                expectNoEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `generate link without image generator, get short link`() {
+        runTest {
+            // Given
+            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
+                identifier = dummyIdentifier,
+                pageTypeEnum = ShareExPageTypeEnum.PDP,
+                defaultUrl = "",
+                trackerArg = ShareExTrackerArg(),
+                bottomSheetModel = ShareExBottomSheetModel(
+                    title = "testTitle",
+                    subtitle = "testSubtitle",
+                    bottomSheetPage = ShareExBottomSheetPageModel(
+                        listChip = listOf(),
+                        listShareProperty = listOf(
+                            ShareExPropertyModel(
+                                linkProperties = ShareExLinkProperties(
+                                    androidUrl = dummyUrl,
+                                    iosUrl = dummyUrl,
+                                    desktopUrl = dummyUrl
+                                ),
+                                imageGenerator = null
+                            )
+                        )
+                    )
+                ),
+                throwable = null
+            )
+
+            mockUriBuilder()
+
+            coEvery {
+                getGeneratedImageUseCase.getData(any(), any())
+            } returns flow {
+                emit(ShareExResult.Loading)
+                emit(
+                    ShareExResult.Success(
+                        ShareExImageGeneratorModel(
+                            imageUrl = "testImageUrl",
+                            imageTypeEnum = ShareExImageTypeEnum.DEFAULT
+                        )
+                    )
+                )
+            }
+
+            coEvery {
+                getShortLinkUseCase.getShortLink(any())
+            } returns flow {
+                // Not affiliate
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.BRANCH, ShareExResult.Loading))
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.BRANCH, ShareExResult.Success(dummyShortLink)))
+            }
+
+            val mockUri: Uri = mockk(relaxed = true)
+            coEvery {
+                getDownloadedImageUseCase.downloadImage(any())
+            } returns flow {
+                emit(ShareExResult.Loading)
+                emit(ShareExResult.Success(mockUri))
+            }
+
+            viewModel.channelIntentUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(ShareExAction.InitializePage)
+                viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
+
+                // Then
+                skipItems(1) // initial
+                assertLoadingImageGenerator(awaitItem())
+                assertLoadingLinkGenerator(awaitItem())
+
+                val updatedValue = awaitItem()
+                assert(updatedValue.intent != null)
+                assertEquals(dummyShortLink, updatedValue.message)
+                assertEquals(dummyShortLink, updatedValue.shortLink)
+                assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
+                assertEquals(false, updatedValue.isLoading)
+                assert(updatedValue.error == null)
+                assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
+                assertEquals(false, updatedValue.isAffiliateError)
+
+                expectNoEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `generate link without bottom sheet property and default url, get empty short link or message`() {
+        runTest {
+            // Given
+            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
+                identifier = dummyIdentifier,
+                pageTypeEnum = ShareExPageTypeEnum.PDP,
+                defaultUrl = "",
+                trackerArg = ShareExTrackerArg(),
+                bottomSheetModel = ShareExBottomSheetModel(
+                    title = "testTitle",
+                    subtitle = "testSubtitle",
+                    bottomSheetPage = ShareExBottomSheetPageModel()
+                ),
+                throwable = null
+            )
+
+            viewModel.channelIntentUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(ShareExAction.InitializePage)
+                viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
+
+                // Then
+                skipItems(1) // initial
+
+                val updatedValue = awaitItem()
+                assert(updatedValue.intent != null)
+                assertEquals("", updatedValue.message)
+                assertEquals("", updatedValue.shortLink)
+                assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
+                assertEquals(false, updatedValue.isLoading)
+                assert(updatedValue.error != null)
+                assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
+                assertEquals(false, updatedValue.isAffiliateError)
+
+                expectNoEvents()
+            }
+        }
+    }
+
     @Test
     fun `generate link from default page, get default url`() {
         runTest {
             // Given
-            val dummyChannel = ShareExChannelItemModel(
-                channelEnum = ShareExChannelEnum.OTHERS,
-                mimeType = ShareExMimeTypeEnum.TEXT,
-                packageName = "dummyPackage"
-            )
+
             viewModel.bottomSheetArgs = ShareExBottomSheetArg(
                 identifier = "",
                 pageTypeEnum = ShareExPageTypeEnum.OTHERS,
@@ -69,7 +487,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
                 assertEquals(false, updatedValue.isAffiliateError)
 
-                cancelAndConsumeRemainingEvents()
+                expectNoEvents()
             }
         }
     }
@@ -91,13 +509,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 viewModel.processAction(ShareExAction.InitializePage)
                 viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
 
-                val initialValue = awaitItem()
-                assertEquals(null, initialValue.intent)
-                assertEquals("", initialValue.message)
-                assertEquals("", initialValue.shortLink)
-                assertEquals(null, initialValue.channelEnum)
-                assertEquals(ShareExImageTypeEnum.NO_IMAGE, initialValue.imageType)
-                assertEquals(false, initialValue.isAffiliateError)
+                skipItems(1) // initial
 
                 val updatedValue = awaitItem()
                 assert(updatedValue.intent != null)
@@ -107,8 +519,30 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
                 assertEquals(false, updatedValue.isAffiliateError)
 
-                cancelAndConsumeRemainingEvents()
+                expectNoEvents()
             }
         }
+    }
+
+    private fun assertLoadingImageGenerator(loadingImageGenerator: ShareExChannelIntentUiState) {
+        assert(loadingImageGenerator.intent == null)
+        assertEquals("", loadingImageGenerator.message)
+        assertEquals("", loadingImageGenerator.shortLink)
+        assertEquals(null, loadingImageGenerator.channelEnum)
+        assertEquals(true, loadingImageGenerator.isLoading)
+        assert(loadingImageGenerator.error == null)
+        assertEquals(ShareExImageTypeEnum.NO_IMAGE, loadingImageGenerator.imageType)
+        assertEquals(false, loadingImageGenerator.isAffiliateError)
+    }
+
+    private fun assertLoadingLinkGenerator(loadingLinkGenerator: ShareExChannelIntentUiState) {
+        assert(loadingLinkGenerator.intent == null)
+        assertEquals("", loadingLinkGenerator.message)
+        assertEquals("", loadingLinkGenerator.shortLink)
+        assertEquals(ShareExChannelEnum.OTHERS, loadingLinkGenerator.channelEnum)
+        assertEquals(true, loadingLinkGenerator.isLoading)
+        assert(loadingLinkGenerator.error == null)
+        assertEquals(ShareExImageTypeEnum.NO_IMAGE, loadingLinkGenerator.imageType)
+        assertEquals(false, loadingLinkGenerator.isAffiliateError)
     }
 }

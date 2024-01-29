@@ -17,8 +17,6 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class ShareExViewModelInitializePageTest : ShareExViewModelTestFixture() {
 
-    private val dummyIdentifier = "testId"
-
     @Test
     fun `initialize page, get share bottom sheet`() {
         runTest {
@@ -51,7 +49,7 @@ class ShareExViewModelInitializePageTest : ShareExViewModelTestFixture() {
                 assertEquals(updatedValue.chipPosition, 0)
                 assertEquals(updatedValue.uiModelList?.size, 1)
 
-                cancelAndConsumeRemainingEvents()
+                expectNoEvents()
             }
         }
     }
@@ -88,7 +86,7 @@ class ShareExViewModelInitializePageTest : ShareExViewModelTestFixture() {
                 assertEquals(updatedValue.chipPosition, 0)
                 assertEquals(updatedValue.uiModelList?.size, 1)
 
-                cancelAndConsumeRemainingEvents()
+                expectNoEvents()
             }
         }
     }
