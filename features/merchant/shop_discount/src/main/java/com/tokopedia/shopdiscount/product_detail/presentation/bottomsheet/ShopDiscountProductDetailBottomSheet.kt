@@ -251,7 +251,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     private fun observeProductDetailListLiveData() {
-        viewModel.productDetailListLiveData.observe(viewLifecycleOwner, {
+        viewModel.productDetailListLiveData.observe(viewLifecycleOwner) {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -270,7 +270,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                     showErrorState(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun showToasterError(message: String) {
@@ -394,6 +394,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             }
 
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                showLoading()
                 getProductListData()
             }
         }

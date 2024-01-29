@@ -63,7 +63,7 @@ class ShopDiscountOptOutReasonBottomSheetViewModel @Inject constructor(
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             val response = doOptOutReasonListResponse(listEventId, selectedReason)
-            if (response.isSuccess) {
+            if (response.doSellerOutProgram.responseHeader.isSuccess) {
                 selectedProductToOptOut.forEach { productDetailData ->
                     productDetailData.isSubsidy = false
                 }
