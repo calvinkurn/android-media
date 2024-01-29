@@ -32,9 +32,9 @@ import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.ImageSource.Remote
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
@@ -87,6 +87,7 @@ fun NormalPriceComponent(
                     source = Remote(freeOngkirImageUrl, customUIError = {
 
                     }),
+                    type = NestImageType.Rect(0.dp),
                     modifier = Modifier
                         .height(20.dp)
                         .wrapContentWidth()
@@ -210,6 +211,7 @@ fun PromoPriceFooter(
                 source = Remote(source = boLogo, customUIError = {
 
                 }),
+                type = NestImageType.Rect(0.dp),
                 modifier = Modifier
                     .constrainAs(boImage) {
                         top.linkTo(parent.top)
@@ -270,6 +272,7 @@ fun PromoPriceCard(
                 source = Remote(source = data.superGraphicIconUrl, customUIError = {
 
                 }),
+                type = NestImageType.Rect(0.dp),
                 modifier = Modifier.constrainAs(superGraphic) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.absoluteRight)

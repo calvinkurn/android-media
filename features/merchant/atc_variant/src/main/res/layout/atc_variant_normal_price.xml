@@ -37,7 +37,7 @@
         android:layout_marginTop="2dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_NN400"
+        android:textColor="@color/Unify_NN600"
         android:visibility="gone"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/lbl_header_discounted_percentage"
