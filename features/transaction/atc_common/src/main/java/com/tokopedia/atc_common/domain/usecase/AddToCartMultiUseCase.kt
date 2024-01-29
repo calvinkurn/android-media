@@ -35,6 +35,7 @@ class AddToCartMultiUseCase @Inject constructor(
                     val quantity = param.qty
                     val productPrice = param.productPrice
                     val category = param.category
+                    val shopName = param.shopName
                     AddToCartBaseAnalytics.sendAppsFlyerTracking(
                         productId,
                         productName,
@@ -46,7 +47,8 @@ class AddToCartMultiUseCase @Inject constructor(
                         productId, productName, productPrice.roundToLong().toString(),
                         quantity.toString(), category, "",
                         "", "", "",
-                        "", "", userId
+                        "", "", userId,
+                        shopName
                     )
                 }
             }
