@@ -106,10 +106,10 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
                 mdisp.getSize(mdispSize)
                 val isSliced = myGestureListener.getSlicePercent(it.x, it.y, it1.x, it1.y, mdispSize.x, mdispSize.y, direction)
                 if (isSliced && !crackCouponHandler.isCouponCracked()) {
-                    ketupatSlashCallBack?.ketuPatSlashed()
                     crackCouponHandler.getCouponData(slug, direction)
                     binding.loaderCoupon.visible()
                     binding.lottieViewPopup.pauseAnimation()
+                    ketupatSlashCallBack?.ketuPatSlashed()
                 }
             }
             animationPopupGtmTracker.sendPopupInteractionEvent(scratchCardId)

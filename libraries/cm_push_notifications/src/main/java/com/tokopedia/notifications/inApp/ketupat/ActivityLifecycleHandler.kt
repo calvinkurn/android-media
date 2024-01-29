@@ -102,7 +102,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                 WeakReference(activity)
             val ketupatAnimationPopup = KetupatAnimationPopup(activity.applicationContext, null, activity)
             val weakActivity = currentActivity.get() ?: return
-            ketupatAnimationPopup.loadLottieAnimation(slug, popUpContent, scratchCardId)
+            ketupatAnimationPopup.loadLottieAnimation(slug, popUpContent, scratchCardId, ketupatSlashCallBack)
             val root = weakActivity.window
                 .decorView
                 .findViewById<View>(android.R.id.content)

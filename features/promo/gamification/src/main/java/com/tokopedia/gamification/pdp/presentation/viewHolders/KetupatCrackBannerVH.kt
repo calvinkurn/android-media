@@ -30,7 +30,7 @@ class KetupatCrackBannerVH(itemView: View) :
                          crackData: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem?,
                          scratchCardId: String){
         //show pop up and pass the callback for tracking slash
-        var activityLifecycleHandler: ActivityLifecycleHandler = ActivityLifecycleHandler()
+        var activityLifecycleHandler = ActivityLifecycleHandler()
         activityLifecycleHandler.getScratchCardData(activity,
             "scratch-card-landing-page",
             object : KetupatSlashCallBack {

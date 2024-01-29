@@ -26,7 +26,7 @@ class AudioManager(var mContext: Context) {
                 }
                 reset()
                 setDataSource(filePath)
-                prepareAsync()
+                prepare()
 
             } catch (ex: Exception) {
                 Log.e("aa",ex.toString())
