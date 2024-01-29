@@ -3,6 +3,7 @@ package com.tokopedia.wishlist.collection.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.ProductCardModel
@@ -207,6 +208,10 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         return listTypeData.size
     }
 
+    fun getItems(): List<WishlistCollectionTypeLayoutData> {
+        return listTypeData
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when (listTypeData[position].typeLayout) {
             TYPE_COLLECTION_TICKER -> LAYOUT_COLLECTION_TICKER
@@ -221,10 +226,21 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         }
     }
 
-    fun addList(list: List<WishlistCollectionTypeLayoutData>) {
+    fun set(items: List<WishlistCollectionTypeLayoutData>) {
+        val diffCallback = WishlistDiffUtilCallback(listTypeData.toList(), items)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         listTypeData.clear()
-        listTypeData.addAll(list)
-        notifyDataSetChanged()
+        listTypeData.addAll(items)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun add(items: List<WishlistCollectionTypeLayoutData>) {
+        val newItems = listTypeData.toMutableList().apply { addAll(items) }
+        val diffCallback = WishlistDiffUtilCallback(listTypeData.toList(), newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        listTypeData.clear()
+        listTypeData.addAll(newItems)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun setTickerHasClosed(hasClosed: Boolean) {
@@ -233,14 +249,40 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     }
 
     fun showLoader() {
-        listTypeData.clear()
-        for (x in START_LOADER until TOTAL_LOADER) {
-            listTypeData.add(WishlistCollectionTypeLayoutData("", TYPE_COLLECTION_LOADER))
-        }
-        notifyDataSetChanged()
+        set(
+            (START_LOADER until TOTAL_LOADER).map { index ->
+                WishlistCollectionTypeLayoutData(
+                    "${TYPE_COLLECTION_LOADER}_$index",
+                    "",
+                    TYPE_COLLECTION_LOADER
+                )
+            }
+        )
     }
 
     fun getRecommendationItemAtIndex(index: Int): ProductCardModel {
         return listTypeData[index].dataObject as ProductCardModel
+    }
+
+    inner class WishlistDiffUtilCallback(
+        private val oldItems: List<WishlistCollectionTypeLayoutData>,
+        private val newItems: List<WishlistCollectionTypeLayoutData>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int {
+            return oldItems.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newItems.size
+        }
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition].id == newItems[newItemPosition].id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition] == newItems[newItemPosition]
+        }
     }
 }

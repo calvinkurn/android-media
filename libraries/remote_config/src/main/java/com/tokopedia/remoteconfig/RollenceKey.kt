@@ -123,12 +123,12 @@ object RollenceKey {
     const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 
     // Search Reimagine
-    const val SEARCH_1_INST_AUTO = "search_1_inst_auto"
+    const val SEARCH_1_INST_AUTO = "inst_auto_v2"
     const val SEARCH_1_INST_AUTO_CONTROL = "control_variant"
-    const val SEARCH_1_INST_AUTO_VARIANT_1 = "variant_1"
-    const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2"
-    const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_3"
-    const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_4"
+    const val SEARCH_1_INST_AUTO_VARIANT_1 = "variant_1_is"
+    const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2_is"
+    const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_1_ac"
+    const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_2_ac"
     const val PRODUCT_CARD_SRE_2024 = "productcard_sre2024"
 
     const val ANDROID_INTERNAL_TEST = "android_internal"
