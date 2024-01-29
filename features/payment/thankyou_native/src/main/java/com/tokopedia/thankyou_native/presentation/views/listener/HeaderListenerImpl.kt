@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.presentation.views.listener
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.SPACE
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.BankTransfer
@@ -39,7 +40,7 @@ class HeaderListenerImpl(
     override fun onCopyAmount(amountStr: String) {
         context?.let { context ->
             ThanksPageHelper.copyTOClipBoard(context, amountStr)
-            showToastCopySuccessFully()
+            showToastAmountSuccessfully()
         }
         thankYouPageAnalytics.sendSalinButtonClickEvent(
             thanksPageData.profileCode,
@@ -88,7 +89,7 @@ class HeaderListenerImpl(
                 else -> "Nomor Virtual Account"
             }
 
-            val finalToasterMsg = toasterMsg + context?.getString(R.string.copy_success)
+            val finalToasterMsg = toasterMsg + String.SPACE + context?.getString(R.string.copy_success)
 
             if (finalToasterMsg?.isNotBlank() == true)
                 Toaster.make(it, finalToasterMsg, Toaster.LENGTH_SHORT)
