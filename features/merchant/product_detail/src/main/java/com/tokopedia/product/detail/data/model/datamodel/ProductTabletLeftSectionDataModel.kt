@@ -1,7 +1,9 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_PAYLOAD
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductTabletLeftSectionDataModel(
@@ -27,7 +29,7 @@ data class ProductTabletLeftSectionDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
-        bundle.putInt("hehe", 1)
+        bundle.putInt(TABLET_PAYLOAD, Int.ONE)
         return bundle
     }
 

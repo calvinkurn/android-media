@@ -211,4 +211,5 @@ object ProductDetailConstant {
     const val WEBVIEW_URL_PARAM = "url"
 
     const val A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE = false
+    const val TABLET_PAYLOAD = "TABLET_PAYLOAD"
 }
