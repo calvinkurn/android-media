@@ -6,8 +6,8 @@
 
     <com.tokopedia.promoui.common.CouponImageView
         android:id="@+id/iv_coupon"
-        android:layout_width="270dp"
-        android:layout_height="90dp"
+        android:layout_width="260dp"
+        android:layout_height="86dp"
         app:layout_constraintDimensionRatio="3:1"
         android:scaleType="fitCenter"
         app:corner_radius="@dimen/dp_0"

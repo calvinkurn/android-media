@@ -39,6 +39,7 @@ class CrackCouponHandler(
     var scratchCardId = ""
     private var catalogIds = mutableListOf<String>()
     private var catalogSlug = mutableListOf<String>()
+    var rewardSoundManager: AudioManager? = null
 
     fun getCouponData(slug: String?, direction: MyGestureListener.Direction) {
         try {
@@ -196,21 +197,19 @@ class CrackCouponHandler(
                 binding.lottieViewPopup.setMinFrame(getStartFrameByMarker("Left"))
             }
         }
-        playPrizeSound(activity.applicationContext)
+        playPrizeSound()
         binding.lottieViewPopup.loop(false)
         couponAnimation()
         couponButtonAnimation()
         isCouponCracked = true
     }
 
-    private fun playPrizeSound(context: Context?) {
-        var rewardSoundManager: AudioManager? = null
-        context?.let {
-            if (rewardSoundManager == null) {
-                rewardSoundManager = AudioFactory.createAudio(it)
-            }
-            rewardSoundManager?.playAudio(url)
-        }
+    private fun playPrizeSound() {
+        rewardSoundManager?.playAudio(url)
+    }
+
+    fun destroySound() {
+        rewardSoundManager?.destroy()
     }
 
     fun isCouponCracked(): Boolean {
@@ -263,6 +262,7 @@ class CrackCouponHandler(
         val onClickListener = OnClickListener { _: View? ->
             (view.parent as ViewGroup).removeView(view)
             navigateToAppLink()
+            destroySound()
             animationPopupGtmTracker.sendCtaButtonClickEvent(scratchCardId, catalogSlug, catalogIds)
         }
         binding.ivButtonShare.setOnClickListener(onClickListener)
