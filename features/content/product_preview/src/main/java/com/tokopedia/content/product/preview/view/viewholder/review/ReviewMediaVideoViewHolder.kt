@@ -1,33 +1,32 @@
-package com.tokopedia.content.product.preview.view.viewholder.product
+package com.tokopedia.content.product.preview.view.viewholder.review
 
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.exoplayer2.ui.PlayerControlView
-import com.tokopedia.content.product.preview.databinding.ItemProductContentVideoBinding
-import com.tokopedia.content.product.preview.utils.PRODUCT_CONTENT_VIDEO_KEY_REF
+import com.tokopedia.content.product.preview.databinding.ItemReviewContentVideoBinding
+import com.tokopedia.content.product.preview.utils.REVIEW_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewPlayerControl
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
-class ProductContentVideoViewHolder(
-    private val binding: ItemProductContentVideoBinding,
-    private val listener: ProductPreviewVideoListener
-) : RecyclerView.ViewHolder(binding.root) {
+class ReviewMediaVideoViewHolder(
+    private val binding: ItemReviewContentVideoBinding,
+    private val productPreviewVideoListener: ProductPreviewVideoListener,
+) : ViewHolder(binding.root) {
 
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
     private var mIsSelected: Boolean = false
     private var mVideoId: String = ""
 
     init {
-        binding.root.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
+        binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View) {
                 if (mVideoId.isNotEmpty()) onSelected()
             }
@@ -42,14 +41,14 @@ class ProductContentVideoViewHolder(
         }
     }
 
-    fun bind(content: ProductContentUiModel) {
+    fun bind(content: ReviewMediaUiModel) {
         bindVideoPlayer(content)
     }
 
-    private fun bindVideoPlayer(content: ProductContentUiModel) {
-        mVideoId = String.format(PRODUCT_CONTENT_VIDEO_KEY_REF, content.url)
-        mVideoPlayer = listener.getVideoPlayer(mVideoId)
-        binding.playerProductContentVideo.player = mVideoPlayer?.exoPlayer
+    private fun bindVideoPlayer(content: ReviewMediaUiModel) {
+        mVideoId = String.format(REVIEW_CONTENT_VIDEO_KEY_REF, content.url)
+        mVideoPlayer = productPreviewVideoListener.getVideoPlayer(mVideoId)
+        binding.playerReviewContentVideo.player = mVideoPlayer?.exoPlayer
         binding.playerControl.player = mVideoPlayer?.exoPlayer
 
         binding.playerControl.setListener(object : ProductPreviewPlayerControl.Listener {
@@ -58,7 +57,7 @@ class ProductContentVideoViewHolder(
                 currPosition: Long,
                 totalDuration: Long
             ) {
-                listener.onScrubbing()
+                productPreviewVideoListener.onScrubbing()
                 binding.videoTimeView.setCurrentPosition(currPosition)
                 binding.videoTimeView.setTotalDuration(totalDuration)
                 binding.videoTimeView.show()
@@ -69,7 +68,7 @@ class ProductContentVideoViewHolder(
                 currPosition: Long,
                 totalDuration: Long
             ) {
-                listener.onStopScrubbing()
+                productPreviewVideoListener.onStopScrubbing()
                 binding.videoTimeView.hide()
             }
         })
@@ -88,19 +87,19 @@ class ProductContentVideoViewHolder(
 
     private fun onSelected() {
         mIsSelected = true
-        listener.resumeVideo(mVideoId)
+        productPreviewVideoListener.resumeVideo(mVideoId)
     }
 
     private fun onNotSelected() {
         mIsSelected = false
-        listener.pauseVideo(mVideoId)
+        productPreviewVideoListener.pauseVideo(mVideoId)
     }
 
     private fun showLoading() {
         binding.apply {
             loaderVideo.show()
             if (mVideoPlayer?.exoPlayer?.currentPosition == 0L) {
-                playerProductContentVideo.hide()
+                playerReviewContentVideo.hide()
             }
         }
     }
@@ -108,19 +107,18 @@ class ProductContentVideoViewHolder(
     private fun hideLoading() {
         binding.apply {
             loaderVideo.hide()
-            playerProductContentVideo.show()
+            playerReviewContentVideo.show()
         }
     }
 
     companion object {
-        fun create(parent: ViewGroup, listener: ProductPreviewVideoListener) =
-            ProductContentVideoViewHolder(
-                binding = ItemProductContentVideoBinding.inflate(
+        fun create(parent: ViewGroup, productPreviewVideoListener: ProductPreviewVideoListener) =
+            ReviewMediaVideoViewHolder(
+                binding = ItemReviewContentVideoBinding.inflate(
                     LayoutInflater.from(parent.context),
-                    parent,
-                    false
+                    parent, false,
                 ),
-                listener = listener
+                productPreviewVideoListener = productPreviewVideoListener,
             )
     }
 }

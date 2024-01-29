@@ -27,13 +27,13 @@ import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
+import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
-import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
@@ -51,7 +51,7 @@ import com.tokopedia.content.common.R as contentcommonR
 class ReviewFragment @Inject constructor(
     private val router: Router
 ) : TkpdBaseV4Fragment(),
-    ReviewParentContentViewHolder.Listener,
+    ReviewInteractionListener,
     MenuBottomSheet.Listener,
     ReviewReportBottomSheet.Listener {
 
@@ -62,7 +62,9 @@ class ReviewFragment @Inject constructor(
         get() = _binding!!
 
     private val reviewAdapter by lazyThreadSafetyNone {
-        ReviewParentAdapter(this)
+        ReviewParentAdapter(
+            reviewInteractionListener = this
+        )
     }
 
     private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
@@ -128,7 +130,9 @@ class ReviewFragment @Inject constructor(
     private fun setupView() {
         binding.rvReview.adapter = reviewAdapter
         snapHelper.attachToRecyclerView(binding.rvReview)
+        binding.rvReview.removeOnScrollListener(scrollListener)
         binding.rvReview.addOnScrollListener(scrollListener)
+        binding.rvReview.itemAnimator = null
     }
 
     private fun observeReview() {

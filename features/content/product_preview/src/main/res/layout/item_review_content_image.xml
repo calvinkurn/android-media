@@ -8,17 +8,25 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_review_content_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="H,9:16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:rImg_cornerRadius="20dp"
-        tools:visibility="visible" />
+        app:rImg_cornerRadius="20dp" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_image"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:visibility="visible"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="decorative_white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

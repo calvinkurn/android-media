@@ -9,11 +9,11 @@ import com.tokopedia.content.product.preview.view.uimodel.product.ProductContent
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductIndicatorViewHolder
 
 class ProductIndicatorAdapter(
-    private val listener: ProductIndicatorListener
+    private val productIndicatorListener: ProductIndicatorListener
 ) : ListAdapter<ProductContentUiModel, ViewHolder>(ProductIndicatorDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ProductIndicatorViewHolder.create(parent, listener)
+        return ProductIndicatorViewHolder.create(parent, productIndicatorListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

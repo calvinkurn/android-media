@@ -1,5 +1,7 @@
 package com.tokopedia.content.product.preview.view.uimodel.review
 
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
+
 /**
  * @author by astidhiyaa on 06/12/23
  */
@@ -25,8 +27,10 @@ data class ReviewContentUiModel(
 }
 
 data class ReviewMediaUiModel(
-    val type: String,
-    val url: String
+    val mediaId: String = "",
+    val type: MediaType = MediaType.Unknown,
+    val url: String = "",
+    val selected: Boolean = false,
 )
 
 data class ReviewLikeUiState(

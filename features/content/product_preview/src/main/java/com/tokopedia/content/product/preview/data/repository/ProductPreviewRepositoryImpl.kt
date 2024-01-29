@@ -68,11 +68,17 @@ class ProductPreviewRepositoryImpl @Inject constructor(
         !response.isStatusError()
     }
 
-    override suspend fun likeReview(state: ReviewLikeUiState, reviewId: String): ReviewLikeUiState = withContext(dispatchers.io) {
-        val response =
-            likeUseCase(ReviewLikeUseCase.Param(reviewId = reviewId, likeStatus = state.state.switch.value))
-        mapper.mapLike(response)
-    }
+    override suspend fun likeReview(state: ReviewLikeUiState, reviewId: String): ReviewLikeUiState =
+        withContext(dispatchers.io) {
+            val response =
+                likeUseCase(
+                    ReviewLikeUseCase.Param(
+                        reviewId = reviewId,
+                        likeStatus = state.state.switch.value
+                    )
+                )
+            mapper.mapLike(response)
+        }
 
     override suspend fun submitReport(report: ReviewReportUiModel, reviewId: String): Boolean =
         withContext(dispatchers.io) {

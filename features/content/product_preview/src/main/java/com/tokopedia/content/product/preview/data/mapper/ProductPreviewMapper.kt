@@ -6,8 +6,10 @@ import com.tokopedia.content.product.preview.data.response.GetMiniProductInfoRes
 import com.tokopedia.content.product.preview.data.response.LikeReviewResponse
 import com.tokopedia.content.product.preview.data.response.MediaReviewResponse
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewDescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
@@ -25,7 +27,21 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
         val mapped = response.data.review.map {
             ReviewContentUiModel(
                 reviewId = it.feedbackId,
-                medias = emptyList(), // TODO: map and sew it later,
+                medias = it.videos.mapIndexed { index, videos ->
+                    ReviewMediaUiModel(
+                        mediaId = videos.attachmentId,
+                        type = MediaType.Video,
+                        url = videos.url,
+                        selected = index == 0
+                    )
+                } + it.images.mapIndexed { index, images ->
+                    ReviewMediaUiModel(
+                        mediaId = images.attachmentId,
+                        type = MediaType.Image,
+                        url = images.fullSizeUrl,
+                        selected = if (it.videos.isEmpty()) index == 0 else false
+                    )
+                },
                 menus = ReviewMenuStatus(isReportable = it.isReportable && !isOwner(it.user)),
                 likeState = ReviewLikeUiState(
                     count = it.likeStats.totalLike,

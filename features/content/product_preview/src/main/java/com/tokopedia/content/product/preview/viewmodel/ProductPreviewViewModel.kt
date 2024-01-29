@@ -321,4 +321,5 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }
         }
     }
+
 }
