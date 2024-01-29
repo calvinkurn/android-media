@@ -986,7 +986,8 @@ class AtcVariantBottomSheet :
                 sharedData?.minimumShippingPrice ?: 0.0,
                 sharedData?.trackerAttribution ?: "",
                 sharedData?.trackerListNamePdp ?: "",
-                sharedData?.showQtyEditor ?: false
+                sharedData?.showQtyEditor ?: false,
+                viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopName ?: ""
             )
         }
     }

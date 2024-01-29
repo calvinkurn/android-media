@@ -701,7 +701,7 @@ open class DynamicProductDetailFragment :
 
     private fun getPrefetchData(): ProductDetailPrefetch.Data? {
         val context = context ?: return null
-        val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
+        val cacheManager = SaveInstanceCacheManager(context.applicationContext, prefetchCacheId)
         return cacheManager.get(
             ProductDetailPrefetch.Data::class.java.simpleName,
             ProductDetailPrefetch.Data::class.java
@@ -5011,6 +5011,7 @@ open class DynamicProductDetailFragment :
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
                         userId = viewModel.userId
+                        shopName = data.basic.shopName
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -5052,6 +5053,7 @@ open class DynamicProductDetailFragment :
                     productName = data.getProductName
                     category = data.basic.category.name
                     price = data.finalPrice.toString()
+                    shopName = data.basic.shopName
                 }
             ),
             userId = viewModel.userId,
