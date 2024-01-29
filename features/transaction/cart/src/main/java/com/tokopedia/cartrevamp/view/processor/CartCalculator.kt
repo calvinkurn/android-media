@@ -14,7 +14,7 @@ object CartCalculator {
     fun calculatePriceMarketplaceProduct(
         allCartItemDataList: ArrayList<CartItemHolderData>,
         cartModel: CartModel,
-        updateCartModel: (cartModel: CartModel) -> Unit
+        isCalculateAddons: Boolean
     ): Triple<Int, Pair<Double, Double>, Double> {
         var totalItemQty = 0
         var subtotalBeforeSlashedPrice = 0.0
@@ -91,12 +91,13 @@ object CartCalculator {
                 subtotalCashback = returnValueNormalProduct.third
             }
 
-            if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
-                updateCartModel(cartModel.copy(totalQtyWithAddon = totalItemQty))
-                cartItemHolderData.addOnsProduct.listData.forEach {
-                    if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY || it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
-                        val qtyAddon = if (it.fixedQuantity) 1 else itemQty
-                        subtotalPrice += (qtyAddon * it.price)
+            if (isCalculateAddons) {
+                if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
+                    cartItemHolderData.addOnsProduct.listData.forEach {
+                        if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY || it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                            val qtyAddon = if (it.fixedQuantity) 1 else itemQty
+                            subtotalPrice += (qtyAddon * it.price)
+                        }
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,19 +8,23 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
-import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -55,10 +60,13 @@ import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreOwner
+import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreProvider
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -79,7 +87,7 @@ import com.tokopedia.creation.common.R as creationcommonR
  * Created By : Muhammad Furqan on 02/02/23
  */
 class FeedBaseFragment :
-    BaseDaggerFragment(),
+    TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
     FragmentListener {
 
@@ -165,6 +173,8 @@ class FeedBaseFragment :
             )
         }
 
+    private val viewModelStoreProvider by activityViewModels<FeedPostViewModelStoreProvider>()
+
     private val openCreateShorts =
         registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
             if (!isCreatingNewShorts) return@registerForActivityResult
@@ -178,6 +188,8 @@ class FeedBaseFragment :
             // this doesn't work, bcs the viewmodel doen't survive
             if (userSession.isLoggedIn) {
                 feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+            } else {
+                feedMainViewModel.setActiveTab(TAB_TYPE_FOR_YOU)
             }
         }
     private val openBrowseLoginResult =
@@ -189,6 +201,11 @@ class FeedBaseFragment :
             }
         }
 
+    override fun onAttach(context: Context) {
+        inject()
+        super.onAttach(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
@@ -197,6 +214,14 @@ class FeedBaseFragment :
                     fragment.listener = this
                     fragment.shouldShowPerformanceAction = false
                     fragment.analytics = contentCreationAnalytics
+                }
+
+                is FeedFragment -> {
+                    fragment.setDataSource(object : FeedFragment.DataSource {
+                        override fun getViewModelStoreOwner(type: String): ViewModelStoreOwner {
+                            return FeedPostViewModelStoreOwner(viewModelStoreProvider, type)
+                        }
+                    })
                 }
             }
         }
@@ -248,6 +273,7 @@ class FeedBaseFragment :
     }
 
     override fun onScrollToTop() {
+        if (!isAdded) return
         feedMainViewModel.scrollCurrentTabToTop()
     }
 
@@ -259,7 +285,7 @@ class FeedBaseFragment :
         return true
     }
 
-    override fun initInjector() {
+    private fun inject() {
         DaggerFeedMainComponent.factory()
             .build(
                 activityContext = requireContext(),
@@ -281,28 +307,12 @@ class FeedBaseFragment :
             ContentCreationTypeEnum.POST -> {
                 feedNavigationAnalytics.eventClickCreatePost()
 
-                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2).apply {
-                    putExtra(
-                        ContentCreationConsts.IS_CREATE_POST_AS_BUYER,
-                        data.authorType.asBuyer
-                    )
-                    putExtra(
-                        ContentCreationConsts.APPLINK_AFTER_CAMERA_CAPTURE,
-                        ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                    )
-                    putExtra(
-                        ContentCreationConsts.MAX_MULTI_SELECT_ALLOWED,
-                        ContentCreationConsts.VALUE_MAX_MULTI_SELECT_ALLOWED
-                    )
-                    putExtra(
-                        ContentCreationConsts.TITLE,
-                        getString(creationcommonR.string.content_creation_post_as_label)
-                    )
-                    putExtra(
-                        ContentCreationConsts.APPLINK_FOR_GALLERY_PROCEED,
-                        ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                    )
-                }
+                val intent = ContentCreationConsts.getPostIntent(
+                    context = context,
+                    asABuyer = data.authorType.asBuyer,
+                    title = getString(creationcommonR.string.content_creation_post_as_label),
+                    sourcePage = ""
+                )
                 startActivity(intent)
                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
             }
@@ -374,15 +384,15 @@ class FeedBaseFragment :
 
     private fun setupInsets() {
         binding.containerFeedTopNav.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
-
             val topInsetsMargin =
                 (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
 
-            getAllMotionScene().forEach {
-                it.setMargin(
-                    binding.containerFeedTopNav.vMenuCenter.id,
-                    ConstraintSet.TOP,
-                    topInsetsMargin
+            binding.containerFeedTopNav.vMenuCenter.apply {
+                setMargin(
+                    marginLeft,
+                    topInsetsMargin,
+                    marginRight,
+                    marginBottom
                 )
             }
         }
@@ -491,102 +501,122 @@ class FeedBaseFragment :
     }
 
     private fun observeUpload() {
-        // we don't use repeatOnLifecycle here as we want to listen to upload receivers even when the page is not fully resumed
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            creationUploader
-                .observe()
-                .collect { uploadResult ->
-                    when (uploadResult) {
-                        is CreationUploadResult.Empty -> {
-                            binding.uploadView.hide()
-                        }
-                        is CreationUploadResult.Upload -> {
-                            binding.uploadView.show()
-                            binding.uploadView.setUploadProgress(uploadResult.progress)
-                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
-                        }
-                        is CreationUploadResult.OtherProcess -> {
-                            binding.uploadView.show()
-                            binding.uploadView.setOtherProgress(uploadResult.progress)
-                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
-                        }
-                        is CreationUploadResult.Success -> {
-                            binding.uploadView.hide()
-
-                            when (val uploadData = uploadResult.data) {
-                                is CreationUploadData.Post -> {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG
-                                    )
-                                }
-                                is CreationUploadData.Shorts -> {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG,
-                                        actionText = getString(R.string.feed_upload_shorts_see_video),
-                                        actionListener = {
-                                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
-                                                uploadResult.data.authorId,
-                                                uploadResult.data.authorType,
-                                                uploadResult.data.creationId
-                                            )
-                                            router.route(
-                                                requireContext(),
-                                                ApplinkConst.PLAY_DETAIL,
-                                                uploadResult.data.creationId
-                                            )
-                                        }
-                                    )
-                                }
-                                is CreationUploadData.Stories -> {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_story_success),
-                                        duration = Toaster.LENGTH_LONG,
-                                        actionText = getString(R.string.feed_upload_shorts_see_video),
-                                        actionListener = {
-                                            router.route(
-                                                requireContext(),
-                                                uploadData.applink
-                                            )
-                                        }
-                                    )
-                                }
-                                else -> {}
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                creationUploader
+                    .observe()
+                    .collect { uploadResult ->
+                        when (uploadResult) {
+                            is CreationUploadResult.Empty -> {
+                                binding.uploadView.hide()
                             }
-                        }
-                        is CreationUploadResult.Failed -> {
-                            binding.uploadView.show()
-                            binding.uploadView.setFailed()
-                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
-                            binding.uploadView.setListener(object : UploadInfoView.Listener {
-                                override fun onRetryClicked(view: UploadInfoView) {
-                                    launch {
-                                        creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                    }
-                                }
 
-                                override fun onCloseWhenFailedClicked(view: UploadInfoView) {
-                                    launch {
-                                        creationUploader.deleteTopQueue()
-                                        creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                        binding.uploadView.hide()
+                            is CreationUploadResult.Upload -> {
+                                binding.uploadView.show()
+                                binding.uploadView.setUploadProgress(uploadResult.progress)
+                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                            }
+
+                            is CreationUploadResult.OtherProcess -> {
+                                binding.uploadView.show()
+                                binding.uploadView.setOtherProgress(uploadResult.progress)
+                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                            }
+
+                            is CreationUploadResult.Success -> {
+                                binding.uploadView.hide()
+
+                                when (val uploadData = uploadResult.data) {
+                                    is CreationUploadData.Post -> {
+                                        showNormalToaster(
+                                            getString(R.string.feed_upload_content_success),
+                                            duration = Toaster.LENGTH_LONG,
+                                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                                            actionListener = {
+                                                val intent = RouteManager.getIntent(
+                                                    context,
+                                                    ApplinkConst.FEED_RELEVANT_POST,
+                                                    uploadData.activityId,
+                                                )
+
+                                                router.route(requireActivity(), intent)
+                                            }
+                                        )
                                     }
 
-                                    if (uploadResult.data.uploadType == CreationUploadType.Post) {
-                                        feedMainViewModel.deletePostCache()
+                                    is CreationUploadData.Shorts -> {
+                                        showNormalToaster(
+                                            getString(R.string.feed_upload_content_success),
+                                            duration = Toaster.LENGTH_LONG,
+                                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                                            actionListener = {
+                                                playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                                    uploadResult.data.authorId,
+                                                    uploadResult.data.authorType,
+                                                    uploadResult.data.creationId
+                                                )
+                                                router.route(
+                                                    requireContext(),
+                                                    ApplinkConst.PLAY_DETAIL,
+                                                    uploadResult.data.creationId
+                                                )
+                                            }
+                                        )
                                     }
+
+                                    is CreationUploadData.Stories -> {
+                                        showNormalToaster(
+                                            getString(R.string.feed_upload_story_success),
+                                            duration = Toaster.LENGTH_LONG,
+                                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                                            actionListener = {
+                                                router.route(
+                                                    requireContext(),
+                                                    uploadData.applink
+                                                )
+                                            }
+                                        )
+                                    }
+
+                                    else -> {}
                                 }
-                            })
+                            }
+
+                            is CreationUploadResult.Failed -> {
+                                binding.uploadView.show()
+                                binding.uploadView.setFailed()
+                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                                binding.uploadView.setListener(object : UploadInfoView.Listener {
+                                    override fun onRetryClicked(view: UploadInfoView) {
+                                        launch {
+                                            creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
+                                        }
+                                    }
+
+                                    override fun onCloseWhenFailedClicked(view: UploadInfoView) {
+                                        launch {
+                                            creationUploader.deleteQueueAndChannel(uploadResult.data)
+                                            creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
+                                            binding.uploadView.hide()
+                                        }
+
+                                        if (uploadResult.data.uploadType == CreationUploadType.Post) {
+                                            feedMainViewModel.deletePostCache()
+                                        }
+                                    }
+                                })
+                            }
+
+                            else -> {}
                         }
-                        else -> {}
                     }
-                }
+            }
         }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        if (!isAdded) return
         if (!isVisibleToUser) {
             onPauseInternal()
         } else {
@@ -657,25 +687,39 @@ class FeedBaseFragment :
         }
 
         if (firstTabData != null) {
-            binding.containerFeedTopNav.tyFeedFirstTab.text = firstTabData.title
-            binding.containerFeedTopNav.tyFeedFirstTab.setOnClickListener {
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.text = firstTabData.title
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickForYouTab()
                 selectActiveTab(TAB_FIRST_INDEX)
             }
-            binding.containerFeedTopNav.tyFeedFirstTab.show()
+
+            if (firstTabData.hasNewContent && userSession.isLoggedIn) {
+                binding.containerFeedTopNav.layoutFeedTopTab.vFirstTabRedDot.show()
+            } else {
+                binding.containerFeedTopNav.layoutFeedTopTab.vFirstTabRedDot.hide()
+            }
+
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.show()
         } else {
-            binding.containerFeedTopNav.tyFeedFirstTab.hide()
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.hide()
         }
 
         if (secondTabData != null) {
-            binding.containerFeedTopNav.tyFeedSecondTab.text = secondTabData.title
-            binding.containerFeedTopNav.tyFeedSecondTab.setOnClickListener {
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.text = secondTabData.title
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickFollowingTab()
                 selectActiveTab(TAB_SECOND_INDEX)
             }
-            binding.containerFeedTopNav.tyFeedSecondTab.show()
+
+            if (secondTabData.hasNewContent && userSession.isLoggedIn) {
+                binding.containerFeedTopNav.layoutFeedTopTab.vSecondTabRedDot.show()
+            } else {
+                binding.containerFeedTopNav.layoutFeedTopTab.vSecondTabRedDot.hide()
+            }
+
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.show()
         } else {
-            binding.containerFeedTopNav.tyFeedSecondTab.hide()
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.hide()
         }
 
         if (isJustLoggedIn && userSession.isLoggedIn) {
@@ -827,9 +871,9 @@ class FeedBaseFragment :
 
     private fun handleTabTransition(position: Int) {
         if (position == TAB_FIRST_INDEX) {
-            binding.containerFeedTopNav.root.transitionToStart()
+            binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.transitionToStart()
         } else {
-            binding.containerFeedTopNav.root.transitionToEnd()
+            binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.transitionToEnd()
         }
     }
 
@@ -856,13 +900,6 @@ class FeedBaseFragment :
 
     private fun hideErrorView() {
         binding.feedError.hide()
-    }
-
-    private fun getAllMotionScene(): List<ConstraintSet> {
-        return listOf(
-            binding.containerFeedTopNav.root.getConstraintSet(R.id.start),
-            binding.containerFeedTopNav.root.getConstraintSet(R.id.end)
-        )
     }
 
     companion object {

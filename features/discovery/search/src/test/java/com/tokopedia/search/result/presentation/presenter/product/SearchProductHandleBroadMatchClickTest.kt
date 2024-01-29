@@ -70,7 +70,7 @@ internal class SearchProductHandleBroadMatchClickTest: ProductListPresenterTestF
     private fun `Then verify view interaction for click broad match`(broadMatchItemData: BroadMatchItemDataView) {
         verify {
             broadMatchView.trackEventClickBroadMatchItem(broadMatchItemData)
-            broadMatchView.openLink(broadMatchItemData.applink, broadMatchItemData.url)
+            broadMatchView.openLink(broadMatchItemData)
         }
     }
 
@@ -150,7 +150,7 @@ internal class SearchProductHandleBroadMatchClickTest: ProductListPresenterTestF
                 carouselProductType.type,
                 carouselProductType.inspirationCarouselProduct,
             )
-            broadMatchView.openLink(dynamicProductCarousel.applink, dynamicProductCarousel.url)
+            broadMatchView.openLink(dynamicProductCarousel)
         }
 
         verify(exactly = 0) {

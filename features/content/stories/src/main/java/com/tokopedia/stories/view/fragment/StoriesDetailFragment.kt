@@ -238,6 +238,13 @@ class StoriesDetailFragment @Inject constructor(
         ContentReportBottomSheet.get(childFragmentManager)?.dismiss()
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
 
+        analytic?.sendClickReportReason(
+            storiesId = viewModel.mDetail.id,
+            contentType = viewModel.mDetail.content.type,
+            storyType = viewModel.mDetail.storyType,
+            reportReason = item.title
+        )
+
         ContentSubmitReportBottomSheet.getOrCreate(
             childFragmentManager,
             requireActivity().classLoader
@@ -511,7 +518,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun buildEventLabel(): String =
-        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${if (viewModel.mDetail.category == StoriesDetailItem.StoryCategory.Manual) "organic" else "asgc"} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${viewModel.mDetail.storyType} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -521,15 +528,16 @@ class StoriesDetailFragment @Inject constructor(
 
             when (state.category) {
                 StoriesDetailItem.StoryCategory.Manual -> {
-                    val creationTimestamp = ContentDateConverter.getDiffTime(state.publishedAt) { dateTime ->
-                        when {
-                            dateTime.day > 30 -> dateTime.yearMonth
-                            dateTime.day in 1..30 -> "${dateTime.day} ${ContentDateConverter.DAY}"
-                            dateTime.hour in 1..23 -> "${dateTime.hour} ${ContentDateConverter.HOUR}"
-                            dateTime.minute in 1..59 -> "${dateTime.minute} ${ContentDateConverter.MINUTE_CONCISE}"
-                            else -> ContentDateConverter.BELOW_1_MINUTE_CONCISE
+                    val creationTimestamp =
+                        ContentDateConverter.getDiffTime(state.publishedAt) { dateTime ->
+                            when {
+                                dateTime.day > THIRTY -> dateTime.yearMonth
+                                dateTime.day in ONE..THIRTY -> "${dateTime.day} ${ContentDateConverter.DAY}"
+                                dateTime.hour in ONE..TWENTY_THREE -> "${dateTime.hour} ${ContentDateConverter.HOUR}"
+                                dateTime.minute in ONE..FIFTY_NINE -> "${dateTime.minute} ${ContentDateConverter.MINUTE_CONCISE}"
+                                else -> ContentDateConverter.BELOW_1_MINUTE_CONCISE
+                            }
                         }
-                    }
 
                     tvStoriesTimestamp.text = getString(
                         storiesR.string.story_creation_timestamp,
@@ -640,7 +648,7 @@ class StoriesDetailFragment @Inject constructor(
 
         with(binding.nudgeStoriesProduct) {
             setContent {
-                StoriesProductNudge(state.productCount) {
+                StoriesProductNudge(state.productCount, state.isProductAvailable) {
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
             }
@@ -650,15 +658,19 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         showSwipeProductJob = viewLifecycleOwner.lifecycleScope.launch {
             if (state.isProductAvailable) {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
+
                 delay(DELAY_SWIPE_PRODUCT_BADGE_SHOW)
                 TransitionManager.beginDelayedTransition(
                     binding.root,
                     Fade(Fade.IN)
-                        .addTarget(binding.nudgeStoriesProduct)
+                        .addTarget(binding.flStoriesProduct)
                 )
+                binding.flStoriesProduct.show()
                 binding.nudgeStoriesProduct.show()
             } else {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
             }
         }
@@ -965,6 +977,12 @@ class StoriesDetailFragment @Inject constructor(
             updateList(viewModel.userReportReasonList)
         }.show(childFragmentManager, ContentReportBottomSheet.TAG)
 
+        analytic?.sendViewReportReasonList(
+            storiesId = viewModel.mDetail.id,
+            contentType = viewModel.mDetail.content.type,
+            storyType = viewModel.mDetail.storyType
+        )
+
         viewModel.submitAction(StoriesUiAction.OpenReport)
     }
 
@@ -1029,6 +1047,12 @@ class StoriesDetailFragment @Inject constructor(
 
     companion object {
         private const val DELAY_SWIPE_PRODUCT_BADGE_SHOW = 2000L
+
+        private const val THIRTY = 30
+        private const val TWENTY_THREE = 23
+        private const val FIFTY_NINE = 59
+        private const val ONE = 1
+
 
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
 

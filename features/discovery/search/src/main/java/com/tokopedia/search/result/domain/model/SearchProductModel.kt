@@ -51,7 +51,11 @@ data class SearchProductModel(
 
     @SerializedName("fetchLastFilter")
     val lastFilter: LastFilter = LastFilter(),
-) {
+
+    @SerializedName("userProfileDob")
+    val userDOB: UserDOB = UserDOB(),
+
+    ) {
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
 
@@ -957,6 +961,10 @@ data class SearchProductModel(
             @SerializedName("rating_average")
             @Expose
             val ratingAverage: String = "",
+
+            @SerializedName("category_id")
+            @Expose
+            val categoryId: String = "",
 
             @SerializedName("label_groups")
             @Expose

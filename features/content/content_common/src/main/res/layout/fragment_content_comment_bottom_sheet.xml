@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:layout_height="match_parent">
 
     <com.tokopedia.content.common.ui.custom.ContentHeaderView
         android:id="@+id/comment_header"
@@ -16,25 +13,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        />
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_comment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@id/view_comment_send"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comment_header"
-        app:layout_constraintVertical_bias="0.0"
-        >
-    </androidx.recyclerview.widget.RecyclerView>
+        app:layout_constraintVertical_bias="0.0"/>
 
     <LinearLayout
         android:id="@+id/view_comment_send"
@@ -45,41 +41,38 @@
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_user_photo"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            app:unify_image_type="circle"
-            />
+            android:scaleType="centerCrop"
+            app:unify_image_type="circle" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/new_comment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN1000"
-            android:minHeight="@dimen/content_common_space_36"
-            android:maxLines="4"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/content_common_space_8"
             android:layout_weight="1"
             android:background="@drawable/bg_et_comment"
             android:hint="@string/content_comment_edit_text_hint"
-            android:textColorHint="@color/Unify_NN600"
             android:inputType="textMultiLine"
+            android:maxLines="4"
+            android:minHeight="@dimen/content_common_space_36"
             android:paddingStart="16dp"
             android:paddingTop="6dp"
             android:paddingEnd="12dp"
             android:paddingBottom="6dp"
             android:scrollbars="vertical"
             android:tag=""
+            android:textColor="@color/Unify_NN1000"
+            android:textColorHint="@color/Unify_NN600"
             android:textSize="@dimen/unify_font_14"
-            android:textStyle="normal"
-            />
+            android:textStyle="normal" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_comment_send"
@@ -92,8 +85,7 @@
             app:icon_color_light_enable="@color/Unify_NN0"
             app:icon_color_night_disabled="@color/Unify_NN0"
             app:icon_color_night_enable="@color/Unify_NN0"
-            app:icon_name="SEND_TEXT"
-            />
+            app:icon_name="SEND_TEXT" />
 
     </LinearLayout>
 
@@ -109,6 +101,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/v_comment_empty"
+        layout="@layout/item_comment_empty"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

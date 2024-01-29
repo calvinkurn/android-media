@@ -24,7 +24,15 @@
     <string name="content_creation_failed_network_image_url">https://images.tokopedia.net/img/content/creation/content_creation_network-error.png</string>
 
     <string name="content_creation_entry_point_button_label">Buat Konten</string>
-    <string name="content_creation_entry_point_desription"><![CDATA[Promosikan produkmu dengan <b>Live, Video, Foto & Story</b>!]]></string>
+    <string name="content_creation_entry_point_desription"><![CDATA[Promosi di <b>Live, Video & Foto</b> bikin orang impulsif belanja!]]></string>
+
+    <string name="content_creation_upload_notification_post_progress_title">Tunggu, ya. Foto-mu lagi di-upload</string>
+    <string name="content_creation_upload_notification_post_progress_description">Selagi menunggu Foto di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia.</string>
+    <string name="content_creation_upload_notification_post_success_title">Yay, Foto-mu berhasil di-upload!</string>
+    <string name="content_creation_upload_notification_post_success_description">Lihat Foto-nya di sini, yuk!</string>
+    <string name="content_creation_upload_notification_post_fail_title">Oops, gagal upload Foto</string>
+    <string name="content_creation_upload_notification_post_fail_description">Klik di sini buat ulangi progres upload Foto-nya, ya!</string>
+    <string name="content_creation_upload_notification_post_fail_retry">Coba lagi</string>
 
     <string name="content_creation_upload_notification_shorts_progress_title">Tunggu ya, videomu lagi di-upload</string>
     <string name="content_creation_upload_notification_shorts_progress_description">Selagi menunggu video di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia.</string>\

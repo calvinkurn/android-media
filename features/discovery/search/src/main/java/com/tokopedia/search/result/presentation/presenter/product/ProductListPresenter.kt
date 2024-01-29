@@ -13,6 +13,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET
 import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.SAVE_LAST_FILTER_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_POST_ATC_CAROUSEL_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE
@@ -33,6 +34,8 @@ import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
+import com.tokopedia.search.result.domain.usecase.getpostatccarousel.GetPostATCCarouselUseCase
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.model.ProductDataView
@@ -78,10 +81,10 @@ import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGe
 import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegate
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenter
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
@@ -136,6 +139,8 @@ class ProductListPresenter @Inject constructor(
     @param:Named(SAVE_LAST_FILTER_USE_CASE)
     private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
     private val addToCartUseCase: AddToCartUseCase,
+    @param:Named(GET_POST_ATC_CAROUSEL_USE_CASE)
+    private val getPostATCCarouselUseCase: Lazy<UseCase<SearchInspirationCarousel>>,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val schedulersProvider: SchedulersProvider,
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
@@ -151,7 +156,7 @@ class ProductListPresenter @Inject constructor(
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val suggestionPresenter: SuggestionPresenter,
     private val tickerPresenter: TickerPresenter,
-    private val safeSearchPresenter: SafeSearchPresenter,
+    private val safeSearchPresenter: SafeSearchPresenterDelegate,
     wishlistPresenterDelegate: WishlistPresenterDelegate,
     dynamicFilterModelProvider: DynamicFilterModelProvider,
     bottomSheetFilterPresenter: BottomSheetFilterPresenter,
@@ -369,7 +374,6 @@ class ProductListPresenter @Inject constructor(
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
 
-        paginationImpl.totalData = productDataView.totalData
     }
 
     private fun createProductDataView(
@@ -390,6 +394,7 @@ class ProductListPresenter @Inject constructor(
             isShowLocalSearchRecommendation(),
             externalReference,
             newCardType,
+            safeSearchPresenter.isShowAdultEnableAndProfileVerify()
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -593,6 +598,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         if (isViewNotAttached) return
 
+        safeSearchPresenter.setUserProfileDob(searchProductModel.userDOB)
         val productDataView = createFirstProductDataView(searchProductModel)
 
         if (isSearchRedirected(productDataView))
@@ -1493,6 +1499,7 @@ class ProductListPresenter @Inject constructor(
         getLocalSearchRecommendationUseCase.get()?.unsubscribe()
         getInspirationCarouselChipsUseCase.get()?.unsubscribe()
         saveLastFilterUseCase.get()?.unsubscribe()
+        getPostATCCarouselUseCase.get()?.unsubscribe()
         recommendationPresenterDelegate.detachView()
         onSafeSearchViewDestroyed()
 

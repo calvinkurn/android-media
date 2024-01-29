@@ -13,6 +13,7 @@ val QUERY_ADD_TO_CART = """
                       quantity
                       notes
                       shop_id
+                      shop_name
                       customer_id
                       warehouse_id
                       tracker_attribution

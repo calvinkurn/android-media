@@ -46,8 +46,10 @@ object CampaignWidgetTracking : BaseTrackerConst() {
                     creativeUrl = ""
                 )
             )
-        ).appendBusinessUnit(BusinessUnit.DEFAULT)
+        )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendChannelId(channel.id)
             .appendUserId(userId)
         return trackingBuilder.build()
     }

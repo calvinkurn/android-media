@@ -131,6 +131,10 @@ class RecyclerViewUpdater @Inject constructor(
         productListAdapter?.refreshItemAtIndex(index)
     }
 
+    override fun refreshItemAtIndex(index: Int, refreshItem: Visitable<*>) {
+        productListAdapter?.refreshItemAtIndex(index, refreshItem)
+    }
+
     override fun addLoading() {
         productListAdapter?.addLoading()
     }
@@ -157,6 +161,10 @@ class RecyclerViewUpdater @Inject constructor(
 
     override fun scrollToPosition(position: Int) {
         recyclerView?.scrollToPosition(position)
+    }
+
+    override fun unBlurItem() {
+        productListAdapter?.unBlurItem()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

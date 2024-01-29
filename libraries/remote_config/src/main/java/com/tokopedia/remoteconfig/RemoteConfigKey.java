@@ -192,8 +192,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
     public static final String ENABLE_SLASH_PRICE = "android_enable_slash_price";
 
-    public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
-
     public static final String DISCOVERY_DISABLE_SINGLE_PROD_CARD = "android_discovery_single_product_disable";
 
     public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
@@ -202,12 +200,10 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
 
-    public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
-
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
     public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
-    
+
     public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
 
     public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
@@ -220,8 +216,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEND_SUCCESS_LOG_BRANCH = "android_enable_success_log_branch";
 
     public static final String ENABLE_NEW_SHARE_SELLER = "android_sellerapp_enable_new_share";
-
-    public static final String ENABLE_STOCK_AVAILABLE = "android_enable_stock_available";
 
     public static final String RECOM_USE_GQL_FED_QUERY = "android_recom_use_gql_fed_query";
 
@@ -236,6 +230,9 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
 
+    public static final String ENABLE_PERFORMANCE_TRACE_V2 = "android_enable_performance_trace_v2";
+
+    public static final String PERFORMANCE_TRACE_CONFIG = "android_universal_performance_config";
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
 
     public static final String ENABLE_CHATBOT_MVVM = "android_chatbot_is_mvvm";
@@ -291,6 +288,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_PDP_P1_CACHEABLE = "android_pdp_p1_should_cacheable";
 
+    public static final String ENABLE_STOCK_AVAILABLE = "android_enable_stock_available";
+
     public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
 
     public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
@@ -310,6 +309,20 @@ public class RemoteConfigKey {
     public static final String ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND = "android_main_app_enable_disco_shop_offer_hero_brand";
 
     public static final String ANDROID_ENABLE_AUTO_TOPADS_WD_RECOMMENDATION = "android_enable_auto_topads_wd_recommendation";
+
+    public static final String ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL = "android_saldo_enable_auto_wd_init_gql";
+
+    public static final String ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR = "android_enable_new_quantity_editor_cart";
+
+    public static final String ANDROID_INTERNAL_TEST_UPDATE_CONFIG = "android_internal_test_update_config";
+
+    public static final String ANDROID_INTERNAL_PUBLIC_VERSION_DIALOG_CONFIG = "android_internal_public_version_dialog_config";
+
+    public static final String ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG = "android_internal_nakama_version_dialog_config";
+  
+    public static final String ANDROID_CHATBOT_SECURE_IMAGE = "android_chatbot_secure_image";
+
+    public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
 
     public static final String ANDROID_ENABLE_THANKYOUPAGE_V2 = "android_enable_new_thankyoupage";
 }

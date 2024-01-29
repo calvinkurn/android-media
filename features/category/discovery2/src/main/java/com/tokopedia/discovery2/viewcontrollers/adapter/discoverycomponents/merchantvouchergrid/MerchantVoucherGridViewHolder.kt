@@ -24,7 +24,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class MerchantVoucherGridViewHolder(
     itemView: View,
     val fragment: Fragment
-): AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     companion object {
         private const val SCROLL_UP_DIRECTION = 1
         private const val GRID_SPAN_COUNT = 2
@@ -126,8 +126,13 @@ class MerchantVoucherGridViewHolder(
     private fun MerchantVoucherGridViewModel.observeSeeMore(
         lifecycleOwner: LifecycleOwner
     ) {
-        seeMore.observe(lifecycleOwner) { redirection ->
-            binding?.renderSeeMoreButton(redirection)
+        binding?.apply {
+            seeMore.observe(lifecycleOwner) { result ->
+                when (result) {
+                    is Success -> renderSeeMoreButton(result.data)
+                    is Fail -> seeMoreBtn.hide()
+                }
+            }
         }
     }
 
@@ -139,6 +144,7 @@ class MerchantVoucherGridViewHolder(
     private fun MerchantVoucherGridLayoutBinding.hideWidget() {
         merchantVoucherRv.hide()
         seeMoreBtn.hide()
+        seeMoreBtnSpace.hide()
     }
 
     private fun MerchantVoucherGridLayoutBinding.renderSeeMoreButton(redirection: Redirection) {
@@ -153,6 +159,8 @@ class MerchantVoucherGridViewHolder(
                 }
             }
         }
+
+        seeMoreBtnSpace.show()
     }
 
     private fun MerchantVoucherGridLayoutBinding.setupRecyclerView() {

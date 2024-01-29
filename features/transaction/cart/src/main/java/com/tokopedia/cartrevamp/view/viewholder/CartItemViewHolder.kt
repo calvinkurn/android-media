@@ -11,6 +11,10 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -21,8 +25,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
+import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
 import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
@@ -37,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -44,9 +51,16 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.nest.components.quantityeditor.QtyButton
+import com.tokopedia.nest.components.quantityeditor.QtyField
+import com.tokopedia.nest.components.quantityeditor.QtyState
+import com.tokopedia.nest.components.quantityeditor.view.QuantityEditorView
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.resources.isDarkMode
@@ -57,16 +71,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.*
+import com.tokopedia.nest.components.R as nestcomponentsR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @SuppressLint("ClickableViewAccessibility")
-class CartItemViewHolder constructor(
+class CartItemViewHolder(
     private val binding: ItemCartProductRevampBinding,
     private var actionListener: CartItemAdapter.ActionListener?,
     private var mainCoachMark: CartMainCoachMarkUiModel,
     private val binderHelper: CartViewBinderHelper
 ) : RecyclerView.ViewHolder(binding.root) {
+
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(itemView.context) }
 
     private var viewHolderListener: ViewHolderListener? = null
 
@@ -77,6 +94,18 @@ class CartItemViewHolder constructor(
     private var informationLabel: MutableList<String> = mutableListOf()
     private var qtyTextWatcher: TextWatcher? = null
     private var lastQty: Int = 0
+    private var isDeleteFromDoneImeButton: Boolean = false
+
+    init {
+        binding.qtyEditorProduct.apply {
+            isExpand = true
+            expandState.value = true
+            enableManualInput.value = true
+            configState.value = configState.value.copy(
+                qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_NN1000)
+            )
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     fun clear() {
@@ -95,6 +124,7 @@ class CartItemViewHolder constructor(
     ) {
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
+        this.isDeleteFromDoneImeButton = false
 
         itemView.addOnImpressionListener(data, onView = {
             if (!data.isError) {
@@ -111,9 +141,10 @@ class CartItemViewHolder constructor(
         renderShopInfo(data)
         renderLeftAnchor(data)
         renderProductInfo(data)
-        renderQuantity(data, viewHolderListener)
+        renderQuantityWidget(data)
         renderProductAction(data)
         renderBmGmOfferTicker(data)
+        renderProductTagInfo(data)
     }
 
     private fun initSwipeLayout(data: CartItemHolderData) {
@@ -137,6 +168,7 @@ class CartItemViewHolder constructor(
             binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
         }
         setSwipeLayoutColor()
+        setSwipeLayoutSwipeListener(data)
         setSwipeLayoutClickListener(data)
     }
 
@@ -190,17 +222,41 @@ class CartItemViewHolder constructor(
         }
     }
 
+    private fun setSwipeLayoutSwipeListener(data: CartItemHolderData) {
+        binding.apply {
+            swipeLayout.setSwipeListener(object : CartSwipeRevealLayout.SwipeListener {
+                override fun onClosed(view: CartSwipeRevealLayout?) {
+                    actionListener?.onSwipeToDeleteClosed(data.productId)
+                }
+
+                override fun onOpened(view: CartSwipeRevealLayout?) {
+                    // no-op
+                }
+
+                override fun onSlide(view: CartSwipeRevealLayout?, slideOffset: Float) {
+                    // no-op
+                }
+            })
+        }
+    }
+
     private fun setSwipeLayoutClickListener(data: CartItemHolderData) {
         binding.apply {
             flSwipeDelete.setOnClickListener {
                 if (swipeLayout.isOpen()) {
-                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                    actionListener?.onCartItemDeleteButtonClicked(
+                        data,
+                        CartDeleteButtonSource.SwipeToDelete
+                    )
                     binderHelper.closeAll()
                 }
             }
             flSwipeDeleteBundling.setOnClickListener {
                 if (swipeLayoutBundling.isOpen()) {
-                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                    actionListener?.onCartItemDeleteButtonClicked(
+                        data,
+                        CartDeleteButtonSource.SwipeToDelete
+                    )
                     binderHelper.closeAll()
                 }
             }
@@ -393,7 +449,7 @@ class CartItemViewHolder constructor(
     private fun renderActionDelete(data: CartItemHolderData) {
         binding.buttonDeleteCart.setOnClickListener {
             if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemDeleteButtonClicked(data, true)
+                actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
             }
         }
         binding.buttonDeleteCart.show()
@@ -407,7 +463,7 @@ class CartItemViewHolder constructor(
         }
 
         checkboxProduct.show()
-        checkboxProduct.setOnCheckedChangeListener { compoundButton, b ->
+        checkboxProduct.setOnCheckedChangeListener { _, _ ->
             // disable listener before setting current selection state
         }
         checkboxProduct.isChecked = data.isSelected
@@ -566,16 +622,17 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductActionSection(data: CartItemHolderData) {
+        val quantityEditorView = getQuantityEditorView()
         if (data.isBundlingItem) {
             if (data.isMultipleBundleProduct && (data.bundlingItemPosition == BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
-                binding.qtyEditorProduct.gone()
+                quantityEditorView.gone()
             } else {
-                binding.qtyEditorProduct.show()
+                quantityEditorView.show()
             }
             binding.buttonChangeNote.show()
             binding.buttonToggleWishlist.show()
         } else {
-            binding.qtyEditorProduct.show()
+            quantityEditorView.show()
             binding.buttonChangeNote.show()
             binding.buttonToggleWishlist.show()
         }
@@ -619,7 +676,7 @@ class CartItemViewHolder constructor(
                 )
                 if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER || (!data.isMultipleBundleProduct)) {
                     connect(
-                        R.id.qty_editor_product,
+                        getQuantityEditorLayoutId(),
                         ConstraintSet.TOP,
                         R.id.button_change_note,
                         ConstraintSet.BOTTOM,
@@ -627,7 +684,7 @@ class CartItemViewHolder constructor(
                     )
                 } else {
                     connect(
-                        R.id.qty_editor_product,
+                        getQuantityEditorLayoutId(),
                         ConstraintSet.TOP,
                         R.id.item_addon_cart,
                         ConstraintSet.BOTTOM,
@@ -638,66 +695,66 @@ class CartItemViewHolder constructor(
                 clear(R.id.button_change_note_lottie, ConstraintSet.BOTTOM)
                 clear(R.id.button_toggle_wishlist, ConstraintSet.BOTTOM)
                 clear(R.id.iv_animated_wishlist, ConstraintSet.BOTTOM)
-                clear(R.id.qty_editor_product, ConstraintSet.BOTTOM)
+                clear(getQuantityEditorLayoutId(), ConstraintSet.BOTTOM)
             } else {
                 connect(
                     R.id.button_change_note,
                     ConstraintSet.TOP,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     margin
                 )
                 connect(
                     R.id.button_change_note_lottie,
                     ConstraintSet.TOP,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     margin
                 )
                 connect(
                     R.id.button_change_note,
                     ConstraintSet.BOTTOM,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.BOTTOM,
                     margin
                 )
                 connect(
                     R.id.button_change_note_lottie,
                     ConstraintSet.BOTTOM,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.BOTTOM,
                     margin
                 )
                 connect(
                     R.id.button_toggle_wishlist,
                     ConstraintSet.TOP,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     margin
                 )
                 connect(
                     R.id.iv_animated_wishlist,
                     ConstraintSet.TOP,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     margin
                 )
                 connect(
                     R.id.button_toggle_wishlist,
                     ConstraintSet.BOTTOM,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.BOTTOM,
                     margin
                 )
                 connect(
                     R.id.iv_animated_wishlist,
                     ConstraintSet.BOTTOM,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.BOTTOM,
                     margin
                 )
                 connect(
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     R.id.item_addon_cart,
                     ConstraintSet.BOTTOM,
@@ -1177,10 +1234,10 @@ class CartItemViewHolder constructor(
             binding.root.context.getString(R.string.cart_button_notes_filled_content_desc)
     }
 
-    private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
-        val qtyEditorProduct = binding.qtyEditorProduct
+    private fun renderOldQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
+        val qtyEditorProduct = binding.oldQtyEditorProduct
         if (data.isError) {
-            binding.qtyEditorProduct.gone()
+            qtyEditorProduct.gone()
             return
         }
         qtyEditorProduct.autoHideKeyboard = true
@@ -1238,7 +1295,11 @@ class CartItemViewHolder constructor(
                         if (data.isBundlingItem) data.bundleQuantity else data.quantity
                     if (isActive && previousQuantity != newValue) {
                         if (!qtyEditorProduct.editText.isFocused) {
-                            validateQty(newValue, data)
+                            if (isDeleteFromDoneImeButton) {
+                                isDeleteFromDoneImeButton = false
+                            } else {
+                                validateOldQty(newValue, data)
+                            }
                             if (isActive && newValue != 0) {
                                 actionListener?.onCartItemQuantityChanged(data, newValue)
                                 handleRefreshType(data, viewHolderListener)
@@ -1258,7 +1319,7 @@ class CartItemViewHolder constructor(
                     if (data.isBundlingItem) data.bundleQuantity else data.quantity
                 if ((currentQuantity == 1 && data.minOrder == 1) || (currentQuantity == data.minOrder && data.isAlreadyShowMinimumQuantityPurchasedError)) {
                     delayChangeQty?.cancel()
-                    actionListener?.onCartItemDeleteButtonClicked(data, false)
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
                     actionListener?.sendRemoveCartFromSubtractButtonAnalytic(data)
                 }
                 actionListener?.onCartItemQuantityMinusButtonClicked()
@@ -1280,8 +1341,11 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
-                if (qtyEditorProduct.editText.text.toString() == "0") {
-                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                val isDeletion = qtyEditorProduct.editText.text.toString() == "0"
+                isDeleteFromDoneImeButton = isDeletion
+                if (isDeletion) {
+                    delayChangeQty?.cancel()
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
                 }
                 if (lastQty > data.maxOrder) {
                     binding.labelQuantityError.text = String.format(
@@ -1303,8 +1367,123 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.isEnabled = data.isError == false
     }
 
-    private fun validateQty(newValue: Int, element: CartItemHolderData) {
-        val qtyEditorCart = binding.qtyEditorProduct
+    private fun renderQuantityWidget(data: CartItemHolderData) {
+        if (isUsingNewQuantityEditor()) {
+            renderQuantity(data, viewHolderListener)
+        } else {
+            renderOldQuantity(data, viewHolderListener)
+        }
+    }
+
+    private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
+        val qtyEditorProduct = binding.qtyEditorProduct
+        if (data.isError) {
+            qtyEditorProduct.gone()
+            return
+        }
+
+        if (data.isAlreadyShowMinimumQuantityPurchasedError) {
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_min_quantity_error),
+                data.minOrder
+            )
+            binding.labelQuantityError.visible()
+        }
+
+        if (data.isAlreadyShowMaximumQuantityPurchasedError) {
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_max_quantity_error),
+                data.maxOrder
+            )
+            binding.labelQuantityError.visible()
+        }
+
+        if (!data.isAlreadyShowMinimumQuantityPurchasedError && !data.isAlreadyShowMaximumQuantityPurchasedError) {
+            binding.labelQuantityError.gone()
+        }
+
+        qtyEditorProduct.apply {
+            onFocusChanged = {
+                qtyState.value = if (it.isFocused) QtyState.Focus else QtyState.Enabled
+            }
+            keyboardOptions.value = KeyboardOptions(
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Number
+            )
+            keyboardActions.value = KeyboardActions(
+                onDone = {
+                    val newQty = qtyValue.value
+                    if (newQty == 0) {
+                        actionListener?.onCartItemDeleteButtonClicked(
+                            data,
+                            CartDeleteButtonSource.QuantityEditorImeAction
+                        )
+                        return@KeyboardActions
+                    }
+                    validateQty(newQty, data)
+                    lastQty = qtyValue.value
+                    actionListener?.onCartItemQuantityChanged(data, qtyValue.value)
+                    handleRefreshType(data, viewHolderListener)
+                    hideKeyboard()
+                    actionListener?.clearAllFocus()
+                }
+            )
+            qtyValue.value = if (data.isBundlingItem) data.bundleQuantity else data.quantity
+            configState.value = configState.value.copy(
+                qtyMinusButton = getQuantityEditorMinButton(
+                    if (data.isBundlingItem) data.bundleQuantity else data.quantity,
+                    data
+                ),
+                qtyPlusButton = configState.value.qtyPlusButton.copy(
+                    onClick = {
+                        if (!data.isError && bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                            actionListener?.onCartItemQuantityPlusButtonClicked()
+                        }
+                    }
+                ),
+                minInt = 0,
+                maxInt = data.maxOrder
+            )
+
+            onValueChanged = { qty ->
+                configState.value = configState.value.copy(
+                    qtyMinusButton = getQuantityEditorMinButton(qty, data)
+                )
+                if (qtyState.value !is QtyState.Focus) {
+                    validateQty(qty, data)
+                    if (qty != 0) {
+                        lastQty = qty
+                        actionListener?.onCartItemQuantityChanged(data, qty)
+                        handleRefreshType(data, viewHolderListener)
+                    }
+                } else {
+                    qtyValue.value = qty
+                }
+            }
+        }
+    }
+
+    private fun getQuantityEditorMinButton(quantity: Int, data: CartItemHolderData): QtyButton {
+        return if (quantity == data.minOrder) {
+            binding.qtyEditorProduct.configState.value.qtyMinusButton.copy(
+                iconUnifyId = IconUnify.DELETE_SMALL,
+                colorInt = nestcomponentsR.color.Unify_NN950,
+                qtyEnabledCondition = { _, _ -> true },
+                onClick = {
+                    actionListener?.onCartItemDeleteButtonClicked(
+                        data,
+                        CartDeleteButtonSource.TrashBin
+                    )
+                    actionListener?.clearAllFocus()
+                }
+            )
+        } else {
+            QtyButton.defaultMinButton
+        }
+    }
+
+    private fun validateOldQty(newValue: Int, element: CartItemHolderData) {
+        val qtyEditorCart = binding.oldQtyEditorProduct
         if (newValue > element.minOrder) {
             element.isAlreadyShowMinimumQuantityPurchasedError = false
         }
@@ -1313,7 +1492,7 @@ class CartItemViewHolder constructor(
         }
         if (newValue < element.minOrder) {
             if (element.minOrder <= 1) {
-                actionListener?.onCartItemDeleteButtonClicked(element, false)
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
                 return
             }
             binding.labelQuantityError.show()
@@ -1326,11 +1505,79 @@ class CartItemViewHolder constructor(
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
             } else {
                 element.isAlreadyShowMinimumQuantityPurchasedError = false
-                actionListener?.onCartItemDeleteButtonClicked(element, false)
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
             }
         }
         qtyEditorCart.addButton.isEnabled = true
         qtyEditorCart.subtractButton.isEnabled = true
+    }
+
+    private fun validateQty(newQty: Int, data: CartItemHolderData) {
+        validateMaximumQty(newQty, data)
+        validateMinimumQty(newQty, data)
+    }
+
+    private fun validateMaximumQty(newQty: Int, data: CartItemHolderData) {
+        if (newQty > data.maxOrder) {
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_max_quantity_error),
+                data.maxOrder
+            )
+            data.isAlreadyShowMaximumQuantityPurchasedError = true
+            binding.qtyEditorProduct.qtyValue.value = data.maxOrder
+            binding.labelQuantityError.show()
+        } else if (newQty > data.minOrder && newQty < data.maxOrder) {
+            data.isAlreadyShowMaximumQuantityPurchasedError = false
+            binding.labelQuantityError.gone()
+        }
+    }
+
+    private fun validateMinimumQty(newQty: Int, data: CartItemHolderData) {
+        val qtyEditorCart = binding.qtyEditorProduct
+        if (newQty > data.minOrder) {
+            data.isAlreadyShowMinimumQuantityPurchasedError = false
+        }
+        if (newQty < data.maxOrder) {
+            data.isAlreadyShowMaximumQuantityPurchasedError = false
+        }
+        if (lastQty > data.minOrder && newQty == data.minOrder && data.minOrder > 1) {
+            binding.labelQuantityError.show()
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_min_quantity_error),
+                data.minOrder
+            )
+            if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
+                qtyEditorCart.qtyValue.value = data.minOrder
+                data.isAlreadyShowMinimumQuantityPurchasedError = true
+            } else {
+                data.isAlreadyShowMinimumQuantityPurchasedError = false
+                actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                actionListener?.clearAllFocus()
+            }
+            return
+        }
+        if (newQty < data.minOrder) {
+            if (data.minOrder <= 1) {
+                actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                actionListener?.clearAllFocus()
+                return
+            }
+            binding.labelQuantityError.show()
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_min_quantity_error),
+                data.minOrder
+            )
+            if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
+                qtyEditorCart.qtyValue.value = data.minOrder
+                data.isAlreadyShowMinimumQuantityPurchasedError = true
+            } else {
+                data.isAlreadyShowMinimumQuantityPurchasedError = false
+                actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                actionListener?.clearAllFocus()
+            }
+            return
+        }
+        return
     }
 
     private fun handleRefreshType(
@@ -1615,21 +1862,14 @@ class CartItemViewHolder constructor(
         }
     }
 
-    private fun validateErrorView(typography: Typography, isError: Boolean) {
-        if (isError) {
-            typography.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN400
-                )
-            )
+    private fun renderProductTagInfo(data: CartItemHolderData) {
+        if (data.productTagInfo.isNotEmpty()) {
+            binding.textProductTagInfo.apply {
+                visible()
+                text = data.productTagInfo.firstOrNull()?.message ?: ""
+            }
         } else {
-            typography.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN600
-                )
-            )
+            binding.textProductTagInfo.gone()
         }
     }
 
@@ -1671,5 +1911,25 @@ class CartItemViewHolder constructor(
         private const val BOTTOM_DIVIDER_BMGM_MARGIN_START = 52
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
+    }
+
+    private fun getQuantityEditorView(): View {
+        return if (isUsingNewQuantityEditor()) binding.qtyEditorProduct else binding.oldQtyEditorProduct
+    }
+
+    fun getQuantityEditorLayoutId(): Int {
+        return if (isUsingNewQuantityEditor()) R.id.qty_editor_product else R.id.old_qty_editor_product
+    }
+
+    fun getOldQuantityEditorAnchorView(): QuantityEditorUnify {
+        return binding.oldQtyEditorProduct
+    }
+
+    fun getNewQuantityEditorAnchorView(): QuantityEditorView {
+        return binding.qtyEditorProduct
+    }
+
+    fun isUsingNewQuantityEditor(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR, false)
     }
 }

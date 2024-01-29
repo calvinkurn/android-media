@@ -14,7 +14,7 @@ data class ScheduleDeliveryData(
     @SerializedName("hidden")
     val hidden: Boolean = true,
     @SerializedName("recommend")
-    val recommend: Boolean = false,
+    var recommend: Boolean = false,
     @SerializedName("delivery_type")
     val deliveryType: Int = 0,
     @SerializedName("title")

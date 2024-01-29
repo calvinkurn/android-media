@@ -57,6 +57,9 @@ object RollenceKey {
     const val CART_CHECKOUT_NEW = "cart_checkout_new"
     const val PROMO_ENTRY_POINT_IMPROVEMENT = "promowidget_cartco"
     const val PROMO_ENTRY_POINT_NEW = "new_promowidget"
+    const val UOH_BUY_AGAIN_WIDGET = "buyagain_uoh"
+    const val UOH_BUY_AGAIN_WIDGET_CONTROL = "without_buyagain_uoh"
+    const val UOH_BUY_AGAIN_WIDGET_VARIANT = "with_buyagain_uoh"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -76,11 +79,12 @@ object RollenceKey {
     // For You Rollence
     const val FOR_YOU_FEATURE_FLAG = "foryou_feature_flag"
 
-    // PDP
-    const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
-    const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
-    const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
+    // Explore Category Experiment
+    const val EXPLORE_CATEGORY_DEFAULT = "control_variant"
+    const val EXPLORE_CATEGORY_EXP = "GetJelajah"
+    const val JELAJAH_REVAMP = "JelajahRevamp"
 
+    // PDP
     const val PDP_PREFETCH = "prefetch_pdp_android"
     const val PDP_PREFETCH_ENABLE = "variant_prefetch"
     const val PDP_PREFETCH_DISABLE = "control_prefetch"
@@ -119,12 +123,12 @@ object RollenceKey {
     const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 
     // Search Reimagine
-    const val SEARCH_1_INST_AUTO = "search_1_inst_auto"
+    const val SEARCH_1_INST_AUTO = "inst_auto_v2"
     const val SEARCH_1_INST_AUTO_CONTROL = "control_variant"
-    const val SEARCH_1_INST_AUTO_VARIANT_1 = "variant_1"
-    const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2"
-    const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_3"
-    const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_4"
+    const val SEARCH_1_INST_AUTO_VARIANT_1 = "variant_1_is"
+    const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2_is"
+    const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_1_ac"
+    const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_2_ac"
     const val SEARCH_2_COMPONENT = "search_2_component"
     const val SEARCH_2_COMPONENT_CONTROL = "control_variant"
     const val SEARCH_2_COMPONENT_CAROUSEL_VAR = "ads_crsl_var"
@@ -135,4 +139,6 @@ object RollenceKey {
     const val SEARCH_3_PRODUCT_CARD_VAR_1B = "var_1b"
     const val SEARCH_3_PRODUCT_CARD_VAR_2A = "var_2a"
     const val SEARCH_3_PRODUCT_CARD_VAR_2B = "var_2b"
+
+    const val ANDROID_INTERNAL_TEST = "android_internal"
 }

@@ -181,14 +181,16 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
 
     private fun cancelPreviousDownload() {
         try {
-            if (allowRunningServiceFromActivity) {
-                DFInstaller.stopInstall(activity?.applicationContext!!)
-            } else {
-                sessionId?.let {
-                    manager?.cancelInstall(it)
-                }
-                sessionId = null
+            // stop install in background
+            DFInstaller.stopInstall(activity?.applicationContext!!)
+
+            // stop install in foreground
+            sessionId?.let {
+                manager?.cancelInstall(it)
             }
+
+
+            sessionId = null
         } catch (ignored: Exception) {
 
         }

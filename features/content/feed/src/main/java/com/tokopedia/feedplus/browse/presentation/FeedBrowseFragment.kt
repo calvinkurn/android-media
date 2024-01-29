@@ -16,26 +16,31 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
-import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
+import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.calculateWindowSizeClass
+import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
+import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseImpressionManager
+import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
+import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseAction
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
-import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collectLatest
@@ -50,114 +55,171 @@ import com.tokopedia.content.common.R as contentcommonR
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-class FeedBrowseFragment @Inject constructor(
+internal class FeedBrowseFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
-    coroutineDispatchers: CoroutineDispatchers,
-    private val tracker: FeedBrowseTracker
+    private val impressionManager: FeedBrowseImpressionManager,
+    private val router: Router,
+    trackerFactory: FeedBrowseTrackerImpl.Factory
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
 
-    private val channelListener = object : FeedBrowseChannelViewHolder.Listener {
-        override fun onRetryClicked(
-            extraParam: WidgetRequestModel,
-            widgetModel: FeedBrowseUiModel.Channel
+    private val tracker by lazyThreadSafetyNone {
+        trackerFactory.create(FeedBrowseTrackerImpl.PREFIX_BROWSE_PAGE)
+    }
+
+    private val bannerListener = object : FeedBrowseBannerViewHolder.Item.Listener {
+        override fun onBannerImpressed(
+            viewHolder: FeedBrowseBannerViewHolder.Item,
+            item: FeedBrowseItemListModel.Banner.Item
         ) {
-            viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(extraParam, widgetModel.id)
-            )
+            tracker.viewInspirationBanner(item.banner, item.slotInfo, item.index)
         }
 
-        override fun onCardImpressed(
-            channelModel: PlayWidgetChannelUiModel,
-            config: PlayWidgetConfigUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            channelPositionInList: Int,
-            verticalWidgetPosition: Int
+        override fun onBannerClicked(
+            viewHolder: FeedBrowseBannerViewHolder.Item,
+            item: FeedBrowseItemListModel.Banner.Item
         ) {
-            tracker.sendViewChannelCardEvent(
-                item = channelModel,
-                config = config,
-                widget = widgetModel,
-                channelPositionInList = channelPositionInList,
-                verticalWidgetPosition = verticalWidgetPosition
-            )
+            tracker.clickInspirationBanner(item.banner, item.slotInfo, item.index)
+            router.route(context, item.banner.appLink)
         }
+    }
 
-        override fun onCardClicked(
-            channelModel: PlayWidgetChannelUiModel,
-            config: PlayWidgetConfigUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            channelPositionInList: Int,
-            verticalWidgetPosition: Int
-        ) {
-            tracker.sendClickChannelCardEvent(
-                item = channelModel,
-                config = config,
-                widget = widgetModel,
-                channelPositionInList = channelPositionInList,
-                verticalWidgetPosition = verticalWidgetPosition
-            )
-            goToPage(channelModel.appLink)
-        }
-
+    private val chipsListener = object : ChipsViewHolder.Listener {
         override fun onChipImpressed(
-            chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            chipPositionInList: Int,
-            verticalWidgetPosition: Int
+            viewHolder: ChipsViewHolder,
+            widgetModel: FeedBrowseItemListModel.Chips.Item,
+            chip: WidgetMenuModel,
+            chipPosition: Int
         ) {
-            tracker.sendViewChipsWidgetEvent(
-                chipModel,
-                widgetModel,
-                chipPositionInList,
-                verticalWidgetPosition
+            tracker.viewChipsWidget(
+                chip,
+                widgetModel.slotInfo,
+                chipPosition
             )
         }
 
         override fun onChipClicked(
-            chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel
+            viewHolder: ChipsViewHolder,
+            widgetModel: FeedBrowseItemListModel.Chips.Item,
+            chip: WidgetMenuModel,
+            chipPosition: Int
         ) {
-            viewModel.submitAction(FeedBrowseUiAction.SelectChip(chipModel, widgetModel.id))
+            tracker.clickChipsWidget(
+                chip,
+                widgetModel.slotInfo,
+                chipPosition
+            )
+            viewModel.onAction(FeedBrowseAction.SelectChipWidget(widgetModel.slotInfo.id, chip))
         }
 
         override fun onChipSelected(
-            chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            chipPositionInList: Int,
-            verticalWidgetPosition: Int
+            viewHolder: ChipsViewHolder,
+            widgetModel: FeedBrowseItemListModel.Chips.Item,
+            chip: WidgetMenuModel
         ) {
-            tracker.sendClickChipsWidgetEvent(
-                chipModel,
-                widgetModel,
-                chipPositionInList,
-                verticalWidgetPosition
-            )
-            viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(chipModel.extraParam, widgetModel.id)
+            viewModel.onAction(FeedBrowseAction.FetchCardsWidget(widgetModel.slotInfo.id, chip))
+        }
+    }
+
+    private val channelListener = object : FeedBrowseHorizontalChannelsViewHolder.Listener {
+        override fun onRetry(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            slotId: String,
+            menu: WidgetMenuModel
+        ) {
+            viewModel.onAction(FeedBrowseAction.FetchCardsWidget(slotId, menu))
+        }
+
+        override fun onRefresh(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            slotId: String,
+            menu: WidgetMenuModel
+        ) {
+            viewModel.onAction(FeedBrowseAction.FetchCardsWidget(slotId, menu))
+        }
+
+        override fun onCardImpressed(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalChannels,
+            channel: PlayWidgetChannelUiModel,
+            channelPosition: Int
+        ) {
+            tracker.viewChannelCard(
+                item = channel,
+                config = widgetModel.itemState.config,
+                slotInfo = widgetModel.slotInfo,
+                channelPositionInList = channelPosition
             )
         }
 
-        override fun onWidgetShouldRefresh(
-            extraParam: WidgetRequestModel,
-            widgetModel: FeedBrowseUiModel.Channel
+        override fun onCardClicked(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalChannels,
+            channel: PlayWidgetChannelUiModel,
+            channelPosition: Int
         ) {
-            viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(extraParam, widgetModel.id)
+            router.route(context, channel.appLink)
+            tracker.clickChannelCard(
+                item = channel,
+                config = widgetModel.itemState.config,
+                slotInfo = widgetModel.slotInfo,
+                channelPositionInList = channelPosition
             )
         }
     }
+
+    private val creatorListener = object : FeedBrowseHorizontalAuthorsViewHolder.Listener {
+        override fun onWidgetImpressed(
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+            item: AuthorWidgetModel,
+            authorWidgetPosition: Int
+        ) {
+            tracker.viewAuthorWidget(item, widgetModel.slotInfo, authorWidgetPosition)
+        }
+
+        override fun onChannelClicked(
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+            item: AuthorWidgetModel,
+            authorWidgetPosition: Int
+        ) {
+            tracker.clickChannelCard(item, widgetModel.slotInfo, authorWidgetPosition)
+            router.route(context, item.contentAppLink)
+        }
+
+        override fun onAuthorClicked(
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+            item: AuthorWidgetModel,
+            authorWidgetPosition: Int
+        ) {
+            tracker.clickAuthorName(item, widgetModel.slotInfo, authorWidgetPosition)
+            router.route(context, item.appLink)
+        }
+    }
+
     private val adapter by viewLifecycleBound(
-        { FeedBrowseAdapter(channelListener, it.viewLifecycleOwner.lifecycleScope, coroutineDispatchers) }
+        {
+            FeedBrowseAdapter(
+                it.viewLifecycleOwner.lifecycleScope,
+                requireActivity().calculateWindowSizeClass(),
+                chipsListener,
+                bannerListener,
+                channelListener,
+                creatorListener
+            )
+        }
     )
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            exitPage()
+            tracker.clickBackExitBrowsePage()
+            requireActivity().finish()
         }
     }
 
@@ -184,7 +246,10 @@ class FeedBrowseFragment @Inject constructor(
         setupView()
         observeUiState()
 
-        viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
+        if (savedInstanceState == null) {
+            viewModel.onAction(FeedBrowseAction.LoadInitialPage)
+            tracker.openScreenBrowseFeedPage()
+        }
     }
 
     override fun getScreenName(): String {
@@ -209,7 +274,7 @@ class FeedBrowseFragment @Inject constructor(
                     when (state) {
                         FeedBrowseUiState.Placeholder -> {
                             hideError()
-                            showPlaceholder()
+                            adapter.setPlaceholder()
                         }
                         is FeedBrowseUiState.Success -> {
                             hideError()
@@ -231,22 +296,21 @@ class FeedBrowseFragment @Inject constructor(
         (activity as? AppCompatActivity)?.setSupportActionBar(binding.feedBrowseHeader)
         binding.feedBrowseHeader.setBackgroundColor(Color.TRANSPARENT)
         binding.feedBrowseHeader.setNavigationOnClickListener {
-            exitPage()
+            onBackPressedCallback.handleOnBackPressed()
         }
 
-        binding.feedBrowseList.adapter = adapter
-    }
-
-    private fun showPlaceholder() {
-        renderContent(
-            listOf(
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Chips),
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards),
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards)
+        val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
+            spanSizeLookup = adapter.getSpanSizeLookup()
+        }
+        binding.feedBrowseList.layoutManager = layoutManager
+        binding.feedBrowseList.itemAnimator = null
+        binding.feedBrowseList.addItemDecoration(
+            FeedBrowseItemDecoration(
+                binding.feedBrowseList.resources,
+                layoutManager.spanCount
             )
         )
+        binding.feedBrowseList.adapter = adapter
     }
 
     private fun showError(throwable: Throwable) {
@@ -261,9 +325,9 @@ class FeedBrowseFragment @Inject constructor(
         }
         binding.feedBrowseError.setActionClickListener {
             if (errorType == GlobalError.MAINTENANCE) {
-                exitPage()
+                onBackPressedCallback.handleOnBackPressed()
             } else {
-                viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
+                viewModel.onAction(FeedBrowseAction.LoadInitialPage)
             }
         }
         binding.feedBrowseError.setType(errorType)
@@ -295,22 +359,16 @@ class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseHeader.title = newTitle
     }
 
-    private fun renderContent(widgets: List<FeedBrowseUiModel>) {
-        if (binding.feedBrowseList.isComputingLayout ||
-            binding.feedBrowseList.scrollState != RecyclerView.SCROLL_STATE_IDLE
-        ) {
-            return
+    private fun renderContent(widgets: List<FeedBrowseStatefulModel>) {
+        impressionManager.onNewWidgets(widgets.map { it.model })
+        if (widgets.isEmpty()) {
+            adapter.setPlaceholder()
+        } else {
+            adapter.setItems(widgets) {
+                if (_binding == null) return@setItems
+                binding.feedBrowseList.invalidateItemDecorations()
+            }
         }
-        adapter.setItemsAndAnimateChanges(widgets)
-    }
-
-    private fun goToPage(appLink: String) {
-        RouteManager.route(requireContext(), appLink)
-    }
-
-    private fun exitPage() {
-        tracker.sendClickBackExitEvent()
-        requireActivity().finish()
     }
 
     companion object {

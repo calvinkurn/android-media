@@ -3,7 +3,6 @@ package com.tokopedia.creation.common.upload.uploader.notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -11,6 +10,7 @@ import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.activity.ContentCreationPostUploadActivity
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
+import com.tokopedia.creation.common.upload.model.CreationUploadSuccessData
 import javax.inject.Inject
 
 /**
@@ -32,7 +32,7 @@ class StoriesUploadNotificationManager @Inject constructor(
         failRetryAction = context.getString(R.string.content_creation_upload_notification_stories_fail_retry),
     )
 
-    override fun generateSuccessPendingIntent(): PendingIntent? {
+    override fun generateSuccessPendingIntent(successData: CreationUploadSuccessData): PendingIntent? {
         val storiesUploadData = uploadData
         if (storiesUploadData !is CreationUploadData.Stories) return null
 

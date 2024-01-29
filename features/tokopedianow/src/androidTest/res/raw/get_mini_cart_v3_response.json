@@ -1,0 +1,882 @@
+{
+  "mini_cart_v3": {
+    "error_message": [],
+    "status": "OK",
+    "data": {
+      "errors": [],
+      "beli_button_config": {
+        "button_type": 1,
+        "button_wording": "Beli"
+      },
+      "bottom_bar": {
+        "text": "",
+        "is_shop_active": false,
+        "total_price_fmt": ""
+      },
+      "total_product_count": 18,
+      "total_product_error": 8,
+      "total_product_price": 674800,
+      "simplified_shopping_summary": {
+        "text": "",
+        "sections": []
+      },
+      "available_section": {
+        "available_group": [
+          {
+            "cart_string": "11515028-0-14435087-202143156",
+            "shop": {
+              "shop_id": 11515028,
+              "shop_name": "11515028tknw",
+              "shop_type_info": {
+                "title_fmt": "official_store"
+              }
+            },
+            "shipment_information": {
+              "free_shipping": {
+                "eligible": false
+              },
+              "free_shipping_extra": {
+                "eligible": false
+              }
+            },
+            "cart_details": [
+              {
+                "bundle_detail": {
+                  "bundle_id": 0,
+                  "bundle_name": "",
+                  "bundle_type": "",
+                  "bundle_status": "",
+                  "bundle_description": "",
+                  "bundle_price": 0,
+                  "bundle_price_fmt": "",
+                  "bundle_original_price": 0,
+                  "bundle_original_price_fmt": "",
+                  "bundle_min_order": 0,
+                  "bundle_max_order": 0,
+                  "bundle_quota": 0,
+                  "edit_app_link": "",
+                  "bundle_qty": 0,
+                  "bundle_group_id": "",
+                  "slash_price_label": "",
+                  "bundle_grayscale_icon_url": ""
+                },
+                "products": [
+                  {
+                    "cart_id": 7067079463,
+                    "parent_id": 0,
+                    "product_id": 1904942085,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 75,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 5082,
+                    "category": "",
+                    "product_name": "daging_ayam",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 28000,
+                    "product_invenage_value": 25,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 7058897413,
+                    "parent_id": 0,
+                    "product_id": 1904942546,
+                    "product_quantity": 2,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 450,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4911,
+                    "category": "",
+                    "product_name": "wms_jambu_jamaika",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 5000,
+                    "product_invenage_value": 2,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581219250,
+                    "parent_id": 0,
+                    "product_id": 6903919687,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 500,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4925,
+                    "category": "",
+                    "product_name": "Multiloc_strawberry_test",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 9000,
+                    "product_invenage_value": 100,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581152835,
+                    "parent_id": 0,
+                    "product_id": 5208529191,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 100,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4911,
+                    "category": "",
+                    "product_name": "multiple_jambu_phase_2",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 3500,
+                    "product_invenage_value": 500,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581152670,
+                    "parent_id": 0,
+                    "product_id": 6903919689,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 500,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4912,
+                    "category": "",
+                    "product_name": "Multiloc_jeruk_test",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 15000,
+                    "product_invenage_value": 6,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581152612,
+                    "parent_id": 0,
+                    "product_id": 7029763701,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 100,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4916,
+                    "category": "",
+                    "product_name": "flash_sale_kurma",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 1500,
+                    "product_invenage_value": 500,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581152493,
+                    "parent_id": 0,
+                    "product_id": 5194296711,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 100,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4683,
+                    "category": "",
+                    "product_name": "single_almond",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 1500,
+                    "product_invenage_value": 500,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581152344,
+                    "parent_id": 0,
+                    "product_id": 4208745078,
+                    "product_quantity": 99,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 150,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4931,
+                    "category": "",
+                    "product_name": "Alfamart_Facial_Tissue_Frozen_50_Sheets",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 4700,
+                    "product_invenage_value": 99,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581152255,
+                    "parent_id": 0,
+                    "product_id": 5208528625,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 100,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 5201,
+                    "category": "",
+                    "product_name": "multiple_kelengkeng_phase_2",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 1500,
+                    "product_invenage_value": 500,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581152152,
+                    "parent_id": 0,
+                    "product_id": 6889991385,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 250,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4921,
+                    "category": "",
+                    "product_name": "card_pir",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 2000,
+                    "product_invenage_value": 10,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581151963,
+                    "parent_id": 0,
+                    "product_id": 5208528902,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 100,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4917,
+                    "category": "",
+                    "product_name": "multiple_lemon",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 4000,
+                    "product_invenage_value": 99,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581151806,
+                    "parent_id": 0,
+                    "product_id": 6889991282,
+                    "product_quantity": 8,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 250,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4919,
+                    "category": "",
+                    "product_name": "card_nanas",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 3000,
+                    "product_invenage_value": 10,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581151677,
+                    "parent_id": 0,
+                    "product_id": 6903919751,
+                    "product_quantity": 2,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 35000,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4892,
+                    "category": "",
+                    "product_name": "Multiloc_labu_test",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 20000,
+                    "product_invenage_value": 9,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6581151397,
+                    "parent_id": 0,
+                    "product_id": 5194296364,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 100,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4964,
+                    "category": "",
+                    "product_name": "single_terasi",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 1500,
+                    "product_invenage_value": 2,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6526888125,
+                    "parent_id": 0,
+                    "product_id": 5194296491,
+                    "product_quantity": 2,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 100,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 5016,
+                    "category": "",
+                    "product_name": "single_kuaci_phase_2",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 4000,
+                    "product_invenage_value": 499,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6526887804,
+                    "parent_id": 0,
+                    "product_id": 6269646235,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 450,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 4911,
+                    "category": "",
+                    "product_name": "wms_jambu_kristal",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 15000,
+                    "product_invenage_value": 3,
+                    "product_switch_invenage": 1
+                  },
+                  {
+                    "cart_id": 6472978006,
+                    "parent_id": 0,
+                    "product_id": 6903919781,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 1000,
+                    "slash_price_label": "",
+                    "warehouse_id": 14435087,
+                    "category_id": 5130,
+                    "category": "",
+                    "product_name": "Multiloc_melon_test",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 20000,
+                    "product_invenage_value": 10,
+                    "product_switch_invenage": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "unavailable_section": [
+        {
+          "unavailable_group": [
+            {
+              "shop": {
+                "shop_id": 11515028,
+                "shop_name": "11515028tknw",
+                "shop_type_info": {
+                  "title_fmt": "official_store"
+                }
+              },
+              "shipment_information": {
+                "free_shipping": {
+                  "eligible": false
+                },
+                "free_shipping_extra": {
+                  "eligible": false
+                }
+              },
+              "cart_details": [
+                {
+                  "cart_id": "0",
+                  "bundle_detail": {
+                    "bundle_id": 0,
+                    "bundle_name": "",
+                    "bundle_type": "",
+                    "bundle_status": "",
+                    "bundle_description": "",
+                    "bundle_price": 0,
+                    "bundle_price_fmt": "",
+                    "bundle_original_price": 0,
+                    "bundle_original_price_fmt": "",
+                    "bundle_min_order": 0,
+                    "bundle_max_order": 0,
+                    "bundle_quota": 0,
+                    "edit_app_link": "",
+                    "bundle_qty": 0,
+                    "bundle_group_id": "",
+                    "slash_price_label": "",
+                    "bundle_grayscale_icon_url": ""
+                  },
+                  "products": [
+                    {
+                      "cart_id": 6581221825,
+                      "parent_id": 0,
+                      "product_id": 9706889229,
+                      "product_quantity": 1,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 100,
+                      "slash_price_label": "",
+                      "warehouse_id": 14435087,
+                      "category_id": 5325,
+                      "category": "",
+                      "product_name": "hub_fc_charger_ugm_pakem",
+                      "variant_description_detail": {
+                        "variant_name": []
+                      },
+                      "product_price": 25000
+                    },
+                    {
+                      "cart_id": 6581134274,
+                      "parent_id": 0,
+                      "product_id": 9408955273,
+                      "product_quantity": 1,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 250,
+                      "slash_price_label": "",
+                      "warehouse_id": 14435087,
+                      "category_id": 4909,
+                      "category": "",
+                      "product_name": "fc_buah_naga_250_g",
+                      "variant_description_detail": {
+                        "variant_name": []
+                      },
+                      "product_price": 5000
+                    },
+                    {
+                      "cart_id": 6581133830,
+                      "parent_id": 0,
+                      "product_id": 9408955239,
+                      "product_quantity": 2,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 500,
+                      "slash_price_label": "",
+                      "warehouse_id": 14435087,
+                      "category_id": 4906,
+                      "category": "",
+                      "product_name": "fc_anggur_500_g",
+                      "variant_description_detail": {
+                        "variant_name": []
+                      },
+                      "product_price": 10000
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unavailable_group": [
+            {
+              "shop": {
+                "shop_id": 11515028,
+                "shop_name": "11515028tknw",
+                "shop_type_info": {
+                  "title_fmt": "official_store"
+                }
+              },
+              "shipment_information": {
+                "free_shipping": {
+                  "eligible": false
+                },
+                "free_shipping_extra": {
+                  "eligible": false
+                }
+              },
+              "cart_details": [
+                {
+                  "cart_id": "0",
+                  "bundle_detail": {
+                    "bundle_id": 0,
+                    "bundle_name": "",
+                    "bundle_type": "",
+                    "bundle_status": "",
+                    "bundle_description": "",
+                    "bundle_price": 0,
+                    "bundle_price_fmt": "",
+                    "bundle_original_price": 0,
+                    "bundle_original_price_fmt": "",
+                    "bundle_min_order": 0,
+                    "bundle_max_order": 0,
+                    "bundle_quota": 0,
+                    "edit_app_link": "",
+                    "bundle_qty": 0,
+                    "bundle_group_id": "",
+                    "slash_price_label": "",
+                    "bundle_grayscale_icon_url": ""
+                  },
+                  "products": [
+                    {
+                      "cart_id": 6255217792,
+                      "parent_id": 0,
+                      "product_id": 4942063071,
+                      "product_quantity": 1,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 100,
+                      "slash_price_label": "",
+                      "warehouse_id": 14435087,
+                      "category_id": 5340,
+                      "category": "",
+                      "product_name": "Rokok_Organik1",
+                      "variant_description_detail": {
+                        "variant_name": []
+                      },
+                      "product_price": 30000
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unavailable_group": [
+            {
+              "shop": {
+                "shop_id": 11515028,
+                "shop_name": "11515028tknw",
+                "shop_type_info": {
+                  "title_fmt": "official_store"
+                }
+              },
+              "shipment_information": {
+                "free_shipping": {
+                  "eligible": false
+                },
+                "free_shipping_extra": {
+                  "eligible": false
+                }
+              },
+              "cart_details": [
+                {
+                  "cart_id": "0",
+                  "bundle_detail": {
+                    "bundle_id": 1201379,
+                    "bundle_name": "bundling 5 product",
+                    "bundle_type": "MULTIPLE",
+                    "bundle_status": "ACTIVE",
+                    "bundle_description": "",
+                    "bundle_price": 11000,
+                    "bundle_price_fmt": "Rp11.000",
+                    "bundle_original_price": 11000,
+                    "bundle_original_price_fmt": "Rp11.000",
+                    "bundle_min_order": 1,
+                    "bundle_max_order": 30000,
+                    "bundle_quota": -1,
+                    "edit_app_link": "tokopedia://product-bundle/0?source\u003dminicart\u0026viewType\u003dbottomsheet\u0026bundleId\u003d1201379\u0026selectedProductIds\u003d3525683754,5208528625,5208528831,5208529191,5208529652\u0026cartIds\u003d6723048527,6723048526,6723048525,6723048524,6723048523",
+                    "bundle_qty": 1,
+                    "bundle_group_id": "bid:1201379-pid:0-pid1:3525683754-pid2:5208528625-pid3:5208528831-pid4:5208529191-pid5:5208529652",
+                    "slash_price_label": "0%",
+                    "bundle_grayscale_icon_url": ""
+                  },
+                  "products": [
+                    {
+                      "cart_id": 6723048527,
+                      "parent_id": 0,
+                      "product_id": 5208529652,
+                      "product_quantity": 1,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 100,
+                      "slash_price_label": "",
+                      "warehouse_id": 14435087,
+                      "category_id": 4916,
+                      "category": "",
+                      "product_name": "multiple_kurma_phase_2",
+                      "variant_description_detail": {
+                        "variant_name": []
+                      },
+                      "product_price": 2000
+                    },
+                    {
+                      "cart_id": 6723048526,
+                      "parent_id": 0,
+                      "product_id": 5208529191,
+                      "product_quantity": 1,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 100,
+                      "slash_price_label": "",
+                      "warehouse_id": 14435087,
+                      "category_id": 4911,
+                      "category": "",
+                      "product_name": "multiple_jambu_phase_2",
+                      "variant_description_detail": {
+                        "variant_name": []
+                      },
+                      "product_price": 3500
+                    },
+                    {
+                      "cart_id": 6723048525,
+                      "parent_id": 0,
+                      "product_id": 5208528831,
+                      "product_quantity": 1,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 100,
+                      "slash_price_label": "",
+                      "warehouse_id": 14435087,
+                      "category_id": 4908,
+                      "category": "",
+                      "product_name": "multiple_blueberry",
+                      "variant_description_detail": {
+                        "variant_name": []
+                      },
+                      "product_price": 1000
+                    },
+                    {
+                      "cart_id": 6723048524,
+                      "parent_id": 0,
+                      "product_id": 5208528625,
+                      "product_quantity": 1,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 100,
+                      "slash_price_label": "",
+                      "warehouse_id": 14435087,
+                      "category_id": 5201,
+                      "category": "",
+                      "product_name": "multiple_kelengkeng_phase_2",
+                      "variant_description_detail": {
+                        "variant_name": []
+                      },
+                      "product_price": 1500
+                    },
+                    {
+                      "cart_id": 6723048523,
+                      "parent_id": 3525683731,
+                      "product_id": 3525683754,
+                      "product_quantity": 1,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 100,
+                      "slash_price_label": "",
+                      "warehouse_id": 14435087,
+                      "category_id": 4905,
+                      "category": "",
+                      "product_name": "multiple_wortel - 2 kg",
+                      "variant_description_detail": {
+                        "variant_name": [
+                          "2 kg"
+                        ]
+                      },
+                      "product_price": 3000
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

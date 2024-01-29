@@ -5,12 +5,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.usecase.supportingbrand.SupportingBrandLoadState
 import com.tokopedia.discovery2.usecase.supportingbrand.SupportingBrandUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.spyk
@@ -58,9 +60,9 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.pageEndPoint } returns pageEndpoint
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
-        coVerify(exactly = 1) { useCase.loadFirstPageComponents(componentId, pageEndpoint) }
+        coVerify(exactly = 1) { useCase.loadPageComponents(componentId, pageEndpoint) }
     }
 
     @Test
@@ -77,12 +79,17 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.getComponentsItem() } returns componentsItems
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } returns true
+        coEvery {
+            useCase.loadPageComponents(
+                componentId,
+                pageEndpoint
+            )
+        } returns SupportingBrandLoadState.LOAD_MORE
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
         Assert.assertTrue(viewModel.brands.value is Success)
-        Assert.assertEquals(componentsItems, (viewModel.brands.value as Success).data)
+        Assert.assertEquals(componentsItems[0], (viewModel.brands.value as Success).data[0])
     }
 
     @Test
@@ -94,9 +101,9 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.pageEndPoint } returns pageEndpoint
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } throws Throwable()
+        coEvery { useCase.loadPageComponents(componentId, pageEndpoint) } throws Throwable()
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
         Assert.assertTrue(viewModel.brands.value is Fail)
     }
@@ -110,9 +117,14 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.pageEndPoint } returns pageEndpoint
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } returns false
+        coEvery {
+            useCase.loadPageComponents(
+                componentId,
+                pageEndpoint
+            )
+        } returns SupportingBrandLoadState.FAILED
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
         Assert.assertTrue(viewModel.brands.value is Fail)
         Assert.assertEquals("Empty Data", (viewModel.brands.value as Fail).throwable.message)
@@ -131,11 +143,82 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.getComponentsItem() } returns componentsItems
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } returns true
+        coEvery {
+            useCase.loadPageComponents(
+                componentId,
+                pageEndpoint
+            )
+        } returns SupportingBrandLoadState.LOAD_MORE
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
         Assert.assertTrue(viewModel.brands.value is Fail)
         Assert.assertEquals("Empty Data", (viewModel.brands.value as Fail).throwable.message)
+    }
+
+    @Test
+    fun `test for loadPageBrand with state LOAD_MORE`() {
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val componentsItem: ComponentsItem = spyk()
+        val list = ArrayList<ComponentsItem>()
+        val result = Success(arrayListOf(componentsItem))
+        for (i in 1..10)
+            list.add(ComponentsItem(id = i.toString()))
+        coEvery {
+            useCase.loadPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns SupportingBrandLoadState.LOAD_MORE
+        every { componentsItem.getComponentsItem() } returns list
+        every { viewModel.brands.value } returns result
+        viewModel.loadMore()
+
+        assert(!viewModel.isLoading)
+        assert(viewModel.brands.value == result)
+    }
+
+    @Test
+    fun `test for loadPageBrand with state REACH_END_OF_PAGE`() {
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val componentsItem: ComponentsItem = spyk()
+        val list = ArrayList<ComponentsItem>()
+        val result = Success(arrayListOf(componentsItem))
+        for (i in 1..10)
+            list.add(ComponentsItem(id = i.toString()))
+        coEvery {
+            useCase.loadPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns SupportingBrandLoadState.REACH_END_OF_PAGE
+        every { componentsItem.getComponentsItem() } returns list
+        every { viewModel.brands.value } returns result
+        viewModel.loadMore()
+
+        assert(!viewModel.isLoading)
+        assert(viewModel.brands.value == result)
+    }
+
+    @Test
+    fun `test for loadPageBrand with state FAILED`() {
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val componentsItem: ComponentsItem = spyk()
+        val list = ArrayList<ComponentsItem>()
+        val result = Success(arrayListOf(componentsItem))
+        for (i in 1..10)
+            list.add(ComponentsItem(id = i.toString()))
+        coEvery {
+            useCase.loadPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns SupportingBrandLoadState.FAILED
+        every { componentsItem.getComponentsItem() } returns list
+        every { viewModel.brands.value } returns result
+        viewModel.loadMore()
+
+        assert(!viewModel.isLoading)
+        assert(viewModel.brands.value == result)
     }
 }

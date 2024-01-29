@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
@@ -76,6 +77,7 @@ import com.tokopedia.digital_product_detail.presentation.custom.activityresult.O
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
+import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPDataPlanPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
@@ -116,6 +118,7 @@ import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBa
 import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceOTPBottomSheet
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeOmniWidget
+import com.tokopedia.recharge_component.widget.isNumeric
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -172,6 +175,9 @@ class DigitalPDPDataPlanFragment :
     @Inject
     lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
 
+    @Inject
+    lateinit var performanceMonitoring: DigitalPDPDataPlanPerformanceCallback
+
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
     private var operator = TelcoOperator()
@@ -190,6 +196,8 @@ class DigitalPDPDataPlanFragment :
 
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
+
+    private var onRenderProductsGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
     private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { result ->
         when (result) {
@@ -255,6 +263,11 @@ class DigitalPDPDataPlanFragment :
         } else if (childFragment is FilterPDPBottomsheet) {
             childFragment.setListener(this)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        stopPrepareMonitoring()
     }
 
     private fun setupKeyboardWatcher() {
@@ -442,6 +455,7 @@ class DigitalPDPDataPlanFragment :
         }
 
         viewModel.mccmProductsData.observe(viewLifecycleOwner) {
+            startProductsRenderMonitoring()
             when (it) {
                 is RechargeNetworkResult.Success -> {
                     if (it.data.listDenomData.isNotEmpty()) {
@@ -622,9 +636,9 @@ class DigitalPDPDataPlanFragment :
             binding?.rechargePdpPaketDataOmniWidget?.hide()
         } else {
             otherComponents.forEach {
-                    if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
-                        val collection = it.otherComponentDataCollection.firstOrNull { collection ->
-                            collection.key == APPLINK_OMNI_DATA_CODE
+                if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
+                    val collection = it.otherComponentDataCollection.firstOrNull { collection ->
+                        collection.key == APPLINK_OMNI_DATA_CODE
                     }
                     if (collection != null) {
                         renderOmniChannel(collection.value)
@@ -659,6 +673,7 @@ class DigitalPDPDataPlanFragment :
         isOperatorChanged: Boolean,
         clientNumber: String
     ) {
+        startNetworkMonitoring()
         viewModel.run {
             if (isOperatorChanged) resetFilter()
             isProductListEmpty = false
@@ -789,12 +804,31 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
+        fun getContactByPermission(): MutableList<TopupBillsContact> {
+            context?.let {
+                val hasContactPermission = permissionCheckerHelper.hasPermission(
+                    it,
+                    arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT)
+                )
+                return if (hasContactPermission) {
+                    val contacts = viewModel.getContactList()
+                    contacts
+                } else {
+                    mutableListOf()
+                }
+            }
+            return mutableListOf()
+        }
+
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
+                val contacts = getContactByPermission()
+                val mappedContacts = DigitalPDPWidgetMapper.mapContactToWidgetModels(contacts)
                 setAutoCompleteList(
                     DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
                         autoComplete
-                    )
+                    ),
+                    mappedContacts
                 )
             }
         }
@@ -1138,7 +1172,11 @@ class DigitalPDPDataPlanFragment :
     private fun initClientNumberWidget() {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             setCustomInputNumberFormatter { inputNumber ->
-                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                if (inputNumber.isNumeric()) {
+                    CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                } else {
+                    inputNumber
+                }
             }
             setInputFieldStaticLabel(
                 getString(
@@ -1550,6 +1588,52 @@ class DigitalPDPDataPlanFragment :
                 })
     }
 
+    private fun stopPrepareMonitoring() {
+        performanceMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        stopPrepareMonitoring()
+        performanceMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        performanceMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        performanceMonitoring.stopMonitoring()
+    }
+
+    private fun startProductsRenderMonitoring() {
+        startRenderMonitoring()
+
+        if (onRenderProductsGlobalLayoutListener == null) {
+            onRenderProductsGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (isAdded) {
+                        stopRenderMonitoring()
+                        binding?.rechargePdpPaketDataDenomFullWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
+                }
+            }
+            binding?.rechargePdpPaketDataDenomFullWidget?.viewTreeObserver?.addOnGlobalLayoutListener(onRenderProductsGlobalLayoutListener)
+        }
+    }
+
+    /**
+     * Monitor duration between receive response until the UI is rendered.
+     * */
+    private fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        performanceMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderMonitoring() {
+        performanceMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
+    }
+
     //region RechargeProductDescListener
 
     override fun onCloseProductBottomSheet(denomData: DenomData, layoutType: DenomWidgetEnum) {
@@ -1697,17 +1781,17 @@ class DigitalPDPDataPlanFragment :
     //endregion
 
     //region ClientNumberAutoCompleteListener
-    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
+    override fun onClickAutoComplete(autoCompleteItem: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (favorite.name.isNotEmpty()) {
-            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
+        if (autoCompleteItem.isFavoriteNumber) {
+            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId
             )
         } else {
-            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
+            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,

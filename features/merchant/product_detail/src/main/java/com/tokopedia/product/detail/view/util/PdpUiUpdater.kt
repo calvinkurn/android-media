@@ -277,7 +277,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-
     private fun DynamicProductInfoP1.createProductContentData() = createContentMainData()
     private fun DynamicProductInfoP1.createOngoingCampaignData() = createContentMainData()
 
@@ -1341,7 +1340,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateAPlusContentMediaOnExpandedStateChange(aPlusContentExpanded: Boolean) {
         val lastShowedAPlusMediaName = findLastShowedAPlusMediaName(aPlusContentExpanded)
-        mapOfData.forEach { (key, _) ->
+        mapOfData.asSequence().filter { it.value is APlusImageUiModel }.forEach { (key, _) ->
             updateData(key, false) {
                 (mapOfData[key] as? APlusImageUiModel)?.apply {
                     expanded = aPlusContentExpanded

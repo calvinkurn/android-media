@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.ui.activity
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -16,10 +18,11 @@ class CatalogComparisonDetailActivity : BaseSimpleActivity() {
         setContentView(R.layout.activity_catalog_comparison_detail)
         val catalogId = intent.getStringExtra(ARG_PARAM_CATALOG_ID).orEmpty()
         val categoryId = intent.getStringExtra(ARG_PARAM_CATEGORY_ID).orEmpty()
-        val compareCatalogId = intent.getStringExtra(ARG_PARAM_COMPARE_CATALOG_ID).orEmpty()
-        var fragment = CatalogComparisonDetailFragment.newInstance(catalogId, categoryId, compareCatalogId)
+        val compareCatalogId = intent.getStringArrayListExtra(ARG_PARAM_COMPARE_CATALOG_ID).orEmpty()
+        val fragment = CatalogComparisonDetailFragment.newInstance(catalogId, categoryId, compareCatalogId)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.catalog_comparison_detail_parent_view,
+            .replace(
+                R.id.catalog_comparison_detail_parent_view,
                 fragment,
                 CATALOG_COMPARISON_DETAIL_FRAGMENT_TAG
             )
@@ -27,6 +30,14 @@ class CatalogComparisonDetailActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-       return null
+        return null
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        val newOverride = Configuration(newBase?.resources?.configuration)
+        newOverride.fontScale = 1.0f
+        applyOverrideConfiguration(newOverride)
+
+        super.attachBaseContext(newBase)
     }
 }

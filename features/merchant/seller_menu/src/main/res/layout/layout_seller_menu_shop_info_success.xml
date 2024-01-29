@@ -55,11 +55,12 @@
         android:id="@+id/shopBadges"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/setting_shop_badge_height"
+        android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@id/innerCircle"
         app:layout_constraintStart_toStartOf="@id/shopName"
         app:layout_constraintTop_toBottomOf="@id/shopName"
         app:unify_image_corner_radius="0"
-        app:srcCompat="@drawable/ic_power_merchant" />
+        tools:srcCompat="@drawable/ic_power_merchant" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dot"

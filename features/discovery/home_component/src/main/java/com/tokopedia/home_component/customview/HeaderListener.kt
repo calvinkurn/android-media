@@ -7,4 +7,5 @@ interface HeaderListener {
     fun onChannelExpired(channelModel: ChannelModel) { }
     fun onReloadClick(channelModel: ChannelModel) { }
     fun onDismissClick(channelModel: ChannelModel) { }
+    fun onVisibilityChanged(isVisible: Boolean) { }
 }

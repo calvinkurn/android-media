@@ -40,6 +40,9 @@ data class GroupShop(
     var courierSelectionErrorData: CourierSelectionErrorData = CourierSelectionErrorData(),
     var scheduleDelivery: ScheduleDeliveryData = ScheduleDeliveryData(),
     var ratesValidationFlow: Boolean = false,
+    // new OFOC
+    var shippingComponents: Int = 1,
+    var groupingState: Int = 1,
 
     // new
     val groupType: Int = 0,
@@ -52,7 +55,9 @@ data class GroupShop(
     var listSubtotalAddOn: List<ShipmentSubtotalAddOnData> = emptyList(),
 
     // new O2O
-    val groupMetadata: String = ""
+    val groupMetadata: String = "",
+
+    val shipmentAction: HashMap<Long, ShipmentAction> = HashMap()
 ) : Parcelable {
 
     companion object {

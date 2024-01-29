@@ -10,6 +10,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -217,6 +218,50 @@ class DigitalAddToCartViewModelTest {
     }
 
     @Test
+    fun addToCart_loggedIn_returnsSuccessWithBackendErrorAtc() {
+        // Given
+        val redirectUrl = "tokopedia://home"
+        val dummyResponse = DigitalAtcTrackingModel(
+            redirectUrl = redirectUrl,
+            cartId = "17211378",
+            productId = "",
+            operatorName = "",
+            categoryId = "",
+            categoryName = "",
+            priceText = "",
+            pricePlain = 0.0,
+            isInstantCheckout = false,
+            source = 0,
+            userId = "123",
+            isSpecialProduct = false,
+            channelId = "1",
+            atcError = ErrorAtc(
+                title = "error"
+            )
+        )
+
+        coEvery {
+            digitalAddToCartUseCase.execute(any(), any(), any(), "pdp_to_multi_checkout")
+        } returns dummyResponse
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // When
+        val digitalCheckoutPassData = DigitalCheckoutPassData()
+        digitalCheckoutPassData.categoryId = "1"
+        digitalAddToCartViewModel.setAtcMultiCheckoutParam()
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier()
+        )
+
+        // Then
+        val errorData = digitalAddToCartViewModel.errorAtc.value
+        assertNotNull(errorData)
+        assert(errorData?.title == "error")
+    }
+
+    @Test
     fun addToCart_loggedInNullId_returnsNoConnectionError() {
         // Given
         coEvery {
@@ -247,6 +292,34 @@ class DigitalAddToCartViewModelTest {
         // Given
         val errorMessage = "this is error message"
         val throwable = Throwable(errorMessage)
+        coEvery {
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
+        } throws throwable
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // When
+        val digitalCheckoutPassData = DigitalCheckoutPassData()
+        digitalCheckoutPassData.categoryId = "1"
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier()
+        )
+
+        // Then
+        val resultData = digitalAddToCartViewModel.addToCartResult.value
+        assertNotNull(resultData)
+        assert(resultData is Fail)
+
+        val throwableResult = (resultData as Fail).throwable
+        assert(throwableResult.message == errorMessage)
+    }
+
+    @Test
+    fun addToCart_loggedIn_returnsDigitalFailWithResponseErrorException() {
+        // Given
+        val errorMessage = "this is error message"
+        val throwable = ResponseErrorException(errorMessage)
         coEvery {
             digitalAddToCartUseCase.execute(any(), any(), any(), "")
         } throws throwable

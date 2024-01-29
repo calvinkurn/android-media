@@ -49,6 +49,7 @@ class ProductViewModelMapper(
         isLocalSearchRecommendation: Boolean,
         externalReference: String,
         newCardType: String = "",
+        isEnableAdultContent: Boolean = true,
     ): ProductDataView {
         val productDataView = ProductDataView()
         val productListType =
@@ -78,6 +79,7 @@ class ProductViewModelMapper(
             externalReference,
             searchProductModel.keywordIntention(isUseAceSearchProductV5),
             searchProductModel.isShowButtonAtc(isUseAceSearchProductV5),
+            if(isUseAceSearchProductV5) isEnableAdultContent else true
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductModel,
@@ -176,6 +178,7 @@ class ProductViewModelMapper(
         externalReference: String,
         keywordIntention: Int,
         showButtonAtc: Boolean,
+        isEnableAdultContent: Boolean = true,
     ): List<ProductItemDataView> {
         return if (isUseAceSearchProductV5) {
             searchProductModel.searchProductV5.data.productList.mapIndexed { index, productModel ->
@@ -189,6 +192,7 @@ class ProductViewModelMapper(
                     productListType,
                     externalReference,
                     keywordIntention,
+                    isEnableAdultContent
                 )
             }
         } else {
@@ -218,6 +222,7 @@ class ProductViewModelMapper(
         productListType: String,
         externalReference: String,
         keywordIntention: Int,
+        isEnableAdultContent: Boolean = true,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
 
@@ -268,6 +273,7 @@ class ProductViewModelMapper(
         productItem.customVideoURL = productModel.mediaURL.videoCustom
         productItem.parentId = productModel.meta.parentID
         productItem.isPortrait = productModel.meta.isPortrait
+        productItem.isImageBlurred = productModel.meta.isImageBlurred && !isEnableAdultContent
         return productItem
     }
 
