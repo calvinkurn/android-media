@@ -66,6 +66,7 @@ import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartFragment
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
+import com.tokopedia.cart.view.di.DaggerCartRevampComponent
 import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
@@ -161,6 +162,7 @@ import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
+import com.tokopedia.promousage.util.logger.PromoErrorException
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -5160,7 +5162,7 @@ class CartRevampFragment :
 
     private fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
-        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException || throwable is ResponseErrorException)) {
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException || throwable is ResponseErrorException || throwable is PromoErrorException)) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
 
