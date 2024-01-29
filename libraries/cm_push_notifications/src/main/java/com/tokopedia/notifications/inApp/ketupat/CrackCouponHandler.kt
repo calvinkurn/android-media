@@ -37,8 +37,8 @@ class CrackCouponHandler(
     var url = ""
     var buttonShareAppLink = ""
     var scratchCardId = ""
-    var CatalogId = ""
-    var CatalogSlug = ""
+    private var catalogIds = mutableListOf<String>()
+    private var catalogSlug = mutableListOf<String>()
 
     fun getCouponData(slug: String?, direction: MyGestureListener.Direction) {
         try {
@@ -142,6 +142,16 @@ class CrackCouponHandler(
                 val couponImage = (coupon as View).findViewById<CouponImageView>(R.id.iv_coupon)
                 couponImage.loadImageFitCenter(getCouponURl(i, it))
                 binding.couponContainer.addView(coupon)
+                it[i].slug?.let { slug ->
+                    animationPopupGtmTracker.sendCouponImpressionEvent(scratchCardId,
+                        slug, it[i].catalogID.toString())
+                }
+                catalogIds.add(it[i].catalogID.toString())
+                catalogSlug.add(it[i].slug.toString())
+
+                if ( i >= 3) {
+                    setCloseButtonMargin(0.0f)
+                }
             }
             playAnimationInDirection(direction)
         }
@@ -239,7 +249,6 @@ class CrackCouponHandler(
         val layout = binding.couponContainer
         val anim: Animation = AnimationUtils.loadAnimation(activity, R.anim.coupon_scale)
         layout.startAnimation(anim)
-//        animationPopupGtmTracker.sendCouponImpressionEvent()
     }
 
     private fun couponButtonAnimation() {
@@ -247,14 +256,14 @@ class CrackCouponHandler(
         val layout = binding.ivButtonShare
         val anim: Animation = AnimationUtils.loadAnimation(activity, R.anim.button_translate)
         layout.startAnimation(anim)
-//        animationPopupGtmTracker.sendCtaButtonImpressionEvent()
+        animationPopupGtmTracker.sendCtaButtonImpressionEvent(scratchCardId, catalogSlug, catalogIds)
     }
 
     private fun onButtonShareClick(view: View) {
         val onClickListener = OnClickListener { _: View? ->
             (view.parent as ViewGroup).removeView(view)
             navigateToAppLink()
-//            animationPopupGtmTracker.sendCtaButtonClickEvent()
+            animationPopupGtmTracker.sendCtaButtonClickEvent(scratchCardId, catalogSlug, catalogIds)
         }
         binding.ivButtonShare.setOnClickListener(onClickListener)
     }
@@ -267,5 +276,9 @@ class CrackCouponHandler(
     private fun resetCloseButtonMargin() {
 //        binding.icClose.translationY = 180.0f
         binding.icClose.translationX = 0.0f
+    }
+
+    private fun setCloseButtonMargin(margin: Float) {
+        binding.icClose.translationY = margin
     }
 }
