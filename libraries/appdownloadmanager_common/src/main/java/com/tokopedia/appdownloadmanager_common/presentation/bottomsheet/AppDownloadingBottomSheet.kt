@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
@@ -126,8 +127,10 @@ class AppDownloadingBottomSheet :
                 }
             }
 
+            overlayClickDismiss = false
             showKnob = true
-            showCloseIcon = false
+            showCloseIcon = true
+
             setChild(composeView)
         }
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -186,8 +189,9 @@ class AppDownloadingBottomSheet :
                             val viewTarget: LinearLayout =
                                 view.findViewById(unifycomponentsR.id.bottom_sheet_wrapper)
 
-                            isCancelable = false
-                            dialog?.setCanceledOnTouchOutside(false)
+                            val bottomSheetClose = view.findViewById<ImageView>(unifycomponentsR.id.bottom_sheet_close)
+                            bottomSheetClose.visibility = View.GONE
+
                             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
                         }
                     }

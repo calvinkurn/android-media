@@ -606,7 +606,7 @@ class CommonTopupBillsViewModelTest {
 
         verify { digitalCheckVoucherUseCase.execute(any(), any()) }
     }
-
+    
     @Suppress("UNCHECKED_CAST")
     @Test
     fun createSeamlessFavoriteNumberParams_returnsCorrectParamKeys() {
