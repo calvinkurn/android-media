@@ -16,15 +16,7 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
         assertEquals(View.VISIBLE, widget.binding?.layoutStateHasSelectedNormalShipping?.visibility)
     }
 
-    fun assertWhitelabelShippingVisible() {
-        assertEquals(View.VISIBLE, widget.binding?.layoutStateHasSelectedWhitelabelShipping?.visibility)
-    }
-
     fun assertNormalShippingTitle(title: CharSequence) {
-        assertEquals(widget.binding?.labelSelectedShippingDuration?.text, title)
-    }
-
-    fun assertWhitelabelShippingTitle(title: CharSequence) {
         assertEquals(widget.binding?.labelSelectedShippingDuration?.text, title)
     }
 
@@ -43,6 +35,78 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     fun assertNormalShippingCodLabel(text: CharSequence, visibility: Int) {
         assertEquals(widget.binding?.lblCodAvailable?.visibility, visibility)
         assertEquals(widget.binding?.lblCodAvailable?.text, text)
+    }
+
+    fun assertWhitelabelShippingVisible() {
+        assertEquals(
+            View.VISIBLE,
+            widget.binding?.layoutStateHasSelectedWhitelabelShipping?.visibility
+        )
+    }
+
+    fun assertWhitelabelShippingTitle(title: CharSequence) {
+        assertEquals(widget.binding?.labelSelectedWhitelabelShipping?.text, title)
+    }
+
+    fun assertWhitelabelShippingEta(text: CharSequence) {
+        assertEquals(widget.binding?.labelWhitelabelShippingEta?.text, text)
+    }
+
+    fun assertBebasOngkirShippingVisible() {
+        assertEquals(
+            View.VISIBLE,
+            widget.binding?.layoutStateHasSelectedFreeShipping?.visibility
+        )
+    }
+
+    fun assertBebasOngkirShippingTitle(title: CharSequence) {
+        assertEquals(widget.binding?.labelSelectedFreeShipping?.text, title)
+    }
+
+    fun assertBebasOngkirShippingEta(eta: CharSequence, visibility: Int) {
+        assertEquals(widget.binding?.labelFreeShippingEta?.text, eta)
+        assertEquals(
+            visibility,
+            widget.binding?.labelFreeShippingEta?.visibility
+        )
+    }
+
+    fun assertBebasOngkirShippingCodLabel(text: CharSequence, visibility: Int) {
+        assertEquals(widget.binding?.lblCodFreeShipping?.visibility, visibility)
+        assertEquals(widget.binding?.lblCodFreeShipping?.text, text)
+    }
+    fun assertBebasOngkirShippingLogoLabel(visibility: Int) {
+        assertEquals(widget.binding?.imgLogoFreeShipping?.visibility, visibility)
+    }
+
+    fun assertNow2HourShippingVisible() {
+        assertEquals(
+            View.VISIBLE,
+            widget.binding?.layoutStateHasSelectedSingleShipping?.visibility
+        )
+    }
+
+    fun assertNow2HourShippingTitle(title: CharSequence) {
+        assertEquals(widget.binding?.labelSelectedSingleShippingTitle?.text, title)
+    }
+
+    fun assertNow2HourShippingDescription(description: CharSequence, visibility: Int) {
+        assertEquals(widget.binding?.labelSelectedSingleShippingTitle?.text, description)
+    }
+
+    fun assertSchellyShippingVisible() {
+        assertEquals(
+            View.VISIBLE,
+            widget.binding?.shippingNowWidget?.visibility
+        )
+    }
+
+    // todo
+    fun assertSchellyShippingVisible() {
+        assertEquals(
+            View.VISIBLE,
+            widget.binding?.shippingNowWidget?.visibility
+        )
     }
 
     fun assertMustInsurance(price: Double) {
