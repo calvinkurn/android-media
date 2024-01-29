@@ -24,6 +24,7 @@ import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
@@ -77,6 +78,14 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
             )
 
             mockUriBuilder()
+
+            every {
+                userSession.isLoggedIn
+            } returns true
+
+            every {
+                userSession.userId
+            } returns "123"
 
             coEvery {
                 getGeneratedImageUseCase.getData(any(), any())
