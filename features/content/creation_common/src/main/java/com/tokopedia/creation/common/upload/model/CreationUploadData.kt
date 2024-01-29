@@ -36,6 +36,8 @@ sealed interface CreationUploadData {
 
     fun mapToEntity(gson: Gson): CreationUploadQueueEntity
 
+    fun mapDataToJson(gson: Gson): String
+
     fun mapToJson(gson: Gson): String {
         return try {
             gson.toJson(mapToEntity(gson))
@@ -74,6 +76,9 @@ sealed interface CreationUploadData {
 
         @SerializedName(KEY_DRAFT_ID)
         val draftId: String,
+
+        @SerializedName(KEY_ACTIVITY_ID)
+        val activityId: String,
     ) : CreationUploadData {
 
         override val notificationCover: String
@@ -90,10 +95,15 @@ sealed interface CreationUploadData {
                 coverUri = coverUri,
                 authorId = authorId,
                 authorType = authorType,
-                data = gson.toJson(
-                    CreationUploadQueueEntity.Post(
-                        draftId = draftId
-                    )
+                data = mapDataToJson(gson),
+            )
+        }
+
+        override fun mapDataToJson(gson: Gson): String {
+            return gson.toJson(
+                CreationUploadQueueEntity.Post(
+                    draftId = draftId,
+                    activityId = activityId,
                 )
             )
         }
@@ -154,12 +164,16 @@ sealed interface CreationUploadData {
                 coverUri = coverUri,
                 authorId = authorId,
                 authorType = authorType,
-                data = gson.toJson(
-                    CreationUploadQueueEntity.Shorts(
-                        mediaUriList = mediaUriList,
-                        sourceId = sourceId,
-                        isInterspersed = isInterspersed,
-                    )
+                data = mapDataToJson(gson),
+            )
+        }
+
+        override fun mapDataToJson(gson: Gson): String {
+            return gson.toJson(
+                CreationUploadQueueEntity.Shorts(
+                    mediaUriList = mediaUriList,
+                    sourceId = sourceId,
+                    isInterspersed = isInterspersed,
                 )
             )
         }
@@ -229,14 +243,18 @@ sealed interface CreationUploadData {
                 coverUri = coverUri,
                 authorId = authorId,
                 authorType = authorType,
-                data = gson.toJson(
-                    CreationUploadQueueEntity.Stories(
-                        mediaUriList = mediaUriList,
-                        mediaTypeList = mediaTypeList,
-                        imageSourceId = imageSourceId,
-                        videoSourceId = videoSourceId,
-                        applink = applink,
-                    )
+                data = mapDataToJson(gson),
+            )
+        }
+
+        override fun mapDataToJson(gson: Gson): String {
+            return gson.toJson(
+                CreationUploadQueueEntity.Stories(
+                    mediaUriList = mediaUriList,
+                    mediaTypeList = mediaTypeList,
+                    imageSourceId = imageSourceId,
+                    videoSourceId = videoSourceId,
+                    applink = applink,
                 )
             )
         }
@@ -259,6 +277,7 @@ sealed interface CreationUploadData {
         private const val KEY_IMAGE_SOURCE_ID = "image_source_id"
         private const val KEY_VIDEO_SOURCE_ID = "video_source_id"
         private const val KEY_DRAFT_ID = "draftId"
+        private const val KEY_ACTIVITY_ID = "activityId"
         private const val KEY_APPLINK = "applink"
         private const val KEY_IS_INTERSPERSED = "is_interspersed"
 
@@ -296,6 +315,7 @@ sealed interface CreationUploadData {
                         authorId = entity.authorId,
                         authorType = entity.authorType,
                         draftId = postEntity.draftId,
+                        activityId = postEntity.activityId,
                     )
                 }
                 CreationUploadType.Shorts -> {
@@ -364,6 +384,7 @@ sealed interface CreationUploadData {
                 authorId = authorId,
                 authorType = authorType,
                 draftId = draftId,
+                activityId = "",
             )
         }
 
