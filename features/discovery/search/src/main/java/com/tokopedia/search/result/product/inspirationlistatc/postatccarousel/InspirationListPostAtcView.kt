@@ -1,10 +1,9 @@
-package com.tokopedia.search.result.product.inspirationlistatc
+package com.tokopedia.search.result.product.inspirationlistatc.postatccarousel
 
-import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
 
-interface InspirationListAtcView {
+interface InspirationListPostAtcView {
 
     fun trackSeeMoreClick(data: InspirationCarouselDataView.Option)
 
@@ -19,7 +18,6 @@ interface InspirationListAtcView {
     fun openVariantBottomSheet(
         product: InspirationCarouselDataView.Option.Product,
         type: String,
-        onCheckout: () -> Unit
     )
 
     fun trackAddToCartVariant(product: InspirationCarouselDataView.Option.Product)
@@ -29,4 +27,8 @@ interface InspirationListAtcView {
     fun trackAdsClick(product: InspirationCarouselDataView.Option.Product)
 
     fun trackAdsImpress(product: InspirationCarouselDataView.Option.Product)
+
+    fun closeListPostAtcView(item: InspirationListPostAtcDataView)
+
+    fun cancelCloseListPostAtcView(item: InspirationListPostAtcDataView)
 }

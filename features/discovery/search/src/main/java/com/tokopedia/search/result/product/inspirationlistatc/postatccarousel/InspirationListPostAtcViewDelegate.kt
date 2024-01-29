@@ -1,11 +1,12 @@
-package com.tokopedia.search.result.product.inspirationlistatc
+package com.tokopedia.search.result.product.inspirationlistatc.postatccarousel
 
 import android.content.Context
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.search.R
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
@@ -31,18 +32,18 @@ import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 @SearchScope
-class InspirationListAtcViewDelegate @Inject constructor(
+class InspirationListPostAtcViewDelegate @Inject constructor(
     private val trackingQueue: TrackingQueue,
     private val searchNavigationListener: SearchNavigationListener?,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val atcVariantLauncher: AddToCartVariantBottomSheetLauncher,
-    searchParameterProvider: SearchParameterProvider,
+    private val searchParameterProvider: SearchParameterProvider,
     classNameProvider: ClassNameProvider,
     @SearchContext
     context: Context,
     fragmentProvider: FragmentProvider,
     queryKeyProvider: QueryKeyProvider,
-): InspirationListAtcView,
+): InspirationListPostAtcView,
     SearchParameterProvider by searchParameterProvider,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -89,8 +90,7 @@ class InspirationListAtcViewDelegate @Inject constructor(
 
     override fun openVariantBottomSheet(
         product: InspirationCarouselDataView.Option.Product,
-        type: String,
-        onCheckout: () -> Unit,
+        type: String
     ) {
         atcVariantLauncher.launch(
             productId = product.id,
@@ -99,18 +99,17 @@ class InspirationListAtcViewDelegate @Inject constructor(
                 type,
                 product.componentId,
             )
-        ) { productResult ->
+        ) {
             val trackingData =
                 InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                     product,
                     getSearchParameter(),
-                    productResult.cartId,
+                    it.cartId,
                     product.minOrder.toIntOrZero(),
                 )
 
             trackItemClick(trackingData)
             trackAddToCart(trackingData)
-            onCheckout.invoke()
         }
 
         SearchIdlingResource.decrement()
@@ -144,5 +143,32 @@ class InspirationListAtcViewDelegate @Inject constructor(
             product.imgUrl,
             SearchConstant.TopAdsComponent.ORGANIC_ADS
         )
+    }
+
+    override fun closeListPostAtcView(item: InspirationListPostAtcDataView) {
+        val productAtc = item.option
+        trackCarouselClickCloseAction(productAtc)
+    }
+
+    override fun cancelCloseListPostAtcView(item: InspirationListPostAtcDataView) {
+        val productAtc = item.option
+        trackCarouselClickCloseAction(productAtc)
+    }
+
+    private fun trackCarouselClickCloseAction(
+        option: InspirationCarouselDataView.Option,
+    ) {
+        val searchParams = searchParameterProvider.getSearchParameter()?.getSearchParameterMap().orEmpty()
+        val keyword = searchParameterProvider.getSearchParameter()?.getSearchQuery().orEmpty()
+        val dimension90 = Dimension90Utils.getDimension90(searchParams)
+        searchComponentTracking(
+            trackingOption = option.trackingOption,
+            keyword = keyword,
+            valueId = "0",
+            valueName = "${option.carouselTitle} - ${option.title}",
+            componentId = option.componentId,
+            applink = option.applink,
+            dimension90 = dimension90
+        ).click(TrackApp.getInstance().gtm)
     }
 }
