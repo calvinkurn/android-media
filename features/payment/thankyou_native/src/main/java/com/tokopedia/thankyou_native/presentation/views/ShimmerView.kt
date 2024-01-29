@@ -52,7 +52,6 @@ class ShimmerView: FrameLayout {
                     translationX = (-SHIMMER_WIDTH).toPx().toFloat()
                     setImageResource(R.drawable.shimmer_white)
                     scaleType = ImageView.ScaleType.FIT_CENTER
-                    alpha = 0.5f
 
                     val anim = ValueAnimator.ofFloat((-SHIMMER_WIDTH).toPx().toFloat(), this@ShimmerView.measuredWidth.toFloat())
                     anim.duration = SHIMMER_DURATION

@@ -425,4 +425,18 @@ class ThankPageViewModelUnitTest {
             )
         }
     }
+
+    @Test
+    fun `Load ThanksPageData V2`() {
+        // given
+        val isV2 = true
+
+        // when
+        viewModel.getThanksPageData("", "", isV2)
+
+        // verify
+        verify {
+            thankPageUseCaseV2.getThankPageData(any(), any(), any(), any())
+        }
+    }
 }
