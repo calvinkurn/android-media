@@ -1,15 +1,20 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
+@file:SuppressLint("EntityFieldAnnotation")
 
+package com.tokopedia.recommendation_widget_common.widget.foryou.recomcard
+
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Space
-import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -20,39 +25,33 @@ import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCar
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.ColorMode
-import com.tokopedia.unifyprinciples.modeAware
-import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifyprinciples.modeAware
+import timber.log.Timber
 
-class RecomEntityCardViewHolder(
-    view: View,
-    private val listener: Listener
-) : BaseRecommendationForYouViewHolder<RecomEntityCardUiModel>(
-    view,
-    RecomEntityCardUiModel::class.java
-) {
+class RecomEntityCardView @JvmOverloads constructor(
+    context: Context,
+    attributeSet: AttributeSet? = null
+) : FrameLayout(context, attributeSet) {
 
-    companion object {
-        @LayoutRes
-        val LAYOUT = recommendation_widget_commonR.layout.item_recom_entity_card
-
-        private const val mingHeightCard = 320f
-        internal const val SQUARE_IMAGE_RATIO = "1:1"
-    }
-
-    private val binding = ItemRecomEntityCardBinding.bind(itemView)
+    private val binding = ItemRecomEntityCardBinding.inflate(LayoutInflater.from(context))
+    private var listener: Listener? = null
 
     init {
+        addView(binding.root)
+
         binding.entryPointCard.animateOnPress = CardUnify2.ANIMATE_BOUNCE
     }
 
-    override fun bind(element: RecomEntityCardUiModel) {
-        setBackgroundCardColor(element.backgroundColor)
-        setProductName(element.title)
-        setProductSubtitle(element.subTitle)
-        setProductImageUrl(element.imageUrl)
-        setLabelTitle(element.labelState)
-        setLabelIcon(element.labelState.iconUrl)
+    fun setupView(model: RecomEntityModel) {
+        if (listener == null) Timber.w(Throwable("RecomEntityCardView: You haven't set the listener yet."))
+
+        setBackgroundCardColor(model.backgroundColor)
+        setProductName(model.title)
+        setProductSubtitle(model.subTitle)
+        setProductImageUrl(model.imageUrl)
+        setLabelTitle(model.labelState)
+        setLabelIcon(model.labelState.iconUrl)
         setupImageRatio(
             binding.clEntryPointCard,
             binding.imgEntryPointCard,
@@ -60,22 +59,31 @@ class RecomEntityCardViewHolder(
             SQUARE_IMAGE_RATIO
         )
         setMinHeightEntryPointCard()
-        setOnCardImpressionListener(element)
-        setOnCardClickListener(element)
+        setOnCardImpressionListener(model)
+        setOnCardClickListener(model)
     }
 
-    private fun setOnCardClickListener(element: RecomEntityCardUiModel) {
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        listener = null
+    }
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
+    }
+
+    private fun setOnCardClickListener(element: RecomEntityModel) {
         binding.entryPointCard.setOnClickListener {
-            listener.onEntityCardClickListener(element, bindingAdapterPosition)
+            listener?.onEntityCardClickListener(element)
         }
     }
 
-    private fun setOnCardImpressionListener(element: RecomEntityCardUiModel) {
+    private fun setOnCardImpressionListener(element: RecomEntityModel) {
         binding.entryPointCard.addOnImpressionListener(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onEntityCardImpressionListener(element, bindingAdapterPosition)
+                    listener?.onEntityCardImpressionListener(element)
                 }
             }
         )
@@ -100,7 +108,7 @@ class RecomEntityCardViewHolder(
     }
 
     private fun getTextColorLightModeAware(): Int {
-        val ctx = itemView.context.modeAware(ColorMode.LIGHT_MODE) ?: itemView.context
+        val ctx = context.modeAware(ColorMode.LIGHT_MODE) ?: context
         return ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN950)
     }
 
@@ -108,7 +116,7 @@ class RecomEntityCardViewHolder(
         binding.imgEntryPointCard.loadImage(productImageUrl)
     }
 
-    private fun setLabelTitle(labelState: RecomEntityCardUiModel.LabelState) {
+    private fun setLabelTitle(labelState: RecomEntityModel.LabelState) {
         with(binding.tvLabelState) {
             shouldShowWithAction(labelState.title.isNotBlank()) {
                 text = labelState.title
@@ -181,7 +189,12 @@ class RecomEntityCardViewHolder(
     }
 
     interface Listener {
-        fun onEntityCardImpressionListener(item: RecomEntityCardUiModel, position: Int)
-        fun onEntityCardClickListener(item: RecomEntityCardUiModel, position: Int)
+        fun onEntityCardImpressionListener(item: RecomEntityModel)
+        fun onEntityCardClickListener(item: RecomEntityModel)
+    }
+
+    companion object {
+        private const val mingHeightCard = 320f
+        internal const val SQUARE_IMAGE_RATIO = "1:1"
     }
 }
