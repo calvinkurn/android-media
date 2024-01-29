@@ -8,6 +8,7 @@ import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.BmgmMiniCar
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.viewholder.BmgmBundledProductViewHolder
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.viewholder.BmgmProductPlaceholderViewHolder
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.viewholder.BmgmSingleProductViewHolder
+import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.viewholder.MiniCartGiftDividerViewHolder
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.viewholder.MiniCartGwpGiftPlaceholderViewHolder
 import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.viewholder.MiniCartGwpGiftWidgetViewHolder
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartVisitable
@@ -40,6 +41,10 @@ class BmgmMiniCartAdapterFactoryImpl(
         return MiniCartGwpGiftWidgetViewHolder.RES_LAYOUT
     }
 
+    override fun type(model: BmgmMiniCartVisitable.DividerUiModel): Int {
+        return MiniCartGiftDividerViewHolder.RES_LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             BmgmBundledProductViewHolder.RES_LAYOUT -> BmgmBundledProductViewHolder(parent, listener)
@@ -47,6 +52,7 @@ class BmgmMiniCartAdapterFactoryImpl(
             BmgmProductPlaceholderViewHolder.RES_LAYOUT -> BmgmProductPlaceholderViewHolder(parent, listener)
             MiniCartGwpGiftPlaceholderViewHolder.RES_LAYOUT -> MiniCartGwpGiftPlaceholderViewHolder(parent, listener)
             MiniCartGwpGiftWidgetViewHolder.RES_LAYOUT -> MiniCartGwpGiftWidgetViewHolder(parent, listener)
+            MiniCartGiftDividerViewHolder.RES_LAYOUT -> MiniCartGiftDividerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

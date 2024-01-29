@@ -36,6 +36,7 @@ import com.tokopedia.buy_more_get_more.minicart.presentation.model.getProductLis
 import com.tokopedia.buy_more_get_more.minicart.presentation.viewmodel.BmgmMiniCartViewModel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -130,10 +131,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     fun fetchData(
-        shopIds: List<Long>,
-        offerIds: List<Long>,
-        offerJsonData: String,
-        warehouseIds: List<Long>
+        shopIds: List<Long>, offerIds: List<Long>, offerJsonData: String, warehouseIds: List<Long>
     ) {
         this.param = MiniCartParam(
             shopIds = shopIds,
@@ -223,6 +221,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             loadingStateGroup.visible()
             bmsmMiniCartView.gone()
             rvBmgmMiniCart.gone()
+            stickyGiftView.gone()
             tvBmgmCartDiscount.gone()
         }
     }
@@ -235,6 +234,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         dismissMiniCartLoadingState()
         binding?.run {
             errorStateGroup.visible()
+            stickyGiftView.gone()
             rvBmgmMiniCart.gone()
             tvBmgmCartDiscount.gone()
             bmsmMiniCartView.gone()
@@ -277,18 +277,37 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     private fun setupTiersApplied(data: BmgmMiniCartDataUiModel) {
-        binding?.run {
-            rvBmgmMiniCart.visible()
+        binding?.rvBmgmMiniCart?.run {
+            if (itemDecorationCount == Int.ZERO) {
+                addItemDecoration(BmgmMiniCartItemDecoration(offerType))
+            }
 
             if (data.tiers.isNotEmpty()) {
                 setupMessageWithAnimation(data.offerMessage)
-                rvBmgmMiniCart.visible()
+                visible()
             } else {
-                tvBmgmCartDiscount.gone()
-                rvBmgmMiniCart.gone()
+                binding?.tvBmgmCartDiscount?.gone()
+                gone()
             }
+        }
 
-            updateItemList(data.getProductList())
+        binding?.stickyGiftView?.run {
+            if (offerType == OfferType.PROGRESSIVE_DISCOUNT) {
+                updateItemList(data.getProductList())
+                gone()
+            } else {
+                val allProducts = data.getProductList()
+                val atcProducts = allProducts.filter {
+                    it !is BmgmMiniCartVisitable.GwpGiftWidgetUiModel
+                }
+                updateItemList(atcProducts)
+
+                val gifts =
+                    allProducts.filterIsInstance<BmgmMiniCartVisitable.GwpGiftWidgetUiModel>()
+                submitList(gifts)
+                setOnItemClickedListener(::setOnItemClickedListener)
+                isVisible = gifts.isNotEmpty()
+            }
         }
     }
 
@@ -315,8 +334,8 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private fun showPriceSummary(data: BmgmMiniCartDataUiModel) {
         binding?.bmsmMiniCartView?.run {
-            val shouldShowSlashPrice = data.priceBeforeBenefit != data.finalPrice
-                    && offerType == OfferType.PROGRESSIVE_DISCOUNT
+            val shouldShowSlashPrice =
+                data.priceBeforeBenefit != data.finalPrice && offerType == OfferType.PROGRESSIVE_DISCOUNT
             initSummaryView(shouldShowSlashPrice)
             visible()
             refresh(
@@ -341,8 +360,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 overridePrimaryButtonAction = true,
                 overridePrimaryButtonWording = context.getString(R.string.bmsm_check_cart),
                 page = MiniCartAnalytics.Page.BMSM_OLP_PAGE
-            ),
-            listener
+            ), listener
         )
     }
 
@@ -371,9 +389,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private fun setupRecyclerView() {
         binding?.rvBmgmMiniCart?.run {
-            if (itemDecorationCount == Int.ZERO) {
-                addItemDecoration(BmgmMiniCartItemDecoration())
-            }
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = miniCartAdapter
         }
@@ -386,10 +401,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         val userId = userSession.get().userId
 
         BmgmMiniCartTracker.sendClickCekKeranjangEvent(
-            offerId = offerId,
-            warehouseId = warehouseId,
-            shopId = shopId,
-            userId = userId
+            offerId = offerId, warehouseId = warehouseId, shopId = shopId, userId = userId
         )
     }
 

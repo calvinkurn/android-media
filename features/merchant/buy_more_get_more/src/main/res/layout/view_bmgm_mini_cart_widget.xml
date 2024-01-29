@@ -17,24 +17,45 @@
         android:outAnimation="@anim/text_slide_out_up_animation"
         android:textColor="@color/Unify_NN950"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/topItemsBarrier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Yay, kamu dapat potongan 550 rb!"
         tools:visibility="visible" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/topItemsBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="stickyGiftView, rvBmgmMiniCart" />
+
+    <com.tokopedia.buy_more_get_more.minicart.presentation.customview.StickyGiftView
+        android:id="@+id/stickyGiftView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="4dp"
+        android:paddingTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bmsmMiniCartView"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:itemCount="1"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_mini_cart_gwp_gift_list"
+        tools:orientation="horizontal" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBmgmMiniCart"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
         android:orientation="horizontal"
+        android:paddingTop="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/bmsmMiniCartView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/stickyGiftView"
         app:layout_constraintTop_toBottomOf="@+id/tvBmgmCartDiscount"
         tools:itemCount="2"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -118,5 +139,5 @@
         android:background="@color/Unify_Background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
