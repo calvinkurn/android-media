@@ -566,6 +566,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    fun removeShareIconView() {
+        navIconAdapter?.removeIcon(navIconAdapter?.getShareIconPosition() ?: return)
+    }
+
     fun updateIcon(oldIconId: Int, newIconId: Int) {
         navIconAdapter?.updateIcon(oldIconId, newIconId)
     }

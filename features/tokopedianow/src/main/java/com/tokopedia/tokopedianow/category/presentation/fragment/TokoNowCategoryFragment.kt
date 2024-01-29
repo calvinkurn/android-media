@@ -14,6 +14,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.utils.UrlParamUtils
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.observe
@@ -39,7 +40,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcase
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseItemViewHolder
-import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
@@ -110,7 +111,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
 
     override fun createAdapterTypeFactory(): CategoryAdapterTypeFactory {
         return CategoryAdapterTypeFactory(
-            categoryTitleListener = createTitleCallback(),
             categoryNavigationListener = createCategoryNavigationCallback(),
             categoryShowcaseItemListener = createCategoryShowcaseItemCallback(),
             categoryShowcaseHeaderListener = createCategoryShowcaseHeaderCallback(),
@@ -118,6 +118,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             tokoNowChooseAddressWidgetListener = createTokoNowChooseAddressWidgetCallback(),
             tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
+            tokoNowHeaderListener = createTitleCallback(),
             productAdsCarouselListener = createProductCardAdsCallback(),
             recycledViewPool = recycledViewPool,
             lifecycleOwner = viewLifecycleOwner
@@ -322,8 +323,8 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
      * -- callback function section --
      */
 
-    private fun createTitleCallback() = object : CategoryTitleViewHolder.CategoryTitleListener {
-        override fun onClickMoreCategories() {
+    private fun createTitleCallback() = object : TokoNowHeaderViewHolder.TokoNowHeaderListener {
+        override fun onClickCtaHeader() {
             RouteManager.route(
                 context,
                 ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
@@ -334,6 +335,8 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
                 warehouseIds = viewModel.getWarehouseIds()
             )
         }
+
+        override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) { /* nothing to do */ }
     }
 
     private fun createCategoryNavigationCallback() = object : CategoryNavigationViewHolder.CategoryNavigationListener {

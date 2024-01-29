@@ -277,4 +277,8 @@
     <string name="tokopedianow_buyer_communication_two_hour_benefit">2 Jam Tiba<sup>*</sup>. Butuh cepat? Nikmati pengiriman cepat, langsung ke alamatmu. (<sup>*</sup>Khusus Jadetabek)</string>
     <string name="tokopedianow_buyer_communication_tnc"><![CDATA[Dengan belanja, kamu menyetujui syarat & ketentuan.]]></string>
     <string name="tokopedianow_buyer_communication_tnc_label">syarat &amp; ketentuan.</string>
+
+    <!-- Shopping List -->
+    <string name="tokopedianow_shopping_list_page_title">List Belanja</string>
+    <string name="tokopedianow_shopping_list_repurchase">Beli Lagi</string>
 </resources>

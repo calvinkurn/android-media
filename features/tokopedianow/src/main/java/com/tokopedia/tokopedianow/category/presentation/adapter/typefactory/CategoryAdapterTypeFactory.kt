@@ -8,17 +8,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
-import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryTitleUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder.CategoryNavigationListener
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseViewHolder
-import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder
-import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder.CategoryTitleListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder.TokoNowHeaderListener
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProgressBarTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTickerTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowHeaderTypeFactory
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
@@ -28,6 +28,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDy
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProgressBarViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
@@ -35,12 +36,12 @@ import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategory
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 
 class CategoryAdapterTypeFactory(
-    private var categoryTitleListener: CategoryTitleListener? = null,
     private var categoryNavigationListener: CategoryNavigationListener? = null,
     private var categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
     private var categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
     private var tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
     private var tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
+    private var tokoNowHeaderListener: TokoNowHeaderListener? = null,
     private var recycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
     tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener,
@@ -51,13 +52,13 @@ class CategoryAdapterTypeFactory(
     productAdsCarouselListener,
     tokoNowView
 ), CategoryTypeFactory,
+    TokoNowHeaderTypeFactory,
     TokoNowCategoryMenuTypeFactory,
     TokoNowProductRecommendationTypeFactory,
     TokoNowProgressBarTypeFactory,
     TokoNowTickerTypeFactory {
 
     /* Category Component Ui Model */
-    override fun type(uiModel: CategoryTitleUiModel): Int = CategoryTitleViewHolder.LAYOUT
     override fun type(uiModel: CategoryNavigationUiModel): Int = CategoryNavigationViewHolder.LAYOUT
     override fun type(uiModel: CategoryShowcaseUiModel): Int = CategoryShowcaseViewHolder.LAYOUT
 
@@ -66,14 +67,11 @@ class CategoryAdapterTypeFactory(
     override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProgressBarUiModel): Int = TokoNowProgressBarViewHolder.LAYOUT
     override fun type(uiModel: TokoNowTickerUiModel): Int = TokoNowTickerViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowHeaderUiModel): Int = TokoNowHeaderViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             /* Category Component View Holder */
-            CategoryTitleViewHolder.LAYOUT -> CategoryTitleViewHolder(
-                itemView = view,
-                listener = categoryTitleListener
-            )
             CategoryNavigationViewHolder.LAYOUT -> CategoryNavigationViewHolder(
                 itemView = view,
                 listener = categoryNavigationListener
@@ -101,13 +99,17 @@ class CategoryAdapterTypeFactory(
             TokoNowTickerViewHolder.LAYOUT -> TokoNowTickerViewHolder(
                 itemView = view
             )
+            TokoNowHeaderViewHolder.LAYOUT -> TokoNowHeaderViewHolder(
+                itemView = view,
+                listener = tokoNowHeaderListener
+            )
             else -> super.createViewHolder(view, type)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        categoryTitleListener = null
+        tokoNowHeaderListener = null
         categoryNavigationListener = null
         categoryShowcaseItemListener = null
         categoryShowcaseHeaderListener = null

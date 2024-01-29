@@ -22,4 +22,5 @@
     <dimen name="tokopedianow_quest_card_title_start_padding">6dp</dimen>
     <dimen name="tokopedianow_quest_star_offset">8.5dp</dimen>
     <dimen name="tokopedianow_quest_lottie_offset">10dp</dimen>
+    <dimen name="tokopedianow_shopping_list_header_chevron_icon_size">18dp</dimen>
 </resources>

@@ -30,4 +30,5 @@
     <color name="tokopedianow_quest_circle_border_dms_color">#33E4EBF5</color>
     <color name="tokopedianow_quest_progress_dms_color">#06649E</color>
     <color name="tokopedianow_quest_selected_circle_dms_color">#FFFFFF</color>
+    <color name="tokopedianow_shopping_list_back_button_dms_color">#121212</color>
 </resources>
