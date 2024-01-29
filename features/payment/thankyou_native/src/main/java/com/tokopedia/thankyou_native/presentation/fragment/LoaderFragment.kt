@@ -174,8 +174,8 @@ class LoaderFragment : BaseDaggerFragment() {
                 val lottie = (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess)
                 lottie.visible()
                 context?.let {
-                    lottie.setAnimationTint(arrayOf("white BG"), ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
-                    lottie.setAnimationTint(arrayOf("White Solid 2"), ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
+                    lottie.setAnimationTint("white BG", ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
+                    lottie.setAnimationTint("White Solid 2", ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
                 }
                 lottie.playAnimation()
                 lottie.addAnimatorListener(object: AnimatorListener {
@@ -283,14 +283,14 @@ class LoaderFragment : BaseDaggerFragment() {
 
 }
 
-fun LottieAnimationView.setAnimationTint(itemsToTint: Array<String>?, @ColorInt color: Int) {
+fun LottieAnimationView.setAnimationTint(itemsToTint: String, @ColorInt color: Int) {
     if (itemsToTint == null) {
         //un-tint
         addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER) { null }
         return
     }
     addValueCallback(
-        KeyPath(*itemsToTint,"**" ),
+        KeyPath(itemsToTint,"**"),
         LottieProperty.COLOR_FILTER
     ) { PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP) }
 }
