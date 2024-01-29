@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
@@ -70,6 +72,7 @@ class TokoNowHeaderViewHolder(
             )
             val layerDrawable = LayerDrawable(arrayOf(gradientDrawable))
             root.background = layerDrawable
+            aivSuperGraphic.show()
         } else {
             root.setBackgroundColor(
                 safeParseColor(
@@ -80,6 +83,7 @@ class TokoNowHeaderViewHolder(
                     )
                 )
             )
+            aivSuperGraphic.hide()
         }
     }
 

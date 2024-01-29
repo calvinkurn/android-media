@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addHeader
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addHeaderSpace
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addWishlistProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -58,55 +59,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         layout.addHeader(
             headerModel = headerModel
         )
-
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
-        layout.addHeaderSpace(
-            space = headerSpace,
-            headerModel = headerModel
-        )
+        layout.addWishlistProducts()
         _firstPage.value = layout
     }
 }

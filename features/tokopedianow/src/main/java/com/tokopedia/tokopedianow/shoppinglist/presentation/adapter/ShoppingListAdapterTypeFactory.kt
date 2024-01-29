@@ -13,7 +13,6 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderSpaceViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.HorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.seeallcategory.persentation.viewholder.SeeAllCategoryItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.HorizontalProductCardItemViewHolder
 
 class ShoppingListAdapterTypeFactory(
@@ -28,7 +27,7 @@ class ShoppingListAdapterTypeFactory(
 {
     override fun type(uiModel: TokoNowHeaderUiModel): Int = TokoNowHeaderViewHolder.LAYOUT
     override fun type(uiModel: TokoNowHeaderSpaceUiModel): Int = TokoNowHeaderSpaceViewHolder.LAYOUT
-    override fun type(uiModel: HorizontalProductCardItemUiModel): Int = SeeAllCategoryItemViewHolder.LAYOUT
+    override fun type(uiModel: HorizontalProductCardItemUiModel): Int = HorizontalProductCardItemViewHolder.LAYOUT
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             TokoNowHeaderViewHolder.LAYOUT -> TokoNowHeaderViewHolder(

@@ -52,6 +52,7 @@
         tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/aiv_super_graphic"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,6 +60,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_icon_pull_refresh"
         android:scaleType="fitXY"
+        android:visibility="gone"
         app:srcCompat="@drawable/tokopedianow_bg_header_shopping_list"/>
 
     <com.google.android.material.imageview.ShapeableImageView

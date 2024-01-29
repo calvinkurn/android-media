@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <CheckBox
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cb_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,7 +31,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="2dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/tp_title"
+        app:layout_constraintBottom_toTopOf="@+id/tp_name"
         app:layout_constraintEnd_toStartOf="@+id/iconUnify"
         app:layout_constraintStart_toEndOf="@+id/iu_product"
         app:layout_constraintTop_toTopOf="@+id/iu_product">
@@ -77,7 +77,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tp_title"
+        android:id="@+id/tp_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -100,7 +100,7 @@
         android:layout_marginBottom="6dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@+id/iu_product"
-        app:layout_constraintEnd_toEndOf="@+id/tp_title"
+        app:layout_constraintEnd_toEndOf="@+id/tp_name"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iu_product"
         app:typographyType="small"
@@ -111,11 +111,11 @@
         android:id="@+id/iconUnify"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:icon_name="DELETE"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/iu_product"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/layout"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/iu_product" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

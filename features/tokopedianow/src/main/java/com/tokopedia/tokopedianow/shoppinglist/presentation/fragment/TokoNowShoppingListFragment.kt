@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapterTypeFactory
+import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -104,15 +105,17 @@ class TokoNowShoppingListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        switchToDarkStatusBar()
-
-        setupRecyclerView()
-        setupNavigationToolbar()
-        setupOnScrollListener()
-
         observeLiveData()
 
-        loadFirstPage()
+        switchToDarkStatusBar()
+
+        binding?.apply {
+            setupRecyclerView()
+            setupNavigationToolbar()
+            setupOnScrollListener()
+
+            loadFirstPage()
+        }
     }
 
     /**
@@ -127,13 +130,11 @@ class TokoNowShoppingListFragment :
             .inject(this)
     }
 
-    private fun loadFirstPage() {
-        binding?.navToolbar?.let { navToolbar ->
-            navToolbar.post {
-                setHeaderSpace(navToolbar)
-                setHeaderModel()
-                viewModel.loadFirstPage()
-            }
+    private fun FragmentTokopedianowShoppingListBinding.loadFirstPage() {
+        navToolbar.post {
+            setHeaderSpace(navToolbar)
+            setHeaderModel(navToolbar.context)
+            viewModel.loadFirstPage()
         }
     }
 
@@ -144,32 +145,31 @@ class TokoNowShoppingListFragment :
         viewModel.headerSpace = navToolbarHeight
     }
 
-    private fun setHeaderModel() {
-        context?.apply {
-            viewModel.headerModel = HeaderModel(
-                pageTitle = getString(R.string.tokopedianow_shopping_list_page_title),
-                pageTitleColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Static_White),
-                ctaText = getString(R.string.tokopedianow_shopping_list_repurchase),
-                ctaTextColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Static_White),
-                ctaChevronIsShown = true,
-                ctaChevronColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Static_White),
-                backgroundGradientColor = TokoNowHeaderUiModel.GradientColor(
-                    startColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_GN500),
-                    endColor = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_GN400)
-                )
+    private fun setHeaderModel(context: Context) {
+        viewModel.headerModel = HeaderModel(
+            pageTitle = getString(R.string.tokopedianow_shopping_list_page_title),
+            pageTitleColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
+            ctaText = getString(R.string.tokopedianow_shopping_list_repurchase),
+            ctaTextColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
+            ctaChevronIsShown = true,
+            ctaChevronColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
+            backgroundGradientColor = TokoNowHeaderUiModel.GradientColor(
+                startColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN500),
+                endColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN400)
             )
-        }
+        )
     }
 
-    private fun setupRecyclerView() {
-        binding?.rvShoppingList?.apply {
+    private fun FragmentTokopedianowShoppingListBinding.setupRecyclerView() {
+        rvShoppingList.apply {
             adapter = this@TokoNowShoppingListFragment.adapter
             layoutManager = LinearLayoutManager(context)
+            addItemDecoration(ShoppingListDecoration())
         }
     }
 
-    private fun setupNavigationToolbar() {
-        binding?.navToolbar?.apply {
+    private fun FragmentTokopedianowShoppingListBinding.setupNavigationToolbar() {
+        navToolbar.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setupToolbarWithStatusBar(activity = requireActivity())
             setToolbarPageName(PAGE_NAME)
@@ -188,20 +188,14 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun setupOnScrollListener() {
-        binding?.apply {
-            val callback = createNavRecyclerViewOnScrollCallback(navToolbar)
-            binding?.rvShoppingList?.addOnScrollListener(callback)
-        }
+    private fun FragmentTokopedianowShoppingListBinding.setupOnScrollListener() {
+        val callback = createNavRecyclerViewOnScrollCallback(navToolbar)
+        rvShoppingList.addOnScrollListener(callback)
     }
 
     private fun getNavToolbarHeight(navToolbar: NavToolbar): Int {
         val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_height).orZero()
-        return if (navToolbar.height.isZero()) {
-            defaultHeight
-        } else {
-            navToolbar.height
-        }
+        return if (navToolbar.height.isZero()) defaultHeight else navToolbar.height
     }
 
     private fun IconBuilder.addNavGlobal(): IconBuilder = addIcon(
@@ -224,11 +218,7 @@ class TokoNowShoppingListFragment :
 
     internal fun switchToLightStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToLightToolbar()
 
-    internal fun NavToolbar.setBackButtonColor(color: Int) {
-        context?.let {
-            setCustomBackButton(color = ContextCompat.getColor(it, color))
-        }
-    }
+    internal fun NavToolbar.setBackButtonColor(color: Int) = setCustomBackButton(color = ContextCompat.getColor(context, color))
 
     /**
      * -- callback function section --
