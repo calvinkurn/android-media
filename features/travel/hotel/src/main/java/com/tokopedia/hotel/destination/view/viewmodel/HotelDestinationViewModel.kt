@@ -122,11 +122,17 @@ class HotelDestinationViewModel @Inject constructor(
             }
         }
 
-        try {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, looper!!)
-        } catch (e: SecurityException) {
-            e.printStackTrace()
+        looper?.let {
+            try {
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback,
+                    looper
+                )
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
         }
+
+
     }
 
     fun validateLocation(latitude: Double, longitude: Double) {

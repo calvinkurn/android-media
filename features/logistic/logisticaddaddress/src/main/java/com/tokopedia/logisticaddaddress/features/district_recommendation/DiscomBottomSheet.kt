@@ -732,7 +732,7 @@ class DiscomBottomSheet :
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLocation() {
+    private fun getLocation(looper: Looper? = Looper.myLooper()) {
         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
             if (data != null) {
                 source?.takeIf { it is DiscomSource.LCA }
@@ -745,11 +745,13 @@ class DiscomBottomSheet :
                 }
 
             } else {
-                fusedLocationClient?.requestLocationUpdates(
-                    AddNewAddressUtils.getLocationRequest(),
-                    locationCallback,
-                    Looper.myLooper()!!
-                )
+                looper?.let {
+                    fusedLocationClient?.requestLocationUpdates(
+                        AddNewAddressUtils.getLocationRequest(),
+                        locationCallback,
+                        it
+                    )
+                }
             }
         }
     }

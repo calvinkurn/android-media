@@ -705,7 +705,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLocation() {
+    private fun getLocation(looper: Looper? = Looper.myLooper() ) {
         binding?.loaderCurrentLocation?.visibility = View.VISIBLE
         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
             if (data != null) {
@@ -724,11 +724,13 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     )
                 }
             } else {
-                fusedLocationClient?.requestLocationUpdates(
-                    AddNewAddressUtils.getLocationRequest(),
-                    locationCallback,
-                    Looper.myLooper()!!
-                )
+                looper?.let {
+                    fusedLocationClient?.requestLocationUpdates(
+                        AddNewAddressUtils.getLocationRequest(),
+                        locationCallback,
+                        it
+                    )
+                }
             }
         }
     }

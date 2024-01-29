@@ -512,7 +512,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     @SuppressLint("MissingPermission")
-    private fun checkAndRequestLocation() {
+    private fun checkAndRequestLocation(looper: Looper? = Looper.myLooper() ) {
         val locationRequest = LocationRequest.create()?.apply {
             interval = 10000
             fastestInterval = 5000
@@ -525,7 +525,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
         task.addOnSuccessListener {
             // Request location update once then remove when settings are satisfied
-            mFusedLocationClient?.requestLocationUpdates(locationRequest, mLocationCallback!!, Looper.myLooper()!!)
+            looper?.let {
+                mFusedLocationClient?.requestLocationUpdates(locationRequest, mLocationCallback!!, looper)
+            }
         }
         task.addOnFailureListener {
             if (it is ResolvableApiException) {
