@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.baselist.R;
+import com.tokopedia.imageassets.TokopediaImageUrl;
 import com.tokopedia.media.loader.JvmMediaLoader;
 
 
@@ -54,6 +55,8 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
         }
         if (!TextUtils.isEmpty(element.getUrlRes())) {
             JvmMediaLoader.loadImage(emptyIconImageView, element.getUrlRes());
+        } else {
+            JvmMediaLoader.loadImage(emptyIconImageView, TokopediaImageUrl.EMPTY_DATA_URL);
         }
         if (element.getCallback() != null) {
             callback = element.getCallback();
