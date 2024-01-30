@@ -1,13 +1,13 @@
 package com.tokopedia.shareexperience.ui.view
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.app.Dialog
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.shareexperience.R
-import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
+import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
 import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingOverlayBinding
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
@@ -48,12 +48,11 @@ class ShareExLoadingDialog(
     }
 
     private fun initInjector() {
-        val baseMainApplication = weakContext.get()?.applicationContext as? BaseMainApplication
-        baseMainApplication?.let {
-            DaggerShareExComponent
-                .builder()
-                .baseAppComponent(it.baseAppComponent)
-                .build()
+        val application = weakContext.get()?.applicationContext as? Application
+        application?.let {
+            ShareExComponentFactoryProvider
+                .instance
+                .createShareExComponent(it)
                 .inject(this)
         }
     }

@@ -11,13 +11,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shareexperience.data.analytic.ShareExAnalytics
-import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
+import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
@@ -47,6 +46,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * Use [com.tokopedia.shareexperience.ui.util.ShareExInitializer] to open this bottom sheet
+ */
 class ShareExBottomSheet :
     BottomSheetUnify(),
     ShareExChipsListener,
@@ -104,12 +106,10 @@ class ShareExBottomSheet :
     }
 
     private fun initInjector() {
-        val baseMainApplication = activity?.applicationContext as? BaseMainApplication
-        baseMainApplication?.let {
-            DaggerShareExComponent
-                .builder()
-                .baseAppComponent(it.baseAppComponent)
-                .build()
+        activity?.application?.let {
+            ShareExComponentFactoryProvider
+                .instance
+                .createShareExComponent(application = it)
                 .inject(this)
         }
     }
