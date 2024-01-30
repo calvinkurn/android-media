@@ -235,31 +235,40 @@ class OfferLandingPageFragment :
     }
 
     private fun initMiniCart() {
-        binding?.miniCartView?.init(lifecycleOwner = viewLifecycleOwner)
+        binding?.miniCartView?.apply {
+            init(lifecycleOwner = viewLifecycleOwner)
+            setOnCheckCartClickListener(currentState.endDate) { isOfferEnded ->
+                if (isOfferEnded) {
+                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+                }
+            }
+        }
     }
 
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
             when (offerInfoForBuyer) {
                 is Success -> {
-                    if(!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
-                        viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.data.nearestWarehouseIds))
-                        viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.data.offerings.firstOrNull()?.shopData))
-                        viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.data.offeringJsonData))
-                        viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.data.offerings.firstOrNull()?.tnc.orEmpty()))
-                        viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.data.offerings.firstOrNull()?.endDate.orEmpty()))
-                        viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.data.offerings.firstOrNull()?.offerTypeId.orZero()))
-                        setupHeader(offerInfoForBuyer.data)
-                        setupTncBottomSheet()
-                        fetchMiniCart()
-                        setMiniCartOnOfferEnd(offerInfoForBuyer.data)
-                    } else {
+                    if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
                         setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+                        return@observe
                     }
+                    viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.data.nearestWarehouseIds))
+                    viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.data.offerings.firstOrNull()?.shopData))
+                    viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.data.offeringJsonData))
+                    viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.data.offerings.firstOrNull()?.tnc.orEmpty()))
+                    viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.data.offerings.firstOrNull()?.endDate.orEmpty()))
+                    viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.data.offerings.firstOrNull()?.offerTypeId.orZero()))
+                    setupHeader(offerInfoForBuyer.data)
+                    setupTncBottomSheet()
+                    fetchMiniCart()
                 }
 
                 is Fail -> {
-                    setViewState(VIEW_ERROR, getErrorCodeFromThrowable(offerInfoForBuyer.throwable.localizedMessage.toIntOrZero()))
+                    setViewState(
+                        VIEW_ERROR,
+                        getErrorCodeFromThrowable(offerInfoForBuyer.throwable.localizedMessage.toIntOrZero())
+                    )
                 }
             }
         }
@@ -327,29 +336,23 @@ class OfferLandingPageFragment :
         viewModel.tierGifts.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+                        setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+                        return@observe
+                    }
                     showBottomSheetGiftList(
                         result.data.selectedTier,
                         result.data.offerInfo,
                         result.data.tierGifts
                     )
                 }
+
                 is Fail -> {}
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
             setDefaultErrorSelection(throwable)
-        }
-    }
-
-    private fun setMiniCartOnOfferEnd(offerInfoForBuyer: OfferInfoForBuyerUiModel?) {
-        binding?.miniCartView?.run {
-            val offer = offerInfoForBuyer?.offerings?.firstOrNull() ?: return@run
-            setOnCheckCartClickListener(offer.endDate) { isOfferEnded ->
-                if (isOfferEnded) {
-                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
-                }
-            }
         }
     }
 
@@ -700,15 +703,15 @@ class OfferLandingPageFragment :
     }
 
     override fun onProductAtcVariantClicked(product: OfferProductListUiModel.Product) {
+        if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+            setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+            return
+        }
         if (isLogin) {
             if (product.isVbs) {
                 openAtcVariant(product)
             } else {
-                if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
-                    addToCartProduct(product)
-                } else {
-                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
-                }
+                addToCartProduct(product)
             }
         } else {
             redirectToLoginPage(REQUEST_CODE_USER_LOGIN)
@@ -831,16 +834,20 @@ class OfferLandingPageFragment :
         selectedTier: OfferInfoForBuyerUiModel.Offering.Tier,
         offerInfo: OfferInfoForBuyerUiModel
     ) {
-        if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
-            viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
-        } else {
-            setViewState(VIEW_ERROR, Status.OOS)
+        if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+            setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+            return
         }
+        viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
     }
 
     private fun redirectToCartPage() {
         sendProductImpressionTracker()
         context?.let {
+            if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+                setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+                return
+            }
             val userSession = UserSession(it)
             if (userSession.isLoggedIn) {
                 RouteManager.route(it, ApplinkConst.CART)
