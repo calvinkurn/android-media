@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImageRounded
@@ -192,7 +192,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     }
 
     private fun setRecommendationItemToView(dataModel: AddToCartDoneRecommendationItemDataModel) {
-        val isShopIdTheSame = dataModel.recommendationItem.shopId == model?.shopId?.toIntOrZero()
+        val isShopIdTheSame = dataModel.recommendationItem.shopId.toLong() == model?.shopId?.toLongOrZero()
 
         productName.text = dataModel.recommendationItem.name
         shopLocation.text = dataModel.recommendationItem.location
