@@ -35,7 +35,7 @@ internal fun View.animateSlide(yPosTarget: Int): ObjectAnimator {
     }
 }
 
-internal fun clearStoriesCache() {
+internal suspend fun clearStoriesCache() {
     val rootFolder = File(getEditorCacheFolderPath())
     val now = System.currentTimeMillis()
     rootFolder.listFiles()?.forEach {
@@ -47,7 +47,7 @@ internal fun clearStoriesCache() {
 /**
  * Delete target file, true if success
  */
-fun deleteFile(targetFile: File): Boolean {
+private suspend fun deleteFile(targetFile: File): Boolean {
     if (!targetFile.exists()) return false
 
     return try {
