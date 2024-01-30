@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithCacheData
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -220,7 +220,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         if (merchantVoucherViewModel.bannerUrl.isNullOrEmpty()) {
             ivVoucherBanner?.visibility = View.GONE
         } else {
-            ImageHandler.loadImageAndCache(ivVoucherBanner, merchantVoucherViewModel.bannerUrl)
+            ivVoucherBanner?.loadImageWithCacheData(merchantVoucherViewModel.bannerUrl)
             ivVoucherBanner?.visibility = View.VISIBLE
         }
         val voucherString = merchantVoucherViewModel.getTypeString(requireContext()) + " " +

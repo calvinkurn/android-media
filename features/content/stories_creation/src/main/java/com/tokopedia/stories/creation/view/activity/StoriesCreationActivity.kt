@@ -22,11 +22,13 @@ import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteCon
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.picker.common.basecomponent.utils.rootCurrentView
 import com.tokopedia.play_common.util.CacheUtil
 import com.tokopedia.play_common.util.VideoSnapshotHelper
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.analytic.StoriesCreationAnalytic
 import com.tokopedia.stories.creation.di.StoriesCreationInjector
+import com.tokopedia.stories.creation.util.showErrorToaster
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
 import com.tokopedia.stories.creation.view.model.StoriesMedia
@@ -290,6 +292,11 @@ class StoriesCreationActivity : BaseActivity() {
                         is StoriesCreationUiEvent.StoriesUploadQueued -> {
                             setResult(RESULT_OK)
                             finish()
+                        }
+                        is StoriesCreationUiEvent.ShowError -> {
+                            this@StoriesCreationActivity.rootCurrentView().showErrorToaster(
+                                err = event.throwable
+                            )
                         }
                     }
             }

@@ -3,6 +3,7 @@ package com.tokopedia.media.loader
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
+import androidx.core.graphics.drawable.toDrawable
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
@@ -62,6 +63,23 @@ fun String.getBitmapImageUrlAsFlow(
 
         awaitClose { channel.close() }
     }
+}
+
+fun View.loadImageBackground(
+    url: String,
+    properties: Properties.() -> Unit = {}
+) {
+    MediaLoaderTarget.loadImage(
+        context,
+        Properties()
+            .apply(properties)
+            .setSource(url),
+        MediaBitmapEmptyTarget(
+            onReady = {
+                this.background = it.toDrawable(this.resources)
+            }
+        )
+    )
 }
 
 @Deprecated(

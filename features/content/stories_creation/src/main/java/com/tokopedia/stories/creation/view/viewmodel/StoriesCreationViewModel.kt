@@ -6,6 +6,7 @@ import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.creation.common.util.StoriesAppLinkBuilder
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -126,8 +127,13 @@ class StoriesCreationViewModel @Inject constructor(
     }
 
     private fun handleClickUpload() {
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             val state = _uiState.value
+
+            repo.updateStoryStatus(
+                storyId = state.config.storiesId,
+                status = StoriesStatus.Queue,
+            )
 
             val data = CreationUploadData.buildForStories(
                 creationId = state.config.storiesId,
@@ -147,6 +153,8 @@ class StoriesCreationViewModel @Inject constructor(
             creationUploader.upload(data)
 
             _uiEvent.emit(StoriesCreationUiEvent.StoriesUploadQueued)
+        }) { throwable ->
+            _uiEvent.emit(StoriesCreationUiEvent.ShowError(throwable))
         }
     }
 }
