@@ -3,15 +3,20 @@ package com.tokopedia.chatbot.chatbot2.csat.view
 import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chatbot.chatbot2.csat.data.request.SubmitCsatRequest
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.SubmitButtonState
+import com.tokopedia.chatbot.chatbot2.csat.domain.usecase.SubmitCsatUseCase
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class CsatViewModel @Inject constructor(
+    private val submitCsatUseCase: SubmitCsatUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -93,5 +98,17 @@ class CsatViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun sendCsat() {
+        submitCsatUseCase.setRequestParams(SubmitCsatRequest())
+        submitCsatUseCase.execute(
+            {
+                Log.d("Irfan", "Send Csat Success")
+            },
+            {
+                Log.d("Irfan", "Send Csat Error")
+            }
+        )
     }
 }

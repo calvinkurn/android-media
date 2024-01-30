@@ -217,6 +217,9 @@ class CsatBottomsheet :
 
     private fun renderButtonState(state: SubmitButtonState) {
         viewBinding?.csatButtonSubmit?.isEnabled = state.isEnabled
+        viewBinding?.csatButtonSubmit?.setOnClickListener {
+            viewModel.sendCsat()
+        }
     }
 
     override fun getComponent(): CsatComponent {

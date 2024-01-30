@@ -158,7 +158,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia-android-internal://customercare/csat"
     }
 
     data class Model(

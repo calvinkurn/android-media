@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.csat.data
+package com.tokopedia.chatbot.chatbot2.csat.data.response
 
 import com.google.gson.annotations.SerializedName
 
