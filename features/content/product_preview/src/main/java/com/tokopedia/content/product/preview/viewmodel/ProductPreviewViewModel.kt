@@ -56,7 +56,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private val reviewSourceId: String
         get() {
-            return when (val source = productPreviewSource.productPreviewSource) {
+            return when (val source = productPreviewSource.source) {
                 is ProductPreviewSourceModel.ReviewSourceData -> {
                     source.reviewSourceId
                 }
@@ -66,7 +66,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private val attachmentSourceId: String
         get() {
-            return when (val source = productPreviewSource.productPreviewSource) {
+            return when (val source = productPreviewSource.source) {
                 is ProductPreviewSourceModel.ReviewSourceData -> {
                     source.attachmentSourceId
                 }
@@ -125,7 +125,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun handleInitializeProductMainData() {
-        when (val source = productPreviewSource.productPreviewSource) {
+        when (val source = productPreviewSource.source) {
             is ProductPreviewSourceModel.ProductSourceData -> {
                 _productContentState.update {
                     it.copy(productList = source.productSourceList)

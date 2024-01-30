@@ -127,7 +127,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun initSource() {
-        when (viewModel.productPreviewSource.productPreviewSource) {
+        when (viewModel.productPreviewSource.source) {
             is ProductPreviewSourceModel.ProductSourceData -> {
                 pagerAdapter.insertFragment(productReviewTab)
                 isShowProductTab(true)

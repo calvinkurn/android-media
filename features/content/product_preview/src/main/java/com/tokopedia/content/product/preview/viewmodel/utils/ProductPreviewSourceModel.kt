@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class ProductPreviewSourceModel(
     val productId: String,
-    val productPreviewSource: ProductPreviewSource
+    val source: ProductPreviewSource
 ) : Parcelable {
 
     sealed interface ProductPreviewSource : Parcelable
@@ -23,7 +23,7 @@ data class ProductPreviewSourceModel(
     @Parcelize
     data class ReviewSourceData(
         val reviewSourceId: String = "",
-        val attachmentSourceId: String = "",
+        val attachmentSourceId: String = ""
     ) : ProductPreviewSource
 
     @Parcelize
@@ -32,7 +32,7 @@ data class ProductPreviewSourceModel(
     companion object {
         val Empty = ProductPreviewSourceModel(
             productId = "",
-            productPreviewSource = UnknownSource
+            source = UnknownSource
         )
     }
 }

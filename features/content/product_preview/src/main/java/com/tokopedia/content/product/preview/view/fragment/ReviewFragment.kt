@@ -37,6 +37,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
+import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -120,11 +121,26 @@ class ReviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fetchReviews()
+
         setupView()
+
         observeReview()
         observeEvent()
+    }
 
-        viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
+    private fun fetchReviews() {
+        when (viewModel.productPreviewSource.source) {
+            is ProductPreviewSourceModel.ProductSourceData -> {
+                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
+            }
+            is ProductPreviewSourceModel.ReviewSourceData -> {
+                viewModel.onAction(ProductPreviewAction.FetchReviewByIds)
+            }
+            ProductPreviewSourceModel.UnknownSource -> {
+                activity?.finish()
+            }
+        }
     }
 
     private fun setupView() {

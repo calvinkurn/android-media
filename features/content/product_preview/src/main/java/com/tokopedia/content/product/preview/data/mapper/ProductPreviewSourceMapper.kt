@@ -18,7 +18,7 @@ class ProductPreviewSourceMapper(
     ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
-            productPreviewSource = ProductPreviewSourceModel.ProductSourceData(
+            source = ProductPreviewSourceModel.ProductSourceData(
                 productSourceList = productData.data.getGalleryItems().mapIndexed { index, item ->
                     ProductContentUiModel(
                         contentId = item.id,
@@ -45,7 +45,7 @@ class ProductPreviewSourceMapper(
     ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
-            productPreviewSource = ProductPreviewSourceModel.ReviewSourceData(
+            source = ProductPreviewSourceModel.ReviewSourceData(
                 reviewSourceId = reviewId,
                 attachmentSourceId = attachmentId
             )
