@@ -54,8 +54,6 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
         }
         if (!TextUtils.isEmpty(element.getUrlRes())) {
             JvmMediaLoader.loadImage(emptyIconImageView, element.getUrlRes());
-        } else {
-
         }
         if (element.getCallback() != null) {
             callback = element.getCallback();
