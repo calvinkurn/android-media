@@ -20,7 +20,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
-import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
+import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE_ARGS
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
@@ -34,11 +34,9 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -54,17 +52,17 @@ class ProductPreviewFragment @Inject constructor(
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        val productPreviewSourceModel: ProductPreviewSourceModel by lazyThreadSafetyNone {
+        val productPreviewSourceArgs: ProductPreviewSourceModel by lazyThreadSafetyNone {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arguments?.getParcelable(
-                    PRODUCT_PREVIEW_SOURCE,
+                    PRODUCT_PREVIEW_SOURCE_ARGS,
                     ProductPreviewSourceModel::class.java
                 )
             } else {
-                arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
+                arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE_ARGS)
             } ?: ProductPreviewSourceModel.Empty
         }
-        viewModelFactory.create(productPreviewSourceModel)
+        viewModelFactory.create(productPreviewSourceArgs)
     }
 
     private var _binding: FragmentProductPreviewBinding? = null

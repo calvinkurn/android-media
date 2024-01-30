@@ -43,22 +43,22 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 class ProductPreviewViewModel @AssistedInject constructor(
-    @Assisted private val productPreviewSourceModel: ProductPreviewSourceModel,
+    @Assisted private val productPreviewSourceArgs: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
     private val userSessionInterface: UserSessionInterface
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(productPreviewSourceModel: ProductPreviewSourceModel): ProductPreviewViewModel
+        fun create(productPreviewSourceArgs: ProductPreviewSourceModel): ProductPreviewViewModel
     }
 
     val productPreviewSource: ProductPreviewSourceModel
-        get() = productPreviewSourceModel
+        get() = productPreviewSourceArgs
 
     private val reviewSourceId: String
         get() {
-            return when(val source = productPreviewSource.productPreviewSource) {
+            return when (val source = productPreviewSource.productPreviewSource) {
                 is ProductPreviewSourceModel.ReviewSourceData -> {
                     source.reviewSourceId
                 }
@@ -68,7 +68,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private val attachmentSourceId: String
         get() {
-            return when(val source = productPreviewSource.productPreviewSource) {
+            return when (val source = productPreviewSource.productPreviewSource) {
                 is ProductPreviewSourceModel.ReviewSourceData -> {
                     source.attachmentSourceId
                 }
@@ -181,7 +181,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
                         reviewContentUiModel.copy(
                             mediaSelectedPosition = getMediaSourcePosition(newList)
                         )
-                    } else reviewContentUiModel
+                    } else {
+                        reviewContentUiModel
+                    }
                 }
                 review.copy(reviewContent = reviewList, reviewPaging = response.reviewPaging)
             }

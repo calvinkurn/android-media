@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.product.preview.databinding.ActivityProductPreviewBinding
 import com.tokopedia.content.product.preview.di.ProductPreviewInjector
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
-import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
+import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE_ARGS
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import javax.inject.Inject
@@ -81,7 +81,7 @@ class ProductPreviewActivity : BaseActivity() {
         ): Intent {
             val intent = Intent(context, ProductPreviewActivity::class.java)
             val bundle = Bundle()
-            bundle.putParcelable(PRODUCT_PREVIEW_SOURCE, productPreviewSourceModel)
+            bundle.putParcelable(PRODUCT_PREVIEW_SOURCE_ARGS, productPreviewSourceModel)
             intent.putExtras(bundle)
             return intent
         }
