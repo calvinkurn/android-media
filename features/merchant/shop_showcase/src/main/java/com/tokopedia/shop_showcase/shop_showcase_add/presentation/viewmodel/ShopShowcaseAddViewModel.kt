@@ -47,9 +47,7 @@ class ShopShowcaseAddViewModel @Inject constructor(
     private val _listOfUpdateShowcaseNameResponse = MutableLiveData<MutableList<Any>>()
     private val _listOfAppendResponse = MutableLiveData<MutableList<Any>>()
     private val _listOfRemoveResponse = MutableLiveData<MutableList<Any>>()
-    private val _listOfUpdateShowcaseResponse = MutableLiveData<Result<UpdateShopShowcaseResponse>>()
-    private val _listOfAppendProductShowcaseResponse = MutableLiveData<Result<AppendShowcaseProductResponse>>()
-    private val _listOfRemovedProductShowcaseResponse = MutableLiveData<Result<RemoveShowcaseProductResponse>>()
+    private val _listOfAppendAndRemoveResponse = MutableLiveData<MutableList<Any>>()
 
     val createShopShowcase: LiveData<Result<AddShopShowcaseResponse>> get() = _createShopShowcase
     val selectedProductList: LiveData<Result<List<ShowcaseProduct>>> get() = _selectedProductList
@@ -59,13 +57,11 @@ class ShopShowcaseAddViewModel @Inject constructor(
     val listOfUpdateShowcaseNameResponse: LiveData<MutableList<Any>> get() = _listOfUpdateShowcaseNameResponse
     val listOfAppendResponse: LiveData<MutableList<Any>> get() = _listOfAppendResponse
     val listOfRemoveResponse: LiveData<MutableList<Any>> get() = _listOfRemoveResponse
+    val listOfAppendAndRemoveResponse: LiveData<MutableList<Any>> get() = _listOfAppendAndRemoveResponse
 
     private val updateShopShowcase: LiveData<Result<UpdateShopShowcaseResponse>> get() = _updateShopShowcase
     private val appendNewShowcaseProduct: LiveData<Result<AppendShowcaseProductResponse>> get() = _appendNewShowcaseProduct
     private val removeShowcaseProduct: LiveData<Result<RemoveShowcaseProductResponse>> get() = _removeShowcaseProduct
-//    private val listOfUpdateShowcaseResponse: LiveData<Result<UpdateShopShowcaseResponse>> get() = _listOfUpdateShowcaseResponse
-//    private val listOfAppendProductShowcaseResponse: LiveData<Result<AppendShowcaseProductResponse>> get() = _listOfAppendProductShowcaseResponse
-//    private val listOfRemovedProductShowcaseResponse: LiveData<Result<RemoveShowcaseProductResponse>> get() = _listOfRemovedProductShowcaseResponse
 
     fun addShopShowcase(data: AddShopShowcaseParam) {
         launchCatchError(block = {
@@ -183,7 +179,7 @@ class ShopShowcaseAddViewModel @Inject constructor(
         })
     }
 
-    fun updateShopShowcase(
+    fun updateShowcaseAppendAndRemoveProduct(
         data: UpdateShopShowcaseParam,
         newAppendedProduct: AppendShowcaseProductParam,
         removedProduct: RemoveShowcaseProductParam

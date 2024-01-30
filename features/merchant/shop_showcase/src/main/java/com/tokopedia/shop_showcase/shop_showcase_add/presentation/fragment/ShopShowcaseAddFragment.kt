@@ -248,6 +248,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         removeObservers(shopShowcaseAddViewModel.listOfUpdateShowcaseNameResponse)
         removeObservers(shopShowcaseAddViewModel.listOfAppendResponse)
         removeObservers(shopShowcaseAddViewModel.listOfRemoveResponse)
+        removeObservers(shopShowcaseAddViewModel.listOfAppendAndRemoveResponse)
     }
 
     fun onBackPressedConfirm() {
@@ -285,6 +286,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         observeUpdateShowcaseName()
         observeUpdateShowcaseAppendProduct()
         observeUpdateShowcaseRemoveProduct()
+        observeUpdateShowcaseAppendAndRemove()
     }
 
     private fun initRecyclerView(previewListener: ShopShowcasePreviewListener) {
@@ -596,7 +598,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun observeUpdateShowcaseAppendProduct() {
         observe(shopShowcaseAddViewModel.listOfAppendResponse) {
             val responseList = it
-            if (responseList.size > 2) {
+            if (responseList.size > 1) {
                 val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
                 val appendShowcaseProductResult = responseList[1] as Result<AppendShowcaseProductResponse>
                 validateShowcaseNameUpdateResponse(
@@ -608,7 +610,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     is Success -> {
                         if (appendShowcaseProductResult.data.status) {
                             // everything is fine, navigate back to showcase list
-                            sendTrackerFinishCreateOrUpdateShowcase(isSuccess = true)
                             navigateBackAndCloseShowcasePage()
                         } else {
                             // Show error append new showcase product
@@ -628,7 +629,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun observeUpdateShowcaseRemoveProduct() {
         observe(shopShowcaseAddViewModel.listOfRemoveResponse) {
             val responseList = it
-            if (responseList.size > 2) {
+            if (responseList.size > 1) {
                 val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
                 val removeShowcaseProductResult = responseList[1] as Result<RemoveShowcaseProductResponse>
                 validateShowcaseNameUpdateResponse(
@@ -640,7 +641,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     is Success -> {
                         if (removeShowcaseProductResult.data.status) {
                             // everything is fine, navigate back to showcase list
-                            sendTrackerFinishCreateOrUpdateShowcase(isSuccess = true)
                             navigateBackAndCloseShowcasePage()
                         } else {
                             // Show error append new showcase product
@@ -657,6 +657,57 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         }
     }
 
+    private fun observeUpdateShowcaseAppendAndRemove() {
+        observe(shopShowcaseAddViewModel.listOfAppendAndRemoveResponse) {
+            val responseList = it
+            if (responseList.size > 2) {
+                val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
+                val appendShowcaseProductResult = responseList[1] as Result<AppendShowcaseProductResponse>
+                val removeShowcaseProductResult = responseList[2] as Result<RemoveShowcaseProductResponse>
+                var isSuccessRemove: Boolean = false
+                var isSuccessAppend: Boolean = false
+                var isSuccessUpdateShowcaseName: Boolean = false
+
+                when (updateShowcaseNameResult) {
+                    is Success -> {
+                        if (updateShowcaseNameResult.data.success == true) {
+                            isSuccessUpdateShowcaseName = true
+                        } else {
+                            showUnifyToaster(updateShowcaseNameResult.data.message ?: getString(R.string.error_happens))
+                        }
+                    }
+                    is Fail -> (updateShowcaseNameResult as Fail).throwable.message?.let { message -> showUnifyToaster(message) }
+                }
+
+                when (appendShowcaseProductResult) {
+                    is Success -> {
+                        if (appendShowcaseProductResult.data.status) {
+                            isSuccessAppend = true
+                        } else {
+                            showUnifyToaster(appendShowcaseProductResult.data.header.reason)
+                        }
+                    }
+                    is Fail -> (appendShowcaseProductResult as Fail).throwable.message?.let { message -> showUnifyToaster(message) }
+                }
+
+                when (removeShowcaseProductResult) {
+                    is Success -> {
+                        if (removeShowcaseProductResult.data.status) {
+                            isSuccessRemove = true
+                        } else {
+                            showUnifyToaster(removeShowcaseProductResult.data.header.reason)
+                        }
+                    }
+                    is Fail -> (removeShowcaseProductResult as Fail).throwable.message?.let { message -> showUnifyToaster(message) }
+                }
+
+                if (isSuccessUpdateShowcaseName && isSuccessAppend && isSuccessRemove) {
+                    navigateBackAndCloseShowcasePage()
+                }
+            }
+        }
+    }
+
     private fun validateShowcaseNameUpdateResponse(
         updateShowcaseNameResult: Result<UpdateShopShowcaseResponse>,
         isUpdateShowcaseNameOnly: Boolean
@@ -666,7 +717,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 if (updateShowcaseNameResult.data.success == true) {
                     if (isUpdateShowcaseNameOnly) { // To prevent the tracker is triggered multiple times
                         // everything is fine, navigate back to showcase list
-                        sendTrackerFinishCreateOrUpdateShowcase(isSuccess = true)
                         navigateBackAndCloseShowcasePage()
                     }
                 } else {
@@ -692,6 +742,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     private fun navigateBackAndCloseShowcasePage() {
+        sendTrackerFinishCreateOrUpdateShowcase(isSuccess = true)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
         intent.putExtra(ShopShowcaseParamConstant.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
         activity?.setResult(Activity.RESULT_OK, intent)
@@ -749,6 +800,11 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         val isAppendProduct: Boolean = appendShowcaseProductParam.listAppended.size.isMoreThanZero()
         val isRemoveProduct: Boolean = removeShowcaseProductParam.listRemoved.size.isMoreThanZero()
         if (isAppendProduct && isRemoveProduct) {
+            shopShowcaseAddViewModel.updateShowcaseAppendAndRemoveProduct(
+                data = updateShopShowcaseParam,
+                newAppendedProduct = appendShowcaseProductParam,
+                removedProduct = removeShowcaseProductParam
+            )
         } else if (isAppendProduct) {
             shopShowcaseAddViewModel.updateShowcaseAppendProduct(
                 data = updateShopShowcaseParam,
