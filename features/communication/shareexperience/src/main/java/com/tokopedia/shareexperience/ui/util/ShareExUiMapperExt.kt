@@ -114,6 +114,7 @@ fun ShareExBottomSheetModel.mapError(
         listOf(ShareExErrorUiModel(throwable))
     } else {
         val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
+        // Only shows the channel for share, no share body
         // Channel Ui
         val socialChannelUiModel = ShareExSocialChannelUiModel(this.bottomSheetPage.socialChannel)
         if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {

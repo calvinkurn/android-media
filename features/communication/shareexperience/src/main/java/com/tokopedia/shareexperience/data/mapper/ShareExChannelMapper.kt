@@ -199,6 +199,7 @@ class ShareExChannelMapper @Inject constructor(
                 channelEnum = ShareExChannelEnum.COPY_LINK,
                 title = resourceProvider.getCopyLinkChannelTitle(),
                 icon = IconUnify.LINK,
+                packageName = "", // No need package name, will not use intent
                 mimeType = ShareExMimeTypeEnum.NOTHING
             )
         )
@@ -225,6 +226,7 @@ class ShareExChannelMapper @Inject constructor(
                 channelEnum = ShareExChannelEnum.OTHERS,
                 title = resourceProvider.getOthersChannelTitle(),
                 icon = IconUnify.MENU_KEBAB_HORIZONTAL,
+                packageName = "", // No need package name, will not use intent
                 mimeType = ShareExMimeTypeEnum.TEXT
             )
         )

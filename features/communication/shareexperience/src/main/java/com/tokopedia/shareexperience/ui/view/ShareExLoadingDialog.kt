@@ -11,7 +11,11 @@ import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingOverlayBinding
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExOthersBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExShopBottomSheetRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
@@ -70,10 +74,7 @@ class ShareExLoadingDialog(
         weakContext.get()?.let {
             (it as? FragmentActivity)?.lifecycleScope?.launch {
                 try {
-                    val request = ShareExProductBottomSheetRequest(
-                        pageType = pageTypeEnum.valueInt,
-                        id = id
-                    )
+                    val request = getRequest()
                     useCase.getData(request).collectLatest { result ->
                         when (result) {
                             is ShareExResult.Success, is ShareExResult.Error -> {
@@ -93,6 +94,36 @@ class ShareExLoadingDialog(
                     }
                     onResult(ShareExResult.Error(throwable))
                 }
+            }
+        }
+    }
+
+    private fun getRequest(): ShareExBottomSheetRequest {
+        return when (pageTypeEnum) {
+            ShareExPageTypeEnum.PDP -> {
+                ShareExProductBottomSheetRequest(
+                    pageType = pageTypeEnum.valueInt,
+                    id = id
+                )
+            }
+            ShareExPageTypeEnum.SHOP -> {
+                ShareExShopBottomSheetRequest(
+                    pageType = pageTypeEnum.valueInt,
+                    id = id
+                )
+            }
+            ShareExPageTypeEnum.DISCOVERY -> {
+                ShareExDiscoveryBottomSheetRequest(
+                    pageType = pageTypeEnum.valueInt,
+                    id = id
+                )
+            }
+            else -> {
+                // Default Others
+                ShareExOthersBottomSheetRequest(
+                    pageType = pageTypeEnum.valueInt,
+                    id = id
+                )
             }
         }
     }
