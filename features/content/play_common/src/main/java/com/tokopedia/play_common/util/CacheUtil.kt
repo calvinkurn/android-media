@@ -8,7 +8,7 @@ import com.tokopedia.utils.file.FileUtil
 object CacheUtil {
 
     fun deleteFileFromCache(filePath: String) {
-        if (filePath.contains(FileUtil.getTokopediaInternalDirectory(null).path)) {
+        if (filePath.isNotBlank() && filePath.contains(FileUtil.getTokopediaInternalDirectory(null).path)) {
             FileUtil.deleteFile(filePath)
         }
     }
