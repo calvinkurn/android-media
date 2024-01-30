@@ -4,18 +4,21 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
 import com.tokopedia.home.databinding.ItemHomeRecommendationPlayWidgetBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
+import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
 
 class HomeRecommendationPlayWidgetViewHolder(
     view: View,
     homeRecommendationPlayWidgetManager: HomeRecommendationVideoWidgetManager,
-    private val listener: Listener
-) : BaseRecommendationForYouViewHolder<HomeRecommendationPlayWidgetUiModel>(
+    private val listener: GlobalRecomListener
+) : BaseForYouViewHolder<HomeRecommendationPlayWidgetUiModel>(
     view,
     HomeRecommendationPlayWidgetUiModel::class.java
 ) {
@@ -53,11 +56,11 @@ class HomeRecommendationPlayWidgetViewHolder(
 
     private fun setHomePlayWidgetVideoClick(element: HomeRecommendationPlayWidgetUiModel) {
         binding.homeRecomPlayWidgetVideo.setOnClickListener {
-            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
+            listener.onPlayVideoWidgetClick(element.toModel(), bindingAdapterPosition)
         }
 
         itemView.setOnClickListener {
-            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
+            listener.onPlayVideoWidgetClick(element.toModel(), bindingAdapterPosition)
         }
     }
 
@@ -66,14 +69,9 @@ class HomeRecommendationPlayWidgetViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onPlayVideoWidgetImpress(element, bindingAdapterPosition)
+                    listener.onPlayVideoWidgetImpress(element.toModel(), bindingAdapterPosition)
                 }
             }
         )
-    }
-
-    interface Listener {
-        fun onPlayVideoWidgetClick(element: HomeRecommendationPlayWidgetUiModel, position: Int)
-        fun onPlayVideoWidgetImpress(element: HomeRecommendationPlayWidgetUiModel, position: Int)
     }
 }

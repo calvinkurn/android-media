@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
+import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.databinding.ItemHomeBannerTopadsLayoutBinding
 import com.tokopedia.home_component.util.toDpFloat
@@ -12,14 +12,16 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationBannerTopAdsViewHolder(
     view: View,
-    private val homeRecommendationListener: HomeRecommendationListener
-) : BaseRecommendationForYouViewHolder<HomeRecommendationBannerTopAdsUiModel>(
+    private val homeRecommendationListener: GlobalRecomListener
+) : BaseForYouViewHolder<HomeRecommendationBannerTopAdsUiModel>(
     view,
     HomeRecommendationBannerTopAdsUiModel::class.java
 ) {
@@ -64,7 +66,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
 
     private fun setBannerTopAdsImpressionListener(
         recommendationBannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
-        listener: HomeRecommendationListener
+        listener: GlobalRecomListener
     ) {
         itemView.addOnImpressionListener(
             recommendationBannerTopAdsUiModel,
@@ -79,7 +81,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
                         HOME_RECOM_TAB_BANNER
                     )
                     listener.onBannerTopAdsImpress(
-                        recommendationBannerTopAdsUiModel,
+                        recommendationBannerTopAdsUiModel.toModel(),
                         bindingAdapterPosition
                     )
                 }
@@ -97,7 +99,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
                 element.topAdsImageViewModel?.imageUrl,
                 HOME_RECOM_TAB_BANNER
             )
-            homeRecommendationListener.onBannerTopAdsClick(element, bindingAdapterPosition)
+            homeRecommendationListener.onBannerTopAdsClick(element.toModel(), bindingAdapterPosition)
         }
     }
 

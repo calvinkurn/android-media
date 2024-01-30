@@ -93,8 +93,10 @@ class HomeRecommendationFeedViewHolder(
     private fun initMegaTabLayout() {
         binding.tabRecommendation.show()
 
-        val data = recommendationTabDataModelList?.map { it.toMegaTabItem() }
-        binding.tabRecommendation.set(data, binding.viewPagerHomeFeeds)
+        recommendationTabDataModelList?.map { it.toMegaTabItem() }
+            ?.let {
+                binding.tabRecommendation.set(it, binding.viewPagerHomeFeeds)
+            }
 
         binding.tabRecommendation.onTabSelected(::onTabLayoutSelected)
         binding.tabRecommendation.onTabReselected(::onTabLayoutReselected)
