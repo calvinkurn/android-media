@@ -1,6 +1,8 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
+import android.graphics.Typeface
 import android.text.Spanned
+import android.text.SpannedString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
@@ -85,20 +87,25 @@ class ReviewParentContentViewHolder(
 
     private var snapHelperMedia = PagerSnapHelper()
 
-    private val clickableSpan: (String) -> ClickableSpan = { desc ->
+    private val descriptionUiModel = DescriptionUiModel()
+
+    private val clickableSpan: ClickableSpan =
         object : ClickableSpan() {
             override fun updateDrawState(tp: TextPaint) {
                 tp.color =
-                    MethodChecker.getColor(binding.root.context, unifyprinciplesR.color.Unify_GN500)
+                    MethodChecker.getColor(
+                        binding.root.context,
+                        unifyprinciplesR.color.Unify_Static_White
+                    )
                 tp.isUnderlineText = false
+                tp.typeface = Typeface.DEFAULT_BOLD
             }
 
             override fun onClick(widget: View) {
-                binding.tvReviewDescription.maxLines = MAX_LINES_VALUE
-                binding.tvReviewDescription.text = desc
+                descriptionUiModel.isExpanded = !descriptionUiModel.isExpanded
+                setupExpanded()
             }
         }
-    }
 
     fun bind(item: ReviewContentUiModel) {
         bindMedia(item.medias)
@@ -157,18 +164,41 @@ class ReviewParentContentViewHolder(
             val start = text.getLineStart(0)
             val end = text.getLineEnd(MAX_LINES_THRESHOLD - 1)
 
-            tvReviewDescription.text = buildSpannedString {
+            val truncatedText = buildSpannedString {
                 append(text.text.subSequence(start, end).dropLast(READ_MORE_COUNT))
                 append(root.context.getString(R.string.product_prev_review_ellipsize))
                 append(
                     root.context.getString(R.string.product_prev_review_expand),
-                    clickableSpan(description),
+                    clickableSpan,
                     Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                 )
             }
+
+            val ogText = buildSpannedString {
+                append(description)
+                append(root.context.getString(R.string.product_prev_review_ellipsize))
+                append(
+                    root.context.getString(R.string.product_prev_review_collapse),
+                    clickableSpan,
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            descriptionUiModel.originalText = ogText
+            descriptionUiModel.truncatedText = truncatedText
             tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
+            setupExpanded()
         }
         tvReviewDescription.show()
+    }
+
+    private fun setupExpanded() {
+        val (lines, text) = if (descriptionUiModel.isExpanded) {
+            Pair(MAX_LINES_VALUE, descriptionUiModel.originalText)
+        } else {
+            Pair(MAX_LINES_THRESHOLD, descriptionUiModel.truncatedText)
+        }
+        binding.tvReviewDescription.maxLines = lines
+        binding.tvReviewDescription.text = text
     }
 
     fun bindLike(state: ReviewLikeUiState) = with(binding.layoutLikeReview) {
@@ -265,6 +295,12 @@ class ReviewParentContentViewHolder(
         binding.groupReviewDetails.show()
         binding.groupReviewInteraction.show()
     }
+
+    data class DescriptionUiModel(
+        var isExpanded: Boolean = false,
+        var originalText: SpannedString = buildSpannedString { },
+        var truncatedText: SpannedString = buildSpannedString { },
+    )
 
     companion object {
         private const val MAX_LINES_VALUE = 25
