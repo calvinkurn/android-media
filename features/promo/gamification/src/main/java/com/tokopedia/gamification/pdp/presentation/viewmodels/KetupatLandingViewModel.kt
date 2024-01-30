@@ -45,10 +45,11 @@ class KetupatLandingViewModel @Inject constructor(
     private val ketaupatLandingDataList =
         MutableLiveData<ArrayList<Visitable<KetupatLandingTypeFactory>>>()
     private val referralTimeData = MutableLiveData<KetupatReferralEventTimeStamp>()
-    var data: KetupatLandingPageData? = null
-    var eventSlug = ""
+    private var eventSlug = ""
     private var benefitCouponRequest: BenefitCouponRequest? = null
     private var catalogSlugJSON: JSONArray? = null
+    private val slugList : MutableList<String> = arrayListOf()
+
     fun getGamificationLandingPageData(slug: String = "") {
         launchCatchError(
             block = {
@@ -75,6 +76,9 @@ class KetupatLandingViewModel @Inject constructor(
                     }
                     this.gamiGetScratchCardLandingPage.sections.find { it?.type == "benefit-coupon-slug"}?.jsonParameter.apply {
                         catalogSlugJSON = JSONObject(this.toString()).get("catalogSlugs") as JSONArray
+                        for (i in 0 until catalogSlugJSON?.length().orZero()) {
+                            slugList.add(catalogSlugJSON?.get(i).toString())
+                        }
                     }
                 }
 
@@ -83,10 +87,7 @@ class KetupatLandingViewModel @Inject constructor(
                         ketupatBenefitCouponUseCase.getTokopointsCouponList(it) }
                     }
 
-                val slugList = emptyList<String>()
-
-                val benefitCouponSlugDataAPI =
-                    async { ketupatBenefitCouponSlugUseCase.getTokopointsCouponListStack(slugList) }
+                val benefitCouponSlugDataAPI = async { ketupatBenefitCouponSlugUseCase.getTokopointsCouponListStack(slugList) }
 
                 benefitCouponDataAPI.await().apply { benefitCouponData.value = this }
                 benefitCouponSlugDataAPI.await().apply { benefitCouponSlugData.value = this }
