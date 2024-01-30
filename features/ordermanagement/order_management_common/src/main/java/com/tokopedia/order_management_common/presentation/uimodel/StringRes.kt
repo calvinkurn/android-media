@@ -1,8 +1,8 @@
 package com.tokopedia.order_management_common.presentation.uimodel
 
 import android.content.Context
-import android.content.res.Resources
 import androidx.annotation.StringRes
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class StringRes(
     @StringRes private val resId: Int,
@@ -15,8 +15,8 @@ data class StringRes(
             } else {
                 context?.resources?.getString(resId).orEmpty()
             }
-        } catch (_: Resources.NotFoundException) {
-            ""
+        } catch (_: Exception) {
+            String.EMPTY
         }
     }
 }
