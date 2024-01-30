@@ -113,16 +113,17 @@ internal fun productCardListCarouselHeight(
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
-        addToCartHeight(context, productCardModel),
     )
 
     val productCardComponentHeight = productCardComponentHeightList.sum()
-    val productCardContentHeight = maxOf(
-        productCardImageHeight + productCardStockInfoHeight,
-        productCardComponentHeight
-    )
+    val productCardImageSectionHeight = productCardImageHeight + productCardStockInfoHeight
+
     val productCardHeight =
-        productCardContentHeight + listCardPaddingInBackground(productCardModel, context)
+        listOf(
+            maxOf(productCardImageSectionHeight, productCardComponentHeight),
+            listCardPaddingInBackground(productCardModel, context),
+            addToCartHeight(context, productCardModel),
+        ).sum()
 
     Timber.d(
         "Product Card Components Height List: %s; Total Component Height: %s; Final Height: %s",
