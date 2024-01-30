@@ -8,7 +8,7 @@ import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRec
 
 class InfiniteProductViewHolder(
     private val binding: ItemInfiniteProductBinding,
-    private val callback: InfiniteRecommendationCallback
+    private val callback: InfiniteRecommendationCallback,
 ) : InfiniteRecommendationViewHolder<InfiniteProductUiModel>(binding.root) {
 
     override fun bind(item: InfiniteProductUiModel) = with(binding.infiniteProductCard) {
