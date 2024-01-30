@@ -257,7 +257,7 @@ class MixLeftComponentViewHolder (itemView: View,
                     ChannelModelMapper.mapToProductCardModel(
                         element,
                         cardInteraction,
-                        isInBackground = channel.channelBanner.imageUrl.isNotEmpty()
+                        isInBackground = channel.channelBanner.gradientColor.hasGradientBackground(itemView.context)
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
