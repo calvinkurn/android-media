@@ -1,7 +1,6 @@
 package com.tokopedia.productcard.reimagine
 
 import android.graphics.PorterDuff
-import android.text.Spannable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -378,15 +377,6 @@ internal class ProductCardRenderer(
 
         view.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
             AddToCartButton(cardConstraintLayout, type.addToCartConstraints())
-        }
-    }
-
-    companion object {
-        private val SPANNABLE_FACTORY = object: Spannable.Factory() {
-            override fun newSpannable(source: CharSequence?): Spannable {
-                return if (source is Spannable) source
-                else super.newSpannable(source)
-            }
         }
     }
 }
