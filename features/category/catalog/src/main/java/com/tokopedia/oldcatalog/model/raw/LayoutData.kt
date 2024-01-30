@@ -1,5 +1,6 @@
 package com.tokopedia.oldcatalog.model.raw
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class LayoutData(
@@ -46,7 +47,9 @@ data class LayoutData(
     @SerializedName("searchOverride")
     val searchOverride: List<SearchOverride> = listOf(),
     @SerializedName("video")
-    val video: List<CatalogVideo> = listOf()
+    val video: List<CatalogVideo> = listOf(),
+    @SerializedName("topSeller")
+    val topSeller: TopSeller = TopSeller()
 ) {
 
     data class Style(
@@ -59,7 +62,9 @@ data class LayoutData(
         @SerializedName("bannerRatio")
         val bannerRatio: String = "",
         @SerializedName("maxDisplay")
-        val maxDisplay: Int = 0
+        val maxDisplay: Int = 0,
+        @SerializedName("isSticky")
+        val isSticky: Boolean = false
     )
 
     data class Hero(
@@ -286,4 +291,40 @@ data class LayoutData(
         @SerializedName("title") val title: String = "",
         @SerializedName("videoId") val videoId: String = ""
     )
+
+    data class TopSeller(
+        @SerializedName("productID") val productID: String = "",
+        @SerializedName("warehouseID") val warehouseID: String = "",
+        @SerializedName("shop") val shop: Shop = Shop(),
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("price")
+        val price: Price = Price(),
+        @SerializedName("credibility") val credibility: Credibility = Credibility(),
+        @SerializedName("labelGroups") val labelGroups: List<LabelGroup> = emptyList()
+    ) {
+        data class Shop(
+            @SerializedName("id") val id: String = "",
+            @SerializedName("name") val name: String = "",
+            @SerializedName("city") val city: String = "",
+            @SerializedName("badge") val badge: String = ""
+        )
+        data class Price(
+            @SerializedName("text") val text: String = "",
+            @SerializedName("original") val original: String = ""
+        )
+        data class Credibility(
+            @SerializedName("rating") val rating: String = "",
+            @SerializedName("sold") val sold: String = ""
+        )
+        data class LabelGroup(
+            @SerializedName("position") val position: String = "",
+            @SerializedName("title") val title: String = "",
+            @SerializedName("url") val url: String = "",
+            @SerializedName("styles") val styles: List<Style> = emptyList()
+        )
+        data class Style(
+            @SerializedName("key") val key: String = "",
+            @SerializedName("value") val value: String = ""
+        )
+    }
 }
