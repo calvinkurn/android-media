@@ -261,8 +261,8 @@ ext {
     ]
 
     gotoOneKyc = [
-            resource : "com.gojek.android:OneKycResources:2.4.2@aar",
-            oneKycSdk : "com.gojek.android:OneKycSdk:2.4.2@aar",
+            resource : "com.gojek.android:OneKycResources:2.4.3Pre6@aar",
+            oneKycSdk : "com.gojek.android:OneKycSdk:2.4.3Pre6@aar",
             clickStream : "com.gojek.android:clickstream:4.0.3-alpha",
             protoToko : "com.gojek.clickstream:proto-toko:4.273.5",
             protoSdk : "com.gojek.clickstream:proto-sdk:1.18.2"
