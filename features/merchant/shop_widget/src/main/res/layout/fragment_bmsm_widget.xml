@@ -286,7 +286,7 @@
         android:id="@+id/loading_state"
         layout="@layout/loading_state_bmsm_widget" />
 
-    <com.tokopedia.unifycomponents.EmptyState
+    <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/emptyPageLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

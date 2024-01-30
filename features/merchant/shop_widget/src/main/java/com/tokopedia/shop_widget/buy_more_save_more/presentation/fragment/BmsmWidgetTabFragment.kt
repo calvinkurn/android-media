@@ -433,6 +433,8 @@ class BmsmWidgetTabFragment :
                         setImageUrl(TokopediaImageUrl.OLP_NOT_FOUND_ILLUSTRATION)
                         setTitle(title)
                         setDescription(description)
+                        emptyStateTitleID.setEmptyStateTextColor()
+                        emptyStateDescriptionID.setEmptyStateTextColor()
                     }
                     cardErrorState.gone()
                 }
@@ -557,7 +559,7 @@ class BmsmWidgetTabFragment :
         }
     }
 
-    private fun Typography.setPdSubtitleTextColor(): Int{
+    private fun Typography.setPdSubtitleTextColor(){
         val textColor = when (colorThemeConfiguration) {
             BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
             BmsmWidgetColorThemeConfig.REIMAGINE -> {
@@ -569,7 +571,22 @@ class BmsmWidgetTabFragment :
             }
             BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_pd_sub_title_text_color)
         }
-        return textColor
+         setTextColor(textColor)
+    }
+
+    private fun Typography.setEmptyStateTextColor() {
+        val textColor = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.LIGHT) {
+                    ContextCompat.getColor(context, R.color.dms_static_black)
+                } else {
+                    ContextCompat.getColor(context, R.color.dms_static_white)
+                }
+            }
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_static_black)
+        }
+        setTextColor(textColor)
     }
 
     fun setOnSuccessAtcListener(onSuccessAtc: (String, String, AddToCartDataModel) -> Unit) {
