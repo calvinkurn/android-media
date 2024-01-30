@@ -166,7 +166,7 @@ class BmgmSectionViewHolder(
         binding.rvOrderBmgm.run {
             if (itemDecorationCount.isZero()) {
                 val dividerDrawable = runSafely {
-                    MethodChecker.getDrawable(context, R.drawable.om_detail_add_on_solid_divider)
+                    MethodChecker.getDrawable(context, R.drawable.om_detail_add_on_dash_divider)
                 }
                 addItemDecoration(
                     RecyclerViewItemDivider(
