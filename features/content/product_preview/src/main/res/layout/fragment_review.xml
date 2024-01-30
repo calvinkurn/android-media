@@ -19,10 +19,9 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_loader"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_gravity="center"
-        android:layout_marginStart="14dp"
         android:layout_marginTop="18dp"
         android:visibility="gone"
         app:loader_type="decorative_white"

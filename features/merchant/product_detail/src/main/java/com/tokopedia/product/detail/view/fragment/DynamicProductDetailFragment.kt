@@ -71,6 +71,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
 import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
@@ -303,7 +304,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -1968,28 +1968,33 @@ open class DynamicProductDetailFragment :
 
     override fun onMediaReviewClick(
         reviewID: String,
+        attachmentID: String,
         position: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
         detailedMediaResult: ProductrevGetReviewMedia
     ) {
-        context?.let {
-            DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(
-                viewModel.getDynamicProductInfoP1,
-                componentTrackDataModel ?: ComponentTrackDataModel(),
-                reviewID
-            )
-            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-                context = it,
-                pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
-                productID = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
-                shopID = viewModel.getDynamicProductInfoP1?.basic?.shopID.orEmpty(),
-                isProductReview = true,
-                isFromGallery = false,
-                mediaPosition = position.inc(),
-                showSeeMore = detailedMediaResult.hasNext,
-                preloadedDetailedReviewMediaResult = detailedMediaResult
-            ).let { startActivity(it) }
-        }
+        DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(
+            viewModel.getDynamicProductInfoP1,
+            componentTrackDataModel ?: ComponentTrackDataModel(),
+            reviewID
+        )
+
+        openProductPreviewActivityReviewSource(
+            reviewId = reviewID,
+            attachmentId = attachmentID,
+        )
+        // TODO product preview remote config
+//        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+//            context = requireContext(),
+//            pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
+//            productID = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
+//            shopID = viewModel.getDynamicProductInfoP1?.basic?.shopID.orEmpty(),
+//            isProductReview = true,
+//            isFromGallery = false,
+//            mediaPosition = position.inc(),
+//            showSeeMore = detailedMediaResult.hasNext,
+//            preloadedDetailedReviewMediaResult = detailedMediaResult
+//        ).let { startActivity(it) }
     }
 
     override fun onReviewClick() {
@@ -2166,7 +2171,8 @@ open class DynamicProductDetailFragment :
                 )
             )
         }
-        openProductPreviewActivity()
+        openProductPreviewActivityProductSource()
+        // TODO product preview remote config
     }
 
     override fun onVideoVolumeCLicked(isMute: Boolean) {
@@ -2305,24 +2311,43 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onImageClicked(position: Int) {
-        openProductPreviewActivity(position = position)
+        openProductPreviewActivityProductSource(position = position)
+        // TODO product preview remote config
     }
 
-    private fun openProductPreviewActivity(
-        data: DynamicProductInfoP1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1(),
+    private fun openProductPreviewActivityProductSource(
+        productData: DynamicProductInfoP1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1(),
         position: Int = 0,
         videoLastDuration: Long = productVideoCoordinator?.getCurrentPosition().orZero(),
         videoTotalDuration: Long = productVideoCoordinator?.getDuration().orZero()
     ) {
         val productId = productId ?: return
         val intent = ProductPreviewActivity.createIntent(
-            context = requireActivity(),
-            productContentData = DynamicProductDetailMapper.mapProductDetailToProductPreview(
+            context = requireContext(),
+            productPreviewSourceModel = ProductPreviewSourceMapper(
                 productId = productId,
-                data = data,
-                position = position,
+            ).mapProductSourceModel(
+                productData = productData,
+                mediaSelectedPosition = position,
                 videoLastDuration = videoLastDuration,
                 videoTotalDuration = videoTotalDuration
+            )
+        )
+        startActivity(intent)
+    }
+
+    private fun openProductPreviewActivityReviewSource(
+        reviewId: String,
+        attachmentId: String,
+    ) {
+        val productId = productId ?: return
+        val intent = ProductPreviewActivity.createIntent(
+            context = requireContext(),
+            productPreviewSourceModel = ProductPreviewSourceMapper(
+                productId = productId,
+            ).mapReviewSourceModel(
+                reviewId = reviewId,
+                attachmentId = attachmentId,
             )
         )
         startActivity(intent)

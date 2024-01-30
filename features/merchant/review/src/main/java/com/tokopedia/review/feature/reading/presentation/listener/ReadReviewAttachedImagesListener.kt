@@ -6,6 +6,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 interface ReadReviewAttachedImagesListener {
     fun onAttachedImagesClicked(
         productReview: ProductReview,
+        attachmentId: String,
         reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
         positionClicked: Int,
         shopId: String,
