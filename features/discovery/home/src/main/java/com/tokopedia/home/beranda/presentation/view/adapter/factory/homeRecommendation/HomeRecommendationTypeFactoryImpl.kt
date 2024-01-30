@@ -4,46 +4,44 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.getLayout
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
-import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityCardViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
 
 class HomeRecommendationTypeFactoryImpl(
-    private val topAdsBannerClickListener: TopAdsBannerClickListener,
-    private val homeRecommendationListener: HomeRecommendationListener,
+    private val listener: GlobalRecomListener,
     private val homeRecommendationVideoWidgetManager: HomeRecommendationVideoWidgetManager
 ) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
-    override fun type(dataModel: HomeRecommendationItemDataModel): Int { // ✅
+    override fun type(dataModel: RecomEntityCardUiModel): Int {
+        return RecomEntityCardViewHolder.LAYOUT
+    }
+    override fun type(dataModel: HomeRecommendationItemDataModel): Int {
         return dataModel.getLayout()
     }
 
-    override fun type(dataModel: HomeRecommendationLoading): Int { // ✅
+    override fun type(dataModel: HomeRecommendationLoading): Int {
         return HomeRecommendationLoadingViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationEmpty): Int { // ✅
+    override fun type(dataModel: HomeRecommendationEmpty): Int {
         return EmptyViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationError): Int { // ✅
+    override fun type(dataModel: HomeRecommendationError): Int {
         return HomeRecommendationErrorViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: BannerRecommendationDataModel): Int { // ✅
+    override fun type(dataModel: BannerRecommendationDataModel): Int {
         return HomeBannerFeedViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationLoadMore): Int { // ✅
+    override fun type(dataModel: HomeRecommendationLoadMore): Int {
         return HomeRecommendationLoadingMoreViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationBannerTopAdsOldDataModel): Int { // ✅
+    override fun type(dataModel: HomeRecommendationBannerTopAdsOldDataModel): Int {
         return HomeRecommendationBannerTopAdsOldViewHolder.LAYOUT
     }
 
@@ -51,15 +49,15 @@ class HomeRecommendationTypeFactoryImpl(
         return HomeRecommendationHeadlineTopAdsViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationPlayWidgetUiModel): Int { // ✅
+    override fun type(dataModel: HomeRecommendationPlayWidgetUiModel): Int {
         return HomeRecommendationPlayWidgetViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationBannerTopAdsUiModel): Int { // ✅
+    override fun type(dataModel: HomeRecommendationBannerTopAdsUiModel): Int {
         return HomeRecommendationBannerTopAdsViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: HomeRecommendationButtonRetryUiModel): Int { // ✅
+    override fun type(dataModel: HomeRecommendationButtonRetryUiModel): Int {
         return HomeRecommendationButtonRetryViewHolder.LAYOUT
     }
 
@@ -67,25 +65,25 @@ class HomeRecommendationTypeFactoryImpl(
         return when (type) {
             HomeRecommendationItemGridViewHolder.LAYOUT -> HomeRecommendationItemGridViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
-            RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(parent, homeRecommendationListener)
+            RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(parent, listener)
 
             HomeRecommendationItemListViewHolder.LAYOUT -> HomeRecommendationItemListViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
             HomeRecommendationLoadingViewHolder.LAYOUT -> HomeRecommendationLoadingViewHolder(parent)
             HomeBannerFeedViewHolder.LAYOUT -> HomeBannerFeedViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
             HomeRecommendationErrorViewHolder.LAYOUT -> HomeRecommendationErrorViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
             EmptyViewHolder.LAYOUT -> HomeRecommendationEmptyViewHolder(parent)
@@ -96,19 +94,19 @@ class HomeRecommendationTypeFactoryImpl(
 
             HomeRecommendationBannerTopAdsOldViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsOldViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
             HomeRecommendationHeadlineTopAdsViewHolder.LAYOUT -> HomeRecommendationHeadlineTopAdsViewHolder(
                 parent,
-                topAdsBannerClickListener
+                listener
             )
 
-            HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent, homeRecommendationVideoWidgetManager, homeRecommendationListener)
+            HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent, homeRecommendationVideoWidgetManager, listener)
 
-            HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(parent, homeRecommendationListener)
+            HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(parent, listener)
 
-            HomeRecommendationButtonRetryViewHolder.LAYOUT -> HomeRecommendationButtonRetryViewHolder(parent, homeRecommendationListener)
+            HomeRecommendationButtonRetryViewHolder.LAYOUT -> HomeRecommendationButtonRetryViewHolder(parent, listener)
 
             else -> super.createViewHolder(parent, type)
         }

@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecomme
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 
 interface HomeRecommendationTypeFactory {
+    fun type(dataModel: RecomEntityCardUiModel): Int
     fun type(dataModel: HomeRecommendationLoading): Int
     fun type(dataModel: HomeRecommendationEmpty): Int
     fun type(dataModel: HomeRecommendationError): Int
