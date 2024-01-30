@@ -5,6 +5,6 @@ package com.tokopedia.buy_more_get_more.minicart.presentation.model.effect
  */
 
 sealed interface MiniCartEditorEffect {
-    data class OnRemoveFailed(val message: String? = "") : MiniCartEditorEffect
+    data class OnRemoveFailed(val throwable: Throwable) : MiniCartEditorEffect
     object DismissBottomSheet : MiniCartEditorEffect
 }

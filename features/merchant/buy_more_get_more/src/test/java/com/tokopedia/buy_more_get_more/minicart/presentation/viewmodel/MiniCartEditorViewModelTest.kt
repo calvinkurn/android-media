@@ -345,7 +345,7 @@ class MiniCartEditorViewModelTest : BaseCartCheckboxViewModelTest<MiniCartEditor
             assertEquals(states[2].dismissPartiallyLoading(), states[3])
 
             //assert the ui effect to show the error toaster
-            assertEquals(MiniCartEditorEffect.OnRemoveFailed("delete failed"), effects[0])
+            assertEquals(MiniCartEditorEffect.OnRemoveFailed(throwable), effects[0])
         }
     }
 

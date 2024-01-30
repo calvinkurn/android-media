@@ -31,15 +31,15 @@ class MiniCartGwpGiftWidgetViewHolder(
     override fun bind(element: BmgmMiniCartVisitable.GwpGiftWidgetUiModel) {
         setupRecyclerView()
         showGifts(element.productList)
-        showRibbon(element)
+        showRibbon()
 
         itemView.setOnClickListener {
             listener.setOnItemClickedListener()
         }
     }
 
-    private fun showRibbon(element: BmgmMiniCartVisitable.GwpGiftWidgetUiModel) {
-        binding.miniCartRibbonView.setText(element.benefitWording)
+    private fun showRibbon() {
+        binding.miniCartRibbonView.setText(itemView.context.getString(R.string.bmsm_gift_label))
     }
 
     private fun setupRecyclerView() {

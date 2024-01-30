@@ -18,4 +18,5 @@ interface BmgmMiniCartAdapterFactory : AdapterTypeFactory {
     fun type(model: GwpMiniCartEditorVisitable.GiftMessageUiModel): Int = -1
     fun type(model: GwpMiniCartEditorVisitable.MiniCartEditorLoadingState): Int = -1
     fun type(model: GwpMiniCartEditorVisitable.MiniCartEditorErrorState): Int = -1
+    fun type(model: BmgmMiniCartVisitable.DividerUiModel): Int = -1
 }
