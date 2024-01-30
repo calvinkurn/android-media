@@ -593,10 +593,15 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         )
         bottomSheet.setListener(object : ShopDiscountProductDetailBottomSheet.Listener {
             override fun deleteParentProduct(productId: String) {
+                showToaster(getString(R.string.sd_discount_deleted))
                 deleteSingleProduct(productId)
             }
         })
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showToaster(message: String) {
+        binding?.root showToaster message
     }
 
     private fun deleteSingleProduct(productId: String) {

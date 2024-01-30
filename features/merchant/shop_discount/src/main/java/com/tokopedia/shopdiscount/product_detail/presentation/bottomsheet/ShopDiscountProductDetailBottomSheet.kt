@@ -40,6 +40,7 @@ import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountO
 import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountSubsidyOptOutReasonBottomSheet
 import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountSubsidyProgramInformationBottomSheet
 import com.tokopedia.shopdiscount.utils.extension.showError
+import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -169,7 +170,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     private fun observeDeleteProductDiscount() {
-        viewModel.deleteProductDiscount.observe(viewLifecycleOwner, {
+        viewModel.deleteProductDiscount.observe(viewLifecycleOwner) {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -186,7 +187,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                     showToasterError(errorMessage)
                 }
             }
-        })
+        }
     }
 
     private fun updateProductList() {
@@ -198,7 +199,13 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         if (adapter.getTotalProduct().isZero()) {
             dismiss()
             listener?.deleteParentProduct(productParentId)
+        } else {
+            showToaster(getString(R.string.sd_discount_deleted))
         }
+    }
+
+    private fun showToaster(message: String) {
+        viewBinding?.root showToaster message
     }
 
     private fun observeReserveProduct() {
