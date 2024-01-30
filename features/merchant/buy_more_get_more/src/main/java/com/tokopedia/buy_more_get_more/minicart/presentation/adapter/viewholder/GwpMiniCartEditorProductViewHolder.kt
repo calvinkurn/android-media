@@ -8,7 +8,6 @@ import com.tokopedia.buy_more_get_more.minicart.presentation.adapter.GwpMiniCart
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.campaign.utils.extension.doOnTextChanged
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -99,23 +98,15 @@ class GwpMiniCartEditorProductViewHolder(
             val prevQty = element.quantity
             if (newQty <= Int.ZERO) {
                 withContext(Dispatchers.Main) {
-                    setOnInvalidMinQty()
+                    delay(ADJUST_QTY_DEBOUNCE)
+                    binding.gwpQtyEditor.setValue(prevQty)
                 }
                 return@launch
-            } else {
-                withContext(Dispatchers.Main) {
-                    binding.gwpQtyEditor.errorMessage.gone()
-                }
             }
             if (newQty != prevQty) {
                 listener.onCartItemQuantityChanged(element, newQty)
             }
         }
-    }
-
-    private fun setOnInvalidMinQty() {
-        binding.gwpQtyEditor.errorMessage.visible()
-        binding.gwpQtyEditor.errorMessage.text = itemView.context.getString(R.string.qty_error_empty_message)
     }
 
     private fun deleteCart(element: BmgmMiniCartVisitable.ProductUiModel) {
