@@ -43,7 +43,6 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 private const val NORMAL_PROMO_UI = 1
 private const val EMPTY_PROMO_UI = 0
-private val Static_950: Color = Color(0xFF212121)
 
 @Composable
 fun ProductDetailPriceComponent(
@@ -200,7 +199,7 @@ fun PromoPriceFooter(
                     bottom.linkTo(parent.bottom)
                 },
                 textStyle = NestTheme.typography.small.copy(
-                    color = Static_950
+                    color = NestTheme.colors.NN._950
                 )
             )
         }
