@@ -341,11 +341,7 @@ class HotelDestinationViewModelTest {
         // given
         coEvery { fusedLocationProviderClient.requestLocationUpdates(any(), any(), any()) } throws SecurityException()
 
-//        mockkObject(Looper::class)
-
-        // Mock the behavior of Looper.myLooper()
         val mockLooper = mockk<Looper>()
-//        coEvery { Looper.myLooper() } returns mockLooper
 
         // when
         hotelDestinationViewModel.getLocationFromUpdates(fusedLocationProviderClient, mockLooper)

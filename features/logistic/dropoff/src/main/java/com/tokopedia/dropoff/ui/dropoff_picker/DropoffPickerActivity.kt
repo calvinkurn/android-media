@@ -545,7 +545,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun stopLocationRequest() {
-        mFusedLocationClient?.removeLocationUpdates(mLocationCallback!!)
+
+        mLocationCallback?.let { mFusedLocationClient?.removeLocationUpdates(it) }
     }
 
     private val goToAutoComplete: (View?) -> Unit = {
