@@ -5,8 +5,8 @@ import com.tokopedia.shareexperience.data.usecase.ShareExGetAffiliateEligibility
 import com.tokopedia.shareexperience.data.usecase.ShareExGetDownloadedImageUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.ShareExGetGeneratedImageUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.ShareExGetSharePropertiesUseCaseImpl
-import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExBranchLinkUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExGetAffiliateLinkUseCaseImpl
+import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExGetBranchLinkUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExGetShortLinkUseCaseImpl
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetDownloadedImageUseCase
@@ -41,7 +41,7 @@ abstract class ShareExUseCaseModule {
     @Binds
     @ActivityScope
     abstract fun provideGetBranchLinkUseCase(
-        useCase: ShareExBranchLinkUseCaseImpl
+        useCase: ShareExGetBranchLinkUseCaseImpl
     ): ShareExGetBranchLinkUseCase
 
     @Binds

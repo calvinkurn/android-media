@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class ShareExBranchLinkUseCaseImpl @Inject constructor(
+class ShareExGetBranchLinkUseCaseImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dispatchers: CoroutineDispatchers
 ) : ShareExGetBranchLinkUseCase {
