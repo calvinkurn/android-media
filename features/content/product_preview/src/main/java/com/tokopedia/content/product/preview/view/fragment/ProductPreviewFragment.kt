@@ -37,6 +37,7 @@ import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourc
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -104,6 +105,7 @@ class ProductPreviewFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initData()
         initViews()
+        initSource()
 
         onClickHandler()
         observeData()
@@ -124,22 +126,26 @@ class ProductPreviewFragment @Inject constructor(
             registerOnPageChangeCallback(pagerListener)
             adapter = pagerAdapter
         }
+    }
 
+    private fun initSource() {
         when (viewModel.productPreviewSource.productPreviewSource) {
             is ProductPreviewSourceModel.ProductSourceData -> {
-                layoutProductPreviewTab.tvProductTabTitle.visible()
-                layoutProductPreviewTab.tvReviewTabTitle.visible()
-                layoutProductPreviewTab.viewTabIndicator.visible()
                 pagerAdapter.insertFragment(productReviewTab)
+                isShowProductTab(true)
             }
             is ProductPreviewSourceModel.ReviewSourceData -> {
-                layoutProductPreviewTab.tvProductTabTitle.gone()
-                layoutProductPreviewTab.tvReviewTabTitle.gone()
-                layoutProductPreviewTab.viewTabIndicator.gone()
                 pagerAdapter.insertFragment(reviewTab)
+                isShowProductTab(false)
             }
-            else -> return@with
+            else -> activity?.finish()
         }
+    }
+
+    private fun isShowProductTab(isShow: Boolean) = with(binding) {
+        layoutProductPreviewTab.tvProductTabTitle.showWithCondition(isShow)
+        layoutProductPreviewTab.tvReviewTabTitle.showWithCondition(isShow)
+        layoutProductPreviewTab.viewTabIndicator.showWithCondition(isShow)
     }
 
     private fun onClickHandler() = with(binding) {

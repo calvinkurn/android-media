@@ -11,7 +11,8 @@ data class ReviewContentUiModel(
     val menus: ReviewMenuStatus,
     val likeState: ReviewLikeUiState,
     val author: ReviewAuthorUiModel,
-    val description: ReviewDescriptionUiModel
+    val description: ReviewDescriptionUiModel,
+    val mediaSelectedPosition: Int,
 ) {
     companion object {
         val Empty
@@ -21,7 +22,8 @@ data class ReviewContentUiModel(
                 menus = ReviewMenuStatus(isReportable = false),
                 likeState = ReviewLikeUiState(0, ReviewLikeUiState.ReviewLikeStatus.Reset),
                 author = ReviewAuthorUiModel("", "", "", "", ""),
-                description = ReviewDescriptionUiModel(0, "", "", "")
+                description = ReviewDescriptionUiModel(0, "", "", ""),
+                mediaSelectedPosition = -1,
             )
     }
 }

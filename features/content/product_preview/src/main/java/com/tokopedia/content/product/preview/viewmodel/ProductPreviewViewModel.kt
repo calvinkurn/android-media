@@ -56,6 +56,26 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val productPreviewSource: ProductPreviewSourceModel
         get() = productPreviewSourceModel
 
+    private val reviewSourceId: String
+        get() {
+            return when(val source = productPreviewSource.productPreviewSource) {
+                is ProductPreviewSourceModel.ReviewSourceData -> {
+                    source.reviewSourceId
+                }
+                else -> ""
+            }
+        }
+
+    private val attachmentSourceId: String
+        get() {
+            return when(val source = productPreviewSource.productPreviewSource) {
+                is ProductPreviewSourceModel.ReviewSourceData -> {
+                    source.attachmentSourceId
+                }
+                else -> ""
+            }
+        }
+
     private val _productContentState = MutableStateFlow(ProductUiModel.Empty)
     private val _reviewContentState = MutableStateFlow(ReviewUiModel.Empty)
     private val _bottomNavContentState = MutableStateFlow(BottomNavUiModel.Empty)
@@ -109,7 +129,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         when (val source = productPreviewSource.productPreviewSource) {
             is ProductPreviewSourceModel.ProductSourceData -> {
                 _productContentState.value = _productContentState.value.copy(
-                    productList = source.productList
+                    productList = source.productSourceList
                 )
             }
 
@@ -155,13 +175,26 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 }
             }
             _reviewContentState.update { review ->
-                review.copy(reviewContent = newList, reviewPaging = response.reviewPaging)
+                val reviewList = newList.mapIndexed { index, reviewContentUiModel ->
+                    // TODO product preview fetch getReviewById
+                    if (index == 0 && reviewContentUiModel.reviewId == reviewSourceId) {
+                        reviewContentUiModel.copy(
+                            mediaSelectedPosition = getMediaSourcePosition(newList)
+                        )
+                    } else reviewContentUiModel
+                }
+                review.copy(reviewContent = reviewList, reviewPaging = response.reviewPaging)
             }
         }) {
             _reviewContentState.update { review ->
                 review.copy(reviewPaging = ReviewPaging.Error(it))
             }
         }
+    }
+
+    private fun getMediaSourcePosition(review: List<ReviewContentUiModel>): Int {
+        val mediaPosition = review.first().medias.indexOfFirst { it.mediaId == attachmentSourceId }
+        return if (mediaPosition < 0) 0 else mediaPosition
     }
 
     private fun addToChart(model: BottomNavUiModel) {

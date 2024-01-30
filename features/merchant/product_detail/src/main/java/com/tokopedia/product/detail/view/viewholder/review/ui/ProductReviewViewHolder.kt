@@ -298,6 +298,7 @@ class ProductReviewViewHolder(
                     } else {
                         listener.onMediaReviewClick(
                             item.getReviewID(),
+                            item.getAttachmentID(),
                             position,
                             getComponentTrackData(it),
                             DynamicProductDetailMapper.generateDetailedMediaResult(
@@ -311,6 +312,7 @@ class ProductReviewViewHolder(
                     } else {
                         listener.onMediaReviewClick(
                             item.getReviewID(),
+                            item.getAttachmentID(),
                             position,
                             getComponentTrackData(it),
                             DynamicProductDetailMapper.generateDetailedMediaResult(

@@ -17,13 +17,13 @@ data class ProductPreviewSourceModel(
 
     @Parcelize
     data class ProductSourceData(
-        val productList: List<ProductContentUiModel> = emptyList()
+        val productSourceList: List<ProductContentUiModel> = emptyList()
     ) : ProductPreviewSource
 
     @Parcelize
     data class ReviewSourceData(
-        val reviewId: String = "",
-        val reviewMediaPosition: Int = -1
+        val reviewSourceId: String = "",
+        val attachmentSourceId: String = "",
     ) : ProductPreviewSource
 
     @Parcelize

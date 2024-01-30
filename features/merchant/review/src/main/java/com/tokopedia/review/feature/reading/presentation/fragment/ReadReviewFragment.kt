@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,8 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
+import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
@@ -620,6 +623,7 @@ open class ReadReviewFragment :
 
     override fun onAttachedImagesClicked(
         productReview: ProductReview,
+        attachmentId: String,
         reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
         positionClicked: Int,
         shopId: String,
@@ -634,25 +638,30 @@ open class ReadReviewFragment :
         } else {
             ReadReviewTracking.trackOnShopReviewImageClicked(productReview.feedbackID, shopId)
         }
-        context?.let { context ->
-            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-                context = context,
-                pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
-                productID = viewModel.getProductId(),
-                shopID = viewModel.getShopId(),
-                isProductReview = isProductReview,
-                isFromGallery = false,
-                mediaPosition = positionClicked.plus(1),
-                showSeeMore = false,
-                preloadedDetailedReviewMediaResult = ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(
-                    productReview,
-                    reviewMediaThumbnailUiModel,
-                    shopId
-                )
-            ).let {
-                startActivityForResult(it, GALLERY_ACTIVITY_CODE)
-            }
-        }
+
+        goToProductPreviewActivityReviewSource(
+            reviewId = productReview.feedbackID,
+            attachmentId = attachmentId,
+        )
+
+        // TODO product preview remote config
+//        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+//            context = requireContext(),
+//            pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
+//            productID = viewModel.getProductId(),
+//            shopID = viewModel.getShopId(),
+//            isProductReview = isProductReview,
+//            isFromGallery = false,
+//            mediaPosition = positionClicked.plus(1),
+//            showSeeMore = false,
+//            preloadedDetailedReviewMediaResult = ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(
+//                productReview,
+//                reviewMediaThumbnailUiModel,
+//                shopId
+//            )
+//        ).let {
+//            startActivityForResult(it, GALLERY_ACTIVITY_CODE)
+//        }
     }
 
     override fun stopPreparePerfomancePageMonitoring() {
@@ -1199,6 +1208,23 @@ open class ReadReviewFragment :
             ?: ProductrevGetShopRatingAndTopic()
     }
 
+    private fun goToProductPreviewActivityReviewSource(
+        reviewId: String,
+        attachmentId: String,
+    ) {
+        val productId = viewModel.getProductId()
+        val intent = ProductPreviewActivity.createIntent(
+            context = requireContext(),
+            productPreviewSourceModel = ProductPreviewSourceMapper(
+                productId = productId,
+            ).mapReviewSourceModel(
+                reviewId = reviewId,
+                attachmentId = attachmentId,
+            )
+        )
+        startActivity(intent)
+    }
+
     private fun goToReportReview(reviewId: String, shopId: String) {
         val intent =
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
@@ -1258,6 +1284,7 @@ open class ReadReviewFragment :
             (adapter as? ReadReviewAdapter)?.findReviewContainingThumbnail(item)?.let { (reviewItemPosition, element) ->
                 onAttachedImagesClicked(
                     productReview = element.reviewData,
+                    attachmentId = item.getAttachmentID(),
                     reviewMediaThumbnailUiModel = element.mediaThumbnails,
                     positionClicked = position,
                     shopId = element.shopId,

@@ -101,14 +101,17 @@ class ReviewParentContentViewHolder(
     }
 
     fun bind(item: ReviewContentUiModel) {
-        bindMedia(item.medias)
+        bindMedia(item.medias, item.mediaSelectedPosition)
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
         setupTap(item)
     }
 
-    private fun bindMedia(media: List<ReviewMediaUiModel>) = with(binding.rvReviewMedia) {
+    private fun bindMedia(
+        media: List<ReviewMediaUiModel>,
+        mediaSelectedPosition: Int
+    ) = with(binding.rvReviewMedia) {
         prepareVideoPlayerIfNeeded(media)
 
         adapter = reviewMediaAdapter
@@ -118,7 +121,9 @@ class ReviewParentContentViewHolder(
         itemAnimator = null
 
         reviewMediaAdapter.submitList(media)
-        setupPageControlMedia(media.size)
+
+        setupPageControlMedia(media.size, mediaSelectedPosition)
+        scrollToPosition(mediaSelectedPosition)
     }
 
     private fun bindAuthor(author: ReviewAuthorUiModel) = with(binding.layoutAuthorReview) {
@@ -234,8 +239,12 @@ class ReviewParentContentViewHolder(
         }
     }
 
-    private fun setupPageControlMedia(mediaSize: Int) = with(binding.pcReviewContent) {
+    private fun setupPageControlMedia(
+        mediaSize: Int,
+        mediaSelectedPosition: Int,
+    ) = with(binding.pcReviewContent) {
         setIndicator(mediaSize)
+        setCurrentIndicator(mediaSelectedPosition)
     }
 
     private fun getContentCurrentPosition(): Int {

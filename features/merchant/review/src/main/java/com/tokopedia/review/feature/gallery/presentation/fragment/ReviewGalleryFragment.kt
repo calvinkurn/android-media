@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
+import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -49,7 +51,6 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatis
 import com.tokopedia.reviewcommon.extension.isMoreThanZero
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -485,17 +486,43 @@ class ReviewGalleryFragment :
     }
 
     private fun goToMediaPreview(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
-        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+        val reviewId = reviewGalleryMediaThumbnailUiModel.feedbackId
+        val attachmentId = reviewGalleryMediaThumbnailUiModel.attachmentId
+
+        goToProductPreviewActivityReviewSource(
+            reviewId = reviewId,
+            attachmentId = attachmentId,
+        )
+        // TODO product preview remote config
+
+//        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+//            context = requireContext(),
+//            pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
+//            productID = viewModel.getProductId(),
+//            shopID = viewModel.getShopId(),
+//            isProductReview = true,
+//            isFromGallery = true,
+//            mediaPosition = reviewGalleryMediaThumbnailUiModel.mediaNumber,
+//            showSeeMore = false,
+//            preloadedDetailedReviewMediaResult = viewModel.concatenatedReviewImages.value
+//        ).also { startActivityForResult(it, IMAGE_PREVIEW_ACTIVITY_CODE) }
+    }
+
+    private fun goToProductPreviewActivityReviewSource(
+        reviewId: String,
+        attachmentId: String,
+    ) {
+        val productId = viewModel.getProductId()
+        val intent = ProductPreviewActivity.createIntent(
             context = requireContext(),
-            pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
-            productID = viewModel.getProductId(),
-            shopID = viewModel.getShopId(),
-            isProductReview = true,
-            isFromGallery = true,
-            mediaPosition = reviewGalleryMediaThumbnailUiModel.mediaNumber,
-            showSeeMore = false,
-            preloadedDetailedReviewMediaResult = viewModel.concatenatedReviewImages.value
-        ).also { startActivityForResult(it, IMAGE_PREVIEW_ACTIVITY_CODE) }
+            productPreviewSourceModel = ProductPreviewSourceMapper(
+                productId = productId,
+            ).mapReviewSourceModel(
+                reviewId = reviewId,
+                attachmentId = attachmentId,
+            )
+        )
+        startActivity(intent)
     }
 
     private fun isFirstPage(): Boolean {
