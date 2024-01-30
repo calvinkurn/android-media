@@ -246,7 +246,7 @@ internal class FeedBrowseFragment @Inject constructor(
         setupView()
         observeUiState()
 
-        if (savedInstanceState == null) {
+        if (activity?.lastNonConfigurationInstance == null) {
             viewModel.onAction(FeedBrowseAction.LoadInitialPage)
             tracker.openScreenBrowseFeedPage()
         }

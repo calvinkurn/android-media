@@ -4,7 +4,9 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.os.Bundle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.action.ViewActions.typeText
@@ -24,8 +26,10 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPDataPlanActivity
 import com.tokopedia.digital_product_detail.presentation.webview.RechargeCheckBalanceWebViewActivity
+import com.tokopedia.digital_product_detail.pulsa.DigitalPDPPulsaActivityStub
 import com.tokopedia.digital_product_detail.utils.CustomViewAction
 import com.tokopedia.digital_product_detail.utils.CustomViewAction.nestedScrollTo
 import com.tokopedia.recharge_component.model.InputNumberActionType
@@ -50,7 +54,12 @@ abstract class BaseDigitalPDPDataPlanTest {
     ) {
         override fun getActivityIntent(): Intent {
             val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-            return RouteManager.getIntent(targetContext, getApplink())
+            return Intent(targetContext, DigitalPDPDataPlanActivityStub::class.java).apply {
+                val extras = Bundle()
+                extras.putString(DigitalPDPConstant.PARAM_MENU_ID, "290")
+                extras.putString(DigitalPDPConstant.PARAM_CATEGORY_ID, "2")
+                putExtras(extras)
+            }
         }
 
         override fun beforeActivityLaunched() {
@@ -137,6 +146,10 @@ abstract class BaseDigitalPDPDataPlanTest {
 
     protected fun clientNumberWidget_typeNumber(number: String) {
         onView(withId(unifycomponentsR.id.text_field_input)).perform(typeText(number))
+    }
+
+    protected fun clientNumberWidget_clearText() {
+        onView(withId(unifycomponentsR.id.text_field_input)).perform(clearText())
     }
 
     protected fun clientNumberWidget_clickClearIcon() {
@@ -267,11 +280,6 @@ abstract class BaseDigitalPDPDataPlanTest {
         onView(withId(unifycomponentsR.id.bottom_sheet_close)).perform(click())
     }
 
-    abstract fun getApplink(): String
-
     abstract fun getMockModelConfig(): MockModelConfig
 
-    companion object {
-        const val APPLINK = "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2"
-    }
 }

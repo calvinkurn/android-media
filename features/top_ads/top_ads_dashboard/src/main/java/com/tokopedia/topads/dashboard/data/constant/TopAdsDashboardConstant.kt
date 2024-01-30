@@ -104,6 +104,7 @@ object TopAdsDashboardConstant {
     const val INVALID_KEYWORD_TAG = "INVALID_KEYWORD_TAG"
     const val SEVEN_DAYS_RANGE_INDEX = 2
     const val DATE_PICKER_SHEET = "datepicker"
+    const val BERANDA_CREATION_SHEET = "berandaCreationSheet"
     const val GROUP_TYPE_HEADLINE = 3
     const val GROUP_TYPE_PRODUCT = 1
     const val CONST_0 = 0
@@ -130,6 +131,13 @@ object TopAdsDashboardConstant {
     const val CONST_EFECTIVITAS_IKLAN = 5
     const val DATE_PICKER_DEFAULT_INDEX = 2
     const val QUERY_PARAM_TAB= "tab"
+    const val IKLAN_PRODUCT_AD_TYPE_IMG_URL = "https://images.tokopedia.net/img/android/topads/dashboard/iklan_produk.png"
+    const val IKLAN_TOKO_AD_TYPE_IMG_URL = "https://images.tokopedia.net/img/android/topads/dashboard/iklan_toko.png"
+    const val ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL = "https://images.tokopedia.net/img/android/topads/auto_ps/activate_auto_ps_confirmation.png"
+    const val IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL = "https://images.tokopedia.net/img/android/topads/auto_ps/iklan_toko_empty_state.png"
+    const val IKLAN_PRODUK_AUTO_PS_EMPTY_VIEW_IMG_URL = "https://images.tokopedia.net/img/android/topads/auto_ps/iklan_produk_empty_state.png"
+    const val IKLAN_PRODUK_AUTO_PS_ARTICLE_LINK = "https://seller.tokopedia.com/edu/topads-produk/"
+    const val IKLAN_TOKO_AUTO_PS_ARTICLE_LINK = "https://seller.tokopedia.com/edu/topads-iklan-toko/"
 
     object TopAdsCreditTopUpConstant {
         const val TOP_UP_FREQUENCY_FOUR = 4

@@ -10,7 +10,7 @@ import android.text.style.TypefaceSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
@@ -21,6 +21,7 @@ import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.view.binding.viewBinding
@@ -69,7 +70,7 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindIconSubtitle(item: BaseSuggestionDataView) {
         binding?.iconSubtitle?.shouldShowOrHideWithAction(item.iconSubtitle.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconSubtitle)
+            it.loadImage(item.iconSubtitle)
         }
     }
 
@@ -161,7 +162,7 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindShortcutButton(item: BaseSuggestionDataView) {
         binding?.actionShortcutButton?.shouldShowOrHideWithAction(item.shortcutImage.isNotEmpty()) {
-            ImageHandler.loadImage2(it, item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
+            it.loadImageWithError(item.shortcutImage,R.drawable.autocomplete_ic_copy_to_search_bar)
         }
     }
 
