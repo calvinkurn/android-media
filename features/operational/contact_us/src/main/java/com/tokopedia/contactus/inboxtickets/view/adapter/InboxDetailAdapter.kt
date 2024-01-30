@@ -14,7 +14,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
@@ -175,7 +175,7 @@ class InboxDetailAdapter(
             }
             val item = commentList[position]
             if (item.createdBy.isNullCreatedBy()) {
-                ImageHandler.loadImageCircle2(mContext, ivProfile, item.createdBy.picture)
+                ivProfile?.loadImageCircle(item.createdBy.picture)
                 if (isRoleAgent(item)) tvName?.text =
                     view.context.getString(R.string.contact_us_tokopedia_care_team)
                 else tvName?.text = item.createdBy.name
