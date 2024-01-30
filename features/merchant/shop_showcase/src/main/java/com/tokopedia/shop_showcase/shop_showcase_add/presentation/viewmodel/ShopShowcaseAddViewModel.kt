@@ -43,7 +43,6 @@ class ShopShowcaseAddViewModel @Inject constructor(
     private val _removeShowcaseProduct = MutableLiveData<Result<RemoveShowcaseProductResponse>>()
     private val _selectedProductList = MutableLiveData<Result<List<ShowcaseProduct>>>()
     private val _loaderState = MutableLiveData<Boolean>()
-    private val _listOfResponse = MutableLiveData<MutableList<Any>>()
     private val _listOfUpdateShowcaseNameResponse = MutableLiveData<MutableList<Any>>()
     private val _listOfAppendResponse = MutableLiveData<MutableList<Any>>()
     private val _listOfRemoveResponse = MutableLiveData<MutableList<Any>>()
@@ -52,7 +51,6 @@ class ShopShowcaseAddViewModel @Inject constructor(
     val createShopShowcase: LiveData<Result<AddShopShowcaseResponse>> get() = _createShopShowcase
     val selectedProductList: LiveData<Result<List<ShowcaseProduct>>> get() = _selectedProductList
     val loaderState: LiveData<Boolean> get() = _loaderState
-    val listOfResponse: LiveData<MutableList<Any>> get() = _listOfResponse
 
     val listOfUpdateShowcaseNameResponse: LiveData<MutableList<Any>> get() = _listOfUpdateShowcaseNameResponse
     val listOfAppendResponse: LiveData<MutableList<Any>> get() = _listOfAppendResponse
@@ -239,7 +237,7 @@ class ShopShowcaseAddViewModel @Inject constructor(
                 }
             }
 
-            _listOfResponse.value = listOfResponse
+            _listOfAppendAndRemoveResponse.value = listOfResponse
             hideLoader()
         })
     }

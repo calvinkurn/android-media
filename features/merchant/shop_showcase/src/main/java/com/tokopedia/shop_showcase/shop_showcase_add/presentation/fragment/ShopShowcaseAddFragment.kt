@@ -244,7 +244,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         removeObservers(shopShowcaseAddViewModel.createShopShowcase)
         removeObservers(shopShowcaseAddViewModel.selectedProductList)
         removeObservers(shopShowcaseAddViewModel.loaderState)
-        removeObservers(shopShowcaseAddViewModel.listOfResponse)
         removeObservers(shopShowcaseAddViewModel.listOfUpdateShowcaseNameResponse)
         removeObservers(shopShowcaseAddViewModel.listOfAppendResponse)
         removeObservers(shopShowcaseAddViewModel.listOfRemoveResponse)
@@ -282,7 +281,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         observeCreateShopShowcase()
         observeLoaderState()
         observeGetSelectedProductList()
-        observeUpdateShopShowcase()
         observeUpdateShowcaseName()
         observeUpdateShowcaseAppendProduct()
         observeUpdateShowcaseRemoveProduct()
@@ -320,7 +318,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     }
                     return false
                 }
-                // TODO: Update flag etalase_name_change if there is any changes on etalase name input
             })
 
             addTextChangedListener(object : TextWatcher {
@@ -361,7 +358,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         chooseProductText?.setOnClickListener {
             tracking.addShowcaseClickChooseProductText(shopId, shopType, isActionEdit)
             showChooseProductConfirmDialog()
-            // TODO: Update flag product addition after add product success
         }
     }
 
@@ -510,73 +506,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 }
                 else -> {
                     // no-op
-                }
-            }
-        }
-    }
-
-    private fun observeUpdateShopShowcase() {
-        observe(shopShowcaseAddViewModel.listOfResponse) {
-            val responseList = it
-
-            // TODO: Need to validate these cases to performs correct UI state
-            // 1. Etalase name change
-            // 2. Etalase name change + Append product list
-            // 3. Etalase name change + Remove product from list
-
-            val hasAppendResult: Boolean = responseList
-                .filterIsInstance<Result<AppendShowcaseProductResponse>>()
-                .isNotEmpty()
-
-            if (hasAppendResult) {
-                val asdssfd = ""
-            }
-
-            val updateShowcaseNameResult = responseList.filterIsInstance<Result<UpdateShopShowcaseResponse>>()
-            val appendShowcaseProductResult = responseList.filterIsInstance<Result<AppendShowcaseProductResponse>>()
-            val removeShowcaseProductResult = responseList.filterIsInstance<Result<RemoveShowcaseProductResponse>>()
-
-            if (responseList.size > 2) {
-                val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
-                val appendShowcaseProductResult = responseList[1] as Result<AppendShowcaseProductResponse>
-                val removeShowcaseProductResult = responseList[2] as Result<RemoveShowcaseProductResponse>
-
-                if (updateShowcaseNameResult is Success) {
-                    if (updateShowcaseNameResult.data.success == true) {
-                        if (appendShowcaseProductResult is Success) { // ----> Problem here
-
-                            // check if append new showcase product is success
-                            if (appendShowcaseProductResult.data.status) {
-                                if (removeShowcaseProductResult is Success) {
-                                    // check if remove showcase product is success
-                                    if (removeShowcaseProductResult.data.status) {
-                                        // everything is fine, navigate back to showcase list
-                                        tracking.onFinishCreateOrUpdateShowcase(shopId, shopType, true)
-                                        val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-                                        intent.putExtra(ShopShowcaseParamConstant.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
-                                        activity?.setResult(Activity.RESULT_OK, intent)
-                                        activity?.finish()
-                                    } else {
-                                        // Show error remove showcase product
-                                        tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
-                                        showUnifyToaster(removeShowcaseProductResult.data.header.reason)
-                                    }
-                                }
-                            } else {
-                                // Show error append new showcase product
-                                tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
-                                showUnifyToaster(appendShowcaseProductResult.data.header.reason)
-                            }
-                        }
-                    } else {
-                        // Show error update name failed
-                        tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
-                        showUnifyToaster(updateShowcaseNameResult.data.message ?: getString(R.string.error_happens))
-                    }
-                } else {
-                    // Show error use case Fail result
-                    tracking.onFinishCreateOrUpdateShowcase(shopId, shopType)
-                    (updateShowcaseNameResult as Fail).throwable.message?.let { message -> showUnifyToaster(message) }
                 }
             }
         }
@@ -793,9 +722,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
         appendedProductList?.let { appendShowcaseProductParam.listAppended = it }
         removedProductList?.let { removeShowcaseProductParam.listRemoved = it }
-
-        // TODO: Remove this!!
-//        shopShowcaseAddViewModel.updateShopShowcase(updateShopShowcaseParam, appendShowcaseProductParam, removeShowcaseProductParam)
 
         val isAppendProduct: Boolean = appendShowcaseProductParam.listAppended.size.isMoreThanZero()
         val isRemoveProduct: Boolean = removeShowcaseProductParam.listRemoved.size.isMoreThanZero()
