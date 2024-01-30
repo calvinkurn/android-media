@@ -385,7 +385,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.startupRuntime
 
-    implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
