@@ -29,7 +29,6 @@ import com.tokopedia.people.di.UserProfileInjector
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.views.screen.ProfileSettingsScreen
 import com.tokopedia.people.views.uimodel.event.UserProfileSettingsEvent
-import com.tokopedia.play.widget.analytic.const.trackerMultiFields
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -84,7 +83,6 @@ class ProfileSettingsActivity : AppCompatActivity() {
                         }
                     }
                 }
-                trackerMultiFields()
 
                 ProfileSettingsScreen(
                     reviewSettings = reviewSettings,
