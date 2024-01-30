@@ -6,9 +6,9 @@ import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
-import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceSellerStatusResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
-import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceSellerStatusUseCase
+import com.tokopedia.shopdiscount.info.data.response.GetSlashPriceTickerResponse
+import com.tokopedia.shopdiscount.info.domain.usecase.GetSlashPriceTickerUseCase
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
 import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListMetaResponse
 import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
@@ -58,7 +58,7 @@ class ProductManageViewModelTest {
     lateinit var sellerEligibilityObserver: Observer<in Result<SellerEligibilityData>>
 
     @RelaxedMockK
-    lateinit var getSlashPriceSellerStatusUseCase: GetSlashPriceSellerStatusUseCase
+    lateinit var getSlashPriceTickerUseCase: GetSlashPriceTickerUseCase
 
     @RelaxedMockK
     lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
@@ -72,7 +72,7 @@ class ProductManageViewModelTest {
             CoroutineTestDispatchersProvider,
             getSlashPriceProductListMetaUseCase,
             getSlashPriceBenefitUseCase,
-            getSlashPriceSellerStatusUseCase,
+            getSlashPriceTickerUseCase,
             getTargetedTickerUseCase,
             authorizeAccessUseCase,
             productListMetaMapper,
@@ -317,8 +317,8 @@ class ProductManageViewModelTest {
     fun `when get targeted ticker success, then result should success`(){
         //Given
         coEvery {
-            getSlashPriceSellerStatusUseCase.executeOnBackground()
-        } returns GetSlashPriceSellerStatusResponse()
+            getSlashPriceTickerUseCase.executeOnBackground()
+        } returns GetSlashPriceTickerResponse()
         coEvery {
             getTargetedTickerUseCase.execute(any())
         } returns listOf()
@@ -332,7 +332,7 @@ class ProductManageViewModelTest {
     fun `when get targeted ticker error, then result should fail`(){
         //Given
         coEvery {
-            getSlashPriceSellerStatusUseCase.executeOnBackground()
+            getSlashPriceTickerUseCase.executeOnBackground()
         } throws MessageErrorException("error")
         //When
         viewModel.getTargetedTickerData()

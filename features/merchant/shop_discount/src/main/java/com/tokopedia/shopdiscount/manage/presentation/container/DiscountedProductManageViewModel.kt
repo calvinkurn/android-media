@@ -13,7 +13,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
-import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceSellerStatusUseCase
+import com.tokopedia.shopdiscount.info.domain.usecase.GetSlashPriceTickerUseCase
+import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
 import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
@@ -30,7 +31,7 @@ class DiscountedProductManageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSlashPriceProductListMetaUseCase: GetSlashPriceProductListMetaUseCase,
     private val getSlashPriceBenefitUseCase: GetSlashPriceBenefitUseCase,
-    private val getSlashPriceSellerStatusUseCase: GetSlashPriceSellerStatusUseCase,
+    private val getSlashPriceTickerUseCase: GetSlashPriceTickerUseCase,
     private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
     private val productListMetaMapper: ProductListMetaMapper,
@@ -117,9 +118,11 @@ class DiscountedProductManageViewModel @Inject constructor(
 
     fun getTargetedTickerData() {
         launchCatchError(block = {
-            val targetedTickerKey = withContext(dispatchers.io) {
-                getSlashPriceSellerStatusUseCase.setParams()
-                getSlashPriceSellerStatusUseCase.executeOnBackground().getSlashPriceSellerStatus.listKey
+            val tickerUnificationConfig = withContext(dispatchers.io) {
+                getSlashPriceTickerUseCase.setParams(ShopDiscountSellerInfoMapper.mapToGetSlashPriceTickerRequest())
+                val response = getSlashPriceTickerUseCase.executeOnBackground()
+                val uiModel = ShopDiscountSellerInfoMapper.mapToShopDiscountTickerUiModel(response)
+                uiModel.tickerUnificationConfig
             }
             val tickerData = withContext(dispatchers.io) {
                 getTargetedTickerUseCase.execute(
@@ -127,8 +130,8 @@ class DiscountedProductManageViewModel @Inject constructor(
                         page = "seller.selpart-flash-sale",
                         targets = listOf(
                             GetTargetedTickerUseCase.Param.Target(
-                                type = "rollence_name",
-                                values = listOf()
+                                type = tickerUnificationConfig.target.type,
+                                values = tickerUnificationConfig.target.listValue
                             )
                         )
                     )

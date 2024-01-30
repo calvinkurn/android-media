@@ -79,7 +79,13 @@ class ShopDiscountOptOutReasonBottomSheetViewModelTest {
         //Given
         coEvery {
             doOptOutSubsidyUseCase.executeOnBackground()
-        } returns DoOptOutResponse(isSuccess = true)
+        } returns DoOptOutResponse(
+            doSellerOutProgram = DoOptOutResponse.DoSellerOutProgram(
+                responseHeader = DoOptOutResponse.DoSellerOutProgram.ResponseHeader(
+                    isSuccess = true
+                )
+            )
+        )
 
         //When
         viewModel.doOptOutProductSubsidy(mutableListOf(), listOf(), "")
@@ -93,7 +99,13 @@ class ShopDiscountOptOutReasonBottomSheetViewModelTest {
         //Given
         coEvery {
             doOptOutSubsidyUseCase.executeOnBackground()
-        } returns DoOptOutResponse(isSuccess = false)
+        } returns DoOptOutResponse(
+            doSellerOutProgram = DoOptOutResponse.DoSellerOutProgram(
+                responseHeader = DoOptOutResponse.DoSellerOutProgram.ResponseHeader(
+                    isSuccess = false
+                )
+            )
+        )
 
         //When
         viewModel.doOptOutProductSubsidy(mutableListOf(), listOf(), "")

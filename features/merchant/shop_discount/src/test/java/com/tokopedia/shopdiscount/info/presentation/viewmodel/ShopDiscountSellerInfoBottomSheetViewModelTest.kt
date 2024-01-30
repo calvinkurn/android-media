@@ -4,9 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
-import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceSellerStatusResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
-import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceSellerStatusUseCase
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.info.data.response.GetSlashPriceTickerResponse
 import com.tokopedia.shopdiscount.info.domain.usecase.GetSlashPriceTickerUseCase
@@ -29,9 +27,6 @@ class ShopDiscountSellerInfoBottomSheetViewModelTest {
     lateinit var getSlashPriceTickerUseCase: GetSlashPriceTickerUseCase
 
     @RelaxedMockK
-    lateinit var getSlashPriceSellerStatusUseCase: GetSlashPriceSellerStatusUseCase
-
-    @RelaxedMockK
     lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
 
     @get:Rule
@@ -45,7 +40,6 @@ class ShopDiscountSellerInfoBottomSheetViewModelTest {
             CoroutineTestDispatchersProvider,
             getSlashPriceBenefitUseCase,
             getSlashPriceTickerUseCase,
-            getSlashPriceSellerStatusUseCase,
             getTargetedTickerUseCase
         )
     }
@@ -92,45 +86,11 @@ class ShopDiscountSellerInfoBottomSheetViewModelTest {
     }
 
     @Test
-    fun `When success get ticker data, should return success result and matched with mock data`() {
-        coEvery {
-            getSlashPriceTickerUseCase.executeOnBackground()
-        } returns getGetSlashPriceTickerMockSuccessResponse()
-        viewModel.getTickerData()
-        val liveDataValue = viewModel.slashPriceTickerLiveData.value
-        assert(liveDataValue is Success)
-        val liveDataSuccessValue = liveDataValue as Success
-        assert(liveDataSuccessValue.data.responseHeader.success)
-        assert(liveDataSuccessValue.data.listTicker.size == mockListTickerMessage.size)
-    }
-
-    private fun getGetSlashPriceTickerMockSuccessResponse(): GetSlashPriceTickerResponse {
-        return GetSlashPriceTickerResponse(
-            GetSlashPriceTickerResponse.GetSlashPriceTicker(
-                responseHeader = ResponseHeader(success = true),
-                listTicker = mockListTickerMessage
-            )
-        )
-    }
-
-    @Test
-    fun `When error get ticker data, should return fail result`() {
-        coEvery {
-            getSlashPriceTickerUseCase.executeOnBackground()
-        } throws Exception(mockErrorMessage)
-        viewModel.getTickerData()
-        val liveDataValue = viewModel.slashPriceTickerLiveData.value
-        assert(liveDataValue is Fail)
-        val liveDataFailValue = liveDataValue as Fail
-        assert(liveDataFailValue.throwable.message == mockErrorMessage)
-    }
-
-    @Test
     fun `when get targeted ticker success, then result should success`(){
         //Given
         coEvery {
-            getSlashPriceSellerStatusUseCase.executeOnBackground()
-        } returns GetSlashPriceSellerStatusResponse()
+            getSlashPriceTickerUseCase.executeOnBackground()
+        } returns GetSlashPriceTickerResponse()
         coEvery {
             getTargetedTickerUseCase.execute(any())
         } returns listOf()
@@ -144,7 +104,7 @@ class ShopDiscountSellerInfoBottomSheetViewModelTest {
     fun `when get targeted ticker error, then result should fail`(){
         //Given
         coEvery {
-            getSlashPriceSellerStatusUseCase.executeOnBackground()
+            getSlashPriceTickerUseCase.executeOnBackground()
         } throws MessageErrorException("error")
         //When
         viewModel.getTargetedTickerData()

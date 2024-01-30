@@ -15,6 +15,24 @@ data class GetSlashPriceTickerResponse(
         var responseHeader: ResponseHeader = ResponseHeader(),
         @SerializedName("tickers")
         @Expose
-        var listTicker: List<String> = listOf()
-    )
+        var listTicker: List<String> = listOf(),
+        @SerializedName("tickerUnificationConfig")
+        @Expose
+        var tickerUnificationConfig: TickerUnificationConfig = TickerUnificationConfig()
+    ){
+        data class TickerUnificationConfig(
+            @SerializedName("Target")
+            @Expose
+            var target: Target = Target()
+        ){
+            data class Target(
+                @SerializedName("Type")
+                @Expose
+                var type: String = "",
+                @SerializedName("Values")
+                @Expose
+                var listValue: List<String> = listOf()
+            )
+        }
+    }
 }

@@ -9,12 +9,10 @@ import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
-import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceSellerStatusUseCase
-import com.tokopedia.shopdiscount.info.data.response.GetSlashPriceTickerResponse
-import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountTickerUiModel
 import com.tokopedia.shopdiscount.info.domain.usecase.GetSlashPriceTickerUseCase
+import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -25,7 +23,6 @@ class ShopDiscountSellerInfoBottomSheetViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val getSlashPriceBenefitUseCase: GetSlashPriceBenefitUseCase,
     private val getSlashPriceTickerUseCase: GetSlashPriceTickerUseCase,
-    private val getSlashPriceSellerStatusUseCase: GetSlashPriceSellerStatusUseCase,
     private val getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -59,26 +56,13 @@ class ShopDiscountSellerInfoBottomSheetViewModel @Inject constructor(
         return getSlashPriceBenefitUseCase.executeOnBackground()
     }
 
-    fun getTickerData() {
-        launchCatchError(dispatcherProvider.io, block = {
-            val response = getSlashPriceTickerData()
-            val uiModel = ShopDiscountSellerInfoMapper.mapToShopDiscountTickerUiModel(response)
-            _slashPriceTickerLiveData.postValue(Success(uiModel))
-        }) {
-            _slashPriceTickerLiveData.postValue(Fail(it))
-        }
-    }
-
-    private suspend fun getSlashPriceTickerData(): GetSlashPriceTickerResponse {
-        getSlashPriceTickerUseCase.setParams(ShopDiscountSellerInfoMapper.mapToGetSlashPriceTickerRequest())
-        return getSlashPriceTickerUseCase.executeOnBackground()
-    }
-
     fun getTargetedTickerData() {
         launchCatchError(block = {
-            val targetedTickerKey = withContext(dispatcherProvider.io) {
-                getSlashPriceSellerStatusUseCase.setParams()
-                getSlashPriceSellerStatusUseCase.executeOnBackground().getSlashPriceSellerStatus.listKey
+            val tickerUnificationConfig = withContext(dispatcherProvider.io) {
+                getSlashPriceTickerUseCase.setParams(ShopDiscountSellerInfoMapper.mapToGetSlashPriceTickerRequest())
+                val response = getSlashPriceTickerUseCase.executeOnBackground()
+                val uiModel = ShopDiscountSellerInfoMapper.mapToShopDiscountTickerUiModel(response)
+                uiModel.tickerUnificationConfig
             }
             val tickerData = withContext(dispatcherProvider.io) {
                 getTargetedTickerUseCase.execute(
@@ -86,8 +70,8 @@ class ShopDiscountSellerInfoBottomSheetViewModel @Inject constructor(
                         page = "seller.selpart-flash-sale",
                         targets = listOf(
                             GetTargetedTickerUseCase.Param.Target(
-                                type = "rollence_name",
-                                values = listOf()
+                                type = tickerUnificationConfig.target.type,
+                                values = tickerUnificationConfig.target.listValue
                             )
                         )
                     )

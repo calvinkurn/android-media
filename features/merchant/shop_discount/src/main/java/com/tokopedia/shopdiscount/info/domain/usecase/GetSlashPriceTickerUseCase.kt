@@ -35,6 +35,7 @@ class GetSlashPriceTickerUseCase @Inject constructor(
     companion object {
         private const val KEY_PARAMS = "params"
         private const val QUERY_NAME = "GetSlashPriceTickerQuery"
+        //TODO need to add new field for ticker once BE ready
         private const val QUERY = """
             query GetSlashPriceTicker(${'$'}params: GetSlashPriceTickerRequest!) {
               GetSlashPriceTicker(params: ${'$'}params) {
