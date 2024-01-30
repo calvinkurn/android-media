@@ -2,8 +2,9 @@ package com.tokopedia.cartrevamp.view.uimodel
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
-import com.tokopedia.cartcommon.data.response.common.ProductTagInfo
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
+import com.tokopedia.cart.view.uimodel.CartProductLabelData
+import com.tokopedia.cartcommon.data.response.common.ProductTagInfo
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
@@ -105,8 +106,11 @@ data class CartItemHolderData(
     var addOnsProduct: CartAddOnData = CartAddOnData(),
 
     // BMGM
-        var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData(),
-    var showBmGmBottomDivider: Boolean = false
+    var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData(),
+    var showBmGmBottomDivider: Boolean = false,
+
+    // Campaign Product Label
+    val cartProductLabelData: CartProductLabelData = CartProductLabelData()
 ) : ImpressHolder() {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0

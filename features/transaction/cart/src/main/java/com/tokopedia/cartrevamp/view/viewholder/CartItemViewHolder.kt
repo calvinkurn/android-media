@@ -26,12 +26,12 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
+import com.tokopedia.cart.view.uimodel.CartProductLabelData
 import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.cartrevamp.view.customview.HexColor
-import com.tokopedia.cartrevamp.view.uimodel.CartCampaignModel
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
@@ -72,7 +72,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 import com.tokopedia.nest.components.R as nestcomponentsR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -1113,7 +1113,7 @@ class CartItemViewHolder(
         val hasPriceOriginal = data.productOriginalPrice > 0
         val hasWholesalePrice = data.wholesalePrice > 0
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
-            data.productInitialPriceBeforeDrop > data.productPrice
+                data.productInitialPriceBeforeDrop > data.productPrice
         if (!data.isError && (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) && !data.isBundlingItem) {
             if (data.productSlashPriceLabel.isNotBlank()) {
                 // Slash price
@@ -1237,7 +1237,10 @@ class CartItemViewHolder(
             binding.root.context.getString(R.string.cart_button_notes_filled_content_desc)
     }
 
-    private fun renderOldQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
+    private fun renderOldQuantity(
+        data: CartItemHolderData,
+        viewHolderListener: ViewHolderListener?
+    ) {
         val qtyEditorProduct = binding.oldQtyEditorProduct
         if (data.isError) {
             qtyEditorProduct.gone()
@@ -1322,7 +1325,10 @@ class CartItemViewHolder(
                     if (data.isBundlingItem) data.bundleQuantity else data.quantity
                 if ((currentQuantity == 1 && data.minOrder == 1) || (currentQuantity == data.minOrder && data.isAlreadyShowMinimumQuantityPurchasedError)) {
                     delayChangeQty?.cancel()
-                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                    actionListener?.onCartItemDeleteButtonClicked(
+                        data,
+                        CartDeleteButtonSource.TrashBin
+                    )
                     actionListener?.sendRemoveCartFromSubtractButtonAnalytic(data)
                 }
                 actionListener?.onCartItemQuantityMinusButtonClicked()
@@ -1348,7 +1354,10 @@ class CartItemViewHolder(
                 isDeleteFromDoneImeButton = isDeletion
                 if (isDeletion) {
                     delayChangeQty?.cancel()
-                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
+                    actionListener?.onCartItemDeleteButtonClicked(
+                        data,
+                        CartDeleteButtonSource.QuantityEditorImeAction
+                    )
                 }
                 if (lastQty > data.maxOrder) {
                     binding.labelQuantityError.text = String.format(
@@ -1495,7 +1504,10 @@ class CartItemViewHolder(
         }
         if (newValue < element.minOrder) {
             if (element.minOrder <= 1) {
-                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
+                actionListener?.onCartItemDeleteButtonClicked(
+                    element,
+                    CartDeleteButtonSource.TrashBin
+                )
                 return
             }
             binding.labelQuantityError.show()
@@ -1508,7 +1520,10 @@ class CartItemViewHolder(
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
             } else {
                 element.isAlreadyShowMinimumQuantityPurchasedError = false
-                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
+                actionListener?.onCartItemDeleteButtonClicked(
+                    element,
+                    CartDeleteButtonSource.TrashBin
+                )
             }
         }
         qtyEditorCart.addButton.isEnabled = true
@@ -1876,92 +1891,106 @@ class CartItemViewHolder(
         }
     }
 
-    private fun enableCampaignLogoTicker(): Boolean {
-        return true
-    }
+    private fun renderCartCampaignFestivityTicker(data: CartItemHolderData) {
+        // val productLabelData = data.cartProductLabelData
+        val productLabelData = when (bindingAdapterPosition) {
+            2 -> {
+                // Default Image 1
+                CartProductLabelData(
+                    type = CartProductLabelData.TYPE_DEFAULT,
+                    imageLogoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
+                    backgroundStartColor = HexColor("#004B40"),
+                    backgroundEndColor = HexColor("#009245")
+                )
+            }
 
-    private fun renderCartCampaignFestivityTicker(
-        data: CartItemHolderData
-    ) {
-        // TODO: Implement real data
-        val tickerData = if (bindingAdapterPosition == 3) {
-            CartCampaignModel(
-                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
-//            logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
-                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
-                text = "Kejar Diskon",
-                backgroundGradientStartColor = "#FFF5F6",
-                backgroundGradientEndColor = "#FFF5F6",
-                endTimestamp = 1706512702000
-            )
-        } else if (bindingAdapterPosition == 6) {
-            CartCampaignModel(
-//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
-            logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
-                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
-                text = "Kejar Diskon",
-                backgroundGradientStartColor = "#FFF5F6",
-                backgroundGradientEndColor = "#FFF5F6",
-                endTimestamp = 1706512702000
-            )
-        } else if (bindingAdapterPosition == 7) {
-            CartCampaignModel(
-//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
-//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
-                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
-                text = "Kejaran Diskon di Tokopedia Panjang Sekali",
-                backgroundGradientStartColor = "#FFF5F6",
-                backgroundGradientEndColor = "#FFF5F6",
-                endTimestamp = 1706512702000
-            )
-        } else if (bindingAdapterPosition == 10) {
-            CartCampaignModel(
-//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
-//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
-                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
-                text = "Kejaran Diskon di Tokopedia Panjang Sekali",
-                backgroundGradientStartColor = "#FFF5F6",
-                backgroundGradientEndColor = "#FFF5F6",
-//                endTimestamp = 1706512702000
-            )
-        } else if (bindingAdapterPosition == 11) {
-            CartCampaignModel(
-//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
-//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
-//                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
-                text = "Kejaran Diskon",
-                backgroundGradientStartColor = "#FFF5F6",
-                backgroundGradientEndColor = "#FFF5F6",
-//                endTimestamp = 1706512702000
-            )
-        } else {
-            CartCampaignModel(
-//                logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
-//            logoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
-                iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity.png",
-//                text = "Kejar Diskon",
-                backgroundGradientStartColor = "#FFF5F6",
-                backgroundGradientEndColor = "#FFF5F6",
-                endTimestamp = 1706512702000
-            )
+            3 -> {
+                // Default Image 2
+                CartProductLabelData(
+                    type = CartProductLabelData.TYPE_DEFAULT,
+                    imageLogoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
+                    backgroundStartColor = HexColor("#004B40"),
+                    backgroundEndColor = HexColor("#009245")
+                )
+            }
+
+            4 -> {
+                // Default Text 1
+                CartProductLabelData(
+                    type = CartProductLabelData.TYPE_DEFAULT,
+                    text = "Tokopedia 100000th Anniversary",
+                    textColor = HexColor("#FFFFFF"),
+                    backgroundStartColor = HexColor("#00A958"),
+                    backgroundEndColor = HexColor("#00A958")
+                )
+            }
+
+            5 -> {
+                // Default Text 2
+                CartProductLabelData(
+                    type = CartProductLabelData.TYPE_DEFAULT,
+                    text = "Tokopedia Anniversary",
+                    textColor = HexColor("#FFFFFF"),
+                    backgroundStartColor = HexColor("#00A958"),
+                    backgroundEndColor = HexColor("#00A958")
+                )
+            }
+
+            6 -> {
+                // Timer
+                CartProductLabelData(
+                    type = CartProductLabelData.TYPE_TIMER,
+                    remainingTimeMillis = 3600000,
+                    iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity-white.png",
+                    textColor = HexColor("#F94D63"),
+                    lineColor = HexColor("#F94D63"),
+                    backgroundStartColor = HexColor("#F94D63"),
+                )
+            }
+
+            else -> {
+                // None
+                CartProductLabelData()
+            }
         }
-        if (tickerData.logoUrl.isNotBlank() && enableCampaignLogoTicker()) {
-            binding.cartCampaignTicker.showLogoTicker(
-                logoUrl = tickerData.logoUrl,
-                backgroundColorStart = HexColor("#004B40"),
-                backgroundColorEnd = HexColor("#009245")
-            )
-        } else if (tickerData.text.isNotBlank()) {
-            val remainingTimeMillis = tickerData.endTimestamp - System.currentTimeMillis()
-            binding.cartCampaignTicker.showTextTicker(
-                text = tickerData.text,
-                backgroundColor = HexColor("#FFF5F6"),
-                iconUrl = tickerData.iconUrl,
-                textColor = HexColor("#D72C2C"),
-                remainingTimeMillis = remainingTimeMillis
-            )
-        } else {
-            binding.cartCampaignTicker.hideTicker()
+        when (productLabelData.type) {
+            CartProductLabelData.TYPE_DEFAULT -> {
+                val useImageLogo = productLabelData.imageLogoUrl.isNotBlank()
+                val useTextLogo = productLabelData.text.isNotBlank()
+                if (useImageLogo) {
+                    binding.cartCampaignProductLabel.showImageLabel(
+                        logoUrl = productLabelData.imageLogoUrl,
+                        backgroundStartColor = productLabelData.backgroundStartColor,
+                        backgroundEndColor = productLabelData.backgroundEndColor
+                    )
+                } else if (useTextLogo) {
+                    binding.cartCampaignProductLabel.showTextLabel(
+                        text = productLabelData.text,
+                        textColor = productLabelData.textColor,
+                        backgroundStartColor = productLabelData.backgroundStartColor,
+                        backgroundEndColor = productLabelData.backgroundEndColor
+                    )
+                } else {
+                    binding.cartCampaignProductLabel.hideTicker()
+                }
+            }
+
+            CartProductLabelData.TYPE_TIMER -> {
+                val hasRemainingTime = productLabelData.remainingTimeMillis > 0
+                if (hasRemainingTime) {
+                    binding.cartCampaignProductLabel.showTimedLabel(
+                        remainingTimeMillis = productLabelData.remainingTimeMillis,
+                        iconUrl = productLabelData.iconUrl,
+                        backgroundColor = productLabelData.lineColor,
+                    )
+                } else {
+                    binding.cartCampaignProductLabel.hideTicker()
+                }
+            }
+
+            else -> {
+                binding.cartCampaignProductLabel.hideTicker()
+            }
         }
     }
 
@@ -2022,6 +2051,9 @@ class CartItemViewHolder(
     }
 
     fun isUsingNewQuantityEditor(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR, false)
+        return remoteConfig.getBoolean(
+            RemoteConfigKey.ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR,
+            false
+        )
     }
 }
