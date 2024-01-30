@@ -38,8 +38,6 @@ class KetupatReferralUserRegistrationUseCase @Inject constructor(
     private fun createRequestParams(slug: String): HashMap<String, Any> {
         val request = HashMap<String, Any>()
         request[EVENT_SLUG] = slug
-//        val input = HashMap<String, Any>()
-//        input[EVENT_SLUG] = request
         return request
     }
 

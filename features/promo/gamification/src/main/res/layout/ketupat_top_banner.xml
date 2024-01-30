@@ -28,6 +28,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:typographyType="body_1" />
 
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/top_banner_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            app:timer_unify_single_variant="informative_alternate"
+            android:background="@color/transparent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/header_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:timer_unify_single_showClockIcon="true"
+            app:timer_unify_single_textWidth="full_radius"
+            app:timer_unify_single_type="hour" />
+
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_clock"
             android:layout_width="20dp"

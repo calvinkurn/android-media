@@ -9,9 +9,13 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.getDayDiffFromToday
+import com.tokopedia.utils.date.trimDate
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
@@ -71,12 +75,24 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
                 ""
             }
             else -> {
-                formatDate("yyyy-MM-dd HH:mm:ss Z", "HH:mm:ss", time + "00")
+                itemView.findViewById<IconUnify>(gamificationR.id.ic_clock).hide()
+                itemView.findViewById<IconUnify>(gamificationR.id.top_banner_counter).hide()
+                showTimer(time)
+                ""
             }
         }
         itemView.findViewById<Typography>(gamificationR.id.top_banner_counter).apply {
             text = date
             show()
+        }
+    }
+
+    private fun showTimer(time: String) {
+        itemView.findViewById<TimerUnifySingle>(gamificationR.id.top_banner_timer).apply {
+            this.visible()
+            val calendar = Calendar.getInstance(Locale.ENGLISH)
+            calendar.time = getAbsoluteDiff(time)
+            this.targetDate = calendar
         }
     }
 
@@ -90,6 +106,13 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
             Timber.e(e)
         }
         return -1
+    }
+
+    private fun getAbsoluteDiff(time: String): Date? {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.ENGLISH)
+        formatter.isLenient = false
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        return formatter.parse(time + "00")
     }
 
     private fun formatDate(
