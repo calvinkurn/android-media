@@ -2,6 +2,7 @@ package com.tokopedia.productcard.experiments
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -26,6 +27,8 @@ import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -43,6 +46,7 @@ internal class ReimagineGridViewStrategy(
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by lazyView<ImageView?>(R.id.productCardImage)
+    private val nameText by lazyView<Typography?>(R.id.productCardName)
     private val videoIdentifier by lazyView<ImageView?>(R.id.productCardVideoIdentifier)
     private val threeDots by lazyView<ImageView?>(R.id.productCardThreeDots)
     private val video: VideoPlayerController by lazyThreadSafetyNone {
@@ -73,6 +77,8 @@ internal class ReimagineGridViewStrategy(
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
             )
         }
+
+        nameText?.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12.toPx().toFloat())
     }
 
     private fun initAttributes(attrs: AttributeSet?) {

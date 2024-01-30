@@ -2,6 +2,7 @@ package com.tokopedia.productcard.experiments
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -24,6 +25,8 @@ import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -41,6 +44,7 @@ internal class ReimagineListCarouselViewStrategy(
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageView?>(R.id.productCardImage)
+    private val nameText by lazyView<Typography?>(R.id.productCardName)
 
     override fun additionalMarginStart() = cardContainer?.marginStart ?: 0
 
@@ -62,6 +66,8 @@ internal class ReimagineListCarouselViewStrategy(
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
             )
         }
+
+        nameText?.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12.toPx().toFloat())
     }
 
     private fun initAttributes(attrs: AttributeSet?) {
