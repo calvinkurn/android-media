@@ -95,7 +95,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ProductInfoP2Login {
         val p2Login = ProductInfoP2Login()
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
-        val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
+        val shopId = requestParams.getString(ProductDetailCommonConstant.PARAM_SHOP_IDS, "")
         val isShopOwner =
             requestParams.getBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, false)
         val fromCache =
@@ -115,7 +115,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(
 
         val topAdsManageParams = mapOf(
             ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
-            ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString(),
+            ProductDetailCommonConstant.PARAM_SHOP_ID to shopId,
             ProductDetailCommonConstant.PARAM_TEASER_SOURCE to "pdp"
         )
         val topAdsManageRequest = GraphqlRequest(
