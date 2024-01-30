@@ -1,5 +1,6 @@
 package com.tokopedia.bmsm_widget.presentation.bottomsheet
 
+import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,6 +26,8 @@ import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -102,7 +105,16 @@ class GiftListBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
-        viewModel.processEvent(GiftListEvent.OpenScreen(offerId, warehouseId, tierGifts, source, selectedTierId))
+        viewModel.processEvent(
+            GiftListEvent.OpenScreen(
+                offerId = offerId,
+                warehouseId = warehouseId,
+                giftProducts = tierGifts,
+                source = source,
+                selectedTierId = selectedTierId,
+                userCache = getUserCache()
+            )
+        )
     }
 
     override fun onCreateView(
@@ -158,7 +170,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
                     outRect.bottom = MARGIN.toPx()
                 }
             }
-            addItemDecoration(itemDecoration) 
+            addItemDecoration(itemDecoration)
         }
     }
 
@@ -231,7 +243,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
         val giftProducts = selectedTier?.products.orEmpty()
         giftListAdapter.submit(giftProducts)
 
-        val ribbonText =  context?.getString(R.string.gwp_gift_ribbon_text_selected)
+        val ribbonText = context?.getString(R.string.gwp_gift_ribbon_text_selected)
         giftListAdapter.setRibbonText(ribbonText.orEmpty())
     }
 
@@ -249,5 +261,11 @@ class GiftListBottomSheet : BottomSheetUnify() {
             imageUris = arrayListOf(imageUrl)
         )
         startActivity(intent)
+    }
+
+    @SuppressLint("PII Data Exposure")
+    private fun getUserCache(): LocalCacheModel {
+        val context = context ?: return LocalCacheModel()
+        return ChooseAddressUtils.getLocalizingAddressData(context)
     }
 }
