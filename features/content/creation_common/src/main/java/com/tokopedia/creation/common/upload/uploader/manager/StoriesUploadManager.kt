@@ -17,8 +17,8 @@ import com.tokopedia.creation.common.util.isMediaPotrait
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.play_common.util.CacheUtil
 import com.tokopedia.play_common.util.VideoSnapshotHelper
-import com.tokopedia.utils.file.FileUtil
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -260,7 +260,7 @@ class StoriesUploadManager @AssistedInject constructor(
     }
 
     private fun deleteMediaCache(uploadData: CreationUploadData.Stories) {
-        FileUtil.deleteFile(uploadData.firstMediaUri)
+        CacheUtil.deleteFileFromCache(uploadData.firstMediaUri)
         snapshotHelper.deleteLocalFile()
     }
 }
