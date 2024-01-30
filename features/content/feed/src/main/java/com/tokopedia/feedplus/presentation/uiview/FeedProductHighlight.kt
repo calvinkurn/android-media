@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -60,6 +61,7 @@ fun FeedProductHighlight(
                     .background(color = Color(0xB22E3137), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp)
                     .clickable {
+                        Log.d("hello in", product.applink)
                         onProductClick(product)
                     }
             ) {
@@ -172,11 +174,11 @@ fun ProductTagItems(
             isVisible = !needToBeShown,
             onClick = onProductLabelClick
         )
-        val highlightedProduct = products.firstOrNull() ?: return
+        val highlightedProduct = products.firstOrNull() ?: return //TODO: adjust to isHiglighted
         FeedProductHighlight(
             product = highlightedProduct,
             isVisible = needToBeShown,
             onClose = { needToBeShown = false },
-            onAtcClick = { onAtcClick }, onProductClick = { onProductClick })
+            onAtcClick = onAtcClick , onProductClick = onProductClick)
     }
 }
