@@ -13,7 +13,9 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderSpaceViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.HorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.TopAllAddToCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.HorizontalProductCardItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.TopAllAddToCartViewHolder
 
 class ShoppingListAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -28,6 +30,7 @@ class ShoppingListAdapterTypeFactory(
     override fun type(uiModel: TokoNowHeaderUiModel): Int = TokoNowHeaderViewHolder.LAYOUT
     override fun type(uiModel: TokoNowHeaderSpaceUiModel): Int = TokoNowHeaderSpaceViewHolder.LAYOUT
     override fun type(uiModel: HorizontalProductCardItemUiModel): Int = HorizontalProductCardItemViewHolder.LAYOUT
+    override fun type(uiModel: TopAllAddToCartUiModel): Int = TopAllAddToCartViewHolder.LAYOUT
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             TokoNowHeaderViewHolder.LAYOUT -> TokoNowHeaderViewHolder(
@@ -40,6 +43,9 @@ class ShoppingListAdapterTypeFactory(
                 itemView = parent
             )
             HorizontalProductCardItemViewHolder.LAYOUT -> HorizontalProductCardItemViewHolder(
+                itemView = parent
+            )
+            TopAllAddToCartViewHolder.LAYOUT -> TopAllAddToCartViewHolder(
                 itemView = parent
             )
             else -> super.createViewHolder(parent, type)

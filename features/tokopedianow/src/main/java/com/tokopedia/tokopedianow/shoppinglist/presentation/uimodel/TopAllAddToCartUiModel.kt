@@ -4,15 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListTypeFactory
 
-data class HorizontalProductCardItemUiModel(
+data class TopAllAddToCartUiModel(
     val id: String,
-    val image: String,
-    val price: String,
-    val name: String,
-    val weight: String,
-    val percentage: String,
-    val slashPrice: String,
-    val removeBottomDivider: Boolean = false
+    val allPrice: String,
+    val selectedProductCounter: String
 ): Visitable<ShoppingListTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: ShoppingListTypeFactory): Int = typeFactory.type(this)
 }

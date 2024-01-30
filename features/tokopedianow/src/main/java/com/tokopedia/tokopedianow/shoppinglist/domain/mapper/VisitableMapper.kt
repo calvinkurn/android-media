@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowHeaderSpaceUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.HorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.TopAllAddToCartUiModel
 
 object VisitableMapper {
     /**
@@ -85,6 +86,41 @@ object VisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000"
+            ),
+            HorizontalProductCardItemUiModel(
+                id = "123121",
+                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
+                price = "Rp5.000",
+                name = "Baby Pak Choy",
+                weight = "350gr",
+                percentage = "50%",
+                slashPrice = "Rp100.000"
+            ),
+            HorizontalProductCardItemUiModel(
+                id = "123121",
+                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
+                price = "Rp5.000",
+                name = "Baby Pak Choy",
+                weight = "350gr",
+                percentage = "50%",
+                slashPrice = "Rp100.000"
+            ),
+            HorizontalProductCardItemUiModel(
+                id = "123121",
+                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
+                price = "Rp5.000",
+                name = "Baby Pak Choy",
+                weight = "350gr",
+                percentage = "50%",
+                slashPrice = "Rp100.000",
+                removeBottomDivider = true
+            )
+        )
+        add(
+            TopAllAddToCartUiModel(
+                id = "2222",
+                allPrice = "Semua (Rp.12.000)",
+                selectedProductCounter = "1 produk terpilih"
             )
         )
         addAll(list)

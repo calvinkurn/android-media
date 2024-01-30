@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHorizontalProductCardItemBinding
@@ -13,7 +14,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HorizontalProductCardItemViewHolder(
     itemView: View
 ): AbstractViewHolder<HorizontalProductCardItemUiModel>(itemView) {
-
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_horizontal_product_card_item
@@ -30,6 +30,7 @@ class HorizontalProductCardItemViewHolder(
             tpPercentage.text = data.percentage
             tpSlashPrice.text = data.slashPrice
             tpSlashPrice.paintFlags = tpSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            if (data.removeBottomDivider) bottomDivider.hide()
         }
     }
 }
