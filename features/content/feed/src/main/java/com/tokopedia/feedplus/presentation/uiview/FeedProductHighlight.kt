@@ -159,6 +159,7 @@ fun ProductTagItems(
     onAtcClick: (FeedCardProductModel) -> Unit,
     onProductClick: (FeedCardProductModel) -> Unit,
     onProductLabelClick: () -> Unit,
+    onProductHighlightClose: () -> Unit
 ) {
     var needToBeShown by remember { mutableStateOf(false) }
 
@@ -178,7 +179,11 @@ fun ProductTagItems(
         FeedProductHighlight(
             product = highlightedProduct,
             isVisible = needToBeShown,
-            onClose = { needToBeShown = false },
-            onAtcClick = onAtcClick , onProductClick = onProductClick)
+            onClose = {
+                onProductHighlightClose.invoke()
+                needToBeShown = false
+            },
+            onAtcClick = onAtcClick, onProductClick = onProductClick
+        )
     }
 }

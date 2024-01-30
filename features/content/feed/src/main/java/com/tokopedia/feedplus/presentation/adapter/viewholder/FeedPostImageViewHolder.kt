@@ -728,6 +728,9 @@ class FeedPostImageViewHolder(
                     )
 
                 },
+                onProductHighlightClose = {
+                    listener.onHighlightClose(trackerDataModel)
+                },
                 onProductClick = {
                     listener.onHighlightClick(
                         it,

@@ -930,6 +930,84 @@ class FeedAnalytics @AssistedInject constructor(
             .send()
     }
 
+    fun impressProductHighlight(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel) {
+        val eventLabel = getEventLabel(trackerModel) + "- ${product.id}"
+        Tracker.Builder()
+            .setEvent(Event.VIEW_ITEM_LIST)
+            .setEventAction("view - product card highlight")
+            .setEventCategory(CATEGORY_UNIFIED_FEED)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(KEY_TRACKER_ID, "49770")
+            .setBusinessUnit(BUSINESS_UNIT_CONTENT)
+            .setCurrentSite(CURRENT_SITE_MARKETPLACE)
+            .setUserId(userId)
+            .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
+            .build()
+            .send() //TODO: add product bundle
+    }
+
+    fun sendClickProductHighlight(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel) {
+        val eventLabel = getEventLabel(trackerModel) + "- ${product.id}"
+        Tracker.Builder()
+            .setEvent(Event.SELECT_CONTENT)
+            .setEventAction("click - product on card highlight")
+            .setEventCategory(CATEGORY_UNIFIED_FEED)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(KEY_TRACKER_ID, "49771")
+            .setBusinessUnit(BUSINESS_UNIT_CONTENT)
+            .setCurrentSite(CURRENT_SITE_MARKETPLACE)
+            .setUserId(userId)
+            .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
+            .build()
+            .send() //TODO: add product bundle
+    }
+
+    fun atcFromProductHighlight(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel) {
+        val eventLabel = getEventLabel(trackerModel) + "- ${product.id}"
+        Tracker.Builder()
+            .setEvent("add_to_cart")
+            .setEventAction("click - keranjang button on card highlight")
+            .setEventCategory(CATEGORY_UNIFIED_FEED)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(KEY_TRACKER_ID, "49772")
+            .setBusinessUnit(BUSINESS_UNIT_CONTENT)
+            .setCurrentSite(CURRENT_SITE_MARKETPLACE)
+            .setUserId(userId)
+            .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
+            .build()
+            .send() //TODO: add product bundle
+    }
+    fun closeProductHighlight(trackerModel: FeedTrackerDataModel) {
+        val eventLabel =" ${getPrefix(trackerModel.tabType)} - ${entrySource.entryPoint} - ${trackerModel.authorType.name.lowercase()} - ${trackerModel.authorId}"
+        Tracker.Builder()
+            .setEvent(Event.CLICK_CONTENT)
+            .setEventAction("click - x - product card highlight")
+            .setEventCategory(CATEGORY_UNIFIED_FEED)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(KEY_TRACKER_ID, "49773")
+            .setBusinessUnit(BUSINESS_UNIT_CONTENT)
+            .setCurrentSite(CURRENT_SITE_MARKETPLACE)
+            .setUserId(userId)
+            .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
+            .build()
+            .send()
+    }
+
+    fun atcFromProductHighlightWithVariant(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel) {
+        Tracker.Builder()
+            .setEvent(Event.CLICK_CONTENT)
+            .setEventAction("click - keranjang button on card highlight bottomsheet")
+            .setEventCategory(CATEGORY_UNIFIED_FEED)
+            .setEventLabel(getEventLabel(trackerModel))
+            .setCustomProperty(KEY_TRACKER_ID, "49891")
+            .setBusinessUnit(BUSINESS_UNIT_CONTENT)
+            .setCurrentSite(CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
     companion object {
         const val KEY_EVENT_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT_EVENT = "businessUnit"
@@ -937,6 +1015,7 @@ class FeedAnalytics @AssistedInject constructor(
         const val KEY_TRACKER_ID = "trackerId"
         const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         const val KEY_SCREEN_NAME = "screenName"
+        const val KEY_PAGE_SOURCE = "pageSource"
 
         const val BUSINESS_UNIT_CONTENT = "content"
         const val CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"

@@ -141,4 +141,6 @@ interface FeedListener {
     fun addToCartHighlight(product: FeedCardProductModel, campaign: FeedCardCampaignModel, position: Int)
 
     fun onHighlightClick(product: FeedCardProductModel, position: Int)
+
+    fun onHighlightClose(trackerModel: FeedTrackerDataModel?)
 }

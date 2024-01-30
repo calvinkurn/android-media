@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.content.common.ui.custom.player.ContentPlayerControl
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
@@ -30,7 +31,6 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.content.common.ui.custom.player.ContentPlayerControl
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
@@ -268,7 +268,9 @@ class FeedPostVideoViewHolder(
             val newPayloads = mutableListOf<Any>().apply {
                 addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
-                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
+                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(
+                    scrollingPayload
+                )
             }
             bind(item.data as FeedCardVideoContentModel, newPayloads)
         }
@@ -540,27 +542,37 @@ class FeedPostVideoViewHolder(
         listener.onWatchPostVideo(element, trackerModel)
         onScrolling(false)
         productButtonView.playProductIconAnimation()
-        binding.productTagView.setContent { ProductTagItems(products = element.products, totalProducts = element.totalProducts, key = element.id, onAtcClick = {
-            listener.addToCartHighlight(it, element.campaign ,absoluteAdapterPosition)
-        }, onProductLabelClick = {
-            listener.onProductTagViewClicked(
-                element.id,
-                element.author,
-                element.type,
-                element.followers.isFollowed,
-                element.campaign,
-                element.hasVoucher,
-                element.products,
-                element.totalProducts,
-                trackerModel,
-                absoluteAdapterPosition
-            )
-        }, onProductClick = {
-            listener.onHighlightClick(
-                it,
-                absoluteAdapterPosition
-            )
-        })}
+        binding.productTagView.setContent {
+            ProductTagItems(products = element.products,
+                totalProducts = element.totalProducts,
+                key = element.id,
+                onAtcClick = {
+                    listener.addToCartHighlight(it, element.campaign, absoluteAdapterPosition)
+                },
+                onProductLabelClick = {
+                    listener.onProductTagViewClicked(
+                        element.id,
+                        element.author,
+                        element.type,
+                        element.followers.isFollowed,
+                        element.campaign,
+                        element.hasVoucher,
+                        element.products,
+                        element.totalProducts,
+                        trackerModel,
+                        absoluteAdapterPosition
+                    )
+                },
+                onProductClick = {
+                    listener.onHighlightClick(
+                        it,
+                        absoluteAdapterPosition
+                    )
+                },
+                onProductHighlightClose = {
+                    listener.onHighlightClose(trackerDataModel)
+                })
+        }
     }
 
     private fun onNotSelected() {

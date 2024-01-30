@@ -2209,6 +2209,7 @@ class FeedFragment :
         feedAnalytics = feedFactory.create(userSession, feedEntrySource)
     }
 
+    //TODO: for atc handle source atc from bottom sheet or highlight etc. For analytics purpose
     override fun addToCartHighlight(product: FeedCardProductModel, campaign: FeedCardCampaignModel, position: Int) {
         val taggedProduct = MapperProductsToXProducts.transform(product, campaign, ContentTaggedProductUiModel.SourceType.Organic)
 
@@ -2228,7 +2229,12 @@ class FeedFragment :
     }
 
     override fun onHighlightClick(product: FeedCardProductModel, position: Int) {
+        currentTrackerData?.let { data -> feedAnalytics?.sendClickProductHighlight(product, data) }
         RouteManager.route(requireContext(), product.applink)
+    }
+
+    override fun onHighlightClose(trackerModel: FeedTrackerDataModel?) {
+        trackerModel?.let { data -> feedAnalytics?.closeProductHighlight(data) }
     }
 
     companion object {
