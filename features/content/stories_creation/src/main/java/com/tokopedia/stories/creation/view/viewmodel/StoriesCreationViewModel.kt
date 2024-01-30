@@ -38,6 +38,9 @@ class StoriesCreationViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
     val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
 
+    val storiesId: String
+        get() = _uiState.value.config.storiesId
+
     val maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig
         get() = _uiState.value.config.maxStoriesConfig
 
