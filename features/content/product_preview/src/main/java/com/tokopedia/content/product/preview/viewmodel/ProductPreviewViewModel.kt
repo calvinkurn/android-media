@@ -15,6 +15,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ClickMenu
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchMiniInfo
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReview
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReviewByIds
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Like
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.LikeFromResult
@@ -111,6 +112,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             FetchMiniInfo -> handleFetchMiniInfo()
             ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
             LikeFromResult -> handleLikeFromResult()
+            FetchReviewByIds -> handleFetchReviewByIds()
             is ProductSelected -> handleProductSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh)
             is ProductAction -> addToChart(action.model)
@@ -152,6 +154,35 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleFetchReviewByIds() {
+        viewModelScope.launchCatchError(block = {
+            _reviewContentState.update { review -> review.copy(reviewPaging = ReviewPaging.Load) }
+
+            val ids = listOf(reviewSourceId)
+            val response = repo.getReviewByIds(ids = ids)
+            _reviewContentState.update { review ->
+                val reviewList = response.reviewContent.mapIndexed { index, review ->
+                    if (index == 0 && review.reviewId == reviewSourceId) {
+                        review.copy(
+                            mediaSelectedPosition = getMediaSourcePosition(response.reviewContent)
+                        )
+                    } else {
+                        review
+                    }
+                }
+                review.copy(
+                    reviewContent = reviewList,
+                    reviewPaging = response.reviewPaging
+                )
+            }
+
+            handleFetchReview(isRefresh = false)
+        }, onError = {
+                // TODO handle some toast?
+                handleFetchReview(isRefresh = true)
+            })
+    }
+
     private fun handleFetchReview(isRefresh: Boolean) {
         val state = _reviewContentState.value.reviewPaging
         val page = when {
@@ -172,17 +203,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 }
             }
             _reviewContentState.update { review ->
-                val reviewList = newList.mapIndexed { index, reviewContentUiModel ->
-                    // TODO product preview fetch getReviewById
-                    if (index == 0 && reviewContentUiModel.reviewId == reviewSourceId) {
-                        reviewContentUiModel.copy(
-                            mediaSelectedPosition = getMediaSourcePosition(newList)
-                        )
-                    } else {
-                        reviewContentUiModel
-                    }
-                }
-                review.copy(reviewContent = reviewList, reviewPaging = response.reviewPaging)
+                review.copy(reviewContent = newList, reviewPaging = response.reviewPaging)
             }
         }) {
             _reviewContentState.update { review ->

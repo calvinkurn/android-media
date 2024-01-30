@@ -5,13 +5,14 @@ import com.tokopedia.content.product.preview.data.response.AddWishlistResponse
 import com.tokopedia.content.product.preview.data.response.GetMiniProductInfoResponse
 import com.tokopedia.content.product.preview.data.response.LikeReviewResponse
 import com.tokopedia.content.product.preview.data.response.MediaReviewResponse
+import com.tokopedia.content.product.preview.data.response.ReviewByIdsResponse
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewDescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
@@ -23,6 +24,54 @@ import javax.inject.Inject
  * @author by astidhiyaa on 06/12/23
  */
 class ProductPreviewMapper @Inject constructor(private val userSession: UserSessionInterface) {
+
+    fun mapReviewsByIds(response: ReviewByIdsResponse): ReviewUiModel {
+        val mapped = response.data.review.map {
+            ReviewContentUiModel(
+                reviewId = it.feedbackId,
+                medias = it.videos.mapIndexed { index, videos ->
+                    ReviewMediaUiModel(
+                        mediaId = videos.attachmentId,
+                        type = MediaType.Video,
+                        url = videos.url,
+                        selected = index == 0
+                    )
+                } + it.images.mapIndexed { index, images ->
+                    ReviewMediaUiModel(
+                        mediaId = images.attachmentId,
+                        type = MediaType.Image,
+                        url = images.fullSizeUrl,
+                        selected = if (it.videos.isEmpty()) index == 0 else false
+                    )
+                },
+                menus = ReviewMenuStatus(isReportable = it.isReportable && !isOwner(it.user.userId)),
+                likeState = ReviewLikeUiState(
+                    count = it.likeStats.totalLike,
+                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(it.likeStats.likeStatus),
+                    withAnimation = false
+                ),
+                author = ReviewAuthorUiModel(
+                    name = it.user.fullName,
+                    type = it.user.label,
+                    id = it.user.userId,
+                    avatarUrl = it.user.image,
+                    appLink = it.user.url
+                ),
+                description = ReviewDescriptionUiModel(
+                    stars = it.rating,
+                    productType = Uri.decode(it.variantName),
+                    timestamp = it.createTimestamp,
+                    description = Uri.decode(it.review)
+                ),
+                mediaSelectedPosition = 0
+            )
+        }
+        return ReviewUiModel(
+            reviewPaging = ReviewPaging.Success(0, true),
+            reviewContent = mapped
+        )
+    }
+
     fun mapReviews(response: MediaReviewResponse, page: Int): ReviewUiModel {
         val mapped = response.data.review.map {
             ReviewContentUiModel(
@@ -42,7 +91,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                         selected = if (it.videos.isEmpty()) index == 0 else false
                     )
                 },
-                menus = ReviewMenuStatus(isReportable = it.isReportable && !isOwner(it.user)),
+                menus = ReviewMenuStatus(isReportable = it.isReportable && !isOwner(it.user.userId)),
                 likeState = ReviewLikeUiState(
                     count = it.likeStats.totalLike,
                     state = ReviewLikeUiState.ReviewLikeStatus.getByValue(it.likeStats.likeStatus),
@@ -61,7 +110,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     timestamp = it.createTimestamp,
                     description = Uri.decode(it.review)
                 ),
-                mediaSelectedPosition = 0,
+                mediaSelectedPosition = 0
             )
         }
         return ReviewUiModel(
@@ -70,8 +119,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
         )
     }
 
-    private fun isOwner(author: MediaReviewResponse.ReviewerUserInfo): Boolean =
-        author.userId == userSession.userId
+    private fun isOwner(authorId: String): Boolean = authorId == userSession.userId
 
     fun mapMiniInfo(response: GetMiniProductInfoResponse): BottomNavUiModel =
         BottomNavUiModel(
