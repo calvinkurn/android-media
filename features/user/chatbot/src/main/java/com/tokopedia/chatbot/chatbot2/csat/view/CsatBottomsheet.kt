@@ -182,30 +182,36 @@ class CsatBottomsheet :
         viewBinding?.csatReasonContainer?.removeAllViews()
         csatModel.selectedPoint.reasons.forEach { reason ->
             val reasonLayout = layoutInflater.inflate(R.layout.item_csat_reason, null)
-            reasonLayout.findViewById<Typography>(R.id.csat_reason_title).text = reason
-            reasonLayout.findViewById<CheckboxUnify>(R.id.csat_reason_checkbox)
-                .setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (isChecked) {
-                        viewModel.selectSelectedReason(reason)
-                    } else {
-                        viewModel.unselectSelectedReason(reason)
-                    }
-                    viewModel.updateButton()
+            val reasonMessage = reasonLayout.findViewById<Typography>(R.id.csat_reason_title)
+            reasonMessage.text = reason
+            val reasonCheckBox = reasonLayout.findViewById<CheckboxUnify>(R.id.csat_reason_checkbox)
+            reasonCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) {
+                    viewModel.selectSelectedReason(reason)
+                } else {
+                    viewModel.unselectSelectedReason(reason)
                 }
+                viewModel.updateButton()
+            }
+            reasonLayout.setOnClickListener {
+                reasonCheckBox.isChecked = !reasonCheckBox.isChecked
+            }
             viewBinding?.csatReasonContainer?.addView(reasonLayout)
         }
     }
 
     private fun renderOtherReason(csatModel: CsatModel) {
         viewBinding?.csatOtherReasonTitle?.text = csatModel.selectedPoint.otherReasonTitle
-        viewBinding?.csatOtherReason?.setCounter(csatModel.maximumOtherReasonChar)
-        viewBinding?.csatOtherReason?.minLine = 4
-        viewBinding?.csatOtherReason?.setLabel("Tulis detailnya di sini, ya..")
-        viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.minimumOtherReasonChar} karakter")
-        viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
-            // todo : add debounce
-            viewModel.setOtherReason(it.toString())
-            viewModel.updateButton()
+        viewBinding?.csatOtherReason?.apply {
+            setCounter(csatModel.maximumOtherReasonChar)
+            minLine = 4
+            setLabel("Tulis detailnya di sini, ya..")
+            viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.minimumOtherReasonChar} karakter")
+            viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
+                // todo : add debounce
+                viewModel.setOtherReason(it.toString())
+                viewModel.updateButton()
+            }
         }
     }
 

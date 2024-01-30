@@ -17,12 +17,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/csat_reason_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/csat_reason_checkbox"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_2"
-        tools:text="Gimana kami bisa memperbaikinya memperbaikinya memperbaikinya memperbaikinya?" />
+        tools:text="Gimana kami bisa baikinya memperbaikinya?" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
