@@ -6,4 +6,4 @@
     android:layout_height="0.5dp"
     android:layout_marginBottom="8dp"
     android:layout_marginTop="8dp"
-    android:background="@color/Unify_N400" />
+    android:background="@color/Unify_NN600" />
