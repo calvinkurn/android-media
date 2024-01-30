@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chatbot.chatbot2.csat.data.request.SubmitCsatRequest
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
-import com.tokopedia.chatbot.chatbot2.csat.domain.model.SubmitButtonState
 import com.tokopedia.chatbot.chatbot2.csat.domain.usecase.SubmitCsatUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,11 +19,21 @@ class CsatViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
+    private val _csatEventFlow = MutableSharedFlow<CsatEvent>(replay = 1)
+    val csatEventFlow = _csatEventFlow.asSharedFlow()
+
     private val _csatDataStateFlow = MutableStateFlow(CsatModel())
     val csatDataStateFlow = _csatDataStateFlow.asStateFlow()
 
-    private val _submitButtonStateFlow = MutableStateFlow(SubmitButtonState())
-    val submitButtonStateFlow = _submitButtonStateFlow.asStateFlow()
+    fun processAction(action: CsatAction) {
+        when (action) {
+            is CsatAction.SelectScore -> setSelectedScore(action.pointModel)
+            is CsatAction.SelectReason -> selectSelectedReason(action.reason)
+            is CsatAction.UnselectReason -> unselectSelectedReason(action.reason)
+            is CsatAction.SetOtherReason -> setOtherReason(action.reason)
+            CsatAction.SendCsat -> sendCsat()
+        }
+    }
 
     fun initializeData(csatModel: CsatModel) {
         _csatDataStateFlow.update {
@@ -32,15 +41,15 @@ class CsatViewModel @Inject constructor(
                 title = csatModel.title,
                 points = csatModel.points,
                 selectedPoint = csatModel.selectedPoint,
-                selectedReasons = csatModel.selectedReasons,
-                otherReason = csatModel.otherReason,
+                selectedReasons = mutableListOf(),
+                otherReason = "",
                 minimumOtherReasonChar = csatModel.minimumOtherReasonChar,
                 maximumOtherReasonChar = csatModel.maximumOtherReasonChar
             )
         }
     }
 
-    fun setSelectedScore(pointModel: PointModel) {
+    private fun setSelectedScore(pointModel: PointModel) {
         _csatDataStateFlow.update {
             it.copy(
                 selectedPoint = pointModel,
@@ -49,7 +58,7 @@ class CsatViewModel @Inject constructor(
         }
     }
 
-    fun selectSelectedReason(reason: String) {
+    private fun selectSelectedReason(reason: String) {
         _csatDataStateFlow.value.selectedReasons.let {
             if (!it.contains(reason)) {
                 it.add(reason)
@@ -61,7 +70,7 @@ class CsatViewModel @Inject constructor(
         }
     }
 
-    fun unselectSelectedReason(reason: String) {
+    private fun unselectSelectedReason(reason: String) {
         _csatDataStateFlow.value.selectedReasons.let {
             if (it.contains(reason)) {
                 it.remove(reason)
@@ -73,7 +82,7 @@ class CsatViewModel @Inject constructor(
         }
     }
 
-    fun setOtherReason(otherReason: String) {
+    private fun setOtherReason(otherReason: String) {
         _csatDataStateFlow.value.otherReason = otherReason
         Log.d("Irfan", _csatDataStateFlow.value.otherReason)
     }
@@ -85,22 +94,14 @@ class CsatViewModel @Inject constructor(
             val isOtherReasonNotSatisfied =
                 csatModel.otherReason.isNotBlank() && csatModel.otherReason.length < minimumOtherReasonChar
             if (isSelectedReasonsEmpty || isOtherReasonNotSatisfied) {
-                _submitButtonStateFlow.update {
-                    it.copy(
-                        isEnabled = false
-                    )
-                }
+                _csatEventFlow.tryEmit(CsatEvent.UpdateButton(isEnabled = false))
             } else {
-                _submitButtonStateFlow.update {
-                    it.copy(
-                        isEnabled = true
-                    )
-                }
+                _csatEventFlow.tryEmit(CsatEvent.UpdateButton(isEnabled = true))
             }
         }
     }
 
-    fun sendCsat() {
+    private fun sendCsat() {
         submitCsatUseCase.setRequestParams(SubmitCsatRequest())
         submitCsatUseCase.execute(
             {

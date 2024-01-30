@@ -19,7 +19,6 @@ import com.tokopedia.chatbot.chatbot2.csat.di.CsatComponent
 import com.tokopedia.chatbot.chatbot2.csat.di.DaggerCsatComponent
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
-import com.tokopedia.chatbot.chatbot2.csat.domain.model.SubmitButtonState
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.dummyData
 import com.tokopedia.chatbot.databinding.BottomsheetCsatBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -112,8 +111,18 @@ class CsatBottomsheet :
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.submitButtonStateFlow.collectLatest {
-                renderButtonState(it)
+            viewModel.csatEventFlow.collect {
+                when (it) {
+                    is CsatEvent.UpdateButton -> {
+                        renderButtonState(it)
+                    }
+
+                    is CsatEvent.ShowError -> {
+                    }
+
+                    is CsatEvent.NavigateToPreviousPage -> {
+                    }
+                }
             }
         }
     }
@@ -139,7 +148,7 @@ class CsatBottomsheet :
             val emojiImageUnify =
                 getEmojiLayout(context, pointUiModel, csatModel.selectedPoint.score)
             emojiImageUnify.setOnClickListener {
-                viewModel.setSelectedScore(pointUiModel)
+                viewModel.processAction(CsatAction.SelectScore(pointUiModel))
             }
             viewBinding?.csatEmojiContainer?.addView(emojiImageUnify)
         }
@@ -187,9 +196,9 @@ class CsatBottomsheet :
             val reasonCheckBox = reasonLayout.findViewById<CheckboxUnify>(R.id.csat_reason_checkbox)
             reasonCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
-                    viewModel.selectSelectedReason(reason)
+                    viewModel.processAction(CsatAction.SelectReason(reason))
                 } else {
-                    viewModel.unselectSelectedReason(reason)
+                    viewModel.processAction(CsatAction.UnselectReason((reason)))
                 }
                 viewModel.updateButton()
             }
@@ -209,16 +218,16 @@ class CsatBottomsheet :
             viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.minimumOtherReasonChar} karakter")
             viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
                 // todo : add debounce
-                viewModel.setOtherReason(it.toString())
+                viewModel.processAction(CsatAction.SetOtherReason(it.toString()))
                 viewModel.updateButton()
             }
         }
     }
 
-    private fun renderButtonState(state: SubmitButtonState) {
+    private fun renderButtonState(state: CsatEvent.UpdateButton) {
         viewBinding?.csatButtonSubmit?.isEnabled = state.isEnabled
         viewBinding?.csatButtonSubmit?.setOnClickListener {
-            viewModel.sendCsat()
+            viewModel.processAction(CsatAction.SendCsat)
         }
     }
 
