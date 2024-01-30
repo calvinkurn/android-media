@@ -217,6 +217,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun init(context: Context, attrs: AttributeSet?) {
         val inflater = LayoutInflater.from(context)
         inflater.inflate(R.layout.nav_main_toolbar, this, true)
+        contentInsetStartWithNavigation = 0
 
         if (attrs != null) {
             val ta = context.obtainStyledAttributes(attrs, R.styleable.NavToolbar, 0, 0)

@@ -3567,12 +3567,11 @@ open class DynamicProductDetailFragment :
                 if (items.isEmpty()) {
                     navigation?.stop(recyclerView)
                 } else {
-                    val offsetY = navToolbar?.height.orZero()
-                    navigation?.start(recyclerView, items, this, offsetY = offsetY)
+                    navigation?.start(recyclerView, items, this)
                 }
             }
         }
-    }
+                }
 
     override fun onButtonFollowNplClick() {
         val reData = viewModel.p2Data.value?.restrictionInfo?.getReByProductId(

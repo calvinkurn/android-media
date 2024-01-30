@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -28,6 +27,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.product.manage.ProductManageInstance
@@ -272,11 +273,7 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     private fun showLoading() {
         binding?.ivLoadingStockReminder?.let { iv ->
-            ImageHandler.loadGif(
-                iv,
-                com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate,
-                com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate
-            )
+            iv.loadAsGif(com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate)
         }
         binding?.loadingStockReminder?.visibility = View.VISIBLE
         binding?.cardSaveBtn?.visibility = View.GONE
@@ -284,7 +281,7 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     private fun hideLoading() {
         binding?.ivLoadingStockReminder?.let { iv ->
-            ImageHandler.clearImage(iv)
+            iv.clearImage()
         }
         binding?.loadingStockReminder?.visibility = View.GONE
         binding?.cardSaveBtn?.visibility = View.VISIBLE

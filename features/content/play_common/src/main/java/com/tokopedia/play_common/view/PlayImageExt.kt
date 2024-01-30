@@ -15,11 +15,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-fun ImageView.loadImage(url: String, listener: ImageHandler.ImageLoaderStateListener? = null){
+fun ImageView.loadImage(url: String, listener: ImageLoaderStateListener? = null){
     Glide.with(context)
             .load(url)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -124,4 +123,9 @@ fun View.setGradientAnimBackground(colorArray: List<String>) {
     } else if (colorArray.isNotEmpty()) {
         this.setBackgroundColor(parseColor(colorArray.first()))
     }
+}
+
+interface ImageLoaderStateListener {
+    fun successLoad()
+    fun failedLoad()
 }
