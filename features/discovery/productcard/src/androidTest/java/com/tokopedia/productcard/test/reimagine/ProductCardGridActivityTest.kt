@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.reimagine.ProductCardGridView
 import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.unifycomponents.R
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.test.R as productcardtestR
 
@@ -84,18 +84,18 @@ class ProductCardGridActivityTest: AppCompatActivity() {
             }
         }
 
-        private fun toast(message: String) {
-            val toastMessage = "Position $bindingAdapterPosition, $message"
-            Toast.makeText(itemView.context, toastMessage, Toast.LENGTH_SHORT).show()
-        }
-
         private fun setBackgroundContainer(productCardModel: ProductCardModel, view: View) {
             val contextResource = view.context
             if(productCardModel.isInBackground) {
-                view.setBackgroundColor(contextResource.getColor(R.color.Unify_GN100))
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_GN100))
             } else {
-                view.setBackgroundColor(contextResource.getColor(R.color.Unify_NN0))
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_NN0))
             }
+        }
+
+        private fun toast(message: String) {
+            val toastMessage = "Position $bindingAdapterPosition, $message"
+            Toast.makeText(itemView.context, toastMessage, Toast.LENGTH_SHORT).show()
         }
 
         fun recycle() {

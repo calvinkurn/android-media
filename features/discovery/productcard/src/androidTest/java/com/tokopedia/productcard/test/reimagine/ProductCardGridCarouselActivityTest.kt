@@ -107,11 +107,6 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
                 2 * context.getPixel(R.dimen.product_card_reimagine_use_compat_padding_size)
             else 0
 
-        private fun toast(message: String) {
-            val toastMessage = "Position $bindingAdapterPosition, $message"
-            Toast.makeText(itemView.context, toastMessage, Toast.LENGTH_SHORT).show()
-        }
-
         private fun setBackgroundContainer(productCardModel: ProductCardModel, view: View) {
             val contextResource = view.context
             if(productCardModel.isInBackground) {
@@ -119,6 +114,11 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
             } else {
                 view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_NN0))
             }
+        }
+
+        private fun toast(message: String) {
+            val toastMessage = "Position $bindingAdapterPosition, $message"
+            Toast.makeText(itemView.context, toastMessage, Toast.LENGTH_SHORT).show()
         }
 
         fun recycle() {
