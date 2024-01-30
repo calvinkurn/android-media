@@ -57,7 +57,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.QueryHotelPropertySearch
+import com.tokopedia.hotel.common.util. QueryHotelPropertySearch
 import com.tokopedia.hotel.databinding.FragmentHotelSearchMapBinding
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
@@ -1209,7 +1209,7 @@ class HotelSearchMapFragment :
                         createCustomMarker(
                             requireContext(),
                             HOTEL_PRICE_ACTIVE_PIN,
-                            allMarker[position].title!!
+                            allMarker[position].title?:""
                         )
                     )
                     putPriceMarkerOnTop(position)
@@ -1250,7 +1250,7 @@ class HotelSearchMapFragment :
     private fun resetMarkerState() {
         if (!allMarker.isNullOrEmpty()) {
             allMarker.forEach {
-                it.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title!!))
+                it.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title?:""))
             }
         }
     }

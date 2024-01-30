@@ -526,7 +526,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         task.addOnSuccessListener {
             // Request location update once then remove when settings are satisfied
             looper?.let {
-                mFusedLocationClient?.requestLocationUpdates(locationRequest, mLocationCallback!!, looper)
+                mLocationCallback?.let { it1 ->
+                    mFusedLocationClient?.requestLocationUpdates(locationRequest,
+                        it1, looper)
+                }
             }
         }
         task.addOnFailureListener {
