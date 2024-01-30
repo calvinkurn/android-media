@@ -98,7 +98,8 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
 
     private fun getDateDiffFromToday(date: String?): Long? {
         try {
-            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.ENGLISH)
+            val localeID = Locale("in", "ID")
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", localeID)
             formatter.isLenient = false
             formatter.timeZone = TimeZone.getTimeZone("UTC")
             return formatter.parse(date + "00")?.getDayDiffFromToday()

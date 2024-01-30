@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Point
+import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,13 +23,12 @@ import com.tokopedia.notifications.databinding.LayoutInappAnimationBinding
 import com.tokopedia.notifications.domain.data.PopUpContent
 import kotlinx.android.synthetic.main.layout_inapp_animation.view.*
 
-
-open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val activity: Activity):
+open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val activity: Activity) :
     ConstraintLayout(context, attrs) {
 
     private val layoutInflater = LayoutInflater.from(context)
     private val binding =
-       LayoutInappAnimationBinding.inflate(layoutInflater, this, true)
+        LayoutInappAnimationBinding.inflate(layoutInflater, this, true)
     private var eventSlicingStart: MotionEvent? = null
     private var myGestureListener = MyGestureListener()
     private var eventSlicingEnd: MotionEvent? = null
@@ -38,19 +38,21 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private var scratchCardId: String = ""
     private var ketupatSlashCallBack: KetupatSlashCallBack? = null
 
-    open fun loadLottieAnimation(slug: String?, popUpContent: PopUpContent,
-                                 scratchCardId: String,
-                                 ketupatSlashCallBack: KetupatSlashCallBack? = null) {
+    open fun loadLottieAnimation(
+        slug: String?,
+        popUpContent: PopUpContent,
+        scratchCardId: String,
+        ketupatSlashCallBack: KetupatSlashCallBack? = null
+    ) {
         try {
-        loadAnimationFromURl(popUpContent)
             this.slug = slug
             this.scratchCardId = scratchCardId
+            this.ketupatSlashCallBack = ketupatSlashCallBack
+            loadAnimationFromURl(popUpContent)
             handleLottieSlice()
             binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
             onCloseClick(binding.root)
             onParentContainerClick(binding.root)
-            this.ketupatSlashCallBack = ketupatSlashCallBack
-            animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
         } catch (e: Exception) {
             ServerLogger.log(
                 Priority.P2,
@@ -67,12 +69,18 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private fun loadAnimationFromURl(popUpContent: PopUpContent) {
         popUpContent.assets?.get(0)?.let {
             binding.lottieViewPopup.setAnimationFromUrl(it.value)
-            animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
             binding.lottieViewPopup.setMinFrame("Tutorial")
             binding.lottieViewPopup.setMaxFrame(59)
+            Handler().postDelayed({
+                binding.icClose.visible()
+            }, 600)
+            animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
         }
         popUpContent.assets?.get(1)?.let {
             crackCouponHandler.url = it.value.toString()
+            activity.applicationContext?.let { context ->
+                crackCouponHandler.rewardSoundManager = createAudioManager(context)
+            }
         }
     }
 
@@ -117,9 +125,9 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     }
 
     private fun onCloseClick(view: View) {
-        binding.icClose.visible()
         val onClickListener = OnClickListener { _: View? ->
             (view.parent as ViewGroup).removeView(view)
+            crackCouponHandler.destroySound()
             animationPopupGtmTracker.sendPopupCloseEvent(scratchCardId)
         }
         binding.icClose.setOnClickListener(onClickListener)
@@ -128,12 +136,22 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private fun onParentContainerClick(view: View) {
         val (percentageDx, percentageDy) = myGestureListener.getGesturePercent()
         val onClickListener = OnClickListener { _: View? ->
-            if (percentageDx < 8 || percentageDy < 8) {
+            if (percentageDx < 6 || percentageDy < 6) {
                 (view.parent as ViewGroup).removeView(view)
+                crackCouponHandler.destroySound()
                 animationPopupGtmTracker.sendPopupCloseEvent(scratchCardId)
             }
         }
         binding.parentContainer.setOnClickListener(onClickListener)
     }
 
+    private fun createAudioManager(context: Context?): AudioManager? {
+        var rewardSoundManager: AudioManager? = null
+        context?.let {
+            if (rewardSoundManager == null) {
+                rewardSoundManager = AudioFactory.createAudio(it)
+            }
+        }
+        return rewardSoundManager
+    }
 }
