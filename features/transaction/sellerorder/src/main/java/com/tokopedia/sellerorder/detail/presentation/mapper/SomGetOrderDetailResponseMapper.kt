@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.order_management_common.domain.data.ProductBenefit
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
@@ -57,7 +58,14 @@ object SomGetOrderDetailResponseMapper {
                         addOnSummaryUiModel = it.addonSummary?.let { addOnSummary ->
                             com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
                                 addOnIdentifier = addOnsIdentifier,
-                                totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(addOnSummary.totalPriceStr)),
+                                totalPriceText = if (addOnSummary.totalPriceStr.isNotBlank()) {
+                                    StringRes(
+                                        order_management_commonR.string.om_add_on_collapsed_title_format,
+                                        listOf(addOnSummary.totalPriceStr)
+                                    )
+                                } else {
+                                    StringRes(Int.ZERO)
+                                },
                                 addonsLogoUrl = addOnIcon,
                                 addonsTitle = addOnLabel,
                                 addonItemList = addOnSummary.addons.map { addon ->
@@ -241,7 +249,14 @@ object SomGetOrderDetailResponseMapper {
                     addOnSummaryUiModel = product.addOnSummary?.let { addOnSummary ->
                         com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
                             addOnIdentifier = addOnsIdentifier,
-                            totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(addOnSummary.totalPriceStr)),
+                            totalPriceText = if (addOnSummary.totalPriceStr.isNotBlank()) {
+                                StringRes(
+                                    order_management_commonR.string.om_add_on_collapsed_title_format,
+                                    listOf(addOnSummary.totalPriceStr)
+                                )
+                            } else {
+                                StringRes(Int.ZERO)
+                            },
                             addonsLogoUrl = addOnIcon,
                             addonsTitle = addOnLabel,
                             addonItemList = addOnSummary.addons.map { addon ->
@@ -285,7 +300,14 @@ object SomGetOrderDetailResponseMapper {
                 SomDetailAddOnOrderLevelUiModel(
                     addOnSummaryUiModel = AddOnSummaryUiModel(
                         addOnIdentifier = addOnSummary.label,
-                        totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(addOnSummary.totalPriceStr)),
+                        totalPriceText = if (addOnSummary.totalPriceStr.isNotBlank()) {
+                            StringRes(
+                                order_management_commonR.string.om_add_on_collapsed_title_format,
+                                listOf(addOnSummary.totalPriceStr)
+                            )
+                        } else {
+                            StringRes(Int.ZERO)
+                        },
                         addonsLogoUrl = addOnIcon,
                         addonsTitle = addOnLabel,
                         addonItemList = addOnSummary.addons.map { addon ->

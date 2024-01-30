@@ -1091,7 +1091,14 @@ object ProductListUiStateMapper {
             addOnSummaryUiModel = product.addonSummary?.let {
                 com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
                     addOnIdentifier = addOnIdentifier,
-                    totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(it.totalPriceStr)),
+                    totalPriceText = if (it.totalPriceStr.isNotBlank()) {
+                        StringRes(
+                            order_management_commonR.string.om_add_on_collapsed_title_format,
+                            listOf(it.totalPriceStr)
+                        )
+                    } else {
+                        StringRes(Int.ZERO)
+                    },
                     addonsLogoUrl = addOnIcon,
                     addonsTitle = addOnLabel,
                     addonItemList = it.addons?.map { addon ->

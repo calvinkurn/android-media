@@ -96,7 +96,6 @@ class ProductBmgmItemAdapter(
                 setBmgmItemProductPriceQuantity(it.quantity, it.productPriceText)
                 setupBmgmItemProductNote(it.productNote)
                 setupAddonSection(it.addOnSummaryUiModel)
-                setupDividerAddonSummary(it)
                 setItemOnClickListener(it)
                 setupBmgmItemButton(it.button, it.isProcessing == true)
                 setupImpressionListener(it)
@@ -150,10 +149,6 @@ class ProductBmgmItemAdapter(
                 partialBmgmAddonSummaryBinding =
                     PartialBmgmAddOnSummaryBinding.bind(this.itemView.findViewById(R.id.itemBmgmAddonViewStub))
             }
-        }
-
-        private fun setupDividerAddonSummary(uiModel: ProductBmgmSectionUiModel.ProductUiModel?) {
-            binding.dividerAddOn.showWithCondition(uiModel?.addOnSummaryUiModel != null)
         }
 
         private fun setBmgmItemThumbnail(thumbnailUrl: String) {
