@@ -7,6 +7,8 @@ data class CartShopGroupTickerGroupMetadata(
     val listOrderData: ArrayList<OrderData> = arrayListOf()
 ) {
     data class OrderData(
+        @SerializedName("order_metadata")
+        val orderMetadata: String = "",
         @SerializedName("unique_id")
         val uniqueId: String = "",
         @SerializedName("shop")
@@ -33,11 +35,7 @@ data class CartShopGroupTickerGroupMetadata(
                 @SerializedName("product_id")
                 val productId: String = "",
                 @SerializedName("quantity")
-                val quantity: Int = 0,
-                @SerializedName("cpl")
-                val cpl: String = "",
-                @SerializedName("origin_warehouse_id")
-                val originWarehouseId: String = ""
+                val quantity: Int = 0
             )
         }
     }

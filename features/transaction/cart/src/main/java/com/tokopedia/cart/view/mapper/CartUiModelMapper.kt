@@ -477,6 +477,12 @@ object CartUiModelMapper {
                 actionsData = cartData.availableSection.actions
                 isError = false
             }
+            identifier = generateIdentifier(
+                availableShop?.cartStringOrder,
+                bundleGroupId,
+                cartDetail.cartDetailInfo.bmgmData.offerId,
+                cartDetail.cartDetailInfo.bmgmData.offerTypeId
+            )
             shopHolderData = shopData
             originWarehouseIds = product.originWarehouseIds
             needPrescription = product.ethicalDrug.needPrescription
@@ -926,5 +932,14 @@ object CartUiModelMapper {
         } else {
             return CartDetailInfo()
         }
+    }
+
+    private fun generateIdentifier(
+        cartStringOrder: String?,
+        bundleGroupId: String,
+        offerId: Long,
+        offerTypeId: Long
+    ): String {
+        return "$cartStringOrder|$bundleGroupId|$offerId|$offerTypeId"
     }
 }

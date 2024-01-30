@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartItemHolderData(
+    var identifier: String = "",
     var cartString: String = "",
     var cartStringOrder: String = "",
     var actionsData: List<Action> = emptyList(),
