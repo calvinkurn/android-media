@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.baselist.R;
-import com.tokopedia.media.loader.JvmMediaLoader;
 
 
 /**
