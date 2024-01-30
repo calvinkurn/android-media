@@ -271,6 +271,9 @@ class ThankYouPageActivity :
 
     private fun showToolbarAfterLoading(title: String) {
         if (isGlobalNavEnable()) {
+            if (isV2Enabled()) {
+                globalNabToolbar.alpha = 0f
+            }
             globalNabToolbar.show()
             initializeGlobalNav(title)
         } else {

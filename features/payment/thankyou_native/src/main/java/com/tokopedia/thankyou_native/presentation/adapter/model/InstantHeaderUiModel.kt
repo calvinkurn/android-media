@@ -21,7 +21,7 @@ data class InstantHeaderUiModel(
     val secondaryButtonText: String,
     val promoFlags: String,
     val totalDeduction: Float
-) : Visitable<BottomContentFactory> {
+) : Visitable<BottomContentFactory>, WidgetTag(TAG) {
 
     override fun type(typeFactory: BottomContentFactory): Int {
         return typeFactory.type(this)
@@ -74,5 +74,7 @@ data class InstantHeaderUiModel(
 
             return totalDeduction
         }
+
+        const val TAG = "instant_header"
     }
 }

@@ -33,7 +33,7 @@ data class WaitingHeaderUiModel(
     val secondaryButtonText: String,
     val highlightLastThreeDigits: Boolean,
     val bankBranch: String,
-) : Visitable<BottomContentFactory> {
+) : Visitable<BottomContentFactory>, WidgetTag(TAG) {
 
     override fun type(typeFactory: BottomContentFactory): Int {
         return typeFactory.type(this)
@@ -81,5 +81,7 @@ data class WaitingHeaderUiModel(
                 thanksPageData.additionalInfo.bankBranch
             )
         }
+
+        const val TAG = "waiting_header"
     }
 }
