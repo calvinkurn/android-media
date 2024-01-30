@@ -125,9 +125,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun handleInitializeProductMainData() {
         when (val source = productPreviewSource.productPreviewSource) {
             is ProductPreviewSourceModel.ProductSourceData -> {
-                _productContentState.value = _productContentState.value.copy(
-                    productList = source.productSourceList
-                )
+                _productContentState.update {
+                    it.copy(productList = source.productSourceList)
+                }
             }
 
             else -> return
