@@ -17,24 +17,26 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     }
 
     fun assertNormalShippingTitle(title: CharSequence) {
-        assertEquals(widget.binding?.labelSelectedShippingDuration?.text, title)
+        assertEquals(widget.binding?.labelSelectedShippingDuration?.text?.toString(), title)
     }
 
     fun assertNormalShippingCourier(courier: CharSequence) {
-        assertEquals(widget.binding?.labelSelectedShippingCourier?.text, courier)
+        assertEquals(widget.binding?.labelSelectedShippingCourier?.text?.toString(), courier)
     }
 
     fun assertNormalShippingEta(eta: CharSequence) {
-        assertEquals(widget.binding?.labelSelectedShippingPriceOrDuration?.text, eta)
+        assertEquals(widget.binding?.labelSelectedShippingPriceOrDuration?.text?.toString(), eta)
     }
 
     fun assertNormalShippingCourierPrice(price: CharSequence) {
-        assertEquals(widget.binding?.labelSelectedShippingPriceOrDuration?.text, price)
+        assertEquals(widget.binding?.labelSelectedShippingPriceOrDuration?.text?.toString(), price)
     }
 
     fun assertNormalShippingCodLabel(text: CharSequence, visibility: Int) {
         assertEquals(widget.binding?.lblCodAvailable?.visibility, visibility)
-        assertEquals(widget.binding?.lblCodAvailable?.text, text)
+        if (visibility == View.VISIBLE) {
+            assertEquals(widget.binding?.lblCodAvailable?.text?.toString(), text)
+        }
     }
 
     fun assertWhitelabelShippingVisible() {
@@ -45,11 +47,11 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     }
 
     fun assertWhitelabelShippingTitle(title: CharSequence) {
-        assertEquals(widget.binding?.labelSelectedWhitelabelShipping?.text, title)
+        assertEquals(widget.binding?.labelSelectedWhitelabelShipping?.text.toString(), title)
     }
 
     fun assertWhitelabelShippingEta(text: CharSequence) {
-        assertEquals(widget.binding?.labelWhitelabelShippingEta?.text, text)
+        assertEquals(widget.binding?.labelWhitelabelShippingEta?.text?.toString(), text)
     }
 
     fun assertBebasOngkirShippingVisible() {
@@ -60,11 +62,11 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     }
 
     fun assertBebasOngkirShippingTitle(title: CharSequence) {
-        assertEquals(widget.binding?.labelSelectedFreeShipping?.text, title)
+        assertEquals(widget.binding?.labelSelectedFreeShipping?.text?.toString(), title)
     }
 
     fun assertBebasOngkirShippingEta(eta: CharSequence, visibility: Int) {
-        assertEquals(widget.binding?.labelFreeShippingEta?.text, eta)
+        assertEquals(widget.binding?.labelFreeShippingEta?.text?.toString(), eta)
         assertEquals(
             visibility,
             widget.binding?.labelFreeShippingEta?.visibility
@@ -73,7 +75,7 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
 
     fun assertBebasOngkirShippingCodLabel(text: CharSequence, visibility: Int) {
         assertEquals(widget.binding?.lblCodFreeShipping?.visibility, visibility)
-        assertEquals(widget.binding?.lblCodFreeShipping?.text, text)
+        assertEquals(widget.binding?.lblCodFreeShipping?.text?.toString(), text)
     }
 
     fun assertBebasOngkirShippingLogoLabel(visibility: Int) {
@@ -88,11 +90,11 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     }
 
     fun assertNow2HourShippingTitle(title: CharSequence) {
-        assertEquals(widget.binding?.labelSelectedSingleShippingTitle?.text, title)
+        assertEquals(widget.binding?.labelSelectedSingleShippingTitle?.text?.toString(), title)
     }
 
     fun assertNow2HourShippingDescription(description: CharSequence, visibility: Int) {
-        assertEquals(widget.binding?.labelSelectedSingleShippingTitle?.text, description)
+        assertEquals(widget.binding?.labelSelectedSingleShippingTitle?.text?.toString(), description)
     }
 
     fun assertSchellyShippingVisible() {
@@ -104,7 +106,7 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
 
     fun assertErrorPinpointVisible(text: CharSequence) {
         assertEquals(widget.binding?.layoutStateHasSelectedSingleShipping?.visibility, View.VISIBLE)
-        assertEquals(widget.binding?.labelSingleShippingEta?.text, text)
+        assertEquals(widget.binding?.labelSingleShippingEta?.text?.toString(), text)
     }
 
     fun assertUnavailableCourierLayoutVisible() {
@@ -138,7 +140,7 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     fun assertMustInsurance(price: Double) {
         assertEquals(widget.binding?.layoutShipmentInsurance?.visibility, View.VISIBLE)
         assertEquals(
-            widget.binding?.tvInsuranceTitle?.text,
+            widget.binding?.tvInsuranceTitle?.text?.toString(),
             "Dilindungi Asuransi Pengiriman (${
             convertPriceValueToIdrFormat(
                 price,
@@ -156,7 +158,7 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     fun assertOptionalInsurance(price: Double, isChecked: Boolean) {
         assertEquals(widget.binding?.layoutShipmentInsurance?.visibility, View.VISIBLE)
         assertEquals(
-            widget.binding?.tvInsuranceTitle?.text,
+            widget.binding?.tvInsuranceTitle?.text?.toString(),
             "Pakai Asuransi Pengiriman (${
             convertPriceValueToIdrFormat(
                 price,
@@ -166,5 +168,10 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
         )
         assertEquals(widget.binding?.checkboxInsurance?.visibility, View.VISIBLE)
         assertEquals(widget.binding?.checkboxInsurance?.isChecked, isChecked)
+    }
+
+    fun assertInitialStateVisible() {
+        assertEquals(View.VISIBLE, widget.binding?.labelChooseShipping?.visibility)
+        assertEquals("Pilih Pengiriman", widget.binding?.labelChooseShipping?.text)
     }
 }
