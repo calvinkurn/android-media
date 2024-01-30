@@ -187,9 +187,10 @@ open class GoToKycModule {
         val customKycConfigs = gson.parseDataFromString(
             kycConfigString,
             UnifiedKycConfigs::class.java
-        )?.copy(
-            uploadSelfieSecondImageEnabled = RemoteConfigInstance.getInstance()
-                .abTestPlatform.getString(KEY_UPLOAD_SELFIE).isNotEmpty()
+        )
+
+        customKycConfigs?.setUploadSelfieSecondImageEnabled(
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(KEY_UPLOAD_SELFIE).isNotEmpty()
         )
 
         val customAuroraConfigs = gson.parseDataFromString(
