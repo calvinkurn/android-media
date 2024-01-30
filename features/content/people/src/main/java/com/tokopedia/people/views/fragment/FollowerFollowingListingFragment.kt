@@ -107,6 +107,14 @@ internal class FollowerFollowingListingFragment @Inject constructor(
         activity?.onBackPressed()
     }
 
+    private fun onPageChanged(type: FollowListType) {
+        if (type == FollowListType.Follower) {
+            userProfileTracker.openFollowersTab(userId)
+        } else {
+            userProfileTracker.openFollowingTab(userId)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -125,6 +133,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                         profileName = uiState.profileName,
                         totalFollowersFmt = uiState.totalFollowersFmt,
                         totalFollowingsFmt = uiState.totalFollowingsFmt,
+                        onPageChanged = ::onPageChanged,
                         onBackClicked = ::onNavigationBackClicked,
                         initialSelectedTabType = if (selectedTab == EXTRA_FOLLOWING) FollowListType.Following else FollowListType.Follower,
                         followListViewModel = { type ->
@@ -140,6 +149,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                                 }
                             )[FollowListViewModel::class.java]
                         },
+                        tracker = userProfileTracker,
                         modifier = Modifier.fillMaxSize()
                     )
                 }

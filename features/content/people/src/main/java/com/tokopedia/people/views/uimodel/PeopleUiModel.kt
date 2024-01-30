@@ -31,8 +31,26 @@ sealed class PeopleUiModel : BaseItem() {
     ) : PeopleUiModel()
 }
 
+val PeopleUiModel.id: String
+    get() = when (this) {
+        is PeopleUiModel.ShopUiModel -> id
+        is PeopleUiModel.UserUiModel -> id
+    }
+
 val PeopleUiModel.appLink: String
     get() = when (this) {
         is PeopleUiModel.ShopUiModel -> appLink
         is PeopleUiModel.UserUiModel -> appLink
+    }
+
+val PeopleUiModel.isMySelf: Boolean
+    get() = when (this) {
+        is PeopleUiModel.ShopUiModel -> false
+        is PeopleUiModel.UserUiModel -> isMySelf
+    }
+
+val PeopleUiModel.isFollowed: Boolean
+    get() = when (this) {
+        is PeopleUiModel.ShopUiModel -> isFollowed
+        is PeopleUiModel.UserUiModel -> isFollowed
     }
