@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.data.pojo.SettingSections
 import com.tokopedia.settingnotif.usersetting.util.componentTextColor
@@ -21,7 +21,7 @@ class SettingSectionViewHolder(itemView: View?) : AbstractViewHolder<SettingSect
     override fun bind(element: SettingSections?) {
         if (element == null) return
         sectionTitle?.text = element.title
-        ImageHandler.LoadImage(icSection, element.icon)
+        icSection?.loadImageFitCenter(element.icon)
 
         context?.let {
             val colorId = componentTextColor(element.isEnabled)

@@ -28,7 +28,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellersearch.SellerSearchDeeplinkMapper
@@ -51,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -1401,29 +1401,17 @@ class SellerHomeFragment :
     }
 
     private fun setupShopSharing() {
-        ImageHandler.loadImageWithTarget(
-            context,
-            shopShareData?.shopSnippetURL.orEmpty(),
-            object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(
-                    resource: Bitmap,
-                    transition: Transition<in Bitmap>?
-                ) {
-                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                        resource,
-                        Bitmap.CompressFormat.PNG
-                    )
-                    if (savedFile != null) {
-                        shopImageFilePath = savedFile.absolutePath
-                        initShopShareBottomSheet()
-                    }
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // no op
+        context?.let {
+            shopShareData?.shopSnippetURL.orEmpty().getBitmapImageUrl(it) { bitmapResult ->
+                val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                    bitmapResult, Bitmap.CompressFormat.PNG
+                )
+                if (savedFile != null) {
+                    shopImageFilePath = savedFile.absolutePath
+                    initShopShareBottomSheet()
                 }
             }
-        )
+        }
         if (shopShareData == null) {
             val milestoneWidget = adapter.data.firstOrNull { it is MilestoneWidgetUiModel }
             milestoneWidget?.let {
