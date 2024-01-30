@@ -12,14 +12,14 @@ import dagger.assisted.AssistedInject
  * @author by astidhiyaa on 06/12/23
  */
 class ProductPreviewViewModelFactory @AssistedInject constructor(
-    @Assisted private val productPreviewSourceArgs: ProductPreviewSourceModel,
+    @Assisted private val productPreviewSource: ProductPreviewSourceModel,
     private val factory: ProductPreviewViewModel.Factory
 ) : ViewModelProvider.Factory {
 
     @AssistedFactory
     interface Creator {
-        fun create(@Assisted productPreviewSourceArgs: ProductPreviewSourceModel): ProductPreviewViewModelFactory
+        fun create(@Assisted productPreviewSource: ProductPreviewSourceModel): ProductPreviewViewModelFactory
     }
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = factory.create(productPreviewSourceArgs) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = factory.create(productPreviewSource) as T
 }

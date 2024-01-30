@@ -43,18 +43,15 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 class ProductPreviewViewModel @AssistedInject constructor(
-    @Assisted private val productPreviewSourceArgs: ProductPreviewSourceModel,
+    @Assisted val productPreviewSource: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
     private val userSessionInterface: UserSessionInterface
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(productPreviewSourceArgs: ProductPreviewSourceModel): ProductPreviewViewModel
+        fun create(productPreviewSource: ProductPreviewSourceModel): ProductPreviewViewModel
     }
-
-    val productPreviewSource: ProductPreviewSourceModel
-        get() = productPreviewSourceArgs
 
     private val reviewSourceId: String
         get() {

@@ -20,7 +20,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
-import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE_ARGS
+import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
@@ -52,17 +52,17 @@ class ProductPreviewFragment @Inject constructor(
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        val productPreviewSourceArgs: ProductPreviewSourceModel by lazyThreadSafetyNone {
+        val productPreviewSource: ProductPreviewSourceModel by lazyThreadSafetyNone {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arguments?.getParcelable(
-                    PRODUCT_PREVIEW_SOURCE_ARGS,
+                    PRODUCT_PREVIEW_SOURCE,
                     ProductPreviewSourceModel::class.java
                 )
             } else {
-                arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE_ARGS)
+                arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
             } ?: ProductPreviewSourceModel.Empty
         }
-        viewModelFactory.create(productPreviewSourceArgs)
+        viewModelFactory.create(productPreviewSource)
     }
 
     private var _binding: FragmentProductPreviewBinding? = null
