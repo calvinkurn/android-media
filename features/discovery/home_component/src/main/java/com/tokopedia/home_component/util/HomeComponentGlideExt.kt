@@ -130,16 +130,17 @@ fun ImageView.loadImageWithoutPlaceholder(
     listener: ImageHandler.ImageLoaderStateListener? = null,
     skipErrorPlaceholder: Boolean = false,
 ){
+    val imageView = this
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     if(url.isGif()) {
         this.loadAsGif(url) {
             setPlaceHolder(-1)
             if(skipErrorPlaceholder) setErrorDrawable(home_componentR.drawable.bg_transparent)
-            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadImageWithoutPlaceholder)
+            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, imageView)
         }
     } else {
         this.loadImageWithoutPlaceholder(url) {
-            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadImageWithoutPlaceholder)
+            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, imageView)
         }
     }
 }
