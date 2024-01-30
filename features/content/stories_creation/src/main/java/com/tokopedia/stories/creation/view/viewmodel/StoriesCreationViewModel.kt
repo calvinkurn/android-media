@@ -41,6 +41,9 @@ class StoriesCreationViewModel @Inject constructor(
     val storiesId: String
         get() = _uiState.value.config.storiesId
 
+    val mediaFilePath: String
+        get() = _uiState.value.media.filePath
+
     val maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig
         get() = _uiState.value.config.maxStoriesConfig
 

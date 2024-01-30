@@ -20,6 +20,7 @@ import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play_common.util.VideoSnapshotHelper
 import com.tokopedia.stories.creation.R
@@ -36,6 +37,7 @@ import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
+import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -194,13 +196,13 @@ class StoriesCreationActivity : BaseActivity() {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    lifecycleScope.launch {
+                    lifecycleScope.launchCatchError(block = {
                         withContext(dispatchers.io) {
-                            deleteMediaCache()
+                            FileUtil.deleteFile(viewModel.mediaFilePath)
                         }
 
                         finish()
-                    }
+                    }) {}
                 }
             }
         )
@@ -291,10 +293,6 @@ class StoriesCreationActivity : BaseActivity() {
                     }
             }
         }
-    }
-
-    private suspend fun deleteMediaCache() {
-
     }
 
     private fun showErrorBottomSheet(throwable: Throwable) {
