@@ -555,6 +555,11 @@ class FeedPostVideoViewHolder(
                 trackerModel,
                 absoluteAdapterPosition
             )
+        }, onProductClick = {
+            listener.onHighlightClick(
+                it,
+                absoluteAdapterPosition
+            )
         })}
     }
 

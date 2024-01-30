@@ -2227,6 +2227,10 @@ class FeedFragment :
         }
     }
 
+    override fun onHighlightClick(product: FeedCardProductModel, position: Int) {
+        RouteManager.route(requireContext(), product.applink)
+    }
+
     companion object {
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bs"
 

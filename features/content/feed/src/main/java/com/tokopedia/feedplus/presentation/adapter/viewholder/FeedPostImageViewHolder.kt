@@ -211,6 +211,7 @@ class FeedPostImageViewHolder(
                     MotionEvent.ACTION_DOWN -> {
                         firstX = event.x
                     }
+
                     MotionEvent.ACTION_UP -> {
                         secondX = event.x
                         val deltaX = secondX - firstX
@@ -692,26 +693,48 @@ class FeedPostImageViewHolder(
         }
     }
 
-    private fun setupProductLabel(products: List<FeedCardProductModel>, totalProducts: Int, id: String) {
+    private fun setupProductLabel(
+        products: List<FeedCardProductModel>,
+        totalProducts: Int,
+        id: String
+    ) {
         if (mData == null) return
-        binding.productTagView.setContent { ProductTagItems(products = products, totalProducts = totalProducts, key = id, onProductLabelClick = {
-            mData?.let { element ->
-                listener.onProductTagViewClicked(
-                    element.id,
-                    element.author,
-                    element.type,
-                    element.followers.isFollowed,
-                    element.campaign,
-                    element.hasVoucher,
-                    element.products,
-                    element.totalProducts,
-                    trackerDataModel,
-                    absoluteAdapterPosition
-                )
-            }
-        }, onAtcClick = {
-            listener.addToCartHighlight(it, mData?.campaign ?: FeedCardCampaignModel(), absoluteAdapterPosition)
-        }) }
+        binding.productTagView.setContent {
+            ProductTagItems(
+                products = products,
+                totalProducts = totalProducts,
+                key = id,
+                onProductLabelClick = {
+                    mData?.let { element ->
+                        listener.onProductTagViewClicked(
+                            element.id,
+                            element.author,
+                            element.type,
+                            element.followers.isFollowed,
+                            element.campaign,
+                            element.hasVoucher,
+                            element.products,
+                            element.totalProducts,
+                            trackerDataModel,
+                            absoluteAdapterPosition
+                        )
+                    }
+                },
+                onAtcClick = {
+                    listener.addToCartHighlight(
+                        it,
+                        mData?.campaign ?: FeedCardCampaignModel(),
+                        absoluteAdapterPosition
+                    )
+
+                },
+                onProductClick = {
+                    listener.onHighlightClick(
+                        it,
+                        absoluteAdapterPosition
+                    )
+                })
+        }
     }
 
     override fun onViewRecycled() {

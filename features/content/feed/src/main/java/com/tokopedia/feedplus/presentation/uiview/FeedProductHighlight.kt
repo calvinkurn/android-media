@@ -45,7 +45,8 @@ fun FeedProductHighlight(
     product: FeedCardProductModel,
     isVisible: Boolean,
     onClose: () -> Unit,
-    onAtcClick: (FeedCardProductModel) -> Unit
+    onAtcClick: (FeedCardProductModel) -> Unit,
+    onProductClick: (FeedCardProductModel) -> Unit,
 ) {
     NestTheme {
         AnimatedVisibility(
@@ -59,7 +60,7 @@ fun FeedProductHighlight(
                     .background(color = Color(0xB22E3137), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp)
                     .clickable {
-                        onAtcClick(product)
+                        onProductClick(product)
                     }
             ) {
                 val (image, title, ogPrice, discountedPrice, btnAtc, btnClose) = createRefs()
@@ -112,7 +113,8 @@ fun FeedProductHighlight(
                         width = Dimension.fillToConstraints
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
-                    })
+                    }
+                        .clickable { onAtcClick(product) })
                 //Close Button: close show label again
                 NestIcon(iconId = IconUnify.CLOSE,
                     colorLightEnable = NestTheme.colors.NN._0,
@@ -153,6 +155,7 @@ fun ProductTagItems(
     totalProducts: Int,
     key: String,
     onAtcClick: (FeedCardProductModel) -> Unit,
+    onProductClick: (FeedCardProductModel) -> Unit,
     onProductLabelClick: () -> Unit,
 ) {
     var needToBeShown by remember { mutableStateOf(false) }
@@ -174,8 +177,6 @@ fun ProductTagItems(
             product = highlightedProduct,
             isVisible = needToBeShown,
             onClose = { needToBeShown = false },
-            onAtcClick = {
-                onAtcClick
-            })
+            onAtcClick = { onAtcClick }, onProductClick = { onProductClick })
     }
 }
