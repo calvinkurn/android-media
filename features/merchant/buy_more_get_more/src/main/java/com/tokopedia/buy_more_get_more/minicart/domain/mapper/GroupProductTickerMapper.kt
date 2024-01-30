@@ -43,6 +43,9 @@ class GroupProductTickerMapper @Inject constructor() {
             tiers.add(giftView)
         }
 
+        //get first tier message
+        val tierMessage = bmgmData.tierProductList.firstOrNull()?.tierMessage.orEmpty()
+
         //calculate final price
         val lastIndexOfProduct = tiers.indexOfLast { it is BmgmMiniCartVisitable.ProductUiModel }
         var finalPrice = 0.0
@@ -55,16 +58,12 @@ class GroupProductTickerMapper @Inject constructor() {
                 }
 
                 is GwpMiniCartEditorVisitable.GiftMessageUiModel -> {
-                    tier.copy(messages = bmgmData.offerMessage)
+                    tier.copy(messages = listOf(tierMessage))
                 }
 
                 else -> tier
             }
         }.toList()
-
-        val offerMessage = tiers.filterIsInstance<BmgmMiniCartVisitable.TierUiModel>().map {
-            it.tierMessage
-        }
 
         return data.copy(
             tiers = finalTiers,
@@ -72,7 +71,7 @@ class GroupProductTickerMapper @Inject constructor() {
             priceBeforeBenefit = finalPrice,
             isTierAchieved = bmgmData.isTierAchieved,
             offerJsonData = bmgmData.offerJsonData,
-            offerMessage = offerMessage
+            offerMessage = bmgmData.offerMessage
         )
     }
 
