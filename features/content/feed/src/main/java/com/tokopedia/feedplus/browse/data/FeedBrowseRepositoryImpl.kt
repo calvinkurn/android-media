@@ -84,21 +84,21 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
             val response = feedXHomeUseCase(
                 feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
             )
-            mapper.mapSlotsResponse(response).ifEmpty {
-                error("no slots available")
-            }
-
-//            listOf(
-//                FeedBrowseSlotUiModel.StoryGroups(
-//                    slotId = "story_slot",
-//                    title = "",
-//                    storyList = emptyList(),
-//                    nextCursor = "",
-//                    source = "browse-page"
-//                )
-//            ) + mapper.mapSlotsResponse(response).ifEmpty {
+//            mapper.mapSlotsResponse(response).ifEmpty {
 //                error("no slots available")
 //            }
+
+            listOf(
+                FeedBrowseSlotUiModel.StoryGroups(
+                    slotId = "story_slot",
+                    title = "",
+                    storyList = emptyList(),
+                    nextCursor = "",
+                    source = "browse-page"
+                )
+            ) + mapper.mapSlotsResponse(response).ifEmpty {
+                error("no slots available")
+            }
         }
     }
 
@@ -151,11 +151,11 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         StoryGroupsModel(
             List(20) {
                 StoryNodeModel(
-                    id = if (it == 0) "16511314" else "Story $it",
+                    id = if (it == 0) "7240865" else "12751408",
                     name = "Story $it",
                     thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/tPxBYm/2023/8/1/0fc7d4e1-c812-4bbf-8e73-45ccb3661c84.jpg",
                     hasUnseenStory = it.isEven(),
-                    appLink = "tokopedia://stories/shop/16511314",
+                    appLink = if (it == 0) "tokopedia://stories/shop/7240865" else "tokopedia://stories/shop/12751408",
                     lastUpdatedAt = System.currentTimeMillis(),
                     authorType = AuthorType.Shop
                 )
