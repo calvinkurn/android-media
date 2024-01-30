@@ -324,4 +324,5 @@ public class RemoteConfigKey {
 
     public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
 
+    public static final String ANDROID_ENABLE_THANKYOUPAGE_V2 = "android_enable_new_thankyoupage";
 }
