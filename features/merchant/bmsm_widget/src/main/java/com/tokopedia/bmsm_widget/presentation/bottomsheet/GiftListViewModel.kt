@@ -33,7 +33,8 @@ class GiftListViewModel @Inject constructor(
                         warehouseId = event.warehouseId,
                         tierProducts = event.giftProducts,
                         source = event.source,
-                        selectedTierId = event.selectedTierId
+                        selectedTierId = event.selectedTierId,
+                        userCache = event.userCache
                     )
                 }
             }
@@ -54,7 +55,8 @@ class GiftListViewModel @Inject constructor(
                         offerId = currentState.offerId,
                         warehouseId = currentState.warehouseId,
                         tierProduct = currentState.tierProducts
-                    )
+                    ),
+                    userCache = currentState.userCache
                 )
 
                 val tierGift = getGiftListUseCase.execute(param)
