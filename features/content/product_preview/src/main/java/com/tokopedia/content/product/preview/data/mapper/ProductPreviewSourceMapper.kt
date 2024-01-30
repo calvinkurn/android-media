@@ -14,7 +14,7 @@ class ProductPreviewSourceMapper(
         productData: DynamicProductInfoP1,
         mediaSelectedPosition: Int,
         videoLastDuration: Long,
-        videoTotalDuration: Long,
+        videoTotalDuration: Long
     ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
@@ -23,6 +23,7 @@ class ProductPreviewSourceMapper(
                     ProductContentUiModel(
                         contentId = item.id,
                         selected = index == mediaSelectedPosition,
+                        variantName = item.tag.orEmpty(),
                         type = when (item.type) {
                             ProductDetailGallery.Item.Type.Video -> MediaType.Video
                             ProductDetailGallery.Item.Type.Image -> MediaType.Image
@@ -40,15 +41,14 @@ class ProductPreviewSourceMapper(
 
     fun mapReviewSourceModel(
         reviewId: String,
-        attachmentId: String,
+        attachmentId: String
     ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
             productPreviewSource = ProductPreviewSourceModel.ReviewSourceData(
                 reviewSourceId = reviewId,
-                attachmentSourceId = attachmentId,
+                attachmentSourceId = attachmentId
             )
         )
     }
-
 }
