@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam
+import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam.*
 import com.tokopedia.campaign.data.request.GetOfferingProductListRequestParam
 import com.tokopedia.campaign.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.campaign.usecase.GetOfferProductListUseCase
@@ -177,7 +178,7 @@ class BmsmWidgetTabViewModel @Inject constructor(
             } else {
                 emptyList()
             },
-            userLocation = GetOfferingInfoForBuyerRequestParam.UserLocation(
+            userLocation = UserLocation(
                 addressId = currentState.localCacheModel?.address_id.toLongOrZero(),
                 districtId = currentState.localCacheModel?.district_id.toLongOrZero(),
                 postalCode = currentState.localCacheModel?.postal_code.orEmpty(),
@@ -185,7 +186,8 @@ class BmsmWidgetTabViewModel @Inject constructor(
                 longitude = currentState.localCacheModel?.long.orEmpty(),
                 cityId = currentState.localCacheModel?.city_id.toLongOrZero()
             ),
-            userId = userId.toLongOrZero()
+            userId = userId.toLongOrZero(),
+            additionalParams = AdditionalParams()
         )
     }
 
