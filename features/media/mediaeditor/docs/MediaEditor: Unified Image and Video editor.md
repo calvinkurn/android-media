@@ -54,18 +54,18 @@ val intent = MediaPicker.intent(
         )
 ```
 
-### Other config
+### Editor config
 
 
 
 ```
-get editor param:
+Getter:
 ratioList(): ArrayList<ImageRatioType>
 editorToolsList(): ArrayList<Int>
 autoCropRatio(): ImageRatioType
 getCustomCtaText(): String
 
-setter editor param:
+Setter:
 withWatermark()
 withRemoveBackground()
 withAddLogo()
@@ -106,7 +106,7 @@ RATIO_2_1
 
 ## Action Items
 
-- Add video editor
+- Add video editor (TODO)
 
 ## Useful Links
 
