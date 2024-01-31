@@ -6,17 +6,17 @@ import com.google.android.exoplayer2.ExoPlaybackException
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
 import com.tokopedia.home.databinding.ItemHomeRecommendationPlayWidgetBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
 import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayVideoWidgetManager
 
 class HomeRecommendationPlayWidgetViewHolder(
     view: View,
-    homeRecommendationPlayWidgetManager: HomeRecommendationVideoWidgetManager,
+    homeRecommendationPlayWidgetManager: PlayVideoWidgetManager,
     private val listener: GlobalRecomListener
 ) : BaseForYouViewHolder<HomeRecommendationPlayWidgetUiModel>(
     view,
