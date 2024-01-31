@@ -37,6 +37,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.util.RecommendationItemDecoration
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -345,8 +346,13 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         val isVerticalRecommendationViewHolder =
             getViewHolderByPosition(position) is ProductRecommendationVerticalViewHolder
 
+        val isVerticalPlaceholderRecommendationViewHolder =
+            getViewHolderByPosition(position) is ProductRecommendationVerticalPlaceholderViewHolder
+
         val shouldFullSpan =
-            (position > 1 || isPageError) && !isVerticalRecommendationViewHolder
+            (position > 1 || isPageError) &&
+                (!isVerticalRecommendationViewHolder ||
+                    !isVerticalPlaceholderRecommendationViewHolder)
         return if (shouldFullSpan) {
             2
         } else {
