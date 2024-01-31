@@ -59,6 +59,7 @@ fun PriceCtaSellerOfferingCompose(
     textPriceColor: Int,
     iconColor: Int
 ) {
+
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,

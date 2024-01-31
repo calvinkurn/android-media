@@ -70,6 +70,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_VIDEO.type -> it.mapToVideo(isDarkMode)
                 WidgetTypes.CATALOG_REVIEW_BUYER.type -> it.mapToBuyerReview(remoteModel.basicInfo)
                 WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
+                WidgetTypes.CATALOG_CTA_PRICE.type -> it.mapToCtaPrice(isDarkMode)
                 else -> {
                     BlankUiModel()
                 }
@@ -751,6 +752,25 @@ class CatalogDetailUiMapper @Inject constructor(
                     )
                 }
         )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToCtaPrice(
+        darkMode: Boolean
+    ): BaseCatalogUiModel {
+        return if (data?.style?.isSticky == false && !data.style.isHidden) {
+            val minPrice = data.priceCta.marketPrice.firstOrNull()?.minFmt.orEmpty()
+            val maxPrice = data.priceCta.marketPrice.firstOrNull()?.maxFmt.orEmpty()
+            val color = if (darkMode) catalogR.color.catalog_dms_dark_color_text_common
+                else catalogR.color.catalog_dms_light_color_text_common
+            PriceCtaSellerOfferingUiModel(
+                price = if (minPrice == maxPrice) maxPrice else "$minPrice - $maxPrice",
+                textTitleColor = color,
+                textPriceColor = color,
+                iconColor = color
+            )
+        } else {
+            BlankUiModel()
+        }
     }
 
     private fun getTextColor(darkMode: Boolean): Int {

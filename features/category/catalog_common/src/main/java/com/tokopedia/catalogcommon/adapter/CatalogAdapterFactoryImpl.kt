@@ -103,6 +103,7 @@ class CatalogAdapterFactoryImpl(
             ColumnedInfoViewHolder.LAYOUT -> ColumnedInfoViewHolder(view, columnedInfoListener)
             BuyerReviewViewHolder.LAYOUT -> BuyerReviewViewHolder(view, buyerReviewListener)
             SellerOfferingViewHolder.LAYOUT -> SellerOfferingViewHolder(view)
+            PriceCtaSellerOfferingViewHolder.LAYOUT -> PriceCtaSellerOfferingViewHolder(view)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
