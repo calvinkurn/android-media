@@ -69,9 +69,9 @@
     <dimen name="home_dynamic_icon_big_image_corner_radius">12dp</dimen>
 
     <dimen name="home_dynamic_icon_small_padding_top">4dp</dimen>
-    <dimen name="home_dynamic_icon_small_margin_top_title">6dp</dimen>
-    <dimen name="home_dynamic_icon_small_image_size">42dp</dimen>
-    <dimen name="home_dynamic_icon_small_title_width">58dp</dimen>
+    <dimen name="home_dynamic_icon_small_margin_top_title">4dp</dimen>
+    <dimen name="home_dynamic_icon_small_image_size">48dp</dimen>
+    <dimen name="home_dynamic_icon_small_title_width">56dp</dimen>
     <dimen name="home_dynamic_icon_small_image_corner_radius">8dp</dimen>
 
     <dimen name="home_deals_outer_card_padding">4dp</dimen>
