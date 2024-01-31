@@ -13,7 +13,7 @@ import dagger.Component
     modules = [
         // Stub modules
         ShareExModuleStub::class,
-//        ShareExUseCaseModuleStub::class,
+        ShareExRepositoryModuleStub::class,
 
         // Real modules
         ShareExViewModelModule::class,

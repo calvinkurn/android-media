@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.ShareExResourceProviderImpl
+import com.tokopedia.shareexperience.data.util.ShareExTelephonyUtil
 import com.tokopedia.shareexperience.stub.common.RemoteConfigStub
+import com.tokopedia.shareexperience.stub.common.ShareExTelephonyUtilStub
 import com.tokopedia.shareexperience.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -33,5 +35,13 @@ object ShareExModuleStub {
     @ActivityScope
     fun provideRemoteConfig(): RemoteConfig {
         return RemoteConfigStub()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideTelephonyUtil(
+        @ApplicationContext context: Context
+    ): ShareExTelephonyUtil {
+        return ShareExTelephonyUtilStub(context)
     }
 }
