@@ -10,7 +10,6 @@ import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.presentation.LandingPageRefreshCallback
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.notifications.inApp.ketupat.ActivityLifecycleHandler
 import com.tokopedia.notifications.inApp.ketupat.KetupatSlashCallBack
 import com.tokopedia.unifycomponents.ImageUnify
@@ -45,23 +44,6 @@ class KetupatCrackBannerVH(itemView: View) :
             object : KetupatSlashCallBack {
                 override fun ketuPatSlashed() {
                     //change button state
-                    itemView.findViewById<ImageUnify>(gamificationR.id.crack_icon_img)
-                        ?.setImageUrl(crackData?.assets?.find { it?.key == "IMAGE_ICON_OPENED" }?.value.toString())
-                    itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).hide()
-
-                    itemView.findViewById<Typography>(gamificationR.id.more_info_btn).setBackground(
-                        itemView.context.getResources()
-                            .getDrawable(gamificationR.drawable.rect_stroke_white_solid)
-                    )
-
-                    if (lessThanADay(endTime)) {
-                        itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
-                            crackData?.text?.find { it?.key == "LAST_DAY" }?.value
-                    } else {
-                        itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
-                            crackData?.text?.find { it?.key == "OPENED" }?.value
-                    }
-
                     GamificationAnalytics.sendClickClaimButtonEvent(
                         "direct_reward_id: $scratchCardId", "gamification",
                         "tokopediamarketplace"
@@ -73,10 +55,6 @@ class KetupatCrackBannerVH(itemView: View) :
     }
 
     override fun bind(element: KetupatCrackBannerVHModel?) {
-        if (!itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).isVisible) {
-            return
-        }
-
         val scratchCardId = element?.scratchCard?.id.toString()
         val endTime = element?.scratchCard?.endTime
 
@@ -85,10 +63,6 @@ class KetupatCrackBannerVH(itemView: View) :
                 crackData?.title
             itemView.findViewById<ImageUnify>(gamificationR.id.crack_bg_img)
                 ?.setImageUrl(crackData?.assets?.find { it?.key == "BACKGROUND_IMAGE" }?.value.toString())
-            itemView.findViewById<ImageUnify>(gamificationR.id.crack_icon_img)
-                ?.setImageUrl(crackData?.assets?.find { it?.key == "IMAGE_ICON" }?.value.toString())
-            itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
-                crackData?.text?.find { it?.key == "DEFAULT" }?.value
             itemView.findViewById<Typography>(gamificationR.id.more_info_btn).apply {
                 text = crackData?.cta?.find { it?.type == "redirection" }?.text
                 this.setOnClickListener {
@@ -103,10 +77,36 @@ class KetupatCrackBannerVH(itemView: View) :
                 }
             }
 
+            if (crackData?.cta?.find { it?.type == "crack" } == null) {
+                itemView.findViewById<ImageUnify>(gamificationR.id.crack_icon_img)
+                    ?.setImageUrl(crackData?.assets?.find { it?.key == "IMAGE_ICON_OPENED" }?.value.toString())
+                itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).hide()
+
+                itemView.findViewById<Typography>(gamificationR.id.more_info_btn).setBackground(
+                    itemView.context.getResources()
+                        .getDrawable(gamificationR.drawable.rect_stroke_white_solid)
+                )
+
+                if (lessThanADay(endTime)) {
+                    itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
+                        crackData?.text?.find { it?.key == "LAST_DAY" }?.value
+                } else {
+                    itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
+                        crackData?.text?.find { it?.key == "OPENED" }?.value
+                }
+            } else {
+                itemView.findViewById<ImageUnify>(gamificationR.id.crack_icon_img)
+                    ?.setImageUrl(crackData?.assets?.find { it?.key == "IMAGE_ICON" }?.value.toString())
+                itemView.findViewById<Typography>(gamificationR.id.crack_img_text)?.text =
+                    crackData?.text?.find { it?.key == "DEFAULT" }?.value
+
+            }
             itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).apply {
                 this.setOnClickListener {
-                    showKetupatPopUp((context as Activity), crackData, scratchCardId,
-                        endTime, element?.landingPageRefreshCallback)
+                    showKetupatPopUp(
+                        (context as Activity), crackData, scratchCardId,
+                        endTime, element?.landingPageRefreshCallback
+                    )
                 }
             }
             crackData?.cta?.get(0)?.imageURL?.let {
@@ -123,7 +123,7 @@ class KetupatCrackBannerVH(itemView: View) :
     private fun lessThanADay(endTime: String?): Boolean {
         val diffEndTime = getDateDiffFromToday(endTime)
         if (diffEndTime != null) {
-            if (diffEndTime < 2 && diffEndTime > -1)
+            if (diffEndTime.toInt() == 0)
                 return true
         }
         return false

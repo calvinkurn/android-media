@@ -129,4 +129,17 @@
             tools:orientation="vertical" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error_ketupat_lp"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:visibility="gone"
+        app:globalerrors_type="MAINTENANCE"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ketupat_navToolbar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
