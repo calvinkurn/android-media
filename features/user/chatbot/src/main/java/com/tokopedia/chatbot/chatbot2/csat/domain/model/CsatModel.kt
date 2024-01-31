@@ -5,14 +5,15 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CsatModel(
+    var caseId: String = "",
+    var caseChatId: String = "",
     var title: String = "",
     var service: String = "",
     var points: MutableList<PointModel> = mutableListOf(),
     var selectedPoint: PointModel = PointModel(),
     var selectedReasons: MutableList<String> = mutableListOf(),
     var otherReason: String = "",
-    var minimumOtherReasonChar: Int = 0,
-    var maximumOtherReasonChar: Int = 0
+    var minimumOtherReasonChar: Int = 0
 ) : Parcelable
 
 @Parcelize

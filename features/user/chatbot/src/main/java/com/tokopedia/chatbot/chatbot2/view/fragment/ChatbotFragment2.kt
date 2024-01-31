@@ -375,6 +375,9 @@ class ChatbotFragment2 :
         private const val SNACK_BAR_TEXT_OK = "OK"
         private const val BOT_OTHER_REASON_TEXT = "bot_other_reason"
         private const val SELECTED_ITEMS = "selected_items"
+        private const val SERVICE = "service"
+        private const val OTHER_REASON = "other_reason"
+        private const val DYNAMIC_REASON = "dynamic_reason"
         private const val EMOJI_STATE = "emoji_state"
         private const val TIME_STAMP = "time_stamp"
         private const val CSAT_ATTRIBUTES = "csat_attribute"
@@ -1741,6 +1744,9 @@ class ChatbotFragment2 :
             caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID).orEmpty()
             rating = data.extras?.getLong(EMOJI_STATE).orZero()
             reasonCode = data.getStringExtra(SELECTED_ITEMS).orEmpty()
+            service = data.getStringExtra(SERVICE).orEmpty()
+            otherReason = data.getStringExtra(OTHER_REASON).orEmpty()
+            dynamicReasons = data.getStringArrayListExtra(DYNAMIC_REASON).orEmpty()
         }
         viewModel.submitChatCsat(messageId, input)
     }

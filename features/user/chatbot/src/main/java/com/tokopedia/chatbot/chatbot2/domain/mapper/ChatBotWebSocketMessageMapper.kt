@@ -25,7 +25,6 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UP
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceSentPojo
-import com.tokopedia.chatbot.chatbot2.csat.data.response.DynamicCsat
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
 import com.tokopedia.chatbot.chatbot2.data.chatactionballoon.ChatActionPojo
@@ -55,6 +54,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
 /**
@@ -321,7 +321,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
             )
         var dynamicCsatModel: CsatModel? = null
         if ((csatAttributesPojo.csat?.dynamicCsat?.points?.size ?: 0) > 0) {
-            dynamicCsatModel = convertToDynamicCsatModel(csatAttributesPojo.csat?.dynamicCsat)
+            dynamicCsatModel = convertToDynamicCsatModel(csatAttributesPojo.csat)
         }
         return CsatOptionsUiModel(
             pojo.msgId,
@@ -339,12 +339,14 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
         )
     }
 
-    private fun convertToDynamicCsatModel(response: DynamicCsat?): CsatModel? {
+    private fun convertToDynamicCsatModel(response: CsatAttributesPojo.Csat?): CsatModel? {
         if (response != null) {
             return CsatModel(
-                title = response.title,
-                service = response.service,
-                points = response.points.map {
+                caseId = response.caseId.orEmpty(),
+                caseChatId = response.caseChatId.orEmpty(),
+                title = response.dynamicCsat?.title.orEmpty(),
+                service = response.dynamicCsat?.service.orEmpty(),
+                points = response.dynamicCsat?.points?.map {
                     PointModel(
                         score = it.score,
                         caption = it.caption,
@@ -352,8 +354,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
                         otherReasonTitle = it.otherReasonTitle,
                         reasons = it.reasons
                     )
-                }.toMutableList(),
-                minimumOtherReasonChar = response.minimumOtherReasonChar
+                }?.toMutableList() ?: mutableListOf(),
+                minimumOtherReasonChar = response.dynamicCsat?.minimumOtherReasonChar.orZero()
             )
         } else {
             return null

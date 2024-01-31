@@ -1,8 +1,10 @@
 package com.tokopedia.chatbot.chatbot2.csat.view
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -121,16 +123,28 @@ class CsatBottomsheet :
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.csatEventFlow.collect {
-                when (it) {
+            viewModel.csatEventFlow.collect { csatEvent ->
+                when (csatEvent) {
                     is CsatEvent.UpdateButton -> {
-                        renderButtonState(it)
+                        renderButtonState(csatEvent)
                     }
 
-                    is CsatEvent.ShowError -> {
-                    }
-
-                    is CsatEvent.NavigateToPreviousPage -> {
+                    is CsatEvent.NavigateToSubmitCsat -> {
+                        activity?.let {
+                            val intentResult = Intent().apply {
+                                putExtra(CASE_ID, csatEvent.csatData.caseId)
+                                putExtra(CASE_CHAT_ID, csatEvent.csatData.caseChatId)
+                                putExtra(EMOJI_STATE, csatEvent.csatData.selectedPoint.score)
+//                                putExtra(SELECTED_ITEMS, )
+                                putExtra(SERVICE, csatEvent.csatData.service)
+                                putExtra(OTHER_REASON, csatEvent.csatData.otherReason)
+                                val dynamicReasons = arrayListOf<String>()
+                                dynamicReasons.addAll(csatEvent.csatData.selectedReasons)
+                                putStringArrayListExtra(DYNAMIC_REASON, dynamicReasons)
+                            }
+                            it.setResult(Activity.RESULT_OK, intentResult)
+                            it.finish()
+                        }
                     }
 
                     CsatEvent.FallbackDismissBottomSheet -> activity?.finish()
@@ -160,7 +174,7 @@ class CsatBottomsheet :
             val emojiImageUnify =
                 getEmojiLayout(context, pointUiModel, csatModel.selectedPoint.score)
             emojiImageUnify.setOnClickListener {
-                viewModel.processAction(CsatAction.SelectScore(pointUiModel))
+                viewModel.processAction(CsatUserAction.SelectScore(pointUiModel))
             }
             viewBinding?.csatEmojiContainer?.addView(emojiImageUnify)
         }
@@ -208,9 +222,9 @@ class CsatBottomsheet :
             val reasonCheckBox = reasonLayout.findViewById<CheckboxUnify>(R.id.csat_reason_checkbox)
             reasonCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
-                    viewModel.processAction(CsatAction.SelectReason(reason))
+                    viewModel.processAction(CsatUserAction.SelectReason(reason))
                 } else {
-                    viewModel.processAction(CsatAction.UnselectReason((reason)))
+                    viewModel.processAction(CsatUserAction.UnselectReason((reason)))
                 }
                 viewModel.updateButton()
             }
@@ -224,13 +238,12 @@ class CsatBottomsheet :
     private fun renderOtherReason(csatModel: CsatModel) {
         viewBinding?.csatOtherReasonTitle?.text = csatModel.selectedPoint.otherReasonTitle
         viewBinding?.csatOtherReason?.apply {
-            setCounter(csatModel.maximumOtherReasonChar)
             minLine = 4
             setLabel("Tulis detailnya di sini, ya..")
             viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.minimumOtherReasonChar} karakter")
             viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
                 // todo : add debounce
-                viewModel.processAction(CsatAction.SetOtherReason(it.toString()))
+                viewModel.processAction(CsatUserAction.SetOtherReason(it.toString()))
                 viewModel.updateButton()
             }
         }
@@ -239,7 +252,7 @@ class CsatBottomsheet :
     private fun renderButtonState(state: CsatEvent.UpdateButton) {
         viewBinding?.csatButtonSubmit?.isEnabled = state.isEnabled
         viewBinding?.csatButtonSubmit?.setOnClickListener {
-            viewModel.processAction(CsatAction.SendCsat)
+            viewModel.processAction(CsatUserAction.SendCsatUser)
         }
     }
 
@@ -255,6 +268,15 @@ class CsatBottomsheet :
     }
 
     companion object {
+
+        const val CASE_ID = "caseID"
+        const val CASE_CHAT_ID = "caseChatID"
+        const val EMOJI_STATE = "emoji_state"
+        const val SELECTED_ITEMS = "selected_items"
+        const val SERVICE = "service"
+        const val OTHER_REASON = "other_reason"
+        const val DYNAMIC_REASON = "dynamic_reason"
+
         fun newInstance(selectedScore: Int, csatModel: CsatModel): CsatBottomsheet {
             val bottomSheet = CsatBottomsheet()
             val bundle = Bundle()
