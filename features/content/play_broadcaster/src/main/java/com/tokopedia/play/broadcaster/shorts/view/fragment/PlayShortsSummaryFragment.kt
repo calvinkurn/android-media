@@ -89,7 +89,7 @@ class PlayShortsSummaryFragment @Inject constructor(
             false
         )
 
-        binding.composeView.apply {
+        binding.layoutSummaryConfig.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {

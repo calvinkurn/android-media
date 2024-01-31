@@ -97,7 +97,7 @@
         tools:text="Jonathan Darwin" />
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/compose_view"
+        android:id="@+id/layout_summary_config"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
