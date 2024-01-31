@@ -923,7 +923,7 @@ class DiscoveryPageDataMapper(
             Layout.valueOf(it.asCamelCase())
             val componentName = when (Layout.valueOf(it.asCamelCase())) {
                 Layout.Single -> ComponentNames.SingleAutomateCoupon.componentName
-                Layout.Double -> ComponentNames.DoubleAutomateCoupon.componentName
+                Layout.Double -> ComponentNames.GridAutomateCoupon.componentName
                 Layout.Carousel -> ComponentNames.CarouselAutomateCoupon.componentName
             }
 
