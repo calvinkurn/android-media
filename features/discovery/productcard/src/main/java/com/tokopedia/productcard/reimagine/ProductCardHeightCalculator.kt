@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.reimagine
 
 import android.content.Context
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineDispatcher
@@ -41,7 +42,7 @@ internal fun productCardGridCarouselHeight(
         productImageWidth,
         gridCarouselCardPaddingBottom(context),
         stockInfoHeight(context, productCardModel),
-        gridCarouselNameHeight(context, productCardModel),
+        gridCarouselNameHeight(context),
         priceSectionHeight(context, productCardModel),
         discountSectionBelowPriceHeight(context, productCardModel),
         benefitSectionHeight(context, productCardModel),
@@ -64,13 +65,9 @@ internal fun productCardGridCarouselHeight(
 private fun gridCarouselCardPaddingBottom(context: Context?) =
     context.getPixel(productcardR.dimen.product_card_reimagine_carousel_padding_bottom)
 
-private fun gridCarouselNameHeight(context: Context?, productCardModel: ProductCardModel): Int {
-    val nameLineHeight = productcardR.dimen.product_card_reimagine_name_1_line_height
-
-    return context.getPixel(productcardR.dimen.product_card_reimagine_name_image_margin_top)
-        .plus(context.getPixel(nameLineHeight))
-        .plus(labelAssignedValueAdditionalHeight(context, productCardModel))
-}
+private fun gridCarouselNameHeight(context: Context?): Int =
+    context.getPixel(productcardR.dimen.product_card_reimagine_name_image_margin_top)
+        .plus(context.getPixel(productcardR.dimen.product_card_reimagine_name_1_line_height))
 
 private fun compatPaddingTopBottomMargin(useCompatPadding: Boolean, context: Context?) =
     if (useCompatPadding)
@@ -110,20 +107,23 @@ internal fun productCardListCarouselHeight(
     val productCardStockInfoHeight = stockInfoHeight(context, productCardModel)
 
     val productCardComponentHeightList = listOf(
-        listCarouselNameHeight(context, productCardModel),
+        listCarouselNameHeight(context),
         priceSectionHeight(context, productCardModel),
         discountSectionBelowPriceHeight(context, productCardModel),
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
-        addToCartHeight(context, productCardModel),
     )
 
     val productCardComponentHeight = productCardComponentHeightList.sum()
-    val productCardHeight = maxOf(
-        productCardImageHeight + productCardStockInfoHeight,
-        productCardComponentHeight
-    )
+    val productCardImageSectionHeight = productCardImageHeight + productCardStockInfoHeight
+
+    val productCardHeight =
+        listOf(
+            maxOf(productCardImageSectionHeight, productCardComponentHeight),
+            listCardPaddingInBackground(productCardModel, context),
+            addToCartHeight(context, productCardModel),
+        ).sum()
 
     Timber.d(
         "Product Card Components Height List: %s; Total Component Height: %s; Final Height: %s",
@@ -135,14 +135,13 @@ internal fun productCardListCarouselHeight(
     return productCardHeight
 }
 
-private fun listCarouselNameHeight(context: Context?, productCardModel: ProductCardModel) =
-    context.getPixel(productcardR.dimen.product_card_reimagine_name_2_line_height)
-        .plus(labelAssignedValueAdditionalHeight(context, productCardModel))
-
-private fun labelAssignedValueAdditionalHeight(context: Context?, productCardModel: ProductCardModel) =
-    if (productCardModel.labelAssignedValue() != null)
-        context.getPixel(productcardR.dimen.product_card_reimagine_label_assigned_value_additional_height)
+private fun listCardPaddingInBackground(productCardModel: ProductCardModel, context: Context?) =
+    if (productCardModel.isInBackground)
+        context.getPixel(R.dimen.product_card_reimagine_content_guideline_padding_in_background) * 2
     else 0
+
+private fun listCarouselNameHeight(context: Context?) =
+    context.getPixel(productcardR.dimen.product_card_reimagine_name_2_line_height)
 
 private fun stockInfoHeight(context: Context?, productCardModel: ProductCardModel) =
     if (productCardModel.stockInfo() != null)

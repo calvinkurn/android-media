@@ -14,7 +14,6 @@ import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.GOLD
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -44,8 +43,6 @@ internal class RibbonView: LinearLayout {
 
         View.inflate(context, R.layout.product_card_reimagine_ribbon, this)
     }
-
-    fun additionalMarginStart() = 4.toPx()
 
     fun render(ribbon: ProductCardModel.LabelGroup?) {
         if (ribbon != null) showRibbon(ribbon)
@@ -96,4 +93,6 @@ internal class RibbonView: LinearLayout {
     private fun redRibbonSlip() = intArrayOf(getColor(R.color.dms_ribbon_anchor_static_dark))
 
     private fun getColor(@ColorRes colorId: Int): Int = ContextCompat.getColor(context, colorId)
+
+    data class Margin(val start: Int = 0, val top: Int = 0)
 }

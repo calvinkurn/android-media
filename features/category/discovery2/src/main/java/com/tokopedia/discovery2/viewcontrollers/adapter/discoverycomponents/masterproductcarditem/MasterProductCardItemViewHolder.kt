@@ -42,8 +42,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var masterProductCardListView: ProductCardListView? = null
     private var productCardView: CardUnify2? =
         itemView.findViewById(productcardR.id.cardViewProductCard)
-    private var productCardViewReimagined: CardUnify2? =
-        itemView.findViewById(productcardR.id.productCardCardUnifyContainer)
     private var productCardName = ""
     private var dataItem: DataItem? = null
     private var componentPosition: Int? = null
@@ -250,8 +248,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 it.applyCarousel()
                 productCardView?.layoutParams?.width =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-                productCardViewReimagined?.layoutParams?.width =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.disco_carousel_product_card_grid_width)
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
@@ -261,14 +257,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
                         R.dimen.dp_70
                     )
-                productCardViewReimagined?.layoutParams?.width =
-                    Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
-                        R.dimen.dp_70
-                    )
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
-            setProductCardV5Background()
         } else {
             setProductViewDimens()
         }
@@ -280,18 +271,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         set3DotsWishlistWithAtc(dataItem)
         setSimilarProductWishlist(dataItem)
         checkProductIsFulfillment(productCardModel)
-    }
-
-    private fun setProductCardV5Background() {
-        if (masterProductCardItemViewModel?.getProductCardType().equals(
-                "v2_no_background",
-                true
-            ) && productCardName != ComponentNames.ShopOfferHeroBrandProductItem.componentName
-        ) {
-            productCardViewReimagined?.setCardUnifyBackgroundColor(Color.TRANSPARENT)
-        }else{
-            productCardViewReimagined?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN0))
-        }
     }
 
     private fun checkProductIsFulfillment(productCardModel: ProductCardModel) {

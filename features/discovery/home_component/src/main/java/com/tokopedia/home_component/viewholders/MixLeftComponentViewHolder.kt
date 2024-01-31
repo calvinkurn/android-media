@@ -159,14 +159,14 @@ class MixLeftComponentViewHolder (itemView: View,
             parallaxBackground.setBackgroundColor(
                     ContextCompat.getColor(itemView.context, android.R.color.transparent)
             )
-            image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
-                override fun successLoad(view: ImageView?) {
+            image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageLoaderStateListener{
+                override fun successLoad(view: ImageView) {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
                 }
 
-                override fun failedLoad(view: ImageView?) {
+                override fun failedLoad(view: ImageView) {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
@@ -257,7 +257,7 @@ class MixLeftComponentViewHolder (itemView: View,
                     ChannelModelMapper.mapToProductCardModel(
                         element,
                         cardInteraction,
-                        isInBackground = channel.channelBanner.imageUrl.isNotEmpty()
+                        isInBackground = channel.channelBanner.gradientColor.hasGradientBackground(itemView.context)
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

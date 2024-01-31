@@ -63,6 +63,7 @@ object ChannelModelMapper {
             isTopStockBar = isTopStockbar,
             cardType = cardType,
             productListType = productCardListType,
+            hasAddToCartButton = channelGrid.hasBuyButton,
             isInBackground = isInBackground,
         )
     }

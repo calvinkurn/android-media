@@ -2,12 +2,15 @@ package com.tokopedia.productcard.experiments
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
+import androidx.core.view.setPadding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,10 +24,14 @@ import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
+import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
+import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -39,7 +46,9 @@ internal class ReimagineListViewStrategy(
     private val renderer = ProductCardRenderer(productCardView, ProductCardType.List)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
+    private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageView?>(R.id.productCardImage)
+    private val nameText by lazyView<Typography?>(R.id.productCardName)
     private val videoIdentifier by lazyView<ImageView?>(R.id.productCardVideoIdentifier)
     private val threeDots by lazyView<ImageView?>(R.id.productCardThreeDots)
     private val video: VideoPlayerController by lazyThreadSafetyNone {
@@ -59,12 +68,15 @@ internal class ReimagineListViewStrategy(
 
         cardContainer?.run {
             elevation = 0f
-            radius = 0f
+            radius = context.getPixel(R.dimen.product_card_reimagine_image_radius).toFloat()
+            cornerRadius = 0f
 
             setCardUnifyBackgroundColor(
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
             )
         }
+
+        nameText?.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12.toPx().toFloat())
     }
 
     private fun initAttributes(attrs: AttributeSet?) {
@@ -92,6 +104,7 @@ internal class ReimagineListViewStrategy(
 
         renderVideo(productCardModel)
         renderThreeDots(productCardModel)
+        renderCardPadding(productCardModel)
 
         CompatPaddingUtils(productCardView, useCompatPadding, productCardModel).updatePadding()
     }
@@ -112,6 +125,16 @@ internal class ReimagineListViewStrategy(
                 )
             }
         }
+    }
+
+    private fun renderCardPadding(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
+        val cardPadding =
+            if (productCardModel.isInBackground)
+                context.getPixel(productcardR.dimen.product_card_reimagine_content_guideline_padding_in_background)
+            else
+                0
+
+        cardConstraintLayout?.setPadding(cardPadding)
     }
 
     override fun setImageProductViewHintListener(

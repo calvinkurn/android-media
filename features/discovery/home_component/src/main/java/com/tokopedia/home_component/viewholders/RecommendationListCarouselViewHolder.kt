@@ -17,6 +17,7 @@ import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentRecommendationListCarouselBinding
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
+import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
@@ -136,19 +137,19 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     val productData = mapGridToProductData(it, isInBackground)
                     tempDataList.add(productData)
                     HomeRecommendationListData(
-                            it.imageUrl,
-                            it.name,
-                            it.discount,
-                            it.slashedPrice,
-                            it.price,
-                            it.applink,
-                            it.isTopads,
-                            channel.channelGrids.size > 1,
-                            channel,
-                            it,
-                            adapterPosition,
-                            listCarouselListener,
-                            productData
+                        recommendationImageUrl = it.imageUrl,
+                        recommendationTitle = it.name,
+                        recommendationDiscountLabel = it.discount,
+                        recommendationSlashedPrice = it.slashedPrice,
+                        recommendationPrice = it.price,
+                        recommendationApplink = it.applink,
+                        isTopAds = it.isTopads,
+                        isCarousel = channel.channelGrids.size > 1,
+                        channelModel = channel,
+                        grid = it,
+                        parentPosition = adapterPosition,
+                        listener = listCarouselListener,
+                        productData = productData
                     )
                 }.toMutableList()
                 if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listCarouselListener, adapterPosition))
@@ -171,20 +172,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
     }
 
     private fun mapGridToProductData(grid: ChannelGrid, isInBackground: Boolean): ProductCardModel {
-        return ProductCardModel(
-            productImageUrl = grid.imageUrl,
-            productName = grid.name,
-            discountPercentage = grid.discount,
-            slashedPrice = grid.slashedPrice,
-            formattedPrice = grid.price,
-            hasAddToCartButton = grid.hasBuyButton,
-            isTopAds = grid.isTopads,
-            addToCardText = itemView.context.getString(R.string.home_global_component_buy_again),
-            shopLocation = grid.shop.shopLocation,
-            shopBadgeList = grid.badges.map {
-                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-            },
-            cardInteraction = cardInteraction,
+        return ChannelModelMapper.mapToProductCardModel(
+            channelGrid= grid,
             isInBackground = isInBackground
         )
     }
@@ -234,27 +223,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 false
                         )
                     }
-            }
-                recommendationCard.setProductModel(
-                    ProductCardModel(
-                        productImageUrl = recommendation.recommendationImageUrl,
-                        productName = recommendation.recommendationTitle,
-                        discountPercentage = recommendation.recommendationDiscountLabel,
-                        slashedPrice = recommendation.recommendationSlashedPrice,
-                        formattedPrice = recommendation.recommendationPrice,
-                        hasAddToCartButton = recommendation.grid.hasBuyButton,
-                        isTopAds = recommendation.isTopAds,
-                        isOutOfStock = recommendation.grid.isOutOfStock,
-                        ratingCount = recommendation.grid.rating,
-                        reviewCount = recommendation.grid.countReview,
-                        countSoldRating = recommendation.grid.ratingFloat,
-                        shopLocation = recommendation.grid.shop.shopLocation,
-                        shopBadgeList = recommendation.grid.badges.map {
-                            ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                        },
-                        cardInteraction = cardInteraction
-                    )
-                )
+                }
+
+                recommendationCard.setProductModel(recommendation.productData)
+
                 val addToCartButton: UnifyButton? = recommendationCard.findViewById(productcardR.id.buttonAddToCart)
                 addToCartButton?.run {
                     text = itemView.context.getString(R.string.home_global_component_buy_again)

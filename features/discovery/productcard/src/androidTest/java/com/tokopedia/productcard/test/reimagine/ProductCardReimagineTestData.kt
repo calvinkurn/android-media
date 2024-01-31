@@ -13,7 +13,9 @@ import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.shortProductName
+import com.tokopedia.productcard.utils.RED
 import com.tokopedia.productcard.utils.TEXT_DARK_GREY
+import com.tokopedia.productcard.utils.WORDING_SEGERA_HABIS
 import org.hamcrest.Matcher
 
 typealias ProductCardReimagineMatcher =
@@ -40,6 +42,7 @@ internal val productCardReimagineTestData = listOf(
     preventiveBlock(),
     overlay(),
     atc(),
+    itemInBackground(),
 )
 
 private fun imageNamePrice(): ProductCardReimagineMatcher {
@@ -448,6 +451,7 @@ private fun labelAssignedValue(): ProductCardReimagineMatcher {
     val matcher = mapOf<Int, Matcher<View?>>(
         R.id.productCardImage to isDisplayed(),
         R.id.productCardName to isDisplayedContainingText(model.name),
+        R.id.productCardLabelAssignedValue to isDisplayed(),
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
@@ -777,4 +781,60 @@ private fun atc(): ProductCardReimagineMatcher {
     )
 
     return Triple(model, matcher, "ATC")
+}
+
+private fun itemInBackground(): ProductCardReimagineMatcher {
+    val reimagineProductOffers = labelGroupProductOffers()
+    val reimagineBenefitLabel = labelGroupBenefit()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY,
+    )
+    val reimagineRibbon = labelGroupRibbon(RED)
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name paling panjang",
+    )
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        labelGroupList = listOf(
+            reimagineBenefitLabel,
+            reimagineCredibilityLabel,
+            reimagineProductOffers,
+            reimagineRibbon,
+        ),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        isInBackground = true,
+        hasAddToCart = true,
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardLabelOffer to isDisplayedWithText(reimagineProductOffers.title),
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+
+        R.id.productCardRibbon to isDisplayed(),
+        R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
+        R.id.productCardRibbonSlip to isDisplayed(),
+
+        R.id.productCardOutline to isDisplayed(),
+        R.id.productCardAddToCart to isDisplayed(),
+    )
+
+    return Triple(model, matcher, "Item In Background")
 }

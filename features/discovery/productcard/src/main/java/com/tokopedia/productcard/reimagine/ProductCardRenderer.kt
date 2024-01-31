@@ -1,31 +1,27 @@
 package com.tokopedia.productcard.reimagine
 
 import android.graphics.PorterDuff
-import android.text.Spannable
-import android.text.SpannableString
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.LabelGroupStyle.TEXT_COLOR
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup.Style
-import com.tokopedia.productcard.reimagine.assignedvalue.renderProductNameWithAssignedValue
 import com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
 import com.tokopedia.productcard.reimagine.overlay.LabelOverlay
 import com.tokopedia.productcard.reimagine.ribbon.RibbonView
@@ -45,6 +41,7 @@ internal class ProductCardRenderer(
 
     private val context = view.context
 
+    private val outlineView by view.lazyView<View?>(R.id.productCardOutline)
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by view.lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by view.lazyView<ImageView?>(R.id.productCardImage)
@@ -52,7 +49,8 @@ internal class ProductCardRenderer(
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val labelPreventiveOverlay by view.lazyView<Typography?>(R.id.productCardLabelPreventiveOverlay)
     private val labelPreventiveBlock by view.lazyView<Typography?>(R.id.productCardLabelPreventiveBlock)
-    private val nameText by lazyThreadSafetyNone { initNameText() }
+    private val nameText by view.lazyView<Typography?>(R.id.productCardName)
+    private val labelAssignedValue by view.lazyView<ImageView?>(R.id.productCardLabelAssignedValue)
     private val priceText by view.lazyView<Typography?>(R.id.productCardPrice)
     private val nettPriceIcon by view.lazyView<ImageView?>(R.id.productCardNettPriceIcon)
     private val nettPriceText by view.lazyView<Typography?>(R.id.productCardNettPrice)
@@ -67,18 +65,16 @@ internal class ProductCardRenderer(
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
 
-    private fun initNameText(): Typography? =
-        view.findViewById<Typography?>(R.id.productCardName).also {
-            it.setSpannableFactory(SPANNABLE_FACTORY)
-        }
-
     fun setProductModel(productCardModel: ProductCardModel) {
+        renderOutline(productCardModel)
+        renderCardContainer(productCardModel)
         renderImage(productCardModel)
         renderOverlay(productCardModel)
         renderAds(productCardModel)
         renderLabelPreventiveOverlay(productCardModel)
         renderLabelPreventiveBlock(productCardModel)
         renderName(productCardModel)
+        renderLabelAssignedValue(productCardModel)
         renderPrice(productCardModel)
         renderNettPrice(productCardModel)
         renderSlashedPrice(productCardModel)
@@ -90,6 +86,17 @@ internal class ProductCardRenderer(
         renderRibbon(productCardModel)
         renderSafeContent(productCardModel)
         renderAddToCart(productCardModel)
+    }
+
+    private fun renderOutline(productCardModel: ProductCardModel) {
+        outlineView?.showWithCondition(productCardModel.isInBackground)
+    }
+
+    private fun renderCardContainer(productCardModel: ProductCardModel) {
+        cardContainer?.layoutParams = cardContainer?.layoutParams?.apply {
+            val marginLayoutParams = this as? ViewGroup.MarginLayoutParams
+            marginLayoutParams?.marginStart = type.cardContainerMarginStart(productCardModel)
+        }
     }
 
     private fun renderImage(productCardModel: ProductCardModel) {
@@ -171,14 +178,27 @@ internal class ProductCardRenderer(
         nameText?.background = nameTextBackground(isSafeProduct)
         nameText?.shouldShowWithAction(productCardModel.name.isNotEmpty()) {
             if (isSafeProduct) {
-                it.setText(SpannableString(""), TextView.BufferType.SPANNABLE)
+                it.text = ""
                 it.contentDescription = ""
             } else {
-                val name = MethodChecker.fromHtml(productCardModel.name).toString()
-                it.renderProductNameWithAssignedValue(productCardModel, name)
+                val originalName = MethodChecker.fromHtml(productCardModel.name).toString()
                 it.contentDescription =
-                    context.getString(R.string.content_desc_textViewProductName) + " " + name
+                    context.getString(R.string.content_desc_textViewProductName) + " " + originalName
+
+                val imageURL = productCardModel.labelAssignedValue()?.imageUrl ?: ""
+                val renderName = (if (imageURL.isNotBlank()) " ".repeat(15) else "") + originalName
+                it.text = renderName
             }
+        }
+    }
+
+    private fun renderLabelAssignedValue(productCardModel: ProductCardModel) {
+        val productName = productCardModel.name
+        val imageURL = productCardModel.labelAssignedValue()?.imageUrl ?: ""
+        val hasLabelAssignedValue = productName.isNotBlank() && imageURL.isNotBlank()
+
+        labelAssignedValue.shouldShowWithAction(hasLabelAssignedValue) {
+            it.loadImage(imageURL)
         }
     }
 
@@ -336,18 +356,16 @@ internal class ProductCardRenderer(
     }
 
     private fun renderRibbon(productCardModel: ProductCardModel) {
-        val labelRibbon = productCardModel.ribbon()
+        ribbon?.render(productCardModel.ribbon())
 
-        ribbon?.render(labelRibbon)
+        val ribbonMargin = type.ribbonMargin(productCardModel)
 
-        val marginStart =
-            if (labelRibbon != null) ribbon?.additionalMarginStart() ?: 0
-            else 0
-
-        cardContainer?.layoutParams = cardContainer?.layoutParams?.apply {
-            val marginLayoutParams = this as? ViewGroup.MarginLayoutParams
-            marginLayoutParams?.marginStart = marginStart
-        }
+        ribbon?.setMargin(
+            left = ribbonMargin.start,
+            top = ribbonMargin.top,
+            right = 0,
+            bottom = 0,
+        )
     }
 
     private fun renderSafeContent(productCardModel: ProductCardModel) {
@@ -359,15 +377,6 @@ internal class ProductCardRenderer(
 
         view.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
             AddToCartButton(cardConstraintLayout, type.addToCartConstraints())
-        }
-    }
-
-    companion object {
-        private val SPANNABLE_FACTORY = object: Spannable.Factory() {
-            override fun newSpannable(source: CharSequence?): Spannable {
-                return if (source is Spannable) source
-                else super.newSpannable(source)
-            }
         }
     }
 }

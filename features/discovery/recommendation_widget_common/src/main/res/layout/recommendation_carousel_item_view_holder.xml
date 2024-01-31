@@ -9,4 +9,5 @@
     android:focusable="true"
     app:reimagine="true"
     app:reimagine_template="gridCarousel"
-    app:useCompatPadding="true" />
+    app:useCompatPadding="true"
+    app:forceWidth="@dimen/product_card_flashsale_width" />

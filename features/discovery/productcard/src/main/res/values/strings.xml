@@ -42,6 +42,7 @@
     <string name="content_desc_videoPlay">button play</string>
     <string name="content_desc_imageLabelOverlay">label overlay</string>
     <string name="content_desc_iconNettPrice">icon nett price</string>
+    <string name="content_desc_labelAssignedValue">label assigned value</string>
 
     <string name="product_card_content_desc_imageRating">image rating</string>
     <string name="product_card_content_desc_seeOtherProduct">lihat produk lainnya</string>
