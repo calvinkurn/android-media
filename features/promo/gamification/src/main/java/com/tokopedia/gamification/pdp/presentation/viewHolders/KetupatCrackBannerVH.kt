@@ -9,6 +9,7 @@ import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.notifications.inApp.ketupat.ActivityLifecycleHandler
 import com.tokopedia.notifications.inApp.ketupat.KetupatSlashCallBack
 import com.tokopedia.unifycomponents.ImageUnify
@@ -68,6 +69,10 @@ class KetupatCrackBannerVH(itemView: View) :
     }
 
     override fun bind(element: KetupatCrackBannerVHModel?) {
+        if (!itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).isVisible) {
+            return
+        }
+
         val scratchCardId = element?.scratchCard?.id.toString()
         val endTime = element?.scratchCard?.endTime
 
@@ -100,9 +105,11 @@ class KetupatCrackBannerVH(itemView: View) :
                 }
             }
             crackData?.cta?.get(0)?.imageURL?.let {
-                itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).setImageUrl(
-                    it
-                )
+                if (it.isNotEmpty()) {
+                    itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).setImageUrl(
+                        it
+                    )
+                }
             }
             GamificationAnalytics.sendImpressManualClaimSectionEvent("direct_reward_id: $scratchCardId")
         }

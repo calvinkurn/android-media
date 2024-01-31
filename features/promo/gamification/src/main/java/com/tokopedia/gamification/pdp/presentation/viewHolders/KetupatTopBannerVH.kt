@@ -66,8 +66,8 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
                 formatDate("yyyy-MM-dd HH:mm:ss Z", "dd MMMM yyyy", time + "00")
             }
 
-            diff in 2..7 -> {
-                "$diff Days"
+            diff in 1..7 -> {
+                "${diff + 1} Days"
             }
 
             diff < 0 -> {

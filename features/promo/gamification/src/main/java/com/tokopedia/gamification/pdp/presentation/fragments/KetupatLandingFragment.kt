@@ -75,10 +75,11 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
         ketupatLandingViewModel?.getReferralTimeData()?.observe(this) {
             view?.findViewById<Group>(R.id.shimmer_group)?.hide()
-            view?.findViewById<RecyclerView>(R.id.ketupat_rv)?.show()
+            view?.findViewById<SwipeRefreshLayout>(R.id.ketupat_landing_page_swipe_refresh)?.show()
         }
 
         ketupatLandingViewModel?.getLandingPageData()?.observe(this) {
+            ketupatLPSwipeToRefreshView?.isRefreshing = false
             if (it.gamiGetScratchCardLandingPage.appBar?.isShownShareIcon == true) {
                 view?.let { view -> setSharingHeaderIconAndListener(view, it) }
             }
@@ -125,6 +126,8 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
             ketupatLPSwipeToRefreshView?.setOnRefreshListener {
                 //refresh lp
                 refreshData()
+                ketupatLPSwipeToRefreshView?.isRefreshing = true
+                ketupatRV?.scrollToPosition(0)
             }
         }
     }
