@@ -62,7 +62,10 @@ class DynamicOneLinerViewHolder(
         }
 
         val url = data.applink
-        dynamicOneLinerIconRight.showIfWithBlock(url.isNotEmpty()) {
+        dynamicOneLinerIconRight.showIfWithBlock(
+            url.isNotEmpty() ||
+                name == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_PROMO
+        ) {
             val chainStyle = when (data.chevronPos) {
                 CHEVRON_POS_FOLLOW -> ConstraintSet.CHAIN_PACKED
                 CHEVRON_POS_END -> ConstraintSet.CHAIN_SPREAD_INSIDE
