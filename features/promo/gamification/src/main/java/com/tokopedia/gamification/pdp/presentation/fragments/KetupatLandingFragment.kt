@@ -22,6 +22,7 @@ import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
 import com.tokopedia.gamification.pdp.data.di.components.PdpComponent
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
+import com.tokopedia.gamification.pdp.presentation.LandingPageRefreshCallback
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.KetupatLandingViewModel
@@ -153,7 +154,13 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
     private fun refreshData(){
             if (userSessionInterface?.isLoggedIn == true) {
-                ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024")
+                ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024",
+                    object : LandingPageRefreshCallback{
+                        override fun refreshLandingPage() {
+                            refreshData()
+                        }
+
+                    })
                 if(!fragmentDataRendered){
                     setUpAndCallRecommendation()
                 }

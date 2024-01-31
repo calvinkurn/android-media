@@ -14,6 +14,7 @@ import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponUseCase
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatLandingUseCase
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatReferralEventTimeStampUseCase
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatReferralUserRegistrationUseCase
+import com.tokopedia.gamification.pdp.presentation.LandingPageRefreshCallback
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponSlugVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponVHModel
@@ -49,10 +50,13 @@ class KetupatLandingViewModel @Inject constructor(
     private var benefitCouponRequest: BenefitCouponRequest? = null
     private var catalogSlugJSON: JSONArray? = null
     private val slugList : MutableList<String> = arrayListOf()
+    private var landingPageRefreshCallback: LandingPageRefreshCallback? = null
 
-    fun getGamificationLandingPageData(slug: String = "") {
+    fun getGamificationLandingPageData(slug: String = "",
+                                       landingPageRefreshCallback: LandingPageRefreshCallback? = null) {
         launchCatchError(
             block = {
+                this.landingPageRefreshCallback = landingPageRefreshCallback
                 val landingPageMainData =
                     async { ketupatLandingUseCase.getScratchCardLandingPage(slug) }
 
@@ -154,7 +158,8 @@ class KetupatLandingViewModel @Inject constructor(
                 ?.let { tempList.add(it) }
         }
         if (crack != null) {
-            data.scratchCard?.let { KetupatCrackBannerVHModel(crack!!, it) }
+            data.scratchCard?.let { KetupatCrackBannerVHModel(crack!!, it,
+                landingPageRefreshCallback) }
                 ?.let { tempList.add(it) }
         }
         if (referral != null && referralTimeData.value?.gameReferralEventContent?.eventContent?.remainingTime.orZero() > 0) {

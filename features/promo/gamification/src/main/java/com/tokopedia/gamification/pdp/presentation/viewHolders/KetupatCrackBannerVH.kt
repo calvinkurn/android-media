@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.pdp.data.GamificationAnalytics
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
+import com.tokopedia.gamification.pdp.presentation.LandingPageRefreshCallback
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -34,7 +35,8 @@ class KetupatCrackBannerVH(itemView: View) :
         activity: Activity,
         crackData: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem?,
         scratchCardId: String,
-        endTime: String?
+        endTime: String?,
+        landingPageRefreshCallback: LandingPageRefreshCallback?
     ) {
         //show pop up and pass the callback for tracking slash
         var activityLifecycleHandler = ActivityLifecycleHandler()
@@ -64,6 +66,8 @@ class KetupatCrackBannerVH(itemView: View) :
                         "direct_reward_id: $scratchCardId", "gamification",
                         "tokopediamarketplace"
                     )
+                    //refresh data
+                    landingPageRefreshCallback?.refreshLandingPage()
                 }
             })
     }
@@ -101,7 +105,8 @@ class KetupatCrackBannerVH(itemView: View) :
 
             itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).apply {
                 this.setOnClickListener {
-                    showKetupatPopUp((context as Activity), crackData, scratchCardId, endTime)
+                    showKetupatPopUp((context as Activity), crackData, scratchCardId,
+                        endTime, element?.landingPageRefreshCallback)
                 }
             }
             crackData?.cta?.get(0)?.imageURL?.let {
