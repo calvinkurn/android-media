@@ -26,6 +26,7 @@ class GetOccCartMapperWithExternalAutoApplyPromoTest : BaseOrderSummaryPageViewM
         assertEquals(0, result.promo.lastApply.codes.size)
         assertEquals(1, result.promo.lastApply.voucherOrders.size)
         assertEquals("DDN30WA2HCZ36A1M2PDR", result.promo.lastApply.voucherOrders.first().code)
+        assertEquals("CART_STRING", result.promo.lastApply.voucherOrders.first().uniqueId)
     }
 
     @Test

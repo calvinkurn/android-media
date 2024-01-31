@@ -20,7 +20,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 
 object LastApplyMapper {
 
-    private val TYPE_PROMO_MV = "mv"
+    private const val TYPE_PROMO_MV = "mv"
 
     fun mapPromo(promo: PromoSAFResponse): OrderPromo {
         return OrderPromo(
