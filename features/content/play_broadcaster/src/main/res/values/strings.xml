@@ -320,4 +320,5 @@
     <string name="play_shorts_interspersing_video_new_video_desc">Video Konten Ini</string>
     <string name="play_shorts_interspersing_video_old_video_desc">Video di Halaman Produk saat ini</string>
     <string name="play_shorts_interspersing_video_replace">akan menggantikan</string>
+    <string name="play_shorts_interspersing_video_failed_check_pdp_video">Ada gangguan yang lagi dibereskan. Coba lagi, ya.</string>
 </resources>

@@ -32,6 +32,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.play.broadcaster.R
 import javax.inject.Inject
 
 /**
@@ -202,7 +203,13 @@ class PlayShortsSummaryFragment @Inject constructor(
                     }
                     is PlayShortsUiEvent.ErrorCheckInterspersing -> {
                         analytic.impressInterspersingError(viewModel.selectedAccount, viewModel.shortsId)
-                        showErrorToaster(event.throwable)
+                        showErrorToaster(
+                            throwable = event.throwable,
+                            customErrMessage = getString(R.string.play_shorts_interspersing_video_failed_check_pdp_video),
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                        ) {
+                            viewModel.submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = true))
+                        }
                     }
                     is PlayShortsUiEvent.ShowInterspersingConfirmation -> {
                         showInterspersingConfirmation()
@@ -292,10 +299,18 @@ class PlayShortsSummaryFragment @Inject constructor(
         }
     }
 
-    private fun showErrorToaster(throwable: Throwable) {
+    private fun showErrorToaster(
+        throwable: Throwable,
+        customErrMessage: String? = null,
+        actionLabel: String = "",
+        actionListener: () -> Unit = {},
+    ) {
         toaster.showError(
             throwable,
-            duration = Toaster.LENGTH_LONG
+            customErrMessage = customErrMessage,
+            duration = Toaster.LENGTH_LONG,
+            actionLabel = actionLabel,
+            actionListener = { actionListener() },
         )
     }
 
