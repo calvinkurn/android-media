@@ -35,7 +35,7 @@ data class PdpRecommendationWidgetDataModel(
         return this.copy()
     }
 
-    override fun position(): TabletPosition = TabletPosition.BOTTOM
+    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
 
     /**
      * Here we return empty [Bundle] just to trigger the bind with payload functionality so the adapter can reuse the already attached [PdpRecommendationWidgetViewHolder] instead of recreating a new one whenever we want the recom data to be reloaded.

@@ -19,7 +19,7 @@ data class ProductShopReviewDataModel(
     var data: ProductShopReviewUiModel = ProductShopReviewUiModel()
 ) : DynamicPdpDataModel {
 
-    override fun position(): TabletPosition = TabletPosition.BOTTOM
+    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 

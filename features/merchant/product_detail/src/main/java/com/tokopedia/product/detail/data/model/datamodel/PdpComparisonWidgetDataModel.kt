@@ -11,7 +11,7 @@ data class PdpComparisonWidgetDataModel(
         var recommendationWidget: RecommendationWidget
 ) : DynamicPdpDataModel {
 
-    override fun position(): TabletPosition = TabletPosition.BOTTOM
+    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 

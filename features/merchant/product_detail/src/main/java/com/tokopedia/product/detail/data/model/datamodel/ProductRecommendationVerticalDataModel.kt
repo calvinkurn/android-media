@@ -14,7 +14,7 @@ data class ProductRecommendationVerticalDataModel(
     var position: Int = -1
 ) : DynamicPdpDataModel {
 
-    override fun position(): TabletPosition = TabletPosition.BOTTOM
+    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
 
     override fun type(): String = type
 

@@ -151,17 +151,17 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         val temp3 = mutableListOf<DynamicPdpDataModel>()
 
         newData.forEach { dynamicPdpDataModel ->
-            if (dynamicPdpDataModel.position().name == TabletPosition.LEFT.name) {
+            if (dynamicPdpDataModel.tabletSectionPosition().name == TabletPosition.LEFT.name) {
                 temp1.add(dynamicPdpDataModel)
                 return@forEach
             }
 
-            if (dynamicPdpDataModel.position().name == TabletPosition.RIGHT.name) {
+            if (dynamicPdpDataModel.tabletSectionPosition().name == TabletPosition.RIGHT.name) {
                 temp2.add(dynamicPdpDataModel)
                 return@forEach
             }
 
-            if (dynamicPdpDataModel.position().name == TabletPosition.BOTTOM.name) {
+            if (dynamicPdpDataModel.tabletSectionPosition().name == TabletPosition.BOTTOM.name) {
                 temp3.add(dynamicPdpDataModel)
                 return@forEach
             }

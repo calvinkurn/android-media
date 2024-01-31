@@ -15,7 +15,7 @@ data class ProductRecommendationVerticalPlaceholderDataModel(
     val thematicId: String
 ) : DynamicPdpDataModel {
 
-    override fun position(): TabletPosition = TabletPosition.BOTTOM
+    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
 
     override fun type(): String = type
 

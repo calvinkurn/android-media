@@ -11,7 +11,7 @@ data class OngoingCampaignDataModel(
     var data: ProductContentMainData? = null,
     var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
 ) : DynamicPdpDataModel {
-    override fun position(): TabletPosition = TabletPosition.LEFT
+    override fun tabletSectionPosition(): TabletPosition = TabletPosition.LEFT
 
     override fun type(): String = type
 
