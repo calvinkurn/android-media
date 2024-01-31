@@ -30,35 +30,24 @@ import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistNonLogin
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductClickLogin
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductClickLoginTopAds
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductClickNonLogin
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductClickNonLoginTopAds
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductViewLogin
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductViewLoginTopAds
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductViewNonLogin
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductViewNonLoginTopAds
-import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationRemoveWishlistLogin
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.helper.HomeFeedEndlessScrollListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeEggListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.home.beranda.presentation.view.adapter.GlobalHomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder.Companion.LAYOUT
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
-import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.home.beranda.presentation.viewModel.HomeGlobalRecommendationViewModel
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
+import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
 import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
@@ -67,6 +56,7 @@ import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetM
 import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -79,9 +69,9 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.abstraction.R as abstractionR
 
-class HomeRecommendationFragment :
+@RecomTemporary
+class HomeGlobalRecommendationFragment :
     Fragment(),
     GlobalRecomListener,
     TopAdsBannerClickListener {
@@ -95,8 +85,8 @@ class HomeRecommendationFragment :
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
-    private val viewModel: HomeRecommendationViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[HomeRecommendationViewModel::class.java]
+    private val viewModel: HomeGlobalRecommendationViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[HomeGlobalRecommendationViewModel::class.java]
     }
 
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
@@ -109,12 +99,12 @@ class HomeRecommendationFragment :
     }
 
     private val adapter by lazy {
-        val factory = HomeRecommendationTypeFactoryImpl(
+        val factory = ForYouRecommendationTypeFactoryImpl(
             this,
             PlayVideoWidgetManager(recyclerView, viewLifecycleOwner)
         )
 
-        HomeRecommendationAdapter(factory)
+        GlobalHomeRecommendationAdapter(factory)
     }
 
     private val staggeredGridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -262,7 +252,7 @@ class HomeRecommendationFragment :
                                 getString(R.string.home_error_connection),
                                 Snackbar.LENGTH_LONG,
                                 Toaster.TYPE_ERROR,
-                                getString(abstractionR.string.title_try_again),
+                                getString(com.tokopedia.abstraction.R.string.title_try_again),
                                 View.OnClickListener {
                                     endlessRecyclerViewScrollListener?.loadMoreNextPage()
                                 }
@@ -328,7 +318,7 @@ class HomeRecommendationFragment :
         recyclerView?.addItemDecoration(HomeFeedItemDecoration())
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
-            LAYOUT,
+            HomeRecommendationItemGridViewHolder.LAYOUT,
             MAX_RECYCLED_VIEWS
         )
         recyclerView?.setRecycledViewPool(parentPool)
@@ -433,14 +423,14 @@ class HomeRecommendationFragment :
             }
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(
-                    getRecommendationProductViewLoginTopAds(
+                    HomeRecommendationTracking.getRecommendationProductViewLoginTopAds(
                         tabNameLowerCase,
                         model
                     ) as HashMap<String, Any>
                 )
             } else {
                 trackingQueue.putEETracking(
-                    getRecommendationProductViewNonLoginTopAds(
+                    HomeRecommendationTracking.getRecommendationProductViewNonLoginTopAds(
                         tabNameLowerCase,
                         model
                     ) as HashMap<String, Any>
@@ -449,14 +439,14 @@ class HomeRecommendationFragment :
         } else {
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(
-                    getRecommendationProductViewLogin(
+                    HomeRecommendationTracking.getRecommendationProductViewLogin(
                         tabNameLowerCase,
                         model
                     ) as HashMap<String, Any>
                 )
             } else {
                 trackingQueue.putEETracking(
-                    getRecommendationProductViewNonLogin(
+                    HomeRecommendationTracking.getRecommendationProductViewNonLogin(
                         tabNameLowerCase,
                         model
                     ) as HashMap<String, Any>
@@ -480,14 +470,14 @@ class HomeRecommendationFragment :
             }
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                    getRecommendationProductClickLoginTopAds(
+                    HomeRecommendationTracking.getRecommendationProductClickLoginTopAds(
                         tabNameLowerCase,
                         model
                     )
                 )
             } else {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                    getRecommendationProductClickNonLoginTopAds(
+                    HomeRecommendationTracking.getRecommendationProductClickNonLoginTopAds(
                         tabNameLowerCase,
                         model
                     )
@@ -496,14 +486,14 @@ class HomeRecommendationFragment :
         } else {
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                    getRecommendationProductClickLogin(
+                    HomeRecommendationTracking.getRecommendationProductClickLogin(
                         tabNameLowerCase,
                         model
                     )
                 )
             } else {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                    getRecommendationProductClickNonLogin(
+                    HomeRecommendationTracking.getRecommendationProductClickNonLogin(
                         tabNameLowerCase,
                         model
                     )
@@ -784,7 +774,7 @@ class HomeRecommendationFragment :
             if (wishlistResult.isSuccess) {
                 if (wishlistResult.isAddWishlist) {
                     TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                        getRecommendationAddWishlistLogin(
+                        HomeRecommendationTracking.getRecommendationAddWishlistLogin(
                             productCardOptionsModel.productId,
                             tabName
                         )
@@ -798,7 +788,7 @@ class HomeRecommendationFragment :
                     }
                 } else {
                     TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                        getRecommendationRemoveWishlistLogin(
+                        HomeRecommendationTracking.getRecommendationRemoveWishlistLogin(
                             productCardOptionsModel.productId,
                             tabName
                         )
@@ -815,7 +805,10 @@ class HomeRecommendationFragment :
             }
         } else {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getRecommendationAddWishlistNonLogin(productCardOptionsModel.productId, tabName)
+                HomeRecommendationTracking.getRecommendationAddWishlistNonLogin(
+                    productCardOptionsModel.productId,
+                    tabName
+                )
             )
             val rvContext = recyclerView?.context
             rvContext?.let {
@@ -946,3 +939,4 @@ class HomeRecommendationFragment :
         }
     }
 }
+
