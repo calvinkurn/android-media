@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
@@ -9,6 +10,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
@@ -23,6 +26,18 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
         emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
     }.catch {
         emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
+    }.onCompletion {
+        logCompletionBreadcrumb(params, it)
+    }
+
+    private fun logCompletionBreadcrumb(params: GetBuyerOrderDetailParams, throwable: Throwable?) {
+        runCatching {
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Success: $params")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Error: ${throwable.stackTraceToString()}")
+            }
+        }
     }
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {
@@ -87,6 +102,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   badge_url
                 }
                 shipment {
+                  title
                   shipping_name
                   shipping_product_name
                   shipping_display_name

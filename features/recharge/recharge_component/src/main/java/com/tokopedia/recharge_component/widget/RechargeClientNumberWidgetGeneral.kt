@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -18,7 +17,6 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
@@ -36,7 +34,9 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
-import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.common.topupbills.R as commontopupbillsR
+
 /**
  * @author by firman on 10/02/22
  * */
@@ -128,14 +128,15 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(
         }
 
         val emptyStateUnitRes = when (inputFieldType) {
-            InputFieldType.Listrik -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_meter
-            InputFieldType.Telco -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp
-            else -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_meter
+            InputFieldType.Listrik -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_meter
+            InputFieldType.Telco -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_hp
+            else -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_meter
         }
 
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
             R.layout.item_recharge_client_number_auto_complete,
+            mutableListOf(),
             mutableListOf(),
             context.getString(emptyStateUnitRes),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
@@ -160,7 +161,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(
                 chipImageResource = getIconUnifyDrawable(
                     context,
                     IconUnify.VIEW_LIST,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
                 setOnClickListener {
                     mFilterChipListener?.onClickIcon(true)
                 }
@@ -203,7 +204,8 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(
         autoCompleteAdapter?.updateItems(
             suggestions.map {
                 TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
-            }.toMutableList()
+            }.toMutableList(),
+            mutableListOf()
         )
     }
 

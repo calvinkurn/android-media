@@ -3,24 +3,25 @@ package com.tokopedia.catalogcommon.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemComparisonBinding
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.viewholder.comparison.ComparisonItemAdapter
 import com.tokopedia.catalogcommon.viewholder.comparison.ComparisonSpecItemAdapter
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_CLEAR
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlin.math.ceil
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ComparisonViewHolder(
     itemView: View,
@@ -30,13 +31,14 @@ class ComparisonViewHolder(
 
     interface ComparisonItemListener {
         fun onComparisonSwitchButtonClicked(
-            position: Int,
-            item: ComparisonUiModel.ComparisonContent
+            items: List<ComparisonUiModel.ComparisonContent>
         )
-        fun onComparisonSeeMoreButtonClicked()
+
+        fun onComparisonSeeMoreButtonClicked(items: List<ComparisonUiModel.ComparisonContent>)
         fun onComparisonProductClick(id: String)
 
-        fun onComparisonImpression(id: String)
+        fun onComparisonImpression(id: String, widgetName: String)
+        fun onComparisonScrolled(dx: Int, dy: Int, scrollProgress: Int)
     }
 
     companion object {
@@ -45,13 +47,25 @@ class ComparisonViewHolder(
         private const val DEFAULT_LINE_COUNT = 1
         private const val DEFAULT_CHAR_WIDTH = 15
         private const val DEFAULT_TITLE_CHAR_WIDTH = 20
+        private const val TOP_SPEC_MARGIN = 16
+        private const val WIDE_WIDTH_ITEM_COUNT = 2
+        private const val NORMAL_WIDTH_DP_VALUE = 148
+        private const val MAX_PRODUCT_TITLE_LINES = 2
+        private const val INTRO_ANIMATION_START = 1000L
+        private const val INTRO_ANIMATION_END = 3000L
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
+    private var comparisonContents: List<ComparisonUiModel.ComparisonContent> = emptyList()
+    private var scrollProgress = 0
+    private var introAnimationPlayed = false
 
     init {
         binding?.btnSeeMore?.setOnClickListener {
-            comparisonItemListener?.onComparisonSeeMoreButtonClicked()
+            comparisonItemListener?.onComparisonSeeMoreButtonClicked(comparisonContents)
+        }
+        binding?.tfCatalogAction?.setOnClickListener {
+            comparisonItemListener?.onComparisonSwitchButtonClicked(comparisonContents)
         }
     }
 
@@ -66,6 +80,13 @@ class ComparisonViewHolder(
                 isDisplayingTopSpec,
                 comparisonItemListener
             )
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    scrollProgress += dx
+                    comparisonItemListener?.onComparisonScrolled(dx, dy, scrollProgress)
+                }
+            })
         }
     }
 
@@ -73,22 +94,33 @@ class ComparisonViewHolder(
         comparedItem: ComparisonUiModel.ComparisonContent?,
         comparisonItems: List<ComparisonUiModel.ComparisonContent>
     ) {
-        val colorGray = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN500)
-        val specs = if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
+        val specs =
+            if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
         layoutComparison.apply {
             tfProductName.text = comparedItem?.productTitle.orEmpty()
             tfProductPrice.text = comparedItem?.price.orEmpty()
             iuProduct.loadImage(comparedItem?.imageUrl.orEmpty())
-            cardProductAction.cardType = TYPE_CLEAR
-            iconProductAction.setImage(IconUnify.PUSH_PIN_FILLED, colorGray)
             root.addOneTimeGlobalLayoutListener {
                 val textAreaWidth: Double = tfProductPrice.measuredWidth.orZero().toDouble()
                 configureRowsHeight(textAreaWidth, comparedItem, comparisonItems)
-                rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+                rvSpecs.layoutManager =
+                    LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
                 rvSpecs.adapter = ComparisonSpecItemAdapter(specs.orEmpty(), true)
                 setupComparisonListItem(comparisonItems)
+                playIntroAnimation(rvComparisonItems, comparisonItems.count().dec())
             }
         }
+    }
+
+    private fun playIntroAnimation(rvComparisonItems: RecyclerView, lastIndex: Int) {
+        if (introAnimationPlayed || !isDisplayingTopSpec) return
+        introAnimationPlayed = true
+        rvComparisonItems.postDelayed({
+            rvComparisonItems.smoothScrollToPosition(lastIndex)
+        }, INTRO_ANIMATION_START)
+        rvComparisonItems.postDelayed({
+            rvComparisonItems.smoothScrollToPosition(Int.ZERO)
+        }, INTRO_ANIMATION_END)
     }
 
     private fun configureRowsHeight(
@@ -96,14 +128,16 @@ class ComparisonViewHolder(
         comparedItem: ComparisonUiModel.ComparisonContent?,
         comparisonItems: List<ComparisonUiModel.ComparisonContent>
     ) {
-        val specs = if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
+        val specs =
+            if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
         val rowsHeight = List(specs?.size.orZero()) { DEFAULT_LINE_COUNT }.toMutableList()
         var titleHeight = DEFAULT_LINE_COUNT
 
         // update list
         comparisonItems.forEach {
-            val tempTitleHeight = ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH) / textAreaWidth).toInt()
-            if (tempTitleHeight > titleHeight) titleHeight = tempTitleHeight
+            val tempTitleHeight =
+                ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH) / textAreaWidth).toInt()
+            if (tempTitleHeight == MAX_PRODUCT_TITLE_LINES) titleHeight = tempTitleHeight
             if (isDisplayingTopSpec) {
                 it.topComparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
             } else {
@@ -163,9 +197,6 @@ class ComparisonViewHolder(
             tfProductPrice.setTextColor(element.widgetTextColor ?: return)
             element.content.forEach { comparisonContent ->
                 comparisonContent.productTextColor = element.widgetTextColor
-                comparisonContent.topComparisonSpecs.forEach { comparisonSpec ->
-                    comparisonSpec.specTextColor = element.widgetTextColor
-                }
             }
         }
     }
@@ -173,13 +204,35 @@ class ComparisonViewHolder(
     private fun WidgetItemComparisonBinding.setupTopSpecs(element: ComparisonUiModel) {
         btnSeeMore.isVisible = isDisplayingTopSpec
         tfCatalogTitle.isVisible = isDisplayingTopSpec
+        tfCatalogAction.isVisible = isDisplayingTopSpec
+        if (!isDisplayingTopSpec) {
+            layoutComparison.root.setBackgroundResource(Int.ZERO)
+        } else {
+            val margin = TOP_SPEC_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            layoutComparison.root.setMargin(margin, margin, Int.ZERO, Int.ZERO)
+        }
+    }
+
+    private fun WidgetItemComparisonBinding.setupWidth(contentSize: Int) {
+        val screenWidth = if (contentSize <= WIDE_WIDTH_ITEM_COUNT) {
+            getScreenWidth() / WIDE_WIDTH_ITEM_COUNT
+        } else {
+            NORMAL_WIDTH_DP_VALUE.dpToPx(itemView.resources.displayMetrics)
+        }
+        guidelineComparison.setGuidelineBegin(screenWidth)
     }
 
     override fun bind(element: ComparisonUiModel) {
-        comparisonItemListener?.onComparisonImpression(element.content.getOrNull(Int.ONE)?.id.orEmpty())
+        val comparedId = element.content.slice(Int.ONE until element.content.size).joinToString(",") { it.id }
+        comparisonItemListener?.onComparisonImpression(
+            comparedId,
+            element.widgetName
+        )
         if (element.content.isEmpty()) return
+        this.comparisonContents = element.content
         val comparisonItems = element.content.subList(Int.ONE, element.content.size)
         val comparedItem = element.content.firstOrNull()
+        binding?.setupWidth(element.content.size)
         binding?.setupLayoutComparison(comparedItem, comparisonItems)
         binding?.setupColors(element)
         binding?.setupTopSpecs(element)

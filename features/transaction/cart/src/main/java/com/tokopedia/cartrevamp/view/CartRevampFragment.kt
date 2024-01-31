@@ -164,6 +164,7 @@ import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
+import com.tokopedia.promousage.util.logger.PromoErrorException
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -5131,16 +5132,21 @@ class CartRevampFragment :
                         val nearestCartItemViewHolder =
                             findViewHolderForAdapterPosition(nearestItemHolderDataPosition)
                         if (nearestCartItemViewHolder is CartItemViewHolder) {
-                            val quantityView =
-                                nearestCartItemViewHolder.getItemViewBinding().qtyEditorProduct.subtractButton
-                            bulkActionCoachMarkItems.add(
-                                CoachMark2Item(
-                                    quantityView,
-                                    "",
-                                    minQuantityOnboardingData.text,
-                                    CoachMark2.POSITION_BOTTOM
+                            val minusButtonAnchorView = if (nearestCartItemViewHolder.isUsingNewQuantityEditor()) {
+                                nearestCartItemViewHolder.getNewQuantityEditorAnchorView().anchorMinusButton
+                            } else {
+                                nearestCartItemViewHolder.getOldQuantityEditorAnchorView().subtractButton
+                            }
+                            minusButtonAnchorView?.let { anchorView ->
+                                bulkActionCoachMarkItems.add(
+                                    CoachMark2Item(
+                                        anchorView,
+                                        "",
+                                        minQuantityOnboardingData.text,
+                                        CoachMark2.POSITION_BOTTOM
+                                    )
                                 )
-                            )
+                            }
                         } else if (nearestCartItemViewHolder == null && bulkActionCoachMarkItems.isNotEmpty()) {
                             binding?.root?.let {
                                 bulkActionCoachMarkItems.add(
@@ -5168,13 +5174,15 @@ class CartRevampFragment :
                         }
                     }
 
-                    bulkActionCoachMark?.showCoachMark(
-                        bulkActionCoachMarkItems,
-                        null,
-                        bulkActionCoachMarkLastActiveIndex
-                    )
-                    hasShowBulkActionCoachMark = true
-                    CoachMarkPreference.setShown(it, CART_BULK_ACTION_COACH_MARK, true)
+                    if (bulkActionCoachMarkItems.isNotEmpty()) {
+                        bulkActionCoachMark?.showCoachMark(
+                            bulkActionCoachMarkItems,
+                            null,
+                            bulkActionCoachMarkLastActiveIndex
+                        )
+                        hasShowBulkActionCoachMark = true
+                        CoachMarkPreference.setShown(it, CART_BULK_ACTION_COACH_MARK, true)
+                    }
                 }
             }
         }
@@ -5286,7 +5294,7 @@ class CartRevampFragment :
 
     private fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
-        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException || throwable is ResponseErrorException)) {
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException || throwable is ResponseErrorException || throwable is PromoErrorException)) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
 
@@ -5809,6 +5817,11 @@ class CartRevampFragment :
             shopId,
             userSession.userId
         )
+    }
+
+    override fun clearAllFocus() {
+        val view = activity?.currentFocus
+        view?.clearFocus()
     }
 
     private inline fun guardCartClick(onClick: () -> Unit) {

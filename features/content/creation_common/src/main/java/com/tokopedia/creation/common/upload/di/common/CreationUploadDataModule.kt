@@ -7,8 +7,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
 import com.tokopedia.creation.common.upload.data.repository.CreationUploadQueueRepositoryImpl
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
+import com.tokopedia.creation.common.upload.domain.usecase.stories.StoriesUpdateStoryUseCase
 import com.tokopedia.creation.common.upload.util.CreationUploadMutex
-import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.sync.Mutex
@@ -35,14 +36,16 @@ class CreationUploadDataModule {
         mutex: Mutex,
         gson: Gson,
         creationUploadQueueDatabase: CreationUploadQueueDatabase,
-        logger: CreationUploadLogger,
+        updateShortsChannelUseCase: PlayBroadcastUpdateChannelUseCase,
+        updateStoryUseCase: StoriesUpdateStoryUseCase,
     ): CreationUploadQueueRepository {
         return CreationUploadQueueRepositoryImpl(
             dispatchers = dispatchers,
             mutex = mutex,
             gson = gson,
             creationUploadQueueDatabase = creationUploadQueueDatabase,
-            logger = logger,
+            updateShortsChannelUseCase = updateShortsChannelUseCase,
+            updateStoryUseCase = updateStoryUseCase,
         )
     }
 }

@@ -58,7 +58,8 @@ open class AddToCartOccMultiUseCase @Inject constructor(
                     it.productId, it.productName, it.price,
                     it.quantity, it.category, it.categoryLevel1Id,
                     it.categoryLevel1Name, it.categoryLevel2Id, it.categoryLevel2Name,
-                    it.categoryLevel3Id, it.categoryLevel3Name, sentParams.userId
+                    it.categoryLevel3Id, it.categoryLevel3Name, sentParams.userId,
+                    it.shopName
                 )
             }
         }

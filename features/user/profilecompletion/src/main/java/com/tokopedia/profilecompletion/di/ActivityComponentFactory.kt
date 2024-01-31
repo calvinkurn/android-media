@@ -12,7 +12,6 @@ open class ActivityComponentFactory {
     ): ProfileCompletionSettingComponent =
         DaggerProfileCompletionSettingComponent.builder()
             .baseAppComponent((application).baseAppComponent)
-            .profileCompletionSettingModule(ProfileCompletionSettingModule(activity))
             .build()
 
     companion object {
