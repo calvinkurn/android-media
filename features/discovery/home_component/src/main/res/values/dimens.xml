@@ -50,7 +50,8 @@
 
     <dimen name="home_mission_widget_card_image_size">128dp</dimen>
     <dimen name="home_mission_widget_card_margin_horizontal_subtitle">8dp</dimen>
-    <dimen name="home_mission_widget_clear_image_size">100dp</dimen>
+    <dimen name="home_mission_widget_clear_small_image_size">100dp</dimen>
+    <dimen name="home_mission_widget_clear_big_image_size">116dp</dimen>
     <dimen name="home_mission_widget_clear_image_corner_radius">8dp</dimen>
     <dimen name="home_mission_widget_clear_horizontal_padding">12dp</dimen>
     <dimen name="home_mission_widget_clear_bottom_padding">8dp</dimen>
