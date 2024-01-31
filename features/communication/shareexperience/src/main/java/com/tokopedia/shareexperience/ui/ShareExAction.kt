@@ -1,6 +1,5 @@
 package com.tokopedia.shareexperience.ui
 
-import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 
 sealed interface ShareExAction {
