@@ -797,9 +797,10 @@ class DigitalPDPTagihanFragment :
 
     //region AutoCompleteListener
 
-    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
+    override fun onClickAutoComplete(autoCompleteItem: TopupBillsAutoCompleteContactModel) {
+        // TODO: If we have decided to use this page, please check the auto complete tracker rule
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (favorite.name.isNotEmpty()) {
+        if (autoCompleteItem.name.isNotEmpty()) {
             digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 viewModel.operatorData.attributes.name,

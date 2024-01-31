@@ -31,7 +31,7 @@ import javax.inject.Inject
  * access internal applink tokopedia-android-internal://digital/pdp_pulsa
  */
 
-class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {
+open class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {
 
     @Inject
     lateinit var performanceMonitoring: DigitalPDPPulsaPerformanceCallback
