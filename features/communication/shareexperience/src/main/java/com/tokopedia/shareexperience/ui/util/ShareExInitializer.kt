@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -90,7 +89,6 @@ class ShareExInitializer(
         weakContext.get()?.let {
             val lifecycleScope = (it as? LifecycleOwner)?.lifecycleScope
             lifecycleScope?.launch {
-                UUID.randomUUID()
                 try {
                     /**
                      * Add more checker and args here if needed

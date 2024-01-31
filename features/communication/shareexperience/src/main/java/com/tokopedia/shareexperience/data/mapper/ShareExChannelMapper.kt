@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.provider.Telephony.Sms.getDefaultSmsPackage
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
+import com.tokopedia.shareexperience.data.util.ShareExTelephonyUtil
 import com.tokopedia.shareexperience.data.util.toArray
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
@@ -25,6 +25,7 @@ import javax.inject.Inject
 class ShareExChannelMapper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val resourceProvider: ShareExResourceProvider,
+    private val telephony: ShareExTelephonyUtil,
     private val remoteConfig: RemoteConfig,
     private val userSession: UserSessionInterface
 ) {
@@ -209,7 +210,7 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getSMSChannelTitle(),
                 icon = IconUnify.CHAT,
                 mimeType = ShareExMimeTypeEnum.ALL,
-                packageName = getDefaultSmsPackage(context)
+                packageName = telephony.getSMSPackageName()
             )
         )
         generalChannelList.add(
