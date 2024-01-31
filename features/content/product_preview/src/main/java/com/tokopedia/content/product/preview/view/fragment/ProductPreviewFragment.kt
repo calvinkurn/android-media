@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -17,6 +19,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.doOnApplyWindowInsets
+import com.tokopedia.content.common.util.requestApplyInsetsWhenAttached
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
@@ -111,8 +115,21 @@ class ProductPreviewFragment @Inject constructor(
         observeEvent()
     }
 
+    override fun onStart() {
+        super.onStart()
+        view?.requestApplyInsetsWhenAttached()
+    }
+
     override fun onResume() {
         super.onResume()
+        view?.doOnApplyWindowInsets { _, insets, padding, _ ->
+            val isNavVisible = insets.isVisible(WindowInsetsCompat.Type.systemGestures())
+            val navInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
+            binding.root.updatePadding(
+                bottom = padding.bottom + if (isNavVisible) navInsets.bottom else 0
+            )
+        }
+
         viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
     }
 
