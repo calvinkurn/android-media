@@ -156,6 +156,12 @@ class TrackingMapper {
 
     companion object {
 
+        const val IRIS = "iris"
+        const val IRIS_SDK_VERSION = "6.0.0"
+        const val ANDROID = "Android"
+        const val MOBILE = "Mobile"
+        const val TABLET = "Tablet"
+
         const val DEVICE_ID = "device_id"
         const val USER_ID = "user_id"
         const val EVENT_DATA = "event_data"
@@ -173,13 +179,17 @@ class TrackingMapper {
         const val ANDROID_PREV_VERSION_SUFFIX = "before"
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val KEY_NEW_VISIT = "newVisit"
-        const val KEY_BROWSER_NAME = "browser_name"
-        const val KEY_BROWSER_VERSION_NAME = "browser_version_name"
+
+        // device info
+        const val KEY_DEVICE_BROWSER = "device_browser"
+        const val KEY_DEVICE_BROWSER_VERSION = "device_browserVersion"
+        const val KEY_DEVICE_OS_VERSION = "device_osVersion"
         const val KEY_OPERATING_SYSTEM_VERSION_NAME = "operating_system_version_name"
-        const val KEY_MOBILE_DEVICE_BRANDING_NAME = "mobile_device_branding_name"
-        const val KEY_MOBILE_DEVICE_MODEL_NAME = "mobile_device_model_name"
-        const val KEY_DEVICE_LANGUAGE_NAME = "device_language_name"
-        const val KEY_SCREEN_RESOLUTION_NAME = "screen_resolution_name"
+        const val KEY_DEVICE_MOBILE_BRANDING = "device_mobileDeviceBranding"
+        const val KEY_DEVICE_MOBILE_DEVICE_MODEL = "device_mobileDeviceModel"
+        const val KEY_DEVICE_CATEGORY_NAME = "device_category_name"
+        const val KEY_DEVICE_SCREEN_RESOLUTION = "device_screenResolution"
+        const val KEY_DEVICE_LANGUAGE_NAME = "device_language"
 
         fun reformatEvent(event: String, sessionId: String, cache: Cache, context: Context): JSONObject {
             return try {
@@ -194,16 +204,20 @@ class TrackingMapper {
                     val eventName = item.get(KEY_EVENT)
 
                     if (eventName == EVENT_OPEN_SCREEN) {
-                        item.put(KEY_BROWSER_NAME, "")
-                        item.put(KEY_BROWSER_VERSION_NAME, "")
-                        item.put(KEY_OPERATING_SYSTEM_VERSION_NAME, Build.VERSION.RELEASE)
-                        item.put(KEY_MOBILE_DEVICE_BRANDING_NAME, Build.BRAND)
-                        item.put(KEY_MOBILE_DEVICE_MODEL_NAME, Build.MODEL)
+                        item.put(KEY_DEVICE_BROWSER, IRIS)
+                        item.put(KEY_DEVICE_BROWSER_VERSION, IRIS_SDK_VERSION)
+                        item.put(KEY_OPERATING_SYSTEM_VERSION_NAME, ANDROID)
+                        item.put(KEY_DEVICE_OS_VERSION, Build.VERSION.RELEASE)
+                        item.put(KEY_DEVICE_MOBILE_BRANDING, Build.BRAND)
+                        item.put(KEY_DEVICE_MOBILE_DEVICE_MODEL, Build.MODEL)
                         item.put(KEY_DEVICE_LANGUAGE_NAME, Locale.getDefault().toString())
 
                         val screenWidth = DeviceScreenInfo.getScreenWidth(context)
                         val screenHeight = DeviceScreenInfo.getScreenHeight(context)
-                        item.put(KEY_SCREEN_RESOLUTION_NAME, "${screenWidth}x$screenHeight")
+                        item.put(KEY_DEVICE_SCREEN_RESOLUTION, "${screenWidth}x$screenHeight")
+
+                        val categoryName = if (DeviceScreenInfo.isTablet(context)) TABLET else MOBILE
+                        item.put(KEY_DEVICE_CATEGORY_NAME, categoryName)
                     }
 
                     if (!cache.hasVisit() && eventName == EVENT_OPEN_SCREEN) {
