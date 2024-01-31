@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -56,6 +57,9 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
     @Inject
     @JvmField
     var viewModelProvider: ViewModelProvider.Factory? = null
+
+    var ketupatLPSwipeToRefreshView: SwipeRefreshLayout? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setObservers()
@@ -134,6 +138,15 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                 fragmentDataRendered = true
             } else {
                 navigateToLoginPage()
+            }
+        }
+    }
+
+    fun setUpPullToRefresh(view: View?){
+        if(ketupatLPSwipeToRefreshView == null) {
+            ketupatLPSwipeToRefreshView = view?.findViewById<SwipeRefreshLayout>(R.id.ketupat_landing_page_swipe_refresh)
+            ketupatLPSwipeToRefreshView?.setOnRefreshListener {
+                //refresh lp
             }
         }
     }
