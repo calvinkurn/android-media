@@ -9,15 +9,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASE<!--end status-->                                                                 |
-| --- |-------------------------------------------------------------------------------------------------------------------|
+| **Status**       | <!--start status:GREEN-->RELEASE<!--end status-->                                                                 |
+|------------------|-------------------------------------------------------------------------------------------------------------------|
 | **Project Lead** | [Calvin](https://tokopedia.atlassian.net/wiki/people/5c6beecd9170244d98d7d0c4)                                    |
-| Product Manager | [Gilbert .](https://tokopedia.atlassian.net/wiki/people/612c2c400f8ff40068adbfae?ref=confluence)                  |
-| Team | [Minion Jerry]                                                                                                    |
-| Release date | 19 Oct 2022 / <!--start status:GREY-->MA-3.198<!--end status--> <!--start status:GREY-->SA-2.128<!--end status--> |
-| Module type | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->                                                       |
-| Product PRD | [Link](https://tokopedia.atlassian.net/wiki/spaces/CO/pages/2281898008/PRD+-+Immersive+Image+Video+Editor)        |
-| Module Location | `features.mediaeditor`                                                                                            | `features/media/medialoader` |
+| Product Manager  | [Gilbert .](https://tokopedia.atlassian.net/wiki/people/612c2c400f8ff40068adbfae?ref=confluence)                  |
+| Team             | [Minion Jerry]                                                                                                    |
+| Release date     | 19 Oct 2022 / <!--start status:GREY-->MA-3.198<!--end status--> <!--start status:GREY-->SA-2.128<!--end status--> |
+| Module type      | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->                                                       |
+| Product PRD      | [Link](https://tokopedia.atlassian.net/wiki/spaces/CO/pages/2281898008/PRD+-+Immersive+Image+Video+Editor)        |
+| Module Location  | `features.mediaeditor`                                                                                            | `features/media/mediaeditor` |
 
 ## Table of Contents
 
