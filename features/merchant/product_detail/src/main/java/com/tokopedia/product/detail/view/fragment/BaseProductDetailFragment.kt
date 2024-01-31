@@ -37,6 +37,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.util.RecommendationItemDecoration
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -331,18 +332,26 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         val manager = CenterLayoutManagerTablet(context)
         manager.spanSizeLookup = object : SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val isPageError = productAdapter?.currentList.orEmpty().any {
-                    it is PageErrorDataModel || it is ProductLoadingDataModel
-                }
-
-                return if (position > 1 || isPageError) {
-                    2
-                } else {
-                    1
-                }
+                return decideSpanSize(position)
             }
         }
         return manager
+    }
+
+    private fun decideSpanSize(position: Int): Int {
+        val isPageError = productAdapter?.currentList.orEmpty().any {
+            it is PageErrorDataModel || it is ProductLoadingDataModel
+        }
+        val isVerticalRecommendationViewHolder =
+            getViewHolderByPosition(position) is ProductRecommendationVerticalViewHolder
+
+        val shouldFullSpan =
+            (position > 1 || isPageError) && !isVerticalRecommendationViewHolder
+        return if (shouldFullSpan) {
+            2
+        } else {
+            1
+        }
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
