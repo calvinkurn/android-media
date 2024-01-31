@@ -1,7 +1,7 @@
 package com.tokopedia.notifications.inApp.ketupat
 
-import com.tokopedia.notifications.common.CMConstant.AnimationGtmTrackerEvents
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMConstant.AnimationGtmTrackerEvents
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -14,17 +14,17 @@ class AnimationPopupGtmTracker {
     private var eventLabel = ""
 
     fun sendPopupImpressionEvent(scratchCardId: String) {
-        eventLabel = "{direct_reward_id: $scratchCardId}"
+        eventLabel = """{"direct_reward_id": "$scratchCardId"}"""
         createMapAndSendEvent(
             VIEW_LG_IRIS,
             AnimationGtmTrackerEvents.VALUE_IMPRESSION_POPUP_EVENT_ACTION,
             eventLabel,
             AnimationGtmTrackerEvents.VALUE_IMPRESSION_TRACKER_ID
-            )
+        )
     }
 
     fun sendPopupInteractionEvent(scratchCardId: String) {
-        eventLabel = "{direct_reward_id: $scratchCardId}"
+        eventLabel = """{"direct_reward_id": "$scratchCardId"}"""
         createMapAndSendEvent(
             CLICK_LG_IRIS,
             AnimationGtmTrackerEvents.VALUE_INTERACTION_POPUP_EVENT_ACTION,
@@ -34,7 +34,7 @@ class AnimationPopupGtmTracker {
     }
 
     fun sendPopupCloseEvent(scratchCardId: String) {
-        eventLabel = "{direct_reward_id: $scratchCardId}"
+        eventLabel = """{"direct_reward_id": "$scratchCardId"}"""
         createMapAndSendEvent(
             CLICK_LG_IRIS,
             AnimationGtmTrackerEvents.VALUE_CLOSE_POPUP_EVENT_ACTION,
@@ -44,7 +44,7 @@ class AnimationPopupGtmTracker {
     }
 
     fun sendCouponImpressionEvent(scratchCardId: String, catalogSlug: String, catalogId: String) {
-        eventLabel = "{direct_reward_id: $scratchCardId, catalog_slug:$catalogSlug, catalog_id:$catalogId}"
+        eventLabel = """{"direct_reward_id": "$scratchCardId", "catalog_slug":"$catalogSlug", "catalog_id":"$catalogId"}"""
         createMapAndSendEvent(
             CLICK_LG_IRIS,
             AnimationGtmTrackerEvents.VALUE_IMPRESSION_COUPON_EVENT_ACTION,
@@ -54,7 +54,7 @@ class AnimationPopupGtmTracker {
     }
 
     fun sendCtaButtonImpressionEvent(scratchCardId: String, catalogSlug: List<String>, catalogId: List<String>) {
-        eventLabel = "{direct_reward_id: $scratchCardId, catalog_slug:$catalogSlug, catalog_id:$catalogId}"
+        eventLabel = """{"direct_reward_id": "$scratchCardId", "catalog_slug":"$catalogSlug", "catalog_id":"$catalogId"}"""
         createMapAndSendEvent(
             VIEW_LG_IRIS,
             AnimationGtmTrackerEvents.VALUE_IMPRESSION_CTA_BUTTON_EVENT_ACTION,
@@ -64,7 +64,7 @@ class AnimationPopupGtmTracker {
     }
 
     fun sendCtaButtonClickEvent(scratchCardId: String, catalogSlug: List<String>, catalogId: List<String>) {
-        eventLabel = "{direct_reward_id: $scratchCardId, catalog_slug:$catalogSlug, catalog_id:$catalogId}"
+        eventLabel = """{"direct_reward_id": "$scratchCardId", "catalog_slug":"$catalogSlug", "catalog_id":"$catalogId"}"""
         createMapAndSendEvent(
             CLICK_LG_IRIS,
             AnimationGtmTrackerEvents.VALUE_CLICK_CTA_BUTTON_EVENT_ACTION,
@@ -74,7 +74,7 @@ class AnimationPopupGtmTracker {
     }
 
     fun sendErrorImpressionEvent(scratchCardId: String) {
-        eventLabel = "{direct_reward_id: $scratchCardId}"
+        eventLabel = """{"direct_reward_id": "$scratchCardId"}"""
         createMapAndSendEvent(
             VIEW_LG_IRIS,
             AnimationGtmTrackerEvents.VALUE_IMPRESSION_ERROR_EVENT_ACTION,
@@ -84,7 +84,7 @@ class AnimationPopupGtmTracker {
     }
 
     fun sendErrorRetryButtonEvent(scratchCardId: String) {
-        eventLabel = "{direct_reward_id: $scratchCardId}"
+        eventLabel = """{"direct_reward_id": "$scratchCardId"}"""
         createMapAndSendEvent(
             CLICK_LG_IRIS,
             AnimationGtmTrackerEvents.VALUE_CLICK_RETRY_BUTTON_EVENT_ACTION,
@@ -94,7 +94,7 @@ class AnimationPopupGtmTracker {
     }
 
     fun sendErrorUnRetryableImpressionEvent(scratchCardId: String) {
-        eventLabel = "{direct_reward_id: $scratchCardId}"
+        eventLabel = """{"direct_reward_id": "$scratchCardId"}"""
         createMapAndSendEvent(
             VIEW_LG_IRIS,
             AnimationGtmTrackerEvents.VALUE_IMPRESSION_UNRETRY_ERROR_EVENT_ACTION,

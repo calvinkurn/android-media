@@ -3,7 +3,6 @@ package com.tokopedia.gamification.pdp.domain.usecase
 import com.tokopedia.gamification.pdp.data.model.KetupatBenefitCouponSlugData
 import com.tokopedia.gamification.pdp.data.model.request.BenefitCouponSlugRequest
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponSlugUseCase.Companion.GET_TOKOPOINTS_COUPON_LIST_STACK
-import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponUseCase.Companion.GET_TOKOPOINTS_COUPON_LIST
 import com.tokopedia.gamification.pdp.repository.GamificationRepository
 import com.tokopedia.gql_query_annotation.GqlQuery
 import javax.inject.Inject
@@ -13,7 +12,7 @@ class KetupatBenefitCouponSlugUseCase @Inject constructor(
     private val repository: GamificationRepository
 ) {
 
-    private fun createRequestParams(): Map<String, Any> {
+    private fun createRequestParams(catalogSlugRequest: List<String>): Map<String, Any> {
         return mapOf<String, Any>(
             INPUT to BenefitCouponSlugRequest(
                 serviceID = "",
@@ -25,17 +24,17 @@ class KetupatBenefitCouponSlugUseCase @Inject constructor(
                 source = "discovery-page",
                 isGetPromoInfo = true,
                 apiVersion = "2.0.0",
-                catalogSlugs = arrayListOf("DC200STG", "DC300STG", "DC300STG"),
+                catalogSlugs = catalogSlugRequest,
                 clientID = "disco"
             )
         )
     }
 
-    suspend fun getTokopointsCouponListStack(): KetupatBenefitCouponSlugData {
+    suspend fun getTokopointsCouponListStack(catalogSlugRequest: List<String>): KetupatBenefitCouponSlugData {
         return repository.getGQLData(
             GetTokopointsCouponListStack.GQL_QUERY,
             KetupatBenefitCouponSlugData::class.java,
-            createRequestParams()
+            createRequestParams(catalogSlugRequest)
         )
     }
 

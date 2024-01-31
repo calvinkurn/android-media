@@ -23,13 +23,12 @@ import com.tokopedia.notifications.databinding.LayoutInappAnimationBinding
 import com.tokopedia.notifications.domain.data.PopUpContent
 import kotlinx.android.synthetic.main.layout_inapp_animation.view.*
 
-
-open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val activity: Activity):
+open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val activity: Activity) :
     ConstraintLayout(context, attrs) {
 
     private val layoutInflater = LayoutInflater.from(context)
     private val binding =
-       LayoutInappAnimationBinding.inflate(layoutInflater, this, true)
+        LayoutInappAnimationBinding.inflate(layoutInflater, this, true)
     private var eventSlicingStart: MotionEvent? = null
     private var myGestureListener = MyGestureListener()
     private var eventSlicingEnd: MotionEvent? = null
@@ -39,19 +38,21 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private var scratchCardId: String = ""
     private var ketupatSlashCallBack: KetupatSlashCallBack? = null
 
-    open fun loadLottieAnimation(slug: String?, popUpContent: PopUpContent,
-                                 scratchCardId: String,
-                                 ketupatSlashCallBack: KetupatSlashCallBack? = null) {
+    open fun loadLottieAnimation(
+        slug: String?,
+        popUpContent: PopUpContent,
+        scratchCardId: String,
+        ketupatSlashCallBack: KetupatSlashCallBack? = null
+    ) {
         try {
-            loadAnimationFromURl(popUpContent)
             this.slug = slug
             this.scratchCardId = scratchCardId
+            this.ketupatSlashCallBack = ketupatSlashCallBack
+            loadAnimationFromURl(popUpContent)
             handleLottieSlice()
             binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
             onCloseClick(binding.root)
             onParentContainerClick(binding.root)
-            this.ketupatSlashCallBack = ketupatSlashCallBack
-            animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
         } catch (e: Exception) {
             ServerLogger.log(
                 Priority.P2,
@@ -68,19 +69,18 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
     private fun loadAnimationFromURl(popUpContent: PopUpContent) {
         popUpContent.assets?.get(0)?.let {
             binding.lottieViewPopup.setAnimationFromUrl(it.value)
-            animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
             binding.lottieViewPopup.setMinFrame("Tutorial")
             binding.lottieViewPopup.setMaxFrame(59)
             Handler().postDelayed({
                 binding.icClose.visible()
             }, 600)
+            animationPopupGtmTracker.sendPopupImpressionEvent(scratchCardId)
         }
         popUpContent.assets?.get(1)?.let {
             crackCouponHandler.url = it.value.toString()
             activity.applicationContext?.let { context ->
-                 crackCouponHandler.rewardSoundManager = createAudioManager(context)
+                crackCouponHandler.rewardSoundManager = createAudioManager(context)
             }
-
         }
     }
 
@@ -154,5 +154,4 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
         }
         return rewardSoundManager
     }
-
 }

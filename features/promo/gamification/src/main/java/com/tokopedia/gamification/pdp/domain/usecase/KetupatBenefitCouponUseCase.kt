@@ -1,7 +1,6 @@
 package com.tokopedia.gamification.pdp.domain.usecase
 
 import com.tokopedia.gamification.pdp.data.model.KetupatBenefitCouponData
-import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.data.model.request.BenefitCouponRequest
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponUseCase.Companion.GET_TOKOPOINTS_COUPON_LIST
 import com.tokopedia.gamification.pdp.repository.GamificationRepository
@@ -13,23 +12,17 @@ class KetupatBenefitCouponUseCase @Inject constructor(
     private val repository: GamificationRepository
 ) {
 
-    private fun createRequestParams(): Map<String, Any> {
+    private fun createRequestParams(benefitCouponRequest: BenefitCouponRequest): Map<String, Any> {
         return mapOf<String, Any>(
-            INPUT to BenefitCouponRequest(
-                serviceID = "marketplace",
-                categoryIDCoupon = 1,
-                categoryID = 54,
-                limit = 6,
-                page = 1
-            )
+            INPUT to benefitCouponRequest
         )
     }
 
-    suspend fun getTokopointsCouponList(): KetupatBenefitCouponData {
+    suspend fun getTokopointsCouponList(benefitCouponRequest: BenefitCouponRequest): KetupatBenefitCouponData {
         return repository.getGQLData(
             GetTokopointsCouponList.GQL_QUERY,
             KetupatBenefitCouponData::class.java,
-            createRequestParams()
+            createRequestParams(benefitCouponRequest)
         )
     }
 

@@ -49,6 +49,8 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
     private var fragmentDataRendered: Boolean = false
     private var fragmentViewCreated: Boolean = false
+    private var infiniteRecommendationManager: InfiniteRecommendationManager? = null
+    private var ketupatRV: RecyclerView? = null
 
     @Inject
     @JvmField
@@ -67,6 +69,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
     private fun setObservers() {
         ketupatLandingViewModel?.getAffiliateDataItems()?.observe(this) {
+            adapter.clearAllElements()
             adapter.addMoreData(it)
         }
 
@@ -112,34 +115,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
     override fun onResume() {
         super.onResume()
-        if (!fragmentDataRendered) {
-            if (userSessionInterface?.isLoggedIn == true) {
-                ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024")
-
-                val ketupatRV = view?.findViewById<RecyclerView>(R.id.ketupat_rv)
-                val layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-
-                adapter.setVisitables(ArrayList())
-
-                ketupatRV?.layoutManager = layoutManager
-
-                val concatAdapter = ConcatAdapter(adapter)
-                ketupatRV?.adapter = concatAdapter
-                val infiniteRecommendationManager =
-                    context?.let { InfiniteRecommendationManager(it) }
-                infiniteRecommendationManager?.adapter?.let {
-                    concatAdapter.addAdapter(it)
-                }
-                val requestParam = GetRecommendationRequestParam(pageName = "gami_direct_reward")
-                infiniteRecommendationManager?.requestParam = requestParam
-                infiniteRecommendationManager?.fetchRecommendation().apply {
-                    GamificationAnalytics.sendImpressProductRecommendationSectionEvent("direct_reward_id: $scratchCardId")
-                }
-                fragmentDataRendered = true
-            } else {
-                navigateToLoginPage()
-            }
-        }
+        refreshData()
     }
 
     fun setUpPullToRefresh(view: View?){
@@ -160,11 +136,50 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN && userSessionInterface?.isLoggedIn == false) {
-            activity?.finish()
+        if (requestCode == REQUEST_CODE_LOGIN) {
+            if(userSessionInterface?.isLoggedIn == false) {
+                activity?.finish()
+            }else{
+                //refresh data with shimmer
+                refreshData()
+            }
         }
     }
 
+    private fun refreshData(){
+            if (userSessionInterface?.isLoggedIn == true) {
+                ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024")
+                if(!fragmentDataRendered){
+                    setUpAndCallRecommendation()
+                }
+                fragmentDataRendered = true
+            } else {
+                navigateToLoginPage()
+            }
+    }
+
+    private fun setUpAndCallRecommendation(){
+        ketupatRV = view?.findViewById<RecyclerView>(R.id.ketupat_rv)
+        val layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+
+        adapter.setVisitables(ArrayList())
+
+        ketupatRV?.layoutManager = layoutManager
+
+        //recomm section
+        val concatAdapter = ConcatAdapter(adapter)
+        ketupatRV?.adapter = concatAdapter
+        infiniteRecommendationManager =
+            context?.let { InfiniteRecommendationManager(it) }
+        infiniteRecommendationManager?.adapter?.let {
+            concatAdapter.addAdapter(it)
+        }
+        val requestParam = GetRecommendationRequestParam(pageName = "gami_direct_reward")
+        infiniteRecommendationManager?.requestParam = requestParam
+        infiniteRecommendationManager?.fetchRecommendation().apply {
+            GamificationAnalytics.sendImpressProductRecommendationSectionEvent("direct_reward_id: $scratchCardId")
+        }
+    }
     fun setSharingHeaderIconAndListener(
         view: View,
         ketupatLandingPageData: KetupatLandingPageData
