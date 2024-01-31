@@ -84,6 +84,127 @@ class ShippingWidgetTest {
             assertWhitelabelShippingVisible()
             assertWhitelabelShippingTitle("Instan (Rp30.000)")
             assertWhitelabelShippingEta("Estimasi Tiba 1 - 3 Feb")
+            assertOptionalInsurance(2000.0, false)
+        }
+
+        Thread.sleep(2000)
+    }
+
+    @Test
+    fun bebasOngkirTest() {
+        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
+            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.BEBAS_ONGKIR.name)
+        }
+        activityRule.launchActivity(intent)
+
+        val widget =
+            activityRule.activity.findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget)
+        shippingWidget(widget) {
+            assertBebasOngkirShippingVisible()
+            assertBebasOngkirShippingCodLabel("", View.GONE)
+            assertBebasOngkirShippingTitle("(Rp0)")
+            assertBebasOngkirShippingLogoLabel(View.VISIBLE)
+            assertBebasOngkirShippingEta("Estimasi tiba 2-4 Feb", View.VISIBLE)
+            assertOptionalInsurance(2000.0, true)
+        }
+
+        Thread.sleep(2000)
+    }
+
+    @Test
+    fun now2HourWithPromoTest() {
+        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
+            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.NOW_2_HOUR.name)
+        }
+        activityRule.launchActivity(intent)
+
+        val widget =
+            activityRule.activity.findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget)
+        shippingWidget(widget) {
+            assertNow2HourShippingVisible()
+            assertNow2HourShippingTitle("2 Jam Tiba (Rp0)")
+            assertNow2HourShippingDescription("", View.GONE)
+            assertOptionalInsurance(2000.0, true)
+        }
+
+        Thread.sleep(2000)
+    }
+
+    @Test
+    fun schellyWithRatesTest() {
+        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
+            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.SCHELLY_WITH_RATES.name)
+        }
+        activityRule.launchActivity(intent)
+
+        val widget =
+            activityRule.activity.findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget)
+        shippingWidget(widget) {
+            assertSchellyShippingVisible()
+        }
+
+        Thread.sleep(2000)
+    }
+
+    @Test
+    fun unavailableCourierTest() {
+        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
+            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.UNAVAILABLE_COURIER.name)
+        }
+        activityRule.launchActivity(intent)
+
+        val widget =
+            activityRule.activity.findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget)
+        shippingWidget(widget) {
+            assertUnavailableCourierLayoutVisible()
+        }
+
+        Thread.sleep(2000)
+    }
+
+    @Test
+    fun errorPinpointTest() {
+        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
+            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.ERROR_PINPOINT.name)
+        }
+        activityRule.launchActivity(intent)
+
+        val widget =
+            activityRule.activity.findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget)
+        shippingWidget(widget) {
+            assertErrorPinpointVisible()
+        }
+
+        Thread.sleep(2000)
+    }
+
+    @Test
+    fun loadingTest() {
+        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
+            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.LOADING.name)
+        }
+        activityRule.launchActivity(intent)
+
+        val widget =
+            activityRule.activity.findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget)
+        shippingWidget(widget) {
+            assertLoadingVisible()
+        }
+
+        Thread.sleep(2000)
+    }
+
+    @Test
+    fun safErrorTest() {
+        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
+            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.SAF_ERROR.name)
+        }
+        activityRule.launchActivity(intent)
+
+        val widget =
+            activityRule.activity.findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget)
+        shippingWidget(widget) {
+            assertSafErrorLayoutVisible()
         }
 
         Thread.sleep(2000)

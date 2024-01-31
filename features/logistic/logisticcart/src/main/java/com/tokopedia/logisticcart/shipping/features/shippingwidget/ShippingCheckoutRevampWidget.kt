@@ -137,7 +137,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                         showLayoutStateFailedShipping(shippingWidgetUiModel)
                     }
 
-                    ShippingWidgetCourierError.COURIER_EMPTY -> {
+                    ShippingWidgetCourierError.SHIPPING_NOT_SELECTED -> {
                         showLayoutNoSelectedShipping(
                             shippingWidgetUiModel
                         )

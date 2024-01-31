@@ -100,7 +100,7 @@ class CheckoutOrderViewHolder(
         } else if (isDisableChangeCourier && hasGeolocation) {
             ShippingWidgetCourierError.COURIER_UNAVAILABLE
         } else {
-            ShippingWidgetCourierError.COURIER_EMPTY
+            ShippingWidgetCourierError.SHIPPING_NOT_SELECTED
         }
     }
 

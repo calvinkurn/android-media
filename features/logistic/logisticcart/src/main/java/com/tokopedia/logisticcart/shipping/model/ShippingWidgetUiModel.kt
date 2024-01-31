@@ -58,7 +58,7 @@ data class ShippingWidgetUiModel(
 )
 
 enum class ShippingWidgetCourierError {
-    NEED_PINPOINT, COURIER_UNAVAILABLE, COURIER_EMPTY
+    NEED_PINPOINT, COURIER_UNAVAILABLE, SHIPPING_NOT_SELECTED
 }
 
 data class InsuranceWidgetUiModel(

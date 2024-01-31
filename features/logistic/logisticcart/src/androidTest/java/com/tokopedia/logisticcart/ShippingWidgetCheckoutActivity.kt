@@ -10,7 +10,8 @@ import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
 import com.tokopedia.logisticcart.test.R as logisticcarttestR
 
-class ShippingWidgetCheckoutActivity : FragmentActivity(),
+class ShippingWidgetCheckoutActivity :
+    FragmentActivity(),
     ShippingCheckoutRevampWidget.ShippingWidgetListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +25,6 @@ class ShippingWidgetCheckoutActivity : FragmentActivity(),
     }
 
     override fun onChangeDurationClickListener() {
-        //
     }
 
     override fun onChangeCourierClickListener() {

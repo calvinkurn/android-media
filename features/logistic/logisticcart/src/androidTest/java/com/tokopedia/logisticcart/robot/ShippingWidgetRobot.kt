@@ -62,7 +62,7 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     }
 
     fun assertBebasOngkirShippingTitle(title: CharSequence) {
-        assertEquals(widget.binding?.labelSelectedFreeShipping?.text?.toString(), title)
+        assertEquals(title, widget.binding?.labelSelectedFreeShipping?.text?.toString())
     }
 
     fun assertBebasOngkirShippingEta(eta: CharSequence, visibility: Int) {
@@ -74,8 +74,10 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     }
 
     fun assertBebasOngkirShippingCodLabel(text: CharSequence, visibility: Int) {
+        if (visibility == View.VISIBLE) {
+            assertEquals(widget.binding?.lblCodFreeShipping?.text?.toString(), text)
+        }
         assertEquals(widget.binding?.lblCodFreeShipping?.visibility, visibility)
-        assertEquals(widget.binding?.lblCodFreeShipping?.text?.toString(), text)
     }
 
     fun assertBebasOngkirShippingLogoLabel(visibility: Int) {
@@ -94,7 +96,10 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     }
 
     fun assertNow2HourShippingDescription(description: CharSequence, visibility: Int) {
-        assertEquals(widget.binding?.labelSelectedSingleShippingTitle?.text?.toString(), description)
+        assertEquals(widget.binding?.labelSingleShippingMessage?.visibility, visibility)
+        if (visibility == View.VISIBLE) {
+            assertEquals(widget.binding?.labelSingleShippingMessage?.text?.toString(), description)
+        }
     }
 
     fun assertSchellyShippingVisible() {
@@ -104,9 +109,10 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
         )
     }
 
-    fun assertErrorPinpointVisible(text: CharSequence) {
+    fun assertErrorPinpointVisible() {
         assertEquals(widget.binding?.layoutStateHasSelectedSingleShipping?.visibility, View.VISIBLE)
-        assertEquals(widget.binding?.labelSingleShippingEta?.text?.toString(), text)
+        assertEquals(widget.binding?.labelSingleShippingEta?.text?.toString(), "Pengiriman & estimasi tiba akan tampil di sini. Atur")
+        assertEquals(widget.binding?.labelSelectedSingleShippingTitle?.text?.toString(), "Atur pinpoint alamatmu dulu, ya.")
     }
 
     fun assertUnavailableCourierLayoutVisible() {
@@ -114,6 +120,8 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
             View.VISIBLE,
             widget.binding?.layoutStateFailedShipping?.visibility
         )
+        assertEquals("Pengiriman gagal ditampilkan", widget.binding?.labelFailedShippingTitle?.text)
+        assertEquals(View.VISIBLE, widget.binding?.iconReloadShipping?.visibility)
     }
 
     fun assertEmptyCourierLayoutVisible() {
@@ -134,6 +142,11 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
         assertEquals(
             View.VISIBLE,
             widget.binding?.layoutStateHasErrorShipping?.visibility
+        )
+
+        assertEquals(
+            "Pengiriman tidak tersedia",
+            widget.binding?.labelErrorShippingTitle?.text
         )
     }
 
