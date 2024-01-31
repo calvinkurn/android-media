@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_BANNER_ADS
@@ -9,7 +8,16 @@ import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.helper.copy
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BaseHomeRecommendationVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationButtonRetryUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationEmpty
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationError
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationHeadlineTopAdsDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoadMore
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoading
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -29,7 +37,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
@@ -94,7 +101,7 @@ class HomeRecommendationViewModel @Inject constructor(
         page: Int,
         locationParam: String = "",
         sourceType: String,
-        existingRecommendationData: List<Visitable<*>>
+        existingRecommendationData: List<BaseHomeRecommendationVisitable>
     ) {
         if (HomeRecommendationController.isUsingRecommendationCard()) {
             fetchNextHomeRecommendationCard(tabName, page, locationParam, sourceType, existingRecommendationData)
@@ -141,7 +148,7 @@ class HomeRecommendationViewModel @Inject constructor(
         page: Int,
         locationParam: String,
         sourceType: String,
-        existingRecommendationData: List<Visitable<*>>
+        existingRecommendationData: List<BaseHomeRecommendationVisitable>
     ) {
         val existingRecommendationDataMutableList = existingRecommendationData.toMutableList()
 
@@ -303,7 +310,7 @@ class HomeRecommendationViewModel @Inject constructor(
         topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageViewModel>>>,
         homeBannerTopAds: List<HomeRecommendationBannerTopAdsOldDataModel>,
         headlineAds: TopAdsHeadlineResponse,
-        newList: MutableList<Visitable<*>>
+        newList: MutableList<BaseHomeRecommendationVisitable>
     ) {
         incrementTopadsPage()
         val headlineData = headlineAds.displayAds.data
