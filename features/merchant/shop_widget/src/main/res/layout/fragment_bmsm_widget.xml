@@ -122,12 +122,14 @@
                     app:typographyType="paragraph_3"
                     app:typographyWeight="bold" />
 
-                <com.tokopedia.unifyprinciples.Typography
+                <com.tokopedia.shop_widget.buy_more_save_more.presentation.customview.SlidingTextSwitcher
                     android:id="@+id/tpg_sub_title_widget"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
+                    android:inAnimation="@anim/text_slide_in_up_animation"
+                    android:outAnimation="@anim/text_slide_out_up_animation"
                     android:textColor="@color/Unify_Static_White"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_chevron"
                     app:layout_constraintEnd_toStartOf="@+id/icon_chevron"

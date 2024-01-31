@@ -3,11 +3,11 @@ package com.tokopedia.shop_widget.buy_more_save_more.presentation.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextSwitcher
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.shop_widget.R
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +15,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Method
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 26/09/23.
@@ -51,15 +51,19 @@ class SlidingTextSwitcher @JvmOverloads constructor(
         interval: Long = MESSAGE_SWITCH_INITIAL_DELAY,
         textColor: Int
     ) {
+        val typography = currentView as Typography
+        typography.apply {
+            setTextColor(textColor)
+            visible()
+        }
+
         if (messages.size > Int.ONE) {
             visible()
-            startRollingTitle(titles = messages, interval = interval)
+            startRollingTitle(titles = messages, interval = interval, textColor)
         } else {
             val message = messages.firstOrNull().orEmpty()
             showSingleMessageWithNoAnimation(message)
         }
-        val typography = currentView as Typography
-        typography.setTextColor(textColor)
     }
 
     private fun showSingleMessageWithNoAnimation(message: String) {
@@ -67,31 +71,37 @@ class SlidingTextSwitcher @JvmOverloads constructor(
             gone()
         } else {
             visible()
-            setCurrentText(message.parseAsHtml())
+            setCurrentText(MethodChecker.fromHtml(message))
         }
     }
 
 
-    private fun startRollingTitle(titles: List<String>, interval: Long) {
+    private fun startRollingTitle(titles: List<String>, interval: Long, textColor: Int) {
         // when refresh page data
         clear()
 
         job = launch {
             runCatching {
-                rollingTitle(titles = titles, interval = interval)
+                rollingTitle(titles = titles, interval = interval, textColor)
             }
         }
     }
 
-    private suspend fun rollingTitle(titles: List<String>, interval: Long) {
+    private suspend fun rollingTitle(titles: List<String>, interval: Long, textColor: Int) {
         withContext(Dispatchers.IO) {
             while (currentRollingTextIndex < titles.size) {
                 val title = titles[currentRollingTextIndex]
 
+                val typography = getChildAt(currentRollingTextIndex) as Typography
+                typography.apply {
+                    setTextColor(textColor)
+                    visible()
+                }
+
                 if (currentTitle != title) {
                     currentTitle = title
                     withContext(Dispatchers.Main) {
-                        setText(title.parseAsHtml())
+                        setText(MethodChecker.fromHtml(title))
                     }
                 }
 
@@ -110,5 +120,12 @@ class SlidingTextSwitcher @JvmOverloads constructor(
     private fun createTypography() =
         Typography(context).apply {
             setType(Typography.SMALL)
+            setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    R.color.dms_static_white
+                )
+            )
+            gone()
         }
 }

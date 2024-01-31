@@ -552,18 +552,15 @@ class BmsmWidgetTabFragment :
         visible()
     }
 
-    private fun Typography.setSubTitle(messages: List<String>, defaultOfferMessage: String) {
+    private fun SlidingTextSwitcher.setSubTitle(messages: List<String>, defaultOfferMessage: String) {
         val textColor = MethodChecker.getColor(
             context,
             R.color.dms_static_white
         )
-        text = if (messages.isNotEmpty()) {
-            MethodChecker.fromHtml(messages.firstOrNull())
-        } else {
-            MethodChecker.fromHtml(defaultOfferMessage)
-        }
+        val text = messages.ifEmpty { listOf(defaultOfferMessage)  }
+
 //        showWithCondition(messages.isNotEmpty())
-        setTextColor(textColor)
+        setMessages(messages = text, textColor = textColor)
     }
 
     private fun SlidingTextSwitcher.setSlidingText(
