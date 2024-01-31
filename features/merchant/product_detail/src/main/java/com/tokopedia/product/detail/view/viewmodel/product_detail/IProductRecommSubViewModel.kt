@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ViewState
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Result
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Created by yovi.putra on 24/03/23"
@@ -24,6 +27,9 @@ interface IProductRecommSubViewModel {
     val filterTopAdsProduct: LiveData<ProductRecommendationDataModel>
 
     val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
+
+    val resultData : StateFlow<ViewState<RecommendationWidget>>
+    fun onEvent(event: ProductRecommendationEvent)
 
     fun loadViewToView(
         pageName: String,

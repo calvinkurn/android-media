@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.library.subviewmodel.SubViewModel
@@ -14,6 +15,8 @@ import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ViewState
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -21,6 +24,15 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -29,6 +41,7 @@ import javax.inject.Inject
  **/
 
 class ProductRecommSubViewModel @Inject constructor(
+    private val dispatcher: CoroutineDispatchers,
     private val getRecommendationUseCase: dagger.Lazy<GetRecommendationUseCase>,
     private val getProductRecommendationUseCase: dagger.Lazy<GetProductRecommendationUseCase>
 ) : SubViewModel(), IProductRecommSubViewModel {
@@ -53,6 +66,38 @@ class ProductRecommSubViewModel @Inject constructor(
     private val _loadTopAdsProduct = MutableLiveData<Result<RecommendationWidget>>()
     override val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
         get() = _loadTopAdsProduct
+
+    private val _recomPageName = MutableSharedFlow<ProductRecommendationEvent.LoadRecommendation>()
+
+    @OptIn(FlowPreview::class)
+    override val resultData by lazy {
+        _recomPageName
+            .buffer()
+            .flatMapMerge {
+                getRecommendation(
+                    pageName = it.pageName,
+                    productId = it.productId,
+                    isTokoNow = it.isTokoNow,
+                    miniCart = it.miniCart,
+                    queryParam = it.queryParam,
+                    thematicId = it.thematicId
+                )
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = ViewState.Loading(true)
+            )
+    }
+
+    override fun onEvent(event: ProductRecommendationEvent) {
+        when (event) {
+            is ProductRecommendationEvent.LoadRecommendation -> {
+                viewModelScope.launch {
+                    _recomPageName.emit(event)
+                }
+            }
+        }
+    }
 
     override fun loadViewToView(
         pageName: String,
@@ -83,12 +128,13 @@ class ProductRecommSubViewModel @Inject constructor(
                     )
                 )
 
-                _loadViewToView.value = if (!response.firstOrNull()?.recommendationItemList.isNullOrEmpty()) {
-                    Success(response.first())
-                } else {
-                    alreadyHitRecom.remove(pageName)
-                    Fail(MessageErrorException())
-                }
+                _loadViewToView.value =
+                    if (!response.firstOrNull()?.recommendationItemList.isNullOrEmpty()) {
+                        Success(response.first())
+                    } else {
+                        alreadyHitRecom.remove(pageName)
+                        Fail(MessageErrorException())
+                    }
             }.onFailure {
                 alreadyHitRecom.remove(pageName)
                 _loadViewToView.value = Throwable(pageName, it).asFail()
@@ -186,6 +232,31 @@ class ProductRecommSubViewModel @Inject constructor(
             )
         )
     }
+
+    private fun getRecommendation(
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean,
+        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?,
+        queryParam: String,
+        thematicId: String
+    ) = flow {
+        runCatching {
+            val response = getProductRecommendationUseCase.get().executeOnBackground(
+                GetProductRecommendationUseCase.createParams(
+                    productId = productId,
+                    pageName = pageName,
+                    isTokoNow = isTokoNow,
+                    miniCartData = miniCart,
+                    queryParam = queryParam,
+                    thematicId = thematicId
+                )
+            )
+            emit(ViewState.RenderSuccess(response))
+        }.onFailure {
+            emit(ViewState.RenderFailure(Throwable(pageName)))
+        }
+    }.flowOn(dispatcher.io)
 
     override fun loadRecommendation(
         pageName: String,

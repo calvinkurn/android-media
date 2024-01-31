@@ -270,6 +270,8 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCa
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ViewState
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
@@ -1874,13 +1876,15 @@ open class DynamicProductDetailFragment :
 
     override fun loadTopads(pageName: String, queryParam: String, thematicId: String) {
         val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-        viewModel.loadRecommendation(
-            pageName = pageName,
-            productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow,
-            miniCart = viewModel.p2Data.value?.miniCart,
-            queryParam = queryParam,
-            thematicId = thematicId
+        viewModel.onEvent(
+            ProductRecommendationEvent.LoadRecommendation(
+                pageName = pageName,
+                productId = p1.basic.productID,
+                isTokoNow = p1.basic.isTokoNow,
+                miniCart = viewModel.p2Data.value?.miniCart,
+                queryParam = queryParam,
+                thematicId = thematicId
+            )
         )
     }
 
@@ -3132,45 +3136,55 @@ open class DynamicProductDetailFragment :
     }
 
     private fun observeRecommendationProduct() {
-        viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
-            data.doSuccessOrFail({
-                if (it.data.recommendationItemList.isNotEmpty()) {
-                    val enableComparisonWidget = remoteConfig.getBoolean(
-                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET,
-                        true
-                    )
-                    if (enableComparisonWidget) {
-                        when (it.data.layoutType) {
-                            RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
-                                pdpUiUpdater?.updateComparisonBpcDataModel(
-                                    it.data,
-                                    viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
-                                )
-                                updateUi()
-                            }
-                            RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
-                                pdpUiUpdater?.updateComparisonDataModel(it.data)
-                                updateUi()
-                            }
-                            else -> {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.resultData.collect {
+                when (it) {
+                    is ViewState.RenderSuccess -> {
+                        if (it.data.recommendationItemList.isNotEmpty()) {
+                            val enableComparisonWidget = remoteConfig.getBoolean(
+                                RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET,
+                                true
+                            )
+                            if (enableComparisonWidget) {
+                                when (it.data.layoutType) {
+                                    RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
+                                        pdpUiUpdater?.updateComparisonBpcDataModel(
+                                            it.data,
+                                            viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
+                                        )
+                                        updateUi()
+                                    }
+                                    RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
+                                        pdpUiUpdater?.updateComparisonDataModel(it.data)
+                                        updateUi()
+                                    }
+                                    else -> {
+                                        pdpUiUpdater?.updateRecommendationData(it.data)
+                                        updateUi()
+                                    }
+                                }
+                            } else {
                                 pdpUiUpdater?.updateRecommendationData(it.data)
                                 updateUi()
                             }
+                        } else {
+                            // recomUiPageName used because there is possibilites gql recom return empty pagename
+                            pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
+                            updateUi()
                         }
-                    } else {
-                        pdpUiUpdater?.updateRecommendationData(it.data)
-                        updateUi()
                     }
-                } else {
-                    // recomUiPageName used because there is possibilites gql recom return empty pagename
-                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
-                    updateUi()
+
+                    is ViewState.RenderFailure -> {
+                        pdpUiUpdater?.removeComponent(it.throwable.message ?: "")
+                        updateUi()
+                        logException(it.throwable)
+                    }
+
+                    else -> {
+
+                    }
                 }
-            }, {
-                pdpUiUpdater?.removeComponent(it.message ?: "")
-                updateUi()
-                logException(it)
-            })
+            }
         }
 
         viewLifecycleOwner.observe(viewModel.statusFilterTopAdsProduct) {
