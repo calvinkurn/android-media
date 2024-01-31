@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -31,7 +32,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOPS_OFF
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOPS_ON
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.getPdpAppLink
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.dashboard.R
@@ -75,6 +79,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
+import com.tokopedia.topads.dashboard.view.sheet.TopadsBerandaCreationBottomSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -85,6 +90,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 /**
  * Created by hadi.putra on 23/04/2018.
@@ -137,6 +143,10 @@ class TopAdsDashboardActivity :
     private var isNoProduct = false
     private var redirectToTab = 0
     private var redirectToTabInsight = 0
+    private var autoPsData : AutoAdsResponse.TopAdsGetAutoAds.Data? = null
+    private var activeProductCount: Int = Int.ZERO
+    private var activeHeadlineCount: Int = Int.ZERO
+    private var isAutoPsWhitelisted: Boolean = false
 
     companion object {
         const val INSIGHT_PAGE = 3
@@ -153,14 +163,28 @@ class TopAdsDashboardActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
 
         initInjector()
+        topAdsDashboardPresenter.getVariantById()
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
+        topAdsDashboardPresenter.getAutoAdsStatus(resources, ::setAutoAds)
+        topAdsDashboardPresenter.getDashboardGroups(String.EMPTY, Int.ONE)
         setContentView(R.layout.topads_dash_activity_base_layout)
 
         initView()
         setUpClick()
         renderTabAndViewPager()
+
+        topAdsDashboardPresenter.shopVariant.observe(this) { shopVariants ->
+            isAutoPsWhitelisted =
+                shopVariants.isNotEmpty() && shopVariants.filter {
+                    it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
+                        it.variant == TopAdsCommonConstant.AUTOPS_VARIANT }
+                    .isNotEmpty()
+        }
+        topAdsDashboardPresenter.dashboardGroups.observe(this) { data ->
+            activeProductCount = data.getTopadsDashboardGroups.data.size
+        }
 
         topAdsDashboardPresenter.isShopWhiteListed.observe(this) {
             if (it) {
@@ -212,6 +236,7 @@ class TopAdsDashboardActivity :
                             setMultiActionButtonEnabled(true)
                         }
                         IKLANKAN_PRODUK_TAB -> {
+                            txtBuatIklan.text = getString(R.string.topads_dash_buat_iklan)
                             removeBtn()
                             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
                                 VIEW_IKLAN_PRODUK,
@@ -225,7 +250,7 @@ class TopAdsDashboardActivity :
                                 bottom?.gone()
                                 multiActionBtn?.buttonSize = UnifyButton.Size.MEDIUM
                                 multiActionBtn?.text =
-                                    getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
+                                    getString(topadscommonR.string.topads_iklankan_button)
                                 checkVisibility()
                             }
                             RecommendationTracker.clickTabSaranTopads()
@@ -236,6 +261,7 @@ class TopAdsDashboardActivity :
                             txtBuatIklan.hide()
                         }
                         HEADLINE_ADS_TAB -> {
+                            txtBuatIklan.text = if(isAutoPsWhitelisted) getString(R.string.topads_dashboard_create_shop_advertisement) else getString(R.string.topads_dash_buat_iklan)
                             removeBtn()
                             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(
                                 CLICK_IKLAN_TOKO,
@@ -261,7 +287,13 @@ class TopAdsDashboardActivity :
 
         multiActionBtn?.setOnClickListener {
             if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_0) {
-                navigateToAdTypeSelection()
+                if(isAutoPsWhitelisted){
+                    val sheet = TopadsBerandaCreationBottomSheet()
+                    sheet.overlayClickDismiss = false
+                    sheet.show(supportFragmentManager,autoPsData, activeProductCount, activeHeadlineCount)
+                } else {
+                    navigateToAdTypeSelection()
+                }
             }
             if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_3) {
                 val fragments = (viewPager.adapter as TopAdsDashboardBasePagerAdapter).getList()
@@ -356,17 +388,36 @@ class TopAdsDashboardActivity :
 
     private fun setToast() {
         val bundle = intent.extras
-        if (bundle?.getInt(
-                TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED,
-                0
-            ) == PARAM_AUTOADS_BUDGET
-        ) {
-            Toaster.build(
-                this.findViewById(android.R.id.content),
-                getString(R.string.topads_dashboard_updated_daily_budget),
-                TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
-                Toaster.TYPE_NORMAL
-            ).show()
+        when {
+            bundle?.getInt(
+                TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, Int.ZERO
+            ) == PARAM_AUTOADS_BUDGET ->
+                Toaster.build(
+                    this.findViewById(android.R.id.content),
+                    getString(R.string.topads_dashboard_updated_daily_budget),
+                    TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
+                    Toaster.TYPE_NORMAL
+                ).show()
+
+            bundle?.getInt(TopAdsCommonConstant.TOPADS_AUTOPS_ON, Int.ZERO) == PARAM_AUTOPS_ON ->
+                Toaster.build(
+                    this.findViewById(android.R.id.content),
+                    getString(R.string.topads_auto_ps_turn_on_msg),
+                    TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.topads_insight_oke_button)
+                ).show()
+
+            bundle?.getInt(
+                TopAdsCommonConstant.TOPADS_AUTOPS_OFF, Int.ZERO
+            ) == PARAM_AUTOPS_OFF ->
+                Toaster.build(
+                    this.findViewById(android.R.id.content),
+                    getString(R.string.topads_auto_ps_turn_off_msg),
+                    TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.topads_insight_oke_button)
+                ).show()
         }
     }
 
@@ -382,7 +433,7 @@ class TopAdsDashboardActivity :
     }
 
     fun hideButton(toHide: Boolean) {
-        if (multiActionBtn?.text?.equals(getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)) == true) {
+        if (multiActionBtn?.text?.equals(getString(topadscommonR.string.topads_iklankan_button)) == true) {
             bottom?.visibility = if (toHide) View.GONE else View.VISIBLE
             if (toHide) {
                 viewPager.setPadding(0, 0, 0, 0)
@@ -435,6 +486,7 @@ class TopAdsDashboardActivity :
             }
         }
         viewPager.adapter = getViewPagerAdapter()
+        viewPager.offscreenPageLimit = 0
         viewPager.offscreenPageLimit = CONST_3
         tabLayout?.getUnifyTabLayout()?.getTabAt(redirectToTab)?.select()
         viewPager.currentItem = redirectToTab
@@ -523,6 +575,10 @@ class TopAdsDashboardActivity :
         }
     }
 
+    private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
+        autoPsData = data
+    }
+
     override fun getComponent(): TopAdsDashboardComponent =
         DaggerTopAdsDashboardComponent.builder().baseAppComponent(
             (application as BaseMainApplication).baseAppComponent
@@ -600,9 +656,25 @@ class TopAdsDashboardActivity :
                 "{${userSession.shopId}}",
                 userSession.userId
             )
-            val intent =
-                RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
-            startActivityForResult(intent, AUTO_ADS_DISABLED)
+            if(isAutoPsWhitelisted){
+                if(tabLayout?.getUnifyTabLayout()?.selectedTabPosition == IKLANKAN_PRODUK_TAB){
+                    val intent = RouteManager.getIntent(
+                        this,
+                        ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS
+                    )
+                    startActivity(intent)
+                } else if(tabLayout?.getUnifyTabLayout()?.selectedTabPosition == HEADLINE_ADS_TAB){
+                    val intent = RouteManager.getIntent(
+                        this,
+                        ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
+                    )
+                    startActivity(intent)
+                }
+            } else {
+                val intent =
+                    RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
+                startActivityForResult(intent, AUTO_ADS_DISABLED)
+            }
         }
     }
 
@@ -634,6 +706,10 @@ class TopAdsDashboardActivity :
             else -> ""
         }
         multiActionBtn?.isEnabled = count > 0
+    }
+
+    fun setActiveHeadlineCount(count: Int){
+        activeHeadlineCount = count
     }
 
     private fun showBottomSheet() {

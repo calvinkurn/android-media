@@ -31,10 +31,7 @@ class GetMiniCartEditorDataUseCase @Inject constructor(
     }
 
     private fun getMiniCartEditorData(data: BmgmMiniCartDataUiModel): BmgmMiniCartDataUiModel {
-        val offerMessages = data.tiers.filterIsInstance<BmgmMiniCartVisitable.TierUiModel>().map {
-            it.tierMessage
-        }
-        return data.copy(tiers = getItems(data), offerMessage = offerMessages)
+        return data.copy(tiers = getItems(data), offerMessage = data.offerMessage)
     }
 
     private fun getItems(miniCartData: BmgmMiniCartDataUiModel): List<BmgmMiniCartVisitable> {
@@ -48,7 +45,8 @@ class GetMiniCartEditorDataUseCase @Inject constructor(
         }
 
         //add message
-        val message = GwpMiniCartEditorVisitable.GiftMessageUiModel(miniCartData.offerMessage)
+        val offerMessage = listOf(tiers.firstOrNull()?.tierMessage.orEmpty())
+        val message = GwpMiniCartEditorVisitable.GiftMessageUiModel(offerMessage)
         items.add(message)
 
         //add products

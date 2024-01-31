@@ -37,6 +37,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
@@ -180,7 +181,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     productNote = "ukurannya 43 ya",
                     addOnSummaryUiModel = AddOnSummaryUiModel(
                         addOnIdentifier = "2",
-                        totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
+                        totalPriceText = StringRes(Int.ZERO),
                         addonsLogoUrl = "",
                         addonsTitle = "",
                         addonItemList = listOf()
@@ -197,7 +198,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     productNote = "ukurannya 44 ya",
                     addOnSummaryUiModel = AddOnSummaryUiModel(
                         addOnIdentifier = "3",
-                        totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
+                        totalPriceText = StringRes(Int.ZERO),
                         addonsLogoUrl = "",
                         addonsTitle = "",
                         addonItemList = listOf()

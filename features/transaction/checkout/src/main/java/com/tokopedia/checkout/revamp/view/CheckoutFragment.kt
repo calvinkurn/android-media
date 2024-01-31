@@ -82,7 +82,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.fingerprint.util.FingerPrintUtil
+import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -2225,7 +2225,7 @@ class CheckoutFragment :
                     activity
                 )
                 if (fpk != null) {
-                    publicKey = FingerPrintUtil.getPublicKey(fpk)
+                    publicKey = FingerprintUtil.getPublicKey(fpk)
                 }
             }
             viewModel.checkout(publicKey, { onTriggerEpharmacyTracker(it) }) {

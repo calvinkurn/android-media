@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.settingprofile.addpin.view.activity.PinCompleteActivity
@@ -47,7 +47,7 @@ class PinCompleteFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ImageHandler.LoadImage(binding?.completeImage, COMPLETE_PICT_URL)
+        binding?.completeImage?.loadImageFitCenter(COMPLETE_PICT_URL)
         binding?.btnComplete?.setOnClickListener {
             trackingPinUtil.trackClickFinishButton()
             activity?.let {
