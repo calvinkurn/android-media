@@ -139,7 +139,7 @@ class CsatBottomsheet :
         viewBinding?.csatCaption?.setTextColor(
             ContextCompat.getColor(
                 context,
-                captionColors[csatModel.selectedPoint.score - 1]
+                captionColors.getItemSafe(csatModel.selectedPoint.score - 1)
             )
         )
         viewBinding?.csatEmojiContainer?.removeAllViews()
@@ -176,9 +176,9 @@ class CsatBottomsheet :
     private fun mapDrawable(point: PointModel, selectedScore: Int): Int {
         return try {
             if (point.score > selectedScore) {
-                inactiveEmojiDrawables[point.score - 1]
+                inactiveEmojiDrawables.getItemSafe(point.score - 1)
             } else {
-                activeEmojiDrawables[selectedScore - 1]
+                activeEmojiDrawables.getItemSafe(selectedScore - 1)
             }
         } catch (exception: IndexOutOfBoundsException) {
             Timber.e(exception)
@@ -236,6 +236,10 @@ class CsatBottomsheet :
             .builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
+    }
+
+    private fun List<Int>.getItemSafe(index: Int): Int {
+        return if (index >= 0 && index < this.size) this[index] else this[0]
     }
 
     companion object {
