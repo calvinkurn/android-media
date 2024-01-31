@@ -6,38 +6,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/partial_shimmering_list"
+    <include layout="@layout/partial_shimmering_base_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"/>
 
-    <include layout="@layout/bottomsheetbuilder_list_divider"/>
+    <include layout="@layout/bottomsheetbuilder_base_list_divider"/>
 
-    <include layout="@layout/partial_shimmering_list"
+    <include layout="@layout/partial_shimmering_base_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"/>
 
-    <include layout="@layout/bottomsheetbuilder_list_divider"/>
+    <include layout="@layout/bottomsheetbuilder_base_list_divider"/>
 
-    <include layout="@layout/partial_shimmering_list"
+    <include layout="@layout/partial_shimmering_base_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"/>
 
-    <include layout="@layout/bottomsheetbuilder_list_divider"/>
+    <include layout="@layout/bottomsheetbuilder_base_list_divider"/>
 
-    <include layout="@layout/partial_shimmering_list"
+    <include layout="@layout/partial_shimmering_base_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"/>
 
-    <include layout="@layout/bottomsheetbuilder_list_divider"/>
+    <include layout="@layout/bottomsheetbuilder_base_list_divider"/>
 
-    <include layout="@layout/partial_shimmering_list"
+    <include layout="@layout/partial_shimmering_base_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"/>
 
-    <include layout="@layout/bottomsheetbuilder_list_divider"/>
+    <include layout="@layout/bottomsheetbuilder_base_list_divider"/>
 </LinearLayout>

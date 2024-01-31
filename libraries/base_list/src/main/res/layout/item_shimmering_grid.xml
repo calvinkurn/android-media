@@ -11,10 +11,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <include
-            layout="@layout/partial_shimmering_grid"
+            layout="@layout/partial_shimmering_base_grid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -22,7 +23,7 @@
             android:layout_weight="1" />
 
         <include
-            layout="@layout/partial_shimmering_grid"
+            layout="@layout/partial_shimmering_base_grid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -34,10 +35,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <include
-            layout="@layout/partial_shimmering_grid"
+            layout="@layout/partial_shimmering_base_grid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -45,7 +47,7 @@
             android:layout_weight="1" />
 
         <include
-            layout="@layout/partial_shimmering_grid"
+            layout="@layout/partial_shimmering_base_grid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -56,10 +58,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <include
-            layout="@layout/partial_shimmering_grid"
+            layout="@layout/partial_shimmering_base_grid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -67,7 +70,7 @@
             android:layout_weight="1" />
 
         <include
-            layout="@layout/partial_shimmering_grid"
+            layout="@layout/partial_shimmering_base_grid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
