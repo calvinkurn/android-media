@@ -16,7 +16,7 @@ labels:
 | Team             | [Minion Jerry]                                                                                                    |
 | Release date     | 19 Oct 2022 / <!--start status:GREY-->MA-3.198<!--end status--> <!--start status:GREY-->SA-2.128<!--end status--> |
 | Module type      | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->                                                       |
-| Product PRD      | [Link](https://tokopedia.atlassian.net/wiki/spaces/CO/pages/2281898008/PRD+-+Immersive+Image+Video+Editor)        |
+| Product PRD      | [Link](https://tokopedia.atlassian.net/wiki/spaces/CO/pages/1888665745/PRD+Docs+-+Global+Media+Editor)        |
 | Module Location  | `features.mediaeditor`                                                                                            | `features/media/mediaeditor` |
 
 ## Table of Contents
@@ -27,15 +27,32 @@ labels:
 
 ### Background
 
-Throughout H1, we have seen a shift in the general content market trends from users preferring real-time live streams towards shorter length video-on-demand (VOD). Supply-wise, creators prefer to create shorter VODs than live streams. While demand-wise, these VODs have 4x higher order per view conversion compared to live streams. Adding on the fact that our average user watch time is only ~10 seconds, it became a question: How do we help creators create content supplies that are engaging and able to deliver information quickly?
+Universal Media editor is Tokopedia’s unified and modular Media editing service, part of Media assets upload journey. Through this module, we aim to achieve the following objectives:
 
-Image & video can potentially solve act as quick delivery of information. Content-quality wise, we aim towards differentiating from TikTok and Shopee Videos who supply all type of videos (news, movie clips, etc). We want to have a supply of product-centric images & videos that answer (1) what is the product & how to use it, (2) inspiration and (3) review & social proof of owning the product. These videos will be created through various funnels namely Product Image & Video Upload, Short Video Creation, Review Image & Video Upload, Manual Story Creation and then shown throughout the main buyer funnel from Home, Search Product Card Sneak-Peek, Shop and PDP. All in a seamless, immersive experience for all types.
-
-To help users in creating engaging content that will be shown everywhere, unifying the Image & Video Editing and making them immersive is necessary to enhance the quality. Although many users are also using external video editor (e.g. CapCut) to edit their videos before uploading, a certain degree of capabilities should be available in Tokopedia Apps to help users who are unaware and not tech-savvy enough but still want a certain degree of enhancement on their media.
+- Enable content creation on iOS and Android
+- Unify the experience, looks and feel of media editing journey on all use cases
+- Modular and unified modules for Adopters
+- Upload and content creation funnel
+- Base component for Media’s experimentation plan
 
 ### Project Description
 
-A unified media editor is used to edit image & video (video not develop yet), and provide consistency flow and behavior across tokopedia user on editing media  
+Enable content creation on iOS and Android
+- Through providing editing capability for images and videos on iOS and Android, sellers and buyers can edit video seamlessly without having to open a separate application to edit their media assets
+- Enable native editing capabilities on iOS, where basic tools (Crop, Brightness, Contrast, Rotate) are not yet available
+
+Unify the experience, looks and feel of media editing journey on all use cases
+- Through unified experience, user can navigate and edit media assets seamlessly on all use cases
+
+Modular and unified modules for Adopters
+- Page owners that want to enable editing journey can directly adopt from Media Platform’s unified component and adjust based on their needs
+- As page owners, specific editing tools can be activated/deactivated to adjust to their respective use cases (e.g. chat do not need add watermark and remove background feature thus can be turned off)
+
+Upload and content creation funnel
+- We need to be able to track and measure the ease of use for each step in the media upload journey
+
+Base component for Media’s experimentation plan
+- By centralizing the module to Media, we will be able to own and conduct experiments to improve image and video quality in Tokopedia
 
 ## How-to
 
