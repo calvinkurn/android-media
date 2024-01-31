@@ -14,21 +14,21 @@
         android:layout_height="wrap_content"
         android:layout_width="@dimen/dp_290">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/today"
             android:layout_height="@dimen/dp_44"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Today" />
+            android:text="today" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/ok"
             android:layout_height="@dimen/dp_44"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Ok" />
+            android:text="ok" />
 
     </LinearLayout>
 
