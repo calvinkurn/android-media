@@ -811,7 +811,7 @@ class ShipmentAdapter @Inject constructor(
                                     ) || shipmentData.tokoConsultationId == "0" || shipmentData.partnerConsultationId == "0" || TextUtils.isEmpty(
                                         shipmentData.consultationDataString
                                     )
-                                if ((prescriptionIdsEmpty && consultationEmpty) || uploadPrescriptionUiModel?.isBlockCheckoutFlowMessage?.isNotEmpty().orFalse()) {
+                                if (uploadPrescriptionUiModel?.isBlockCheckoutFlowMessage?.isNotEmpty().orFalse() || (prescriptionIdsEmpty && consultationEmpty)) {
                                     isPrescriptionFrontEndValidationError = true
                                     availableCheckout = false
                                     break
