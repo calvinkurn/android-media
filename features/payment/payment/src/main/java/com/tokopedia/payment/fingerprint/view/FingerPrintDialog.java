@@ -1,4 +1,4 @@
-package com.tokopedia.fingerprint.view;
+package com.tokopedia.payment.fingerprint.view;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
@@ -14,9 +14,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.fingerprint.R;
-import com.tokopedia.fingerprint.util.FingerPrintUtil;
-import com.tokopedia.fingerprint.util.FingerprintConstant;
+import com.tokopedia.fingerprint.FingerprintUtil;
+import com.tokopedia.payment.R;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -126,7 +125,7 @@ public class FingerPrintDialog extends BottomSheets {
 
             @Override
             public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-                getCallback().onAuthenticationSucceeded(FingerPrintUtil.INSTANCE.getPublicKey(FingerPrintUtil.INSTANCE.generatePublicKey(context)), getSignature());
+                getCallback().onAuthenticationSucceeded(FingerprintUtil.INSTANCE.getPublicKey(FingerprintUtil.INSTANCE.generatePublicKey(context)), getSignature());
             }
 
             @Override
@@ -141,8 +140,8 @@ public class FingerPrintDialog extends BottomSheets {
         String signText = "";
         try {
             keyStore.load(null);
-            PrivateKey privateKey = (PrivateKey) keyStore.getKey(FingerprintConstant.FINGERPRINT, null);
-            Signature signature = Signature.getInstance(FingerprintConstant.SHA_1_WITH_RSA);
+            PrivateKey privateKey = (PrivateKey) keyStore.getKey(FingerprintUtil.FINGERPRINT, null);
+            Signature signature = Signature.getInstance(FingerprintUtil.SHA_1_WITH_RSA);
             signature.initSign(privateKey);
             signature.update(getTextToEncrypt().getBytes());
             signText = Base64.encodeToString(signature.sign(),
@@ -186,10 +185,10 @@ public class FingerPrintDialog extends BottomSheets {
 
     private void initKeyStore() {
         try {
-            keyStore = KeyStore.getInstance(FingerprintConstant.ANDROID_KEY_STORE);
+            keyStore = KeyStore.getInstance(FingerprintUtil.ANDROID_KEY_STORE);
             keyStore.load(null);
 
-            FingerPrintUtil.INSTANCE.generateKeyPair(keyStore);
+            FingerprintUtil.INSTANCE.generateKeyPair(keyStore);
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         } catch (NoSuchProviderException e) {
@@ -212,8 +211,8 @@ public class FingerPrintDialog extends BottomSheets {
     private boolean initSignature() {
         try {
             keyStore.load(null);
-            PrivateKey key = (PrivateKey) keyStore.getKey(FingerprintConstant.FINGERPRINT, null);
-            signature = Signature.getInstance(FingerprintConstant.SHA_1_WITH_RSA);
+            PrivateKey key = (PrivateKey) keyStore.getKey(FingerprintUtil.FINGERPRINT, null);
+            signature = Signature.getInstance(FingerprintUtil.SHA_1_WITH_RSA);
             signature.initSign(key);
             return true;
         } catch (KeyPermanentlyInvalidatedException e) {

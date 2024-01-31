@@ -9,7 +9,6 @@ import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemShipmentProductBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
@@ -20,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE
@@ -184,10 +185,7 @@ class ShipmentCartItemViewHolder(
         ItemProductInfoAddOnBinding.inflate(LayoutInflater.from(itemView.context), null, false)
         val propertiesBinding = ItemProductInfoAddOnBinding.inflate(LayoutInflater.from(itemView.context), null, false)
         if (!TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.iconUrl)) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(
-                propertiesBinding.ppIvProductInfoAddOn,
-                cartItemModel.ethicalDrugDataModel.iconUrl
-            )
+            propertiesBinding.ppIvProductInfoAddOn.loadImage(cartItemModel.ethicalDrugDataModel.iconUrl)
         }
         if (!TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.text)) {
             propertiesBinding.ppLabelProductInfoAddOn.text = cartItemModel.ethicalDrugDataModel.text
@@ -333,11 +331,7 @@ class ShipmentCartItemViewHolder(
             itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
         if (cartItemModel.isBundlingItem) {
             if (!TextUtils.isEmpty(cartItemModel.bundleIconUrl)) {
-                ImageHandler.loadImage2(
-                    binding.imageBundle,
-                    cartItemModel.bundleIconUrl,
-                    com.tokopedia.utils.R.drawable.ic_loading_placeholder
-                )
+                binding.imageBundle.loadImageWithError(cartItemModel.bundleIconUrl, com.tokopedia.utils.R.drawable.ic_loading_placeholder)
             }
 
             ivProductImageLayoutParams.leftMargin =

@@ -11,12 +11,22 @@ import com.tokopedia.media.loader.data.DEFAULT_ICON_SIZE
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 
 fun ImageView.loadAsGif(
     url: String
 ) = loadGifImage(
     this,
     url,
+    Properties()
+        .isGif(true)
+)
+
+fun ImageView.loadAsGif(
+    resource: Int
+) = loadGifImage(
+    this,
+    resource,
     Properties()
         .isGif(true)
 )
@@ -123,10 +133,27 @@ inline fun ImageView.loadImage(
 
 inline fun ImageView.loadImageFitCenter(
     url: String?,
+    cacheStrategy: MediaCacheStrategy = MediaCacheStrategy.RESOURCE,
     crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties()
     .apply(properties)
-    .fitCenter())
+    .fitCenter()
+    .setCacheStrategy(cacheStrategy))
+
+inline fun ImageView.loadImageCenterCrop(
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties()
+    .apply(properties)
+    .centerCrop())
+
+inline fun ImageView.loadImageWithPlaceholder(
+    url: String?,
+    placeholder: Int,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties()
+    .apply(properties)
+    .setPlaceHolder(placeholder))
 
 inline fun ImageView.loadImageWithoutPlaceholder(
     url: String?,
@@ -143,10 +170,33 @@ inline fun ImageView.loadImageWithoutPlaceholderAndError(
     .setPlaceHolder(-1)
     .setErrorDrawable(-1))
 
+inline fun ImageView.loadImageWithError(
+    url: String?,
+    error: Int,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties()
+    .apply(properties)
+    .setErrorDrawable(error))
+
 inline fun ImageView.loadImageCircle(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties()
+    .apply(properties)
+    .isCircular(true)
+
+    /*
+     * loadImageCircle() extension must be haven't placeholder,
+     * the loader effect should be handled by team by
+     * using own shimmering.
+     * */
+    .setPlaceHolder(-1)
+)
+
+inline fun ImageView.loadImageCircle(
+    resource: Int,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(resource, Properties()
     .apply(properties)
     .isCircular(true)
 
@@ -191,6 +241,16 @@ inline fun ImageView.loadImageRounded(
     call(url, Properties()
         .apply(properties)
         .setRoundedRadius(rounded)
+    )
+}
+
+inline fun ImageView.loadImageWithCacheData(
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
+) {
+    call(url, Properties()
+        .apply(properties)
+        .setCacheStrategy(MediaCacheStrategy.DATA)
     )
 }
 

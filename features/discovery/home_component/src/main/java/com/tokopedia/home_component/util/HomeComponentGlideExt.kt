@@ -11,8 +11,8 @@ import com.tokopedia.media.loader.wrapper.MediaDataSource
 import java.io.File
 import java.net.URI
 import java.util.*
-import com.tokopedia.topads.sdk.R as topadssdkR
 import com.tokopedia.home_component.R as home_componentR
+import com.tokopedia.topads.sdk.R as topadssdkR
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -28,7 +28,7 @@ const val TRUNCATED_URL_PREFIX = "https://images.tokopedia.net/img/cache/"
 fun ImageView.loadImage(
     url: String,
     fpmItemLabel: String = "",
-    listener: ImageHandler.ImageLoaderStateListener? = null,
+    listener: ImageLoaderStateListener? = null,
     properties: Properties.() -> Unit = {}
 ){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
@@ -79,7 +79,7 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
     }
 }
 
-fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
+fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = "", listener: ImageLoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     if(url.isGif()) {
         this.loadAsGif(url) {
@@ -127,7 +127,7 @@ fun ImageView.loadImageWithoutPlaceholder(url: String){
 fun ImageView.loadImageWithoutPlaceholder(
     url: String,
     fpmItemLabel: String = "",
-    listener: ImageHandler.ImageLoaderStateListener? = null,
+    listener: ImageLoaderStateListener? = null,
     skipErrorPlaceholder: Boolean = false,
 ){
     val imageView = this
@@ -145,7 +145,7 @@ fun ImageView.loadImageWithoutPlaceholder(
     }
 }
 
-fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1, listener: ImageHandler.ImageLoaderStateListener? = null){
+fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1, listener: ImageLoaderStateListener? = null){
     if(url.isGif()) {
         this.loadAsGif(url) {
             setPlaceHolder(placeholder)
@@ -234,7 +234,7 @@ fun handleOnResourceReady(dataSource: MediaDataSource?,
 private fun Properties.homeLoadImageListener(
     url: String,
     fpmItemLabel: String,
-    listener: ImageHandler.ImageLoaderStateListener? = null,
+    listener: ImageLoaderStateListener? = null,
     performanceMonitoring: PerformanceMonitoring?,
     view: ImageView,
 ) = listener({ _, mediaDataSource ->
@@ -262,4 +262,9 @@ private fun extReader(url: String): String {
     } catch (_: Exception) {
         ""
     }
+}
+
+interface ImageLoaderStateListener {
+    fun successLoad(view: ImageView)
+    fun failedLoad(view: ImageView)
 }

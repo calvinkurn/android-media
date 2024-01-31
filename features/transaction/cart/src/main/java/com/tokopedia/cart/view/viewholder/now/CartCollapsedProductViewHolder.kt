@@ -2,7 +2,7 @@ package com.tokopedia.cart.view.viewholder.now
 
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartCollapsedProductBinding
 import com.tokopedia.cart.view.ActionListener
@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -47,7 +46,7 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
-        ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageProduct, cartItemHolderData.productImage)
+        viewBinding.imageProduct.loadImage(cartItemHolderData.productImage)
         viewBinding.imageProduct.setOnClickListener {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
