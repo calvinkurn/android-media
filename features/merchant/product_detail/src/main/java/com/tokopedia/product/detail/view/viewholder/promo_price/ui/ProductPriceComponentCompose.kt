@@ -70,7 +70,7 @@ fun NormalPriceComponent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             NestTypography(
