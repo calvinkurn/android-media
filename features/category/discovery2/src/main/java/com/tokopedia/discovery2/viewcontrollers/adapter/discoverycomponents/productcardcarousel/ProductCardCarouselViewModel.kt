@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
@@ -27,7 +28,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.util.Date
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 const val PRODUCT_PER_PAGE = 10
@@ -91,8 +91,10 @@ class ProductCardCarouselViewModel(
         var lihatSemuaComponentData: ComponentsItem? = null
         components.lihatSemua?.let {
 //            we don't add header component in case after when query is hit but no list of products were found.
-            if (!(components.noOfPagesLoaded == 1 && components.getComponentsItem()
-                    .isNullOrEmpty())
+            if (!(
+                components.noOfPagesLoaded == 1 && components.getComponentsItem()
+                    .isNullOrEmpty()
+                )
             ) {
                 it.run {
                     val lihatSemuaDataItem = DataItem(
@@ -122,11 +124,11 @@ class ProductCardCarouselViewModel(
             setProductsList()
             setTimer()
         }, onError = {
-            components.noOfPagesLoaded = 1
-            components.verticalProductFailState = true
-            components.shouldRefreshComponent = null
-            productLoadError.value = true
-        })
+                components.noOfPagesLoaded = 1
+                components.verticalProductFailState = true
+                components.shouldRefreshComponent = null
+                productLoadError.value = true
+            })
     }
 
     fun resetComponent() {
@@ -155,16 +157,14 @@ class ProductCardCarouselViewModel(
 
     private suspend fun reSyncProductCardHeight(list: java.util.ArrayList<ComponentsItem>) {
         if (components.name == ComponentsList.ProductCardCarousel.componentName ||
-            components.name == ComponentsList.ProductCardSprintSaleCarousel.componentName ||
-            components.name == ComponentNames.ProductCardCarouselItemReimagine.componentName ||
-            components.name == ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName
+            components.name == ComponentsList.ProductCardSprintSaleCarousel.componentName
         ) {
             getMaxHeightProductCard(list)
         }
     }
 
     private suspend fun getMaxHeightProductCard(list: java.util.ArrayList<ComponentsItem>) {
-        val productCardModelArray = ArrayList<ProductCardModel>()
+        val productCardModelArray = arrayListOf<ProductCardModel>()
         var templateType = GRID
         list.forEach {
             if (it.properties?.template == LIST) {
@@ -175,7 +175,8 @@ class ProductCardCarouselViewModel(
                 productCardModelArray.add(
                     DiscoveryDataMapper().mapDataItemToProductCardModel(
                         dataItem,
-                        components.name
+                        components.name,
+                        components.properties?.cardType
                     )
                 )
             }
@@ -186,26 +187,35 @@ class ProductCardCarouselViewModel(
                 Dispatchers.Default,
                 isReimagine,
                 useCompatPadding = true
-            )
+            ).orZero()
         } else {
             val mixLeftPadding =
-                if (isMixLeftBannerPresent()) application.applicationContext.resources.getDimensionPixelSize(
-                    R.dimen.dp_10
-                ) else 0
+                if (isMixLeftBannerPresent()) {
+                    application.applicationContext.resources.getDimensionPixelSize(
+                        R.dimen.dp_10
+                    )
+                } else {
+                    0
+                }
             val productImageWidth =
-                if (isReimagine) application.applicationContext.resources
-                    .getDimensionPixelSize(R.dimen.disco_carousel_product_card_grid_width)
-                else application.applicationContext.resources.getDimensionPixelSize(
-                    R.dimen.disco_product_card_width
-                )
+                if (isReimagine) {
+                    application.applicationContext.resources
+                        .getDimensionPixelSize(R.dimen.disco_carousel_product_card_grid_width)
+                } else {
+                    application.applicationContext.resources.getDimensionPixelSize(
+                        R.dimen.disco_product_card_width
+                    )
+                }
 
-            maxHeightProductCard.value = (productCardModelArray.getMaxHeightForGridView(
-                application.applicationContext,
-                Dispatchers.Default,
-                productImageWidth,
-                isReimagine,
-                useCompatPadding = true
-            ) + mixLeftPadding)
+            maxHeightProductCard.value = (
+                productCardModelArray.getMaxHeightForGridView(
+                    application.applicationContext,
+                    Dispatchers.Default,
+                    productImageWidth,
+                    isReimagine,
+                    useCompatPadding = true
+                ) + mixLeftPadding
+                )
         }
     }
 
@@ -228,8 +238,8 @@ class ProductCardCarouselViewModel(
                 paginatedErrorData()
             }
         }, onError = {
-            paginatedErrorData()
-        })
+                paginatedErrorData()
+            })
     }
 
     private suspend fun paginatedErrorData() {

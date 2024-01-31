@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
@@ -41,15 +42,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var masterProductCardListView: ProductCardListView? = null
     private var productCardView: CardUnify2? =
         itemView.findViewById(productcardR.id.cardViewProductCard)
-    private var productCardViewReimagined: CardUnify2? =
-        itemView.findViewById(productcardR.id.productCardCardUnifyContainer)
     private var productCardName = ""
     private var dataItem: DataItem? = null
     private var componentPosition: Int? = null
     private var buttonNotify: UnifyButton? = null
     private var lastClickTime = 0L
     private var interval: Int = 500
-    private var isFulFillment: Boolean = false
+    private var isFullFilment: Boolean = false
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
@@ -249,8 +248,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 it.applyCarousel()
                 productCardView?.layoutParams?.width =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-                productCardViewReimagined?.layoutParams?.width =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.disco_carousel_product_card_grid_width)
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
@@ -260,14 +257,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
                         R.dimen.dp_70
                     )
-                productCardViewReimagined?.layoutParams?.width =
-                    Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
-                        R.dimen.dp_70
-                    )
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
-            setProductCardV5Background()
         } else {
             setProductViewDimens()
         }
@@ -281,20 +273,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         checkProductIsFulfillment(productCardModel)
     }
 
-    private fun setProductCardV5Background() {
-        if (masterProductCardItemViewModel?.getProductCardType().equals(
-                "v2_no_background",
-                true
-            ) && !(productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName)
-        ) {
-            productCardViewReimagined?.setBackgroundColor(Color.TRANSPARENT)
-        }
-    }
-
     private fun checkProductIsFulfillment(productCardModel: ProductCardModel) {
         productCardModel.labelGroupList.forEach {
             if (it.position == IS_FULFILLMENT) {
-                isFulFillment = true
+                isFullFilment = true
             }
         }
     }
@@ -383,7 +365,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 .trackProductCardClick(
                     it.components,
                     it.isUserLoggedIn(),
-                    isFulFillment,
+                    isFullFilment,
                     dataItem?.warehouseId ?: 0
                 )
         }
@@ -397,7 +379,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 .viewProductsList(
                     it.components,
                     it.isUserLoggedIn(),
-                    isFulFillment,
+                    isFullFilment,
                     dataItem?.warehouseId ?: 0
                 )
         }

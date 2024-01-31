@@ -9,13 +9,16 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.productcard.reimagine.ProductCardLabel
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.utils.getPixel
+import com.tokopedia.productcard.utils.safeParseColor
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class LabelBenefitView: FrameLayout {
 
@@ -74,7 +77,7 @@ class LabelBenefitView: FrameLayout {
     }
 
     private fun Paint.initCircleCutoutFillPaint() {
-        color = Color.parseColor("#FFFFFF")
+        color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
         style = Paint.Style.FILL
         isDither = true
     }
@@ -96,7 +99,8 @@ class LabelBenefitView: FrameLayout {
     private fun showLabelBenefit(labelGroup: ProductCardModel.LabelGroup) {
         ProductCardLabel(background, text).render(labelGroup)
 
-        circleCutoutStrokePaint?.color = Color.parseColor(labelGroup.outlineColor())
+        val outlineColor = labelGroup.outlineColor() ?: ""
+        circleCutoutStrokePaint?.color = safeParseColor(outlineColor, Color.TRANSPARENT)
         invalidate()
     }
 

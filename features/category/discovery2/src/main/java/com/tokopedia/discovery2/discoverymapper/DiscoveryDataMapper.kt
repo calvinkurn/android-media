@@ -290,7 +290,8 @@ class DiscoveryDataMapper {
 
     fun mapDataItemToProductCardModel(
         dataItem: DataItem,
-        componentName: String?
+        componentName: String?,
+        cardType: String?
     ): ProductCardModel {
         val productName: String
         val slashedPrice: String
@@ -300,7 +301,10 @@ class DiscoveryDataMapper {
         if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName ||
             componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
             componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName ||
-            componentName == ComponentNames.ProductCardSprintSale.componentName
+            componentName == ComponentNames.ProductCardSprintSale.componentName ||
+            componentName == ComponentNames.ProductCardSprintSaleItemReimagine.componentName ||
+            componentName == ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName
+
         ) {
             productName = dataItem.title ?: ""
             slashedPrice = setSlashPrice(dataItem.discountedPrice, dataItem.price)
@@ -320,6 +324,7 @@ class DiscoveryDataMapper {
             } else {
                 ""
             },
+            isInBackground = cardType.equals("v2_with_background", true),
             countSoldRating = dataItem.averageRating,
             isTopAds = dataItem.isTopads ?: false,
             freeOngkir = ProductCardModel.FreeOngkir(
@@ -350,8 +355,7 @@ class DiscoveryDataMapper {
             hasNotifyMeButton = if (dataItem.stockWording?.title?.isNotEmpty() == true) false else dataItem.hasNotifyMe,
             hasThreeDots = dataItem.hasThreeDots,
             hasButtonThreeDotsWishlist = dataItem.hasThreeDotsWishlist,
-            hasAddToCartWishlist = dataItem.hasATCWishlist,
-            hasAddToCartButton = !dataItem.hasATCWishlist && dataItem.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART && dataItem.isActiveProductCard == true,
+            hasAddToCartButton = dataItem.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART && dataItem.isActiveProductCard == true,
             hasSimilarProductWishlist = dataItem.hasSimilarProductWishlist == true,
             variant = variantProductCard(dataItem),
             nonVariant = nonVariantProductCard(dataItem),

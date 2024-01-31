@@ -14,7 +14,6 @@ class GetTrackingUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<GetTrackingParam, GetLogisticTrackingResponse>(dispatcher.io) {
 
-
     override suspend fun execute(getTrackingParam: GetTrackingParam): GetLogisticTrackingResponse {
         return gql.request(graphqlQuery(), getTrackingParam)
     }
@@ -34,7 +33,6 @@ class GetTrackingUseCase @Inject constructor(
             )
         )
     }
-
 
     override fun graphqlQuery() = """
         query logistic_tracking (${'$'}input: MpLogisticTrackingInputParams!) {
@@ -97,9 +95,18 @@ class GetTrackingUseCase @Inject constructor(
                   url_text
                 }
                 help_page_url
-                ticker_unification_targets {
-                  type
-                  values
+                ticker_unification_params{
+                  page
+                  target{
+                    type
+                    values
+                  }
+                  template{
+                    contents{
+                      key
+                      value
+                    }
+                  }
                 }
               }
               last_driver {
@@ -125,5 +132,5 @@ class GetTrackingUseCase @Inject constructor(
           }
         }
 
-        """.trimIndent()
+    """.trimIndent()
 }

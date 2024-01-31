@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play_common.types.PlayChannelStatusType
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022
@@ -43,4 +44,9 @@ interface PlayShortsRepository {
 
     suspend fun submitOnboardAffiliateTnc(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel
 
+    suspend fun updateStatus(
+        creationId: String,
+        authorId: String,
+        status: PlayChannelStatusType
+    )
 }

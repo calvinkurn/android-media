@@ -38,32 +38,33 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardRevamp(R.layout.product_card_revamp_layout, ComponentNames.ProductCardRevamp.componentName),
     ProductCardRevampItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardRevampItem.componentName),
     MasterProductCardItemList(R.layout.master_product_card_item_list_layout, ComponentNames.MasterProductCardItemList.componentName),
-    //Reimagine
+
+    // Reimagine
     MasterProductCardReimagine(R.layout.master_product_card_item_layout_reimagine, ComponentNames.MasterProductCardItemReimagine.componentName),
     MasterProductCardListReimagine(R.layout.master_product_card_item_list_layout_reimagine, ComponentNames.MasterProductCardItemListReimagine.componentName),
-
 
     // Product Card Revamp Carousel
     ProductCardCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardCarousel.componentName),
     ProductCardCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardCarouselItem.componentName),
     ProductCardCarouselItemList(R.layout.master_product_card_item_list_layout, ComponentNames.ProductCardCarouselItemList.componentName),
-    //Reimagine
-    ProductCardCarouselItemReimagine(R.layout.master_product_card_item_layout_reimagine, ComponentNames.ProductCardCarouselItemReimagine.componentName),
-    ProductCardCarouselItemListReimagine(R.layout.master_product_card_item_list_layout_reimagine, ComponentNames.ProductCardCarouselItemListReimagine.componentName),
 
+    // Reimagine
+    ProductCardCarouselItemReimagine(R.layout.master_product_card_carousel_item_layout_reimagine, ComponentNames.ProductCardCarouselItemReimagine.componentName),
+    ProductCardCarouselItemListReimagine(R.layout.master_product_card_carousel_item_list_layout_reimagine, ComponentNames.ProductCardCarouselItemListReimagine.componentName),
 
     // Product Card Sprint Sale
     ProductCardSprintSale(R.layout.product_card_revamp_layout, ComponentNames.ProductCardSprintSale.componentName),
     ProductCardSprintSaleItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardSprintSaleItem.componentName),
-    //Reimagine
+
+    // Reimagine
     ProductCardSprintSaleItemReimagine(R.layout.master_product_card_item_layout_reimagine, ComponentNames.ProductCardSprintSaleItemReimagine.componentName),
 
     // Product Card Sprint Sale Carousel
     ProductCardSprintSaleCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardSprintSaleCarousel.componentName),
     ProductCardSprintSaleCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardSprintSaleCarouselItem.componentName),
-    //Reimagine
-    ProductCardSprintSaleCarouselItemReimagine(R.layout.master_product_card_item_layout_reimagine, ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName),
 
+    // Reimagine
+    ProductCardSprintSaleCarouselItemReimagine(R.layout.master_product_card_carousel_item_layout_reimagine, ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName),
 
     ProductListEmptyState(R.layout.product_list_state, ComponentNames.ProductListEmptyState.componentName),
     ContentCardEmptyState(R.layout.disco_content_card_empty_state, ComponentNames.ContentCardEmptyState.componentName),
@@ -77,6 +78,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     // Product Card Single
     ProductCardSingle(R.layout.disco_product_card_single, ComponentNames.ProductCardSingle.componentName),
     ProductCardSingleItem(R.layout.master_product_card_item_list_layout, ComponentNames.ProductCardSingleItem.componentName),
+
+    // Product Card Single Reimagine
+    ProductCardSingleReimagine(R.layout.disco_product_card_single, ComponentNames.ProductCardSingleReimagine.componentName),
+    ProductCardSingleItemReimagine(R.layout.master_product_card_item_list_layout_reimagine, ComponentNames.ProductCardSingleItemReimagine.componentName),
 
     // Navigation Chips
     NavigationChips(R.layout.navigation_chips_view, ComponentNames.NavigationChips.componentName),

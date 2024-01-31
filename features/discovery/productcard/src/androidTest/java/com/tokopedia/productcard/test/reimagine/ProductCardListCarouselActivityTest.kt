@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.reimagine.ProductCardListCarouselView
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.productCardListCarouselHeight
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.test.R as productcardtestR
@@ -77,6 +78,8 @@ class ProductCardListCarouselActivityTest: AppCompatActivity() {
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
+            setBackgroundContainer(productCardModel)
+
             val productCardListCarouselHeight =
                 productCardListCarouselHeight(itemView.context, productCardModel)
             productCardContainerCalculator?.layoutParams?.apply {
@@ -90,6 +93,15 @@ class ProductCardListCarouselActivityTest: AppCompatActivity() {
             productCardView?.run {
                 setProductModel(productCardModel)
                 setOnClickListener { toast("Click") }
+            }
+        }
+
+        private fun setBackgroundContainer(productCardModel: ProductCardModel) {
+            val contextResource = itemView.context
+            if(productCardModel.isInBackground) {
+                itemView.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_GN100))
+            } else {
+                itemView.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_NN0))
             }
         }
 

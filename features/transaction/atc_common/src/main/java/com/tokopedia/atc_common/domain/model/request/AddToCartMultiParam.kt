@@ -31,5 +31,8 @@ data class AddToCartMultiParam(
     val warehouseId: String = "0",
 
     @SerializedName("category")
-    val category: String = ""
+    val category: String = "",
+
+    @Transient
+    val shopName: String = ""
 )

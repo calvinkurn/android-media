@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.reimagine.ProductCardGridView
 import com.tokopedia.productcard.reimagine.ProductCardModel
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.test.R as productcardtestR
 
@@ -71,6 +72,8 @@ class ProductCardGridActivityTest: AppCompatActivity() {
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
+            setBackgroundContainer(productCardModel, itemView)
+
             testDescription?.text = "$bindingAdapterPosition $description"
 
             productCardView?.run {
@@ -78,6 +81,15 @@ class ProductCardGridActivityTest: AppCompatActivity() {
                 setOnClickListener { toast("Click") }
                 setThreeDotsClickListener { toast("Three dots click") }
                 setAddToCartOnClickListener { toast("Click ATC") }
+            }
+        }
+
+        private fun setBackgroundContainer(productCardModel: ProductCardModel, view: View) {
+            val contextResource = view.context
+            if(productCardModel.isInBackground) {
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_GN100))
+            } else {
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_NN0))
             }
         }
 

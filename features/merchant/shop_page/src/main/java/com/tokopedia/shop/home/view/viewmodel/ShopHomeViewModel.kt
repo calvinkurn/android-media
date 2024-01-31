@@ -345,12 +345,13 @@ class ShopHomeViewModel @Inject constructor(
     fun addProductToCartOcc(
         product: ShopHomeProductUiModel,
         shopId: String,
+        shopName: String,
         onSuccessAddToCartOcc: (dataModelAtc: DataModel) -> Unit,
         onErrorAddToCartOcc: (exception: Throwable) -> Unit
     ) {
         launchCatchError(block = {
             val addToCartOccSubmitData = withContext(dispatcherProvider.io) {
-                submitAddProductToCartOcc(shopId, product)
+                submitAddProductToCartOcc(shopId, shopName, product)
             }
             if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCartOcc(addToCartOccSubmitData.data)
@@ -540,13 +541,14 @@ class ShopHomeViewModel @Inject constructor(
         return addToCartUseCaseRx.createObservable(requestParams).toBlocking().first()
     }
 
-    private suspend fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
+    private suspend fun submitAddProductToCartOcc(shopId: String, shopName: String, product: ShopHomeProductUiModel): AddToCartDataModel {
         return addToCartOccUseCase.setParams(
             AddToCartOccMultiRequestParams(
                 carts = listOf(
                     AddToCartOccMultiCartParam(
                         productId = product.id,
                         shopId = shopId,
+                        shopName = shopName,
                         quantity = product.minimumOrder.toString(),
                         productName = product.name,
                         price = product.displayedPrice

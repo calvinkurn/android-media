@@ -71,7 +71,12 @@ class MasterProductCardItemViewModel(val application: Application, val component
                 dataItem.value = productData
                 setProductStockWording(productData)
                 lastQuantity = productData.quantity
-                productCardModelLiveData.value = DiscoveryDataMapper().mapDataItemToProductCardModel(productData, components.name)
+                productCardModelLiveData.value =
+                    DiscoveryDataMapper().mapDataItemToProductCardModel(
+                        productData,
+                        components.name,
+                        components.properties?.cardType
+                    )
             }
         }
     }

@@ -80,6 +80,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleReimagineViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight.ProductHighlightViewHolder
@@ -289,7 +290,6 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewModel
             )
 
-
             // Product Card Horizontal Carousel
             initializeComponent(
                 ComponentsList.ProductCardCarousel,
@@ -351,7 +351,6 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewModel
             )
 
-
             initializeComponent(
                 ComponentsList.ProductListEmptyState,
                 ::EmptyStateViewHolder,
@@ -389,6 +388,17 @@ class DiscoveryHomeFactory {
             )
             initializeComponent(
                 ComponentsList.ProductCardSingleItem,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.ProductCardSingleReimagine,
+                ::ProductCardSingleReimagineViewHolder,
+                ::ProductCardSingleViewModel
+            )
+            initializeComponent(
+                ComponentsList.ProductCardSingleItemReimagine,
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
