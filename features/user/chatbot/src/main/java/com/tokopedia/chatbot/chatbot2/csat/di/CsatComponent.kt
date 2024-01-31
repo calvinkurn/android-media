@@ -6,7 +6,7 @@ import com.tokopedia.chatbot.chatbot2.csat.view.CsatBottomsheet
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [CsatModule::class, CsatViewModelModule::class,], dependencies = [BaseAppComponent::class])
+@Component(modules = [CsatViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface CsatComponent {
     fun inject(bottomSheet: CsatBottomsheet)
 }
