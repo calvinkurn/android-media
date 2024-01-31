@@ -17,7 +17,8 @@ data class ProductPreviewSourceModel(
 
     @Parcelize
     data class ProductSourceData(
-        val productSourceList: List<ProductContentUiModel> = emptyList()
+        val productSourceList: List<ProductContentUiModel> = emptyList(),
+        val hasReviewMedia: Boolean
     ) : ProductPreviewSource
 
     @Parcelize

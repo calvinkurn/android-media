@@ -25,6 +25,12 @@ data class ProductPreviewTabUiModel(
             )
         )
 
+        val productTab = listOf(
+            ProductPreviewTabUiModel(
+                tabs = ProductReviewTab.ProductTab
+            )
+        )
+
         val reviewTab = listOf(
             ProductPreviewTabUiModel(
                 tabs = ProductReviewTab.ReviewTab

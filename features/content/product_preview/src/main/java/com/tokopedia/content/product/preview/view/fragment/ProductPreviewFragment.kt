@@ -27,6 +27,7 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.productReviewTab
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.productTab
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
@@ -127,20 +128,25 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun initSource() {
-        when (viewModel.productPreviewSource.source) {
+        when (val source = viewModel.productPreviewSource.source) {
             is ProductPreviewSourceModel.ProductSourceData -> {
-                pagerAdapter.insertFragment(productReviewTab)
-                isShowProductTab(true)
+                if (source.hasReviewMedia) {
+                    pagerAdapter.insertFragment(productReviewTab)
+                    isShowAllTab(true)
+                } else {
+                    pagerAdapter.insertFragment(productTab)
+                    isShowAllTab(false)
+                }
             }
             is ProductPreviewSourceModel.ReviewSourceData -> {
                 pagerAdapter.insertFragment(reviewTab)
-                isShowProductTab(false)
+                isShowAllTab(false)
             }
             else -> activity?.finish()
         }
     }
 
-    private fun isShowProductTab(isShow: Boolean) = with(binding) {
+    private fun isShowAllTab(isShow: Boolean) = with(binding) {
         layoutProductPreviewTab.tvProductTabTitle.showWithCondition(isShow)
         layoutProductPreviewTab.tvReviewTabTitle.showWithCondition(isShow)
         layoutProductPreviewTab.viewTabIndicator.showWithCondition(isShow)

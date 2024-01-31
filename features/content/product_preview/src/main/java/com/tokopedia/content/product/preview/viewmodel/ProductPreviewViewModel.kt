@@ -197,7 +197,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val response = repo.getReview(productPreviewSource.productId, page)
             val newList = buildList {
                 if (_reviewContentState.value.reviewContent.isNotEmpty()) {
-                    addAll(_reviewContentState.value.reviewContent + response.reviewContent)
+                    val newResponse = response.reviewContent.filterNot {
+                        it.reviewId == reviewSourceId
+                    }
+                    addAll(_reviewContentState.value.reviewContent + newResponse)
                 } else {
                     addAll(response.reviewContent)
                 }
