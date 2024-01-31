@@ -58,7 +58,12 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
 
     override suspend fun deleteTopQueue() {
         lockAndSwitchContext(dispatchers) {
+            val topQueue = creationUploadQueueDatabase.creationUploadQueueDao().getTopQueue()
             creationUploadQueueDatabase.creationUploadQueueDao().deleteTopQueue()
+
+            if (topQueue != null) {
+                deleteMediaCache(topQueue)
+            }
         }
     }
 
@@ -121,11 +126,7 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
             queueList
                 .filter { it.uploadType == CreationUploadType.Stories.type }
                 .forEach { queueEntity ->
-                    val stories = CreationUploadData.parseFromEntity(queueEntity, gson) as? CreationUploadData.Stories
-
-                    stories?.let {
-                        CacheUtil.deleteFileFromCache(it.firstMediaUri)
-                    }
+                    deleteMediaCache(queueEntity)
                 }
         }
     }
@@ -154,6 +155,17 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
                     queueId,
                     data,
                 )
+        }
+    }
+
+    private fun deleteMediaCache(queueEntity: CreationUploadQueueEntity) {
+
+        if (queueEntity.uploadType != CreationUploadType.Stories.type) return
+
+        val stories = CreationUploadData.parseFromEntity(queueEntity, gson) as? CreationUploadData.Stories
+
+        stories?.let {
+            CacheUtil.deleteFileFromCache(it.firstMediaUri)
         }
     }
 
