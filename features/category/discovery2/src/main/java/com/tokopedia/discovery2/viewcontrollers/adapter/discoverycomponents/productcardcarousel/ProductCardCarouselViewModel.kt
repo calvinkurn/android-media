@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
@@ -163,7 +164,7 @@ class ProductCardCarouselViewModel(
     }
 
     private suspend fun getMaxHeightProductCard(list: java.util.ArrayList<ComponentsItem>) {
-        val productCardModelArray: ArrayList<ProductCardModel> = arrayListOf()
+        val productCardModelArray = arrayListOf<ProductCardModel>()
         var templateType = GRID
         list.forEach {
             if (it.properties?.template == LIST) {
@@ -186,7 +187,7 @@ class ProductCardCarouselViewModel(
                 Dispatchers.Default,
                 isReimagine,
                 useCompatPadding = true
-            )
+            ).orZero()
         } else {
             val mixLeftPadding =
                 if (isMixLeftBannerPresent()) {
