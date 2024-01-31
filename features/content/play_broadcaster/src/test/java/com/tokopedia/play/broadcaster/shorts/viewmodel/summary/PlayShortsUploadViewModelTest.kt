@@ -145,7 +145,7 @@ class PlayShortsUploadViewModelTest {
                 submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
                 submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.last()]))
             }.recordStateAndEvent {
-                submitAction(PlayShortsAction.ClickUploadVideo)
+                submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = false))
             }
 
             state.uploadState.assertType<PlayShortsUploadUiState.Error>()
