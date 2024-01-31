@@ -72,7 +72,7 @@ import javax.inject.Inject
 
 @RecomTemporary
 class HomeGlobalRecommendationFragment :
-    Fragment(),
+    BaseRecommendationFragment(),
     GlobalRecomListener,
     TopAdsBannerClickListener {
 
@@ -728,7 +728,7 @@ class HomeGlobalRecommendationFragment :
         }
     }
 
-    fun scrollToTop() {
+    override fun scrollToTop() {
         if (view == null) {
             return
         }
@@ -908,7 +908,7 @@ class HomeGlobalRecommendationFragment :
             recomId: Int,
             tabName: String,
             sourceType: String
-        ): HomeRecommendationFragment {
+        ): HomeGlobalRecommendationFragment {
             val homeFeedFragment = HomeRecommendationFragment()
             val bundle = Bundle()
             bundle.putInt(ARG_TAB_INDEX, tabIndex)

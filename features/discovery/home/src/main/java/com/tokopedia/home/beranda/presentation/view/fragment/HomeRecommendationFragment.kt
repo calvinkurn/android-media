@@ -82,7 +82,7 @@ import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 
 class HomeRecommendationFragment :
-    Fragment(),
+    BaseRecommendationFragment(),
     GlobalRecomListener,
     TopAdsBannerClickListener {
 
@@ -738,7 +738,7 @@ class HomeRecommendationFragment :
         }
     }
 
-    fun scrollToTop() {
+    override fun scrollToTop() {
         if (view == null) {
             return
         }
