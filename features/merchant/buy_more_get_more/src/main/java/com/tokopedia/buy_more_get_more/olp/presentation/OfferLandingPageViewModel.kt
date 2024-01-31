@@ -469,6 +469,8 @@ class OfferLandingPageViewModel @Inject constructor(
     }
 
     private fun BmgmMiniCartDataUiModel.toTierGifts(): List<TierGifts> {
+        if (!isTierAchieved) return emptyList()
+
         val tierGifts = mutableListOf<TierGifts>()
 
         val gifts = tiers.filterIsInstance<BmgmMiniCartVisitable.TierUiModel>()
