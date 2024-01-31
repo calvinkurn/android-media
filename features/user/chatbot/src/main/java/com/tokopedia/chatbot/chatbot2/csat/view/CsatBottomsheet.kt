@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.csat.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -19,7 +20,8 @@ import com.tokopedia.chatbot.chatbot2.csat.di.CsatComponent
 import com.tokopedia.chatbot.chatbot2.csat.di.DaggerCsatComponent
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
-import com.tokopedia.chatbot.chatbot2.csat.domain.model.dummyData
+import com.tokopedia.chatbot.chatbot2.csat.view.CsatActivity.Companion.EXTRA_CSAT_DATA
+import com.tokopedia.chatbot.chatbot2.csat.view.CsatActivity.Companion.EXTRA_CSAT_SELECTED_SCORE
 import com.tokopedia.chatbot.databinding.BottomsheetCsatBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -71,6 +73,7 @@ class CsatBottomsheet :
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetStyle)
     }
 
+    @SuppressLint("DeprecatedMethod")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,8 +81,15 @@ class CsatBottomsheet :
     ): View? {
         viewBinding = BottomsheetCsatBinding.inflate(LayoutInflater.from(context))
         initializeBottomSheet()
-        viewModel.initializeData(dummyData)
-        observeViewModel()
+
+        val selectedScore: Int? = arguments?.getInt(EXTRA_CSAT_SELECTED_SCORE)
+        val csatModel: CsatModel? = arguments?.getParcelable(EXTRA_CSAT_DATA)
+        if (selectedScore != null && csatModel != null) {
+            viewModel.initializeData(selectedScore, csatModel)
+            observeViewModel()
+        } else {
+            activity?.finish()
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -122,6 +132,8 @@ class CsatBottomsheet :
 
                     is CsatEvent.NavigateToPreviousPage -> {
                     }
+
+                    CsatEvent.FallbackDismissBottomSheet -> activity?.finish()
                 }
             }
         }
@@ -243,10 +255,11 @@ class CsatBottomsheet :
     }
 
     companion object {
-        fun newInstance(): CsatBottomsheet {
+        fun newInstance(selectedScore: Int, csatModel: CsatModel): CsatBottomsheet {
             val bottomSheet = CsatBottomsheet()
             val bundle = Bundle()
-            // ... extra
+            bundle.putInt(EXTRA_CSAT_SELECTED_SCORE, selectedScore)
+            bundle.putParcelable(EXTRA_CSAT_DATA, csatModel)
             bottomSheet.arguments = bundle
             return bottomSheet
         }

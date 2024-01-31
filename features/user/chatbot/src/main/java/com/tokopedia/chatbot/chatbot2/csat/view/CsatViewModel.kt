@@ -35,17 +35,22 @@ class CsatViewModel @Inject constructor(
         }
     }
 
-    fun initializeData(csatModel: CsatModel) {
-        _csatDataStateFlow.update {
-            it.copy(
-                title = csatModel.title,
-                points = csatModel.points,
-                selectedPoint = csatModel.selectedPoint,
-                selectedReasons = mutableListOf(),
-                otherReason = "",
-                minimumOtherReasonChar = csatModel.minimumOtherReasonChar,
-                maximumOtherReasonChar = csatModel.maximumOtherReasonChar
-            )
+    fun initializeData(selectedScore: Int, csatModel: CsatModel) {
+        val selectedPoint = csatModel.points.firstOrNull { it.score == selectedScore }
+        if (selectedPoint != null) {
+            _csatDataStateFlow.update {
+                it.copy(
+                    title = csatModel.title,
+                    points = csatModel.points,
+                    selectedPoint = selectedPoint,
+                    selectedReasons = mutableListOf(),
+                    otherReason = "",
+                    minimumOtherReasonChar = csatModel.minimumOtherReasonChar,
+                    maximumOtherReasonChar = csatModel.maximumOtherReasonChar
+                )
+            }
+        } else {
+            _csatEventFlow.tryEmit(CsatEvent.FallbackDismissBottomSheet)
         }
     }
 

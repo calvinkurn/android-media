@@ -1,26 +1,28 @@
 package com.tokopedia.chatbot.chatbot2.csat.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class CsatModel(
     var title: String = "",
+    var service: String = "",
     var points: MutableList<PointModel> = mutableListOf(),
     var selectedPoint: PointModel = PointModel(),
     var selectedReasons: MutableList<String> = mutableListOf(),
     var otherReason: String = "",
     var minimumOtherReasonChar: Int = 0,
     var maximumOtherReasonChar: Int = 0
-)
+) : Parcelable
 
+@Parcelize
 data class PointModel(
     var score: Int = 0,
     var caption: String = "",
     var reasonTitle: String = "",
     var reasons: List<String> = emptyList(),
     var otherReasonTitle: String = ""
-)
-
-data class SubmitButtonState(
-    var isEnabled: Boolean = false
-)
+) : Parcelable
 
 val dummyData = CsatModel(
     title = "Gimana pengalamanmu dengan Tokopedia Care?",

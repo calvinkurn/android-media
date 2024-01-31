@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.chatbot2.data.csatoptionlist
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.chatbot.chatbot2.csat.data.response.DynamicCsatWs
 
 data class CsatAttributesPojo(
     @SerializedName("csat")
@@ -22,7 +23,9 @@ data class CsatAttributesPojo(
         @SerializedName("trigger_rule_type")
         val triggerRuleType: String?,
         @SerializedName("user_id")
-        val userId: Long?
+        val userId: Long?,
+        @SerializedName("dynamic_csat")
+        val dynamicCsat: DynamicCsatWs?
     ) {
         data class Point(
             @SerializedName("caption")

@@ -98,6 +98,7 @@ import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.chatbot2.attachinvoice.view.TransactionInvoiceBottomSheetListener
 import com.tokopedia.chatbot.chatbot2.attachinvoice.view.resultmodel.SelectedInvoice
+import com.tokopedia.chatbot.chatbot2.csat.view.CsatActivity
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
@@ -2275,13 +2276,23 @@ class ChatbotFragment2 :
         model: CsatOptionsUiModel?
     ) {
         csatOptionsUiModel = model
-        startActivityForResult(
-            context?.let {
-                ChatBotCsatActivity
-                    .getInstance(it, selected.value, model)
-            },
-            REQUEST_SUBMIT_CSAT
-        )
+        val dynamicCsatModel = model?.dynamicCsat
+        if (dynamicCsatModel != null) {
+            startActivityForResult(
+                context?.let {
+                    CsatActivity.getInstance(it, selected.value.toInt(), dynamicCsatModel) // converting to int is safe in this case
+                },
+                REQUEST_SUBMIT_CSAT
+            )
+        } else {
+            startActivityForResult(
+                context?.let {
+                    ChatBotCsatActivity
+                        .getInstance(it, selected.value, model)
+                },
+                REQUEST_SUBMIT_CSAT
+            )
+        }
     }
 
     override fun onRetrySendImage(element: ImageUploadUiModel) {
