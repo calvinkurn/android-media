@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.reimagine
 
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine
 
@@ -20,6 +21,7 @@ data class ProductCardModel(
     val stockInfo: StockInfo = StockInfo(),
     val isSafeProduct: Boolean = false,
     val isInBackground: Boolean = false,
+    val nonVariant: NonVariant? = null,
 ) {
 
     fun labelBenefit(): LabelGroupReimagine? =
@@ -69,6 +71,14 @@ data class ProductCardModel(
     fun stockInfo() : StockInfo? = stockInfo.takeIf { it.hasTitle() }
 
     fun showPrice() = price.isNotBlank() && labelNettPrice() == null
+
+    fun useQuantityEditor() = nonVariant != null
+
+    fun showAddToCartNonVariant(): Boolean = nonVariant?.quantity == 0
+
+    fun showQuantityEditor(): Boolean = (nonVariant?.quantity ?: 0) > 0
+
+    fun showAddToCartButton(): Boolean = hasAddToCart || showAddToCartNonVariant()
 
     private fun labelGroup(position: String) = labelGroupList.find { it.position == position }
 
@@ -143,6 +153,30 @@ data class ProductCardModel(
                 )
         }
     }
+
+    data class NonVariant(
+        val quantity: Int = 0,
+        internal val minQuantity: Int = 0,
+        internal val maxQuantity: Int = 0,
+    ) {
+        val minQuantityFinal = maxOf(minQuantity, MIN_QUANTITY_NON_VARIANT)
+        val maxQuantityFinal = maxOf(maxQuantity, minQuantityFinal)
+
+        val quantityRange: IntRange
+            get() = minQuantityFinal..maxQuantityFinal
+
+        companion object {
+            fun from(nonVariant: ProductCardModel.NonVariant?): NonVariant? {
+                nonVariant ?: return null
+
+                return NonVariant(
+                    quantity = nonVariant.quantity,
+                    minQuantity = nonVariant.minQuantity,
+                    maxQuantity = nonVariant.maxQuantity,
+                )
+            }
+        }
+    }
     
     companion object {
         fun from(productCardModel: ProductCardModel): ProductCardModelReimagine =
@@ -161,6 +195,7 @@ data class ProductCardModel(
                 hasThreeDots = productCardModel.hasThreeDots,
                 stockInfo = StockInfo.from(productCardModel),
                 isInBackground = productCardModel.isInBackground,
+                nonVariant = NonVariant.from(productCardModel.nonVariant),
             )
 
         private fun shopBadge(productCardModel: ProductCardModel) =
