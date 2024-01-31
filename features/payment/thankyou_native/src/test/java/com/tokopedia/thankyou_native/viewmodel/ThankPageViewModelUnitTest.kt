@@ -377,7 +377,7 @@ class ThankPageViewModelUnitTest {
         viewModel.addBottomContentWidget(headlineAdsVisitable)
 
         // assert
-        Assert.assertEquals(viewModel.widgetOrder, arrayListOf("banner", "dg", "pg", "shopads", "feature"))
+        Assert.assertEquals(viewModel.widgetOrder, arrayListOf("instant_header","waiting_header","processing_header","divider","banner", "dg", "pg", "shopads", "feature"))
         Assert.assertEquals(viewModel.bottomContentVisitableList.value?.size, 3)
         Assert.assertEquals(viewModel.bottomContentVisitableList.value?.first(), bannerWidgetModel)
         Assert.assertEquals(viewModel.bottomContentVisitableList.value?.get(1), headlineAdsVisitable)
