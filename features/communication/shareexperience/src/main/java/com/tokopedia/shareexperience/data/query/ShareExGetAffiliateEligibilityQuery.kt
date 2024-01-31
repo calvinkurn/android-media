@@ -4,9 +4,8 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 class ShareExGetAffiliateEligibilityQuery : GqlQueryInterface {
 
-    private val operationName = "generateAffiliateLinkEligibility"
     override fun getOperationNameList(): List<String> {
-        return listOf(operationName)
+        return listOf(OPERATION_NAME)
     }
 
     override fun getQuery(): String = """query generateAffiliateLinkEligibility(${'$'}generateAffiliateLinkEligibilityRequest: generateAffiliateLinkEligibilityRequest!) {
@@ -18,5 +17,9 @@ class ShareExGetAffiliateEligibilityQuery : GqlQueryInterface {
                 }
     """.trimIndent()
 
-    override fun getTopOperationName(): String = operationName
+    override fun getTopOperationName(): String = OPERATION_NAME
+
+    companion object {
+        const val OPERATION_NAME = "generateAffiliateLinkEligibility"
+    }
 }

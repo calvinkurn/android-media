@@ -1,8 +1,8 @@
 package com.tokopedia.shareexperience.data.mapper
 
 import com.tokopedia.shareexperience.data.dto.ShareExSharePropertiesResponseDto
-import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateEligibilityResponseDto
-import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
+import com.tokopedia.shareexperience.data.dto.affiliate.properties.ShareExAffiliateEligibilityResponseDto
+import com.tokopedia.shareexperience.data.dto.affiliate.properties.ShareExAffiliateRegistrationWidgetResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorArgResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel

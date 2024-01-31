@@ -3,10 +3,8 @@ package com.tokopedia.shareexperience.data.query
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 class ShareExGetSharePropertiesQuery : GqlQueryInterface {
-
-    private val operationName = "getShareProperties"
     override fun getOperationNameList(): List<String> {
-        return listOf(operationName)
+        return listOf(OPERATION_NAME)
     }
 
     override fun getQuery(): String = """
@@ -62,5 +60,9 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
         }
     """.trimIndent()
 
-    override fun getTopOperationName(): String = operationName
+    override fun getTopOperationName(): String = OPERATION_NAME
+
+    companion object {
+        const val OPERATION_NAME = "getShareProperties"
+    }
 }
