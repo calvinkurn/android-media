@@ -22,6 +22,8 @@ internal class PromoAccordionItemDelegateAdapter(
     private val onImpressionPromo: (PromoItem) -> Unit,
     private val onImpressActivationGoPayLater: (PromoItem) -> Unit,
     private val onClickActivationGoPayLater: (PromoItem) -> Unit,
+    private val onImpressionGplEligible: (PromoItem) -> Unit,
+    private val onClickGplEligible: (PromoItem) -> Unit,
 ) : DelegateAdapter<PromoItem, PromoAccordionItemDelegateAdapter.ViewHolder>(
     PromoItem::class.java
 ) {
@@ -132,6 +134,10 @@ internal class PromoAccordionItemDelegateAdapter(
                                 if (vcvPromo.getIsActivationGopayLaterShown()) {
                                     onClickActivationGoPayLater(item)
                                 }
+
+                                if (vcvPromo.getIsGopayCicilEligible()) {
+                                    onClickGplEligible(item)
+                                }
                             }
                         }
 
@@ -145,6 +151,10 @@ internal class PromoAccordionItemDelegateAdapter(
                         onImpressionPromo(item)
                         if (vcvPromo.getIsActivationGopayLaterShown()) {
                             onImpressActivationGoPayLater(item)
+                        }
+
+                        if (vcvPromo.getIsGopayCicilEligible()) {
+                            onImpressionGplEligible(item)
                         }
                     }
                 }

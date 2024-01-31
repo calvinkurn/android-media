@@ -186,12 +186,18 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     onRecommendationAnimationEnd,
                     onClickClose,
                     onImpressActivationGoPayLater,
-                    onClickActivationGoPayLater
+                    onClickActivationGoPayLater,
+                    onImpressionGplEligible,
+                    onClickGplEligible
                 )
             )
             .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
-            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem, onImpressionPromo, onImpressActivationGoPayLater,
-                onClickActivationGoPayLater))
+            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem,
+                onImpressionPromo,
+                onImpressActivationGoPayLater,
+                onClickActivationGoPayLater,
+                onImpressionGplEligible,
+                onClickGplEligible))
             .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
             .add(PromoTncDelegateAdapter(onClickPromoTnc))
             .add(PromoAttemptCodeDelegateAdapter(onAttemptPromoCode))
@@ -1109,6 +1115,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private val onClickActivationGoPayLater = { clickedPromo: PromoItem ->
         processAndSendClickActivationGoPayLater(clickedPromo)
+    }
+
+    private val onImpressionGplEligible = { viewedPromo: PromoItem ->
+        processAndSendImpressionAutoApplyGpl(viewedPromo)
+    }
+
+    private val onClickGplEligible = { clickedPromo: PromoItem ->
+        processAndSendClickGplEligible(clickedPromo)
     }
 
     private val onClickClose = {

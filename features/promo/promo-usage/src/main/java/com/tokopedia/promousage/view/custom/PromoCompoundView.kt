@@ -69,6 +69,7 @@ class PromoCompoundView @JvmOverloads constructor(
 
     private var binding: PromoUsageItemPromoCompoundViewBinding? = null
     private var isActivationGopayLaterShown: Boolean = false
+    private var isGopayCicilEligible: Boolean = false
 
     init {
 //        viewOverlay = this.overlay
@@ -94,6 +95,10 @@ class PromoCompoundView @JvmOverloads constructor(
 
     fun getIsActivationGopayLaterShown(): Boolean {
         return isActivationGopayLaterShown
+    }
+
+    fun getIsGopayCicilEligible(): Boolean {
+        return isGopayCicilEligible
     }
 
     private fun renderLoading(promo: PromoItem) {
@@ -381,6 +386,8 @@ class PromoCompoundView @JvmOverloads constructor(
                         clAdditionalInfo.gone()
                         isActivationGopayLaterShown = false
                     }
+
+                    isGopayCicilEligible = isPromoGopayLater && !isPromoCtaRegisterGopayLater
                 }
 
                 else -> {

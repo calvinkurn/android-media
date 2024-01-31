@@ -366,9 +366,9 @@ class PromoUsageAnalytics @Inject constructor() : PromoAnalytics() {
     ) {
         val sourcePage = generateSourcePage(entryPoint)
         val selectedStr = if (clickedPromo.state is PromoItemState.Selected) {
-            Int.ONE
-        } else {
             Int.ZERO
+        } else {
+            Int.ONE
         }
         val eventLabel = "$sourcePage - $selectedStr"
         sendGeneralEvent(
@@ -443,9 +443,9 @@ class PromoUsageAnalytics @Inject constructor() : PromoAnalytics() {
     ) {
         val sourcePage = generateSourcePage(entryPoint)
         val selectedStr = if (clickedPromo.state is PromoItemState.Selected) {
-            Int.ONE
-        } else {
             Int.ZERO
+        } else {
+            Int.ONE
         }
         val eventLabel = "${clickedPromo.promoId} - $sourcePage - $selectedStr"
         sendGeneralEvent(
