@@ -24,7 +24,7 @@ data class ProcessingHeaderUiModel(
     val primaryButtonText: String,
     val shouldHideSecondaryButton: Boolean,
     val secondaryButtonText: String
-) : Visitable<BottomContentFactory> {
+) : Visitable<BottomContentFactory>, WidgetTag(TAG) {
 
     override fun type(typeFactory: BottomContentFactory): Int {
         return typeFactory.type(this)
@@ -66,6 +66,8 @@ data class ProcessingHeaderUiModel(
                 secondaryButtonText.orEmpty()
             )
         }
+
+        const val TAG = "processing_header"
     }
 }
 

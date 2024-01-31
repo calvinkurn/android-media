@@ -215,7 +215,9 @@ open class ThankYouBaseFragment :
         } else {
             getBottomContentRecyclerView()?.layoutManager = LinearLayoutManager(context)
             getBottomContentRecyclerView()?.adapter = bottomContentAdapter
-            getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
+            if (isV2Enabled) {
+                getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
+            }
 
             bindThanksPageDataToUI(thanksPageData)
             addHeader()
@@ -238,7 +240,6 @@ open class ThankYouBaseFragment :
     private fun startAnimate() {
         if (!isV2Enabled) return
 
-        (activity as ThankYouPageActivity).globalNabToolbar.alpha = 0f
         (activity as ThankYouPageActivity).globalNabToolbar.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
         getBottomContentRecyclerView()?.animate()?.translationY(0f)?.setDuration(UnifyMotion.T5)?.start()
         getBottomContentRecyclerView()?.alpha = 0f
