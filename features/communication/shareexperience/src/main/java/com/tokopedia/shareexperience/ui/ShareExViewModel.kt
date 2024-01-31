@@ -16,7 +16,6 @@ import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
-import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorWrapperRequest
@@ -31,6 +30,7 @@ import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExImageGeneratorUiState
@@ -54,8 +54,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 class ShareExViewModel @Inject constructor(
@@ -253,7 +251,7 @@ class ShareExViewModel @Inject constructor(
                 val channelEnum = channelItemModel.channelEnum
                 val chipPosition = bottomSheetModel.getSelectedChipPosition(bottomSheetArgs.selectedChip).orZero()
                 val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
-                val campaign = generateCampaign(shareProperty, bottomSheetArgs.identifier, bottomSheetArgs.pageTypeEnum)
+                val campaign = bottomSheetArgs.trackerArg.utmCampaign.replace(ShareExTrackerArg.SHARE_ID_KEY, shareProperty.shareId.toString())
                 val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
                     androidUrl = generateUrlWithUTM(shareProperty.linkProperties.androidUrl, channelEnum, campaign),
                     iosUrl = generateUrlWithUTM(shareProperty.linkProperties.iosUrl, channelEnum, campaign),
@@ -332,28 +330,6 @@ class ShareExViewModel @Inject constructor(
             newUri.query(query)
         }
         return newUri.build().toString()
-    }
-
-    private fun generateCampaign(
-        shareProperty: ShareExPropertyModel,
-        identifier: String,
-        pageTypeEnum: ShareExPageTypeEnum
-    ): String {
-        var campaign = "${pageTypeEnum.name}-$identifier"
-        campaign += if (userSession.isLoggedIn) {
-            "-${userSession.userId}"
-        } else {
-            "-0"
-        }
-        campaign += "-${getSimpleDate()}"
-        if (shareProperty.imageGenerator?.sourceId?.isNotBlank() == true) {
-            campaign += "-${shareProperty.imageGenerator.sourceId}"
-        }
-        return campaign
-    }
-
-    private fun getSimpleDate(): String {
-        return SimpleDateFormat("ddMMyy", Locale.getDefault()).format(Date())
     }
 
     private fun generateShortLinkRequest(
