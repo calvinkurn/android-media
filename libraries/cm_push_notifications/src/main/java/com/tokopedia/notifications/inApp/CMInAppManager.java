@@ -2,6 +2,8 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -45,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_FETCH;
@@ -84,6 +87,16 @@ public class CMInAppManager implements CmInAppListener,
     private Boolean isCmInAppManagerInitialized = false;
     @Nullable
     private IExternalInAppCallback externalInAppCallback;
+
+    SharedPreferences sharedPreference =  application.getSharedPreferences(
+            "inapp_shown_time",
+            Context.MODE_PRIVATE
+    );
+
+    SharedPreferences sharedPreferenceKetupat =  application.getSharedPreferences(
+            "ketupat_shown_time",
+            Context.MODE_PRIVATE
+    );
 
     static {
         inAppManager = new CMInAppManager();
@@ -186,6 +199,7 @@ public class CMInAppManager implements CmInAppListener,
                 sendEventInAppPrepared(cmInApp);
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
                 if (canShowDialog()) {
+
                     showDialog(cmInApp);
                 }
             }
@@ -216,6 +230,13 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     private void showDialog(CMInApp data) {
+        long ketupatShownTime = application.getSharedPreferences(
+                "ketupat_shown_time",
+                Context.MODE_PRIVATE
+        ).getLong("ketupat_shown_time", System.currentTimeMillis());
+        if (TimeUnit.MILLISECONDS.toHours(ketupatShownTime - System.currentTimeMillis()) < 24) {
+            return;
+        }
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
         String type = data.type;
         if (!TextUtils.isEmpty(type)) {
@@ -231,6 +252,10 @@ public class CMInAppManager implements CmInAppListener,
                     break;
             }
         }
+        application.getSharedPreferences(
+                "inapp_shown_time",
+                Context.MODE_PRIVATE
+        ).edit().putLong("inapp_shown_time", System.currentTimeMillis()).apply();
     }
 
     private void showInterstitialDialog(WeakReference<Activity> currentActivity, CMInApp data) {
