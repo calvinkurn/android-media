@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.ui.mapper
 
 import android.content.Context
+import android.graphics.Color
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -85,7 +86,8 @@ class CatalogDetailUiMapper @Inject constructor(
             widgets = widgets,
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
             priceCtaProperties = mapToPriceCtaProperties(remoteModel),
-            remoteModel.basicInfo.productSortingStatus.orZero(),
+            priceCtaSellerOfferingProperties = mapToPriceCtaSellerOfferingProperties(remoteModel),
+            productSortingStatus = remoteModel.basicInfo.productSortingStatus.orZero(),
             catalogUrl = remoteModel.basicInfo.url.orEmpty(),
             shareProperties = mapToShareProperties(remoteModel, widgets)
         )
@@ -146,7 +148,9 @@ class CatalogDetailUiMapper @Inject constructor(
         }
     }
 
-    private fun mapToPriceCtaProperties(remoteModel: CatalogResponseData.CatalogGetDetailModular): PriceCtaProperties {
+    private fun mapToPriceCtaProperties(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): PriceCtaProperties {
         val bgColor = remoteModel.globalStyle?.secondaryColor
         val textColorRes = if (remoteModel.globalStyle?.darkMode == true) {
             unifycomponentsR.color.Unify_Static_White
@@ -175,6 +179,30 @@ class CatalogDetailUiMapper @Inject constructor(
                 MethodChecker.getColor(context, textColorRes)
             )
         } ?: PriceCtaProperties()
+    }
+
+    private fun mapToPriceCtaSellerOfferingProperties(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): PriceCtaSellerOfferingProperties {
+        val bgColor = remoteModel.globalStyle?.secondaryColor
+        return remoteModel.layouts?.firstOrNull {
+            it.type == WidgetTypes.CATALOG_CTA_PRICE_TOP_SELLER.type
+        }?.data?.run {
+            PriceCtaSellerOfferingProperties(
+                productId = topSeller.productID,
+                shopName = topSeller.shop.name,
+                price = topSeller.price.text,
+                slashPrice = topSeller.price.original,
+                shopRating = topSeller.credibility.rating,
+                sold = topSeller.credibility.sold,
+                badge = topSeller.shop.badge,
+                textColor = Color.BLACK,
+                iconColor = Color.BLACK,
+                bgColor = "#$bgColor".stringHexColorParseToInt(),
+                bgColorAtc = Color.GREEN,
+                isDarkTheme = remoteModel.globalStyle?.darkMode == true
+            )
+        } ?: PriceCtaSellerOfferingProperties()
     }
 
     private fun mapToNavigationProperties(

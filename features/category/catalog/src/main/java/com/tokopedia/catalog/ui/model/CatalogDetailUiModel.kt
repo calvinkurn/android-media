@@ -8,7 +8,8 @@ data class CatalogDetailUiModel(
     val priceCtaProperties: PriceCtaProperties,
     val productSortingStatus: Int,
     val catalogUrl: String,
-    val shareProperties: ShareProperties = ShareProperties()
+    val shareProperties: ShareProperties = ShareProperties(),
+    val priceCtaSellerOfferingProperties: PriceCtaSellerOfferingProperties = PriceCtaSellerOfferingProperties()
 )
 
 data class PriceCtaProperties(

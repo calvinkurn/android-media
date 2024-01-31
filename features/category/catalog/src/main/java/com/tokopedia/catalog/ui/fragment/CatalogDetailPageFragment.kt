@@ -426,8 +426,8 @@ class CatalogDetailPageFragment :
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
-//                binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
-//                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaProperties)
+                binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
+                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaSellerOfferingProperties)
                 widgetAdapter.addWidget(it.data.widgets)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
@@ -593,7 +593,6 @@ class CatalogDetailPageFragment :
         binding?.statusBar?.alpha = scrollProgress
     }
 
-    // Call this methods if you want to override the CTA & Price widget's theme
     private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaWidget(properties: PriceCtaProperties) {
         icCtaNormal.root.show()
         icCtaSellerOffering.root.gone()
