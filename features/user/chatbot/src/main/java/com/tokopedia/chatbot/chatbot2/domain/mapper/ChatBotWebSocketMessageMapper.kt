@@ -25,7 +25,7 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UP
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceSentPojo
-import com.tokopedia.chatbot.chatbot2.csat.data.response.DynamicCsatWs
+import com.tokopedia.chatbot.chatbot2.csat.data.response.DynamicCsat
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
 import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
 import com.tokopedia.chatbot.chatbot2.data.chatactionballoon.ChatActionPojo
@@ -339,7 +339,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
         )
     }
 
-    private fun convertToDynamicCsatModel(response: DynamicCsatWs?): CsatModel? {
+    private fun convertToDynamicCsatModel(response: DynamicCsat?): CsatModel? {
         if (response != null) {
             return CsatModel(
                 title = response.title,
