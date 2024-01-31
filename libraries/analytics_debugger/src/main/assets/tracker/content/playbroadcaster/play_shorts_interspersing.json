@@ -1,6 +1,6 @@
 {
   "readme": "Play Shorts - Interspersing Video",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "clickContent",
