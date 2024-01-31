@@ -8,4 +8,7 @@
     <string name="buyer_review_detail_bottomsheet_title">Ulasan Produk</string>
     <string name="catalog_common_for_title_catalog">Katalog</string>
     <string name="catalog_add_to_cart">Tambah keranjang</string>
+    <string name="title_price_cta_seller_offering">Pilihan lain dari Tokopedia</string>
+    <string name="catalog_prefix_price_cta_seller_offering">Dari %s</string>
+
 </resources>

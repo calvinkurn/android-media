@@ -24,10 +24,13 @@ android {
     defaultConfig {
         multiDexEnabled true
     }
-
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
     }
 }
 
@@ -49,6 +52,9 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
     implementation projectOrAar(rootProject.ext.libraries.applink)
 
     implementation projectOrAar(rootProject.ext.libraries.utils)

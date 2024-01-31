@@ -58,7 +58,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.unifyDependencies.header
-    implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

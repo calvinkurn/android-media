@@ -55,8 +55,10 @@ import com.tokopedia.catalogcommon.viewholder.VideoViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
+import com.tokopedia.catalogcommon.uimodel.PriceCtaSellerOfferingUiModel
 import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
+import com.tokopedia.catalogcommon.viewholder.PriceCtaSellerOfferingViewHolder
 import com.tokopedia.catalogcommon.viewholder.SellerOfferingViewHolder
 
 class CatalogAdapterFactoryImpl(
@@ -180,5 +182,9 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: SellerOfferingUiModel): Int {
         return SellerOfferingViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: PriceCtaSellerOfferingUiModel): Int {
+        return PriceCtaSellerOfferingViewHolder.LAYOUT
     }
 }
