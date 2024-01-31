@@ -4,12 +4,12 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -183,6 +183,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.setBackgroundColor(Color.RED)
         setupArgs()
         fetchHomeRecommendationRollence()
         setupRecyclerView()
@@ -909,7 +910,7 @@ class HomeGlobalRecommendationFragment :
             tabName: String,
             sourceType: String
         ): HomeGlobalRecommendationFragment {
-            val homeFeedFragment = HomeRecommendationFragment()
+            val homeFeedFragment = HomeGlobalRecommendationFragment()
             val bundle = Bundle()
             bundle.putInt(ARG_TAB_INDEX, tabIndex)
             bundle.putInt(ARG_RECOM_ID, recomId)

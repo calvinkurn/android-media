@@ -25,6 +25,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(HomeRecommendationViewModel::class)
+    @ViewModelKey(HomeGlobalRecommendationViewModel::class)
     internal abstract fun homeGlobalRecommendationViewModel(viewModel: HomeGlobalRecommendationViewModel): ViewModel
 }
