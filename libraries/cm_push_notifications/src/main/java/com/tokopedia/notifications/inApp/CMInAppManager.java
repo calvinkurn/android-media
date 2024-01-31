@@ -88,16 +88,6 @@ public class CMInAppManager implements CmInAppListener,
     @Nullable
     private IExternalInAppCallback externalInAppCallback;
 
-    SharedPreferences sharedPreference =  application.getSharedPreferences(
-            "inapp_shown_time",
-            Context.MODE_PRIVATE
-    );
-
-    SharedPreferences sharedPreferenceKetupat =  application.getSharedPreferences(
-            "ketupat_shown_time",
-            Context.MODE_PRIVATE
-    );
-
     static {
         inAppManager = new CMInAppManager();
     }
@@ -199,7 +189,6 @@ public class CMInAppManager implements CmInAppListener,
                 sendEventInAppPrepared(cmInApp);
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
                 if (canShowDialog()) {
-
                     showDialog(cmInApp);
                 }
             }
@@ -230,7 +219,7 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     private void showDialog(CMInApp data) {
-        long ketupatShownTime = application.getSharedPreferences(
+        long ketupatShownTime = application.getApplicationContext().getSharedPreferences(
                 "ketupat_shown_time",
                 Context.MODE_PRIVATE
         ).getLong("ketupat_shown_time", System.currentTimeMillis());
@@ -252,7 +241,7 @@ public class CMInAppManager implements CmInAppListener,
                     break;
             }
         }
-        application.getSharedPreferences(
+        application.getApplicationContext().getSharedPreferences(
                 "inapp_shown_time",
                 Context.MODE_PRIVATE
         ).edit().putLong("inapp_shown_time", System.currentTimeMillis()).apply();
