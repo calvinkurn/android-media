@@ -95,7 +95,7 @@ class PartialContentView(
     }
 
     fun updateUniversalShareWidget(shouldShow: Boolean) = with(binding.universalShareWidget) {
-        if (shouldShow) {
+        if (shouldShow && isWidgetRollenceActive()) {
             listener.onUniversalShareWidget(this)
             setColorShareIcon(unifyprinciplesR.color.Unify_NN700)
             show()
