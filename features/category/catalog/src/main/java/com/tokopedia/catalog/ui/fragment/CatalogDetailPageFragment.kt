@@ -139,8 +139,10 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.usecase.detail.InvalidCatalogComparisonException
 import com.tokopedia.unifycomponents.Toaster
@@ -594,9 +596,8 @@ class CatalogDetailPageFragment :
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaWidget(properties: PriceCtaProperties) {
-        icCtaNormal.root.show()
-        icCtaSellerOffering.root.gone()
         icCtaNormal.apply {
+            root.showWithCondition(properties.isVisible)
             containerPriceCta.setBackgroundColor(properties.bgColor)
             tgpCatalogName.setTextColor(properties.textColor)
             tgpPriceRanges.setTextColor(properties.textColor)
@@ -640,9 +641,8 @@ class CatalogDetailPageFragment :
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaSellerOfferingWidget(properties: PriceCtaSellerOfferingProperties) {
-        icCtaNormal.root.gone()
-        icCtaSellerOffering.root.show()
         icCtaSellerOffering.apply {
+            root.showWithCondition(properties.isVisible)
             containerPriceCta.setBackgroundColor(properties.bgColor)
             ctaAtc.setPrice(properties.price)
             ctaAtc.setSlashPrice(properties.slashPrice)

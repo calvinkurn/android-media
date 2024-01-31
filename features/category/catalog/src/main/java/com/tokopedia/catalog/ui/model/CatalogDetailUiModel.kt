@@ -19,7 +19,8 @@ data class PriceCtaProperties(
     val price: String = "",
     val productName: String = "",
     val bgColor: Int = 0,
-    val textColor: Int = 0
+    val textColor: Int = 0,
+    val isVisible: Boolean = false
 )
 
 data class PriceCtaSellerOfferingProperties(
@@ -35,7 +36,8 @@ data class PriceCtaSellerOfferingProperties(
     val iconColor: Int = 0,
     val bgColor: Int = 0,
     val bgColorAtc: Int = 0,
-    val isDarkTheme: Boolean = false
+    val isDarkTheme: Boolean = false,
+    val isVisible: Boolean = false
 )
 
 data class NavigationProperties(

@@ -1,7 +1,6 @@
 package com.tokopedia.catalog.ui.mapper
 
 import android.content.Context
-import android.graphics.Color
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -160,6 +159,7 @@ class CatalogDetailUiMapper @Inject constructor(
         return remoteModel.layouts?.firstOrNull {
             it.type == WidgetTypes.CATALOG_CTA_PRICE.type
         }?.data?.run {
+            if (style.isHidden || !style.isSticky) return@run PriceCtaProperties()
             val marketPrice = priceCta.marketPrice.firstOrNull()
             val minFmt = marketPrice?.minFmt.orEmpty()
             val maxFmt = marketPrice?.maxFmt.orEmpty()
@@ -176,7 +176,8 @@ class CatalogDetailUiMapper @Inject constructor(
                 price = displayedPrice,
                 productName = priceCta.name,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
-                MethodChecker.getColor(context, textColorRes)
+                MethodChecker.getColor(context, textColorRes),
+                isVisible = true
             )
         } ?: PriceCtaProperties()
     }
@@ -188,6 +189,7 @@ class CatalogDetailUiMapper @Inject constructor(
         return remoteModel.layouts?.firstOrNull {
             it.type == WidgetTypes.CATALOG_CTA_PRICE_TOP_SELLER.type
         }?.data?.run {
+            if (style.isHidden || !style.isSticky) return@run PriceCtaSellerOfferingProperties()
             PriceCtaSellerOfferingProperties(
                 productId = topSeller.productID,
                 shopName = topSeller.shop.name,
@@ -196,11 +198,9 @@ class CatalogDetailUiMapper @Inject constructor(
                 shopRating = topSeller.credibility.rating,
                 sold = topSeller.credibility.sold,
                 badge = topSeller.shop.badge,
-                textColor = Color.BLACK,
-                iconColor = Color.BLACK,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
-                bgColorAtc = Color.GREEN,
-                isDarkTheme = remoteModel.globalStyle?.darkMode == true
+                isDarkTheme = remoteModel.globalStyle?.darkMode == true,
+                isVisible = true
             )
         } ?: PriceCtaSellerOfferingProperties()
     }
