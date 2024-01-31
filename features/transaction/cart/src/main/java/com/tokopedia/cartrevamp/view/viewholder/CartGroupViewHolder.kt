@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cart.databinding.ItemGroupRevampBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.collapsedproduct.CartCollapsedProductAdapter
