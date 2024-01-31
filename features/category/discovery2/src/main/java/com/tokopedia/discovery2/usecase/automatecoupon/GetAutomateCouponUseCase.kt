@@ -6,6 +6,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponRequest
 import com.tokopedia.discovery2.data.automatecoupon.CouponInfo
 import com.tokopedia.discovery2.data.automatecoupon.CouponListWidgets
+import com.tokopedia.discovery2.data.automatecoupon.Layout
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.automatecoupon.IAutomateCouponGqlRepository
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
@@ -13,6 +14,7 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
 import com.tokopedia.discovery_component.widgets.automatecoupon.TimeLimit
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.asLowerCase
 import java.util.*
 import javax.inject.Inject
 
@@ -32,7 +34,7 @@ class GetAutomateCouponUseCase @Inject constructor(
 
             val data = it.data?.firstOrNull() ?: return State.FAILED
 
-            val response = repository.fetchData(data.mapToCouponRequest())
+            val response = repository.fetchData(data.mapToCouponRequest(), it.name)
 
             response.promoCatalog?.catalogWithCouponList?.let { coupons ->
                 if (coupons.isNotEmpty()) {
@@ -70,16 +72,27 @@ class GetAutomateCouponUseCase @Inject constructor(
         forEachIndexed { index, it ->
             if (it.info == null) return@forEachIndexed
 
+            val compName = if (component.data?.firstOrNull()?.couponLayout == Layout.Single.name.asLowerCase()) {
+                ComponentNames.SingleAutomateCoupon.componentName
+            } else {
+                ComponentNames.GridAutomateCoupon.componentName
+            }
+
             val componentsItem = ComponentsItem().apply {
                 position = index
-                name = ComponentNames.SingleAutomateCoupon.componentName
+                name = compName
                 parentListSize = this@mapToComponentList.size
                 parentComponentName = component.name
                 parentComponentId = component.id
                 creativeName = component.creativeName
                 properties = component.properties
 
-                automateCoupons = mutableListOf(it.info.mapToModel())
+                val models = if (component.name == ComponentNames.GridAutomateCoupon.componentName) {
+                    mutableListOf(it.info.mapToGridModel())
+                } else {
+                    mutableListOf(it.info.mapToListModel())
+                }
+                automateCoupons = models
             }
 
             list.add(componentsItem)
@@ -88,7 +101,7 @@ class GetAutomateCouponUseCase @Inject constructor(
         return list
     }
 
-    private fun CouponInfo.mapToModel(): AutomateCouponModel.List {
+    private fun CouponInfo.mapToListModel(): AutomateCouponModel.List {
         val type = DynamicColorText(
             header?.firstOrNull()?.parent?.text.orEmpty(),
             header?.firstOrNull()?.parent?.colorList?.hexColors?.firstOrNull().orEmpty()
@@ -127,6 +140,50 @@ class GetAutomateCouponUseCase @Inject constructor(
             tnc = tnc,
             backgroundUrl = background?.imageURL.orEmpty(),
             timeLimit = timeLimit,
+            iconUrl = iconURL.orEmpty(),
+            shopName = shopName,
+            badgeText = badge
+        )
+    }
+
+    private fun CouponInfo.mapToGridModel(): AutomateCouponModel.Grid {
+        val type = DynamicColorText(
+            header?.firstOrNull()?.parent?.text.orEmpty(),
+            header?.firstOrNull()?.parent?.colorList?.hexColors?.firstOrNull().orEmpty()
+        )
+
+        val shopName = DynamicColorText(
+            header?.firstOrNull()?.children?.firstOrNull()?.text.orEmpty(),
+            header?.firstOrNull()?.children?.firstOrNull()?.colorList?.hexColors?.firstOrNull()
+                .orEmpty()
+        )
+
+        val benefit = DynamicColorText(
+            title?.firstOrNull()?.parent?.text.orEmpty(),
+            title?.firstOrNull()?.parent?.colorList?.hexColors?.firstOrNull().orEmpty()
+        )
+
+        val tnc = DynamicColorText(
+            subtitle?.firstOrNull()?.parent?.text.orEmpty(),
+            subtitle?.firstOrNull()?.parent?.colorList?.hexColors?.firstOrNull().orEmpty()
+        )
+
+        val prefixTimeLimit = DynamicColorText(
+            footer?.firstOrNull()?.parent?.text.orEmpty(),
+            footer?.firstOrNull()?.parent?.colorList?.hexColors?.firstOrNull().orEmpty()
+        )
+
+        val epoch = footer?.firstOrNull()?.children?.firstOrNull()?.values?.firstOrNull()?.value
+        val endDate = epoch?.epochToDate()
+        val timeLimit = TimeLimit.Timer(prefixTimeLimit, endDate)
+
+        val badge = badges?.firstOrNull()?.value
+
+        return AutomateCouponModel.Grid(
+            type = type,
+            benefit = benefit,
+            tnc = tnc,
+            backgroundUrl = background?.imageURL.orEmpty(),
             iconUrl = iconURL.orEmpty(),
             shopName = shopName,
             badgeText = badge

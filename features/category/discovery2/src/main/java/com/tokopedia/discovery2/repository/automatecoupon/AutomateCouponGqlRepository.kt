@@ -9,8 +9,15 @@ import javax.inject.Inject
 
 class AutomateCouponGqlRepository @Inject constructor(val getGQLString: (Int) -> String) :
     BaseRepository(), IAutomateCouponGqlRepository {
-    override suspend fun fetchData(request: AutomateCouponRequest): AutomateCouponResponse {
-        return getGQLData(automateCouponGQL, AutomateCouponResponse::class.java, setParams(request))
+    override suspend fun fetchData(
+        request: AutomateCouponRequest,
+        componentName: String?
+    ): AutomateCouponResponse {
+        return getGQLData(
+            automateCouponGQL,
+            AutomateCouponResponse::class.java,
+            setParams(request)
+        )
     }
 
     private fun setParams(request: AutomateCouponRequest): Map<String, Any> {

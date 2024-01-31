@@ -8,6 +8,10 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.GridAutomateCouponItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.GridAutomateCouponViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.ListAutomateCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.ListAutomateCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.SingleAutomateCouponViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.SingleAutomateCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
@@ -674,6 +678,18 @@ class DiscoveryHomeFactory {
                 ComponentsList.SingleAutomateCoupon,
                 ::SingleAutomateCouponViewHolder,
                 ::SingleAutomateCouponViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.GridAutomateCoupon,
+                ::GridAutomateCouponViewHolder,
+                ::ListAutomateCouponViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.GridAutomateCouponItem,
+                ::GridAutomateCouponItemViewHolder,
+                ::ListAutomateCouponItemViewModel
             )
         }
 

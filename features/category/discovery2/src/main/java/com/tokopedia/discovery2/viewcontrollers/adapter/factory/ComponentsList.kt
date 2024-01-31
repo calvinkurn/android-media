@@ -178,5 +178,20 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     SingleAutomateCoupon(
         id = R.layout.single_automate_coupon_layout,
         componentName = ComponentNames.SingleAutomateCoupon.componentName
-    )
+    ),
+
+    GridAutomateCoupon(
+        id = R.layout.grid_automate_coupon_layout,
+        componentName = ComponentNames.GridAutomateCoupon.componentName
+    ),
+
+    GridAutomateCouponItem(
+        id = R.layout.grid_automate_coupon_layout,
+        componentName = ComponentNames.GridAutomateCouponItem.componentName
+    ),
+
+//    CarouselAutomateCoupon(
+//        id = R.layout.carousel_automate_coupon_layout,
+//        componentName = ComponentNames.CarouselAutomateCoupon.componentName
+//    )
 }
