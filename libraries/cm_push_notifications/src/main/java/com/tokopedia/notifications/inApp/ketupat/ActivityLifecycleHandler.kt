@@ -122,11 +122,11 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     }
 
     private fun getShownTime(context: Context, key: String): Long {
-        return getSharedPref(context, key).getLong(key, System.currentTimeMillis())
+        return getSharedPref(context, key).getLong(key, 0)
     }
 
     private fun is24HourBefore(time: Long): Boolean {
-        return TimeUnit.MILLISECONDS.toHours(time - System.currentTimeMillis()) >= 24
+        return TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - time) >= 24
     }
 
     private fun setTimeStampForKetupat(activity: Activity) {

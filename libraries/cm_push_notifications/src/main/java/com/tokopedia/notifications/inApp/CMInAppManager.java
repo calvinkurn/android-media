@@ -222,8 +222,8 @@ public class CMInAppManager implements CmInAppListener,
         long ketupatShownTime = application.getApplicationContext().getSharedPreferences(
                 "ketupat_shown_time",
                 Context.MODE_PRIVATE
-        ).getLong("ketupat_shown_time", System.currentTimeMillis());
-        if (TimeUnit.MILLISECONDS.toHours(ketupatShownTime - System.currentTimeMillis()) < 24) {
+        ).getLong("ketupat_shown_time", 0);
+        if (TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis()-ketupatShownTime) < 24) {
             return;
         }
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
