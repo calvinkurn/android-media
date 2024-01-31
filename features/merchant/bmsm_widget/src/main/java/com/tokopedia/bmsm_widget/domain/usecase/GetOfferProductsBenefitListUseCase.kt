@@ -1,5 +1,6 @@
 package com.tokopedia.bmsm_widget.domain.usecase
 
+import android.annotation.SuppressLint
 import com.tokopedia.bmsm_widget.data.mapper.GetOfferProductsBenefitListMapper
 import com.tokopedia.bmsm_widget.data.request.GetOfferProductsBenefitListRequest
 import com.tokopedia.bmsm_widget.data.response.GetOfferProductsBenefitListResponse
@@ -91,6 +92,7 @@ class GetOfferProductsBenefitListUseCase @Inject constructor(
         )
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun Param.toRequestParams(): GetOfferProductsBenefitListRequest {
         val source = when (source) {
             PageSource.OFFER_LANDING_PAGE -> "offer_page"

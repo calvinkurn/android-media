@@ -17,4 +17,6 @@ sealed interface GiftListEvent {
 
     object GetGiftList : GiftListEvent
     data class ChangeGiftTier(val selectedTier: TierGift) : GiftListEvent
+
+    object TapIconCloseBottomSheet : GiftListEvent
 }

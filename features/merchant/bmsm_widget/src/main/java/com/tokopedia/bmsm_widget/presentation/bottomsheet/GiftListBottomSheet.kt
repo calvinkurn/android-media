@@ -123,7 +123,10 @@ class GiftListBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         setupBottomSheet(inflater, container)
-        setCloseClickListener { dismiss() }
+        setCloseClickListener {
+            viewModel.processEvent(GiftListEvent.TapIconCloseBottomSheet)
+            dismiss()
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
