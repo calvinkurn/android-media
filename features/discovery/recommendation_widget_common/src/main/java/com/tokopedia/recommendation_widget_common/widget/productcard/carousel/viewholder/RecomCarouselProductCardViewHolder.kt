@@ -19,7 +19,8 @@ class RecomCarouselProductCardViewHolder (view: View,
         AbstractViewHolder<RecomCarouselProductCardDataModel>(view) {
 
     companion object{
-        val LAYOUT = R.layout.item_recom_carousel_productcard
+        val LAYOUT_V5 = R.layout.item_recom_carousel_productcard
+        val LAYOUT_V4 = R.layout.item_recom_carousel_productcard_qe_old
         private const val className = "com.tokopedia.recommendation_widget_common.widget.productcard.carousel.viewholder.RecomCarouselProductCardViewHolder"
     }
 

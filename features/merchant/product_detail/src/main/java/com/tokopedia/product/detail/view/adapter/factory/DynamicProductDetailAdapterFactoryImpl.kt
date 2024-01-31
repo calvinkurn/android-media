@@ -77,6 +77,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductMiniShopWidgetViewHol
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofStockViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationQeOldViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
@@ -98,6 +99,7 @@ import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.Pro
 import com.tokopedia.product.detail.view.viewholder.review.ui.ProductReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
+import com.tokopedia.recommendation_widget_common.RecomTemporary
 
 class DynamicProductDetailAdapterFactoryImpl(
     private val listener: DynamicProductDetailListener,
@@ -107,8 +109,14 @@ class DynamicProductDetailAdapterFactoryImpl(
     private val affiliateCookieHelper: AffiliateCookieHelper,
     private val pdpCallback: PdpCallbackDelegate
 ) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+
+    @RecomTemporary
     override fun type(data: ProductRecommendationDataModel): Int {
-        return ProductRecommendationViewHolder.LAYOUT
+        return if (data.recomWidgetData?.hasQuantityEditor() == true) {
+            ProductRecommendationQeOldViewHolder.LAYOUT
+        } else {
+            ProductRecommendationViewHolder.LAYOUT
+        }
     }
 
     override fun type(data: ProductGeneralInfoDataModel): Int {
@@ -291,6 +299,11 @@ class DynamicProductDetailAdapterFactoryImpl(
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
             FintechWidgetV2ViewHolder.LAYOUT -> FintechWidgetV2ViewHolder(view, listener)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
+                view,
+                listener,
+                affiliateCookieHelper
+            )
+            ProductRecommendationQeOldViewHolder.LAYOUT -> ProductRecommendationQeOldViewHolder(
                 view,
                 listener,
                 affiliateCookieHelper
