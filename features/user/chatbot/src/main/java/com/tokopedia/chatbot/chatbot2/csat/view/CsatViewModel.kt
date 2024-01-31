@@ -36,6 +36,9 @@ class CsatViewModel @Inject constructor(
         if (selectedPoint != null) {
             _csatDataStateFlow.update {
                 it.copy(
+                    caseId = csatModel.caseId,
+                    caseChatId = csatModel.caseChatId,
+                    service = csatModel.service,
                     title = csatModel.title,
                     points = csatModel.points,
                     selectedPoint = selectedPoint,

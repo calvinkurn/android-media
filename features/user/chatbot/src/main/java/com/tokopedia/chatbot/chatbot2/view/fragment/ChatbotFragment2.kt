@@ -1742,11 +1742,15 @@ class ChatbotFragment2 :
             messageID = messageId
             caseID = data.getStringExtra(ChatBotCsatActivity.CASE_ID).orEmpty()
             caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID).orEmpty()
-            rating = data.extras?.getLong(EMOJI_STATE).orZero()
             reasonCode = data.getStringExtra(SELECTED_ITEMS).orEmpty()
             service = data.getStringExtra(SERVICE).orEmpty()
             otherReason = data.getStringExtra(OTHER_REASON).orEmpty()
             dynamicReasons = data.getStringArrayListExtra(DYNAMIC_REASON).orEmpty()
+            rating = if (dynamicReasons.isNotEmpty()) {
+                data.extras?.getInt(EMOJI_STATE).orZero().toLong()
+            } else {
+                data.extras?.getLong(EMOJI_STATE).orZero()
+            }
         }
         viewModel.submitChatCsat(messageId, input)
     }
