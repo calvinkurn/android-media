@@ -173,6 +173,8 @@ class MixLeftComponentViewHolder (itemView: View,
                 }
             })
         } else {
+            image.invisible()
+            parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
             loadingBackground.hide()
         }
     }
