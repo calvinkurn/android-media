@@ -7,4 +7,5 @@
     <string name="text_selengkapnya_template">%s…Selengkapnya</string>
     <string name="buyer_review_detail_bottomsheet_title">Ulasan Produk</string>
     <string name="catalog_common_for_title_catalog">Katalog</string>
+    <string name="catalog_add_to_cart">Tambah keranjang</string>
 </resources>

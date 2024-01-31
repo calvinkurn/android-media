@@ -55,7 +55,9 @@ import com.tokopedia.catalogcommon.viewholder.VideoViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
+import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
+import com.tokopedia.catalogcommon.viewholder.SellerOfferingViewHolder
 
 class CatalogAdapterFactoryImpl(
     private val heroBannerListener: HeroBannerListener? = null,
@@ -98,6 +100,7 @@ class CatalogAdapterFactoryImpl(
             VideoViewHolder.LAYOUT -> VideoViewHolder(view, videoListener)
             ColumnedInfoViewHolder.LAYOUT -> ColumnedInfoViewHolder(view, columnedInfoListener)
             BuyerReviewViewHolder.LAYOUT -> BuyerReviewViewHolder(view, buyerReviewListener)
+            SellerOfferingViewHolder.LAYOUT -> SellerOfferingViewHolder(view)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
@@ -173,5 +176,9 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: BuyerReviewUiModel): Int {
         return BuyerReviewViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: SellerOfferingUiModel): Int {
+        return SellerOfferingViewHolder.LAYOUT
     }
 }

@@ -152,7 +152,8 @@ private fun ShopInfo(shopName: String, badge: String) {
                 fontWeight = FontWeight.Normal,
                 color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
             ),
-            modifier = Modifier.padding(start = 4.dp)
+            modifier = Modifier.padding(start = 4.dp),
+            maxLines = 1
         )
     }
 }
@@ -172,7 +173,8 @@ private fun ShopCredibility(rating: String, sold: String) {
                 fontWeight = FontWeight.Normal,
                 color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
             ),
-            modifier = Modifier.padding(end = 4.dp, start = 2.dp)
+            modifier = Modifier.padding(end = 4.dp, start = 2.dp),
+            maxLines = 1
         )
         Box(
             modifier = Modifier
@@ -188,7 +190,8 @@ private fun ShopCredibility(rating: String, sold: String) {
                 fontWeight = FontWeight.Normal,
                 color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
             ),
-            modifier = Modifier.padding(start = 4.dp)
+            modifier = Modifier.padding(start = 4.dp),
+            maxLines = 1
         )
     }
 }
@@ -209,7 +212,7 @@ private fun CtaSellerOfferingPreview() {
         modifier = Modifier.background(
             color = NestGN.light._950,
             shape = RoundedCornerShape(8.dp)
-        ),
+        ).height(50.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
