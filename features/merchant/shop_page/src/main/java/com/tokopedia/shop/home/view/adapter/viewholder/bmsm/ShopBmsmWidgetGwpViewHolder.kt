@@ -38,6 +38,7 @@ class ShopBmsmWidgetGwpViewHolder(
                 tpgTitle.apply {
                     text = element.header.title
                     setTextColor(getTextColor(element))
+                    showWithCondition(element.header.title.isNotEmpty())
                 }
                 tpgSubTitle.apply {
                     showWithCondition(element.data.size == Int.ONE)

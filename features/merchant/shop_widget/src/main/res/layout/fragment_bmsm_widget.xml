@@ -120,8 +120,7 @@
                     app:layout_constraintStart_toEndOf="@+id/barrier_img_gift"
                     app:layout_constraintTop_toTopOf="@+id/icon_chevron"
                     app:typographyType="paragraph_3"
-                    app:typographyWeight="bold"
-                    tools:text="Kamu dapat 2 hadiah!" />
+                    app:typographyWeight="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tpg_sub_title_widget"
@@ -136,6 +135,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/tpg_title_widget"
                     app:typographyType="small"
                     tools:text="Kamu dapat 2 hadiah!" />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:id="@+id/pd_upselling_loader"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tpg_title_widget"
+                    app:loader_type="rect" />
 
                 <LinearLayout
                     android:id="@+id/pd_upselling_wrapper"
@@ -158,10 +169,12 @@
                         android:layout_marginStart="8dp"
                         app:srcCompat="@drawable/icon_bmgm" />
 
-                    <com.tokopedia.unifyprinciples.Typography
+                    <com.tokopedia.shop_widget.buy_more_save_more.presentation.customview.SlidingTextSwitcher
                         android:id="@+id/tpg_pd_upselling_wording"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:inAnimation="@anim/text_slide_in_up_animation"
+                        android:outAnimation="@anim/text_slide_out_up_animation"
                         android:layout_marginHorizontal="4dp"
                         android:textColor="@color/Unify_TN600"
                         app:typographyType="small"

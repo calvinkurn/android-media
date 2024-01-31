@@ -73,10 +73,6 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdUiModel
-import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
-import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetDependencyProvider
-import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetEventListener
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties

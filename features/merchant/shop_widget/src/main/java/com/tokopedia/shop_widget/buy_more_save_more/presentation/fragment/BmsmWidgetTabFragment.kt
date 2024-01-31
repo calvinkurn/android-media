@@ -1,8 +1,10 @@
 package com.tokopedia.shop_widget.buy_more_save_more.presentation.fragment
 
+import android.content.Intent
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +20,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -40,7 +42,6 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.buy_more_save_more.di.component.DaggerBmsmWidgetComponent
 import com.tokopedia.shop_widget.buy_more_save_more.di.module.BmsmWidgetModule
@@ -49,6 +50,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoForBuyerU
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.adapter.BmsmWidgetProductListAdapter
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.adapter.decoration.ProductListItemDecoration
+import com.tokopedia.shop_widget.buy_more_save_more.presentation.customview.SlidingTextSwitcher
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetItemEventListener
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewmodel.BmsmWidgetTabViewModel
 import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
@@ -144,8 +146,8 @@ class BmsmWidgetTabFragment :
 
     private var onSuccessAtc: (String, String, AddToCartDataModel) -> Unit = { _, _, _ -> }
     private var onErrorAtc: (String) -> Unit = {}
-    private var onNavigateToOlp: (String, String, String) -> Unit = {_, _, _ ->  }
-    private var onProductCardClicked: (String, String, Product) -> Unit = {_, _, _ ->  }
+    private var onNavigateToOlp: (String, String, String) -> Unit = { _, _, _ -> }
+    private var onProductCardClicked: (String, String, Product) -> Unit = { _, _, _ -> }
     private var onWidgetVisible: (String) -> Unit = {}
     private val isLogin: Boolean
         get() = viewModel.isLogin
@@ -195,8 +197,17 @@ class BmsmWidgetTabFragment :
         getOfferingData()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AtcVariantHelper.ATC_VARIANT_RESULT_CODE) viewModel.getMinicartV3()
+    }
+
     override fun onAtcClicked(product: Product) {
         if (isLogin) {
+            binding?.apply {
+                pdUpsellingLoader.showWithCondition(pdUpsellingWrapper.isVisible)
+                pdUpsellingWrapper.gone()
+            }
             if (product.isVbs) {
                 openAtcVariant(product)
             } else {
@@ -332,12 +343,9 @@ class BmsmWidgetTabFragment :
             }
 
             tpgTitleWidget.setTitle(upsellWording, defaultOfferMessage)
-            tpgSubTitleWidget.setSubTitle(offerMessage)
-            tpgPdUpsellingWording.apply {
-                text = MethodChecker.fromHtml(offerMessage.firstOrNull())
-                showWithCondition(offerMessage.isNotEmpty())
-                setPdSubtitleTextColor()
-            }
+            tpgSubTitleWidget.setSubTitle(offerMessage, defaultOfferMessage)
+            tpgPdUpsellingWording.setSlidingText(offerMessage, defaultOfferMessage)
+
             when (offerTypeId) {
                 OFFER_TYPE_PD -> setupPdHeader(offerMessage)
                 OFFER_TYPE_GWP -> setupGwpHeader(productGiftImages)
@@ -535,33 +543,40 @@ class BmsmWidgetTabFragment :
             context,
             R.color.dms_static_white
         )
-        this.apply {
-            visible()
-            text = if (upsellWording.isNotEmpty()) {
-                MethodChecker.fromHtml(upsellWording)
-            } else {
-                MethodChecker.fromHtml(defaultOfferMessage)
-            }
-            setTextColor(textColor)
+        text = if (upsellWording.isNotEmpty()) {
+            MethodChecker.fromHtml(upsellWording)
+        } else {
+            MethodChecker.fromHtml(defaultOfferMessage)
         }
+        setTextColor(textColor)
+        visible()
     }
 
-    private fun Typography.setSubTitle(messages: List<String>) {
+    private fun Typography.setSubTitle(messages: List<String>, defaultOfferMessage: String) {
         val textColor = MethodChecker.getColor(
             context,
             R.color.dms_static_white
         )
-
-        this.apply {
-            text = MethodChecker.fromHtml(messages.firstOrNull())
-            showWithCondition(messages.isNotEmpty())
-            setTextColor(textColor)
+        text = if (messages.isNotEmpty()) {
+            MethodChecker.fromHtml(messages.firstOrNull())
+        } else {
+            MethodChecker.fromHtml(defaultOfferMessage)
         }
+//        showWithCondition(messages.isNotEmpty())
+        setTextColor(textColor)
     }
 
-    private fun Typography.setPdSubtitleTextColor(){
+    private fun SlidingTextSwitcher.setSlidingText(
+        offerMessages: List<String>,
+        defaultOfferMessage: String
+    ) {
+        binding?.pdUpsellingLoader?.gone()
         val textColor = when (colorThemeConfiguration) {
-            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(
+                context,
+                R.color.dms_static_white
+            )
+
             BmsmWidgetColorThemeConfig.REIMAGINE -> {
                 if (patternColorType == ColorType.LIGHT) {
                     ContextCompat.getColor(context, R.color.dms_pd_sub_title_text_color)
@@ -569,14 +584,25 @@ class BmsmWidgetTabFragment :
                     ContextCompat.getColor(context, R.color.dms_static_white)
                 }
             }
-            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_pd_sub_title_text_color)
+
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(
+                context,
+                R.color.dms_pd_sub_title_text_color
+            )
         }
-         setTextColor(textColor)
+        setMessages(
+            messages = offerMessages.ifEmpty { listOf(defaultOfferMessage) },
+            textColor = textColor
+        )
     }
 
     private fun Typography.setEmptyStateTextColor() {
         val textColor = when (colorThemeConfiguration) {
-            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(
+                context,
+                R.color.dms_static_white
+            )
+
             BmsmWidgetColorThemeConfig.REIMAGINE -> {
                 if (patternColorType == ColorType.LIGHT) {
                     ContextCompat.getColor(context, R.color.dms_static_black)
@@ -584,7 +610,11 @@ class BmsmWidgetTabFragment :
                     ContextCompat.getColor(context, R.color.dms_static_white)
                 }
             }
-            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_static_black)
+
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(
+                context,
+                R.color.dms_static_black
+            )
         }
         setTextColor(textColor)
     }
@@ -631,7 +661,7 @@ class BmsmWidgetTabFragment :
         } else {
             context?.resources?.getDimensionPixelSize(R.dimen.dp_200).orZero()
         }
-        return if (productCardModelList.size > Int.ONE){
+        return if (productCardModelList.size > Int.ONE) {
             productCardModelList.getMaxHeightForGridView(
                 context,
                 Dispatchers.Default,

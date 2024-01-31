@@ -131,6 +131,26 @@ class BmsmWidgetTabViewModel @Inject constructor(
                 val offeringInfoDeffered =
                     async { getOfferInfoForBuyerUseCase.execute(getOfferingInfoForBuyerRequestParam()) }
                 val offeringInfo = getOfferingInfoForBuyerMapper.map(offeringInfoDeffered.await())
+                _uiState.update {
+                    it.copy(
+                        isShowLoading = false,
+                        offeringInfo = offeringInfo
+                    )
+                }
+                if (currentState.isNeedToRefreshOfferingData) {
+                    getProductListData(Int.ONE)
+                }
+            },
+            onError = {
+                _error.postValue(it)
+            }
+        )
+    }
+
+    fun getMinicartV3() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
 
                 val miniCartDataDeffered = async {
                     getMiniCartDataUseCase.get().invoke(
@@ -140,32 +160,28 @@ class BmsmWidgetTabViewModel @Inject constructor(
                             useCase = MINICART_USECASE_PARAM,
                             bmgm = GetMiniCartParam.GetMiniCartBmgmParam(
                                 offerIds = currentState.offerIds,
-                                offerJsonData = offeringInfo.offeringJsonData,
-                                warehouseIds = offeringInfo.nearestWarehouseIds
+                                offerJsonData = currentState.offeringInfo.offeringJsonData,
+                                warehouseIds = currentState.offeringInfo.nearestWarehouseIds
                             )
                         )
                     ).toSimplifiedData()
                 }
+                val miniCartSimplifiedData = if (isLogin) miniCartDataDeffered.await() else MiniCartSimplifiedData()
 
                 _uiState.update {
-                    val miniCartSimplifiedData = if (isLogin) miniCartDataDeffered.await() else MiniCartSimplifiedData()
                     val appliedTierId =
                         miniCartSimplifiedData.bmgmData.tiersApplied.firstOrNull()?.tierId
-                            ?: offeringInfo.offerings.firstOrNull()?.tierList?.firstOrNull()?.tierId
+                            ?: currentState.offeringInfo.offerings.firstOrNull()?.tierList?.firstOrNull()?.tierId
                     it.copy(
                         isShowLoading = false,
-                        offeringInfo = offeringInfo,
                         miniCartData = miniCartSimplifiedData,
                         isUpdateGiftImage = appliedTierId == currentState.currentAppliedId,
                         currentAppliedId = appliedTierId.orZero()
                     )
                 }
-                if (currentState.isNeedToRefreshOfferingData) {
-                    getProductListData(Int.ONE)
-                }
             },
-            onError = {
-                _error.postValue(it)
+            onError =  {
+
             }
         )
     }
@@ -255,6 +271,7 @@ class BmsmWidgetTabViewModel @Inject constructor(
                     addToCartUseCase.setParams(param)
                     val result = addToCartUseCase.executeOnBackground()
                     _miniCartAdd.postValue(Success(result))
+                    getMinicartV3()
                 }
             },
             onError = {
