@@ -110,6 +110,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpPullToRefresh(view)
         fragmentViewCreated = true
     }
 
@@ -123,6 +124,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
             ketupatLPSwipeToRefreshView = view?.findViewById<SwipeRefreshLayout>(R.id.ketupat_landing_page_swipe_refresh)
             ketupatLPSwipeToRefreshView?.setOnRefreshListener {
                 //refresh lp
+                refreshData()
             }
         }
     }
