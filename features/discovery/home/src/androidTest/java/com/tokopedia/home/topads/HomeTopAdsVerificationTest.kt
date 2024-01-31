@@ -23,6 +23,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.component.disableCoachMark
@@ -42,7 +44,6 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
 import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerViewWithIdle
@@ -342,7 +343,7 @@ class HomeTopAdsVerificationTest {
         val itemList = recomFeedRecyclerView?.getRecomItemList().orEmpty()
 
         return itemList.count {
-            it is HomeRecommendationModel && it.recommendationProductItem.isTopAds
+            it is HomeRecommendationItemDataModel && it.recommendationProductItem.isTopAds
         }
     }
 
@@ -372,7 +373,7 @@ class HomeTopAdsVerificationTest {
         return homeAdapter.currentList
     }
 
-    private fun RecyclerView.getRecomItemList(): List<Visitable<*>> {
+    private fun RecyclerView.getRecomItemList(): List<Visitable<HomeRecommendationTypeFactoryImpl>> {
         val homeRecomAdapter = this.adapter as? HomeRecommendationAdapter
 
         if (homeRecomAdapter == null) {
