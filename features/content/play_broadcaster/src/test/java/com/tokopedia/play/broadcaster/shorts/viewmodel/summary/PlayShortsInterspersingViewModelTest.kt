@@ -137,6 +137,7 @@ class PlayShortsInterspersingViewModelTest {
                 submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = true))
             }
 
+            it.productVideo.hasVideo.assertTrue()
             events.last().assertType<PlayShortsUiEvent.ShowInterspersingConfirmation>()
             state.uploadState.assertEqualTo(PlayShortsUploadUiState.Unknown)
             coVerify(exactly = 0) { mockCreationUploader.upload(any()) }
@@ -171,6 +172,7 @@ class PlayShortsInterspersingViewModelTest {
                 submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = true))
             }
 
+            it.productVideo.hasVideo.assertFalse()
             events.last().assertType<PlayShortsUiEvent.ErrorCheckInterspersing>()
             state.uploadState.assertType<PlayShortsUploadUiState.Error>()
             coVerify(exactly = 0) { mockCreationUploader.upload(any()) }
@@ -206,6 +208,7 @@ class PlayShortsInterspersingViewModelTest {
                 submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = true))
             }
 
+            it.productVideo.hasVideo.assertFalse()
             state.uploadState.assertEqualTo(PlayShortsUploadUiState.Success)
             coVerify(exactly = 1) { mockCreationUploader.upload(any()) }
         }
