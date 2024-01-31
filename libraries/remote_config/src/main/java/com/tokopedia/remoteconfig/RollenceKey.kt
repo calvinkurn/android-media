@@ -24,6 +24,7 @@ object RollenceKey {
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
+    const val HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom"
     // end of home rollence section
 
     // navigation rollence section

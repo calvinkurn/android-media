@@ -13,11 +13,13 @@ object HomeRollenceController {
     var rollenceLoadTime: String = ""
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
     var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
+    var shouldGlobalComponentRecomEnabled: Boolean = false
 
     fun fetchHomeRollenceValue() {
         fetchAtfRollenceValue()
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
+        fetchGlobalComponentMigrationFallback()
     }
 
     @JvmStatic
@@ -66,6 +68,19 @@ object HomeRollenceController {
             )
         } catch (_: Exception) {
             RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
+        }
+    }
+
+    private fun fetchGlobalComponentMigrationFallback() {
+        // set the default value to exp variant so that users that are not included
+        // in the experiment still get the new caching mechanism
+        shouldGlobalComponentRecomEnabled = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getBoolean(
+                RollenceKey.HOME_GLOBAL_COMPONENT_FALLBACK,
+                false
+            )
+        } catch (_: Exception) {
+            false
         }
     }
 
