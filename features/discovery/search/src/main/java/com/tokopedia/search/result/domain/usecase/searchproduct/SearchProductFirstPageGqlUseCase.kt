@@ -11,11 +11,9 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
-import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.UserProfileDobModel
@@ -62,7 +60,7 @@ class SearchProductFirstPageGqlUseCase(
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
         val query = getQueryFromParameters(searchProductParams)
-        val params = UrlParamUtils.generateUrlParamString(searchProductParams)
+        val params = UrlParamUtils.generateUrlParamString(searchProductParams) + sreParams()
         val headlineAdsParams = createHeadlineParams(
             requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
             HEADLINE_ITEM_VALUE_FIRST_PAGE,
@@ -105,8 +103,7 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     private fun MutableList<GraphqlRequest>.addQuickFilterRequest(query: String, params: String) {
-        val mutableParams = paramsAddSREIfProductCardExperimentReimagine(params)
-        add(createQuickFilterRequest(query = query, params = mutableParams))
+        add(createQuickFilterRequest(query = query, params = params))
     }
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
@@ -133,17 +130,8 @@ class SearchProductFirstPageGqlUseCase(
 
     private fun MutableList<GraphqlRequest>.addInspirationCarouselRequest(requestParams: RequestParams, params: String) {
         if (requestParams.isSkipInspirationCarousel()) return
-        val mutableParams = paramsAddSREIfProductCardExperimentReimagine(params)
-        add(createSearchInspirationCarouselRequest(params = mutableParams))
-    }
 
-    private fun paramsAddSREIfProductCardExperimentReimagine(params: String): String {
-        val extraParamSre = "&l_name=sre"
-
-        if (ProductCardExperiment.isReimagine()) {
-            return "$params$extraParamSre"
-        }
-        return params
+        add(createSearchInspirationCarouselRequest(params = params))
     }
 
     private fun MutableList<GraphqlRequest>.addInspirationWidgetRequest(requestParams: RequestParams, params: String) {
