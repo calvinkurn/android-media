@@ -59,7 +59,8 @@
             android:background="@color/Unify_NN0"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/view">
+            app:layout_constraintTop_toBottomOf="@id/view"
+            android:visibility="gone">
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/multiActionBtn"
