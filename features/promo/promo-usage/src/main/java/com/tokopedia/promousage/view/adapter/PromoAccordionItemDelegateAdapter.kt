@@ -19,7 +19,9 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class PromoAccordionItemDelegateAdapter(
     private val onClickPromo: (PromoItem) -> Unit,
-    private val onImpressionPromo: (PromoItem) -> Unit
+    private val onImpressionPromo: (PromoItem) -> Unit,
+    private val onImpressActivationGoPayLater: (PromoItem) -> Unit,
+    private val onClickActivationGoPayLater: (PromoItem) -> Unit,
 ) : DelegateAdapter<PromoItem, PromoAccordionItemDelegateAdapter.ViewHolder>(
     PromoItem::class.java
 ) {
@@ -127,6 +129,9 @@ internal class PromoAccordionItemDelegateAdapter(
                         is PromoItemState.Normal, is PromoItemState.Selected -> {
                             if (!item.isCalculating) {
                                 onClickPromo(item)
+                                if (vcvPromo.getIsActivationGopayLaterShown()) {
+                                    onClickActivationGoPayLater(item)
+                                }
                             }
                         }
 
@@ -138,6 +143,9 @@ internal class PromoAccordionItemDelegateAdapter(
                 if (vcvPromo.isVisible) {
                     vcvPromo.addOnImpressionListener(item) {
                         onImpressionPromo(item)
+                        if (vcvPromo.getIsActivationGopayLaterShown()) {
+                            onImpressActivationGoPayLater(item)
+                        }
                     }
                 }
             }

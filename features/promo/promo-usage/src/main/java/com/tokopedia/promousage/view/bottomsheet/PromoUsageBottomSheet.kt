@@ -184,11 +184,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     onClickRecommendationPromo,
                     onImpressionPromo,
                     onRecommendationAnimationEnd,
-                    onClickClose
+                    onClickClose,
+                    onImpressActivationGoPayLater,
+                    onClickActivationGoPayLater
                 )
             )
             .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
-            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem, onImpressionPromo))
+            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem, onImpressionPromo, onImpressActivationGoPayLater,
+                onClickActivationGoPayLater))
             .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
             .add(PromoTncDelegateAdapter(onClickPromoTnc))
             .add(PromoAttemptCodeDelegateAdapter(onAttemptPromoCode))
@@ -1100,6 +1103,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         viewModel.onRecommendationAnimationEnd()
     }
 
+    private val onImpressActivationGoPayLater = { viewedPromo: PromoItem ->
+        processAndSendImpressionActivationGoPayLater(viewedPromo)
+    }
+
+    private val onClickActivationGoPayLater = { clickedPromo: PromoItem ->
+        processAndSendClickActivationGoPayLater(clickedPromo)
+    }
+
     private val onClickClose = {
         val validateUsePromoRequest = arguments?.getParcelable(BUNDLE_KEY_VALIDATE_USE)
             ?: ValidateUsePromoRequest()
@@ -1312,5 +1323,46 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             appliedPromos = appliedPromos
         )
     }
+
+    private fun processAndSendImpressionActivationGoPayLater(viewedPromo: PromoItem) {
+        promoUsageAnalytics.sendImpressionActivationGoPayLater(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            viewedPromo = viewedPromo
+        )
+    }
+
+    private fun processAndSendClickActivationGoPayLater(clickedPromo: PromoItem) {
+        promoUsageAnalytics.sendClickActivationGoPayLater(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            clickedPromo = clickedPromo
+        )
+    }
+
+    private fun processAndSendImpressionAutoApplyGpl(viewedPromo: PromoItem) {
+        promoUsageAnalytics.sendImpressionAutoApplyGpl(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            viewedPromo = viewedPromo
+        )
+    }
+
+    private fun processAndSendImpressionGplEligible(viewedPromo: PromoItem) {
+        promoUsageAnalytics.sendImpressionGplEligible(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            viewedPromo = viewedPromo
+        )
+    }
+
+    private fun processAndSendClickGplEligible(clickedPromo: PromoItem) {
+        promoUsageAnalytics.sendClickGplEligible(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            clickedPromo = clickedPromo
+        )
+    }
+
     // endregion
 }

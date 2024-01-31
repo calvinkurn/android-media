@@ -2,6 +2,8 @@ package com.tokopedia.promousage.util.analytics
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
@@ -329,5 +331,135 @@ class PromoUsageAnalytics @Inject constructor() : PromoAnalytics() {
             PromoPageEntryPoint.CHECKOUT_PAGE -> SOURCE_PAGE_CHECKOUT
             PromoPageEntryPoint.OCC_PAGE -> SOURCE_PAGE_OCC
         }
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4481
+    // Tracker ID: 49867
+    fun sendImpressionActivationGoPayLater(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        viewedPromo: PromoItem
+    ) {
+        val sourcePage = generateSourcePage(entryPoint)
+        val eventLabel = "$sourcePage"
+        sendGeneralEvent(
+            event = EventName.VIEW_PG_IRIS,
+            eventAction = EventAction.IMPRESSION_GOPAY_LATER_ACTIVATION,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = mapOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.SHOP_ID to viewedPromo.shopId,
+                ExtraKey.TRACKER_ID to TrackerId.IMPRESSION_GOPAY_LATER_ACTIVATION,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4481
+    // Tracker ID: 49868
+    fun sendClickActivationGoPayLater(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        clickedPromo: PromoItem,
+    ) {
+        val sourcePage = generateSourcePage(entryPoint)
+        val selectedStr = if (clickedPromo.state is PromoItemState.Selected) {
+            Int.ONE
+        } else {
+            Int.ZERO
+        }
+        val eventLabel = "$sourcePage - $selectedStr"
+        sendGeneralEvent(
+            event = EventName.CLICK_PG,
+            eventAction = EventAction.CLICK_GOPAY_LATER,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = mapOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.SHOP_ID to clickedPromo.shopId,
+                ExtraKey.TRACKER_ID to TrackerId.CLICK_GOPAY_LATER,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4481
+    // Tracker ID: 49869
+    fun sendImpressionAutoApplyGpl(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        viewedPromo: PromoItem
+    ) {
+        val sourcePage = generateSourcePage(entryPoint)
+        val eventLabel = "${viewedPromo.promoId} - $sourcePage"
+        sendGeneralEvent(
+            event = EventName.VIEW_PG_IRIS,
+            eventAction = EventAction.IMPRESSION_AUTOAPPLY_GPL,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = mapOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.SHOP_ID to viewedPromo.shopId,
+                ExtraKey.TRACKER_ID to TrackerId.IMPRESSION_AUTOAPPLY_GPL,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4481
+    // Tracker ID: 49870
+    fun sendImpressionGplEligible(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        viewedPromo: PromoItem
+    ) {
+        val sourcePage = generateSourcePage(entryPoint)
+        val eventLabel = "${viewedPromo.promoId} - $sourcePage"
+        sendGeneralEvent(
+            event = EventName.VIEW_PG_IRIS,
+            eventAction = EventAction.IMPRESSION_GPL_ELIGIBLE,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = mapOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.SHOP_ID to viewedPromo.shopId,
+                ExtraKey.TRACKER_ID to TrackerId.IMPRESSION_GPL_ELIGIBLE,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE
+            )
+        )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4481
+    // Tracker ID: 49884
+    fun sendClickGplEligible(
+        userId: String,
+        entryPoint: PromoPageEntryPoint,
+        clickedPromo: PromoItem
+    ) {
+        val sourcePage = generateSourcePage(entryPoint)
+        val selectedStr = if (clickedPromo.state is PromoItemState.Selected) {
+            Int.ONE
+        } else {
+            Int.ZERO
+        }
+        val eventLabel = "${clickedPromo.promoId} - $sourcePage - $selectedStr"
+        sendGeneralEvent(
+            event = EventName.CLICK_PG,
+            eventAction = EventAction.CLICK_GPL_ELIGIBLE,
+            eventCategory = EventCategory.PROMO,
+            eventLabel = eventLabel,
+            additionalData = mapOf(
+                ExtraKey.USER_ID to userId,
+                ExtraKey.SHOP_ID to clickedPromo.shopId,
+                ExtraKey.TRACKER_ID to TrackerId.CLICK_GPL_ELIGIBLE,
+                ExtraKey.BUSINESS_UNIT to CustomDimension.BUSINESS_UNIT_PHYSICAL_GOODS,
+                ExtraKey.CURRENT_SITE to CustomDimension.CURRENT_SITE_MARKETPLACE
+            )
+        )
     }
 }

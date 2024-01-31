@@ -17,6 +17,7 @@ data class PromoItem(
     override val id: String = "",
     val headerId: String = "",
 
+    val promoId: String = "",
     val index: Int = 0,
     val title: String = "",
     val code: String = "",

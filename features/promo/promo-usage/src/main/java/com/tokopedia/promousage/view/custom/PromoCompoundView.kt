@@ -68,6 +68,7 @@ class PromoCompoundView @JvmOverloads constructor(
     }
 
     private var binding: PromoUsageItemPromoCompoundViewBinding? = null
+    private var isActivationGopayLaterShown: Boolean = false
 
     init {
 //        viewOverlay = this.overlay
@@ -89,6 +90,10 @@ class PromoCompoundView @JvmOverloads constructor(
         renderExpiryInfo(promo)
         renderAdditionalInfo(promo)
         renderPromoCode(promo)
+    }
+
+    fun getIsActivationGopayLaterShown(): Boolean {
+        return isActivationGopayLaterShown
     }
 
     private fun renderLoading(promo: PromoItem) {
@@ -371,8 +376,10 @@ class PromoCompoundView @JvmOverloads constructor(
                                 R.drawable.promo_usage_shape_promo_bottom_info_actionable
                             )
                         clAdditionalInfo.visible()
+                        isActivationGopayLaterShown = true
                     } else {
                         clAdditionalInfo.gone()
+                        isActivationGopayLaterShown = false
                     }
                 }
 
