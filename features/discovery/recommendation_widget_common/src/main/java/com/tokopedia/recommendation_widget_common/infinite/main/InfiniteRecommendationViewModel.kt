@@ -65,7 +65,7 @@ class InfiniteRecommendationViewModel @Inject constructor(
              * Add title only for the first page
              */
             if (currentPage == DEFAULT_NEXT_PAGE) {
-                components.add(0, InfiniteTitleUiModel(this))
+                components.add(0, InfiniteTitleUiModel(title))
             }
 
             val products = recommendationItemList.map { InfiniteProductUiModel(it) }

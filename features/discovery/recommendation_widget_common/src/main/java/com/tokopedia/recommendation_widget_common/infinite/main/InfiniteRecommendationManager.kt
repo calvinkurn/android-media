@@ -7,7 +7,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationViewModelDelegate
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 
 class InfiniteRecommendationManager(
@@ -50,10 +49,6 @@ class InfiniteRecommendationManager(
 
     override fun onImpressProductCard(recommendationItem: RecommendationItem) {
         listener?.onImpressProductCard(recommendationItem)
-    }
-
-    override fun onClickViewAll(recommendationWidget: RecommendationWidget) {
-        listener?.onClickViewAll(recommendationWidget)
     }
 
     override fun onClickProductCard(recommendationItem: RecommendationItem) {
