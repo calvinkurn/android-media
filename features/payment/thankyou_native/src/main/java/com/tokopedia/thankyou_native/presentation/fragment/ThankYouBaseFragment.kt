@@ -215,7 +215,9 @@ open class ThankYouBaseFragment :
         } else {
             getBottomContentRecyclerView()?.layoutManager = LinearLayoutManager(context)
             getBottomContentRecyclerView()?.adapter = bottomContentAdapter
-            getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
+            if (isV2Enabled) {
+                getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
+            }
 
             bindThanksPageDataToUI(thanksPageData)
             addHeader()
