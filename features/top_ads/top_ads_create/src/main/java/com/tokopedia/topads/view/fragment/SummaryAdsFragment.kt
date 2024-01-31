@@ -593,7 +593,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             groupInput?.setMessage(error)
     }
 
-    private fun onSuccessActivation() {
+    private fun onSuccessActivation(groupId: String) {
         viewModel.getTopAdsDeposit(this::onSuccess, this::errorResponse)
     }
 

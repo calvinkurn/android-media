@@ -29,7 +29,7 @@ import java.lang.ref.WeakReference
  * access internal applink tokopedia-android-internal://digital/pdp_paket_data
  */
 
-class DigitalPDPDataPlanActivity : BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {
+open class DigitalPDPDataPlanActivity : BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

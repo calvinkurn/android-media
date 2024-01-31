@@ -37,6 +37,7 @@ class PlayShortsUploadViewModelTest {
 
         coEvery { mockRepo.getTagRecommendation(any()) } returns mockTagsSize5
         coEvery { mockRepo.saveTag(any(), any()) } returns true
+        coEvery { mockRepo.updateStatus(any(), any(), any()) } returns Unit
 
         val robot = PlayShortsViewModelRobot(
             repo = mockRepo
@@ -110,6 +111,32 @@ class PlayShortsUploadViewModelTest {
         val robot = PlayShortsViewModelRobot(
             repo = mockRepo,
             creationUploader = mockCreationUploader,
+        )
+
+        robot.use {
+            val (state, events) = it.setUp {
+                submitAction(PlayShortsAction.LoadTag)
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.last()]))
+            }.recordStateAndEvent {
+                submitAction(PlayShortsAction.ClickUploadVideo)
+            }
+
+            state.uploadState.assertType<PlayShortsUploadUiState.Error>()
+            events.last().assertType<PlayShortsUiEvent.ErrorUploadMedia>()
+        }
+    }
+
+    @Test
+    fun playShorts_summary_upload_changeStatusToQueueError() {
+        val mockSelectedIdxList = listOf(2, 4)
+
+        coEvery { mockRepo.getTagRecommendation(any()) } returns mockTagsSize5
+        coEvery { mockRepo.saveTag(any(), any()) } returns true
+        coEvery { mockRepo.updateStatus(any(), any(), any()) } throws mockException
+
+        val robot = PlayShortsViewModelRobot(
+            repo = mockRepo
         )
 
         robot.use {

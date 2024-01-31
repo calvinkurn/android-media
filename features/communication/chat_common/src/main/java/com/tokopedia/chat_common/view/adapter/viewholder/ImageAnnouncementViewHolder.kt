@@ -9,10 +9,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImage
 
 /**
  * @author by nisie on 5/15/18.
@@ -28,11 +29,9 @@ class ImageAnnouncementViewHolder(itemView: View, listener: ImageAnnouncementLis
     override fun bind(uiModel: ImageAnnouncementUiModel) {
         super.bind(uiModel)
         uiModel.let {
-            ImageHandler.loadImageWithListener(
-                attachment,
-                it.imageUrl,
-                DynamicSizeImageRequestListener()
-            )
+            attachment?.loadImage(it.imageUrl) {
+                adaptiveImageSizeRequest(true)
+            }
             container.setOnClickListener { view: View? -> listener.onImageAnnouncementClicked(it) }
             btnCheckNow.setOnClickListener { view: View? ->
                 listener.onImageAnnouncementClicked(
@@ -62,7 +61,7 @@ class ImageAnnouncementViewHolder(itemView: View, listener: ImageAnnouncementLis
     override fun onViewRecycled() {
         super.onViewRecycled()
         if (attachment != null) {
-            ImageHandler.clearImage(attachment)
+            attachment.clearImage()
         }
     }
 

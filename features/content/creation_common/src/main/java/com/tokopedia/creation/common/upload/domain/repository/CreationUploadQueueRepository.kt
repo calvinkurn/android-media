@@ -19,5 +19,11 @@ interface CreationUploadQueueRepository {
 
     suspend fun delete(queueId: Int)
 
+    suspend fun deleteQueueAndChannel(data: CreationUploadData)
+
+    suspend fun clearQueue()
+
     suspend fun updateProgress(queueId: Int, progress: Int, uploadStatus: String)
+
+    suspend fun updateData(queueId: Int, data: String)
 }

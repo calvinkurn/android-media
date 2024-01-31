@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemGroupBinding
 import com.tokopedia.cart.view.ActionListener
@@ -145,7 +145,7 @@ class CartGroupViewHolder(
 
     private fun renderGroupBadge(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.groupBadge.isNotBlank()) {
-            ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, cartGroupHolderData.groupBadge)
+            binding.imageShopBadge.loadImage(cartGroupHolderData.groupBadge)
             val contentDescription = if (cartGroupHolderData.isTypeOWOC()) cartGroupHolderData.groupName else cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopTypeInfo?.title
             binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, contentDescription)
             binding.imageShopBadge.show()
@@ -315,10 +315,7 @@ class CartGroupViewHolder(
     private fun renderFreeShipping(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
             if (cartGroupHolderData.freeShippingBadgeUrl.isNotBlank()) {
-                ImageHandler.loadImageWithoutPlaceholderAndError(
-                    imgFreeShipping,
-                    cartGroupHolderData.freeShippingBadgeUrl
-                )
+                imgFreeShipping.loadImage(cartGroupHolderData.freeShippingBadgeUrl)
                 val contentDescriptionStringResource = if (cartGroupHolderData.isFreeShippingPlus) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
                 } else {

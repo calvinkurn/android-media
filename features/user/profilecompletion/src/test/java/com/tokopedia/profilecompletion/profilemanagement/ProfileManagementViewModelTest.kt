@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.profilecompletion.data.SeamlessData
 import com.tokopedia.profilecompletion.domain.GetGotoCookieResult
 import com.tokopedia.profilecompletion.domain.GetGotoCookieUseCase
+import com.tokopedia.profilecompletion.settingprofile.profilemanagement.ProfileManagementViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery

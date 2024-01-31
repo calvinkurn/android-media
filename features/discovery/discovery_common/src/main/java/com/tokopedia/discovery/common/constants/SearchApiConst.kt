@@ -97,6 +97,13 @@ class SearchApiConst {
         const val MANUAL_FILTER = "manual_filter"
         const val LAST_CLICK = "last_click"
         const val DISABLE_AUTO_FILTER_SORT = "disable_auto_filter_sort"
+        const val POST_ATC_SHOP_ID = "post_atc_shop_id"
+        const val POST_ATC_CATEGORY_ID = "post_atc_category_id"
+        const val POST_ATC_PRODUCT_ID = "post_atc_product_id"
+        const val POST_ATC_WAREHOUSE_ID = "post_atc_warehouse_id"
+        const val MINUS_IDS = "minus_ids"
+        const val CAROUSEL_TYPE = "carousel_type"
+        const val POST_ATC_CAROUSEL_TYPE = "post_atc"
 
         const val DEFAULT_VALUE_OF_SHOW_ADULT = "false"
         const val MPS = "mps"

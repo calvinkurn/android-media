@@ -28,11 +28,20 @@ interface CreationUploadQueueDao {
     @Query("DELETE FROM $CREATION_UPLOAD_QUEUE WHERE queue_id = :queueId")
     suspend fun delete(queueId: Int)
 
+    @Query("DELETE FROM $CREATION_UPLOAD_QUEUE")
+    suspend fun deleteAll()
+
     @Query("UPDATE $CREATION_UPLOAD_QUEUE SET upload_progress = :progress, upload_status = :uploadStatus WHERE queue_id = :queueId")
     suspend fun updateProgress(
         queueId: Int,
         progress: Int,
         uploadStatus: String,
+    )
+
+    @Query("UPDATE $CREATION_UPLOAD_QUEUE SET data = :data WHERE queue_id = :queueId")
+    suspend fun updateData(
+        queueId: Int,
+        data: String
     )
 }
 

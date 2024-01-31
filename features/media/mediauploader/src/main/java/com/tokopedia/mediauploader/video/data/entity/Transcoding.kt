@@ -1,6 +1,7 @@
 package com.tokopedia.mediauploader.video.data.entity
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class Transcoding(
     @SerializedName("status") val status: String? = "",
@@ -8,8 +9,12 @@ data class Transcoding(
 ) {
 
     fun isCompleted(): Boolean {
-        return status == "completed"
+        return status?.lowercase(Locale.US) == "completed"
     }
 
     fun requestId() = requestId ?: ""
+
+    fun isFailed(): Boolean {
+        return status?.lowercase(Locale.US) == "failed"
+    }
 }
