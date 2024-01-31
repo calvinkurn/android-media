@@ -61,8 +61,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
-//    implementation projectOrAar(rootProject.ext.libraries.logger)
-//    implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
     implementation projectOrAar(rootProject.ext.libraries.diffUtilRecycler)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
@@ -74,9 +72,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.sortFilter
+//    implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.coach_mark
-    implementation rootProject.ext.unifyDependencies.accordion
+//    implementation rootProject.ext.unifyDependencies.accordion
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.list
 
@@ -89,7 +87,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
-    implementation rootProject.ext.networkDependencies.glide
+//    implementation rootProject.ext.networkDependencies.glide
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
