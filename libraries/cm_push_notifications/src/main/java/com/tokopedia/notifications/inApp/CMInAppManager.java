@@ -189,7 +189,7 @@ public class CMInAppManager implements CmInAppListener,
                 sendEventInAppPrepared(cmInApp);
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
                 if (canShowDialog()) {
-                    showDialog(cmInApp);
+                    showDialog(cmInApp, screenName);
                 }
             }
         }
@@ -218,13 +218,15 @@ public class CMInAppManager implements CmInAppListener,
         }
     }
 
-    private void showDialog(CMInApp data) {
-        long ketupatShownTime = application.getApplicationContext().getSharedPreferences(
-                "ketupat_shown_time",
-                Context.MODE_PRIVATE
-        ).getLong("ketupat_shown_time", 0);
-        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis()-ketupatShownTime) < 5) {
-            return;
+    private void showDialog(CMInApp data, String screenName) {
+        if(screenName.equals("com.tokopedia.navigation.presentation.activity.MainParentActivity")) {
+            long ketupatShownTime = application.getApplicationContext().getSharedPreferences(
+                    "ketupat_shown_time",
+                    Context.MODE_PRIVATE
+            ).getLong("ketupat_shown_time", 0);
+            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - ketupatShownTime) < 5) {
+                return;
+            }
         }
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
         String type = data.type;
@@ -241,10 +243,12 @@ public class CMInAppManager implements CmInAppListener,
                     break;
             }
         }
-        application.getApplicationContext().getSharedPreferences(
-                "inapp_shown_time",
-                Context.MODE_PRIVATE
-        ).edit().putLong("inapp_shown_time", System.currentTimeMillis()).apply();
+        if(screenName.equals("com.tokopedia.navigation.presentation.activity.MainParentActivity")) {
+            application.getApplicationContext().getSharedPreferences(
+                    "inapp_shown_time",
+                    Context.MODE_PRIVATE
+            ).edit().putLong("inapp_shown_time", System.currentTimeMillis()).apply();
+        }
     }
 
     private void showInterstitialDialog(WeakReference<Activity> currentActivity, CMInApp data) {

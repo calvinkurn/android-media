@@ -80,7 +80,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
 
     open fun showLottiePopup(
         activity: Activity,
-        pageSource:String
+        pageSource:String,
         slug: String?,
         popUpContent: PopUpContent,
         scratchCardId: String,
@@ -100,7 +100,8 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                 .findViewById<View>(android.R.id.content)
                 .rootView as FrameLayout
             root.addView(ketupatAnimationPopup)
-            setTimeStampForKetupat(activity)
+            if(pageSource == "tokopedia-home-page")
+                setTimeStampForKetupat(activity)
         } catch (e: Exception) {
             ServerLogger.log(
                 Priority.P2,
