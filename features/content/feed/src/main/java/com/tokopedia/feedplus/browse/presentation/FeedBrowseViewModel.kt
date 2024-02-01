@@ -68,7 +68,7 @@ internal class FeedBrowseViewModel @Inject constructor(
             is FeedBrowseAction.SelectChipWidget -> {
                 handleSelectChip(action.model, action.slotId)
             }
-            FeedBrowseIntent.UpdateStoriesStatus -> {
+            FeedBrowseAction.UpdateStoriesStatus -> {
                 handleUpdateStoriesStatus()
             }
         }
