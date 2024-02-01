@@ -310,6 +310,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -376,8 +377,6 @@ open class DynamicProductDetailFragment :
 
         private const val DEBOUNCE_CLICK = 750
         private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
-
-        private const val ROLLENCE_SHARE_EX = "shareex_an"
 
         fun newInstance(
             productId: String? = null,
