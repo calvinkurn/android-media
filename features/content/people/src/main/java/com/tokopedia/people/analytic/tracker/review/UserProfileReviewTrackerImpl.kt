@@ -3,34 +3,34 @@ package com.tokopedia.people.analytic.tracker.review
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.EventCategory
-import com.tokopedia.content.analytic.base.BaseContentAnalytic
+import com.tokopedia.content.analytic.manager.ContentAnalyticManager
 import com.tokopedia.content.analytic.model.ContentEnhanceEcommerce
 import com.tokopedia.people.analytic.UserProfileAnalytics
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on June 07, 2023
  */
 class UserProfileReviewTrackerImpl @Inject constructor(
-    override val userSession: UserSessionInterface,
-) : BaseContentAnalytic(), UserProfileReviewTracker {
+    analyticManagerFactory: ContentAnalyticManager.Factory,
+) : UserProfileReviewTracker {
 
-    override val businessUnit: String = BusinessUnit.content
-
-    override val eventCategory: String = EventCategory.feedUserProfile
+    private val analyticManager = analyticManagerFactory.create(
+        businessUnit = BusinessUnit.content,
+        eventCategory = EventCategory.feedUserProfile
+    )
 
     override fun clickReviewTab(userId: String, isSelf: Boolean) {
-        sendClickContent(
+        analyticManager.sendClickContent(
             eventAction = "click - review tab",
-            eventLabel = concatLabels(userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf)),
+            eventLabel = analyticManager.concatLabels(userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf)),
             mainAppTrackerId = "44098"
         )
     }
 
     override fun clickUserProfileSettings(userId: String) {
-        sendClickContent(
+        analyticManager.sendClickContent(
             eventAction = "click - gear icon",
             eventLabel = userId,
             mainAppTrackerId = "44099"
@@ -38,9 +38,9 @@ class UserProfileReviewTrackerImpl @Inject constructor(
     }
 
     override fun clickReviewSettingsToggle(userId: String, isOn: Boolean) {
-        sendClickContent(
+        analyticManager.sendClickContent(
             eventAction = "click - toggle button",
-            eventLabel = concatLabels(userId, UserProfileAnalytics.Function.isOnOrOff(isOn)),
+            eventLabel = analyticManager.concatLabels(userId, UserProfileAnalytics.Function.isOnOrOff(isOn)),
             mainAppTrackerId = "44100"
         )
     }
@@ -51,9 +51,9 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         isSelf: Boolean,
         productId: String
     ) {
-        sendClickContent(
+        analyticManager.sendClickContent(
             eventAction = "click - review media",
-            eventLabel = concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productId),
+            eventLabel = analyticManager.concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productId),
             mainAppTrackerId = "44101"
         )
     }
@@ -64,9 +64,9 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         isSelf: Boolean,
         productId: String
     ) {
-        sendClickContent(
+        analyticManager.sendClickContent(
             eventAction = "click - like review",
-            eventLabel = concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productId),
+            eventLabel = analyticManager.concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productId),
             mainAppTrackerId = "44102"
         )
     }
@@ -78,10 +78,10 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         productId: String,
         position: Int
     ) {
-        sendEEPromotions(
+        analyticManager.sendEEPromotions(
             event = Event.viewItem,
             eventAction = "impression - review",
-            eventLabel = concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productId),
+            eventLabel = analyticManager.concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productId),
             promotions = listOf(
                 ContentEnhanceEcommerce.Promotion(
                     itemId = feedbackId,
@@ -95,7 +95,7 @@ class UserProfileReviewTrackerImpl @Inject constructor(
     }
 
     override fun openScreenEmptyOrHiddenReviewTab() {
-        sendOpenScreen(
+        analyticManager.sendOpenScreen(
             screenName = "/user profile - review tab",
             mainAppTrackerId = "44104",
         )
@@ -107,9 +107,9 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         isSelf: Boolean,
         productId: String
     ) {
-        sendClickContent(
+        analyticManager.sendClickContent(
             eventAction = "click - review selengkapnya",
-            eventLabel = concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productId),
+            eventLabel = analyticManager.concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productId),
             mainAppTrackerId = "44108"
         )
     }
@@ -120,10 +120,10 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         isSelf: Boolean,
         productReview: UserReviewUiModel.Product,
     ) {
-        sendEEProduct(
+        analyticManager.sendEEProduct(
             event = Event.selectContent,
             eventAction = "click - product on review",
-            eventLabel = concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productReview.productID),
+            eventLabel = analyticManager.concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productReview.productID),
             itemList = "/user profile - review tab",
             products = listOf(
                 ContentEnhanceEcommerce.Product(

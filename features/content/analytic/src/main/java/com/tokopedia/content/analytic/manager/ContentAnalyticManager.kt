@@ -1,4 +1,4 @@
-package com.tokopedia.content.analytic.base
+package com.tokopedia.content.analytic.manager
 
 import android.os.Bundle
 import com.tokopedia.config.GlobalConfig
@@ -14,17 +14,26 @@ import com.tokopedia.content.analytic.model.isEEPromotion
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
 /**
- * Created By : Jonathan Darwin on January 23, 2024
+ * Created By : Jonathan Darwin on January 25, 2024
  */
-abstract class BaseContentAnalytic {
+class ContentAnalyticManager @AssistedInject constructor(
+    private val userSession: UserSessionInterface,
+    @Assisted("businessUnit") private val businessUnit: String,
+    @Assisted("eventCategory") private val eventCategory: String,
+) {
 
-    abstract val userSession: UserSessionInterface
-
-    abstract val businessUnit: String
-
-    abstract val eventCategory: String
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted("businessUnit") businessUnit: String,
+            @Assisted("eventCategory") eventCategory: String,
+        ): ContentAnalyticManager
+    }
 
     private val currentSite: String
         get() = if (GlobalConfig.isSellerApp()) {
@@ -38,7 +47,7 @@ abstract class BaseContentAnalytic {
 
     private val impressionManager = OneTimeImpressionManager<Any>()
 
-    protected fun sendViewContent(
+    fun sendViewContent(
         eventAction: String,
         eventLabel: String,
         mainAppTrackerId: String,
@@ -55,7 +64,7 @@ abstract class BaseContentAnalytic {
         )
     }
 
-    protected fun sendClickContent(
+    fun sendClickContent(
         eventAction: String,
         eventLabel: String,
         mainAppTrackerId: String,
@@ -72,7 +81,7 @@ abstract class BaseContentAnalytic {
         )
     }
 
-    protected fun sendOpenScreen(
+    fun sendOpenScreen(
         screenName: String,
         mainAppTrackerId: String,
         sellerAppTrackerId: String = "",
@@ -89,7 +98,7 @@ abstract class BaseContentAnalytic {
         )
     }
 
-    protected fun sendEEPromotions(
+    fun sendEEPromotions(
         event: String,
         eventAction: String,
         eventLabel: String,
@@ -109,7 +118,7 @@ abstract class BaseContentAnalytic {
         )
     }
 
-    protected fun sendEEProduct(
+    fun sendEEProduct(
         event: String,
         eventAction: String,
         eventLabel: String,
@@ -132,7 +141,7 @@ abstract class BaseContentAnalytic {
         )
     }
 
-    protected fun sendEvent(
+    fun sendEvent(
         event: String,
         eventAction: String,
         eventLabel: String,
@@ -240,25 +249,25 @@ abstract class BaseContentAnalytic {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(event, trackerBundle)
     }
 
-    protected fun impressOnlyOnce(key: Any, onImpress: () -> Unit) {
+    fun impressOnlyOnce(key: Any, onImpress: () -> Unit) {
         impressionManager.impress(key, onImpress)
     }
 
-    protected fun clearAllImpression() {
+    fun clearAllImpression() {
         impressionManager.reset()
     }
 
-    protected fun clearImpression(key: Any) {
+    fun clearImpression(key: Any) {
         impressionManager.clear(key)
     }
 
-    protected fun concatLabels(
+    fun concatLabels(
         vararg labels: String
     ): String {
         return ContentAnalyticHelper.concatLabels(*labels)
     }
 
-    protected fun concatLabelsWithAuthor(
+    fun concatLabelsWithAuthor(
         author: ContentAnalyticAuthor,
         vararg labels: String
     ): String {
