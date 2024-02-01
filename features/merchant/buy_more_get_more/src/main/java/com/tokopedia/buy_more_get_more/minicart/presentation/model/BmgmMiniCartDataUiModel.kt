@@ -55,15 +55,13 @@ private fun getGiftWithPurchaseItems(detail: BmgmMiniCartDataUiModel): List<Bmgm
                     )
                 }
             )
+            items.add(BmgmMiniCartVisitable.DividerUiModel)
             items.add(giftWidgetModel)
         }
     } else {
         val giftPlaceholder = giftList.firstOrNull() ?: tierProducts.maxByOrNull { it.quantity }
         val productImage = giftPlaceholder?.productImage.orEmpty()
         items.add(BmgmMiniCartVisitable.GwpGiftPlaceholder(productImage))
-    }
-    if (tierProducts.isNotEmpty()) {
-        items.add(BmgmMiniCartVisitable.DividerUiModel)
     }
     tierProducts.forEach { product ->
         repeat(product.quantity) {

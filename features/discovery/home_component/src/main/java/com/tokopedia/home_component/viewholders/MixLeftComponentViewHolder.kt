@@ -44,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+import com.tokopedia.productcard.R as productcardR
 
 /**
  * @author by yoasfs on 2020-03-05
@@ -158,14 +159,14 @@ class MixLeftComponentViewHolder (itemView: View,
             parallaxBackground.setBackgroundColor(
                     ContextCompat.getColor(itemView.context, android.R.color.transparent)
             )
-            image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
-                override fun successLoad(view: ImageView?) {
+            image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageLoaderStateListener{
+                override fun successLoad(view: ImageView) {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
                 }
 
-                override fun failedLoad(view: ImageView?) {
+                override fun failedLoad(view: ImageView) {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
@@ -280,7 +281,7 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 

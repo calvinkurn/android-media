@@ -60,6 +60,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.libraries.track)
 }
 
 project.ext {

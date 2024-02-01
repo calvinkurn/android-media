@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -78,7 +78,7 @@ class ItemOrderListLinearLayout : LinearLayout {
         val iconImage = order.icon
         if (iconImage.isNotEmpty()) {
             icon?.show()
-            ImageHandler.LoadImage(icon, order.icon)
+            icon?.loadImageFitCenter(order.icon)
         } else {
             icon?.hide()
         }

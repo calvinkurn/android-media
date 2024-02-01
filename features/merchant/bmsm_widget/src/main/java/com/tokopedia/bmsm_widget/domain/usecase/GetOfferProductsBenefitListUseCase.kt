@@ -1,5 +1,6 @@
 package com.tokopedia.bmsm_widget.domain.usecase
 
+import android.annotation.SuppressLint
 import com.tokopedia.bmsm_widget.data.mapper.GetOfferProductsBenefitListMapper
 import com.tokopedia.bmsm_widget.data.request.GetOfferProductsBenefitListRequest
 import com.tokopedia.bmsm_widget.data.response.GetOfferProductsBenefitListResponse
@@ -14,6 +15,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
 
 /**
@@ -81,7 +84,7 @@ class GetOfferProductsBenefitListUseCase @Inject constructor(
         )
     }
 
-    data class Param(val source: PageSource, val filter: Filter) {
+    data class Param(val source: PageSource, val filter: Filter, val userCache: LocalCacheModel) {
         data class Filter(
             val offerId: Long,
             val tierProduct: List<TierGifts> = emptyList(),
@@ -89,6 +92,7 @@ class GetOfferProductsBenefitListUseCase @Inject constructor(
         )
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun Param.toRequestParams(): GetOfferProductsBenefitListRequest {
         val source = when (source) {
             PageSource.OFFER_LANDING_PAGE -> "offer_page"
@@ -117,6 +121,14 @@ class GetOfferProductsBenefitListUseCase @Inject constructor(
                     )
                 },
                 warehouseId = filter.warehouseId
+            ),
+            userLocation = GetOfferProductsBenefitListRequest.UserLocation(
+                districtId = userCache.district_id.toLongOrZero(),
+                postalCode = userCache.postal_code,
+                latitude = userCache.lat,
+                longitude = userCache.long,
+                addressId = userCache.address_id.toLongOrZero(),
+                cityId = userCache.city_id.toLongOrZero()
             )
         )
     }

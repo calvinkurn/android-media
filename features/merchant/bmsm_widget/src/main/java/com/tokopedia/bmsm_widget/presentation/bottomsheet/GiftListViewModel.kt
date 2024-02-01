@@ -7,6 +7,7 @@ import com.tokopedia.bmsm_widget.domain.usecase.GetOfferProductsBenefitListUseCa
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.uimodel.GiftListEvent
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.uimodel.GiftListUiState
 import com.tokopedia.bmsm_widget.util.constant.BundleConstant
+import com.tokopedia.bmsm_widget.util.tracker.GiftListBottomSheetTracker
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 class GiftListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getGiftListUseCase: GetOfferProductsBenefitListUseCase
+    private val getGiftListUseCase: GetOfferProductsBenefitListUseCase,
+    private val tracker: GiftListBottomSheetTracker
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(GiftListUiState())
@@ -26,20 +28,28 @@ class GiftListViewModel @Inject constructor(
 
     fun processEvent(event: GiftListEvent) {
         when (event) {
-            is GiftListEvent.OpenScreen -> {
-                _uiState.update {
-                    it.copy(
-                        offerId = event.offerId,
-                        warehouseId = event.warehouseId,
-                        tierProducts = event.giftProducts,
-                        source = event.source,
-                        selectedTierId = event.selectedTierId
-                    )
-                }
-            }
+            is GiftListEvent.OpenScreen -> handleOpenScreenEvent(event)
             GiftListEvent.GetGiftList -> getGiftList()
             is GiftListEvent.ChangeGiftTier -> handleChangeGiftTier(event.selectedTier)
+            GiftListEvent.TapIconCloseBottomSheet -> handleTapIconCloseBottomSheet()
         }
+    }
+
+    private fun handleOpenScreenEvent(event: GiftListEvent.OpenScreen) {
+        _uiState.update {
+            it.copy(
+                offerId = event.offerId,
+                warehouseId = event.warehouseId,
+                tierProducts = event.giftProducts,
+                source = event.source,
+                selectedTierId = event.selectedTierId,
+                userCache = event.userCache
+            )
+        }
+        tracker.sendImpressionOpenGiftListBottomSheet(
+            offerId = event.offerId,
+            warehouseId = event.warehouseId
+        )
     }
 
     private fun getGiftList() {
@@ -54,7 +64,8 @@ class GiftListViewModel @Inject constructor(
                         offerId = currentState.offerId,
                         warehouseId = currentState.warehouseId,
                         tierProduct = currentState.tierProducts
-                    )
+                    ),
+                    userCache = currentState.userCache
                 )
 
                 val tierGift = getGiftListUseCase.execute(param)
@@ -81,5 +92,18 @@ class GiftListViewModel @Inject constructor(
 
     private fun handleChangeGiftTier(tier: TierGift) {
         _uiState.update { it.copy(selectedTier = tier) }
+        tracker.sendClickTapChip(
+            offerId = currentState.offerId,
+            warehouseId = currentState.warehouseId,
+            tierId = tier.tierId,
+            chipName = tier.tierName
+        )
+    }
+
+    private fun handleTapIconCloseBottomSheet() {
+        tracker.sendClickCloseGiftListBottomSheet(
+            offerId = currentState.offerId,
+            warehouseId = currentState.warehouseId
+        )
     }
 }
