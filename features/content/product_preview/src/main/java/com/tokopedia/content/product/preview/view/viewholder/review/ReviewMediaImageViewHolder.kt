@@ -7,6 +7,7 @@ import com.tokopedia.content.product.preview.databinding.ItemReviewContentImageB
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class ReviewMediaImageViewHolder(
@@ -16,6 +17,10 @@ class ReviewMediaImageViewHolder(
     fun bind(content: ReviewMediaUiModel) {
         showLoading()
         renderImage(content.url)
+    }
+
+    internal fun onRecycled() {
+        binding.ivReviewContentImage.clearImage()
     }
 
     private fun renderImage(imageUrl: String) = with(binding.ivReviewContentImage) {
@@ -44,7 +49,7 @@ class ReviewMediaImageViewHolder(
     private fun showErrorImage() {
         binding.apply {
             ivReviewContentImage.apply {
-                setImageResource(0)
+                clearImage()
                 show()
             }
             loaderImage.invisible()
