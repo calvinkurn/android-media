@@ -1,5 +1,6 @@
 package com.tokopedia.stories.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,8 +39,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.play_common.view.ImageLoaderStateListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play_common.view.ImageLoaderStateListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -426,6 +427,12 @@ class StoriesDetailFragment @Inject constructor(
             mAdapter.setItems(state.groupHeader)
             mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
             binding.rvStoriesCategory.scrollToPosition(state.selectedGroupPosition)
+            binding.tvTitle.text = ""
+        } else {
+            mAdapter.clearAllItems()
+            mAdapter.notifyItemRangeRemoved(0, state.groupHeader.size)
+            val selectedGroup = state.groupItems[state.selectedGroupPosition]
+            binding.tvTitle.text = selectedGroup.groupName
         }
 
         binding.layoutDetailLoading.categoriesLoader.hide()
@@ -699,6 +706,8 @@ class StoriesDetailFragment @Inject constructor(
         binding.storiesComponent.showWithCondition(isShow)
         binding.clSideIcons.showWithCondition(isShow)
         binding.vStoriesPartner.root.showWithCondition(isShow)
+
+        binding.tvTitle.showWithCondition(isShow && !viewModel.storiesState.value.canShowGroup)
     }
 
     private fun showStoriesActionView(isShow: Boolean) {

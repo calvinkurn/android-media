@@ -49,7 +49,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -146,21 +149,24 @@ class StoriesViewModel @AssistedInject constructor(
 
     private var mIsPageSelected = false
 
-    val storiesState: Flow<StoriesUiState>
-        get() = combine(
-            _storiesMainDataState,
-            _productsState,
-            _timerState,
-            _reportState
-        ) { storiesMainData, product, timerState, reportState ->
-            StoriesUiState(
-                storiesMainData = storiesMainData,
-                productSheet = product,
-                timerStatus = timerState,
-                reportState = reportState,
-                canShowGroup = args.source != StoriesSource.BROWSE_WIDGET.value
-            )
-        }
+    val storiesState: StateFlow<StoriesUiState> = combine(
+        _storiesMainDataState,
+        _productsState,
+        _timerState,
+        _reportState
+    ) { storiesMainData, product, timerState, reportState ->
+        StoriesUiState(
+            storiesMainData = storiesMainData,
+            productSheet = product,
+            timerStatus = timerState,
+            reportState = reportState,
+            canShowGroup = args.source != StoriesSource.BROWSE_WIDGET.value
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        StoriesUiState.Empty,
+    )
 
     private val _timerState: Flow<TimerStatusInfo>
         get() = combine(
