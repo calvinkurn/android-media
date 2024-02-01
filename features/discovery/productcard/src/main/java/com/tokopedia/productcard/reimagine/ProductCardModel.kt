@@ -54,7 +54,7 @@ data class ProductCardModel(
     fun showVideoIdentifier() = videoUrl.isNotBlank() && !isSafeProduct
 
     fun labelGroupOverlayList() = labelGroupList
-        .filter { it.position.startsWith(LABEL_OVERLAY_) }
+        .filter { it.position.startsWith(LABEL_OVERLAY_) && it.hasImage() }
         .sortedBy { it.position }
 
     fun stockInfo() : StockInfo? = stockInfo.takeIf { it.hasTitle() }
