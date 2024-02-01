@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import android.graphics.Color
-import com.google.gson.Gson
+import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -40,6 +40,7 @@ class TableMapper @Inject constructor(
         private const val COLUMN_IMAGE = 2
         private const val COLUMN_HTML = 4
         private const val COLUMN_HTML_WITH_ICON = 8
+        private const val COLUMN_HTML_WITH_META = 10
 
         private const val MAX_ROWS_PER_PAGE = 5
     }
@@ -110,7 +111,16 @@ class TableMapper @Inject constructor(
                                 width = width,
                                 meta = getTableRowMeta(col.meta),
                                 isLeftAlign = firstTextColumn == col,
-                                colorInt = getColorFromHtml(valueStr)
+                                colorInt = getColorFromHtml(valueStr),
+                                additionalValueString = col.additionalValue
+                            )
+                        }
+                        COLUMN_HTML_WITH_META -> {
+                            TableRowsUiModel.RowColumnHtmlWithMeta(
+                                valueStr = valueStr,
+                                width = width,
+                                htmlMeta = getHtmlMeta(col.meta),
+                                isLeftAlign = firstTextColumn == col
                             )
                         }
                         else -> {
@@ -145,7 +155,7 @@ class TableMapper @Inject constructor(
 
     private fun getTableRowMeta(meta: String): TableRowsUiModel.Meta {
         return try {
-            val metaModel = Gson().fromJson(meta, TableRowMeta::class.java)
+            val metaModel = GsonSingleton.instance.fromJson(meta, TableRowMeta::class.java)
             TableRowsUiModel.Meta(flag = metaModel.flag)
         } catch (e: Exception) {
             TableRowsUiModel.Meta(flag = String.EMPTY)
@@ -176,5 +186,13 @@ class TableMapper @Inject constructor(
             return Color.parseColor(hexColor ?: return null)
         }
         return null
+    }
+
+    private fun getHtmlMeta(meta: String): TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta? {
+        return runCatching {
+            GsonSingleton.instance.fromJson(
+                meta, TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta::class.java
+            )
+        }.getOrNull()
     }
 }

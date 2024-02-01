@@ -74,7 +74,6 @@ ext {
             digitalCheckout                 : ":features:recharge:digital_checkout",
             digitalTopupBills               : ":features:recharge:digital_topup_bills",
             rechargeGeneral                 : ":features:recharge:recharge_general",
-            rechargeOcr                     : ":features:recharge:rechargeocr",
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             rechargeComponent               : ":features:recharge:recharge_component",
             rechargePdpEmoney               : ":features:recharge:recharge_pdp_emoney",

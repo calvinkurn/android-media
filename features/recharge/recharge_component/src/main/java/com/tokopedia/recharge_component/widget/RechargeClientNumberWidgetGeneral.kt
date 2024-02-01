@@ -137,6 +137,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(
             context,
             R.layout.item_recharge_client_number_auto_complete,
             mutableListOf(),
+            mutableListOf(),
             context.getString(emptyStateUnitRes),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
@@ -203,7 +204,8 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(
         autoCompleteAdapter?.updateItems(
             suggestions.map {
                 TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
-            }.toMutableList()
+            }.toMutableList(),
+            mutableListOf()
         )
     }
 

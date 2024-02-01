@@ -1,6 +1,11 @@
 package com.tokopedia.shareexperience.domain.util
 
 object ShareExConstants {
+
+    object Rollence {
+        const val ROLLENCE_SHARE_EX = "shareex_an"
+    }
+
     object RemoteConfigKey {
         const val SOCIAL_MEDIA_ORDERING = "android_universal_sharing_order"
     }

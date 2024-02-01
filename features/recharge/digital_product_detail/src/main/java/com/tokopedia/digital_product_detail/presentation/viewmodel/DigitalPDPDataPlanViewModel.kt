@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
@@ -51,6 +53,7 @@ import javax.inject.Inject
 
 class DigitalPDPDataPlanViewModel @Inject constructor(
     val repo: DigitalPDPTelcoRepository,
+    private val contactDataSource: ContactDataSource,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -67,7 +70,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     var selectedFullProduct = SelectedProduct()
     var recomCheckoutUrl = ""
     var multiCheckoutButtons: List<MultiCheckoutButtons> = listOf()
-    private var atcMultiCheckoutParam : String = ""
+    private var atcMultiCheckoutParam: String = ""
 
     var checkBalanceFailCounter = 0
 
@@ -483,6 +486,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             }
         }
         setFilterDataParam(filterData)
+    }
+
+    fun getContactList(): MutableList<TopupBillsContact> {
+        return contactDataSource.getContactList()
     }
 
     private fun setFilterDataParam(filterTagComponents: List<TelcoFilterTagComponent>) {

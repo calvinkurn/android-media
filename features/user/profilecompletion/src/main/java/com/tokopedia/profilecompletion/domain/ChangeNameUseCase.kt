@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
+import com.tokopedia.profilecompletion.settingprofile.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import javax.inject.Inject
 

@@ -310,7 +310,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -376,11 +376,7 @@ open class DynamicProductDetailFragment :
     companion object {
 
         private const val DEBOUNCE_CLICK = 750
-        private const val TOOLBAR_TRANSITION_START = 10
-        private const val TOOLBAR_TRANSITION_RANGES = 50
         private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
-
-        private const val ROLLENCE_SHARE_EX = "shareex_an"
 
         fun newInstance(
             productId: String? = null,
@@ -620,31 +616,6 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    private val scrollListener by lazy {
-        navToolbar?.let {
-            NavRecyclerViewScrollListener(
-                navToolbar = it,
-                startTransitionPixel = TOOLBAR_TRANSITION_START,
-                toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANGES,
-                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                    override fun onAlphaChanged(offsetAlpha: Float) {
-                    }
-
-                    override fun onSwitchToDarkToolbar() {
-                        setupToolbarWithStatusBarDark()
-                    }
-
-                    override fun onSwitchToLightToolbar() {
-                        setupToolbarWithStatusBarLight()
-                    }
-
-                    override fun onYposChanged(yOffset: Int) {
-                    }
-                }
-            )
-        }
-    }
-
     private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
         ProductMediaRecomBottomSheetManager(childFragmentManager, this)
     }
@@ -667,7 +638,6 @@ open class DynamicProductDetailFragment :
         initBtnAction()
 
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
-        setupToolbarState()
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
@@ -685,7 +655,7 @@ open class DynamicProductDetailFragment :
 
     private fun getPrefetchData(): ProductDetailPrefetch.Data? {
         val context = context ?: return null
-        val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
+        val cacheManager = SaveInstanceCacheManager(context.applicationContext, prefetchCacheId)
         return cacheManager.get(
             ProductDetailPrefetch.Data::class.java.simpleName,
             ProductDetailPrefetch.Data::class.java
@@ -3618,8 +3588,7 @@ open class DynamicProductDetailFragment :
             if (items.isEmpty()) {
                 navigation?.stop(recyclerView)
             } else {
-                val offsetY = navToolbar?.height.orZero()
-                navigation?.start(recyclerView, items, this, offsetY = offsetY)
+                navigation?.start(recyclerView, items, this)
             }
         }
     }
@@ -4680,46 +4649,6 @@ open class DynamicProductDetailFragment :
         return ContextCompat.getColor(requireContext(), unifyColor)
     }
 
-    private fun setupToolbarState() {
-        setupToolbarWithStatusBarDark()
-        addRecyclerViewScrollListener()
-    }
-
-    private fun setupToolbarWithStatusBarLight() {
-        disableFitsSystemWindows()
-
-        navToolbar?.setupToolbarWithStatusBar(
-            requireActivity(),
-            NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT
-        )
-    }
-
-    private fun setupToolbarWithStatusBarDark() {
-        disableFitsSystemWindows()
-
-        navToolbar?.setupToolbarWithStatusBar(
-            requireActivity(),
-            NavToolbar.Companion.StatusBar.STATUS_BAR_DARK
-        )
-    }
-
-    private fun disableFitsSystemWindows() {
-        binding?.apply {
-            containerDynamicProductDetail.fitsSystemWindows = false
-            containerDynamicProductDetail.requestApplyInsets()
-        }
-    }
-
-    /**
-     * add [NavRecyclerViewScrollListener] to set toolbar transparent transition
-     * active when [RollenceKey.PdpToolbar.transparent]
-     */
-    private fun addRecyclerViewScrollListener() {
-        scrollListener?.let {
-            getRecyclerView()?.addOnScrollListener(it)
-        }
-    }
-
     private fun getLocalSearchApplink(): String {
         val basic = viewModel.getDynamicProductInfoP1?.basic
         val isTokoNow = basic?.isTokoNow == true
@@ -5037,6 +4966,7 @@ open class DynamicProductDetailFragment :
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
                         userId = viewModel.userId
+                        shopName = data.basic.shopName
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -5078,6 +5008,7 @@ open class DynamicProductDetailFragment :
                     productName = data.getProductName
                     category = data.basic.category.name
                     price = data.finalPrice.toString()
+                    shopName = data.basic.shopName
                 }
             ),
             userId = viewModel.userId,
