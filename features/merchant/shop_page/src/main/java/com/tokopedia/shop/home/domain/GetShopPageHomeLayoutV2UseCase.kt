@@ -351,6 +351,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         minimumOrder
                         maximumOrder
                         childIDs
+                        isVbs
                         parentID
                         showStockbar
                         rating
