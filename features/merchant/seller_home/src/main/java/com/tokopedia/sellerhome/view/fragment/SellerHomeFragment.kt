@@ -36,6 +36,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -51,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -2040,7 +2042,7 @@ class SellerHomeFragment :
             viewBgShopStatus.visible()
             viewBgShopStatus.loadImage(R.drawable.sah_shop_state_bg_power_merchant)
             thematicIllustration.visible()
-            thematicIllustration.loadImage(R.drawable.sah_ramadhan_thematic_backdrop)
+            thematicIllustration.loadImageWithoutPlaceholderAndError(TokopediaImageUrl.SRE_SELLER_HOME_BACKDROP)
         }
     }
 

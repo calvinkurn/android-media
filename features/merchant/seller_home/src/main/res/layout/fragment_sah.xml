@@ -23,13 +23,15 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/thematicIllustration"
         android:layout_width="0dp"
-        android:layout_height="96dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:scaleType="fitEnd"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/viewBgShopStatus"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/viewBgShopStatus" />
+        app:layout_constraintTop_toTopOf="@+id/viewBgShopStatus"
+        app:unify_image_corner_radius="0"
+        tools:visibility="visible" />
 
     <RelativeLayout
         android:id="@+id/relTicker"
