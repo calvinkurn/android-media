@@ -24,7 +24,9 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
 
     private var isAnimationPopupGQlCalled = false
 
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) { }
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        isAnimationPopupGQlCalled = false
+    }
 
     override fun onActivityResumed(activity: Activity) {
         try {
