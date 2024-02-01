@@ -11,7 +11,9 @@ data class ContentWidgetDataModel(
     val type: String = "",
     var playWidgetState: PlayWidgetState = PlayWidgetState(isLoading = true),
 ) : DynamicPdpDataModel {
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
 
     override fun type() = type
 

@@ -21,7 +21,9 @@ data class APlusImageUiModel(
     var haveBottomPadding: Boolean = false,
     var trackerData: TrackerData = TrackerData()
 ) : DynamicPdpDataModel {
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
 
     override fun type(): String = type
 

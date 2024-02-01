@@ -33,7 +33,8 @@ data class ProductContentDataModel(
         { false },
         "ProductContentDataModel"
     ) {
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.LEFT
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 

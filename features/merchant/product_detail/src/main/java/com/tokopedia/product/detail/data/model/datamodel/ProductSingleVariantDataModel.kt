@@ -26,7 +26,8 @@ data class ProductSingleVariantDataModel(
         customBlocksName = "ProductSingleVariantDataModel"
     ) {
 
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.LEFT
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     override fun type(): String = type
 

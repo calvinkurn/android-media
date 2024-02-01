@@ -31,7 +31,8 @@ data class ProductMiniSocialProofStockDataModel(
         private const val MAX_SOCIAL_PROOF_ITEM = 4
     }
 
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.LEFT
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 

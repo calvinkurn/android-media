@@ -17,7 +17,8 @@ data class ProductCategoryCarouselDataModel(
         var categoryList: List<CategoryCarousel> = listOf()
 ) : DynamicPdpDataModel {
 
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 

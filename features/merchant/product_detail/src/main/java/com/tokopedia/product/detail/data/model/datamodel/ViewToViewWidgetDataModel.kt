@@ -20,6 +20,9 @@ data class ViewToViewWidgetDataModel(
     val thematicId: String
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun type(): String = type
@@ -45,8 +48,6 @@ data class ViewToViewWidgetDataModel(
             false
         }
     }
-
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
 
     override fun newInstance(): DynamicPdpDataModel {
         return this.copy()

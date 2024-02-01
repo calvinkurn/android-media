@@ -22,6 +22,9 @@ data class ProductRecommendationDataModel(
     var position: Int = -1
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     val isRecomenDataEmpty: Boolean
@@ -49,8 +52,6 @@ data class ProductRecommendationDataModel(
     override fun newInstance(): DynamicPdpDataModel {
         return this.copy()
     }
-
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()

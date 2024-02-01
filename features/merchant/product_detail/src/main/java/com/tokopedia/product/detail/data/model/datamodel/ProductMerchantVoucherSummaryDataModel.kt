@@ -17,7 +17,8 @@ data class ProductMerchantVoucherSummaryDataModel(
         customBlocksName = "ProductMerchantVoucherSummaryDataModel"
     ) {
 
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.LEFT
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     data class UiModel(
         val animatedInfo: List<AnimatedInfos> = listOf(),

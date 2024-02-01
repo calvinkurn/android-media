@@ -2993,7 +2993,6 @@ open class DynamicProductDetailFragment :
 
     private fun observeP2Data() {
         viewLifecycleOwner.observe(viewModel.p2Data) {
-            hideSwipeLoading()
             val boeData = viewModel.getBebasOngkirDataByProductId()
             val ratesData = viewModel.getP2RatesEstimateByProductId()
             val shipmentPlus = viewModel.getP2ShipmentPlusByProductId()
@@ -3571,7 +3570,7 @@ open class DynamicProductDetailFragment :
                 }
             }
         }
-                }
+    }
 
     override fun onButtonFollowNplClick() {
         val reData = viewModel.p2Data.value?.restrictionInfo?.getReByProductId(

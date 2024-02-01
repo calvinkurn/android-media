@@ -11,7 +11,8 @@ interface DynamicPdpDataModel : Visitable<DynamicProductDetailAdapterFactory> {
     fun equalsWith(newData: DynamicPdpDataModel): Boolean
     fun newInstance() : DynamicPdpDataModel
     fun getChangePayload(newData: DynamicPdpDataModel) : Bundle?
-    fun tabletSectionPosition(): TabletPosition = TabletPosition.RIGHT
+    val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.RIGHT
 
     val impressHolder: ImpressHolder
 }

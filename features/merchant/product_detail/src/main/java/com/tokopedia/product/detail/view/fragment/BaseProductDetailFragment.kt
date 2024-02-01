@@ -118,7 +118,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     fun submitInitialList(visitables: List<DynamicPdpDataModel>, cacheState: CacheState?) {
         hideSwipeLoading()
 
-        val finalData = if (DeviceScreenInfo.isTablet(requireContext()) ) {
+        val finalData = if (isTabletMode()) {
             manipulateDataTabletMode(visitables)
         } else {
             recordPerformanceTrace(visitables, true, cacheState)
@@ -148,29 +148,29 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     internal fun manipulateDataTabletMode(newData: List<DynamicPdpDataModel>)
         : List<DynamicPdpDataModel> {
-        val temp1 = mutableListOf<DynamicPdpDataModel>()
-        val temp2 = mutableListOf<DynamicPdpDataModel>()
-        val temp3 = mutableListOf<DynamicPdpDataModel>()
+        val leftSide = mutableListOf<DynamicPdpDataModel>()
+        val rightSide = mutableListOf<DynamicPdpDataModel>()
+        val bottomSide = mutableListOf<DynamicPdpDataModel>()
 
         newData.forEach { dynamicPdpDataModel ->
-            if (dynamicPdpDataModel.tabletSectionPosition().name == TabletPosition.LEFT.name) {
-                temp1.add(dynamicPdpDataModel)
+            if (dynamicPdpDataModel.tabletSectionPosition == TabletPosition.LEFT) {
+                leftSide.add(dynamicPdpDataModel)
                 return@forEach
             }
 
-            if (dynamicPdpDataModel.tabletSectionPosition().name == TabletPosition.RIGHT.name) {
-                temp2.add(dynamicPdpDataModel)
+            if (dynamicPdpDataModel.tabletSectionPosition == TabletPosition.RIGHT) {
+                rightSide.add(dynamicPdpDataModel)
                 return@forEach
             }
 
-            if (dynamicPdpDataModel.tabletSectionPosition().name == TabletPosition.BOTTOM.name) {
-                temp3.add(dynamicPdpDataModel)
+            if (dynamicPdpDataModel.tabletSectionPosition == TabletPosition.BOTTOM) {
+                bottomSide.add(dynamicPdpDataModel)
                 return@forEach
             }
         }
-        val leftTab = ProductTabletLeftSectionDataModel(TABLET_LEFT, TABLET_TYPE, temp1)
-        val rightTab = ProductTabletRightSectionDataModel(TABLET_RIGHT, TABLET_TYPE, temp2)
-        return listOf(leftTab, rightTab) + temp3
+        val leftTab = ProductTabletLeftSectionDataModel(TABLET_LEFT, TABLET_TYPE, leftSide)
+        val rightTab = ProductTabletRightSectionDataModel(TABLET_RIGHT, TABLET_TYPE, rightSide)
+        return listOf(leftTab, rightTab) + bottomSide
     }
 
     private fun recordPerformanceTrace(

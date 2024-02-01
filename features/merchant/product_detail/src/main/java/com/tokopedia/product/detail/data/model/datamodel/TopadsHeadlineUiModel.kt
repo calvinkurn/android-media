@@ -14,6 +14,9 @@ data class TopadsHeadlineUiModel(
     var isHeadlineDataFetched: Boolean = false
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun type(): String = type
@@ -31,8 +34,6 @@ data class TopadsHeadlineUiModel(
     override fun newInstance(): DynamicPdpDataModel {
         return this.copy()
     }
-
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
 }

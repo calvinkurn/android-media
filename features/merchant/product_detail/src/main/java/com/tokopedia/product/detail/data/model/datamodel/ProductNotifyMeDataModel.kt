@@ -16,7 +16,9 @@ data class ProductNotifyMeDataModel(
         var bgColorUpcoming: String = "",
         var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
 ) : DynamicPdpDataModel {
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.LEFT
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 

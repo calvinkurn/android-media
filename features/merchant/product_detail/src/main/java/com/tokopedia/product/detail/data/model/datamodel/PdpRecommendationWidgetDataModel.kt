@@ -14,6 +14,9 @@ data class PdpRecommendationWidgetDataModel(
     val recommendationWidgetModel: RecommendationWidgetModel
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun type(): String = recommendationWidgetModel.metadata.pageType
@@ -34,8 +37,6 @@ data class PdpRecommendationWidgetDataModel(
     override fun newInstance(): DynamicPdpDataModel {
         return this.copy()
     }
-
-    override fun tabletSectionPosition(): TabletPosition = TabletPosition.BOTTOM
 
     /**
      * Here we return empty [Bundle] just to trigger the bind with payload functionality so the adapter can reuse the already attached [PdpRecommendationWidgetViewHolder] instead of recreating a new one whenever we want the recom data to be reloaded.
