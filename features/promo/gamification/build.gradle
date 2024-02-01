@@ -32,6 +32,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
 
 
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModel

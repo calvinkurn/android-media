@@ -32,7 +32,6 @@ import javax.inject.Inject
 
 class KetupatLandingViewModel @Inject constructor(
     private val ketupatLandingUseCase: KetupatLandingUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
     private val ketupatBenefitCouponUseCase: KetupatBenefitCouponUseCase,
     private val ketupatBenefitCouponSlugUseCase: KetupatBenefitCouponSlugUseCase,
     private val ketupatReferralUserRegistrationUseCase: KetupatReferralUserRegistrationUseCase,
@@ -40,6 +39,7 @@ class KetupatLandingViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val errorMessage = MutableLiveData<Throwable>()
+    private val isRecommVisible =  MutableLiveData<Boolean>()
     private val landingPageData = MutableLiveData<KetupatLandingPageData>()
     private val benefitCouponData = MutableLiveData<KetupatBenefitCouponData>()
     private val benefitCouponSlugData = MutableLiveData<KetupatBenefitCouponSlugData>()
@@ -49,11 +49,13 @@ class KetupatLandingViewModel @Inject constructor(
     private var eventSlug = ""
     private var benefitCouponRequest: BenefitCouponRequest? = null
     private var catalogSlugJSON: JSONArray? = null
-    private val slugList : MutableList<String> = arrayListOf()
+    private val slugList: MutableList<String> = arrayListOf()
     private var landingPageRefreshCallback: LandingPageRefreshCallback? = null
 
-    fun getGamificationLandingPageData(slug: String = "",
-                                       landingPageRefreshCallback: LandingPageRefreshCallback? = null) {
+    fun getGamificationLandingPageData(
+        slug: String = "",
+        landingPageRefreshCallback: LandingPageRefreshCallback? = null
+    ) {
         launchCatchError(
             block = {
                 this.landingPageRefreshCallback = landingPageRefreshCallback
@@ -78,8 +80,9 @@ class KetupatLandingViewModel @Inject constructor(
                             serviceID = "marketplace"
                         )
                     }
-                    this.gamiGetScratchCardLandingPage.sections.find { it?.type == "benefit-coupon-slug"}?.jsonParameter.apply {
-                        catalogSlugJSON = JSONObject(this.toString()).get("catalogSlugs") as JSONArray
+                    this.gamiGetScratchCardLandingPage.sections.find { it?.type == "benefit-coupon-slug" }?.jsonParameter.apply {
+                        catalogSlugJSON =
+                            JSONObject(this.toString()).get("catalogSlugs") as JSONArray
                         for (i in 0 until catalogSlugJSON?.length().orZero()) {
                             slugList.add(catalogSlugJSON?.get(i).toString())
                         }
@@ -87,18 +90,25 @@ class KetupatLandingViewModel @Inject constructor(
                 }
 
                 val benefitCouponDataAPI =
-                    async { benefitCouponRequest?.let {
-                        ketupatBenefitCouponUseCase.getTokopointsCouponList(it) }
+                    async {
+                        benefitCouponRequest?.let {
+                            ketupatBenefitCouponUseCase.getTokopointsCouponList(it)
+                        }
                     }
 
-                val benefitCouponSlugDataAPI = async { ketupatBenefitCouponSlugUseCase.getTokopointsCouponListStack(slugList) }
+                val benefitCouponSlugDataAPI =
+                    async { ketupatBenefitCouponSlugUseCase.getTokopointsCouponListStack(slugList) }
 
                 benefitCouponDataAPI.await().apply { benefitCouponData.value = this }
                 benefitCouponSlugDataAPI.await().apply { benefitCouponSlugData.value = this }
 
-                ketupatReferralUserRegistrationUseCase.getKetupatReferralUserRegistrationData(eventSlug)
+                ketupatReferralUserRegistrationUseCase.getKetupatReferralUserRegistrationData(
+                    eventSlug
+                )
 
-                val timeData = async { ketupatReferralEventTimeStampUseCase.getKetupatReferralTimeStampData(eventSlug) }
+                val timeData = async {
+                    ketupatReferralEventTimeStampUseCase.getKetupatReferralTimeStampData(eventSlug)
+                }
 
                 timeData.await().apply { referralTimeData.value = this }
 
@@ -115,97 +125,60 @@ class KetupatLandingViewModel @Inject constructor(
             }
         )
     }
-
     private fun convertDataToVisitable(data: KetupatLandingPageData.GamiGetScratchCardLandingPage): ArrayList<Visitable<KetupatLandingTypeFactory>>? {
         val tempList: ArrayList<Visitable<KetupatLandingTypeFactory>> = ArrayList()
-        var header: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
-        var crack: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
-        var referral: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
-        var benefitCoupon: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
-        var benefitCouponSlug: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? =
-            null
-        var banner: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem? = null
-        data.sections?.forEach {
-            when (it?.type) {
-                "header" -> {
-                    header = it
-                }
 
-                "crack" -> {
-                    crack = it
-                }
+        data.sections[0]?.let { KetupatTopBannerVHModel(it, data.scratchCard) }
+            ?.let { tempList.add(it) }
 
-                "referral" -> {
-                    referral = it
-                }
+        data.sections[1]?.let { KetupatCrackBannerVHModel(it, data.scratchCard) }
+            ?.let { tempList.add(it) }
 
-                "benefit-coupon" -> {
-                    benefitCoupon = it
-                }
-
-                "benefit-coupon-slug" -> {
-                    benefitCouponSlug = it
-                }
-
-                "banner" -> {
-                    banner = it
-                }
-            }
-        }
-
-        if (header != null) {
-            data.scratchCard?.let { KetupatTopBannerVHModel(header!!, it) }
-                ?.let { tempList.add(it) }
-        }
-        if (crack != null) {
-            data.scratchCard?.let { KetupatCrackBannerVHModel(crack!!, it,
-                landingPageRefreshCallback) }
-                ?.let { tempList.add(it) }
-        }
-        if (referral != null && referralTimeData.value?.gameReferralEventContent?.eventContent?.remainingTime.orZero() > 0) {
-            referralTimeData.value?.let {
-                data.scratchCard?.let { scratchCard ->
+        if (referralTimeData.value?.gameReferralEventContent?.eventContent?.remainingTime.orZero() > 0) {
+            data.sections[2]?.let {
+                referralTimeData.value?.let { referralTimeData ->
                     KetupatReferralBannerVHModel(
-                        referral!!,
                         it,
-                        scratchCard
+                        referralTimeData, data.scratchCard
                     )
                 }
             }?.let { tempList.add(it) }
         }
-        if (benefitCoupon != null && benefitCouponData.value?.tokopointsCouponList?.tokopointsCouponData?.isEmpty() == false) {
-            data.scratchCard?.let {
+
+        if (benefitCouponData.value?.tokopointsCouponList?.tokopointsCouponData?.isEmpty() == false) {
+            data.sections[3]?.let {
                 KetupatBenefitCouponVHModel(
-                    benefitCoupon!!,
-                    it, benefitCouponData.value
+                    it,
+                    data.scratchCard, benefitCouponData.value
                 )
             }?.let { tempList.add(it) }
         }
-        if (benefitCouponSlug != null && benefitCouponSlugData.value?.tokopointsCouponListStack?.tokopointsCouponDataStack?.isEmpty() == false) {
-            data.scratchCard?.let {
+
+        if (benefitCouponSlugData.value?.tokopointsCouponListStack?.tokopointsCouponDataStack?.isEmpty() == false) {
+            data.sections[4]?.let {
                 KetupatBenefitCouponSlugVHModel(
-                    benefitCouponSlug!!,
+                    it,
                     benefitCouponSlugData.value,
-                    it
+                    data.scratchCard
                 )
-            }?.let {
-                tempList.add(
-                    it
-                )
-            }
+            }?.let { tempList.add(it) }
         }
-        if (banner != null) {
-            data.scratchCard?.let { KetupatRedirectionBannerVHModel(banner!!, it) }
-                ?.let { tempList.add(it) }
-        }
+
+        data.sections[5]?.let { KetupatRedirectionBannerVHModel(it, data.scratchCard) }
+            ?.let { tempList.add(it) }
+
+        isRecommVisible.value = data.sections.find { it?.type == "product-recommendation" } != null
+
         return tempList
     }
 
-    fun getErrorMessage(): LiveData<Throwable> = errorMessage
-    fun getLandingPageData(): LiveData<KetupatLandingPageData> = landingPageData
+        fun getRecommVisibility(): LiveData<Boolean> = isRecommVisible
+        fun getErrorMessage(): LiveData<Throwable> = errorMessage
+        fun getLandingPageData(): LiveData<KetupatLandingPageData> = landingPageData
 
-    fun getReferralTimeData(): LiveData<KetupatReferralEventTimeStamp> = referralTimeData
+        fun getReferralTimeData(): LiveData<KetupatReferralEventTimeStamp> = referralTimeData
 
-    fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<KetupatLandingTypeFactory>>> =
-        ketaupatLandingDataList
+        fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<KetupatLandingTypeFactory>>> =
+            ketaupatLandingDataList
+
 }

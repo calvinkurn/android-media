@@ -27,6 +27,7 @@ import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapte
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.KetupatLandingViewModel
 import com.tokopedia.gamification.utils.KetupatSharingComponent
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -74,9 +75,20 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
             adapter.addMoreData(it)
         }
 
+        ketupatLandingViewModel?.getRecommVisibility()?.observe(this) {
+            if (it) {
+                setUpRecommendation()
+            }
+        }
+
         ketupatLandingViewModel?.getReferralTimeData()?.observe(this) {
             view?.findViewById<Group>(R.id.shimmer_group)?.hide()
             view?.findViewById<SwipeRefreshLayout>(R.id.ketupat_landing_page_swipe_refresh)?.show()
+        }
+
+        ketupatLandingViewModel?.getErrorMessage()?.observe(this) {
+            view?.findViewById<Group>(R.id.shimmer_group)?.hide()
+            view?.findViewById<GlobalError>(R.id.global_error_ketupat_lp)?.show()
         }
 
         ketupatLandingViewModel?.getLandingPageData()?.observe(this) {
@@ -121,9 +133,10 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         refreshData()
     }
 
-    fun setUpPullToRefresh(view: View?){
-        if(ketupatLPSwipeToRefreshView == null) {
-            ketupatLPSwipeToRefreshView = view?.findViewById<SwipeRefreshLayout>(R.id.ketupat_landing_page_swipe_refresh)
+    fun setUpPullToRefresh(view: View?) {
+        if (ketupatLPSwipeToRefreshView == null) {
+            ketupatLPSwipeToRefreshView =
+                view?.findViewById(R.id.ketupat_landing_page_swipe_refresh)
             ketupatLPSwipeToRefreshView?.setOnRefreshListener {
                 //refresh lp
                 refreshData()
@@ -143,42 +156,41 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN) {
-            if(userSessionInterface?.isLoggedIn == false) {
+            if (userSessionInterface?.isLoggedIn == false) {
                 activity?.finish()
-            }else{
+            } else {
                 //refresh data with shimmer
                 refreshData()
             }
         }
     }
 
-    private fun refreshData(){
-            if (userSessionInterface?.isLoggedIn == true) {
-                ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024",
-                    object : LandingPageRefreshCallback{
-                        override fun refreshLandingPage() {
-                            refreshData()
-                        }
+    private fun refreshData() {
+        if (userSessionInterface?.isLoggedIn == true) {
+            ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024",
+                object : LandingPageRefreshCallback {
+                    override fun refreshLandingPage() {
+                        refreshData()
+                    }
 
-                    })
-                if(!fragmentDataRendered){
-                    setUpAndCallRecommendation()
-                }
-                fragmentDataRendered = true
-            } else {
-                navigateToLoginPage()
+                })
+            if (!fragmentDataRendered) {
+                setUpAdapter()
             }
+            fragmentDataRendered = true
+        } else {
+            navigateToLoginPage()
+        }
     }
 
-    private fun setUpAndCallRecommendation(){
-        ketupatRV = view?.findViewById<RecyclerView>(R.id.ketupat_rv)
+    private fun setUpAdapter() {
+        ketupatRV = view?.findViewById(R.id.ketupat_rv)
         val layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
 
         adapter.setVisitables(ArrayList())
 
         ketupatRV?.layoutManager = layoutManager
 
-        //recomm section
         val concatAdapter = ConcatAdapter(adapter)
         ketupatRV?.adapter = concatAdapter
         infiniteRecommendationManager =
@@ -186,12 +198,16 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         infiniteRecommendationManager?.adapter?.let {
             concatAdapter.addAdapter(it)
         }
+    }
+
+    private fun setUpRecommendation() {
         val requestParam = GetRecommendationRequestParam(pageName = "gami_direct_reward")
         infiniteRecommendationManager?.requestParam = requestParam
         infiniteRecommendationManager?.fetchRecommendation().apply {
             GamificationAnalytics.sendImpressProductRecommendationSectionEvent("direct_reward_id: $scratchCardId")
         }
     }
+
     fun setSharingHeaderIconAndListener(
         view: View,
         ketupatLandingPageData: KetupatLandingPageData

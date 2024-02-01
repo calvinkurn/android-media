@@ -7,7 +7,7 @@ import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFa
 
 class KetupatCrackBannerVHModel(
     val crack: KetupatLandingPageData.GamiGetScratchCardLandingPage.SectionItem,
-    val scratchCard: KetupatLandingPageData.GamiGetScratchCardLandingPage.ScratchCard,
+    val scratchCard: KetupatLandingPageData.GamiGetScratchCardLandingPage.ScratchCard?,
     val landingPageRefreshCallback: LandingPageRefreshCallback? = null
 ) :
     Visitable<KetupatLandingTypeFactory> {
