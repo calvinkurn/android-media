@@ -142,7 +142,9 @@ object ProductListUiStateMapper {
                         infoLink = it.infoLink,
                         tips = it.tips
                     )
-                }.orEmpty()
+                }.orEmpty(),
+                canExpandCollapse = true,
+                showTotalPrice = true
             ),
             isProcessing = uiModel.isProcessing.orFalse(),
             button = actionButton,
@@ -544,8 +546,7 @@ object ProductListUiStateMapper {
         val (numOfRemovedAddOn, addOnList) = getAddonsSectionOrderLevel(
             addonInfo = addonInfo,
             collapseProductList = collapseProductList,
-            remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size - productBundlingList.size - nonProductBundlingList.size,
-            addOnsExpandableState = addOnsExpandableState
+            remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size - productBundlingList.size - nonProductBundlingList.size
         )
         val (numOfRemovedUnfulfilled, unFulfilledProductList) = details?.partialFulfillment?.unfulfilled?.details?.let {
             getUnFulfilledProducts(
@@ -867,8 +868,7 @@ object ProductListUiStateMapper {
     private fun getAddonsSectionOrderLevel(
         addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
         collapseProductList: Boolean,
-        remainingSlot: Int,
-        addOnsExpandableState: List<String>
+        remainingSlot: Int
     ): Pair<Int, AddonsListUiModel?> {
         //Order level doesnt really have unique identifier, assign with normal string will be okay
         //Because there is only one add ons card in one order.
@@ -896,10 +896,10 @@ object ProductListUiStateMapper {
                         infoLink = infoLink.orEmpty(),
                         tips = addonNote?.tips.orEmpty()
                     )
-                }.orEmpty()
-            ).also {
-                it.isExpand = !addOnsExpandableState.contains(addOnsIdentifier)
-            }
+                }.orEmpty(),
+                canExpandCollapse = false,
+                showTotalPrice = false
+            )
         }
 
         return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
@@ -1236,7 +1236,9 @@ object ProductListUiStateMapper {
                     infoLink = infoLink.orEmpty(),
                     tips = addonNote?.tips.orEmpty()
                 )
-            }.orEmpty()
+            }.orEmpty(),
+            canExpandCollapse = true,
+            showTotalPrice = true
         ).also {
             it.isExpand = !addOnsExpandableState.contains(addOnsIdentifier)
         }
