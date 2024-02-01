@@ -80,6 +80,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class UniversalInboxFragment @Inject constructor(
@@ -426,13 +427,12 @@ class UniversalInboxFragment @Inject constructor(
         if (headlineIndexList != null && headlineIndexList?.isNotEmpty() == true) {
             val pageNum = endlessRecyclerViewScrollListener?.currentPage.toZeroIfNull()
             // Get headline position for first page recommendation
-            // 2 is the first, because after we get the data, page is added by 1
-            if (pageNum == 2) {
+            if (pageNum == 1) {
                 headlineExperimentPosition =
                     headlineIndexList?.get(Int.ZERO) ?: HEADLINE_POS_NOT_TO_BE_ADDED
-                // If the headline index size is 2 and page number is 3 (second page)
+                // If the headline index size is 2 and second page
             } else if (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT &&
-                pageNum == 3
+                pageNum == 2
             ) {
                 headlineExperimentPosition =
                     headlineIndexList?.get(Int.ONE) ?: HEADLINE_POS_NOT_TO_BE_ADDED // Get the second index
@@ -446,12 +446,19 @@ class UniversalInboxFragment @Inject constructor(
                                 pageNum < HEADLINE_ADS_BANNER_COUNT
                             ) // If the headline index size is 2 and page number is 1 (second page)
                     ) &&
-                headlineExperimentPosition <= adapter.itemCount // Prevent out of bound exception
+                headlineExperimentPosition <= (adapter.itemCount + newList.size) // Prevent out of bound exception
             ) {
-                newList.add(
-                    headlineExperimentPosition,
-                    UniversalInboxTopadsHeadlineUiModel(headlineData, Int.ZERO, index)
-                )
+                // Ex: headline exp position 36
+                // existing product recommendation total is 20 and new product recommendation is 20
+                // 36 - 20 = 16, add to position 16 in the new list
+                val totalProductRecommendation = adapter.itemCount - (adapter.getProductRecommendationFirstPosition() ?: adapter.itemCount)
+                val positionToAdd = (headlineExperimentPosition - totalProductRecommendation).absoluteValue
+                if (positionToAdd <= newList.size - 1) {
+                    newList.add(
+                        positionToAdd,
+                        UniversalInboxTopadsHeadlineUiModel(headlineData, Int.ZERO, index)
+                    )
+                }
             }
         }
     }
@@ -468,10 +475,17 @@ class UniversalInboxFragment @Inject constructor(
             } else {
                 topAdsBannerExperimentPosition
             }
-            newList.add(
-                position,
-                UniversalInboxTopAdsBannerUiModel(topAdsBannerInProductCards)
-            )
+            // Ex: banner exp position 36
+            // existing product recommendation total is 20 and new product recommendation is 20
+            // 36 - 20 = 16, add to position 16 in the new list
+            val totalProductRecommendation = adapter.itemCount - (adapter.getProductRecommendationFirstPosition() ?: adapter.itemCount)
+            val positionToAdd = (position - totalProductRecommendation).absoluteValue
+            if (positionToAdd <= newList.size - 1) {
+                newList.add(
+                    positionToAdd,
+                    UniversalInboxTopAdsBannerUiModel(topAdsBannerInProductCards)
+                )
+            }
         }
     }
 
