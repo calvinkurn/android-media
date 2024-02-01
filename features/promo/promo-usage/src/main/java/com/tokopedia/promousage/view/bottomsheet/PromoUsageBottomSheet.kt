@@ -1117,8 +1117,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         processAndSendClickActivationGoPayLater(clickedPromo)
     }
 
-    private val onImpressionGplEligible = { viewedPromo: PromoItem ->
+    private val onImpressAutoApplyGpl = { viewedPromo: PromoItem ->
         processAndSendImpressionAutoApplyGpl(viewedPromo)
+    }
+
+    private val onImpressionGplEligible = { viewedPromo: PromoItem ->
+        processAndSendImpressionGplEligible(viewedPromo)
     }
 
     private val onClickGplEligible = { clickedPromo: PromoItem ->
