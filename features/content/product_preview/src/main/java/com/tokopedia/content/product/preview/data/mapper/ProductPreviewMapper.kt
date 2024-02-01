@@ -62,6 +62,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     description = Uri.decode(it.review)
                 ),
                 mediaSelectedPosition = 0,
+                isWatchMode = false,
             )
         }
         return ReviewUiModel(

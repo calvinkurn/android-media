@@ -19,11 +19,11 @@
         android:id="@+id/pc_review_content"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
+        android:layout_marginBottom="20dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:indicator_color="INVERTED"
         app:indicator_type="CIRCLE"
-        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@id/layout_author_review"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -152,5 +152,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_watch_mode"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/bg_overlay_circle"
+        android:padding="6dp"
+        android:visibility="gone"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="VISIBILITY_OFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

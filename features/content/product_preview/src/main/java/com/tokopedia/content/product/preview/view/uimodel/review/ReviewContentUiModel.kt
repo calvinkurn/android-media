@@ -13,6 +13,7 @@ data class ReviewContentUiModel(
     val author: ReviewAuthorUiModel,
     val description: ReviewDescriptionUiModel,
     val mediaSelectedPosition: Int,
+    val isWatchMode: Boolean,
 ) {
     companion object {
         val Empty
@@ -24,6 +25,7 @@ data class ReviewContentUiModel(
                 author = ReviewAuthorUiModel("", "", "", "", ""),
                 description = ReviewDescriptionUiModel(0, "", "", ""),
                 mediaSelectedPosition = -1,
+                isWatchMode = false,
             )
     }
 }

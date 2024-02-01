@@ -149,7 +149,7 @@ class ReviewFragment @Inject constructor(
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiEvent
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.CREATED)
                 .collect {
                     when (val event = it) {
                         is ProductPreviewEvent.ShowMenuSheet -> {
@@ -237,18 +237,28 @@ class ReviewFragment @Inject constructor(
      */
     override fun onOptionClicked(menu: ContentMenuItem) {
         when (menu.type) {
+            ContentMenuIdentifier.WatchMode -> {
+                MenuBottomSheet.getOrCreate(
+                    childFragmentManager,
+                    requireActivity().classLoader
+                ).apply { dismissNow() }
+                viewModel.onAction(ProductPreviewAction.ReviewWatchMode)
+            }
             ContentMenuIdentifier.Report ->
                 ReviewReportBottomSheet.getOrCreate(
                     childFragmentManager,
                     requireActivity().classLoader
                 ).show(childFragmentManager)
-
-            else -> {}
+            else -> return
         }
     }
 
     override fun onLike(status: ReviewLikeUiState) {
         viewModel.onAction(ProductPreviewAction.Like(status))
+    }
+
+    override fun updateReviewWatchMode() {
+        viewModel.onAction(ProductPreviewAction.ReviewWatchMode)
     }
 
     /**

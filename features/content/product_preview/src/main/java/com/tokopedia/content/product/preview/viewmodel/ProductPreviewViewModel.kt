@@ -22,6 +22,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewWatchMode
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.UpdateReviewPosition
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
@@ -96,7 +97,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private val currentReview: ReviewContentUiModel
         get() {
-            return if (_reviewContentState.value.reviewContent.isEmpty() ||
+            return if (_reviewContentState.value.reviewContent.isEmpty() &&
                 _reviewPosition.value in 0 until _reviewContentState.value.reviewContent.size
             ) {
                 ReviewContentUiModel.Empty
@@ -111,6 +112,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             FetchMiniInfo -> handleFetchMiniInfo()
             ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
             LikeFromResult -> handleLikeFromResult()
+            ReviewWatchMode -> handleReviewWatchMode()
             is ProductSelected -> handleProductSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh)
             is ProductAction -> addToChart(action.model)
@@ -359,4 +361,17 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }
         }
     }
+
+    private fun handleReviewWatchMode() {
+        _reviewContentState.update { review ->
+            review.copy(
+                reviewContent = review.reviewContent.map { reviewContent ->
+                    if (reviewContent.reviewId == currentReview.reviewId) {
+                        reviewContent.copy(isWatchMode = !reviewContent.isWatchMode)
+                    } else reviewContent.copy(isWatchMode = false)
+                }
+            )
+        }
+    }
+
 }

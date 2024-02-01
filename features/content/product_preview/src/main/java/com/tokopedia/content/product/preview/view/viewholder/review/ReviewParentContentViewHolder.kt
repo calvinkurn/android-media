@@ -54,6 +54,7 @@ class ReviewParentContentViewHolder(
             }
 
             override fun onViewDetachedFromWindow(p0: View) {
+                bindWatchMode(false)
                 mVideoPlayer = null
                 binding.rvReviewMedia.removeOnScrollListener(contentScrollListener)
             }
@@ -101,11 +102,22 @@ class ReviewParentContentViewHolder(
     }
 
     fun bind(item: ReviewContentUiModel) {
+        bindWatchMode(item.isWatchMode)
         bindMedia(item.medias, item.mediaSelectedPosition)
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
         setupTap(item)
+    }
+
+    private fun bindWatchMode(isWatchMode: Boolean) {
+        binding.groupReviewDetails.showWithCondition(!isWatchMode)
+        binding.groupReviewInteraction.showWithCondition(!isWatchMode)
+        binding.icWatchMode.showWithCondition(isWatchMode)
+
+        binding.icWatchMode.setOnClickListener {
+            reviewInteractionListener.updateReviewWatchMode()
+        }
     }
 
     private fun bindMedia(

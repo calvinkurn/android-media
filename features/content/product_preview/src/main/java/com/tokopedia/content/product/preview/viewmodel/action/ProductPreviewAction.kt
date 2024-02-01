@@ -12,6 +12,7 @@ sealed interface ProductPreviewAction {
     object FetchMiniInfo : ProductPreviewAction
     object ProductActionFromResult : ProductPreviewAction
     object LikeFromResult : ProductPreviewAction
+    object ReviewWatchMode: ProductPreviewAction
     data class FetchReview(val isRefresh: Boolean) : ProductPreviewAction
     data class ProductAction(val model: BottomNavUiModel) : ProductPreviewAction
     data class Navigate(val appLink: String) : ProductPreviewAction
