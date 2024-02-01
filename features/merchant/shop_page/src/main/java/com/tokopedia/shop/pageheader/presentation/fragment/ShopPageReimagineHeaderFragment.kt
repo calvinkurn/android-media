@@ -1904,9 +1904,21 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun setTabLayoutBackgroundColor() {
-        if (shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme == true) {
-            val fragmentBackgroundColor = getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
-            tabLayout?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+        context?.let {
+            if (shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme == true) {
+                val tabNavColor =
+                    getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+                val fragmentBackgroundColor = tabNavColor.ifEmpty {
+                    getBodyBackgroundHexColor().ifEmpty {
+                        ShopUtil.getColorHexString(
+                            it,
+                            unifyprinciplesR.color.Unify_NN0
+                        )
+                    }
+                }
+                tabLayout?.background =
+                    ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+            }
         }
     }
 
