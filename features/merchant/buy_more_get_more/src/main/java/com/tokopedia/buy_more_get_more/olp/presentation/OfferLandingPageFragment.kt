@@ -227,7 +227,11 @@ class OfferLandingPageFragment :
             isEnabled = true
             setOnRefreshListener { loadInitialData() }
         }
-        tracker.sendOpenScreenEvent(currentState.shopData.shopId.toString())
+        tracker.sendOpenScreenEvent(
+            currentState.shopData.shopId.toString(),
+            currentState.offerIds.firstOrNull().toString(),
+            currentState.warehouseIds.firstOrNull().toString()
+        )
     }
 
     private fun initMiniCart() {
