@@ -1914,7 +1914,7 @@ class CheckoutViewModel @Inject constructor(
                                         checkoutItem.tokoConsultationId == "0" ||
                                         checkoutItem.partnerConsultationId == "0" ||
                                         checkoutItem.consultationDataString.isEmpty()
-                                if ((prescriptionIdsEmpty && consultationEmpty) || checkoutItem.isBlockCheckoutFlowEPharmacy) {
+                                if (prescriptionIdsEmpty && consultationEmpty) {
                                     isPrescriptionFrontEndValidationError = true
                                     productErrorPrescriptionCount += 1
                                 } else {
@@ -1925,6 +1925,9 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
                 if (checkoutItem is CheckoutEpharmacyModel) {
+                    if (!isPrescriptionFrontEndValidationError) {
+                        isPrescriptionFrontEndValidationError = checkoutItem.epharmacy.isBlockCheckoutFlowMessage.isNotEmpty()
+                    }
                     if (isPrescriptionFrontEndValidationError) {
                         items[index] =
                             checkoutItem.copy(
