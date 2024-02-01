@@ -151,7 +151,8 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
                 )
             },
             pageSource = PageSource.OFFER_LANDING_PAGE,
-            autoSelectTierChipByTierId = selectedTierId
+            autoSelectTierChipByTierId = selectedTierId,
+            shopId = shopId
         )
         if (childFragmentManager.isStateSaved || bottomSheet.isAdded) return
         bottomSheet.show(childFragmentManager, bottomSheet.tag)

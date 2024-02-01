@@ -7,8 +7,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,7 +20,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
@@ -73,10 +70,7 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
-import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetDependencyProvider
-import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetEventListener
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
@@ -86,7 +80,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
-import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
@@ -242,7 +235,7 @@ class OfferLandingPageFragment :
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
             when (offerInfoForBuyer) {
                 is Success -> {
-                    if(!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+                    if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
                         viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.data.nearestWarehouseIds))
                         viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.data.offerings.firstOrNull()?.shopData))
                         viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.data.offeringJsonData))
@@ -990,7 +983,8 @@ class OfferLandingPageFragment :
             warehouseId = warehouseId,
             tierGifts = tierGifts,
             pageSource = PageSource.OFFER_LANDING_PAGE,
-            autoSelectTierChipByTierId = selectedTierId
+            autoSelectTierChipByTierId = selectedTierId,
+            shopId = currentState.shopData.shopId.toString()
         )
 
         bottomSheet.setOnDismissListener {

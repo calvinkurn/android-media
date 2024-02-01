@@ -9,7 +9,7 @@ class GiftListBottomSheetTracker @Inject constructor(private val userSession: Us
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4448
     // Tracker ID: 49755
-    fun sendImpressionOpenGiftListBottomSheet(offerId: Long, warehouseId: Long) {
+    fun sendImpressionOpenGiftListBottomSheet(offerId: Long, warehouseId: Long, shopId: String) {
         val eventLabel = "$offerId - $warehouseId"
 
         Tracker.Builder()
@@ -20,7 +20,7 @@ class GiftListBottomSheetTracker @Inject constructor(private val userSession: Us
             .setCustomProperty(TrackerConstant.TRACKER_ID, "49755")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_PASCAL_CASE)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
-            .setShopId(userSession.shopId)
+            .setShopId(shopId)
             .setUserId(userSession.userId)
             .build()
             .send()
@@ -28,7 +28,7 @@ class GiftListBottomSheetTracker @Inject constructor(private val userSession: Us
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4448
     // Tracker ID: 49756
-    fun sendClickTapChip(offerId: Long, warehouseId: Long, tierId: Long, chipName: String) {
+    fun sendClickTapChip(offerId: Long, warehouseId: Long, tierId: Long, chipName: String, shopId: String) {
         val eventLabel = "$offerId - $warehouseId - $tierId - $chipName"
 
         Tracker.Builder()
@@ -39,7 +39,7 @@ class GiftListBottomSheetTracker @Inject constructor(private val userSession: Us
             .setCustomProperty(TrackerConstant.TRACKER_ID, "49756")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_PASCAL_CASE)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
-            .setShopId(userSession.shopId)
+            .setShopId(shopId)
             .setUserId(userSession.userId)
             .build()
             .send()
@@ -47,7 +47,7 @@ class GiftListBottomSheetTracker @Inject constructor(private val userSession: Us
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4448
     // Tracker ID: 49757
-    fun sendClickCloseGiftListBottomSheet(offerId: Long, warehouseId: Long) {
+    fun sendClickCloseGiftListBottomSheet(offerId: Long, warehouseId: Long, shopId: String) {
         val eventLabel = "$offerId - $warehouseId"
 
         Tracker.Builder()
@@ -58,7 +58,7 @@ class GiftListBottomSheetTracker @Inject constructor(private val userSession: Us
             .setCustomProperty(TrackerConstant.TRACKER_ID, "49757")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_PASCAL_CASE)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
-            .setShopId(userSession.shopId)
+            .setShopId(shopId)
             .setUserId(userSession.userId)
             .build()
             .send()

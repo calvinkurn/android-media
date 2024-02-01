@@ -16,5 +16,6 @@ data class GiftListUiState(
     val tierProducts: List<TierGifts> = emptyList(),
     val selectedTier: TierGift? = null,
     val error: Throwable? = null,
-    val userCache: LocalCacheModel = LocalCacheModel()
+    val userCache: LocalCacheModel = LocalCacheModel(),
+    val shopId: String = ""
 )

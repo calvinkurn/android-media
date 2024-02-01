@@ -43,12 +43,14 @@ class GiftListViewModel @Inject constructor(
                 tierProducts = event.giftProducts,
                 source = event.source,
                 selectedTierId = event.selectedTierId,
-                userCache = event.userCache
+                userCache = event.userCache,
+                shopId = event.shopId
             )
         }
         tracker.sendImpressionOpenGiftListBottomSheet(
             offerId = event.offerId,
-            warehouseId = event.warehouseId
+            warehouseId = event.warehouseId,
+            shopId = currentState.shopId
         )
     }
 
@@ -96,14 +98,16 @@ class GiftListViewModel @Inject constructor(
             offerId = currentState.offerId,
             warehouseId = currentState.warehouseId,
             tierId = tier.tierId,
-            chipName = tier.tierName
+            chipName = tier.tierName,
+            shopId = currentState.shopId
         )
     }
 
     private fun handleTapIconCloseBottomSheet() {
         tracker.sendClickCloseGiftListBottomSheet(
             offerId = currentState.offerId,
-            warehouseId = currentState.warehouseId
+            warehouseId = currentState.warehouseId,
+            shopId = currentState.shopId
         )
     }
 }
