@@ -32,7 +32,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             app:icon_color_light_enable="@color/Unify_Static_Black"
-            app:icon_color_night_enable="@color/Unify_Static_Black"
+            app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="CLOSE"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +47,6 @@
             android:maxLines="1"
             android:singleLine="true"
             android:text="@string/detail_harga"
-            android:textColor="@color/Unify_Static_Black"
             app:layout_constraintBottom_toBottomOf="@+id/ic_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_close"

@@ -101,12 +101,12 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                         viewModel.state.collect { model ->
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 drawable?.colorFilter = BlendModeColorFilter(
-                                    Color.parseColor(model.bgColor),
+                                    requireContext().getUnifyColorFromHex(model.bgColor),
                                     BlendMode.SRC_ATOP
                                 )
                             } else {
                                 drawable?.setColorFilter(
-                                    Color.parseColor(model.bgColor),
+                                    requireContext().getUnifyColorFromHex(model.bgColor),
                                     PorterDuff.Mode.SRC_ATOP
                                 )
                             }
