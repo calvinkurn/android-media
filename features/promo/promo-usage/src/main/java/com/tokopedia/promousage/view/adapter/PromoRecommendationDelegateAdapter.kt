@@ -43,10 +43,6 @@ internal class PromoRecommendationDelegateAdapter(
     private val onImpressionPromo: (PromoItem) -> Unit,
     private val onRecommendationAnimationEnd: () -> Unit,
     private val onClickClose: () -> Unit,
-    private val onImpressActivationGoPayLater: (PromoItem) -> Unit,
-    private val onClickActivationGoPayLater: (PromoItem) -> Unit,
-    private val onImpressionGplEligible: (PromoItem) -> Unit,
-    private val onClickGplEligible: (PromoItem) -> Unit,
 ) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
     PromoRecommendationItem::class.java
 ) {
@@ -86,8 +82,7 @@ internal class PromoRecommendationDelegateAdapter(
 
         private val adapter: CompositeAdapter by lazy {
             CompositeAdapter.Builder()
-                .add(PromoAccordionItemDelegateAdapter(onClickPromo, onImpressionPromo, onImpressActivationGoPayLater,
-                    onClickActivationGoPayLater, onImpressionGplEligible, onClickGplEligible))
+                .add(PromoAccordionItemDelegateAdapter(onClickPromo, onImpressionPromo))
                 .build()
         }
         private val layoutManager by lazy { LinearLayoutManager(itemView.context) }

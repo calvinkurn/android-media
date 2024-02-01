@@ -86,6 +86,32 @@ data class PromoItem(
         get() = isUseSecondaryPromoNormalState ||
             isUseSecondaryPromoSelectedState || isUseSecondaryPromoDisabledState
 
+    val isPromoGopayLater: Boolean
+        get() = if (useSecondaryPromo) {
+            secondaryPromo.couponType.firstOrNull {
+                it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
+            } != null
+        } else {
+            couponType.firstOrNull {
+                it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
+            } != null
+        }
+
+    val isPromoCtaRegisterGopayLater: Boolean
+        get() = if (useSecondaryPromo) {
+        secondaryPromo.cta.type == PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+    } else {
+        cta.type == PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+    }
+
+    val isPromoCtaValid: Boolean
+        get() = if (useSecondaryPromo) {
+        secondaryPromo.cta.text.isNotBlank() &&
+            secondaryPromo.cta.appLink.isNotBlank()
+    } else {
+        cta.text.isNotBlank() && cta.appLink.isNotBlank()
+    }
+
     override fun getChangePayload(other: Any): Any? {
         if (other is PromoItem && id == other.id) {
             val isPromoStateUpdated = state != other.state ||

@@ -68,8 +68,6 @@ class PromoCompoundView @JvmOverloads constructor(
     }
 
     private var binding: PromoUsageItemPromoCompoundViewBinding? = null
-    private var isActivationGopayLaterShown: Boolean = false
-    private var isGopayCicilEligible: Boolean = false
 
     init {
 //        viewOverlay = this.overlay
@@ -91,14 +89,6 @@ class PromoCompoundView @JvmOverloads constructor(
         renderExpiryInfo(promo)
         renderAdditionalInfo(promo)
         renderPromoCode(promo)
-    }
-
-    fun getIsActivationGopayLaterShown(): Boolean {
-        return isActivationGopayLaterShown
-    }
-
-    fun getIsGopayCicilEligible(): Boolean {
-        return isGopayCicilEligible
     }
 
     private fun renderLoading(promo: PromoItem) {
@@ -349,27 +339,7 @@ class PromoCompoundView @JvmOverloads constructor(
                 }
 
                 is PromoItemState.Normal -> {
-                    val isPromoGopayLater = if (promo.useSecondaryPromo) {
-                        promo.secondaryPromo.couponType.firstOrNull {
-                            it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
-                        } != null
-                    } else {
-                        promo.couponType.firstOrNull {
-                            it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
-                        } != null
-                    }
-                    val isPromoCtaRegisterGopayLater = if (promo.useSecondaryPromo) {
-                        promo.secondaryPromo.cta.type == PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
-                    } else {
-                        promo.cta.type == PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
-                    }
-                    val isPromoCtaValid = if (promo.useSecondaryPromo) {
-                        promo.secondaryPromo.cta.text.isNotBlank() &&
-                            promo.secondaryPromo.cta.appLink.isNotBlank()
-                    } else {
-                        promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
-                    }
-                    if (isPromoGopayLater && isPromoCtaRegisterGopayLater && isPromoCtaValid) {
+                    if (promo.isPromoGopayLater && promo.isPromoCtaRegisterGopayLater && promo.isPromoCtaValid) {
                         tpgAdditionalInfoMessage.text =
                             promo.cta.text.toSpannableHtmlString(tpgAdditionalInfoMessage.context)
                         tpgAdditionalInfoMessage
@@ -381,13 +351,9 @@ class PromoCompoundView @JvmOverloads constructor(
                                 R.drawable.promo_usage_shape_promo_bottom_info_actionable
                             )
                         clAdditionalInfo.visible()
-                        isActivationGopayLaterShown = true
                     } else {
                         clAdditionalInfo.gone()
-                        isActivationGopayLaterShown = false
                     }
-
-                    isGopayCicilEligible = isPromoGopayLater && !isPromoCtaRegisterGopayLater
                 }
 
                 else -> {

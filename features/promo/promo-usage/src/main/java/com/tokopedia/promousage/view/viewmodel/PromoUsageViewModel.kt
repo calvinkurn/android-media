@@ -117,6 +117,10 @@ class PromoUsageViewModel @Inject constructor(
     val clickTncUiAction: LiveData<ClickTncUiAction>
         get() = _clickTncUiAction
 
+    private val _autoApplyAction = MutableLiveData<PromoItem>()
+    val autoApplyAction: LiveData<PromoItem>
+        get() = _autoApplyAction
+
     fun loadPromoList(
         promoRequest: PromoRequest? = null,
         chosenAddress: ChosenAddress? = null,
@@ -401,6 +405,7 @@ class PromoUsageViewModel @Inject constructor(
                         } as? PromoItem
                 } as? PromoItem
                 if (gopayLaterPromo != null) {
+                    _autoApplyAction.postValue(gopayLaterPromo)
                     onClickPromo(gopayLaterPromo)
                 }
             }

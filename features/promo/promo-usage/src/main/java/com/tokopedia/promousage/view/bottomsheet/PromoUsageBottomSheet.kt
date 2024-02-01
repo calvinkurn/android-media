@@ -184,20 +184,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     onClickRecommendationPromo,
                     onImpressionPromo,
                     onRecommendationAnimationEnd,
-                    onClickClose,
-                    onImpressActivationGoPayLater,
-                    onClickActivationGoPayLater,
-                    onImpressionGplEligible,
-                    onClickGplEligible
+                    onClickClose
                 )
             )
             .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
-            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem,
-                onImpressionPromo,
-                onImpressActivationGoPayLater,
-                onClickActivationGoPayLater,
-                onImpressionGplEligible,
-                onClickGplEligible))
+            .add(PromoAccordionItemDelegateAdapter(onClickPromoItem, onImpressionPromo))
             .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
             .add(PromoTncDelegateAdapter(onClickPromoTnc))
             .add(PromoAttemptCodeDelegateAdapter(onAttemptPromoCode))
@@ -495,6 +486,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         observeClosePromoPageUiAction()
         observeAutoScrollUiAction()
         observeClickTncUiAction()
+        observeAutoApplyAction()
+    }
+
+    private fun observeAutoApplyAction() {
+        viewModel.autoApplyAction.observe(viewLifecycleOwner) { promoItem ->
+            processAndSendImpressionAutoApplyGpl(promoItem)
+        }
     }
 
     private fun observePromoRecommendationUiAction() {
@@ -1099,34 +1097,30 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private val onClickPromoItem = { clickedItem: PromoItem ->
         viewModel.onClickPromo(clickedItem)
+
+        if (clickedItem.isPromoGopayLater && clickedItem.isPromoCtaRegisterGopayLater && clickedItem.isPromoCtaValid) {
+            processAndSendClickActivationGoPayLater(clickedItem)
+        }
+
+        if (clickedItem.isPromoGopayLater && !clickedItem.isPromoCtaRegisterGopayLater) {
+            processAndSendClickGplEligible(clickedItem)
+        }
     }
 
     private val onImpressionPromo = { item: PromoItem ->
         processAndSendImpressionOfPromoCardNewEvent(item)
+
+        if (item.isPromoGopayLater && item.isPromoCtaRegisterGopayLater && item.isPromoCtaValid) {
+            processAndSendImpressionActivationGoPayLater(item)
+        }
+
+        if (item.isPromoGopayLater && !item.isPromoCtaRegisterGopayLater) {
+            processAndSendImpressionGplEligible(item)
+        }
     }
 
     private val onRecommendationAnimationEnd = {
         viewModel.onRecommendationAnimationEnd()
-    }
-
-    private val onImpressActivationGoPayLater = { viewedPromo: PromoItem ->
-        processAndSendImpressionActivationGoPayLater(viewedPromo)
-    }
-
-    private val onClickActivationGoPayLater = { clickedPromo: PromoItem ->
-        processAndSendClickActivationGoPayLater(clickedPromo)
-    }
-
-    private val onImpressAutoApplyGpl = { viewedPromo: PromoItem ->
-        processAndSendImpressionAutoApplyGpl(viewedPromo)
-    }
-
-    private val onImpressionGplEligible = { viewedPromo: PromoItem ->
-        processAndSendImpressionGplEligible(viewedPromo)
-    }
-
-    private val onClickGplEligible = { clickedPromo: PromoItem ->
-        processAndSendClickGplEligible(clickedPromo)
     }
 
     private val onClickClose = {
