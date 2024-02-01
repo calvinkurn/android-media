@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
@@ -704,6 +705,7 @@ open class DynamicProductDetailFragment :
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
+        viewModel.onEvent(ProductRecommendationEvent.RefreshRecommendation)
         super.onSwipeRefresh()
     }
 
@@ -3138,52 +3140,52 @@ open class DynamicProductDetailFragment :
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.resultData.collect {
-                when (it) {
-                    is ViewState.RenderSuccess -> {
-                        if (it.data.recommendationItemList.isNotEmpty()) {
-                            val enableComparisonWidget = remoteConfig.getBoolean(
-                                RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET,
-                                true
-                            )
-                            if (enableComparisonWidget) {
-                                when (it.data.layoutType) {
-                                    RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
-                                        pdpUiUpdater?.updateComparisonBpcDataModel(
-                                            it.data,
-                                            viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
-                                        )
-                                        updateUi()
+                it.forEach {
+                    val result = it.data
+                    when (result) {
+                        is ViewState.RenderSuccess -> {
+                            if (result.data.recommendationItemList.isNotEmpty()) {
+                                val enableComparisonWidget = remoteConfig.getBoolean(
+                                    RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET,
+                                    true
+                                )
+                                if (enableComparisonWidget) {
+                                    when (result.data.layoutType) {
+                                        RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
+                                            pdpUiUpdater?.updateComparisonBpcDataModel(
+                                                result.data,
+                                                viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
+                                            )
+                                        }
+
+                                        RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
+                                            pdpUiUpdater?.updateComparisonDataModel(result.data)
+                                        }
+
+                                        else -> {
+                                            pdpUiUpdater?.updateRecommendationData(result.data)
+                                        }
                                     }
-                                    RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
-                                        pdpUiUpdater?.updateComparisonDataModel(it.data)
-                                        updateUi()
-                                    }
-                                    else -> {
-                                        pdpUiUpdater?.updateRecommendationData(it.data)
-                                        updateUi()
-                                    }
+                                } else {
+                                    pdpUiUpdater?.updateRecommendationData(result.data)
                                 }
                             } else {
-                                pdpUiUpdater?.updateRecommendationData(it.data)
-                                updateUi()
+                                // recomUiPageName used because there is possibilites gql recom return empty pagename
+                                pdpUiUpdater?.removeComponent(result.data.recomUiPageName)
                             }
-                        } else {
-                            // recomUiPageName used because there is possibilites gql recom return empty pagename
-                            pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
-                            updateUi()
+                        }
+
+                        is ViewState.RenderFailure -> {
+                            pdpUiUpdater?.removeComponent(result.throwable.message ?: "")
+                            logException(result.throwable)
+                        }
+
+                        else -> {
+
                         }
                     }
-
-                    is ViewState.RenderFailure -> {
-                        pdpUiUpdater?.removeComponent(it.throwable.message ?: "")
-                        updateUi()
-                        logException(it.throwable)
-                    }
-
-                    else -> {
-
-                    }
                 }
+                updateUi()
             }
         }
 

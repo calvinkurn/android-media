@@ -26,11 +26,15 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -68,6 +72,7 @@ class ProductRecommSubViewModel @Inject constructor(
         get() = _loadTopAdsProduct
 
     private val _recomPageName = MutableSharedFlow<ProductRecommendationEvent.LoadRecommendation>()
+    private val _refreshPage = MutableStateFlow(false)
 
     @OptIn(FlowPreview::class)
     override val resultData by lazy {
@@ -82,10 +87,33 @@ class ProductRecommSubViewModel @Inject constructor(
                     queryParam = it.queryParam,
                     thematicId = it.thematicId
                 )
-            }.stateIn(
+            }
+            .scan(mutableListOf<ProductRecommUiState>()) { accumulator, value ->
+                if (_refreshPage.value) {
+                    accumulator.clear()
+                }
+
+                accumulator.add(value)
+                _refreshPage.emit(false)
+                accumulator
+            }
+            .debounce(150)
+            .map {
+                val filteredData = it.filterNot {
+                    it.alreadyCollected
+                }
+                filteredData.toMutableList()
+            }
+            .map {
+                val alreadyCollectedData = it.map {
+                    it.copy(alreadyCollected = true)
+                }
+                alreadyCollectedData.toMutableList()
+            }
+            .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = ViewState.Loading(true)
+                initialValue = mutableListOf()
             )
     }
 
@@ -94,6 +122,12 @@ class ProductRecommSubViewModel @Inject constructor(
             is ProductRecommendationEvent.LoadRecommendation -> {
                 viewModelScope.launch {
                     _recomPageName.emit(event)
+                }
+            }
+
+            is ProductRecommendationEvent.RefreshRecommendation -> {
+                viewModelScope.launch {
+                    _refreshPage.emit(true)
                 }
             }
         }
@@ -252,9 +286,20 @@ class ProductRecommSubViewModel @Inject constructor(
                     thematicId = thematicId
                 )
             )
-            emit(ViewState.RenderSuccess(response))
+
+            emit(
+                ProductRecommUiState(
+                    data = ViewState.RenderSuccess(response),
+                    pageName = pageName
+                )
+            )
         }.onFailure {
-            emit(ViewState.RenderFailure(Throwable(pageName)))
+            emit(
+                ProductRecommUiState(
+                    data = ViewState.RenderFailure(Throwable(pageName)),
+                    pageName = pageName
+                )
+            )
         }
     }.flowOn(dispatcher.io)
 

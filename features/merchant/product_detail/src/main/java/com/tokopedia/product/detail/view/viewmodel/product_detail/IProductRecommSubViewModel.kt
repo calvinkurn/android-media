@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ViewState
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommUiState
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Result
@@ -28,7 +29,7 @@ interface IProductRecommSubViewModel {
 
     val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
 
-    val resultData : StateFlow<ViewState<RecommendationWidget>>
+    val resultData : StateFlow<MutableList<ProductRecommUiState>>
     fun onEvent(event: ProductRecommendationEvent)
 
     fun loadViewToView(
