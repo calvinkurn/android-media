@@ -742,18 +742,7 @@ open class SomDetailFragment :
                             buttonResp.key.equals(
                                 KEY_ORDER_EXTENSION_REQUEST,
                                 true
-                            ) -> {
-                                startActivityForResult(
-                                    RouteManager.getIntent(
-                                        requireContext(),
-                                        UriUtil.buildUriAppendParam(
-                                            ApplinkConst.Som.SELLER_ORDER_EXTENSION_REQUEST,
-                                            mapOf(INTENT_PARAM_ORDER_ID to orderId)
-                                        )
-                                    ),
-                                    102
-                                )
-                            }
+                            ) -> bottomSheetManager?.showSomBottomSheetOrderExtensionRequest()
                             buttonResp.key.equals(
                                 KEY_RETURN_TO_SHIPPER,
                                 true
@@ -1027,18 +1016,7 @@ open class SomDetailFragment :
                         key.equals(
                             other = KEY_ORDER_EXTENSION_REQUEST,
                             ignoreCase = true
-                        ) -> {
-                            startActivityForResult(
-                                RouteManager.getIntent(
-                                    requireContext(),
-                                    UriUtil.buildUriAppendParam(
-                                        ApplinkConst.Som.SELLER_ORDER_EXTENSION_REQUEST,
-                                        mapOf(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID to orderId)
-                                    )
-                                ),
-                                102
-                            )
-                        }
+                        ) -> bottomSheetManager?.showSomBottomSheetOrderExtensionRequest()
                         key.equals(
                             other = KEY_RESCHEDULE_PICKUP,
                             ignoreCase = true
@@ -1326,17 +1304,6 @@ open class SomDetailFragment :
             handleFindNewDriverResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_POF) {
             handlePof(resultCode, data)
-        } else if (requestCode == 102) {
-            if (resultCode == Activity.RESULT_OK) {
-                val success = data?.getBooleanExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_RESULT_SUCCESS, false).orFalse()
-                val message = data?.getStringExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_RESULT_MESSAGE).orEmpty()
-                if (success) {
-                    showToaster(message, view, Toaster.TYPE_NORMAL)
-                } else {
-                    showToaster(message, view, Toaster.TYPE_ERROR)
-                }
-                loadDetail()
-            }
         }
     }
 
