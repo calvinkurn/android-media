@@ -968,54 +968,81 @@ open class SomDetailFragment :
                         userSession.shopId
                     )
                     when {
-                        key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackShipmentPage(it)
-                        key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
-                        key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                         key.equals(
-                            KEY_UBAH_NO_RESI,
-                            true
-                        ) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(this)
-
-                        key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
-                        key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                        key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(
-                            it.displayName,
-                            orderId,
-                            skipOrderValidation()
-                        )
-
-                        key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
+                            other = KEY_TRACK_SELLER,
+                            ignoreCase = true
+                        ) -> setActionGoToTrackShipmentPage(it)
                         key.equals(
-                            KEY_SET_DELIVERED,
-                            true
-                        ) -> bottomSheetManager?.showSomBottomSheetSetDelivered(this)
-
-                        key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(
-                            activity,
-                            view,
-                            listOf(detailResponse?.orderId.orEmpty()),
-                            true
-                        )
-                        key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
-                        key.equals(KEY_RESCHEDULE_PICKUP, true) -> goToReschedulePickupPage(
-                            this,
-                            orderId
-                        )
-
+                            other = KEY_REJECT_ORDER,
+                            ignoreCase = true
+                        ) -> setActionRejectOrder()
                         key.equals(
-                            KEY_RETURN_TO_SHIPPER,
-                            true
-                        ) -> SomNavigator.goToReturnToShipper(this@SomDetailFragment, orderId)
-
-                        key.equals(KEY_SEARCH_NEW_DRIVER, true) -> SomNavigator.goToFindNewDriver(
-                            this,
-                            orderId,
-                            detailResponse?.invoice
+                            other = KEY_BATALKAN_PESANAN,
+                            ignoreCase = true
+                        ) -> setActionRejectOrder()
+                        key.equals(
+                            other = KEY_UBAH_NO_RESI,
+                            ignoreCase = true
+                        ) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(listener = this)
+                        key.equals(
+                            other = KEY_UPLOAD_AWB,
+                            ignoreCase = true
+                        ) -> setActionUploadAwb(it)
+                        key.equals(
+                            other = KEY_CHANGE_COURIER,
+                            ignoreCase = true
+                        ) -> setActionChangeCourier()
+                        key.equals(
+                            other = KEY_ACCEPT_ORDER,
+                            ignoreCase = true
+                        ) -> setActionAcceptOrder(it.displayName, orderId, skipOrderValidation())
+                        key.equals(
+                            other = KEY_ASK_BUYER,
+                            ignoreCase = true
+                        ) -> goToAskBuyer()
+                        key.equals(
+                            other = KEY_SET_DELIVERED,
+                            ignoreCase = true
+                        ) -> bottomSheetManager?.showSomBottomSheetSetDelivered(listener = this)
+                        key.equals(
+                            other = KEY_PRINT_AWB,
+                            ignoreCase = true
+                        ) -> SomNavigator.goToPrintAwb(
+                            activity = activity,
+                            view = view,
+                            orderIds = listOf(detailResponse?.orderId.orEmpty()),
+                            markAsPrinted = true
                         )
-                        key.equals(KEY_POF, true) -> SomNavigator.goToPofPage(
-                            this,
-                            detailResponse?.orderId.toZeroStringIfNull(),
-                            detailResponse?.pofData?.pofStatus ?: STATUS_INITIAL
+                        key.equals(
+                            other = KEY_ORDER_EXTENSION_REQUEST,
+                            ignoreCase = true
+                        ) -> setActionRequestExtension()
+                        key.equals(
+                            other = KEY_RESCHEDULE_PICKUP,
+                            ignoreCase = true
+                        ) -> goToReschedulePickupPage(fragment = this, orderId = orderId)
+                        key.equals(
+                            other = KEY_RETURN_TO_SHIPPER,
+                            ignoreCase = true
+                        ) -> SomNavigator.goToReturnToShipper(
+                            fragment = this@SomDetailFragment,
+                            orderId = orderId
+                        )
+                        key.equals(
+                            other = KEY_SEARCH_NEW_DRIVER,
+                            ignoreCase = true
+                        ) -> SomNavigator.goToFindNewDriver(
+                            fragment = this,
+                            orderId = orderId,
+                            invoice = detailResponse?.invoice
+                        )
+                        key.equals(
+                            other = KEY_POF,
+                            ignoreCase = true
+                        ) -> SomNavigator.goToPofPage(
+                            fragment = this,
+                            orderId = detailResponse?.orderId.toZeroStringIfNull(),
+                            pofStatus = detailResponse?.pofData?.pofStatus ?: STATUS_INITIAL
                         )
                     }
                 }
@@ -1091,43 +1118,39 @@ open class SomDetailFragment :
             when (rejectReason.reasonCode) {
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_PRODUCT_EMPTY -> {
                     bottomSheetManager?.showSomBottomSheetProductEmpty(
-                        rejectReason,
-                        detailResponse,
-                        orderId,
-                        this
+                        rejectReason = rejectReason,
+                        orderDetail = detailResponse,
+                        orderId = orderId,
+                        listener = this
                     )
                 }
-
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_SHOP_CLOSED -> {
                     bottomSheetManager?.showSomBottomSheetShopClosed(
-                        rejectReason,
-                        orderId,
-                        this,
-                        childFragmentManager
+                        rejectReason = rejectReason,
+                        orderId = orderId,
+                        listener = this,
+                        fragmentManager = childFragmentManager
                     )
                 }
-
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_COURIER_PROBLEMS -> {
                     bottomSheetManager?.showSomBottomSheetCourierProblem(
-                        rejectReason,
-                        orderId,
-                        this
+                        rejectReason = rejectReason,
+                        orderId = orderId,
+                        listener = this
                     )
                 }
-
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_BUYER_NO_RESPONSE -> {
                     bottomSheetManager?.showSomBottomSheetBuyerNoResponse(
-                        rejectReason,
-                        orderId,
-                        this
+                        rejectReason = rejectReason,
+                        orderId = orderId,
+                        listener = this
                     )
                 }
-
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_OTHER_REASON -> {
                     bottomSheetManager?.showSomBottomSheetBuyerOtherReason(
-                        rejectReason,
-                        orderId,
-                        this
+                        rejectReason = rejectReason,
+                        orderId = orderId,
+                        listener = this
                     )
                 }
             }
@@ -1838,15 +1861,15 @@ open class SomDetailFragment :
     }
 
     override fun getBuyerRequestCancelRespondDescription(): String {
-        return detailResponse?.button?.firstOrNull { it.key == KEY_RESPOND_TO_CANCELLATION }?.popUp?.body.orEmpty()
+        return detailResponse?.getBuyerRequestCancelRespondButton()?.popUp?.body.orEmpty()
     }
 
     override fun getBuyerRequestCancelRespondPrimaryTextButton(): String {
-        return detailResponse?.button?.firstOrNull { it.key == KEY_RESPOND_TO_CANCELLATION }?.popUp?.getPrimaryButton()?.displayName.orEmpty()
+        return detailResponse?.getBuyerRequestCancelRespondButton()?.popUp?.getPrimaryButton()?.displayName.orEmpty()
     }
 
     override fun getBuyerRequestCancelRespondSecondaryTextButton(): String {
-        return detailResponse?.button?.firstOrNull { it.key == KEY_RESPOND_TO_CANCELLATION }?.popUp?.getSecondaryButton()?.displayName.orEmpty()
+        return detailResponse?.getBuyerRequestCancelRespondButton()?.popUp?.getSecondaryButton()?.displayName.orEmpty()
     }
 
     override fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel {
