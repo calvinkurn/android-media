@@ -10,7 +10,7 @@ import android.webkit.URLUtil
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
@@ -43,7 +43,7 @@ class SectionCategoryAdapter(
                     viewCategoryNew?.visibility = View.GONE
 
                 if (URLUtil.isValidUrl(it.iconImageURL))
-                    ImageHandler.loadImageCircle2(context, ivBg, it.iconImageURL)
+                    ivBg?.loadImageCircle(it.iconImageURL)
 
 
                 if (!TextUtils.isEmpty(it.text)) {

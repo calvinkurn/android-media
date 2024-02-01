@@ -105,8 +105,9 @@ class DiscoveryDataMapper {
             val isTabIcon = name == ComponentNames.TabsIcon.componentName
             val isPlainTab = name == ComponentNames.Tabs.componentName &&
                 properties?.background == TAB_DEFAULT_BACKGROUND
+            val isTabImage = name == ComponentNames.TabsImage.componentName
 
-            return isTabIcon || isPlainTab
+            return isTabIcon || isPlainTab || isTabImage
         }
 
         private fun pinnedActiveTab(tabId: String?, item: DataItem, currentIndex: Int) {

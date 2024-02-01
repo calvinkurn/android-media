@@ -98,7 +98,7 @@ class BmgmSectionViewHolder(
     }
 
     override fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        listener.onBmgmItemWarrantyClaim(uiModel)
+        listener.onBmgmItemImpressed(uiModel)
     }
 
     private fun showToaster(message: String) {

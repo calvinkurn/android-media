@@ -12,7 +12,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity.Companion.getCatalogDetail
@@ -73,7 +74,7 @@ class CatalogListCarouselAdapter(var items: List<CatalogsValueEntity>,
         holder.btnContinue.isEnabled = !item.isDisabledButton
         holder.description.text = item.title
         holder.btnContinue.setText(R.string.tp_label_exchange) //TODO asked for server driven value
-        ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner, item.thumbnailUrlMobile)
+        holder.imgBanner?.loadImageFitCenter(item.thumbnailUrlMobile)
         holder.pointValue.visibility = View.VISIBLE
         //setting points info if exist in response
         if (item.pointsStr == null || item.pointsStr!!.isEmpty()) {

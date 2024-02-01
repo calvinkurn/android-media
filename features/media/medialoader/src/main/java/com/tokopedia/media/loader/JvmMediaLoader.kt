@@ -1,7 +1,13 @@
 package com.tokopedia.media.loader
 
+import android.graphics.Bitmap
+import android.net.Uri
 import android.widget.ImageView
+import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.listener.MediaListener
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 /**
  * A static function to loading any images and video thumbnail for java-based.
@@ -18,11 +24,50 @@ object JvmMediaLoader {
         imageView.loadImage(url)
     }
 
+    @JvmStatic fun loadImage(imageView: ImageView, resource: Int) {
+        imageView.loadImage(resource)
+    }
+
+    @JvmStatic fun loadImageWithCacheData(imageView: ImageView, url: String) {
+        imageView.loadImageWithCacheData(url)
+    }
+
     @JvmStatic fun loadImageFitCenter(imageView: ImageView, url: String) {
         imageView.loadImageFitCenter(url)
     }
 
+    @JvmStatic fun loadImageRounded(imageView: ImageView, url: String, radius: Float) {
+        imageView.loadImageRounded(url, radius)
+    }
+
     @JvmStatic fun loadImage(imageView: ImageView, url: String, properties: Properties.() -> Unit) {
         imageView.loadImage(url, properties)
+    }
+
+    @JvmStatic fun loadImage(imageView: ImageView, uri: Uri, properties: Properties.() -> Unit) {
+        imageView.loadImage(uri, properties)
+    }
+
+    @JvmStatic
+    fun loadImage(
+        imageView: ImageView,
+        url: String,
+        onSuccess: (Bitmap?, MediaDataSource?) -> Unit,
+        onError: (MediaException?) -> Unit
+    ) {
+        imageView.loadImage(url) {
+            this.loaderListener = object: MediaListener {
+                // for GIF format
+                override fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) {}
+
+                override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?) {
+                    onSuccess(resource, dataSource)
+                }
+
+                override fun onFailed(error: MediaException?) {
+                    onError(error)
+                }
+            }
+        }
     }
 }

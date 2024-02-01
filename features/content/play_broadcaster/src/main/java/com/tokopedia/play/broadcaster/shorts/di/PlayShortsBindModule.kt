@@ -81,6 +81,8 @@ import com.tokopedia.content.product.picker.seller.domain.repository.ContentProd
 import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.interspersing.PlayShortsInterspersingAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.interspersing.PlayShortsInterspersingAnalyticImpl
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play_common.util.device.PlayDeviceSpec
@@ -121,6 +123,10 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsAffiliateAnalytic(analytic: PlayShortsAffiliateAnalyticImpl): PlayShortsAffiliateAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsInterspersingAnalytic(analytic: PlayShortsInterspersingAnalyticImpl): PlayShortsInterspersingAnalytic
 
     @Binds
     @PlayShortsScope
