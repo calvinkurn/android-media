@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.testcase.summary
 
 import android.content.Intent
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
@@ -9,6 +8,7 @@ import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRe
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
+import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
@@ -17,20 +17,28 @@ import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
-import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsInjector
+import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsLauncher
+import com.tokopedia.play.broadcaster.shorts.helper.clickBackInterspersingConfirmation
+import com.tokopedia.play.broadcaster.shorts.helper.clickCloseBottomSheet
+import com.tokopedia.play.broadcaster.shorts.helper.clickContentTag
+import com.tokopedia.play.broadcaster.shorts.helper.clickContinueOnPreparationPage
+import com.tokopedia.play.broadcaster.shorts.helper.clickInterspersingToggle
+import com.tokopedia.play.broadcaster.shorts.helper.clickNextInterspersingConfirmation
+import com.tokopedia.play.broadcaster.shorts.helper.clickUploadVideo
+import com.tokopedia.play.broadcaster.shorts.helper.clickVideoPdpOnInterspersingConfirmation
+import com.tokopedia.play.broadcaster.shorts.helper.completeMandatoryMenu
 import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 /**
- * Created By : Jonathan Darwin on December 15, 2022
+ * Created By : Jonathan Darwin on January 16, 2024
  */
-@RunWith(AndroidJUnit4ClassRunner::class)
-class PlayShortsSummaryAnalyticTest {
+class PlayShortsInterspersingAnalyticTest {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
@@ -42,7 +50,7 @@ class PlayShortsSummaryAnalyticTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val cassavaValidator = PlayBroadcastCassavaValidator.buildForShorts(cassavaTestRule)
+    private val cassavaValidator = PlayBroadcastCassavaValidator.buildForInterspersingVideo(cassavaTestRule)
 
     private val mockShortsRepo: PlayShortsRepository = mockk(relaxed = true)
     private val mockBroRepo: PlayBroadcastRepository = mockk(relaxed = true)
@@ -55,13 +63,15 @@ class PlayShortsSummaryAnalyticTest {
 
     private val uiModelBuilder = ShortsUiModelBuilder()
 
-    private val mockShortsConfig = uiModelBuilder.buildShortsConfig()
+    private val mockShortsConfig = uiModelBuilder.buildShortsConfig(eligibleInterspersing = true, productCountForInterspersing = 1)
     private val mockAccountList = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
     private val mockAccountShop = mockAccountList[0]
-    private val mockProductTagSection = uiModelBuilder.buildProductTagSectionList()
+    private val mockProductTagSection = uiModelBuilder.buildProductTagSectionList(size = 1)
     private val mockEtalaseProducts = uiModelBuilder.buildEtalaseProducts()
     private val mockTags = uiModelBuilder.buildTags()
     private val mockFirstTagText = mockTags.tags.first().tag
+    private val mockHasPdpVideo = uiModelBuilder.buildHasPdpVideo()
+    private val mockHasNoPdpVideo = uiModelBuilder.buildHasNoPdpVideo()
     private val mockException = Exception("Network Error")
 
     init {
@@ -77,6 +87,7 @@ class PlayShortsSummaryAnalyticTest {
         coEvery { mockContentProductPickerSGCRepo.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProducts
         coEvery { mockContentProductPickerSGCRepo.setProductTags(any(), any()) } returns Unit
         coEvery { mockContentProductPickerSGCRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
+        coEvery { mockShortsRepo.checkProductCustomVideo(any()) } returns mockHasPdpVideo
         coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
         coEvery { mockShortsRepo.saveTag(any(), any()) } returns true
 
@@ -103,65 +114,47 @@ class PlayShortsSummaryAnalyticTest {
         )
     }
 
-    private fun setupSummaryFlow(setupMock: () -> Unit) {
-        setupMock()
-
+    private fun setupSummaryFlow() {
         completeMandatoryMenu()
 
         clickContinueOnPreparationPage()
-    }
-
-    @Test
-    fun testAnalytic_clickBackOnSummaryPage() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
-
-        clickBackOnSummaryPage()
-
-        cassavaValidator.verify("click - back summary page")
-    }
-
-    @Test
-    fun testAnalytic_clickContentTag() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
 
         composeActivityTestRule.clickContentTag(mockFirstTagText)
-
-        cassavaValidator.verify("click - content tag")
     }
 
     @Test
-    fun testAnalytic_clickUploadVideo() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
+    fun testAnalytic_interspersingVideo() {
+        setupSummaryFlow()
+
+        composeActivityTestRule.apply {
+            clickInterspersingToggle()
+            clickInterspersingToggle()
+            verify("click - show video on pdp")
+
+            coEvery { mockShortsRepo.checkProductCustomVideo(any()) } throws mockException
+            clickUploadVideo()
+            verify("view - error toaster show video PDP")
+
+            coEvery { mockShortsRepo.checkProductCustomVideo(any()) } returns mockHasPdpVideo
+            clickUploadVideo()
+            clickCloseBottomSheet()
+            verify("click - x icon video product option for pdp")
+
+            clickUploadVideo()
+            clickBackInterspersingConfirmation()
+            verify("click - kembali show video on pdp")
+
+            clickUploadVideo()
+            clickVideoPdpOnInterspersingConfirmation()
+            verify("click - video card option for pdp")
+
+            pressBack()
+            clickNextInterspersingConfirmation()
+            verify("click - lanjut show video on pdp")
         }
-
-        composeActivityTestRule.clickContentTag(mockFirstTagText)
-        clickUploadVideo()
-
-        cassavaValidator.verify("click - upload video")
     }
 
-    @Test
-    fun testAnalytic_openScreenSummaryPage() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
-
-        cassavaValidator.verifyOpenScreen("/play broadcast short - summary page - ${mockAccountShop.id} - seller")
-    }
-
-    @Test
-    fun testAnalytic_clickRefreshContentTag() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } throws mockException
-        }
-
-        composeActivityTestRule.clickRefreshContentTag()
-
-        cassavaValidator.verify("click - refresh content tags")
+    private fun verify(eventAction: String) {
+        cassavaValidator.verify(eventAction)
     }
 }
