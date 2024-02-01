@@ -53,7 +53,9 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
             emptyIconImageView.setImageDrawable(MethodChecker.getDrawable(context, element.getIconRes()));
         }
         if (!TextUtils.isEmpty(element.getUrlRes())) {
-            Glide.with(context).load(element.getUrlRes()).into(emptyIconImageView);
+            if (context != null) {
+                Glide.with(context).load(element.getUrlRes()).into(emptyIconImageView);
+            }
         }
         if (element.getCallback() != null) {
             callback = element.getCallback();
