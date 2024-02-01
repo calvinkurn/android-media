@@ -39,4 +39,6 @@ sealed interface ProductPreviewEvent {
     data class LikeUpdate(
         val state: ReviewLikeUiState
     ) : ProductPreviewEvent
+
+    object ShowCoachMark : ProductPreviewEvent
 }

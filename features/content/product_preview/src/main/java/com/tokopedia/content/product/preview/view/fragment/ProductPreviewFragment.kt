@@ -3,7 +3,6 @@ package com.tokopedia.content.product.preview.view.fragment
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +44,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -134,6 +134,7 @@ class ProductPreviewFragment @Inject constructor(
     //TODO: seperate coachmark later
     private val coachMarkItems by lazyThreadSafetyNone {
         arrayListOf(
+            //TOD: if entry souce non ATF
             CoachMark2Item(
                 anchorView = binding.layoutProductPreviewTab.icBack,
                 title = "",
@@ -262,7 +263,7 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
-
+                    ProductPreviewEvent.ShowCoachMark -> handleCoachMark()
                     else -> {}
                 }
             }
@@ -276,12 +277,7 @@ class ProductPreviewFragment @Inject constructor(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {
-                    Log.d("hello", coachMarkItems.first().toString())
-                    coachMark.showCoachMark(
-                        step = coachMarkItems,
-                        index = CoachMark2.POSITION_BOTTOM
-                    )
-                    //handleAtc(model)
+                    handleAtc(model)
                 })
             }
         }
@@ -298,6 +294,17 @@ class ProductPreviewFragment @Inject constructor(
             )
         } else {
             viewModel.onAction(ProductPreviewAction.ProductAction(model))
+        }
+    }
+
+    private fun handleCoachMark() {
+        coachMarkJob?.cancel()
+        coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
+            delay(6000L)
+            coachMark.showCoachMark(
+                step = coachMarkItems,
+                index = CoachMark2.POSITION_BOTTOM
+            )
         }
     }
 

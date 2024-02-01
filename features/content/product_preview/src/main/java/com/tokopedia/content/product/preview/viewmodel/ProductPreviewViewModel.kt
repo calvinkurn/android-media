@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
+import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
@@ -45,7 +46,8 @@ import kotlinx.coroutines.launch
 class ProductPreviewViewModel @AssistedInject constructor(
     @Assisted val productPreviewSource: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
-    private val userSessionInterface: UserSessionInterface
+    private val userSessionInterface: UserSessionInterface,
+    private val sharedPreference: ProductPreviewSharedPreference
 ) : ViewModel() {
 
     @AssistedFactory
@@ -104,6 +106,15 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 _reviewContentState.value.reviewContent[_reviewPosition.value]
             }
         }
+
+    init {
+        viewModelScope.launchCatchError(block = {
+            val hasVisit = sharedPreference.isVisited()
+            if (hasVisit) return@launchCatchError
+            _uiEvent.emit(ProductPreviewEvent.ShowCoachMark)
+            sharedPreference.setHasVisit(true)
+        }){}
+    }
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
