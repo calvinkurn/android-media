@@ -27,7 +27,7 @@ class CsatViewModel @Inject constructor(
             is CsatUserAction.SelectReason -> selectSelectedReason(action.reason)
             is CsatUserAction.UnselectReason -> unselectSelectedReason(action.reason)
             is CsatUserAction.SetOtherReason -> setOtherReason(action.reason)
-            CsatUserAction.SendCsatUser -> sendCsat()
+            CsatUserAction.SubmitCsat -> submitCsat()
         }
     }
 
@@ -95,7 +95,7 @@ class CsatViewModel @Inject constructor(
         }
     }
 
-    private fun sendCsat() {
+    private fun submitCsat() {
         _csatEventFlow.tryEmit(CsatEvent.NavigateToSubmitCsat(_csatDataStateFlow.value))
     }
 }

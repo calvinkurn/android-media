@@ -7,5 +7,5 @@ sealed interface CsatUserAction {
     data class SelectReason(val reason: String) : CsatUserAction
     data class UnselectReason(val reason: String) : CsatUserAction
     data class SetOtherReason(val reason: String) : CsatUserAction
-    object SendCsatUser : CsatUserAction
+    object SubmitCsat : CsatUserAction
 }

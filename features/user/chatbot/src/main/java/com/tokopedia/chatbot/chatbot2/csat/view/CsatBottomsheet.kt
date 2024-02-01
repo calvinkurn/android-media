@@ -81,18 +81,25 @@ class CsatBottomsheet :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewBinding = BottomsheetCsatBinding.inflate(LayoutInflater.from(context))
+        initializeViewBinding()
         initializeBottomSheet()
+        initializeCsatData()
+        initializeObserver()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
+    private fun initializeViewBinding() {
+        viewBinding = BottomsheetCsatBinding.inflate(LayoutInflater.from(context))
+    }
+
+    private fun initializeCsatData() {
         val selectedScore: Int? = arguments?.getInt(EXTRA_CSAT_SELECTED_SCORE)
         val csatModel: CsatModel? = arguments?.getParcelable(EXTRA_CSAT_DATA)
         if (selectedScore != null && csatModel != null) {
             viewModel.initializeData(selectedScore, csatModel)
-            observeViewModel()
         } else {
             activity?.finish()
         }
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -112,7 +119,12 @@ class CsatBottomsheet :
         setChild(viewBinding?.root)
     }
 
-    private fun observeViewModel() {
+    private fun initializeObserver() {
+        observeDataState()
+        observeEvent()
+    }
+
+    private fun observeDataState() {
         lifecycleScope.launchWhenStarted {
             viewModel.csatDataStateFlow.collectLatest { csatModel ->
                 context?.let { context ->
@@ -121,35 +133,35 @@ class CsatBottomsheet :
                 }
             }
         }
+    }
 
+    private fun observeEvent() {
         lifecycleScope.launchWhenStarted {
             viewModel.csatEventFlow.collect { csatEvent ->
                 when (csatEvent) {
-                    is CsatEvent.UpdateButton -> {
-                        renderButtonState(csatEvent)
-                    }
-
-                    is CsatEvent.NavigateToSubmitCsat -> {
-                        activity?.let {
-                            val intentResult = Intent().apply {
-                                putExtra(CASE_ID, csatEvent.csatData.caseId)
-                                putExtra(CASE_CHAT_ID, csatEvent.csatData.caseChatId)
-                                putExtra(EMOJI_STATE, csatEvent.csatData.selectedPoint.score)
-//                                putExtra(SELECTED_ITEMS, )
-                                putExtra(SERVICE, csatEvent.csatData.service)
-                                putExtra(OTHER_REASON, csatEvent.csatData.otherReason)
-                                val dynamicReasons = arrayListOf<String>()
-                                dynamicReasons.addAll(csatEvent.csatData.selectedReasons)
-                                putStringArrayListExtra(DYNAMIC_REASON, dynamicReasons)
-                            }
-                            it.setResult(Activity.RESULT_OK, intentResult)
-                            it.finish()
-                        }
-                    }
-
+                    is CsatEvent.UpdateButton -> renderButtonState(csatEvent)
+                    is CsatEvent.NavigateToSubmitCsat -> navigateToSubmitCsat(csatEvent)
                     CsatEvent.FallbackDismissBottomSheet -> activity?.finish()
                 }
             }
+        }
+    }
+
+    private fun navigateToSubmitCsat(csatEvent: CsatEvent.NavigateToSubmitCsat) {
+        activity?.let {
+            val intentResult = Intent().apply {
+                putExtra(CASE_ID, csatEvent.csatData.caseId)
+                putExtra(CASE_CHAT_ID, csatEvent.csatData.caseChatId)
+                putExtra(EMOJI_STATE, csatEvent.csatData.selectedPoint.score)
+                putExtra(SERVICE, csatEvent.csatData.service)
+                putExtra(OTHER_REASON, csatEvent.csatData.otherReason)
+                val dynamicReasons = arrayListOf<String>().apply {
+                    addAll(csatEvent.csatData.selectedReasons)
+                }
+                putStringArrayListExtra(DYNAMIC_REASON, dynamicReasons)
+            }
+            it.setResult(Activity.RESULT_OK, intentResult)
+            it.finish()
         }
     }
 
@@ -238,11 +250,14 @@ class CsatBottomsheet :
     private fun renderOtherReason(csatModel: CsatModel) {
         viewBinding?.csatOtherReasonTitle?.text = csatModel.selectedPoint.otherReasonTitle
         viewBinding?.csatOtherReason?.apply {
-            minLine = 4
-            setLabel("Tulis detailnya di sini, ya..")
-            viewBinding?.csatOtherReason?.setMessage("Min. ${csatModel.minimumOtherReasonChar} karakter")
+            minLine = OTHER_REASON_MIN_LINE
+            setLabel(context?.getString(R.string.chatbot_dynamic_csat_other_reason_label).orEmpty())
+            viewBinding?.csatOtherReason?.setMessage(
+                context?.getString(
+                    R.string.chatbot_dynamic_csat_min_other_reason_char_label,
+                    csatModel.minimumOtherReasonChar
+                ).orEmpty())
             viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
-                // todo : add debounce
                 viewModel.processAction(CsatUserAction.SetOtherReason(it.toString()))
                 viewModel.updateButton()
             }
@@ -252,7 +267,7 @@ class CsatBottomsheet :
     private fun renderButtonState(state: CsatEvent.UpdateButton) {
         viewBinding?.csatButtonSubmit?.isEnabled = state.isEnabled
         viewBinding?.csatButtonSubmit?.setOnClickListener {
-            viewModel.processAction(CsatUserAction.SendCsatUser)
+            viewModel.processAction(CsatUserAction.SubmitCsat)
         }
     }
 
@@ -272,10 +287,11 @@ class CsatBottomsheet :
         const val CASE_ID = "caseID"
         const val CASE_CHAT_ID = "caseChatID"
         const val EMOJI_STATE = "emoji_state"
-        const val SELECTED_ITEMS = "selected_items"
         const val SERVICE = "service"
         const val OTHER_REASON = "other_reason"
         const val DYNAMIC_REASON = "dynamic_reason"
+
+        const val OTHER_REASON_MIN_LINE = 4
 
         fun newInstance(selectedScore: Int, csatModel: CsatModel): CsatBottomsheet {
             val bottomSheet = CsatBottomsheet()
