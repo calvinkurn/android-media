@@ -554,7 +554,6 @@ class BmsmWidgetTabFragment :
     }
 
     private fun SlidingTextSwitcher.setUpsellingGwp(messages: List<String>) {
-        showWithCondition(messages.isNotEmpty())
         val textColor = MethodChecker.getColor(
             context,
             R.color.dms_static_white

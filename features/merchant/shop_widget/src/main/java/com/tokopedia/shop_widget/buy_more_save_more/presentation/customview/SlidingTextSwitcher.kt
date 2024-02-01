@@ -18,10 +18,6 @@ import kotlinx.coroutines.withContext
 import java.lang.reflect.Method
 import kotlin.coroutines.CoroutineContext
 
-/**
- * Created by @ilhamsuaib on 26/09/23.
- */
-
 class SlidingTextSwitcher @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
@@ -40,6 +36,8 @@ class SlidingTextSwitcher @JvmOverloads constructor(
 
     private var currentTitle = ""
 
+    var titles = mutableListOf<String>()
+
     var textColor = MethodChecker.getColor(context, R.color.dms_static_white)
 
     fun setMessages(
@@ -47,23 +45,21 @@ class SlidingTextSwitcher @JvmOverloads constructor(
         interval: Long = MESSAGE_SWITCH_INITIAL_DELAY,
         textColor: Int
     ) {
-        val typography = currentView as Typography
-        typography.apply {
-            setTextColor(textColor)
-            visible()
-        }
+        titles.clear()
+        titles.addAll(messages)
 
-        if (messages.size > Int.ONE) {
+        if (titles.size > Int.ONE) {
             visible()
-            startRollingTitle(titles = messages, interval = interval, textColor)
+            if (currentTitle.isNotEmpty()) setText(titles.firstOrNull())
+            startRollingTitle(titles = titles, interval = interval, textColor)
         } else {
-            val message = messages.firstOrNull().orEmpty()
+            val message = titles.firstOrNull().orEmpty()
             showSingleMessageWithNoAnimation(message)
         }
     }
 
     private fun showSingleMessageWithNoAnimation(message: String) {
-        if (message.isBlank()) {
+        if (message.isEmpty()) {
             gone()
         } else {
             visible()
@@ -88,15 +84,10 @@ class SlidingTextSwitcher @JvmOverloads constructor(
             while (currentRollingTextIndex < titles.size) {
                 val title = titles[currentRollingTextIndex]
 
-                val typography = getChildAt(currentRollingTextIndex) as Typography
-                typography.apply {
-                    setTextColor(textColor)
-                    visible()
-                }
-
                 if (currentTitle != title) {
                     currentTitle = title
                     withContext(Dispatchers.Main) {
+                        setCurrentText("")
                         setText(MethodChecker.fromHtml(title))
                     }
                 }
