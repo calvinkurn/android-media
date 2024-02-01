@@ -42,6 +42,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                 ) {
                     if(!isAnimationPopupGQlCalled) {
                         Handler().postDelayed({
+                            isAnimationPopupGQlCalled = true
                             getScratchCardData(activity)
                         }, 2000)
                     }
@@ -67,7 +68,6 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     ) {
         val userSession = createUserSession(activity)
         if (userSession.isLoggedIn) {
-            isAnimationPopupGQlCalled = true
             AnimationPopupGqlGetData().getAnimationScratchPopupData({
                 it.popUpContent?.let { popup ->
                     if (popup.isShown == true) {
