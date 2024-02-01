@@ -22,9 +22,9 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
             println("hahaha $it")
         }
         this.listener = listener
-//        val filter = IntentFilter()
-//        filter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION)
-//        filter.priority = IntentFilter.SYSTEM_HIGH_PRIORITY
+        val filter = IntentFilter()
+        filter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION)
+        filter.priority = IntentFilter.SYSTEM_HIGH_PRIORITY
         context.registerReceiver(this, IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION))
     }
 
