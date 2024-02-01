@@ -365,7 +365,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             super.onScrollStateChanged(recyclerView, newState)
             if (newState == RecyclerView.SCROLL_STATE_IDLE && productAdapter?.shouldRedrawLayout == true) {
                 rvPdp?.post {
-                    (recyclerView.layoutManager as CenterLayoutManager).invalidateSpanAssignments()
+                    (recyclerView.layoutManager as? CenterLayoutManager)?.invalidateSpanAssignments()
                     recyclerView.invalidateItemDecorations()
                 }
             }
