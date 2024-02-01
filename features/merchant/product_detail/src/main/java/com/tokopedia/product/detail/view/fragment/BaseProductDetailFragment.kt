@@ -24,6 +24,8 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTabletLeftSectionDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTabletRightSectionDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TabletPosition
@@ -344,16 +346,18 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             it is PageErrorDataModel || it is ProductLoadingDataModel
         }
         val isVerticalRecommendationViewHolder =
-            getViewHolderByPosition(position) is ProductRecommendationVerticalViewHolder
+            productAdapter?.currentList.orEmpty()
+                .getOrNull(position) is ProductRecommendationVerticalDataModel
 
         val isVerticalPlaceholderRecommendationViewHolder =
-            getViewHolderByPosition(position) is ProductRecommendationVerticalPlaceholderViewHolder
+            productAdapter?.currentList.orEmpty()
+                .getOrNull(position) is ProductRecommendationVerticalPlaceholderDataModel
 
-        val shouldFullSpan =
-            (position > 1 || isPageError) &&
-                (!isVerticalRecommendationViewHolder ||
-                    !isVerticalPlaceholderRecommendationViewHolder)
-        return if (shouldFullSpan) {
+        if (isVerticalRecommendationViewHolder) {
+            return 1
+        }
+
+        return if (position > 1 || isPageError || isVerticalPlaceholderRecommendationViewHolder) {
             2
         } else {
             1
