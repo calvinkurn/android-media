@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
@@ -60,11 +61,13 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     ) {
         val userSession = createUserSession(activity)
         if (userSession.isLoggedIn && !isAnimationPopupGQlCalled) {
+            isAnimationPopupGQlCalled = true
             AnimationPopupGqlGetData().getAnimationScratchPopupData({
                 it.popUpContent?.let { popup ->
                     if (popup.isShown == true) {
                         showLottiePopup(
                             activity,
+                            pageSource,
                             getSlugData(it),
                             popup,
                             getScratchCardIdData(it),
@@ -72,20 +75,23 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                         )
                     }
                 }
-            }, {}, pageSource)
-            isAnimationPopupGQlCalled = true
+                isAnimationPopupGQlCalled = false
+            }, {
+                isAnimationPopupGQlCalled = false
+            }, pageSource)
         }
     }
 
     open fun showLottiePopup(
         activity: Activity,
+        pageSource:String,
         slug: String?,
         popUpContent: PopUpContent,
         scratchCardId: String,
         ketupatSlashCallBack: KetupatSlashCallBack? = null
     ) {
         try {
-            if (!isAnimationPopEnable(activity)) {
+            if (pageSource == "tokopedia-home-page" && !isAnimationPopEnable(activity)) {
                 return
             }
             val currentActivity: WeakReference<Activity> =
@@ -98,7 +104,8 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                 .findViewById<View>(android.R.id.content)
                 .rootView as FrameLayout
             root.addView(ketupatAnimationPopup)
-            setTimeStampForKetupat(activity)
+            if(pageSource == "tokopedia-home-page")
+                setTimeStampForKetupat(activity)
         } catch (e: Exception) {
             ServerLogger.log(
                 Priority.P2,
@@ -126,7 +133,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     }
 
     private fun is24HourBefore(time: Long): Boolean {
-        return TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - time) >= 24
+        return TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - time) >= 5
     }
 
     private fun setTimeStampForKetupat(activity: Activity) {
@@ -152,7 +159,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity) { }
 
     override fun onActivityStopped(activity: Activity) {
-        isAnimationPopupGQlCalled = false
+//        isAnimationPopupGQlCalled = false
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
