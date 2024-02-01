@@ -4,7 +4,6 @@ import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.style.ImageSpan
 import android.view.View
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -27,6 +26,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemProductContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.widget.CenteredImageSpan
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.common_tradein.R as common_tradeinR
 import com.tokopedia.product.detail.common.R as productdetailcommonR
@@ -164,6 +164,7 @@ class PartialContentView(
         hideGimmick(campaign)
     }
 
+    //region product name text & label icons
     private fun setProductName(labelIcons: List<LabelIcons>, title: String) {
         if (labelIcons.isEmpty()) {
             setProductNameText(title = title)
@@ -190,23 +191,20 @@ class PartialContentView(
         stringBuilder: SpannableStringBuilder,
         labelIcons: List<LabelIcons>
     ) {
-        val drawablePlaceholder = Pair<Drawable?, Boolean>(null, false)
-        val mapIcons = labelIcons
-            .associate { it.iconURL to drawablePlaceholder }
+        val mapIcons: MutableMap<String, Drawable?> = labelIcons
+            .associate { it.iconURL to null }
             .toMutableMap()
 
-        prepareLoadIcons(mapIcons = mapIcons, placeholder = drawablePlaceholder, stringBuilder)
+        prepareLoadIcons(mapIcons = mapIcons, stringBuilder)
     }
 
     private fun prepareLoadIcons(
-        mapIcons: MutableMap<String, Pair<Drawable?, Boolean>>,
-        placeholder: Pair<Drawable?, Boolean>,
+        mapIcons: MutableMap<String, Drawable?>,
         stringBuilder: SpannableStringBuilder
     ) {
         mapIcons.keys.forEach { url ->
             loadIcon(url = url) {
-                val icon = mapIcons[url] ?: placeholder
-                mapIcons[url] = icon.copy(this, true)
+                mapIcons[url] = this
                 renderLabelIcons(stringBuilder = stringBuilder, mapIcons = mapIcons)
             }
         }
@@ -214,25 +212,29 @@ class PartialContentView(
 
     private fun renderLabelIcons(
         stringBuilder: SpannableStringBuilder,
-        mapIcons: MutableMap<String, Pair<Drawable?, Boolean>>
+        mapIcons: MutableMap<String, Drawable?>
     ) {
+        // Exit if all icons have not finished load
+        if (!allIconsLoaded(mapIcons)) return
+
         val textView = binding.productName
+        val textViewLineSpacing = textView.lineSpacingExtra
+        mapIcons.getIcons().forEach { resource ->
+            resource.resizeLabelIconSpec()
+            stringBuilder.setLabelIconSpan(drawable = resource, lineSpacing = textViewLineSpacing)
+            textView.text = stringBuilder
+        }
+    }
+
+    private fun MutableMap<String, Drawable?>.getIcons() = values
+        // reversed this, because each logo put from index 0 always
+        .reversed()
+        .asSequence()
+        .filterNotNull()
+
+    private fun allIconsLoaded(mapIcons: MutableMap<String, Drawable?>): Boolean {
         // ensure all icons has loaded
-        val allIconsLoaded = mapIcons.values.all { it.second }
-
-        if (!allIconsLoaded) return
-
-        mapIcons.values
-            // reversed this, because each logo put from index 0 always
-            .reversed()
-            .asSequence()
-            .map { it.first }
-            .filterNotNull()
-            .forEach { resource ->
-                resource.resizeLabelIconSpec()
-                stringBuilder.setLabelIconSpan(drawable = resource)
-                textView.text = stringBuilder
-            }
+        return mapIcons.values.all { it != null }
     }
 
     private fun Drawable.resizeLabelIconSpec() {
@@ -242,8 +244,8 @@ class PartialContentView(
         setBounds(Int.ZERO, Int.ZERO, right.toInt(), bottom)
     }
 
-    private fun SpannableStringBuilder.setLabelIconSpan(drawable: Drawable) {
-        val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BOTTOM)
+    private fun SpannableStringBuilder.setLabelIconSpan(drawable: Drawable, lineSpacing: Float) {
+        val imageSpan = CenteredImageSpan(drawable, lineSpacing)
 
         insert(Int.ZERO, "  ")
         setSpan(imageSpan, Int.ZERO, Int.ONE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -264,6 +266,7 @@ class PartialContentView(
                 }
             })
     }
+    // endregion product name & label icons
 
     private fun renderStockAvailable(
         campaign: CampaignModular,
