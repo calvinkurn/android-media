@@ -73,7 +73,7 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
             oldRight: Int,
             oldBottom: Int
         ) {
-            val expectedMargin = getRecyclerViewMarginBottom()
+            val expectedMargin = isListHeightTaller()
             if (!expectedMargin) return
             binding.root.layoutParams = binding.root.layoutParams.apply { height = newHeight }
         }
@@ -307,7 +307,7 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
         _binding = null
     }
 
-    private fun getRecyclerViewMarginBottom(): Boolean {
+    private fun isListHeightTaller(): Boolean {
         return binding.rvStoriesProduct.height > binding.root.height
     }
 
