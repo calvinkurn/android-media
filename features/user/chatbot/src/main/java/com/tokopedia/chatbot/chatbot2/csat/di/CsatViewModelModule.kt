@@ -22,7 +22,7 @@ abstract class CsatViewModelModule {
     @IntoMap
     @ActivityScope
     @ViewModelKey(CsatViewModel::class)
-    internal abstract fun bindShareExViewModel(
+    internal abstract fun bindCsatViewModel(
         viewModel: CsatViewModel
     ): ViewModel
 }

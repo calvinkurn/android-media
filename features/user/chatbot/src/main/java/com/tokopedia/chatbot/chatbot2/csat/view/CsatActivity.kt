@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.csat.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -34,6 +35,7 @@ class CsatActivity : BaseSimpleActivity() {
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     private fun adjustOrientation() {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
