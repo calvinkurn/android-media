@@ -251,9 +251,9 @@ object ShopPageProductListMapper {
             forceLightModeColor = isForceLightMode,
             shopBadgeList = shopProductUiModel.badge.map {
                 ProductCardModel.ShopBadge(
-                    isShown = true,
-                    imageUrl = it.title,
-                    title = it.imageUrl
+                    isShown = false,
+                    imageUrl = it.imageUrl,
+                    title = it.title
                 )
             }
         )
