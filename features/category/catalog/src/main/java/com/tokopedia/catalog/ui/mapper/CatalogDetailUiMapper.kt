@@ -194,6 +194,8 @@ class CatalogDetailUiMapper @Inject constructor(
             if (style.isHidden || !style.isSticky) return@run PriceCtaSellerOfferingProperties()
             PriceCtaSellerOfferingProperties(
                 productId = topSeller.productID,
+                warehouseId = topSeller.warehouseID,
+                shopId = topSeller.shop.id,
                 shopName = topSeller.shop.name,
                 price = topSeller.price.text,
                 slashPrice = topSeller.price.original,

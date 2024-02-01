@@ -26,6 +26,8 @@ data class PriceCtaProperties(
 data class PriceCtaSellerOfferingProperties(
     val catalogId: String = "",
     val productId: String = "",
+    val shopId: String = "",
+    val warehouseId: String = "",
     val shopName: String = "",
     val price: String = "",
     val slashPrice: String = "",

@@ -97,6 +97,7 @@ import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Compani
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATEGORY_ID
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_COMPARE_CATALOG_ID
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.PriceCtaSellerOfferingProperties
@@ -606,21 +607,7 @@ class CatalogDetailPageFragment :
             tgpPriceRanges.text = properties.price
 
             btnProductList.setOnClickListener {
-                val catalogProductList =
-                    Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
-                        .buildUpon()
-                        .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
-                        .appendQueryParameter(
-                            QUERY_PRODUCT_SORTING_STATUS,
-                            productSortingStatus.toString()
-                        )
-                        .appendPath(title).toString()
-
-                RouteManager.getIntent(context, catalogProductList).apply {
-                    putExtra(EXTRA_CATALOG_URL, catalogUrl)
-                    startActivity(this)
-                }
-
+                goToProductListPage()
                 CatalogReimagineDetailAnalytics.sendEvent(
                     event = EVENT_VIEW_CLICK_PG,
                     action = EVENT_ACTION_SEE_OPTIONS,
@@ -640,7 +627,9 @@ class CatalogDetailPageFragment :
         )
     }
 
-    private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaSellerOfferingWidget(properties: PriceCtaSellerOfferingProperties) {
+    private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaSellerOfferingWidget(
+        properties: PriceCtaSellerOfferingProperties
+    ) {
         icCtaSellerOffering.apply {
             root.showWithCondition(properties.isVisible)
             containerPriceCta.setBackgroundColor(properties.bgColor)
@@ -651,6 +640,17 @@ class CatalogDetailPageFragment :
             ctaAtc.setSold(properties.sold)
             ctaAtc.setRating(properties.shopRating)
             ctaAtc.setTheme(properties.isDarkTheme)
+            ctaAtc.setOnClick {
+                val atcModel = CatalogProductAtcUiModel(
+                    productId = properties.productId,
+                    shopId = properties.shopId,
+                    warehouseId = properties.warehouseId
+                )
+                viewModel.addProductToCart(atcModel)
+            }
+            btnProductList.setOnClickListener {
+                goToProductListPage()
+            }
         }
     }
 
@@ -673,6 +673,23 @@ class CatalogDetailPageFragment :
     private fun goToLoginPage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         startActivityForResult(intent, LOGIN_REQUEST_CODE)
+    }
+
+    private fun goToProductListPage() {
+        val catalogProductList =
+            Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
+                .buildUpon()
+                .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
+                .appendQueryParameter(
+                    QUERY_PRODUCT_SORTING_STATUS,
+                    productSortingStatus.toString()
+                )
+                .appendPath(title).toString()
+
+        RouteManager.getIntent(context, catalogProductList).apply {
+            putExtra(EXTRA_CATALOG_URL, catalogUrl)
+            startActivity(this)
+        }
     }
 
     private fun sendOpenPageTracker() {
@@ -741,7 +758,7 @@ class CatalogDetailPageFragment :
             }
 
             BannerCatalogUiModel.Ratio.TWO_BY_ONE.ratioName -> {
-                sendOnTimeImpression(TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE, {
+                sendOnTimeImpression(TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE) {
                     CatalogReimagineDetailAnalytics.sendEvent(
                         event = EVENT_VIEW_PG_IRIS,
                         action = "$EVENT_ACTION_IMPRESSION_BANNER $ratio",
@@ -749,7 +766,7 @@ class CatalogDetailPageFragment :
                         labels = catalogId,
                         trackerId = TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
                     )
-                })
+                }
             }
 
             BannerCatalogUiModel.Ratio.ONE_BY_ONE.ratioName -> {

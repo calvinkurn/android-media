@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
@@ -21,7 +24,8 @@ class CatalogDetailPageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val catalogDetailUseCase: CatalogDetailUseCase,
     private val getNotificationUseCase: GetNotificationUseCase,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val addToCartUseCase: AddToCartUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _errorsToaster = MutableLiveData<Throwable>()
@@ -93,6 +97,26 @@ class CatalogDetailPageViewModel @Inject constructor(
             block = {
                 val result = getNotificationUseCase.executeOnBackground()
                 _totalCartItem.postValue(result.totalCart)
+            },
+            onError = {
+                _errorsToaster.postValue(it)
+            }
+        )
+    }
+
+    fun addProductToCart(atcUiModel: CatalogProductAtcUiModel) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val param = AddToCartRequestParams(
+                    productId = atcUiModel.productId,
+                    shopId = atcUiModel.shopId,
+                    quantity = atcUiModel.quantity,
+                    warehouseId = atcUiModel.warehouseId
+                )
+                addToCartUseCase.setParams(param)
+                addToCartUseCase.executeOnBackground()
+                refreshNotification()
             },
             onError = {
                 _errorsToaster.postValue(it)
