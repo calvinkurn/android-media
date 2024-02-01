@@ -107,6 +107,10 @@ class ReviewParentContentViewHolder(
             }
         }
 
+    init {
+        binding.tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
+    }
+
     fun bind(item: ReviewContentUiModel) {
         bindMedia(item.medias)
         bindAuthor(item.author)
@@ -185,7 +189,6 @@ class ReviewParentContentViewHolder(
             }
             descriptionUiModel.originalText = ogText
             descriptionUiModel.truncatedText = truncatedText
-            tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
             setupExpanded()
         }
         tvReviewDescription.show()
