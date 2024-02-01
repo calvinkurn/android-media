@@ -340,9 +340,9 @@ class BmsmWidgetTabFragment :
                 productBenefitImageFromOfferingInfo
             }
 
-            tpgTitleWidget.setTitle(upsellWording, defaultOfferMessage)
-            tpgSubTitleWidget.setUpsellingGwp(offerMessage, defaultOfferMessage)
-            tpgPdUpsellingWording.setUpsellingPd(offerMessage, defaultOfferMessage)
+            tpgTitleWidget.setTitle(offerMessage, upsellWording, defaultOfferMessage)
+            tpgSubTitleWidget.setUpsellingGwp(offerMessage)
+            tpgPdUpsellingWording.setUpsellingPd(offerMessage)
 
             when (offerTypeId) {
                 OFFER_TYPE_PD -> setupPdHeader(offerMessage)
@@ -535,12 +535,16 @@ class BmsmWidgetTabFragment :
         }
     }
 
-    private fun Typography.setTitle(upsellWording: String, defaultOfferMessage: String) {
+    private fun Typography.setTitle(
+        offerMessages: List<String>,
+        upsellWording: String,
+        defaultOfferMessage: String
+    ) {
         val textColor = MethodChecker.getColor(
             context,
             R.color.dms_static_white
         )
-        text = if (upsellWording.isNotEmpty()) {
+        text = if (offerMessages.isNotEmpty()) {
             MethodChecker.fromHtml(upsellWording)
         } else {
             MethodChecker.fromHtml(defaultOfferMessage)
@@ -549,12 +553,12 @@ class BmsmWidgetTabFragment :
         visible()
     }
 
-    private fun SlidingTextSwitcher.setUpsellingGwp(messages: List<String>, defaultOfferMessage: String) {
+    private fun SlidingTextSwitcher.setUpsellingGwp(messages: List<String>) {
+        showWithCondition(messages.isNotEmpty())
         val textColor = MethodChecker.getColor(
             context,
             R.color.dms_static_white
         )
-        val text = messages.ifEmpty { listOf(defaultOfferMessage)  }
         if (childCount < 2){
             setFactory {
                 Typography(context).apply {
@@ -563,12 +567,11 @@ class BmsmWidgetTabFragment :
                 }
             }
         }
-        setMessages(messages = text, textColor = textColor)
+        setMessages(messages = messages, textColor = textColor)
     }
 
     private fun SlidingTextSwitcher.setUpsellingPd(
-        offerMessages: List<String>,
-        defaultOfferMessage: String
+        offerMessages: List<String>
     ) {
         binding?.pdUpsellingLoader?.gone()
         val textColor = when (colorThemeConfiguration) {
@@ -599,9 +602,10 @@ class BmsmWidgetTabFragment :
             }
         }
         setMessages(
-            messages = offerMessages.ifEmpty { listOf(defaultOfferMessage) },
+            messages = offerMessages,
             textColor = textColor
         )
+        showWithCondition(offerMessages.isNotEmpty())
     }
 
     private fun Typography.setEmptyStateTextColor() {
