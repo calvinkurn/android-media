@@ -30,17 +30,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.applink.order.DeeplinkMapperOrder
-import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_DESCRIPTION
-import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID
-import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_L2_CANCELLATION_REASON
-import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_CODE
-import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_TEXT
-import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_PRIMARY_BUTTON_TEXT
-import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_SECONDARY_BUTTON_TEXT
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -397,26 +388,8 @@ open class SomDetailFragment :
         return bottomSheetManager?.dismissBottomSheets().orFalse()
     }
 
-    override fun onShowBuyerRequestCancelRespondBottomSheet(it: SomDetailOrder.GetSomDetail.Button) {
-        startActivityForResult(
-            RouteManager.getIntent(
-                requireContext(),
-                UriUtil.buildUriAppendParam(
-                    ApplinkConst.Som.BUYER_REQUEST_CANCEL_RESPOND,
-                    mapOf(
-                        INTENT_PARAM_ORDER_ID to orderId,
-                        INTENT_PARAM_ORDER_STATUS_CODE to detailResponse?.statusCode.orZero().toString(),
-                        INTENT_PARAM_ORDER_STATUS_TEXT to detailResponse?.statusText.orEmpty(),
-                        INTENT_PARAM_ORDER_L2_CANCELLATION_REASON to Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()),
-                        INTENT_PARAM_DESCRIPTION to detailResponse?.button?.firstOrNull()?.popUp?.body.orEmpty(),
-                        INTENT_PARAM_PRIMARY_BUTTON_TEXT to detailResponse?.button?.firstOrNull()?.popUp?.getPrimaryButton()?.displayName.orEmpty(),
-                        INTENT_PARAM_SECONDARY_BUTTON_TEXT to detailResponse?.button?.firstOrNull()?.popUp?.getSecondaryButton()?.displayName.orEmpty()
-                    )
-                )
-            ),
-            101
-        )
-//        bottomSheetManager?.showSomOrderRequestCancelBottomSheet(it, detailResponse, this)
+    override fun onShowBuyerRequestCancelRespondBottomSheet() {
+        bottomSheetManager?.showBuyerRequestCancelRespondBottomSheet()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -744,7 +717,7 @@ open class SomDetailFragment :
                             buttonResp.key.equals(
                                 KEY_RESPOND_TO_CANCELLATION,
                                 true
-                            ) -> onShowBuyerRequestCancelRespondBottomSheet(buttonResp)
+                            ) -> onShowBuyerRequestCancelRespondBottomSheet()
 
                             buttonResp.key.equals(
                                 KEY_UBAH_NO_RESI,
@@ -1316,16 +1289,6 @@ open class SomDetailFragment :
             handleFindNewDriverResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_POF) {
             handlePof(resultCode, data)
-        } else if (requestCode == 101) {
-            if (resultCode == Activity.RESULT_OK) {
-                val success = data?.getBooleanExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_SUCCESS, false).orFalse()
-                val message = data?.getStringExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_MESSAGE).orEmpty()
-                if (success) {
-                    showToaster(message, view, Toaster.TYPE_NORMAL)
-                } else {
-                    showToaster(message, view, Toaster.TYPE_ERROR)
-                }
-            }
         }
     }
 
@@ -1858,15 +1821,15 @@ open class SomDetailFragment :
     }
 
     override fun getBuyerRequestCancelRespondDescription(): String {
-        return detailResponse?.button?.firstOrNull()?.popUp?.body.orEmpty()
+        return detailResponse?.button?.firstOrNull { it.key == KEY_RESPOND_TO_CANCELLATION }?.popUp?.body.orEmpty()
     }
 
     override fun getBuyerRequestCancelRespondPrimaryTextButton(): String {
-        return detailResponse?.button?.firstOrNull()?.popUp?.getPrimaryButton()?.displayName.orEmpty()
+        return detailResponse?.button?.firstOrNull { it.key == KEY_RESPOND_TO_CANCELLATION }?.popUp?.getPrimaryButton()?.displayName.orEmpty()
     }
 
     override fun getBuyerRequestCancelRespondSecondaryTextButton(): String {
-        return detailResponse?.button?.firstOrNull()?.popUp?.getSecondaryButton()?.displayName.orEmpty()
+        return detailResponse?.button?.firstOrNull { it.key == KEY_RESPOND_TO_CANCELLATION }?.popUp?.getSecondaryButton()?.displayName.orEmpty()
     }
 
     override fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel {
