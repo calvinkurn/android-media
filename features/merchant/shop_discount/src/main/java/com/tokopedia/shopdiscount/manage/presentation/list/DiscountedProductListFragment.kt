@@ -110,6 +110,8 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
 
     private var binding by autoClearedNullable<FragmentDiscountedProductListBinding>()
 
+    private var listParentProductIdWithSubsidy: MutableList<String> = mutableListOf()
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -468,18 +470,26 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 getString(R.string.sd_discount_deleted)
             }
 
+            val updatedTotalProduct: Int
             if (viewModel.isOnMultiSelectMode()) {
-                productAdapter.bulkDelete(viewModel.getSelectedProductIds())
+                val listProductIdSafeToDelete =
+                    viewModel.getSelectedProductIds().toMutableList().apply {
+                        removeAll(
+                            listParentProductIdWithSubsidy
+                        )
+                    }
+                productAdapter.bulkDelete(listProductIdSafeToDelete)
+                updatedTotalProduct = viewModel.getTotalProduct() - listProductIdSafeToDelete.size
             } else {
-                productAdapter.delete(viewModel.getSelectedProduct() ?: return)
+                updatedTotalProduct =
+                    if (viewModel.getSelectedProduct()?.id !in listParentProductIdWithSubsidy) {
+                        productAdapter.delete(viewModel.getSelectedProduct() ?: return)
+                        viewModel.getTotalProduct() - ONE_PRODUCT
+                    } else {
+                        viewModel.getTotalProduct()
+                    }
             }
-
-            val updatedTotalProduct = if (viewModel.isOnMultiSelectMode()) {
-                viewModel.getTotalProduct() - viewModel.getSelectedProductCount()
-            } else {
-                viewModel.getTotalProduct() - ONE_PRODUCT
-            }
-
+            listParentProductIdWithSubsidy.clear()
             binding?.recyclerView showToaster deletionWording
             binding?.tpgTotalProduct?.text =
                 String.format(getString(R.string.sd_total_product), updatedTotalProduct)
@@ -489,9 +499,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             viewModel.setInMultiSelectMode(false)
             viewModel.setDisableProductSelection(false)
             disableMultiSelect()
-
             onDiscountRemoved(discountStatusId, updatedTotalProduct)
-
             handleEmptyState(updatedTotalProduct)
         } else {
             binding?.root showError getString(R.string.sd_error_delete_discount)
@@ -830,6 +838,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         when(data.mode){
             ShopDiscountManageDiscountMode.DELETE -> {
                 showLoaderDialog()
+                listParentProductIdWithSubsidy = data.getListProductParentIdWithSubsidyVariant().toMutableList()
                 viewModel.deleteDiscount(discountStatusId, data.getListProductIdVariantNonSubsidy())
             }
             ShopDiscountManageDiscountMode.UPDATE -> {

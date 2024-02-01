@@ -26,6 +26,16 @@ data class ShopDiscountManageProductSubsidyUiModel(
         }.distinct()
     }
 
+    fun getListProductParentIdWithSubsidyVariant(): List<String> {
+        return listProductDetailData.filter { it.isSubsidy }.map {
+            if (it.parentId == Int.ZERO.toString()) {
+                it.productId
+            } else {
+                it.parentId
+            }
+        }.distinct()
+    }
+
     fun getCtaLink(): String {
         return listProductDetailData.firstOrNull()?.subsidyInfo?.ctaProgramLink.orEmpty()
     }
