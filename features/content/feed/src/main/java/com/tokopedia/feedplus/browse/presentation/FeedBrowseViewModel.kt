@@ -9,8 +9,8 @@ import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,13 +59,13 @@ internal class FeedBrowseViewModel @Inject constructor(
         initialValue = FeedBrowseUiState.Placeholder
     )
 
-    fun onIntent(action: FeedBrowseIntent) {
+    fun onAction(action: FeedBrowseAction) {
         when (action) {
-            FeedBrowseIntent.LoadInitialPage -> handleInitialPage()
-            is FeedBrowseIntent.FetchCardsWidget -> {
+            FeedBrowseAction.LoadInitialPage -> handleInitialPage()
+            is FeedBrowseAction.FetchCardsWidget -> {
                 handleFetchWidget(action.slotId)
             }
-            is FeedBrowseIntent.SelectChipWidget -> {
+            is FeedBrowseAction.SelectChipWidget -> {
                 handleSelectChip(action.model, action.slotId)
             }
             FeedBrowseIntent.UpdateStoriesStatus -> {
@@ -175,8 +175,8 @@ internal class FeedBrowseViewModel @Inject constructor(
                 is ContentSlotModel.TabMenus -> {
                     updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                         it.copy(
-                            menus = response.menu.associateWith { FeedBrowseChannelListState.initLoading() },
-                            selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
+                            menus = response.menus.associateWith { FeedBrowseChannelListState.initLoading() },
+                            selectedMenuId = response.menus.firstOrNull()?.id.orEmpty()
                         )
                     }
                 }

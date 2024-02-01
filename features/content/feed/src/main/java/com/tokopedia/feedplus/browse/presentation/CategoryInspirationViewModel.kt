@@ -40,7 +40,7 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
 
     private val jobMap = mutableMapOf<String, Job>()
 
-    val uiState get() = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     fun onAction(action: CategoryInspirationAction) {
         when (action) {
@@ -123,11 +123,11 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
                 is ContentSlotModel.TabMenus -> {
                     _uiState.update {
                         it.copy(
-                            items = response.menu.associate { menu ->
+                            items = response.menus.associate { menu ->
                                 menu.id to
                                     CategoryInspirationData(menu, FeedBrowseChannelListState.initLoading())
                             },
-                            selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
+                            selectedMenuId = response.menus.firstOrNull()?.id.orEmpty()
                         )
                     }
                 }

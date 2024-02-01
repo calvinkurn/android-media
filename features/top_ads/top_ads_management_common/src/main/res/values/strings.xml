@@ -329,7 +329,6 @@
     <string name="topads_ads_currency_prefix">Rp. %s</string>
     <string name="topads_ads_currency_prefix_without_dot">Rp %s</string>
     <string name="topads_ads_performance_sheet_footer">Perkiraan seberapa sering iklanmu tampil berdasarkan produk yang dipilih, biaya grup iklan, dan anggaran harian.</string>
-
-
-
+    <string name="topads_min_bid_error_msg_format">Min. biaya Rp%d.</string>
+    <string name="topads_max_bid_error_msg_format">Maks. biaya Rp%d.</string>
 </resources>

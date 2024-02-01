@@ -1,5 +1,6 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
+import android.view.View
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.recyclerview.widget.RecyclerView
@@ -109,6 +110,15 @@ class UohOrderListViewHolder(
                             })
                         }
                     }
+                }
+
+                // Workaround for ticker not wrapping multiline content correctly
+                binding.tickerInfoInsideCard.post {
+                    binding.tickerInfoInsideCard.measure(
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                    )
+                    binding.tickerInfoInsideCard.requestLayout()
                 }
             } else {
                 binding.tickerInfoInsideCard.gone()

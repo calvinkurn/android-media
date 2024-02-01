@@ -28,7 +28,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellersearch.SellerSearchDeeplinkMapper
@@ -51,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -152,6 +152,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiMode
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FeedbackLoopOptionsBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.HtmlMetaBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostMoreOptionBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.RewardDetailBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
@@ -181,7 +182,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 import com.tokopedia.globalerror.R as globalerrorR
 import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -731,6 +731,14 @@ class SellerHomeFragment :
         SellerHomeTracking.sendTableSeeMoreClickEvent(element, isEmpty)
     }
 
+    override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+        }.show(fm)
+    }
+
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
         SellerHomeTracking.sendPieChartImpressionEvent(model)
     }
@@ -830,6 +838,14 @@ class SellerHomeFragment :
                 showUnificationCoachMarkWhenVisible()
             }
         }
+    }
+
+    override fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+        }.show(fm)
     }
 
     override fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
@@ -1385,29 +1401,17 @@ class SellerHomeFragment :
     }
 
     private fun setupShopSharing() {
-        ImageHandler.loadImageWithTarget(
-            context,
-            shopShareData?.shopSnippetURL.orEmpty(),
-            object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(
-                    resource: Bitmap,
-                    transition: Transition<in Bitmap>?
-                ) {
-                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                        resource,
-                        Bitmap.CompressFormat.PNG
-                    )
-                    if (savedFile != null) {
-                        shopImageFilePath = savedFile.absolutePath
-                        initShopShareBottomSheet()
-                    }
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // no op
+        context?.let {
+            shopShareData?.shopSnippetURL.orEmpty().getBitmapImageUrl(it) { bitmapResult ->
+                val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                    bitmapResult, Bitmap.CompressFormat.PNG
+                )
+                if (savedFile != null) {
+                    shopImageFilePath = savedFile.absolutePath
+                    initShopShareBottomSheet()
                 }
             }
-        )
+        }
         if (shopShareData == null) {
             val milestoneWidget = adapter.data.firstOrNull { it is MilestoneWidgetUiModel }
             milestoneWidget?.let {
@@ -1564,8 +1568,8 @@ class SellerHomeFragment :
     private fun showPersonaBottomSheet(personaStatus: Int) {
         activity?.let {
             val shouldShowBottomSheet = sharedPref.shouldShowPersonaHomePopup(
-                    userSession.userId
-                ) && isFromPersona
+                userSession.userId
+            ) && isFromPersona
 
             if (shouldShowBottomSheet) {
                 runCatching {
@@ -2279,9 +2283,11 @@ class SellerHomeFragment :
 
     private fun <D : BaseDataUiModel> handleShopShareMilestoneWidget(widget: BaseWidgetUiModel<D>) {
         if (widget is MilestoneWidgetUiModel) {
-            val shareMission = widget.data?.milestoneMissions?.filterIsInstance<BaseMilestoneMissionUiModel>()?.firstOrNull {
-                return@firstOrNull it.missionButton.urlType == BaseMilestoneMissionUiModel.UrlType.SHARE
-            }
+            val shareMission =
+                widget.data?.milestoneMissions?.filterIsInstance<BaseMilestoneMissionUiModel>()
+                    ?.firstOrNull {
+                        return@firstOrNull it.missionButton.urlType == BaseMilestoneMissionUiModel.UrlType.SHARE
+                    }
             val isShareMissionAvailable = !shareMission?.missionCompletionStatus.orFalse()
             if (isShareMissionAvailable) {
                 sellerHomeViewModel.getShopInfoById()
@@ -2953,6 +2959,13 @@ class SellerHomeFragment :
                 }
             }
         }
+    }
+
+    private fun goToHtmlMetaLink(
+        bottomSheetTitle: String,
+        appLink: String
+    ) {
+        RouteManager.route(context, appLink)
     }
 
     private fun showRewardDetailBottomSheet(uiModel: RewardDetailUiModel) {

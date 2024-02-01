@@ -26,6 +26,10 @@ enum class ComponentNames(val componentName: String) {
     TabsIcon("tabs_icon"),
     TabsIconItem("tabs_icon_item"),
 
+    // Tabs With Image or Text
+    TabsImage("tabs_image"),
+    TabsImageItem("tabs_image_item"),
+
     TimerSprintSale("timer_sprint_sale"),
     ShimmerProductCard("shimmer_product_card"),
     Shimmer("shimmer"),

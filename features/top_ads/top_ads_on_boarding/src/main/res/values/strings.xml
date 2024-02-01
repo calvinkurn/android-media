@@ -15,4 +15,15 @@
     <string name="topads_ads_start_page_positive_button">Buat Iklan Pertamamu</string>
     <string name="topads_ads_start_page_button_button">Yuk, Pelajari TopAds</string>
 
+    <string name="topads_onboarding_create_new_ads_cta">Buat Iklan Sekarang!</string>
+    <string name="topads_onboarding_frequently_asked_questions">Hal yang sering ditanyakan</string>
+    <string name="topads_onboarding_title">TopAds</string>
+    <string name="topads_onboarding_promotion_msg">Beriklan dan jangkau pembeli lebih banyak dengan TopAds!</string>
+    <string name="topads_onboarding_promotion_potential_msg">Dengan TopAds tokomu berpotensi:</string>
+    <string name="topads_onboarding_promotion_note">*Berdasarkan data Performa Toko pengguna aktif TopAds 2022</string>
+    <string name="tampil">Tampil</string>
+    <string name="klik">Klik</string>
+    <string name="penjualan">Penjualan</string>
+    <string name="topads_autops_onboarding_article_link">Waktunya buat iklan dengan TopAds untuk bantu perkembangan bisnis tokomu. Baca Artikel</string>
+
 </resources>

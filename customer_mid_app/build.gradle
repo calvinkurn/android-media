@@ -196,7 +196,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
     implementation projectOrAar(rootProject.ext.features.commonEPharmacy)
     implementation projectOrAar(rootProject.ext.libraries.oms)
-    implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.travelCalendar)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)

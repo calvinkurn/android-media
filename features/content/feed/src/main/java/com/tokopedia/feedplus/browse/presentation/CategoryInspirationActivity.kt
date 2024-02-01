@@ -14,6 +14,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * Created by kenny.hadisaputra on 20/09/23
  */
+@Suppress("LateinitUsage")
 class CategoryInspirationActivity : BaseActivity() {
 
     @Inject lateinit var fragmentFactory: FragmentFactory
@@ -21,10 +22,10 @@ class CategoryInspirationActivity : BaseActivity() {
     private lateinit var binding: ActivityFragmentOnlyBinding
 
     private val sourceType: String
-        get() = intent?.data?.getQueryParameter(QUERY_SOURCE_TYPE) ?: "Source type paramater not found"
+        get() = intent?.data?.getQueryParameter(QUERY_SOURCE_TYPE).orEmpty()
 
     private val entryPoint: String
-        get() = intent?.data?.getQueryParameter(QUERY_ENTRYPOINT) ?: "Entrypoint parameter not found"
+        get() = intent?.data?.getQueryParameter(QUERY_ENTRYPOINT).orEmpty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()

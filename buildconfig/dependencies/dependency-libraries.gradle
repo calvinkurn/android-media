@@ -65,7 +65,6 @@ ext {
             devMonitoringTools      : ":libraries:dev_monitoring_tools",
             dynamicFeatures         : ":libraries:dynamic_features",
             encryption              : ":libraries:encryption",
-            fingerprint             : ":libraries:fingerprint",
             floatingWindow          : ":libraries:floating_window",
             foldable                : ":libraries:foldable",
             graphql                 : ":libraries:graphql",

@@ -32,7 +32,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseB
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.HorizontalStoriesViewHolder
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
@@ -45,7 +45,6 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.InterruptedIOException
@@ -61,7 +60,6 @@ import com.tokopedia.content.common.R as contentcommonR
 internal class FeedBrowseFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
     private val impressionManager: FeedBrowseImpressionManager,
-    private val trackingQueue: TrackingQueue,
     private val router: Router,
     trackerFactory: FeedBrowseTrackerImpl.Factory
 ) : TkpdBaseV4Fragment() {
@@ -115,7 +113,7 @@ internal class FeedBrowseFragment @Inject constructor(
                 widgetModel.slotInfo,
                 chipPosition
             )
-            viewModel.onIntent(FeedBrowseIntent.SelectChipWidget(widgetModel.slotInfo.id, chip))
+            viewModel.onAction(FeedBrowseAction.SelectChipWidget(widgetModel.slotInfo.id, chip))
         }
 
         override fun onChipSelected(
@@ -123,7 +121,7 @@ internal class FeedBrowseFragment @Inject constructor(
             widgetModel: FeedBrowseItemListModel.Chips.Item,
             chip: WidgetMenuModel
         ) {
-            viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(widgetModel.slotInfo.id, chip))
+            viewModel.onAction(FeedBrowseAction.FetchCardsWidget(widgetModel.slotInfo.id, chip))
         }
     }
 
@@ -133,7 +131,7 @@ internal class FeedBrowseFragment @Inject constructor(
             slotId: String,
             menu: WidgetMenuModel
         ) {
-            viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(slotId, menu))
+            viewModel.onAction(FeedBrowseAction.FetchCardsWidget(slotId, menu))
         }
 
         override fun onRefresh(
@@ -141,7 +139,7 @@ internal class FeedBrowseFragment @Inject constructor(
             slotId: String,
             menu: WidgetMenuModel
         ) {
-            viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(slotId, menu))
+            viewModel.onAction(FeedBrowseAction.FetchCardsWidget(slotId, menu))
         }
 
         override fun onCardImpressed(
@@ -272,8 +270,8 @@ internal class FeedBrowseFragment @Inject constructor(
         setupView()
         observeUiState()
 
-        if (savedInstanceState == null) {
-            viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        if (activity?.lastNonConfigurationInstance == null) {
+            viewModel.onAction(FeedBrowseAction.LoadInitialPage)
             tracker.openScreenBrowseFeedPage()
         }
     }
@@ -284,12 +282,7 @@ internal class FeedBrowseFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        viewModel.onIntent(FeedBrowseIntent.UpdateStoriesStatus)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        trackingQueue.sendAll()
+        viewModel.onAction(FeedBrowseAction.UpdateStoriesStatus)
     }
 
     override fun onDestroyView() {
@@ -363,7 +356,7 @@ internal class FeedBrowseFragment @Inject constructor(
             if (errorType == GlobalError.MAINTENANCE) {
                 onBackPressedCallback.handleOnBackPressed()
             } else {
-                viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+                viewModel.onAction(FeedBrowseAction.LoadInitialPage)
             }
         }
         binding.feedBrowseError.setType(errorType)

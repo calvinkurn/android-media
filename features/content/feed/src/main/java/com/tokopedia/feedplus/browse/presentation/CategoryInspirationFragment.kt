@@ -194,13 +194,14 @@ internal class CategoryInspirationFragment @Inject constructor(
         setupView()
         observe()
 
-        if (savedInstanceState == null) {
+        if (activity?.lastNonConfigurationInstance == null) {
             viewModel.onAction(CategoryInspirationAction.Init)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvCategoryInspiration.removeOnScrollListener(loadMoreListener)
         _binding = null
     }
 

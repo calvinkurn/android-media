@@ -10,10 +10,11 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.FeedBrowseViewModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
@@ -79,7 +80,7 @@ class FeedBrowseViewModelTest {
 
         backgroundScope.launch { viewModel.uiState.collect() }
 
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
 
         val value = viewModel.uiState.value
         value.assertType<FeedBrowseUiState.Success> {
@@ -122,7 +123,7 @@ class FeedBrowseViewModelTest {
 
         val viewModel = FeedBrowseViewModel(mockRepo)
         backgroundScope.launch { viewModel.uiState.collect() }
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -137,7 +138,7 @@ class FeedBrowseViewModelTest {
             )
         }
 
-        viewModel.onIntent(FeedBrowseIntent.SelectChipWidget(channelMenuSlotModel.slotId, widgetMenus[1]))
+        viewModel.onAction(FeedBrowseAction.SelectChipWidget(channelMenuSlotModel.slotId, widgetMenus[1]))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -166,7 +167,7 @@ class FeedBrowseViewModelTest {
         val viewModel = FeedBrowseViewModel(mockRepo)
         backgroundScope.launch { viewModel.uiState.collect() }
 
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -181,7 +182,7 @@ class FeedBrowseViewModelTest {
         coEvery { mockRepo.getWidgetRecommendation(bannerSlotModel.identifier) } returns WidgetRecommendationModel.Banners(
             listOf(modelGen.bannerModel.elementAt(1))
         )
-        viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(bannerSlotModel.slotId, WidgetMenuModel.Empty))
+        viewModel.onAction(FeedBrowseAction.FetchCardsWidget(bannerSlotModel.slotId, WidgetMenuModel.Empty))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertNotEqualTo(
                 listOf(
@@ -215,7 +216,7 @@ class FeedBrowseViewModelTest {
         val viewModel = FeedBrowseViewModel(mockRepo)
         backgroundScope.launch { viewModel.uiState.collect() }
 
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -230,7 +231,7 @@ class FeedBrowseViewModelTest {
         coEvery { mockRepo.getWidgetRecommendation(authorSlotModel.identifier) } returns WidgetRecommendationModel.Authors(
             listOf(modelGen.authorModel.elementAt(1))
         )
-        viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(authorSlotModel.slotId, WidgetMenuModel.Empty))
+        viewModel.onAction(FeedBrowseAction.FetchCardsWidget(authorSlotModel.slotId, WidgetMenuModel.Empty))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertNotEqualTo(
                 listOf(
@@ -272,7 +273,7 @@ class FeedBrowseViewModelTest {
         val viewModel = FeedBrowseViewModel(mockRepo)
         backgroundScope.launch { viewModel.uiState.collect() }
 
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertEqualTo(
                 listOf(
@@ -287,7 +288,7 @@ class FeedBrowseViewModelTest {
             )
         }
 
-        viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(channelWithMenuSlotModel.slotId, menusModel[1]))
+        viewModel.onAction(FeedBrowseAction.FetchCardsWidget(channelWithMenuSlotModel.slotId, menusModel[1]))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
             it.widgets.assertNotEqualTo(
                 listOf(
@@ -303,6 +304,120 @@ class FeedBrowseViewModelTest {
                             ),
                             selectedMenuId = menusModel.first().id
                         )
+                    )
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `test failed fetch channel with menus`() = runTestUnconfined {
+        val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
+        val channelSlotModel = modelGen.channelWithMenusSlot.take(2).toList()
+        val exception = MessageErrorException()
+
+        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getSlots() } returns channelSlotModel
+        coEvery {
+            mockRepo.getWidgetContentSlot(
+                WidgetRequestModel(channelSlotModel[0].group)
+            )
+        } returns ContentSlotModel.TabMenus(emptyList())
+        coEvery {
+            mockRepo.getWidgetContentSlot(
+                WidgetRequestModel(channelSlotModel[1].group)
+            )
+        } throws exception
+
+        val viewModel = FeedBrowseViewModel(mockRepo)
+        backgroundScope.launch { viewModel.uiState.collect() }
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
+        viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
+            it.widgets.assertEqualTo(
+                listOf(
+                    FeedBrowseStatefulModel(
+                        ResultState.Success,
+                        channelSlotModel[0].copy(menus = emptyMap())
+                    ),
+                    FeedBrowseStatefulModel(
+                        ResultState.Fail(exception),
+                        channelSlotModel[1]
+                    )
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `test failed fetch author`() = runTestUnconfined {
+        val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
+        val authorSlot = modelGen.authorSlot.take(2).toList()
+        val exception = MessageErrorException()
+
+        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getSlots() } returns authorSlot
+        coEvery {
+            mockRepo.getWidgetRecommendation(
+                authorSlot[0].identifier
+            )
+        } returns WidgetRecommendationModel.Authors(emptyList())
+        coEvery {
+            mockRepo.getWidgetRecommendation(
+                authorSlot[1].identifier
+            )
+        } throws exception
+
+        val viewModel = FeedBrowseViewModel(mockRepo)
+        backgroundScope.launch { viewModel.uiState.collect() }
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
+        viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
+            it.widgets.assertEqualTo(
+                listOf(
+                    FeedBrowseStatefulModel(
+                        ResultState.Success,
+                        authorSlot[0].copy(authorList = emptyList())
+                    ),
+                    FeedBrowseStatefulModel(
+                        ResultState.Fail(exception),
+                        authorSlot[1]
+                    )
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `test failed fetch banner`() = runTestUnconfined {
+        val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
+        val bannerSlot = modelGen.bannerSlot.take(2).toList()
+        val exception = MessageErrorException()
+
+        coEvery { mockRepo.getTitle() } returns mockTitle
+        coEvery { mockRepo.getSlots() } returns bannerSlot
+        coEvery {
+            mockRepo.getWidgetRecommendation(
+                bannerSlot[0].identifier
+            )
+        } returns WidgetRecommendationModel.Banners(emptyList())
+        coEvery {
+            mockRepo.getWidgetRecommendation(
+                bannerSlot[1].identifier
+            )
+        } throws exception
+
+        val viewModel = FeedBrowseViewModel(mockRepo)
+        backgroundScope.launch { viewModel.uiState.collect() }
+        viewModel.onAction(FeedBrowseAction.LoadInitialPage)
+        viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
+            it.widgets.assertEqualTo(
+                listOf(
+                    FeedBrowseStatefulModel(
+                        ResultState.Success,
+                        bannerSlot[0].copy(bannerList = emptyList())
+                    ),
+                    FeedBrowseStatefulModel(
+                        ResultState.Fail(exception),
+                        bannerSlot[1]
                     )
                 )
             )
