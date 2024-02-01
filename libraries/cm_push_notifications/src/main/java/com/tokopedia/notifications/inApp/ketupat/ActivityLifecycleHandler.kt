@@ -126,7 +126,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     }
 
     private fun is24HourBefore(time: Long): Boolean {
-        return TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - time) >= 24
+        return TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - time) >= 5
     }
 
     private fun setTimeStampForKetupat(activity: Activity) {
