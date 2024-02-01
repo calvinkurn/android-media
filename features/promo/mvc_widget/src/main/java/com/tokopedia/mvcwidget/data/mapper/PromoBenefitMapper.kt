@@ -26,6 +26,7 @@ enum class Style(val id: String) {
     Text("text_value"),
     TextColor("text_color"),
     TextFormat("text_format"),
+    TncText("tnc_text"),
     TextHtml("text_html"),
 }
 
@@ -54,9 +55,8 @@ internal fun PromoCatalogResponse.toUiModel(): BenefitUiModel {
         estimatePriceComponent.toTextModel(),
         basePriceComponent.toTextModel(),
         listPromo,
-        listOf(),
         BenefitTnc(
-            tncComponent.attributeOf(Style.TextHtml),
+            tncComponent.attributeOf(Style.TncText).split("\n"),
             tncComponent.attributeOf(Style.TextColor)
         )
     )

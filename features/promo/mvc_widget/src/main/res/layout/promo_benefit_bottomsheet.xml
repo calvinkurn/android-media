@@ -111,18 +111,6 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_tnc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/typography2"
-            app:layout_constraintTop_toBottomOf="@+id/rv_info"
-            app:typographyType="display_3"
-            tools:text="test test" />
-
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/toggle_info"
             android:layout_width="28dp"

@@ -8,10 +8,12 @@
     android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
+        android:layout_width="12dp"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:text="\u2022"
+        app:typographyWeight="bold"
         app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography

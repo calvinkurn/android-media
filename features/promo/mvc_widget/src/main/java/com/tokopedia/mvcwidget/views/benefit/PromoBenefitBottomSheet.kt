@@ -140,12 +140,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                             }
 
                             usablePromoAdapter.submitList(model.usablePromo)
-//                        infoAdapter.submitList(model.promoInfo)
-
-                            tvTnc.text = MethodChecker.fromHtml(model.tnc.html)
-                            tvTnc.setTextColor(
-                                requireContext().getUnifyColorFromHex(model.tnc.color)
-                            )
+                            infoAdapter.submitList(model.tnc.tncTexts, model.tnc.color)
                         }
                     }
                     launch {
@@ -175,7 +170,6 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
                 infoStateIsShown = !infoStateIsShown
                 rvInfo.isVisible = infoStateIsShown
-                tvTnc.isVisible = infoStateIsShown
             }
             globalError.errorAction.gone()
         }

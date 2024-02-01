@@ -5,13 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.mvcwidget.databinding.LayoutItemInfoBinding
+import com.tokopedia.mvcwidget.utils.getUnifyColorFromHex
 
 class AdditionalInfoAdapter : RecyclerView.Adapter<AdditionalInfoAdapter.InfoViewHolder>() {
 
     private var list: List<String> = listOf()
+    private var color: String = "#6D7588"
 
-    fun submitList(list: List<String>) {
+    fun submitList(list: List<String>, color: String) {
         this.list = list
+        this.color = color
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoViewHolder {
@@ -20,14 +23,17 @@ class AdditionalInfoAdapter : RecyclerView.Adapter<AdditionalInfoAdapter.InfoVie
     }
 
     override fun onBindViewHolder(holder: InfoViewHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position], color)
     }
 
     override fun getItemCount(): Int = list.size
 
     class InfoViewHolder(private val binding: LayoutItemInfoBinding) : ViewHolder(binding.root) {
-        fun bind(s: String) {
+        fun bind(s: String, color: String) {
+            val context = binding.root.context
+            val c = context.getUnifyColorFromHex(color)
             binding.text.text = s
+            binding.text.setTextColor(c)
         }
     }
 }
