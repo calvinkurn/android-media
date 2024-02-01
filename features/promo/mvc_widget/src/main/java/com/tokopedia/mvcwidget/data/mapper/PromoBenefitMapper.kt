@@ -5,6 +5,7 @@ import com.tokopedia.mvcwidget.views.benefit.BenefitText
 import com.tokopedia.mvcwidget.views.benefit.BenefitTnc
 import com.tokopedia.mvcwidget.views.benefit.BenefitUiModel
 import com.tokopedia.mvcwidget.views.benefit.UsablePromoModel
+import org.w3c.dom.Attr
 
 enum class PdpComponent(val id: String) {
     FinalPrice("pdp_bs_final_price"),
@@ -37,9 +38,15 @@ internal fun PromoCatalogResponse.toUiModel(): BenefitUiModel {
     val estimatePriceComponent = components.componentOf(PdpComponent.FinalPrice)
     val basePriceComponent = components.componentOf(PdpComponent.NetPrice)
     val tncComponent = components.componentOf(PdpComponent.TnC)
-    val cashback = components.componentOf(PdpComponent.Cashback).toTextWithIconModel()
-    val discount = components.componentOf(PdpComponent.Discount).toTextWithIconModel()
-    val listPromo = listOf(cashback, discount)
+    val listPromo: MutableList<UsablePromoModel> = mutableListOf()
+    val cashback = components.componentOf(PdpComponent.Cashback)
+    if (cashback.isNotEmpty()) {
+        listPromo.add(cashback.toTextWithIconModel())
+    }
+    val discount = components.componentOf(PdpComponent.Discount)
+    if (discount.isNotEmpty()) {
+        listPromo.add(discount.toTextWithIconModel())
+    }
 
     return BenefitUiModel(
         headerComponent.attributeOf(Style.BgImage),
