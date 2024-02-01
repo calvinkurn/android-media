@@ -40,7 +40,9 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                 if (!CMInAppManager.getInstance().existsActiveInAppCampaign(HomePageActivity, true) &&
                     isAnimationPopupEnabled
                 ) {
-                    getScratchCardData(activity)
+                    if(!isAnimationPopupGQlCalled) {
+                        getScratchCardData(activity)
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -62,7 +64,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         ketupatSlashCallBack: KetupatSlashCallBack? = null
     ) {
         val userSession = createUserSession(activity)
-        if (userSession.isLoggedIn && !isAnimationPopupGQlCalled) {
+        if (userSession.isLoggedIn) {
             isAnimationPopupGQlCalled = true
             AnimationPopupGqlGetData().getAnimationScratchPopupData({
                 it.popUpContent?.let { popup ->
@@ -87,7 +89,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     private fun enableGQLCall(){
         Handler().postDelayed({
             isAnimationPopupGQlCalled = false
-                              }, 500)
+                              }, 5000)
     }
 
     open fun showLottiePopup(
