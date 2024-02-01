@@ -71,6 +71,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_REVIEW_BUYER.type -> it.mapToBuyerReview(remoteModel.basicInfo)
                 WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
                 WidgetTypes.CATALOG_CTA_PRICE.type -> it.mapToCtaPrice(isDarkMode)
+                WidgetTypes.CATALOG_CARD_TOP_SELLER.type -> it.mapToCardTopSeller(isDarkMode)
                 else -> {
                     BlankUiModel()
                 }
@@ -760,8 +761,11 @@ class CatalogDetailUiMapper @Inject constructor(
         return if (data?.style?.isSticky == false && !data.style.isHidden) {
             val minPrice = data.priceCta.marketPrice.firstOrNull()?.minFmt.orEmpty()
             val maxPrice = data.priceCta.marketPrice.firstOrNull()?.maxFmt.orEmpty()
-            val color = if (darkMode) catalogR.color.catalog_dms_dark_color_text_common
-                else catalogR.color.catalog_dms_light_color_text_common
+            val color = if (darkMode) {
+                catalogR.color.catalog_dms_dark_color_text_common
+            } else {
+                catalogR.color.catalog_dms_light_color_text_common
+            }
             PriceCtaSellerOfferingUiModel(
                 price = if (minPrice == maxPrice) maxPrice else "$minPrice - $maxPrice",
                 textTitleColor = color,
@@ -771,6 +775,36 @@ class CatalogDetailUiMapper @Inject constructor(
         } else {
             BlankUiModel()
         }
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToCardTopSeller(
+        darkMode: Boolean
+    ): BaseCatalogUiModel {
+        return data?.topSeller?.run {
+            val bebasOngkirUrl = labelGroups.firstOrNull { it.position == "overlay_2" }?.url.orEmpty()
+            val productBenefit = labelGroups.firstOrNull { it.position == "ri_product_benefit" }?.title.orEmpty()
+            val productOffer = labelGroups.firstOrNull { it.position == "ri_product_offer" }?.title.orEmpty()
+            SellerOfferingUiModel(
+                productImage = mediaUrl.thumbnailUrl,
+                shopBadge = shop.badge,
+                shopName = shop.name,
+                stockBar = stock.soldPercentage.toString(),
+                productName = "ini harusnya ga ada",
+                productPrice = price.text,
+                productSlashPrice = price.original,
+                shopLocation = shop.city,
+                chatResponseTime = shop.stats.chatEta,
+                orderProcessTime = shop.stats.orderProcessEta,
+                labelPromo = productBenefit,
+                labelTotalDisc = productOffer,
+                shopRating = credibility.rating + if (credibility.ratingCount.isEmpty()) "" else " (${credibility.ratingCount})",
+                totalSold = credibility.sold,
+                freeOngkir = bebasOngkirUrl,
+                estimationShipping = delivery.eta + " • " + additionalService.name,
+                isShopGuarantee = paymentOption.desc.isNotEmpty(),
+                installment = paymentOption.desc
+            )
+        } ?: SellerOfferingUiModel()
     }
 
     private fun getTextColor(darkMode: Boolean): Int {

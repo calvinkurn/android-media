@@ -446,11 +446,19 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
           topSeller {
             productID
             warehouseID
+            stock {
+              soldPercentage
+              isHidden
+            }
             shop {
               id
               name
               city
               badge
+              stats {
+                chatEta
+                orderProcessEta
+              }
             }
             price {
               text
@@ -459,6 +467,21 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
             credibility {
               rating
               sold
+              ratingCount
+            }
+            mediaUrl {
+              image300
+            }
+            delivery {
+              eta
+            }
+            additionalService {
+              name
+            }
+            paymentOption {
+              iconUrl
+              title
+              desc
             }
             labelGroups {
               position

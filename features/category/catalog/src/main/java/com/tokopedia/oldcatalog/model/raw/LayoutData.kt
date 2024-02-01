@@ -300,20 +300,32 @@ data class LayoutData(
         @SerializedName("price")
         val price: Price = Price(),
         @SerializedName("credibility") val credibility: Credibility = Credibility(),
-        @SerializedName("labelGroups") val labelGroups: List<LabelGroup> = emptyList()
+        @SerializedName("labelGroups") val labelGroups: List<LabelGroup> = emptyList(),
+        @SerializedName("mediaUrl") val mediaUrl: MediaUrl = MediaUrl(),
+        @SerializedName("stock") val stock: Stock = Stock(),
+        @SerializedName("paymentOption") val paymentOption: PaymentOption = PaymentOption(),
+        @SerializedName("delivery") val delivery: Delivery = Delivery(),
+        @SerializedName("additionalService") val additionalService: AdditionalService = AdditionalService()
     ) {
         data class Shop(
             @SerializedName("id") val id: String = "",
             @SerializedName("name") val name: String = "",
             @SerializedName("city") val city: String = "",
-            @SerializedName("badge") val badge: String = ""
-        )
+            @SerializedName("badge") val badge: String = "",
+            @SerializedName("stats") val stats: Stats = Stats()
+        ) {
+            data class Stats(
+                val chatEta: String = "",
+                val orderProcessEta: String = ""
+            )
+        }
         data class Price(
             @SerializedName("text") val text: String = "",
             @SerializedName("original") val original: String = ""
         )
         data class Credibility(
             @SerializedName("rating") val rating: String = "",
+            @SerializedName("ratingCount") val ratingCount: String = "",
             @SerializedName("sold") val sold: String = ""
         )
         data class LabelGroup(
@@ -325,6 +337,23 @@ data class LayoutData(
         data class Style(
             @SerializedName("key") val key: String = "",
             @SerializedName("value") val value: String = ""
+        )
+        data class MediaUrl(
+            @SerializedName("image300") val thumbnailUrl: String = ""
+        )
+        data class Stock(
+            @SerializedName("soldPercentage") val soldPercentage: Int = 0,
+            @SerializedName("isHidden") val isHidden: Boolean = false
+        )
+        data class PaymentOption(
+            @SerializedName("desc") val desc: String = "",
+            @SerializedName("iconUrl") val iconUrl: String = ""
+        )
+        data class Delivery(
+            @SerializedName("eta") val eta: String = ""
+        )
+        data class AdditionalService(
+            @SerializedName("name") val name: String = ""
         )
     }
 }
