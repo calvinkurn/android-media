@@ -6,12 +6,12 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateLinkWrapperResponseDto
 import com.tokopedia.shareexperience.data.query.ShareExGetAffiliateEligibilityQuery
-import com.tokopedia.shareexperience.domain.ShareExResult
-import com.tokopedia.shareexperience.domain.asFlowResult
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
 import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateEligibilityRequest
 import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateLinkEligibilityRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
+import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.shareexperience.domain.util.asFlowResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn

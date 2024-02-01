@@ -11,11 +11,13 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.toArray
-import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
+import com.tokopedia.shareexperience.domain.util.ShareExConstants
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
+import com.tokopedia.user.session.UserSessionInterface
 import org.json.JSONArray
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,7 +25,8 @@ import javax.inject.Inject
 class ShareExChannelMapper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val resourceProvider: ShareExResourceProvider,
-    private val remoteConfig: RemoteConfig
+    private val remoteConfig: RemoteConfig,
+    private val userSession: UserSessionInterface
 ) {
 
     fun generateSocialMediaChannel(): ShareExChannelModel {
@@ -71,6 +74,11 @@ class ShareExChannelMapper @Inject constructor(
             resolveInfoList.isNotEmpty()
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+            ShareExLogger.logExceptionToServerLogger(
+                throwable = throwable,
+                deviceId = userSession.deviceId,
+                description = ::isAppInstalled.name
+            )
             false
         }
     }
@@ -85,6 +93,11 @@ class ShareExChannelMapper @Inject constructor(
             JSONArray(socialMediaOrdering).toArray()
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+            ShareExLogger.logExceptionToServerLogger(
+                throwable = throwable,
+                deviceId = userSession.deviceId,
+                description = ::getSocialMediaOrderingArray.name
+            )
             arrayOf()
         }
     }
@@ -186,6 +199,7 @@ class ShareExChannelMapper @Inject constructor(
                 channelEnum = ShareExChannelEnum.COPY_LINK,
                 title = resourceProvider.getCopyLinkChannelTitle(),
                 icon = IconUnify.LINK,
+                packageName = "", // No need package name, will not use intent
                 mimeType = ShareExMimeTypeEnum.NOTHING
             )
         )
@@ -212,6 +226,7 @@ class ShareExChannelMapper @Inject constructor(
                 channelEnum = ShareExChannelEnum.OTHERS,
                 title = resourceProvider.getOthersChannelTitle(),
                 icon = IconUnify.MENU_KEBAB_HORIZONTAL,
+                packageName = "", // No need package name, will not use intent
                 mimeType = ShareExMimeTypeEnum.TEXT
             )
         )

@@ -16,7 +16,6 @@ class ShareExBottomSheetItemCallback(
         return newList.size
     }
 
-    //TODO: configure the check
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition] == newList[newItemPosition]
     }
@@ -24,5 +23,4 @@ class ShareExBottomSheetItemCallback(
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition] == newList[newItemPosition]
     }
-
 }

@@ -6,6 +6,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
+import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -36,8 +38,13 @@ class ShareExMediaCleanupStorageWorker(private val context: Context, params: Wor
                     ExistingWorkPolicy.REPLACE,
                     worker
                 )
-            } catch (ignored: Exception) {
-                Timber.d(ignored)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                ShareExLogger.logExceptionToServerLogger(
+                    throwable = throwable,
+                    deviceId = UserSession(context).deviceId,
+                    description = ::ShareExMediaCleanupStorageWorker.name
+                )
             }
         }
     }

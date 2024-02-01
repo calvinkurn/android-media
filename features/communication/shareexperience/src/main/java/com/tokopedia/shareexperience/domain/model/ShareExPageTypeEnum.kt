@@ -19,11 +19,12 @@ enum class ShareExPageTypeEnum(val value: String, val valueInt: Int) {
     PLAY("play", 9),
     FEED("feed", 10),
     CATEGORY("category", 11),
-    HELP("help", 12);
+    HELP("help", 12),
+    OTHERS("others", 0);
 
     companion object {
         fun fromValue(value: String): ShareExPageTypeEnum {
-            return values().find { it.value == value } ?: PDP // default PDP
+            return values().find { it.value == value } ?: OTHERS // default
         }
     }
 }

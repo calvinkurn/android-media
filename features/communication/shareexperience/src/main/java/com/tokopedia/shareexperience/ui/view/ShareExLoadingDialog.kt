@@ -3,20 +3,23 @@ package com.tokopedia.shareexperience.ui.view
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.os.Bundle
-import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingOverlayBinding
-import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExOthersBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExShopBottomSheetRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
+import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -29,7 +32,7 @@ class ShareExLoadingDialog(
     private val id: String,
     private val pageTypeEnum: ShareExPageTypeEnum,
     private val onResult: (ShareExResult<ShareExBottomSheetModel>) -> Unit
-): Dialog(context, R.style.CustomDialogTheme) {
+) : Dialog(context, R.style.CustomDialogTheme) {
 
     private val weakContext = WeakReference(context)
     private var _binding: ShareexperienceLoadingOverlayBinding? = null
@@ -71,10 +74,7 @@ class ShareExLoadingDialog(
         weakContext.get()?.let {
             (it as? FragmentActivity)?.lifecycleScope?.launch {
                 try {
-                    val request = ShareExProductBottomSheetRequest(
-                        pageType = pageTypeEnum.valueInt,
-                        id = id
-                    )
+                    val request = getRequest()
                     useCase.getData(request).collectLatest { result ->
                         when (result) {
                             is ShareExResult.Success, is ShareExResult.Error -> {
@@ -85,8 +85,45 @@ class ShareExLoadingDialog(
                     }
                 } catch (throwable: Throwable) {
                     Timber.d(throwable)
+                    weakContext.get()?.let { context ->
+                        ShareExLogger.logExceptionToServerLogger(
+                            throwable = throwable,
+                            deviceId = UserSession(context).deviceId,
+                            description = ::fetchBottomSheetData.name
+                        )
+                    }
                     onResult(ShareExResult.Error(throwable))
                 }
+            }
+        }
+    }
+
+    private fun getRequest(): ShareExBottomSheetRequest {
+        return when (pageTypeEnum) {
+            ShareExPageTypeEnum.PDP -> {
+                ShareExProductBottomSheetRequest(
+                    pageType = pageTypeEnum.valueInt,
+                    id = id
+                )
+            }
+            ShareExPageTypeEnum.SHOP -> {
+                ShareExShopBottomSheetRequest(
+                    pageType = pageTypeEnum.valueInt,
+                    id = id
+                )
+            }
+            ShareExPageTypeEnum.DISCOVERY -> {
+                ShareExDiscoveryBottomSheetRequest(
+                    pageType = pageTypeEnum.valueInt,
+                    id = id
+                )
+            }
+            else -> {
+                // Default Others
+                ShareExOthersBottomSheetRequest(
+                    pageType = pageTypeEnum.valueInt,
+                    id = id
+                )
             }
         }
     }

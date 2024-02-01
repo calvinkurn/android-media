@@ -7,8 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.shareexperience.domain.ShareExConstants
-import com.tokopedia.shareexperience.domain.ShareExResult
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
@@ -27,6 +26,9 @@ import com.tokopedia.shareexperience.domain.usecase.ShareExGetDownloadedImageUse
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetGeneratedImageUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetShortLinkUseCase
+import com.tokopedia.shareexperience.domain.util.ShareExConstants
+import com.tokopedia.shareexperience.domain.util.ShareExLogger
+import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
@@ -59,7 +61,7 @@ import javax.inject.Inject
 class ShareExViewModel @Inject constructor(
     private val getSharePropertiesUseCase: ShareExGetSharePropertiesUseCase,
     private val getGeneratedImageUseCase: ShareExGetGeneratedImageUseCase,
-    private val generateShortLinkUseCase: ShareExGetShortLinkUseCase,
+    private val getShortLinkUseCase: ShareExGetShortLinkUseCase,
     private val getDownloadedImageUseCase: ShareExGetDownloadedImageUseCase,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
@@ -81,6 +83,7 @@ class ShareExViewModel @Inject constructor(
      * Ui state for image generator
      */
     private val _imageGeneratorUiState = MutableStateFlow(ShareExImageGeneratorUiState())
+    val imageGeneratorModel = _imageGeneratorUiState.asStateFlow()
 
     /**
      * Ui state for open channel (app) intent
@@ -137,12 +140,17 @@ class ShareExViewModel @Inject constructor(
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
+                ShareExLogger.logExceptionToServerLogger(
+                    throwable = throwable,
+                    deviceId = userSession.deviceId,
+                    description = ::getShareBottomSheetData.name
+                )
             }
         }
     }
 
     private fun handleFirstLoadBottomSheetModel(
-        bottomSheetModel: ShareExBottomSheetModel,
+        bottomSheetModel: ShareExBottomSheetModel, // args model
         selectedChip: String
     ) {
         val chipPosition = bottomSheetModel.getSelectedChipPosition(selectedChip).orZero()
@@ -155,22 +163,18 @@ class ShareExViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getDefaultBottomSheetModel(throwable: Throwable, defaultUrl: String) {
-        getSharePropertiesUseCase.getDefaultData()
-            .collectLatest {
-                when (it) {
-                    is ShareExResult.Success -> {
-                        val uiResult = it.data.mapError(defaultUrl, throwable)
-                        updateBottomSheetUiState(
-                            title = it.data.title,
-                            uiModelList = uiResult,
-                            bottomSheetModel = it.data,
-                            chipPosition = 0 // default
-                        )
-                    }
-                    is ShareExResult.Error, ShareExResult.Loading -> Unit
-                }
-            }
+    private fun getDefaultBottomSheetModel(throwable: Throwable, defaultUrl: String) {
+        val defaultShareProperties = getSharePropertiesUseCase.getDefaultData()
+        bottomSheetArgs = bottomSheetArgs?.copy(
+            bottomSheetModel = defaultShareProperties
+        )
+        val uiResult = defaultShareProperties.mapError(defaultUrl, throwable)
+        updateBottomSheetUiState(
+            title = defaultShareProperties.title,
+            uiModelList = uiResult,
+            bottomSheetModel = defaultShareProperties,
+            chipPosition = 0 // default
+        )
     }
 
     private fun updateShareBottomSheetBody(
@@ -274,9 +278,14 @@ class ShareExViewModel @Inject constructor(
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
+                ShareExLogger.logExceptionToServerLogger(
+                    throwable = throwable,
+                    deviceId = userSession.deviceId,
+                    description = ::generateLink.name
+                )
                 updateIntentUiStateWithDefaultUrl(
                     channelItemModel,
-                    bottomSheetArgs?.defaultUrl ?: "",
+                    bottomSheetArgs?.defaultUrl.toEmptyStringIfNull(),
                     throwable
                 )
             }
@@ -296,7 +305,7 @@ class ShareExViewModel @Inject constructor(
             isLoading = false,
             error = throwable,
             isAffiliateError = false,
-            imageType = ShareExImageTypeEnum.DEFAULT
+            imageType = ShareExImageTypeEnum.NO_IMAGE
         )
     }
 
@@ -308,15 +317,19 @@ class ShareExViewModel @Inject constructor(
         val utmSource = ShareExConstants.ShortLinkValue.SOURCE
         val uri = Uri.parse(url)
         val newUri = Uri.Builder()
-            .scheme(uri.scheme)
-            .authority(uri.authority)
-            .path(uri.path)
-        if (uri.query != null) {
+
+        // Only set scheme, authority, and path if they are not null
+        uri.scheme?.let { newUri.scheme(it) }
+        uri.authority?.let { newUri.authority(it) }
+        uri.path?.let { newUri.path(it) }
+
+        if (!uri.query.isNullOrEmpty()) {
             newUri.appendQueryParameter(ShareExConstants.UTM.SOURCE_KEY, utmSource)
             newUri.appendQueryParameter(ShareExConstants.UTM.MEDIUM_KEY, channelEnum.label)
             newUri.appendQueryParameter(ShareExConstants.UTM.CAMPAIGN_KEY, campaign)
         } else {
-            newUri.query("${ShareExConstants.UTM.SOURCE_KEY}=$utmSource&${ShareExConstants.UTM.MEDIUM_KEY}=${channelEnum.label}&${ShareExConstants.UTM.CAMPAIGN_KEY}=$campaign")
+            val query = "${ShareExConstants.UTM.SOURCE_KEY}=$utmSource&${ShareExConstants.UTM.MEDIUM_KEY}=${channelEnum.label}&${ShareExConstants.UTM.CAMPAIGN_KEY}=$campaign"
+            newUri.query(query)
         }
         return newUri.build().toString()
     }
@@ -366,7 +379,7 @@ class ShareExViewModel @Inject constructor(
         channelItemModel: ShareExChannelItemModel,
         imageType: ShareExImageTypeEnum
     ) {
-        generateShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest { (apiType, result) ->
+        getShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest { (apiType, result) ->
             when (result) {
                 is ShareExResult.Success -> {
                     downloadImageAndShare(shortLinkRequest, channelItemModel, result.data, imageType)
@@ -491,6 +504,11 @@ class ShareExViewModel @Inject constructor(
             }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+            ShareExLogger.logExceptionToServerLogger(
+                throwable = throwable,
+                deviceId = userSession.deviceId,
+                description = ::generateImageFlow.name
+            )
             flow {
                 emit(
                     ShareExImageGeneratorModel(
@@ -524,24 +542,23 @@ class ShareExViewModel @Inject constructor(
         messageWithUrl: String,
         imageUri: Uri?
     ): Intent {
-        val intent = Intent().apply {
-            action = channelItemModel.actionIntent
-            type = channelItemModel.mimeType.textType
-            if (channelItemModel.packageName.isNotBlank()) {
-                setPackage(channelItemModel.packageName)
-            }
-            putExtra(Intent.EXTRA_TEXT, messageWithUrl)
-            if (imageUri != null) {
-                when (channelItemModel.mimeType) {
-                    ShareExMimeTypeEnum.IMAGE -> {
-                        setDataAndType(imageUri, channelItemModel.mimeType.textType)
-                        putExtra(Intent.EXTRA_STREAM, imageUri)
-                    }
-                    ShareExMimeTypeEnum.ALL -> putExtra(Intent.EXTRA_STREAM, imageUri)
-                    else -> Unit
+        val intent = Intent()
+        intent.action = channelItemModel.actionIntent
+        intent.type = channelItemModel.mimeType.textType
+        if (channelItemModel.packageName.isNotBlank()) {
+            intent.setPackage(channelItemModel.packageName)
+        }
+        intent.putExtra(Intent.EXTRA_TEXT, messageWithUrl)
+        if (imageUri != null) {
+            when (channelItemModel.mimeType) {
+                ShareExMimeTypeEnum.IMAGE -> {
+                    intent.setDataAndType(imageUri, channelItemModel.mimeType.textType)
+                    intent.putExtra(Intent.EXTRA_STREAM, imageUri)
                 }
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                ShareExMimeTypeEnum.ALL -> intent.putExtra(Intent.EXTRA_STREAM, imageUri)
+                else -> Unit
             }
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         return intent
     }
