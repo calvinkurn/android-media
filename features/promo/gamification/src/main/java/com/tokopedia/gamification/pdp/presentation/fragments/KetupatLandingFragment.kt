@@ -177,8 +177,6 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                 })
             if (!fragmentDataRendered) {
                 setUpAdapter()
-            }else{
-                adapter
             }
             fragmentDataRendered = true
         } else {
