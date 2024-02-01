@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.pdp.presentation.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -23,8 +24,9 @@ import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.Ketupat
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.common.launchCatchError
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import kotlinx.coroutines.async
 import org.json.JSONArray
 import org.json.JSONObject
@@ -39,7 +41,7 @@ class KetupatLandingViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val errorMessage = MutableLiveData<Throwable>()
-    private val isRecommVisible =  MutableLiveData<Boolean>()
+    private val isRecommVisible = MutableLiveData<Boolean>()
     private val landingPageData = MutableLiveData<KetupatLandingPageData>()
     private val benefitCouponData = MutableLiveData<KetupatBenefitCouponData>()
     private val benefitCouponSlugData = MutableLiveData<KetupatBenefitCouponSlugData>()
@@ -53,17 +55,27 @@ class KetupatLandingViewModel @Inject constructor(
     private var landingPageRefreshCallback: LandingPageRefreshCallback? = null
 
     fun getGamificationLandingPageData(
+        context: Context?,
         slug: String = "",
         landingPageRefreshCallback: LandingPageRefreshCallback? = null
     ) {
         launchCatchError(
             block = {
+
                 this.landingPageRefreshCallback = landingPageRefreshCallback
                 val landingPageMainData =
                     async { ketupatLandingUseCase.getScratchCardLandingPage(slug) }
 
 
                 landingPageMainData.await().apply {
+                    val code = this.gamiGetScratchCardLandingPage.resultStatus?.code
+                    if (code != "200") {
+                        val error = ErrorHandler.getErrorMessage(
+                            context,
+                            MessageErrorException(this.gamiGetScratchCardLandingPage.resultStatus?.message.toString())
+                        )
+                        throw Throwable(error)
+                    }
                     landingPageData.value = this
                     eventSlug =
                         this.gamiGetScratchCardLandingPage.sections.find { it?.type == "referral" }?.jsonParameter?.let {
@@ -87,6 +99,7 @@ class KetupatLandingViewModel @Inject constructor(
                             slugList.add(catalogSlugJSON?.get(i).toString())
                         }
                     }
+
                 }
 
                 val benefitCouponDataAPI =
@@ -125,6 +138,7 @@ class KetupatLandingViewModel @Inject constructor(
             }
         )
     }
+
     private fun convertDataToVisitable(data: KetupatLandingPageData.GamiGetScratchCardLandingPage): ArrayList<Visitable<KetupatLandingTypeFactory>>? {
         val tempList: ArrayList<Visitable<KetupatLandingTypeFactory>> = ArrayList()
 
@@ -172,13 +186,13 @@ class KetupatLandingViewModel @Inject constructor(
         return tempList
     }
 
-        fun getRecommVisibility(): LiveData<Boolean> = isRecommVisible
-        fun getErrorMessage(): LiveData<Throwable> = errorMessage
-        fun getLandingPageData(): LiveData<KetupatLandingPageData> = landingPageData
+    fun getRecommVisibility(): LiveData<Boolean> = isRecommVisible
+    fun getErrorMessage(): LiveData<Throwable> = errorMessage
+    fun getLandingPageData(): LiveData<KetupatLandingPageData> = landingPageData
 
-        fun getReferralTimeData(): LiveData<KetupatReferralEventTimeStamp> = referralTimeData
+    fun getReferralTimeData(): LiveData<KetupatReferralEventTimeStamp> = referralTimeData
 
-        fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<KetupatLandingTypeFactory>>> =
-            ketaupatLandingDataList
+    fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<KetupatLandingTypeFactory>>> =
+        ketaupatLandingDataList
 
 }

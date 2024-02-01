@@ -168,7 +168,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
     private fun refreshData() {
         if (userSessionInterface?.isLoggedIn == true) {
-            ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024",
+            ketupatLandingViewModel?.getGamificationLandingPageData(context,"ketupat-thr-2024",
                 object : LandingPageRefreshCallback {
                     override fun refreshLandingPage() {
                         refreshData()
