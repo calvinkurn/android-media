@@ -82,32 +82,32 @@
                         android:id="@+id/img_stacked_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:paddingTop="2dp"
+                        android:layout_marginStart="16dp"
                         app:layout_constraintBottom_toBottomOf="@+id/loader_gift_items"
                         app:layout_constraintStart_toStartOf="@+id/loader_gift_items"
                         app:layout_constraintTop_toTopOf="@+id/loader_gift_items"
                         app:srcCompat="@drawable/stacked_image_1" />
 
-                    <com.tokopedia.unifycomponents.LoaderUnify
+                    <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/loader_gift_items"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="14dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
                         app:loader_type="rect"
                         app:loader_corner_radius="8dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/loader_gift_image"  />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.tokopedia.unifycomponents.LoaderUnify
-                    android:layout_width="250dp"
-                    android:layout_height="16dp"
+                    android:layout_width="150dp"
+                    android:layout_height="12dp"
                     app:loader_corner_radius="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="32dp"
                     app:loader_type="rect" />
 
             </LinearLayout>
@@ -118,7 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="42dp"
-            android:layout_marginTop="62dp"
+            android:layout_marginTop="72dp"
             android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 

@@ -25,6 +25,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWi
 import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
 import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
 import com.tokopedia.shop_widget.databinding.LayoutBmsmCustomViewBinding
+import com.tokopedia.unifycomponents.R.*
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
@@ -52,12 +53,14 @@ class BmsmWidget : ConstraintLayout {
 
     private var binding: LayoutBmsmCustomViewBinding? = null
 
-    private var onSuccessAtc: (AddToCartDataModel) -> Unit = {}
+    private var onSuccessAtc: (String, String, AddToCartDataModel) -> Unit = { _, _, _ -> }
     private var onErrorAtc: (String) -> Unit = {}
-    private var onNavigateToOlp: (String) -> Unit = {}
-    private var onProductClicked: (Product) -> Unit = {}
-    private var onWidgetVisible: () -> Unit = {}
+    private var onNavigateToOlp: (String, String, String) -> Unit = {_, _, _ ->  }
+    private var onProductClicked: (String, String, Product) -> Unit = {_, _, _ ->  }
+    private var onWidgetVisible: (String) -> Unit = {}
+    private var onTabSelected: (OfferingInfoByShopIdUiModel) -> Unit = {}
     private var tabTotalWidth = 0
+    private var colorSchema: ShopPageColorSchema = ShopPageColorSchema()
     private var colorThemeConfiguration: BmsmWidgetColorThemeConfig = BmsmWidgetColorThemeConfig.DEFAULT
     private var patternColorType: ColorType = ColorType.LIGHT
 
@@ -86,9 +89,11 @@ class BmsmWidget : ConstraintLayout {
     fun setupWidget(
         provider: BmsmWidgetDependencyProvider,
         offerList: List<OfferingInfoByShopIdUiModel>,
+        colorSchema: ShopPageColorSchema,
         colorThemeConfiguration: BmsmWidgetColorThemeConfig,
         patternColorType: ColorType
     ) {
+        this.colorSchema = colorSchema
         this.patternColorType = patternColorType
         this.colorThemeConfiguration = colorThemeConfiguration
         setupTabs(provider, offerList)
@@ -139,15 +144,19 @@ class BmsmWidget : ConstraintLayout {
                 val tabWidth =
                     (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
                 tabTotalWidth += tabWidth
+                handleTabChange(tabBmsmWidget, offerList[currentPosition])
+                applyTabRuleWidth(offerList, tabBmsmWidget)
             }
-            handleTabChange(tabBmsmWidget)
-            applyTabRuleWidth(offerList, tabBmsmWidget)
         }
     }
 
-    private fun handleTabChange(tabsUnify: TabsUnify) {
+    private fun handleTabChange(
+        tabsUnify: TabsUnify,
+        offering: OfferingInfoByShopIdUiModel
+    ) {
         tabsUnify.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                onTabSelected.invoke(offering)
                 tab?.selectTab()
             }
 
@@ -188,7 +197,7 @@ class BmsmWidget : ConstraintLayout {
         val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
         tabTitle?.apply {
             typeface = Typography.getFontType(context, true, Typography.DISPLAY_3)
-            setTextColor(getTextColor())
+            setTextColor(getActiveTabTextColor())
             invalidate()
         }
     }
@@ -197,7 +206,7 @@ class BmsmWidget : ConstraintLayout {
         val tabTitle = this?.customView?.findViewById<Typography>(R.id.tpgTabTitle)
         tabTitle?.apply {
             typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
-            setTextColor(getTextColor())
+            setTextColor(getInActiveTabTextColor())
             invalidate()
         }
     }
@@ -226,20 +235,32 @@ class BmsmWidget : ConstraintLayout {
             )
 
             fragment.apply {
-                setOnSuccessAtcListener {
-                    onSuccessAtc.invoke(it)
+                setOnSuccessAtcListener { offerId, offerType, product ->
+                    onSuccessAtc.invoke(
+                        offerId,
+                        offerType,
+                        product
+                    )
                 }
                 setOnErrorAtcListener {
                     onErrorAtc.invoke(it)
                 }
-                setOnNavigateToOlpListener {
-                    onNavigateToOlp.invoke(it)
+                setOnNavigateToOlpListener { offerId, offerType, product ->
+                    onNavigateToOlp.invoke(
+                        offerId,
+                        offerType,
+                        product
+                    )
                 }
-                setOnProductCardClicked {
-                    onProductClicked.invoke(it)
+                setOnProductCardClicked { offerId, offerType, product ->
+                    onProductClicked.invoke(
+                        offerId,
+                        offerType,
+                        product
+                    )
                 }
-                setOnWidgetVisible {
-                    onWidgetVisible.invoke()
+                setOnWidgetVisible { offerId ->
+                    onWidgetVisible.invoke(offerId)
                 }
             }
 
@@ -253,7 +274,7 @@ class BmsmWidget : ConstraintLayout {
         binding?.vpBmsmWidget?.isUserInputEnabled = false
     }
 
-    fun setOnSuccessAtcListener(onSuccessAtc: (AddToCartDataModel) -> Unit) {
+    fun setOnSuccessAtcListener(onSuccessAtc: (String, String, AddToCartDataModel) -> Unit) {
         this.onSuccessAtc = onSuccessAtc
     }
 
@@ -261,26 +282,45 @@ class BmsmWidget : ConstraintLayout {
         this.onErrorAtc = onErrorAtc
     }
 
-    fun setOnNavigateToOlpListener(onNavigateToOlp: (String) -> Unit) {
+    fun setOnNavigateToOlpListener(onNavigateToOlp: (String, String, String) -> Unit) {
         this.onNavigateToOlp = onNavigateToOlp
     }
 
-    fun setOnProductCardClicked(onProductClicked: (Product) -> Unit) {
+    fun setOnProductCardClicked(onProductClicked: (String, String, Product) -> Unit) {
         this.onProductClicked = onProductClicked
     }
 
-    fun setOnWidgetVisible(onWidgetVisible: () -> Unit) {
+    fun setOnWidgetVisible(onWidgetVisible: (String) -> Unit) {
         this.onWidgetVisible = onWidgetVisible
     }
 
-    private fun getTextColor(): Int{
+    fun setOnTabSelected(onTabSelected: (OfferingInfoByShopIdUiModel) -> Unit) {
+        this.onTabSelected = onTabSelected
+    }
+
+    private fun getActiveTabTextColor(): Int{
         val textColor = when (colorThemeConfiguration) {
             BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
             BmsmWidgetColorThemeConfig.REIMAGINE -> {
-                if (patternColorType == ColorType.LIGHT) {
-                    ContextCompat.getColor(context, R.color.dms_static_black)
+                if (colorSchema.listColorSchema.isNotEmpty()) {
+                    colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
                 } else {
-                    ContextCompat.getColor(context, R.color.dms_static_white)
+                    ContextCompat.getColor(context, color.Unify_NN950)
+                }
+            }
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_static_black)
+        }
+        return textColor
+    }
+
+    private fun getInActiveTabTextColor(): Int{
+        val textColor = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (colorSchema.listColorSchema.isNotEmpty()) {
+                    colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+                } else {
+                    ContextCompat.getColor(context, color.Unify_NN950)
                 }
             }
             BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_static_black)

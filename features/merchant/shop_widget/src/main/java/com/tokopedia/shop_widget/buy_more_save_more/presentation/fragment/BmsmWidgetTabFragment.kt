@@ -1,5 +1,6 @@
 package com.tokopedia.shop_widget.buy_more_save_more.presentation.fragment
 
+import android.content.Intent
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
@@ -20,7 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -40,7 +40,6 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.buy_more_save_more.di.component.DaggerBmsmWidgetComponent
 import com.tokopedia.shop_widget.buy_more_save_more.di.module.BmsmWidgetModule
@@ -49,10 +48,12 @@ import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoForBuyerU
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.adapter.BmsmWidgetProductListAdapter
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.adapter.decoration.ProductListItemDecoration
+import com.tokopedia.shop_widget.buy_more_save_more.presentation.customview.SlidingTextSwitcher
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetItemEventListener
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewmodel.BmsmWidgetTabViewModel
 import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
 import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
+import com.tokopedia.shop_widget.buy_more_save_more.util.NonFatalIssueLogger
 import com.tokopedia.shop_widget.buy_more_save_more.util.Status
 import com.tokopedia.shop_widget.databinding.FragmentBmsmWidgetBinding
 import com.tokopedia.unifycomponents.ImageUnify
@@ -141,11 +142,11 @@ class BmsmWidgetTabFragment :
 
     private var productListAdapter = BmsmWidgetProductListAdapter(this@BmsmWidgetTabFragment)
 
-    private var onSuccessAtc: (AddToCartDataModel) -> Unit = {}
+    private var onSuccessAtc: (String, String, AddToCartDataModel) -> Unit = { _, _, _ -> }
     private var onErrorAtc: (String) -> Unit = {}
-    private var onNavigateToOlp: (String) -> Unit = {}
-    private var onProductCardClicked: (Product) -> Unit = {}
-    private var onWidgetVisible: () -> Unit = {}
+    private var onNavigateToOlp: (String, String, String) -> Unit = { _, _, _ -> }
+    private var onProductCardClicked: (String, String, Product) -> Unit = { _, _, _ -> }
+    private var onWidgetVisible: (String) -> Unit = {}
     private val isLogin: Boolean
         get() = viewModel.isLogin
     private val currentState: BmsmWidgetUiState
@@ -186,7 +187,7 @@ class BmsmWidgetTabFragment :
         setupErrorSection()
         setupProductList()
         setupObserver()
-        onWidgetVisible.invoke()
+        onWidgetVisible.invoke(currentState.offeringInfo.offerings.firstOrNull()?.id.toString())
     }
 
     override fun onResume() {
@@ -194,8 +195,17 @@ class BmsmWidgetTabFragment :
         getOfferingData()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AtcVariantHelper.ATC_VARIANT_RESULT_CODE) viewModel.getMinicartV3()
+    }
+
     override fun onAtcClicked(product: Product) {
         if (isLogin) {
+            binding?.apply {
+                pdUpsellingLoader.showWithCondition(pdUpsellingWrapper.isVisible)
+                pdUpsellingWrapper.gone()
+            }
             if (product.isVbs) {
                 openAtcVariant(product)
             } else {
@@ -207,11 +217,19 @@ class BmsmWidgetTabFragment :
     }
 
     override fun onProductCardClicked(product: Product) {
-        onProductCardClicked.invoke(product)
+        onProductCardClicked.invoke(
+            currentState.offerIds.firstOrNull().toString(),
+            offerTypeId.toString(),
+            product
+        )
     }
 
     override fun onNavigateToOlp() {
-        onNavigateToOlp.invoke(currentState.offeringInfo.offerings.firstOrNull()?.olpAppLink.orEmpty())
+        onNavigateToOlp.invoke(
+            currentState.offerIds.firstOrNull().toString(),
+            offerTypeId.toString(),
+            currentState.offeringInfo.offerings.firstOrNull()?.olpAppLink.orEmpty()
+        )
     }
 
     private fun setupObserver() {
@@ -240,17 +258,23 @@ class BmsmWidgetTabFragment :
                         onErrorAtc.invoke(atc.data.getAtcErrorMessage().orEmpty())
                     } else {
                         getOfferingData()
-                        onSuccessAtc.invoke(atc.data)
+                        onSuccessAtc.invoke(
+                            currentState.offerIds.firstOrNull().toString(),
+                            offerTypeId.toString(),
+                            atc.data
+                        )
                     }
                 }
 
                 is Fail -> {
+                    sendLogger(atc.throwable)
                     onErrorAtc.invoke(atc.throwable.localizedMessage.orEmpty())
                 }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
+            sendLogger(throwable)
             setViewState(
                 VIEW_ERROR,
                 getErrorCodeFromThrowable(throwable.localizedMessage.toIntOrZero())
@@ -316,13 +340,10 @@ class BmsmWidgetTabFragment :
                 productBenefitImageFromOfferingInfo
             }
 
-            tpgTitleWidget.setTitle(upsellWording, defaultOfferMessage)
-            tpgSubTitleWidget.setSubTitle(offerMessage)
-            tpgPdUpsellingWording.apply {
-                text = MethodChecker.fromHtml(offerMessage.firstOrNull())
-                showWithCondition(offerMessage.isNotEmpty())
-                setPdSubtitleTextColor()
-            }
+            tpgTitleWidget.setTitle(offerMessage, upsellWording, defaultOfferMessage)
+            tpgSubTitleWidget.setUpsellingGwp(offerMessage)
+            tpgPdUpsellingWording.setUpsellingPd(offerMessage)
+
             when (offerTypeId) {
                 OFFER_TYPE_PD -> setupPdHeader(offerMessage)
                 OFFER_TYPE_GWP -> setupGwpHeader(productGiftImages)
@@ -334,7 +355,11 @@ class BmsmWidgetTabFragment :
     private fun setupOlpNavigation() {
         binding?.apply {
             iconChevron.setOnClickListener {
-                onNavigateToOlp.invoke(currentState.offeringInfo.offerings.firstOrNull()?.olpAppLink.orEmpty())
+                onNavigateToOlp.invoke(
+                    currentState.offerIds.firstOrNull().toString(),
+                    offerTypeId.toString(),
+                    currentState.offeringInfo.offerings.firstOrNull()?.olpAppLink.orEmpty()
+                )
             }
         }
     }
@@ -353,7 +378,7 @@ class BmsmWidgetTabFragment :
     private fun setProductListData(productList: List<Product>) {
         binding?.rvProduct?.apply {
             viewLifecycleOwner.lifecycleScope.launch {
-                setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
+                if (productList.size > Int.ONE) setHeightBasedOnProductCardMaxHeight(productList.mapToProductCardModel())
             }
             if (productList.size == TWO_PRODUCT_ITEM_SIZE) {
                 layoutManager =
@@ -414,6 +439,8 @@ class BmsmWidgetTabFragment :
                         setImageUrl(TokopediaImageUrl.OLP_NOT_FOUND_ILLUSTRATION)
                         setTitle(title)
                         setDescription(description)
+                        emptyStateTitleID.setEmptyStateTextColor()
+                        emptyStateDescriptionID.setEmptyStateTextColor()
                     }
                     cardErrorState.gone()
                 }
@@ -495,7 +522,6 @@ class BmsmWidgetTabFragment :
                 imgGiftWhiteFrameBroder.visible()
                 groupStackedImg.showWithCondition(productGiftImages.size > Int.ONE)
             }
-
             //upselling wording section
             pdUpsellingWrapper.gone()
         }
@@ -509,38 +535,51 @@ class BmsmWidgetTabFragment :
         }
     }
 
-    private fun Typography.setTitle(upsellWording: String, defaultOfferMessage: String) {
+    private fun Typography.setTitle(
+        offerMessages: List<String>,
+        upsellWording: String,
+        defaultOfferMessage: String
+    ) {
         val textColor = MethodChecker.getColor(
             context,
             R.color.dms_static_white
         )
-        this.apply {
-            visible()
-            text = if (upsellWording.isNotEmpty()) {
-                MethodChecker.fromHtml(upsellWording)
-            } else {
-                MethodChecker.fromHtml(defaultOfferMessage)
+        text = if (offerMessages.isNotEmpty()) {
+            MethodChecker.fromHtml(upsellWording)
+        } else {
+            MethodChecker.fromHtml(defaultOfferMessage)
+        }
+        setTextColor(textColor)
+        visible()
+    }
+
+    private fun SlidingTextSwitcher.setUpsellingGwp(messages: List<String>) {
+        showWithCondition(messages.isNotEmpty())
+        val textColor = MethodChecker.getColor(
+            context,
+            R.color.dms_static_white
+        )
+        if (childCount < 2){
+            setFactory {
+                Typography(context).apply {
+                    setType(Typography.SMALL)
+                    setTextColor(textColor)
+                }
             }
-            setTextColor(textColor)
         }
+        setMessages(messages = messages, textColor = textColor)
     }
 
-    private fun Typography.setSubTitle(messages: List<String>) {
-        val textColor = MethodChecker.getColor(
-            context,
-            R.color.dms_static_white
-        )
-
-        this.apply {
-            text = MethodChecker.fromHtml(messages.firstOrNull())
-            showWithCondition(messages.isNotEmpty())
-            setTextColor(textColor)
-        }
-    }
-
-    private fun Typography.setPdSubtitleTextColor(): Int{
+    private fun SlidingTextSwitcher.setUpsellingPd(
+        offerMessages: List<String>
+    ) {
+        binding?.pdUpsellingLoader?.gone()
         val textColor = when (colorThemeConfiguration) {
-            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(context, R.color.dms_static_white)
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(
+                context,
+                R.color.dms_static_white
+            )
+
             BmsmWidgetColorThemeConfig.REIMAGINE -> {
                 if (patternColorType == ColorType.LIGHT) {
                     ContextCompat.getColor(context, R.color.dms_pd_sub_title_text_color)
@@ -548,12 +587,51 @@ class BmsmWidgetTabFragment :
                     ContextCompat.getColor(context, R.color.dms_static_white)
                 }
             }
-            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_pd_sub_title_text_color)
+
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(
+                context,
+                R.color.dms_pd_sub_title_text_color
+            )
         }
-        return textColor
+        if (childCount < 2){
+            setFactory {
+                Typography(context).apply {
+                    setType(Typography.SMALL)
+                    setTextColor(textColor)
+                }
+            }
+        }
+        setMessages(
+            messages = offerMessages,
+            textColor = textColor
+        )
+        showWithCondition(offerMessages.isNotEmpty())
     }
 
-    fun setOnSuccessAtcListener(onSuccessAtc: (AddToCartDataModel) -> Unit) {
+    private fun Typography.setEmptyStateTextColor() {
+        val textColor = when (colorThemeConfiguration) {
+            BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(
+                context,
+                R.color.dms_static_white
+            )
+
+            BmsmWidgetColorThemeConfig.REIMAGINE -> {
+                if (patternColorType == ColorType.LIGHT) {
+                    ContextCompat.getColor(context, R.color.dms_static_black)
+                } else {
+                    ContextCompat.getColor(context, R.color.dms_static_white)
+                }
+            }
+
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(
+                context,
+                R.color.dms_static_black
+            )
+        }
+        setTextColor(textColor)
+    }
+
+    fun setOnSuccessAtcListener(onSuccessAtc: (String, String, AddToCartDataModel) -> Unit) {
         this.onSuccessAtc = onSuccessAtc
     }
 
@@ -561,15 +639,15 @@ class BmsmWidgetTabFragment :
         this.onErrorAtc = onErrorAtc
     }
 
-    fun setOnNavigateToOlpListener(onNavigateToOlp: (String) -> Unit) {
+    fun setOnNavigateToOlpListener(onNavigateToOlp: (String, String, String) -> Unit) {
         this.onNavigateToOlp = onNavigateToOlp
     }
 
-    fun setOnProductCardClicked(onProductCardClicked: (Product) -> Unit) {
+    fun setOnProductCardClicked(onProductCardClicked: (String, String, Product) -> Unit) {
         this.onProductCardClicked = onProductCardClicked
     }
 
-    fun setOnWidgetVisible(onWidgetVisible: () -> Unit) {
+    fun setOnWidgetVisible(onWidgetVisible: (String) -> Unit) {
         this.onWidgetVisible = onWidgetVisible
     }
 
@@ -595,7 +673,7 @@ class BmsmWidgetTabFragment :
         } else {
             context?.resources?.getDimensionPixelSize(R.dimen.dp_200).orZero()
         }
-        return if (productCardModelList.size > Int.ONE){
+        return if (productCardModelList.size > Int.ONE) {
             productCardModelList.getMaxHeightForGridView(
                 context,
                 Dispatchers.Default,
@@ -704,5 +782,9 @@ class BmsmWidgetTabFragment :
             }
         }
         return background
+    }
+
+    private fun sendLogger(t: Throwable) {
+        NonFatalIssueLogger.logToCrashlytics(t, this::class.java.canonicalName)
     }
 }

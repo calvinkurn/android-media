@@ -14,6 +14,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWi
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetEventListener
 import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeConfig
 import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
+import com.tokopedia.unifycomponents.R.*
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopBmsmWidgetPdViewHolder(
@@ -37,6 +38,7 @@ class ShopBmsmWidgetPdViewHolder(
                 tpgTitle.apply {
                     text = element.header.title
                     setTextColor(getTextColor(element))
+                    showWithCondition(element.header.title.isNotEmpty())
                 }
                 tpgSubTitle.apply {
                     showWithCondition(element.data.size == Int.ONE)
@@ -47,25 +49,49 @@ class ShopBmsmWidgetPdViewHolder(
                     setupWidget(
                         provider = provider,
                         offerList = element.data,
+                        colorSchema = element.header.colorSchema,
                         colorThemeConfiguration = getColorThemeConfiguration(element),
                         patternColorType = ColorType.values().firstOrNull { value ->
                             value.type == patternColorType
                         } ?: ColorType.LIGHT
                     )
-                    setOnSuccessAtcListener { product ->
-                        listener.onBmsmWidgetSuccessAtc(product)
+                    setOnSuccessAtcListener { offerId, offerType, product ->
+                        listener.onBmsmWidgetSuccessAtc(
+                            offerId,
+                            offerType,
+                            product.data.productId,
+                            product)
                     }
                     setOnErrorAtcListener { errorMsg ->
                         listener.onBmsmWidgetErrorAtc(errorMsg)
                     }
-                    setOnNavigateToOlpListener { applink ->
-                        listener.onBmsmWidgetNavigateToOlp(applink)
+                    setOnNavigateToOlpListener { offerId, offerType, applink ->
+                        listener.onBmsmWidgetNavigateToOlp(
+                            offerId,
+                            offerType,
+                            applink,
+                            adapterPosition
+                        )
                     }
-                    setOnProductCardClicked { product ->
-                        listener.onBmsmWidgetProductClicked(product)
+                    setOnProductCardClicked { offerId, offerType, product ->
+                        listener.onBmsmWidgetProductClicked(
+                            offerId,
+                            offerType,
+                            product)
                     }
-                    setOnWidgetVisible {
+                    setOnWidgetVisible { offerId ->
+                        listener.onImpressBmsmWidget(
+                            offerId,
+                            adapterPosition
+                        )
                         isBmsmWidgetAlreadyLoaded = true
+                    }
+                    setOnTabSelected { offering ->
+                        listener.onSelectTabBmsmWidget(
+                            offering.offerId.toString(),
+                            offering.offerType.toString(),
+                            adapterPosition
+                        )
                     }
                 }
             }
@@ -89,10 +115,10 @@ class ShopBmsmWidgetPdViewHolder(
         val textColor =  when (getColorThemeConfiguration(element)) {
             BmsmWidgetColorThemeConfig.FESTIVITY -> ContextCompat.getColor(itemView.context, R.color.dms_static_white)
             BmsmWidgetColorThemeConfig.REIMAGINE -> {
-                if (patternColorType == ColorType.LIGHT.type) {
-                    ContextCompat.getColor(itemView.context, R.color.dms_static_black)
+                if (element.header.colorSchema.listColorSchema.isNotEmpty()) {
+                    element.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
                 } else {
-                    ContextCompat.getColor(itemView.context, R.color.dms_static_white)
+                    ContextCompat.getColor(itemView.context, color.Unify_NN950)
                 }
             }
             BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(itemView.context, R.color.dms_static_black)

@@ -88,7 +88,7 @@ class OfferLandingPageViewModelTest {
     lateinit var getOfferProductListMapper: GetOfferProductListMapper
 
     @RelaxedMockK
-    lateinit var offeringInfoObserver: Observer<in OfferInfoForBuyerUiModel>
+    lateinit var offeringInfoObserver: Observer<in Result<OfferInfoForBuyerUiModel>>
 
     @RelaxedMockK
     lateinit var productListObserver: Observer<in OfferProductListUiModel>
@@ -195,7 +195,7 @@ class OfferLandingPageViewModelTest {
     fun `when getOfferingInfo is called, should set uiState data accordingly`() {
         runBlockingTest {
             // Given
-            val expected = getOfferingInfoForBuyerMapper.map(getDummyOfferingInfoResponse())
+            val expected = Success(getOfferingInfoForBuyerMapper.map(getDummyOfferingInfoResponse()))
             mockGetOfferingInfoForBuyerGqlCall()
 
             // When
@@ -211,15 +211,14 @@ class OfferLandingPageViewModelTest {
     fun `when getOfferingInfo is returning error, should get error message accordingly`() {
         runBlockingTest {
             // Given
-            val expected = MessageErrorException("Server Error")
             mockErrorGetOfferingInfoForBuyerGqlCall()
 
             // When
             viewModel.processEvent(OlpEvent.GetOfferingInfo)
 
             // Then
-            val actual = viewModel.error.getOrAwaitValue()
-            assertEquals(expected.message, actual.message)
+            val actual = viewModel.offeringInfo.getOrAwaitValue()
+            assert(actual is Fail)
         }
     }
 
@@ -692,8 +691,8 @@ class OfferLandingPageViewModelTest {
     }
 
     private fun mockErrorGetOfferingInfoForBuyerGqlCall() {
-        val error = MessageErrorException("Server Error")
-        coEvery { getOfferInfoForBuyerUseCase.execute(any()) } throws error
+        val error = Fail(MessageErrorException("Server Error"))
+        coEvery { getOfferInfoForBuyerUseCase.execute(any()) } throws error.throwable
     }
 
     private fun mockGetOfferingProductListGqlCall() {

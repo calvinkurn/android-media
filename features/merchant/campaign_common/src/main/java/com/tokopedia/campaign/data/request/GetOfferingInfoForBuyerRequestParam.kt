@@ -15,8 +15,9 @@ data class GetOfferingInfoForBuyerRequestParam(
     @SerializedName("user_id")
     val userId: Long = 0,
     @SerializedName("user_location")
-    val userLocation: UserLocation = UserLocation()
-
+    val userLocation: UserLocation = UserLocation(),
+    @SerializedName("additionalParams")
+    val additionalParams: AdditionalParams? = null
 ) {
     data class RequestHeader(
         @SerializedName("source")
@@ -49,5 +50,14 @@ data class GetOfferingInfoForBuyerRequestParam(
         val longitude: String = "",
         @SerializedName("city_id")
         val cityId: Long = 0
+    )
+
+    data class AdditionalParams(
+        @SerializedName("Shop")
+        val isRequestShopData: Boolean = false,
+        @SerializedName("MiniCartWarehouse")
+        val isRequestMiniCartWH: Boolean = false,
+        @SerializedName("NearestWarehouse")
+        val isRequestNearestWarehouse: Boolean = true
     )
 }
