@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.view.fragment
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
@@ -41,6 +44,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -90,6 +94,14 @@ class ProductPreviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.ProductActionFromResult)
     }
 
+    //TODO: seperate coachmark
+
+    private val coachMark by lazyThreadSafetyNone {
+        CoachMark2(requireContext())
+    }
+
+    private var coachMarkJob : Job? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -119,6 +131,18 @@ class ProductPreviewFragment @Inject constructor(
         viewModel.onAction(InitializeProductMainData)
     }
 
+    //TODO: seperate coachmark later
+    private val coachMarkItems by lazyThreadSafetyNone {
+        arrayListOf(
+            (CoachMark2Item(
+                anchorView = binding.vpProductPreview,
+                title = "",
+                description = getString(contentproductpreviewR.string.product_prev_coachmark_bottomnav)
+            )
+                )
+        )
+    }
+
     private fun initViews() = with(binding) {
         vpProductPreview.apply {
             registerOnPageChangeCallback(pagerListener)
@@ -132,10 +156,12 @@ class ProductPreviewFragment @Inject constructor(
                 pagerAdapter.insertFragment(productReviewTab)
                 isShowProductTab(true)
             }
+
             is ProductPreviewSourceModel.ReviewSourceData -> {
                 pagerAdapter.insertFragment(reviewTab)
                 isShowProductTab(false)
             }
+
             else -> activity?.finish()
         }
     }
@@ -246,7 +272,9 @@ class ProductPreviewFragment @Inject constructor(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {
-                    handleAtc(model)
+                    Log.d("hello", coachMarkItems.first().toString())
+                    coachMark.showCoachMark(step = coachMarkItems, index = CoachMark2.POSITION_BOTTOM)
+                    //handleAtc(model)
                 })
             }
         }

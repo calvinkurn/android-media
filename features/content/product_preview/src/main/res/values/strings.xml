@@ -26,4 +26,6 @@
     <string name="review_report_failed_toaster">Gagal mengirim laporan, coba lagi, ya.</string>
     <string name="product_prev_review_expand">Selengkapnya</string>
     <string name="product_prev_review_ellipsize"> ... </string>
+    <string name="product_prev_coachmark_bottomnav">Dari mata turun ke hati. Kalau suka produknya, ayo langsung beli!</string>
+    <string name="product_prev_coachmark_onboard">Lihat semua foto &amp; video produk dari Toko &amp; ulasan pembeli kini jadi lebih mudah!</string>
 </resources>
