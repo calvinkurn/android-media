@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="100dp"
     tools:context=".pdp.presentation.fragments.KetupatLandingFragment">
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -123,12 +122,13 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ketupat_rv"
-            android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:orientation="vertical" />
+            tools:orientation="vertical"
+            android:paddingBottom="64dp"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.tokopedia.globalerror.GlobalError
