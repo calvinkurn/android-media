@@ -51,6 +51,8 @@ class CatalogDetailPageViewModel @Inject constructor(
     private val _scrollEvents = MutableStateFlow("")
     val scrollEvents: Flow<String> = _scrollEvents.asStateFlow()
 
+    var atcModel = CatalogProductAtcUiModel()
+
     fun isUserLoggedIn(): Boolean {
         return getUserId().isNotBlank()
     }

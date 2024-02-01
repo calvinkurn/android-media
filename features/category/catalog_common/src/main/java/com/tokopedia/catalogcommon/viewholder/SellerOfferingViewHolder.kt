@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemSellerOfferingBinding
+import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -13,7 +14,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-class SellerOfferingViewHolder(itemView: View) : AbstractViewHolder<SellerOfferingUiModel>(itemView) {
+class SellerOfferingViewHolder(
+    itemView: View,
+    private val sellerOfferingListener: SellerOfferingListener? = null
+) : AbstractViewHolder<SellerOfferingUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -21,6 +25,17 @@ class SellerOfferingViewHolder(itemView: View) : AbstractViewHolder<SellerOfferi
     }
 
     private val binding by viewBinding<WidgetItemSellerOfferingBinding>()
+
+    init {
+        binding?.apply {
+            btnAtc.setOnClickListener {
+                sellerOfferingListener?.onSellerOfferingAtcButtonClicked()
+            }
+            btnChat.setOnClickListener {
+                sellerOfferingListener?.onSellerOfferingChatButtonClicked()
+            }
+        }
+    }
 
     override fun bind(element: SellerOfferingUiModel) {
         binding?.apply {

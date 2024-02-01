@@ -10,6 +10,7 @@ import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.listener.PanelImageListener
+import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.listener.SliderImageTextListener
 import com.tokopedia.catalogcommon.listener.SupportFeatureListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
@@ -20,6 +21,7 @@ import com.tokopedia.catalogcommon.listener.VideoListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
@@ -27,6 +29,8 @@ import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
+import com.tokopedia.catalogcommon.uimodel.PriceCtaSellerOfferingUiModel
+import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
@@ -37,6 +41,7 @@ import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.viewholder.BannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.BlankViewHolder
+import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.CharacteristicViewHolder
 import com.tokopedia.catalogcommon.viewholder.ColumnedInfoViewHolder
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
@@ -44,6 +49,8 @@ import com.tokopedia.catalogcommon.viewholder.DoubleBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
+import com.tokopedia.catalogcommon.viewholder.PriceCtaSellerOfferingViewHolder
+import com.tokopedia.catalogcommon.viewholder.SellerOfferingViewHolder
 import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
@@ -54,12 +61,6 @@ import com.tokopedia.catalogcommon.viewholder.TrustmakerViewHolder
 import com.tokopedia.catalogcommon.viewholder.VideoViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
-import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
-import com.tokopedia.catalogcommon.uimodel.PriceCtaSellerOfferingUiModel
-import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
-import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
-import com.tokopedia.catalogcommon.viewholder.PriceCtaSellerOfferingViewHolder
-import com.tokopedia.catalogcommon.viewholder.SellerOfferingViewHolder
 
 class CatalogAdapterFactoryImpl(
     private val heroBannerListener: HeroBannerListener? = null,
@@ -79,7 +80,8 @@ class CatalogAdapterFactoryImpl(
     private val supportFeatureListener: SupportFeatureListener? = null,
     private val imageTextListener: SliderImageTextListener? = null,
     private val characteristicListener: CharacteristicListener? = null,
-    private val panelImageListener: PanelImageListener? = null
+    private val panelImageListener: PanelImageListener? = null,
+    private val sellerOfferingListener: SellerOfferingListener? = null
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -88,7 +90,7 @@ class CatalogAdapterFactoryImpl(
             CharacteristicViewHolder.LAYOUT -> CharacteristicViewHolder(view, characteristicListener)
             HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view, heroBannerListener)
             StickyTabNavigationViewHolder.LAYOUT -> StickyTabNavigationViewHolder(view, navListener)
-            SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view,imageTextListener)
+            SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view, imageTextListener)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view, panelImageListener)
             TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view, trustMakerListener)
             BannerRevampViewHolder.LAYOUT -> BannerRevampViewHolder(view, null)
@@ -102,7 +104,7 @@ class CatalogAdapterFactoryImpl(
             VideoViewHolder.LAYOUT -> VideoViewHolder(view, videoListener)
             ColumnedInfoViewHolder.LAYOUT -> ColumnedInfoViewHolder(view, columnedInfoListener)
             BuyerReviewViewHolder.LAYOUT -> BuyerReviewViewHolder(view, buyerReviewListener)
-            SellerOfferingViewHolder.LAYOUT -> SellerOfferingViewHolder(view)
+            SellerOfferingViewHolder.LAYOUT -> SellerOfferingViewHolder(view, sellerOfferingListener)
             PriceCtaSellerOfferingViewHolder.LAYOUT -> PriceCtaSellerOfferingViewHolder(view)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)

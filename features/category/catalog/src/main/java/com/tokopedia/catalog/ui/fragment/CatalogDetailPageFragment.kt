@@ -115,6 +115,7 @@ import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.listener.PanelImageListener
+import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.listener.SliderImageTextListener
 import com.tokopedia.catalogcommon.listener.SupportFeatureListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
@@ -179,7 +180,8 @@ class CatalogDetailPageFragment :
     SupportFeatureListener,
     SliderImageTextListener,
     CharacteristicListener,
-    PanelImageListener {
+    PanelImageListener,
+    SellerOfferingListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -226,7 +228,8 @@ class CatalogDetailPageFragment :
                 supportFeatureListener = this,
                 imageTextListener = this,
                 characteristicListener = this,
-                panelImageListener = this
+                panelImageListener = this,
+                sellerOfferingListener = this
             )
         )
     }
@@ -631,6 +634,11 @@ class CatalogDetailPageFragment :
         properties: PriceCtaSellerOfferingProperties
     ) {
         icCtaSellerOffering.apply {
+            viewModel.atcModel = CatalogProductAtcUiModel(
+                productId = properties.productId,
+                shopId = properties.shopId,
+                warehouseId = properties.warehouseId
+            )
             root.showWithCondition(properties.isVisible)
             containerPriceCta.setBackgroundColor(properties.bgColor)
             ctaAtc.setPrice(properties.price)
@@ -641,12 +649,7 @@ class CatalogDetailPageFragment :
             ctaAtc.setRating(properties.shopRating)
             ctaAtc.setTheme(properties.isDarkTheme)
             ctaAtc.setOnClick {
-                val atcModel = CatalogProductAtcUiModel(
-                    productId = properties.productId,
-                    shopId = properties.shopId,
-                    warehouseId = properties.warehouseId
-                )
-                viewModel.addProductToCart(atcModel)
+                viewModel.addProductToCart(viewModel.atcModel)
             }
             btnProductList.setOnClickListener {
                 goToProductListPage()
@@ -673,6 +676,10 @@ class CatalogDetailPageFragment :
     private fun goToLoginPage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         startActivityForResult(intent, LOGIN_REQUEST_CODE)
+    }
+
+    private fun goToChatPage(shopId: String) {
+        RouteManager.route(context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
     }
 
     private fun goToProductListPage() {
@@ -1109,5 +1116,13 @@ class CatalogDetailPageFragment :
 
     override fun onPanelImageImpression(widgetName: String) {
         viewModel.emitScrollEvent(widgetName)
+    }
+
+    override fun onSellerOfferingAtcButtonClicked() {
+        viewModel.addProductToCart(viewModel.atcModel)
+    }
+
+    override fun onSellerOfferingChatButtonClicked() {
+        goToChatPage(viewModel.atcModel.shopId)
     }
 }
