@@ -127,8 +127,8 @@ class LoginHelperViewModel @Inject constructor(
                 if (useHash) {
                     finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
                 }
-                loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
-                val tokenResult = loginTokenV2UseCase.executeOnBackground()
+                val param = loginTokenV2UseCase.createParams(email, finalPassword, keyData.hash)
+                val tokenResult = loginTokenV2UseCase(param)
                 LoginV2Mapper(userSession).map(
                     tokenResult.loginToken,
                     onSuccessLoginToken = {
@@ -331,6 +331,5 @@ class LoginHelperViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         getProfileUseCase.unsubscribe()
-        loginTokenV2UseCase.cancelJobs()
     }
 }
