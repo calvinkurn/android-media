@@ -5808,7 +5808,8 @@ class CartRevampFragment :
                 )
             },
             pageSource = PageSource.CART,
-            autoSelectTierChipByTierId = tierProductData.tierId
+            autoSelectTierChipByTierId = tierProductData.tierId,
+            shopId = item.shopHolderData.shopId
         )
         giftListBottomSheet.show(parentFragmentManager, giftListBottomSheet.tag)
     }
