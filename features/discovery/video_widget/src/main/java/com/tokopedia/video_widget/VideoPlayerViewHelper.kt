@@ -64,10 +64,10 @@ class VideoPlayerViewHelper(
         }
     }
 
-    private fun canPlay(context: Context, url: String) : Boolean {
+    private fun canPlay(context: Context, url: String): Boolean {
         return DeviceConnectionInfo.isConnectWifi(context) &&
-                isDeviceHasRequirementAutoPlay() &&
-                (!isPlayerPlaying() || url != videoUri.toString())
+            isDeviceHasRequirementAutoPlay() &&
+            (!isPlayerPlaying() || url != videoUri.toString())
     }
 
     override fun stop() {
@@ -87,10 +87,10 @@ class VideoPlayerViewHelper(
         }
     }
 
-    private fun canResume() : Boolean {
-        return videoUri != null
-                && !videoUri?.toString().isNullOrEmpty()
-                && isAutoplay
+    private fun canResume(): Boolean {
+        return videoUri != null &&
+            !videoUri?.toString().isNullOrEmpty() &&
+            isAutoplay
     }
 
     private fun playUri(uri: Uri, autoPlay: Boolean = true) {
@@ -135,12 +135,12 @@ class VideoPlayerViewHelper(
         return ClippingMediaSource(mediaSource, duration)
     }
 
-    private fun getDataSourceFactory(context: Context) : DataSource.Factory{
+    private fun getDataSourceFactory(context: Context): DataSource.Factory {
         val defaultDataSourceFactory = DefaultDataSourceFactory(
             context,
             Util.getUserAgent(context, "Tokopedia Android")
         )
-        return if(shouldCache) {
+        return if (shouldCache) {
             CacheDataSourceFactory(VideoPlayerCache.getInstance(context), defaultDataSourceFactory)
         } else {
             defaultDataSourceFactory
@@ -171,14 +171,7 @@ class VideoPlayerViewHelper(
 
     private fun onActivityPause(shouldPausePlay: Boolean) {
         playerPause()
-        if(shouldPausePlay) stopVideoPlayer()
-    }
-
-    fun onActivityDestroy() {
-        exoPlayerView?.setPlayer(null)
-        releasePlayer()
-        exoPlayerView = null
-        exoPlayer = null
+        if (shouldPausePlay) stopVideoPlayer()
     }
 
     private fun stopVideoPlayer() {
