@@ -100,7 +100,7 @@ class ProductPreviewFragment @Inject constructor(
         CoachMark2(requireContext())
     }
 
-    private var coachMarkJob : Job? = null
+    private var coachMarkJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -134,12 +134,16 @@ class ProductPreviewFragment @Inject constructor(
     //TODO: seperate coachmark later
     private val coachMarkItems by lazyThreadSafetyNone {
         arrayListOf(
-            (CoachMark2Item(
+            CoachMark2Item(
+                anchorView = binding.layoutProductPreviewTab.icBack,
+                title = "",
+                description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard)
+            ),
+            CoachMark2Item(
                 anchorView = binding.vpProductPreview,
                 title = "",
                 description = getString(contentproductpreviewR.string.product_prev_coachmark_bottomnav)
             )
-                )
         )
     }
 
@@ -273,7 +277,10 @@ class ProductPreviewFragment @Inject constructor(
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {
                     Log.d("hello", coachMarkItems.first().toString())
-                    coachMark.showCoachMark(step = coachMarkItems, index = CoachMark2.POSITION_BOTTOM)
+                    coachMark.showCoachMark(
+                        step = coachMarkItems,
+                        index = CoachMark2.POSITION_BOTTOM
+                    )
                     //handleAtc(model)
                 })
             }
