@@ -1,5 +1,6 @@
 package com.tokopedia.catalogcommon.uimodel
 
+import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 
 data class SellerOfferingUiModel(
@@ -26,7 +27,8 @@ data class SellerOfferingUiModel(
     var freeOngkir: String = "",
     var estimationShipping: String = "",
     var isShopGuarantee: Boolean = false,
-    val installment:String = ""
+    val installment:String = "",
+    val cardColor: Int = R.drawable.bg_rounded_border_dark,
 ) : BaseCatalogUiModel(
     idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor,
     darkMode
