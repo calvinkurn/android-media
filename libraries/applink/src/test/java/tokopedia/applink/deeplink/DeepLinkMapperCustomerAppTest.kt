@@ -2440,6 +2440,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller order extenson request appLink then should return tokopedia internal seller order extension request in customerapp`() {
+        val orderId = "987654321"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/${DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH}?${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID}=$orderId&$KEY_REDIRECT_TO_SELLER_APP=true"
+        assertEqualsDeepLinkMapper("${ApplinkConst.Som.SELLER_ORDER_EXTENSION_REQUEST}?${DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_PARAM_ORDER_ID}=$orderId&$KEY_REDIRECT_TO_SELLER_APP=true", expectedDeepLink)
+    }
+
+    @Test
     fun `check tokonow home appLink then should return tokopedia internal tokonow home in customerapp`() {
         val expectedDeepLink = ApplinkConstInternalTokopediaNow.HOME
         val actualDeeplink = ApplinkConst.TokopediaNow.HOME

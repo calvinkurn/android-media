@@ -30,8 +30,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -148,7 +150,7 @@ import com.tokopedia.sellerorder.detail.presentation.mapper.SomDetailMapper
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
+import com.tokopedia.sellerorder.orderextension.presentation.delegate.ISomBottomSheetOrderExtensionRequestManager
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
@@ -169,7 +171,6 @@ import javax.inject.Inject
 import com.tokopedia.sellerorder.R as sellerorderR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-
 /**x
  * Created by fwidjaja on 2019-09-30.
  */
@@ -184,7 +185,9 @@ open class SomDetailFragment :
     SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener,
     IBuyerRequestCancelRespondListener.Mediator,
     IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl(),
-    IBuyerRequestCancelRespondBottomSheetManager.Mediator {
+    IBuyerRequestCancelRespondBottomSheetManager.Mediator,
+    ISomBottomSheetOrderExtensionRequestManager.Listener,
+    ISomBottomSheetOrderExtensionRequestManager.Mediator {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -216,8 +219,8 @@ open class SomDetailFragment :
     private val transparencyFeeCoachMarkHandler by lazy(LazyThreadSafetyMode.NONE) {
         TransparencyFeeCoachMarkHandler()
     }
-    protected val orderExtensionViewModel: SomOrderExtensionViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(SomOrderExtensionViewModel::class.java)
+    private val orderExtensionViewModel: SomOrderExtensionViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[SomOrderExtensionViewModel::class.java]
     }
 
     protected var orderId = ""
@@ -369,7 +372,6 @@ open class SomDetailFragment :
         observingUserRoles()
         observeRejectCancelOrder()
         observeValidateOrder()
-        observeOrderExtensionRequestInfo()
     }
 
     override fun onResume() {
@@ -452,6 +454,7 @@ open class SomDetailFragment :
             bottomSheetListenerMediator = this,
             bottomSheetListener = this
         )
+        bottomSheetManager?.registerSomBottomSheetOrderExtensionRequest(this, this)
     }
 
     private fun observingDetail() {
@@ -740,7 +743,18 @@ open class SomDetailFragment :
                             buttonResp.key.equals(
                                 KEY_ORDER_EXTENSION_REQUEST,
                                 true
-                            ) -> setActionRequestExtension()
+                            ) -> {
+                                startActivityForResult(
+                                    RouteManager.getIntent(
+                                        requireContext(),
+                                        UriUtil.buildUriAppendParam(
+                                            ApplinkConst.Som.SELLER_ORDER_EXTENSION_REQUEST,
+                                            mapOf(INTENT_PARAM_ORDER_ID to orderId)
+                                        )
+                                    ),
+                                    102
+                                )
+                            }
                             buttonResp.key.equals(
                                 KEY_RETURN_TO_SHIPPER,
                                 true
@@ -1014,7 +1028,18 @@ open class SomDetailFragment :
                         key.equals(
                             other = KEY_ORDER_EXTENSION_REQUEST,
                             ignoreCase = true
-                        ) -> setActionRequestExtension()
+                        ) -> {
+                            startActivityForResult(
+                                RouteManager.getIntent(
+                                    requireContext(),
+                                    UriUtil.buildUriAppendParam(
+                                        ApplinkConst.Som.SELLER_ORDER_EXTENSION_REQUEST,
+                                        mapOf(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID to orderId)
+                                    )
+                                ),
+                                102
+                            )
+                        }
                         key.equals(
                             other = KEY_RESCHEDULE_PICKUP,
                             ignoreCase = true
@@ -1047,10 +1072,6 @@ open class SomDetailFragment :
             }
         }
         bottomSheetManager?.dismissSecondaryActionBottomSheet()
-    }
-
-    private fun setActionRequestExtension() {
-        orderExtensionViewModel.getSomOrderExtensionRequestInfoLoadingState()
     }
 
     private fun setActionChangeCourier() {
@@ -1306,6 +1327,17 @@ open class SomDetailFragment :
             handleFindNewDriverResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_POF) {
             handlePof(resultCode, data)
+        } else if (requestCode == 102) {
+            if (resultCode == Activity.RESULT_OK) {
+                val success = data?.getBooleanExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_RESULT_SUCCESS, false).orFalse()
+                val message = data?.getStringExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_RESULT_MESSAGE).orEmpty()
+                if (success) {
+                    showToaster(message, view, Toaster.TYPE_NORMAL)
+                } else {
+                    showToaster(message, view, Toaster.TYPE_ERROR)
+                }
+                loadDetail()
+            }
         }
     }
 
@@ -1576,34 +1608,6 @@ open class SomDetailFragment :
         }
     }
 
-    protected open fun observeOrderExtensionRequestInfo() {
-        orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
-            if (result.message.isNotBlank() || result.throwable != null) {
-                if (result.success) {
-                    showCommonToaster(result.message)
-                } else {
-                    if (result.throwable == null) {
-                        showErrorToaster(result.message)
-                    } else {
-                        result.throwable?.showErrorToaster()
-                    }
-                }
-            }
-            if (result.completed && result.refreshOnDismiss) {
-                loadDetail()
-            }
-            onRequestExtensionInfoChanged(result)
-        }
-    }
-
-    protected fun onRequestExtensionInfoChanged(data: OrderExtensionRequestInfoUiModel) {
-        bottomSheetManager?.showSomBottomSheetOrderExtensionRequest(
-            data,
-            orderId,
-            orderExtensionViewModel
-        )
-    }
-
     private fun onFailedValidateOrder() {
         showToaster(getString(R.string.som_error_validate_order), view, TYPE_ERROR)
     }
@@ -1839,6 +1843,14 @@ open class SomDetailFragment :
         return view as? CoordinatorLayout
     }
 
+    override fun getSomOrderExtensionOrderId(): String {
+        return orderId
+    }
+
+    override fun getSomOrderExtensionViewModel(): SomOrderExtensionViewModel {
+        return orderExtensionViewModel
+    }
+
     override fun getBuyerRequestCancelRespondOrderId(): String {
         return orderId
     }
@@ -1873,6 +1885,23 @@ open class SomDetailFragment :
 
     override fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel {
         return somDetailViewModel
+    }
+
+    override fun onSuccessRequestOrderExtension(message: String) {
+        if (message.isNotBlank()) {
+            showCommonToaster(message)
+            loadDetail()
+        }
+    }
+
+    override fun onFailedRequestOrderExtension(message: String, throwable: Throwable?) {
+        if (throwable == null && message.isNotBlank()) {
+            showErrorToaster(message)
+        } else throwable?.showErrorToaster()
+    }
+
+    override fun onSellerOrderExtensionRequestDismissed() {
+        // noop
     }
 
     private inner class AddOnListener : AddOnViewHolder.Listener {
@@ -1913,3 +1942,4 @@ open class SomDetailFragment :
         }
     }
 }
+

@@ -151,10 +151,9 @@ class SomOrderExtensionViewModelTest {
             viewModel.getSomOrderExtensionRequestInfoLoadingState()
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.success)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -172,10 +171,9 @@ class SomOrderExtensionViewModelTest {
         }
 
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-        assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+        assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.success)
         assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
-        assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
         assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
         assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -191,10 +189,9 @@ class SomOrderExtensionViewModelTest {
         }
 
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-        assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+        assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
         assertFalse(viewModel.orderExtensionRequestInfo.value!!.success)
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.completed)
-        assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
         assertNotNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -232,10 +229,9 @@ class SomOrderExtensionViewModelTest {
             assertNotNull(commentUiModel)
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.success)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -258,10 +254,9 @@ class SomOrderExtensionViewModelTest {
             assertTrue(noSelectedOption)
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.success)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -288,10 +283,9 @@ class SomOrderExtensionViewModelTest {
             assertTrue(currentOrderExtensionRequestInfo.isValid())
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.success)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -324,10 +318,9 @@ class SomOrderExtensionViewModelTest {
             assertFalse(currentOrderExtensionRequestInfo.isValid())
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.success)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -349,10 +342,9 @@ class SomOrderExtensionViewModelTest {
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.success)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertTrue(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -374,10 +366,9 @@ class SomOrderExtensionViewModelTest {
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.success)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -395,10 +386,9 @@ class SomOrderExtensionViewModelTest {
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.success)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -420,10 +410,9 @@ class SomOrderExtensionViewModelTest {
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.success)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNotNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
@@ -457,10 +446,9 @@ class SomOrderExtensionViewModelTest {
 
             viewModel.requestDismissOrderExtensionRequestInfoBottomSheet()
 
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.processing)
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.sendingRequest)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.success)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.completed)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
             assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
