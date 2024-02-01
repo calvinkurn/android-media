@@ -37,13 +37,16 @@ fun MediaBottomNav(
     onAtcClicked: () -> Unit = {}
 ) {
     NestTheme(darkTheme = true) {
-        if (product == BottomNavUiModel.Empty) renderLoading()
-        else renderContent(product = product, onAtcClicked)
+        if (product == BottomNavUiModel.Empty) {
+            RenderLoading()
+        } else {
+            RenderContent(product = product, onAtcClicked)
+        }
     }
 }
 
 @Composable
-private fun renderLoading() {
+private fun RenderLoading() {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,14 +94,13 @@ private fun renderLoading() {
                     bottom.linkTo(parent.bottom)
                 }
         )
-
     }
 }
 
 @Composable
-private fun renderContent(
+private fun RenderContent(
     product: BottomNavUiModel,
-    onAtcClicked: () -> Unit = {},
+    onAtcClicked: () -> Unit = {}
 ) {
     ConstraintLayout(
         modifier = Modifier
