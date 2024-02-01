@@ -41,8 +41,8 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                     isAnimationPopupEnabled
                 ) {
                     if(!isAnimationPopupGQlCalled) {
+                        isAnimationPopupGQlCalled = true
                         Handler().postDelayed({
-                            isAnimationPopupGQlCalled = true
                             getScratchCardData(activity)
                         }, 2000)
                     }
