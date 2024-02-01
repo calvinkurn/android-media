@@ -90,4 +90,5 @@
     <string name="chatbot_invoice_owoc_hide">Sembunyikan</string>
     <string name="chatbot_dynamic_csat_other_reason_label">Tulis detailnya di sini, ya..</string>
     <string name="chatbot_dynamic_csat_min_other_reason_char_label">Min. %1$d karakter</string>
+    <string name="chatbot_csat_submit_label">Kirim</string>
 </resources>

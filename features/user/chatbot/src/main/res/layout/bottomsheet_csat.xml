@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:text="Kirim"
+            android:text="@string/chatbot_csat_submit_label"
             app:layout_constraintTop_toBottomOf="@+id/csat_other_reason"
             tools:layout_editor_absoluteX="16dp" />
 

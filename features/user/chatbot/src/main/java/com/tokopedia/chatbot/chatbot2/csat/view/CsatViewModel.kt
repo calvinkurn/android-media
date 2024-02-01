@@ -82,11 +82,10 @@ class CsatViewModel @Inject constructor(
     }
 
     fun updateButton() {
-        val minimumOtherReasonChar = 30
         _csatDataStateFlow.value.let { csatModel ->
             val isSelectedReasonsEmpty = csatModel.selectedReasons.isEmpty()
             val isOtherReasonNotSatisfied =
-                csatModel.otherReason.isNotBlank() && csatModel.otherReason.length < minimumOtherReasonChar
+                csatModel.otherReason.isNotBlank() && csatModel.otherReason.length < csatModel.minimumOtherReasonChar
             if (isSelectedReasonsEmpty || isOtherReasonNotSatisfied) {
                 _csatEventFlow.tryEmit(CsatEvent.UpdateButton(isEnabled = false))
             } else {
