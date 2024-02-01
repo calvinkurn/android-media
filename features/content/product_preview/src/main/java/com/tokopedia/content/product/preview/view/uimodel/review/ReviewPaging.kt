@@ -5,7 +5,10 @@ package com.tokopedia.content.product.preview.view.uimodel.review
  */
 sealed interface ReviewPaging {
     data class Success(val page: Int, val hasNextPage: Boolean) : ReviewPaging
-    data class Error(val throwable: Throwable) : ReviewPaging
+    data class Error(
+        val throwable: Throwable,
+        val fromFetchByIds: Boolean,
+    ) : ReviewPaging
     object Load : ReviewPaging
     object Unknown : ReviewPaging
 }

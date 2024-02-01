@@ -6,6 +6,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -48,6 +50,7 @@ import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewFragment @Inject constructor(
     private val router: Router
@@ -191,7 +194,7 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun renderList(prev: ReviewUiModel?, data: ReviewUiModel) {
-        if (prev?.reviewContent == data.reviewContent) return
+        if (prev == data) return
 
         val state = data.reviewPaging
 
@@ -210,8 +213,11 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun showError(state: ReviewPaging.Error) = with(binding.reviewGlobalError) {
-        // TODO: why is it in dark mode.
+        errorTitle.setTextColor(getColor(requireContext(), unifyprinciplesR.color.Unify_Static_White))
+        errorDescription.setTextColor(getColor(requireContext(), unifyprinciplesR.color.Unify_Static_White))
+
         show()
+        binding.reviewLoader.hide()
         if (state.throwable is UnknownHostException) {
             setType(GlobalError.NO_CONNECTION)
             errorSecondaryAction.show()
@@ -226,7 +232,10 @@ class ReviewFragment @Inject constructor(
             setType(GlobalError.SERVER_ERROR)
         }
         setActionClickListener {
-            viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
+            hide()
+            binding.reviewLoader.show()
+            if (state.fromFetchByIds) viewModel.onAction(ProductPreviewAction.FetchReviewByIds)
+            else viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
         }
     }
 

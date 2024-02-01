@@ -35,8 +35,10 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -238,8 +240,11 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
-
-                    else -> {}
+                    is ProductPreviewEvent.FailFetchMiniInfo -> {
+                        binding.viewFooter.gone()
+                    }
+                    is ProductPreviewEvent.LikeUpdate -> return@collect
+                    is ProductPreviewEvent.ShowMenuSheet -> return@collect
                 }
             }
         }
@@ -249,6 +254,7 @@ class ProductPreviewFragment @Inject constructor(
         if (prev == model) return
 
         binding.viewFooter.apply {
+            show()
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {

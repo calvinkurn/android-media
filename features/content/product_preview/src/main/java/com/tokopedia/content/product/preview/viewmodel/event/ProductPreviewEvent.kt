@@ -39,4 +39,9 @@ sealed interface ProductPreviewEvent {
     data class LikeUpdate(
         val state: ReviewLikeUiState
     ) : ProductPreviewEvent
+
+    data class FailFetchMiniInfo(
+        val message: Throwable,
+    ): ProductPreviewEvent
+
 }

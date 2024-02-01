@@ -85,9 +85,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val uiState: Flow<ProductReviewUiState>
         get() = combine(
             _productContentState,
-            _bottomNavContentState,
-            _reviewContentState
-        ) { productContent, bottomNavContent, reviewContent ->
+            _reviewContentState,
+            _bottomNavContentState
+        ) { productContent, reviewContent, bottomNavContent ->
             ProductReviewUiState(
                 productUiModel = productContent,
                 reviewUiModel = reviewContent,
@@ -140,7 +140,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             _bottomNavContentState.value = repo.getProductMiniInfo(productPreviewSource.productId)
         }) {
-            // TODO: what happen when fail fetching bottom nav info?
+            _uiEvent.emit(ProductPreviewEvent.FailFetchMiniInfo(it))
         }
     }
 
@@ -178,9 +178,15 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
             handleFetchReview(isRefresh = false)
         }, onError = {
-                // TODO handle some toast?
-                handleFetchReview(isRefresh = true)
-            })
+            _reviewContentState.update { review ->
+                review.copy(
+                    reviewPaging = ReviewPaging.Error(
+                        throwable = it,
+                        fromFetchByIds = true,
+                    )
+                )
+            }
+        })
     }
 
     private fun handleFetchReview(isRefresh: Boolean) {
@@ -210,7 +216,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }
         }) {
             _reviewContentState.update { review ->
-                review.copy(reviewPaging = ReviewPaging.Error(it))
+                review.copy(
+                    reviewPaging = ReviewPaging.Error(
+                        throwable = it,
+                        fromFetchByIds = false,
+                    )
+                )
             }
         }
     }
