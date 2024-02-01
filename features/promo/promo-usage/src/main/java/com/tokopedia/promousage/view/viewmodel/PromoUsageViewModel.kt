@@ -405,10 +405,19 @@ class PromoUsageViewModel @Inject constructor(
                         } as? PromoItem
                 } as? PromoItem
                 if (gopayLaterPromo != null) {
-                    _autoApplyAction.postValue(gopayLaterPromo)
+                    autoApplyTracker(gopayLaterPromo)
                     onClickPromo(gopayLaterPromo)
                 }
             }
+        }
+    }
+
+    private fun autoApplyTracker(gopayItem: PromoItem) {
+        if ((gopayItem.state is PromoItemState.Normal) &&
+            gopayItem.couponType.contains(PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL) &&
+            gopayItem.cta.type != PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+        ) {
+            _autoApplyAction.postValue(gopayItem)
         }
     }
 
