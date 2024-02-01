@@ -12,7 +12,8 @@ sealed interface GiftListEvent {
         val giftProducts: List<TierGifts>,
         val source: PageSource,
         val selectedTierId: Long,
-        val userCache: LocalCacheModel
+        val userCache: LocalCacheModel,
+        val shopId: String
     ) : GiftListEvent
 
     object GetGiftList : GiftListEvent

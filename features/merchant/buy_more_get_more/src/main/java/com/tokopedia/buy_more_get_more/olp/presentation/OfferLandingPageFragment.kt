@@ -73,6 +73,7 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
@@ -82,7 +83,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
-import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
@@ -998,7 +998,8 @@ class OfferLandingPageFragment :
             warehouseId = warehouseId,
             tierGifts = tierGifts,
             pageSource = PageSource.OFFER_LANDING_PAGE,
-            autoSelectTierChipByTierId = selectedTierId
+            autoSelectTierChipByTierId = selectedTierId,
+            shopId = currentState.shopData.shopId.toString()
         )
 
         bottomSheet.setOnDismissListener {

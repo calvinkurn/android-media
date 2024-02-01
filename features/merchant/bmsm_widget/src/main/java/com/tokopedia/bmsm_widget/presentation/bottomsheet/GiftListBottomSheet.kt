@@ -40,6 +40,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val BUNDLE_KEY_OFFER_ID = "offer_id"
+        private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_WAREHOUSE_ID = "warehouse_id"
         private const val BUNDLE_KEY_PAGE_SOURCE = "page_source"
         private const val BUNDLE_KEY_TIER_GIFTS = "tier_gifts"
@@ -56,6 +57,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
         @JvmStatic
         fun newInstance(
             offerId: Long,
+            shopId: String,
             warehouseId: Long,
             tierGifts: List<TierGifts>,
             pageSource: PageSource,
@@ -64,6 +66,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
             return GiftListBottomSheet().apply {
                 arguments = Bundle().apply {
                     putLong(BUNDLE_KEY_OFFER_ID, offerId)
+                    putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putLong(BUNDLE_KEY_WAREHOUSE_ID, warehouseId)
                     putParcelableArrayList(BUNDLE_KEY_TIER_GIFTS, ArrayList(tierGifts))
                     putParcelable(BUNDLE_KEY_PAGE_SOURCE, pageSource)
@@ -90,6 +93,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetGiftListBinding>()
     private val offerId by lazy { arguments?.getLong(BUNDLE_KEY_OFFER_ID).orZero() }
+    private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val warehouseId by lazy { arguments?.getLong(BUNDLE_KEY_WAREHOUSE_ID).orZero() }
     private val tierGifts by lazy { arguments?.getParcelableArrayList<TierGifts>(BUNDLE_KEY_TIER_GIFTS) ?: emptyList() }
     private val source by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_SOURCE) as? PageSource ?: PageSource.OFFER_LANDING_PAGE }
@@ -112,7 +116,8 @@ class GiftListBottomSheet : BottomSheetUnify() {
                 giftProducts = tierGifts,
                 source = source,
                 selectedTierId = selectedTierId,
-                userCache = getUserCache()
+                userCache = getUserCache(),
+                shopId = shopId
             )
         )
     }
