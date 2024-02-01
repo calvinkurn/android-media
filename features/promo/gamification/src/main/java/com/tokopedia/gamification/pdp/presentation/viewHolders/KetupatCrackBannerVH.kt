@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.pdp.presentation.viewHolders
 
 import android.app.Activity
+import android.os.Handler
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -49,7 +50,10 @@ class KetupatCrackBannerVH(itemView: View) :
                         "tokopediamarketplace"
                     )
                     //refresh data
-                    landingPageRefreshCallback?.refreshLandingPage()
+                    Handler().postDelayed({
+                        landingPageRefreshCallback?.refreshLandingPage()
+                    }, 2000)
+
                 }
             })
     }

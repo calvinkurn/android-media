@@ -139,13 +139,15 @@ class KetupatLandingViewModel @Inject constructor(
         )
     }
 
-    private fun convertDataToVisitable(data: KetupatLandingPageData.GamiGetScratchCardLandingPage): ArrayList<Visitable<KetupatLandingTypeFactory>>? {
+    private fun convertDataToVisitable(
+        data: KetupatLandingPageData.GamiGetScratchCardLandingPage
+    ): ArrayList<Visitable<KetupatLandingTypeFactory>>? {
         val tempList: ArrayList<Visitable<KetupatLandingTypeFactory>> = ArrayList()
 
         data.sections[0]?.let { KetupatTopBannerVHModel(it, data.scratchCard) }
             ?.let { tempList.add(it) }
 
-        data.sections[1]?.let { KetupatCrackBannerVHModel(it, data.scratchCard) }
+        data.sections[1]?.let { KetupatCrackBannerVHModel(it, data.scratchCard, landingPageRefreshCallback) }
             ?.let { tempList.add(it) }
 
         if (referralTimeData.value?.gameReferralEventContent?.eventContent?.remainingTime.orZero() > 0) {
