@@ -20,9 +20,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
-import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
@@ -76,11 +74,8 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
             oldBottom: Int
         ) {
             val expectedMargin = getRecyclerViewMarginBottom()
-            val marginLp = view.marginLp
-
-            if (marginLp.bottomMargin >= expectedMargin) return
-            marginLp.updateMargins(bottom = expectedMargin)
-            view.requestLayout()
+            if (!expectedMargin) return
+            binding.root.layoutParams = binding.root.layoutParams.apply { height = newHeight }
         }
     }
 
@@ -312,8 +307,8 @@ class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), Cont
         _binding = null
     }
 
-    private fun getRecyclerViewMarginBottom(): Int {
-        return binding.rvStoriesProduct.height - binding.root.height
+    private fun getRecyclerViewMarginBottom(): Boolean {
+        return binding.rvStoriesProduct.height > binding.root.height
     }
 
     interface Listener {
