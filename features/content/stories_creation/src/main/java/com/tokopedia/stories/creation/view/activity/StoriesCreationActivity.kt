@@ -318,7 +318,7 @@ class StoriesCreationActivity : BaseActivity() {
 
     private fun openMediaPicker() {
         val intentData = MediaPickerIntentData(
-            storiesId = viewModel.storiesId,
+            storiesId = viewModel.storyId,
             minVideoDuration = viewModel.minVideoDuration,
             maxVideoDuration = viewModel.maxVideoDuration,
             previewActionText = getString(R.string.stories_creation_continue),

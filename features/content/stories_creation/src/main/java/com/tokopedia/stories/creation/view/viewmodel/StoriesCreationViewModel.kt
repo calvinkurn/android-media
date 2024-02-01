@@ -2,7 +2,6 @@ package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -38,9 +36,6 @@ class StoriesCreationViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
     val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
-
-    val storiesId: String
-        get() = _uiState.value.config.storiesId
 
     val mediaFilePath: String
         get() = _uiState.value.media.filePath
