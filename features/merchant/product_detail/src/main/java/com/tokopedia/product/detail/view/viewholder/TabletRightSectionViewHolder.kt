@@ -31,7 +31,7 @@ class TabletRightSectionViewHolder(
     }
 
     init {
-        binding.rvPos.adapter = adapter
+        binding.pdpRvLeftTablet.adapter = adapter
     }
 
     companion object {

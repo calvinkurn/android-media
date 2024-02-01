@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 class TabletLeftSectionViewHolder(
     view: View,
-    listener: DynamicProductDetailListener,
+    private val listener: DynamicProductDetailListener,
     adapterTypeFactory: DynamicProductDetailAdapterFactory
 ) : AbstractViewHolder<ProductTabletLeftSectionDataModel>(view) {
 
@@ -31,7 +31,7 @@ class TabletLeftSectionViewHolder(
     }
 
     init {
-        binding.rvPos.adapter = adapter
+        binding.pdpRvLeftTablet.adapter = adapter
     }
 
     companion object {
@@ -49,5 +49,9 @@ class TabletLeftSectionViewHolder(
         }
 
         adapter.submitList(element.listVisitable)
+    }
+
+    fun detachView() {
+        listener.getProductVideoCoordinator()?.onPause()
     }
 }
