@@ -4,15 +4,22 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListTypeFactory
 
-data class HorizontalProductCardItemUiModel(
+data class ShoppingListHorizontalProductCardItemUiModel(
     val id: String,
     val image: String,
+    val eta: String,
     val price: String,
     val name: String,
     val weight: String,
     val percentage: String,
     val slashPrice: String,
-    val removeBottomDivider: Boolean = false
+    val type: LayoutType
 ): Visitable<ShoppingListTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: ShoppingListTypeFactory): Int = typeFactory.type(this)
+
+    enum class LayoutType {
+        ATC_WISHLIST,
+        EMPTY_STOCK,
+        PRODUCT_RECOMMENDATION
+    }
 }

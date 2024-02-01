@@ -3,8 +3,11 @@ package com.tokopedia.tokopedianow.common.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -55,5 +58,17 @@ object ImageUtil {
             return BitmapDrawable(context.resources, bitmap)
         }
         return null
+    }
+
+    fun ImageView.applyBrightnessFilter(brightnessFactor: Float) {
+        val colorMatrix = ColorMatrix().apply {
+            set(floatArrayOf(
+                brightnessFactor, 0f, 0f, 0f, 0f,
+                0f, brightnessFactor, 0f, 0f, 0f,
+                0f, 0f, brightnessFactor, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+        }
+        colorFilter = ColorMatrixColorFilter(colorMatrix)
     }
 }

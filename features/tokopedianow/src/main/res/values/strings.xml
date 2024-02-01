@@ -281,4 +281,5 @@
     <!-- Shopping List -->
     <string name="tokopedianow_shopping_list_page_title">List Belanja</string>
     <string name="tokopedianow_shopping_list_repurchase">Beli Lagi</string>
+    <string name="tokopedianow_shopping_add_shopping_list">+ List Belanja</string>
 </resources>

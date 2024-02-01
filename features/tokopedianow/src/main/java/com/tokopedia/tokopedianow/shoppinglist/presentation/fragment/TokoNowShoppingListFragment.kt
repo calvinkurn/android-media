@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapterTypeFactory
+import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -163,6 +164,7 @@ class TokoNowShoppingListFragment :
         rvShoppingList.apply {
             adapter = this@TokoNowShoppingListFragment.adapter
             layoutManager = LinearLayoutManager(context)
+            addItemDecoration(ShoppingListDecoration())
         }
     }
 

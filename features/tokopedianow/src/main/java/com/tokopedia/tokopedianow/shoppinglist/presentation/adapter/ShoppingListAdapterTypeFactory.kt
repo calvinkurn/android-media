@@ -4,18 +4,24 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowDividerTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowHeaderSpaceTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowHeaderTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTitleTypeFactory
+import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowHeaderSpaceUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTitleUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowDividerViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderSpaceViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.HorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.TopAllAddToCartUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.HorizontalProductCardItemViewHolder
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.TopAllAddToCartViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowTitleViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListTopCheckAllUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListHorizontalProductCardItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListTopCheckAllViewHolder
 
 class ShoppingListAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -25,12 +31,18 @@ class ShoppingListAdapterTypeFactory(
     BaseAdapterTypeFactory(),
     ShoppingListTypeFactory,
     TokoNowHeaderTypeFactory,
-    TokoNowHeaderSpaceTypeFactory
+    TokoNowHeaderSpaceTypeFactory,
+    TokoNowDividerTypeFactory,
+    TokoNowTitleTypeFactory
 {
     override fun type(uiModel: TokoNowHeaderUiModel): Int = TokoNowHeaderViewHolder.LAYOUT
     override fun type(uiModel: TokoNowHeaderSpaceUiModel): Int = TokoNowHeaderSpaceViewHolder.LAYOUT
-    override fun type(uiModel: HorizontalProductCardItemUiModel): Int = HorizontalProductCardItemViewHolder.LAYOUT
-    override fun type(uiModel: TopAllAddToCartUiModel): Int = TopAllAddToCartViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowDividerUiModel): Int = TokoNowDividerViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowTitleUiModel): Int = TokoNowTitleViewHolder.LAYOUT
+
+    override fun type(uiModel: ShoppingListHorizontalProductCardItemUiModel): Int = ShoppingListHorizontalProductCardItemViewHolder.LAYOUT
+    override fun type(uiModel: ShoppingListTopCheckAllUiModel): Int = ShoppingListTopCheckAllViewHolder.LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             TokoNowHeaderViewHolder.LAYOUT -> TokoNowHeaderViewHolder(
@@ -42,10 +54,17 @@ class ShoppingListAdapterTypeFactory(
             TokoNowHeaderSpaceViewHolder.LAYOUT -> TokoNowHeaderSpaceViewHolder(
                 itemView = parent
             )
-            HorizontalProductCardItemViewHolder.LAYOUT -> HorizontalProductCardItemViewHolder(
+            TokoNowDividerViewHolder.LAYOUT -> TokoNowDividerViewHolder(
                 itemView = parent
             )
-            TopAllAddToCartViewHolder.LAYOUT -> TopAllAddToCartViewHolder(
+            TokoNowTitleViewHolder.LAYOUT -> TokoNowTitleViewHolder(
+                itemView = parent
+            )
+
+            ShoppingListHorizontalProductCardItemViewHolder.LAYOUT -> ShoppingListHorizontalProductCardItemViewHolder(
+                itemView = parent
+            )
+            ShoppingListTopCheckAllViewHolder.LAYOUT -> ShoppingListTopCheckAllViewHolder(
                 itemView = parent
             )
             else -> super.createViewHolder(parent, type)
