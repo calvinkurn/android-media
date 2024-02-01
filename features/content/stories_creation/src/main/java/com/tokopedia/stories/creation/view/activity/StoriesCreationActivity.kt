@@ -200,15 +200,12 @@ class StoriesCreationActivity : BaseActivity() {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     lifecycleScope.launch {
-                        try {
+                        runCatching {
                             withContext(dispatchers.io) {
                                 CacheUtil.deleteFileFromCache(viewModel.mediaFilePath)
                             }
-                        } catch (_: Throwable) {
-
-                        } finally {
-                            finish()
                         }
+                        finish()
                     }
                 }
             }
