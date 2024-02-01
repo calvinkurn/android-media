@@ -73,6 +73,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         ketupatLandingViewModel?.getAffiliateDataItems()?.observe(this) {
             adapter.clearAllElements()
             adapter.addMoreData(it)
+            adapter.notifyDataSetChanged()
         }
 
         ketupatLandingViewModel?.getRecommVisibility()?.observe(this) {
@@ -176,6 +177,8 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                 })
             if (!fragmentDataRendered) {
                 setUpAdapter()
+            }else{
+                adapter
             }
             fragmentDataRendered = true
         } else {

@@ -77,11 +77,17 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                         )
                     }
                 }
-                isAnimationPopupGQlCalled = false
+                enableGQLCall()
             }, {
-                isAnimationPopupGQlCalled = false
+                enableGQLCall()
             }, pageSource)
         }
+    }
+
+    private fun enableGQLCall(){
+        Handler().postDelayed({
+            isAnimationPopupGQlCalled = false
+                              }, 500)
     }
 
     open fun showLottiePopup(
