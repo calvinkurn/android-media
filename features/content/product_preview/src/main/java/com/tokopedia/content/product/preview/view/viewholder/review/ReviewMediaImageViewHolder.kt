@@ -22,7 +22,7 @@ class ReviewMediaImageViewHolder(
         loadImageWithoutPlaceholder(imageUrl) {
             listener(
                 onSuccess = { _, _ -> hideLoading() },
-                onError = { hideLoading() }
+                onError = { showErrorImage() }
             )
         }
     }
@@ -37,6 +37,16 @@ class ReviewMediaImageViewHolder(
     private fun hideLoading() {
         binding.apply {
             ivReviewContentImage.show()
+            loaderImage.invisible()
+        }
+    }
+
+    private fun showErrorImage() {
+        binding.apply {
+            ivReviewContentImage.apply {
+                setImageResource(0)
+                show()
+            }
             loaderImage.invisible()
         }
     }

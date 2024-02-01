@@ -22,7 +22,7 @@ class ProductContentImageViewHolder(
         loadImageWithoutPlaceholder(imageUrl) {
             listener(
                 onSuccess = { _, _ -> hideLoading() },
-                onError = { hideLoading() }
+                onError = { showErrorImage() }
             )
         }
     }
@@ -37,6 +37,16 @@ class ProductContentImageViewHolder(
     private fun hideLoading() {
         binding.apply {
             ivProductContentImage.show()
+            loaderImage.invisible()
+        }
+    }
+
+    private fun showErrorImage() {
+        binding.apply {
+            ivProductContentImage.apply {
+                setImageResource(0)
+                show()
+            }
             loaderImage.invisible()
         }
     }
