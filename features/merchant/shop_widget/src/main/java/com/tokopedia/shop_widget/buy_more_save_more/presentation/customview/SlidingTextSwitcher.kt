@@ -40,11 +40,7 @@ class SlidingTextSwitcher @JvmOverloads constructor(
 
     private var currentTitle = ""
 
-    init {
-        setFactory {
-            return@setFactory createTypography()
-        }
-    }
+    var textColor = MethodChecker.getColor(context, R.color.dms_static_white)
 
     fun setMessages(
         messages: List<String>,
@@ -116,16 +112,4 @@ class SlidingTextSwitcher @JvmOverloads constructor(
         currentRollingTextIndex = 0
         job?.cancel()
     }
-
-    private fun createTypography() =
-        Typography(context).apply {
-            setType(Typography.SMALL)
-            setTextColor(
-                MethodChecker.getColor(
-                    context,
-                    R.color.dms_static_white
-                )
-            )
-            gone()
-        }
 }

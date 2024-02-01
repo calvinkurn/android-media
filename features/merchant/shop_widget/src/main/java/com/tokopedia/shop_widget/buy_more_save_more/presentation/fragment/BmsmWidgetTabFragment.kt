@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.imageassets.TokopediaImageUrl
@@ -343,8 +341,8 @@ class BmsmWidgetTabFragment :
             }
 
             tpgTitleWidget.setTitle(upsellWording, defaultOfferMessage)
-            tpgSubTitleWidget.setSubTitle(offerMessage, defaultOfferMessage)
-            tpgPdUpsellingWording.setSlidingText(offerMessage, defaultOfferMessage)
+            tpgSubTitleWidget.setUpsellingGwp(offerMessage, defaultOfferMessage)
+            tpgPdUpsellingWording.setUpsellingPd(offerMessage, defaultOfferMessage)
 
             when (offerTypeId) {
                 OFFER_TYPE_PD -> setupPdHeader(offerMessage)
@@ -524,7 +522,6 @@ class BmsmWidgetTabFragment :
                 imgGiftWhiteFrameBroder.visible()
                 groupStackedImg.showWithCondition(productGiftImages.size > Int.ONE)
             }
-
             //upselling wording section
             pdUpsellingWrapper.gone()
         }
@@ -552,18 +549,24 @@ class BmsmWidgetTabFragment :
         visible()
     }
 
-    private fun SlidingTextSwitcher.setSubTitle(messages: List<String>, defaultOfferMessage: String) {
+    private fun SlidingTextSwitcher.setUpsellingGwp(messages: List<String>, defaultOfferMessage: String) {
         val textColor = MethodChecker.getColor(
             context,
             R.color.dms_static_white
         )
         val text = messages.ifEmpty { listOf(defaultOfferMessage)  }
-
-//        showWithCondition(messages.isNotEmpty())
+        if (childCount < 2){
+            setFactory {
+                Typography(context).apply {
+                    setType(Typography.SMALL)
+                    setTextColor(textColor)
+                }
+            }
+        }
         setMessages(messages = text, textColor = textColor)
     }
 
-    private fun SlidingTextSwitcher.setSlidingText(
+    private fun SlidingTextSwitcher.setUpsellingPd(
         offerMessages: List<String>,
         defaultOfferMessage: String
     ) {
@@ -586,6 +589,14 @@ class BmsmWidgetTabFragment :
                 context,
                 R.color.dms_pd_sub_title_text_color
             )
+        }
+        if (childCount < 2){
+            setFactory {
+                Typography(context).apply {
+                    setType(Typography.SMALL)
+                    setTextColor(textColor)
+                }
+            }
         }
         setMessages(
             messages = offerMessages.ifEmpty { listOf(defaultOfferMessage) },
