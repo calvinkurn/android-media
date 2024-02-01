@@ -604,7 +604,17 @@ class OfferLandingPageFragment :
                         )
                     }
 
-                    Status.GIFT_OOS,
+                    Status.GIFT_OOS -> {
+                        setErrorPage(
+                            title = getString(R.string.bmgm_title_error_gift_out_of_stock),
+                            description = getString(R.string.bmgm_description_error_out_of_stock),
+                            errorType = GlobalError.PAGE_NOT_FOUND,
+                            primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
+                            primaryCtaAction = { activity?.finish() },
+                            imageUrl = TokopediaImageUrl.ILLUSTRATION_SHOP_ETALASE_NOT_FOUND,
+                            isShowProductList = true
+                        )
+                    }
                     Status.OOS -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),

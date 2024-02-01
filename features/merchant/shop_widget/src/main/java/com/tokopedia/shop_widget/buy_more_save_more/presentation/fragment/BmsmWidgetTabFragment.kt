@@ -669,7 +669,7 @@ class BmsmWidgetTabFragment :
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = if (productCardModelList.size > TWO_PRODUCT_ITEM_SIZE) {
-            context?.resources?.getDimensionPixelSize(R.dimen.dp_132).orZero()
+            context?.resources?.getDimensionPixelSize(R.dimen.dp_145).orZero()
         } else {
             context?.resources?.getDimensionPixelSize(R.dimen.dp_200).orZero()
         }

@@ -33,7 +33,7 @@ class BmsmTwoProductListViewHolder(
             productImageUrl = imageUrl,
             productName = name,
             discountPercentage = if (campaign.discountedPercentage != Int.ZERO) "${campaign.discountedPercentage}%" else "",
-            slashedPrice = campaign.originalPrice.ifEmpty { price },
+            slashedPrice = campaign.originalPrice,
             formattedPrice = campaign.discountedPrice.ifEmpty { price },
             countSoldRating = rating,
             hasAddToCartButton = true,
