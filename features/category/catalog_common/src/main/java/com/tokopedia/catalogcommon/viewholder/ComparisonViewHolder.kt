@@ -51,11 +51,14 @@ class ComparisonViewHolder(
         private const val WIDE_WIDTH_ITEM_COUNT = 2
         private const val NORMAL_WIDTH_DP_VALUE = 148
         private const val MAX_PRODUCT_TITLE_LINES = 2
+        private const val INTRO_ANIMATION_START = 1000L
+        private const val INTRO_ANIMATION_END = 3000L
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
     private var comparisonContents: List<ComparisonUiModel.ComparisonContent> = emptyList()
     private var scrollProgress = 0
+    private var introAnimationPlayed = false
 
     init {
         binding?.btnSeeMore?.setOnClickListener {
@@ -104,8 +107,20 @@ class ComparisonViewHolder(
                     LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
                 rvSpecs.adapter = ComparisonSpecItemAdapter(specs.orEmpty(), true)
                 setupComparisonListItem(comparisonItems)
+                playIntroAnimation(rvComparisonItems, comparisonItems.count().dec())
             }
         }
+    }
+
+    private fun playIntroAnimation(rvComparisonItems: RecyclerView, lastIndex: Int) {
+        if (introAnimationPlayed || !isDisplayingTopSpec) return
+        introAnimationPlayed = true
+        rvComparisonItems.postDelayed({
+            rvComparisonItems.smoothScrollToPosition(lastIndex)
+        }, INTRO_ANIMATION_START)
+        rvComparisonItems.postDelayed({
+            rvComparisonItems.smoothScrollToPosition(Int.ZERO)
+        }, INTRO_ANIMATION_END)
     }
 
     private fun configureRowsHeight(

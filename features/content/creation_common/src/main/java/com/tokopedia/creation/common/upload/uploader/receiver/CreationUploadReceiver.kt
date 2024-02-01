@@ -57,7 +57,7 @@ class CreationUploadReceiver : BroadcastReceiver() {
             }
             Action.RemoveQueue.value -> {
                 scope.launch {
-                    uploadQueueRepository.delete(uploadData.queueId)
+                    uploadQueueRepository.deleteQueueAndChannel(uploadData)
                     creationUploader.retry(uploadData.notificationIdAfterUpload)
                 }
             }

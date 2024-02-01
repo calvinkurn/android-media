@@ -43,7 +43,6 @@ import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.SomCon
 import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequestPickupViewModel
 import com.tokopedia.logisticseller.ui.requestpickup.util.DateMapper
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify2
@@ -206,11 +205,22 @@ class RequestPickupFragment :
     private fun renderTicker() {
         binding?.tickerInfoCourier?.apply { ->
             setTickerShape(Ticker.SHAPE_LOOSE)
-            val param = TargetedTickerParamModel(
-                page = TargetedTickerPage.REQUEST_PICKUP,
-                targets = confirmReqPickupResponse.dataSuccess.tickerUnificationTargets.map {
-                    TargetedTickerParamModel.Target(it.type, it.values)
+
+            val tickerParam = confirmReqPickupResponse.dataSuccess.tickerUnificationParams
+
+            val template = TargetedTickerParamModel.Template().copy(
+                contents = tickerParam.template.contents.map {
+                    TargetedTickerParamModel.Template.Content(it.key, it.value)
                 }
+            )
+            val target = tickerParam.target.map {
+                TargetedTickerParamModel.Target(it.type, it.values)
+            }
+
+            val param = TargetedTickerParamModel(
+                page = tickerParam.page,
+                target = target,
+                template = template
             )
 
             loadAndShow(param)

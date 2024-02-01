@@ -1,7 +1,8 @@
 package com.tokopedia.catalog.ui.activity
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
@@ -33,7 +34,7 @@ class CatalogSwitchingComparisonActivity : BaseSimpleActivity() {
             .replace(
                 R.id.catalog_change_comparison_parent_view,
                 fragment,
-                CATALOG_CHANGE_COMPARISON_TAG,
+                CATALOG_CHANGE_COMPARISON_TAG
             )
             .commit()
     }
@@ -42,4 +43,11 @@ class CatalogSwitchingComparisonActivity : BaseSimpleActivity() {
         return null
     }
 
+    override fun attachBaseContext(newBase: Context?) {
+        val newOverride = Configuration(newBase?.resources?.configuration)
+        newOverride.fontScale = 1.0f
+        applyOverrideConfiguration(newOverride)
+
+        super.attachBaseContext(newBase)
+    }
 }

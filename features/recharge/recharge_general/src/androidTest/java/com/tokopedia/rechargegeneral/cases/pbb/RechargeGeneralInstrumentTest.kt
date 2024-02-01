@@ -139,7 +139,7 @@ class RechargeGeneralInstrumentTest {
         ).perform(closeSoftKeyboard())
         Thread.sleep(1000)
         onView(withText(R.string.input_error_message)).check(matches(isDisplayed()))
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
+        onView(withId(R.id.recharge_general_enquiry_button_compose)).check(matches(not(isEnabled())))
 
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
@@ -147,7 +147,7 @@ class RechargeGeneralInstrumentTest {
                 )
         ).perform(closeSoftKeyboard())
         Thread.sleep(1000)
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(isEnabled()))
+        onView(withId(R.id.recharge_general_enquiry_button_compose)).check(matches(isEnabled()))
     }
 
     fun validate_recent_transaction() {
