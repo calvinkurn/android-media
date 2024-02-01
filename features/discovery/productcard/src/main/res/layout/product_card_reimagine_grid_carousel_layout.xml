@@ -189,7 +189,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_end="@dimen/product_card_reimagine_carousel_padding_bottom" />
+                app:layout_constraintGuide_end="@dimen/product_card_reimagine_padding_bottom" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardName"

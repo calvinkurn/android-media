@@ -15,7 +15,6 @@ import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.shortProductName
 import com.tokopedia.productcard.utils.RED
 import com.tokopedia.productcard.utils.TEXT_DARK_GREY
-import com.tokopedia.productcard.utils.WORDING_SEGERA_HABIS
 import org.hamcrest.Matcher
 
 typealias ProductCardReimagineMatcher =
@@ -33,7 +32,6 @@ internal val productCardReimagineTestData = listOf(
     shopSection(),
     shopSectionWithoutBadge(),
     shopSectionWithoutTitle(),
-    bebasOngkir(),
     labelAssignedValue(),
     productOffers(),
     benefitWithOffers(),
@@ -374,51 +372,6 @@ private fun shopSectionWithoutTitle(): ProductCardReimagineMatcher {
     )
 
     return Triple(model, matcher, "Shop without title (will not show)")
-}
-
-private fun bebasOngkir(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = labelGroupBenefit()
-    val reimagineCredibilityLabel = LabelGroup(
-        position = LABEL_REIMAGINE_CREDIBILITY,
-        title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
-    )
-    val shopBadge = ShopBadge(
-        imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name paling panjang",
-    )
-    val model = ProductCardModel(
-        imageUrl = productImageUrl,
-        name = shortProductName,
-        price = "Rp79.000",
-        slashedPrice = "Rp100.000",
-        discountPercentage = 10,
-        labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel),
-        rating = "4.5",
-        shopBadge = shopBadge,
-    )
-
-    val matcher = mapOf<Int, Matcher<View?>>(
-        R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
-        R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-
-        R.id.productCardLabelBenefit to isDisplayed(),
-        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
-
-        R.id.productCardCredibility to isDisplayed(),
-        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
-        R.id.productCardRatingIcon to isDisplayed(),
-        R.id.productCardRating to isDisplayedWithText(model.rating),
-        R.id.productCardRatingDots to isDisplayed(),
-        R.id.productCardShopSection to isDisplayed(),
-        R.id.productCardShopBadge to isDisplayed(),
-        R.id.productCardShopNameLocation to isDisplayed(),
-    )
-
-    return Triple(model, matcher, "Free shipping (Bebas ongkir)")
 }
 
 private fun labelAssignedValue(): ProductCardReimagineMatcher {
@@ -784,6 +737,7 @@ private fun atc(): ProductCardReimagineMatcher {
 }
 
 private fun itemInBackground(): ProductCardReimagineMatcher {
+    val reimagineAssignedValueLabel = labelGroupAssignedValue()
     val reimagineProductOffers = labelGroupProductOffers()
     val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
@@ -805,6 +759,7 @@ private fun itemInBackground(): ProductCardReimagineMatcher {
             reimagineCredibilityLabel,
             reimagineProductOffers,
             reimagineRibbon,
+            reimagineAssignedValueLabel,
         ),
         rating = "4.5",
         shopBadge = shopBadge,
@@ -814,7 +769,8 @@ private fun itemInBackground(): ProductCardReimagineMatcher {
 
     val matcher = mapOf<Int, Matcher<View?>>(
         R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardLabelAssignedValue to isDisplayed(),
+        R.id.productCardName to isDisplayedContainingText(model.name),
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardLabelBenefit to isDisplayed(),
         R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),

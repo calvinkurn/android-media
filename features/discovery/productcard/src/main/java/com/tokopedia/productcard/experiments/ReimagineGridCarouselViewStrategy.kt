@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
@@ -42,10 +43,12 @@ internal class ReimagineGridCarouselViewStrategy(
     private val stockInfo = ProductCardStockInfo(productCardView)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
+    private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageView?>(R.id.productCardImage)
     private val nameText by lazyView<Typography?>(R.id.productCardName)
     private val guidelineStart by lazyView<Guideline?>(R.id.productCardGuidelineStartContent)
     private val guidelineEnd by lazyView<Guideline?>(R.id.productCardGuidelineEndContent)
+    private val guidelineBottom by lazyView<Guideline?>(R.id.productCardGuidelineBottomContent)
 
     val additionalMarginStart: Int
         get() = cardContainer?.marginStart ?: 0
@@ -102,24 +105,41 @@ internal class ReimagineGridCarouselViewStrategy(
     }
 
     private fun renderContentPadding(productCardModel: ProductCardModelReimagine) {
-        if (productCardModel.isInBackground) {
-            setGuidelineItemInBackground()
-        } else {
-            setGuidelineItemNotInBackground()
+        renderContentPaddingHorizontal(productCardModel)
+        renderContentPaddingBottom(productCardModel)
+    }
+
+    private fun renderContentPaddingHorizontal(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
+        val paddingHorizontal =
+            if (productCardModel.isInBackground)
+                context?.getPixel(R.dimen.product_card_reimagine_content_guideline_padding_in_background)
+                    ?: 0
+            else 0
+
+        guidelineStart?.setGuidelineBegin(paddingHorizontal)
+        guidelineEnd?.setGuidelineEnd(paddingHorizontal)
+    }
+
+    private fun renderContentPaddingBottom(productCardModel: ProductCardModelReimagine) {
+        val paddingBottomConstraintLayout =
+            if (productCardModel.isInBackground) 0
+            else context?.getPixel(R.dimen.product_card_reimagine_padding_bottom) ?: 0
+
+        cardConstraintLayout?.let {
+            it.setPadding(
+                it.paddingStart,
+                it.paddingTop,
+                it.paddingEnd,
+                paddingBottomConstraintLayout
+            )
         }
-    }
 
-    private fun setGuidelineItemNotInBackground() {
-        guidelineStart?.setGuidelineBegin(0)
-        guidelineEnd?.setGuidelineEnd(0)
-    }
-
-    private fun setGuidelineItemInBackground() {
-        val dimensGuideline =
-            context?.getPixel(R.dimen.product_card_reimagine_content_guideline_padding_in_background)
+        val paddingBottomGuideline =
+            if (productCardModel.isInBackground) context?.getPixel(R.dimen.product_card_reimagine_padding_bottom)
                 ?: 0
-        guidelineStart?.setGuidelineBegin(dimensGuideline)
-        guidelineEnd?.setGuidelineEnd(dimensGuideline)
+            else 0
+
+        guidelineBottom?.setGuidelineEnd(paddingBottomGuideline)
     }
 
     override fun recycle() { }
