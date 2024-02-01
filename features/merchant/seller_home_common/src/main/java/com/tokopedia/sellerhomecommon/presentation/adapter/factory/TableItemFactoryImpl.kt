@@ -7,14 +7,21 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.sellerhomecommon.presentation.model.TableHeaderUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableItemDivider
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
-import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlWithIconViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlWithMetaViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnImageViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnTextViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableHeaderColumnViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableItemDividerViewHolder
 
 /**
  * Created By @ilhamsuaib on 01/07/20
  */
 
 class TableItemFactoryImpl(
-    private val listener: TableColumnHtmlViewHolder.Listener
+    private val listener: TableColumnHtmlViewHolder.Listener,
+    private val metaTableListener: TableColumnHtmlWithMetaViewHolder.Listener
     ) : BaseAdapterTypeFactory(), TableItemFactory {
 
     override fun type(header: TableHeaderUiModel): Int {
@@ -37,6 +44,9 @@ class TableItemFactoryImpl(
         return TableColumnHtmlWithIconViewHolder.RES_LAYOUT
     }
 
+    override fun type(column: TableRowsUiModel.RowColumnHtmlWithMeta): Int {
+        return TableColumnHtmlWithMetaViewHolder.RES_LAYOUT
+    }
     override fun type(divider: TableItemDivider): Int = TableItemDividerViewHolder.RES_LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -46,6 +56,7 @@ class TableItemFactoryImpl(
             TableColumnImageViewHolder.RES_LAYOUT -> TableColumnImageViewHolder(parent)
             TableColumnHtmlViewHolder.RES_LAYOUT -> TableColumnHtmlViewHolder(parent, listener)
             TableColumnHtmlWithIconViewHolder.RES_LAYOUT -> TableColumnHtmlWithIconViewHolder(parent, listener)
+            TableColumnHtmlWithMetaViewHolder.RES_LAYOUT -> TableColumnHtmlWithMetaViewHolder(parent, metaTableListener)
             TableItemDividerViewHolder.RES_LAYOUT -> TableItemDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

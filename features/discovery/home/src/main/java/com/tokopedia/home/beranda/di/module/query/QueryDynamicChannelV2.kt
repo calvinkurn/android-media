@@ -45,6 +45,12 @@ internal object QueryDynamicChannelV2 {
         "        }\n" +
         "        discount\n" +
         "        imageUrl\n" +
+        "        imageList {\n" +
+        "          type\n" +
+        "          imageUrl\n" +
+        "          leftPadding\n" +
+        "          rightPadding\n" +
+        "        }" +
         "        cashback\n" +
         "        isTopads\n" +
         "        minOrder\n" +

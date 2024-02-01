@@ -1,7 +1,12 @@
 package com.tokopedia.seller.menu.presentation.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,7 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
@@ -22,19 +27,19 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
-import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoErrorViewHolder
-import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoViewHolder
 import com.tokopedia.seller.menu.databinding.FragmentSellerMenuBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoErrorViewHolder
+import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoViewHolder
+import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
@@ -45,9 +50,13 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
 
-class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
-        ShopInfoErrorViewHolder.ShopInfoErrorListener {
+class SellerMenuFragment :
+    Fragment(),
+    SettingTrackingListener,
+    ShopInfoViewHolder.ShopInfoListener,
+    ShopInfoErrorViewHolder.ShopInfoErrorListener {
 
     companion object {
         private const val SCREEN_NAME = "MA - Akun Toko"
@@ -75,13 +84,15 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private var shopAge = 0L
 
     private val adapter by lazy {
-        SellerMenuAdapter(SellerMenuAdapterTypeFactory(
+        SellerMenuAdapter(
+            SellerMenuAdapterTypeFactory(
                 this,
                 this,
                 this,
                 sellerMenuTracker,
                 userSession
-        ))
+            )
+        )
     }
 
     private var binding by autoClearedNullable<FragmentSellerMenuBinding>()
@@ -151,9 +162,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     override fun onSaldoClicked() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
-        else {
+        } else {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
             context?.startActivity(intent)
         }
@@ -174,9 +185,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun initInjector() {
         DaggerSellerMenuComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     private fun setupSwipeRefresh() {
@@ -203,12 +214,16 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 }
                 is Fail -> {
                     if (canShowErrorToaster) {
-                        view?.showToasterError(activity?.resources?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message).orEmpty())
+                        view?.showToasterError(activity?.resources?.getString(sellermenucommonR.string.setting_toaster_error_message).orEmpty())
                     }
                     adapter.showShopInfoError()
                     ShopScoreReputationErrorLogger.logToCrashlytic(
-                            String.format(ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
-                                    ShopScoreReputationErrorLogger.SHOP_ACCOUNT), it.throwable)
+                        String.format(
+                            ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
+                            ShopScoreReputationErrorLogger.SHOP_ACCOUNT
+                        ),
+                        it.throwable
+                    )
                     swipeRefreshLayout?.isRefreshing = false
                 }
             }
@@ -233,7 +248,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             when (it) {
                 is Success -> adapter.showProductSection(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
             swipeRefreshLayout?.isRefreshing = false
@@ -247,11 +262,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     val order = it.data.order
                     adapter.showOrderSection(order)
                     adapter.showNotificationCounter(notificationCount = it.data.resolutionCount, matcher = { item ->
-                        item is SellerMenuItemUiModel && item.title == getString(com.tokopedia.seller.menu.common.R.string.setting_menu_complaint)
+                        item is SellerMenuItemUiModel && item.title == getString(sellermenucommonR.string.setting_menu_complaint)
                     })
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
             swipeRefreshLayout?.isRefreshing = false
@@ -271,7 +286,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 val data = settingResponseState.data
                 if (data is SettingShopInfoUiModel) {
                     adapter.showShopInfo(data, shopScore, shopAge)
-                    sellerMenuTracker.sendEventViewShopAccount(data)
+                    sellerMenuTracker.sendEventViewShopAccount(data.shopStatusUiModel?.userShopInfoWrapper?.shopType)
                 }
             }
             is SettingLoading -> {
@@ -279,7 +294,10 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             }
             is SettingError -> {
                 if (canShowErrorToaster) {
-                    view?.showToasterError(resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message))
+                    view?.showToasterError(
+                        activity?.resources?.getString(sellermenucommonR.string.setting_toaster_error_message)
+                            .orEmpty()
+                    )
                 }
                 adapter.showShopInfoError()
             }
@@ -307,14 +325,16 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun View.showToasterError(errorMessage: String) {
-        Toaster.build(this,
-                errorMessage,
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
-                View.OnClickListener {
-                    retryFetchAfterError()
-                }).show()
+        Toaster.build(
+            this,
+            errorMessage,
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            resources.getString(sellermenucommonR.string.setting_toaster_error_retry),
+            View.OnClickListener {
+                retryFetchAfterError()
+            }
+        ).show()
     }
 
     private fun retryFetchAfterError() {
@@ -328,7 +348,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun setupScrollToShopSetting() {
         val isAnchorToShopSetting = activity?.intent?.getBooleanExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, false)
-                ?: false
+            ?: false
         if (isAnchorToShopSetting) {
             val shopAccountData = adapter.data.firstOrNull { it is SellerFeatureUiModel }
             if (shopAccountData != null) {
@@ -365,5 +385,4 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
         }
     }
-
 }

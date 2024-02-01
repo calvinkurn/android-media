@@ -21,7 +21,6 @@ import com.google.android.exoplayer2.video.VideoListener
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -39,6 +38,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play_common.view.ImageLoaderStateListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -648,7 +648,7 @@ class StoriesDetailFragment @Inject constructor(
 
         with(binding.nudgeStoriesProduct) {
             setContent {
-                StoriesProductNudge(state.productCount) {
+                StoriesProductNudge(state.productCount, state.isProductAvailable) {
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
             }
@@ -658,15 +658,19 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         showSwipeProductJob = viewLifecycleOwner.lifecycleScope.launch {
             if (state.isProductAvailable) {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
+
                 delay(DELAY_SWIPE_PRODUCT_BADGE_SHOW)
                 TransitionManager.beginDelayedTransition(
                     binding.root,
                     Fade(Fade.IN)
-                        .addTarget(binding.nudgeStoriesProduct)
+                        .addTarget(binding.flStoriesProduct)
                 )
+                binding.flStoriesProduct.show()
                 binding.nudgeStoriesProduct.show()
             } else {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
             }
         }

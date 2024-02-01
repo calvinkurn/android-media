@@ -14,7 +14,6 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
-import com.tokopedia.sellerhomecommon.common.DarkModeHelper
 import com.tokopedia.sellerhomecommon.common.di.annotation.ActivityContext
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface

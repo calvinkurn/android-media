@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -57,7 +57,7 @@ class MentionableUserAdapter(
             holder.tvUserName.visible()
         }
 
-        ImageHandler.loadImageCircle2(holder.ivAvatar.context, holder.ivAvatar, filteredList[position].avatarUrl)
+        holder.ivAvatar.loadImageCircle(filteredList[position].avatarUrl)
 
         return view!!
     }
