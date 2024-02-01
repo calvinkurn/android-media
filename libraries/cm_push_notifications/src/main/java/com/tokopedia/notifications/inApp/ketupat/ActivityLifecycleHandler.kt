@@ -65,6 +65,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                     if (popup.isShown == true) {
                         showLottiePopup(
                             activity,
+                            pageSource,
                             getSlugData(it),
                             popup,
                             getScratchCardIdData(it),
@@ -79,13 +80,14 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
 
     open fun showLottiePopup(
         activity: Activity,
+        pageSource:String
         slug: String?,
         popUpContent: PopUpContent,
         scratchCardId: String,
         ketupatSlashCallBack: KetupatSlashCallBack? = null
     ) {
         try {
-            if (!isAnimationPopEnable(activity)) {
+            if (pageSource == "tokopedia-home-page" && !isAnimationPopEnable(activity)) {
                 return
             }
             val currentActivity: WeakReference<Activity> =
