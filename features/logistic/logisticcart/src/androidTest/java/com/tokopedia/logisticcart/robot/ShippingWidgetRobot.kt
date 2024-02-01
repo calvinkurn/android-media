@@ -1,6 +1,9 @@
 package com.tokopedia.logisticcart.robot
 
 import android.view.View
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
@@ -186,5 +189,15 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     fun assertInitialStateVisible() {
         assertEquals(View.VISIBLE, widget.binding?.labelChooseShipping?.visibility)
         assertEquals("Pilih Pengiriman", widget.binding?.labelChooseShipping?.text)
+    }
+
+    fun clickShippingWidget(text: String) {
+        onView(withText(text)).perform(click())
+        Thread.sleep(2000)
+    }
+
+    fun chooseShipment(service: String) {
+        onView(withText(service)).perform(click())
+        Thread.sleep(2000)
     }
 }

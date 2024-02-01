@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.Companion.ERROR_PINPOINT_NEEDED
 import com.tokopedia.logisticcart.databinding.ItemDurationBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
-import com.tokopedia.logisticcart.utils.ShippingViewUtils
+import com.tokopedia.logisticcart.utils.ShippingBottomSheetUtils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -119,7 +119,7 @@ class ShippingDurationViewHolder(
         shippingDurationUiModel.run {
             if (errorMessage?.isNotEmpty() == true) {
                 val error = serviceData.error
-                tvError.text = ShippingViewUtils.constructErrorUi(
+                tvError.text = ShippingBottomSheetUtils.constructErrorUi(
                     binding.root.context,
                     error.errorMessage,
                     error.errorId

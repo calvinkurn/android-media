@@ -1,0 +1,1686 @@
+[
+  {
+    "data": {
+      "ratesV3": {
+        "ratesv3": {
+          "id": ":2289:2291:1",
+          "rates_id": "1706685232621106177",
+          "origin": {
+            "city_id": 178,
+            "city_name": "Kota Administrasi Jakarta Timur"
+          },
+          "destination": {
+            "city_id": 178,
+            "city_name": "Kota Administrasi Jakarta Timur"
+          },
+          "weight": "0.001 kg",
+          "type": "rates",
+          "error": {
+            "error_id": "",
+            "error_message": ""
+          },
+          "services": [
+            {
+              "service_name": "Instant 3 Jam",
+              "service_id": 1000,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 28,
+              "range_price": {
+                "min_price": 103400,
+                "max_price": 103400
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp103.400",
+                "text_etd": "Maks. 3 jam",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba hari ini - besok, maks. 09:00 WIB",
+                "error_code": 0,
+                "text_service_ticker": ""
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "GoSend Bike",
+                  "shipper_id": 10,
+                  "shipper_product_id": 28,
+                  "shipper_product_name": "",
+                  "shipper_product_desc": "Dengan kurir instan, kamu bisa pakai GoSend Car dan GoSend Bike (pengiriman maks. 3 jam \u0026 berat maks. 150kg). Setelah aktif, GoSend Car dan GoSend Bike otomatis masuk pilihan kurir, tidak ditampilkan di menu ini.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "bH9E9AQgVRgU3XAm3V%2FFtLo1OtQ%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": true,
+                  "price": {
+                    "price": 103400,
+                    "formatted_price": "Rp103.400"
+                  },
+                  "etd": {
+                    "min_etd": 10800,
+                    "max_etd": 10800
+                  },
+                  "texts": {
+                    "text_price": "Rp103.400",
+                    "text_etd": "Maks. 3 jam"
+                  },
+                  "insurance": {
+                    "insurance_price": 800,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba hari ini - besok, maks. 09:00 WIB",
+                    "error_code": 0
+                  }
+                },
+                {
+                  "shipper_name": "GrabExpress",
+                  "shipper_id": 13,
+                  "shipper_product_id": 37,
+                  "shipper_product_name": "",
+                  "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "r%2FGknpx0gEqh6dXCsIjyy3CKg4Y%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": true,
+                  "price": {
+                    "price": 103400,
+                    "formatted_price": "Rp103.400"
+                  },
+                  "etd": {
+                    "min_etd": 10800,
+                    "max_etd": 10800
+                  },
+                  "texts": {
+                    "text_price": "Rp103.400",
+                    "text_etd": "Maks. 3 jam"
+                  },
+                  "insurance": {
+                    "insurance_price": 800,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba hari ini - besok, maks. 09:00 WIB",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Same Day 8 Jam",
+              "service_id": 1006,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 20,
+              "range_price": {
+                "min_price": 47000,
+                "max_price": 47000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp47.000",
+                "text_etd": "Maks. 8 jam",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba hari ini - besok, maks. 16:00 WIB",
+                "error_code": 0,
+                "text_service_ticker": ""
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "GoSend Bike",
+                  "shipper_id": 10,
+                  "shipper_product_id": 20,
+                  "shipper_product_name": "",
+                  "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "rZNkH7IDGTBfOmlbLSJKKllu4n8%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": true,
+                  "price": {
+                    "price": 47000,
+                    "formatted_price": "Rp47.000"
+                  },
+                  "etd": {
+                    "min_etd": 28800,
+                    "max_etd": 28800
+                  },
+                  "texts": {
+                    "text_price": "Rp47.000",
+                    "text_etd": "Maks. 8 jam"
+                  },
+                  "insurance": {
+                    "insurance_price": 500,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba hari ini - besok, maks. 16:00 WIB",
+                    "error_code": 0
+                  }
+                },
+                {
+                  "shipper_name": "GrabExpress",
+                  "shipper_id": 13,
+                  "shipper_product_id": 24,
+                  "shipper_product_name": "",
+                  "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "h5RxYaneRM4WNgkRRr330anqIXw%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": true,
+                  "price": {
+                    "price": 47000,
+                    "formatted_price": "Rp47.000"
+                  },
+                  "etd": {
+                    "min_etd": 28800,
+                    "max_etd": 28800
+                  },
+                  "texts": {
+                    "text_price": "Rp47.000",
+                    "text_etd": "Maks. 8 jam"
+                  },
+                  "insurance": {
+                    "insurance_price": 500,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba hari ini - besok, maks. 16:00 WIB",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Same Day",
+              "service_id": 1002,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 19500,
+                "max_price": 19500
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp19.500",
+                "text_etd": "1 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba hari ini - besok, maks. 22:00 WIB",
+                "error_code": 0,
+                "text_service_ticker": ""
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "AnterAja",
+                  "shipper_id": 23,
+                  "shipper_product_id": 49,
+                  "shipper_product_name": "Same Day",
+                  "shipper_product_desc": "Layanan AnterAja Same Day",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "rjsoonS010KYNd2N8sPqEdJr7sI%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 19500,
+                    "formatted_price": "Rp19.500"
+                  },
+                  "etd": {
+                    "min_etd": 86400,
+                    "max_etd": 86400
+                  },
+                  "texts": {
+                    "text_price": "Rp19.500",
+                    "text_etd": "1 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 300,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba hari ini - besok, maks. 22:00 WIB",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Next Day",
+              "service_id": 1003,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 13000,
+                "max_price": 15300
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp13.000 - Rp15.300",
+                "text_etd": "1 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba 1 - 2 Feb",
+                "error_code": 0,
+                "text_service_ticker": ""
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "AnterAja",
+                  "shipper_id": 23,
+                  "shipper_product_id": 46,
+                  "shipper_product_name": "Next Day",
+                  "shipper_product_desc": "Layanan pengiriman express dengan durasi pengiriman 1 hari dihitung sejak serah terima paket ke kurir.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "C%2BjXXRU9bMwCQPPNAEzUJLuJ7K0%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 15300,
+                    "formatted_price": "Rp15.300"
+                  },
+                  "etd": {
+                    "min_etd": 0,
+                    "max_etd": 0
+                  },
+                  "texts": {
+                    "text_price": "Rp15.300",
+                    "text_etd": ""
+                  },
+                  "insurance": {
+                    "insurance_price": 300,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 1 - 2 Feb",
+                    "error_code": 0
+                  }
+                },
+                {
+                  "shipper_name": "SiCepat",
+                  "shipper_id": 11,
+                  "shipper_product_id": 33,
+                  "shipper_product_name": "BEST",
+                  "shipper_product_desc": "BEST (Besok Sampai Tujuan): Layanan Pengiriman Express dengan lead time 1 hari",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "LERR6b%2F3LtdL3rYAtZRddK28Aiw%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 13000,
+                    "formatted_price": "Rp13.000"
+                  },
+                  "etd": {
+                    "min_etd": 86400,
+                    "max_etd": 86400
+                  },
+                  "texts": {
+                    "text_price": "Rp13.000",
+                    "text_etd": "1 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 300,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 1 - 2 Feb",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Reguler",
+              "service_id": 1004,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 10000,
+                "max_price": 11500
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp10.000 - Rp11.500",
+                "text_etd": "1-4 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba 2 - 5 Feb",
+                "error_code": 0,
+                "text_service_ticker": ""
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "Kurir Rekomendasi",
+                  "shipper_id": 26,
+                  "shipper_product_id": 50,
+                  "shipper_product_name": "Reguler",
+                  "shipper_product_desc": "Layanan Reguler Kurir Rekomendasi",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "0csebEKsVJpvjd082CM3yqd97bk%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 11500,
+                    "formatted_price": "Rp11.500"
+                  },
+                  "etd": {
+                    "min_etd": 172800,
+                    "max_etd": 345600
+                  },
+                  "texts": {
+                    "text_price": "Rp11.500",
+                    "text_etd": "2-4 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 300,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 2 - 4 Feb",
+                    "error_code": 0
+                  }
+                },
+                {
+                  "shipper_name": "SiCepat",
+                  "shipper_id": 11,
+                  "shipper_product_id": 18,
+                  "shipper_product_name": "Regular Package",
+                  "shipper_product_desc": "Layanan Pengiriman biasa dengan lead time 1-2 hari (kota besar) dan lead time 3-4 hari (Kabupaten/transit)",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "jVbO8IfJaii0yY2NXEDYLZzSGZ0%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 10000,
+                    "formatted_price": "Rp10.000"
+                  },
+                  "etd": {
+                    "min_etd": 86400,
+                    "max_etd": 172800
+                  },
+                  "texts": {
+                    "text_price": "Rp10.000",
+                    "text_etd": "1-2 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 300,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 2 - 5 Feb",
+                    "error_code": 0
+                  }
+                },
+                {
+                  "shipper_name": "AnterAja",
+                  "shipper_id": 23,
+                  "shipper_product_id": 45,
+                  "shipper_product_name": "Reguler",
+                  "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ \u003e9 hari tergantung rute pengiriman.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "xGVhs44%2BpJ6%2BqAVXtnP5piNKT0g%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 11500,
+                    "formatted_price": "Rp11.500"
+                  },
+                  "etd": {
+                    "min_etd": 86400,
+                    "max_etd": 172800
+                  },
+                  "texts": {
+                    "text_price": "Rp11.500",
+                    "text_etd": "1-2 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 300,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 2 - 5 Feb",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Kargo",
+              "service_id": 1001,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 15000,
+                "max_price": 35000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp15.000 - Rp35.000",
+                "text_etd": "2-4 hari",
+                "text_notes": "",
+                "text_service_desc": "Rekomendasi berat di atas 5kg",
+                "text_eta_summarize": "Estimasi tiba 3 - 6 Feb",
+                "error_code": 0,
+                "text_service_ticker": ""
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "SiCepat Gokil",
+                  "shipper_id": 11,
+                  "shipper_product_id": 43,
+                  "shipper_product_name": "Gokil",
+                  "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman 3-8 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dan berskala besar (bulk shipment) dengan durasi pengiriman yang lebih lama karena menggunakan jalur darat.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "rw2EKGPZiQOQ%2BVflD2dJC1GBToI%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 35000,
+                    "formatted_price": "Rp35.000"
+                  },
+                  "etd": {
+                    "min_etd": 172800,
+                    "max_etd": 259200
+                  },
+                  "texts": {
+                    "text_price": "Rp35.000",
+                    "text_etd": "2-3 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 400,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 3 - 6 Feb",
+                    "error_code": 0
+                  }
+                },
+                {
+                  "shipper_name": "AnterAja",
+                  "shipper_id": 23,
+                  "shipper_product_id": 56,
+                  "shipper_product_name": "CargoAja (Kargo)",
+                  "shipper_product_desc": "Layanan pengiriman oleh Anteraja dengan kecepatan pengiriman 3-9 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dan berskala besar (bulk shipment) dengan durasi pengiriman yang lebih lama karena menggunakan jalur darat.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "0nNPH8buJ0edj0SFKZBxJN%2FiHLw%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 15000,
+                    "formatted_price": "Rp15.000"
+                  },
+                  "etd": {
+                    "min_etd": 172800,
+                    "max_etd": 345600
+                  },
+                  "texts": {
+                    "text_price": "Rp15.000",
+                    "text_etd": "2-4 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 300,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 3 - 5 Feb",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Ekonomi",
+              "service_id": 1005,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 7100,
+                "max_price": 7500
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp7.100 - Rp7.500",
+                "text_etd": "1-4 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba 3 - 6 Feb",
+                "error_code": 0,
+                "text_service_ticker": ""
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "SiCepat HALU",
+                  "shipper_id": 11,
+                  "shipper_product_id": 51,
+                  "shipper_product_name": "HALU",
+                  "shipper_product_desc": "Sicepat Halu ",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "tHPi6hwE3Wpwap4eCoWwXt5zFeo%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 7500,
+                    "formatted_price": "Rp7.500"
+                  },
+                  "etd": {
+                    "min_etd": 86400,
+                    "max_etd": 172800
+                  },
+                  "texts": {
+                    "text_price": "Rp7.500",
+                    "text_etd": "1-2 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 200,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 3 - 6 Feb",
+                    "error_code": 0
+                  }
+                },
+                {
+                  "shipper_name": "AnterAja",
+                  "shipper_id": 23,
+                  "shipper_product_id": 55,
+                  "shipper_product_name": "PakEkoAja (Ekonomi)",
+                  "shipper_product_desc": "Layanan pengiriman ekonomis oleh Anteraja dengan kecepatan pengiriman 3-9 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dengan durasi pengiriman yang lebih lama dibandingkan dengan layanan Reguler.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "%2FinfLeY1w8S%2BhunlhzFrn3rMee4%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 7100,
+                    "formatted_price": "Rp7.100"
+                  },
+                  "etd": {
+                    "min_etd": 172800,
+                    "max_etd": 345600
+                  },
+                  "texts": {
+                    "text_price": "Rp7.100",
+                    "text_etd": "2-4 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 200,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 3 - 6 Feb",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Kurir Toko",
+              "service_id": 999,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 100,
+                "max_price": 100
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp100",
+                "text_etd": "",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "",
+                "error_code": 2,
+                "text_service_ticker": ""
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "Kurir Toko",
+                  "shipper_id": 999,
+                  "shipper_product_id": 999,
+                  "shipper_product_name": "Service Normal",
+                  "shipper_product_desc": "Metode pengiriman custom untuk paket dengan penanganan khusus sesuai kebutuhan penjual.",
+                  "order_message": "",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "GsjXpnMvkzVBNjJsSANoNS%2B5Pus%3D",
+                  "ut": "1706685232",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 100,
+                    "formatted_price": "Rp100"
+                  },
+                  "etd": {
+                    "min_etd": 0,
+                    "max_etd": 0
+                  },
+                  "texts": {
+                    "text_price": "Rp100",
+                    "text_etd": ""
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 1,
+                    "insurance_type_info": "No insurance",
+                    "insurance_used_type": 0,
+                    "insurance_used_info": "Asuransi tidak mendukung kurir dari toko",
+                    "insurance_used_default": 1
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 2
+                  }
+                }
+              ]
+            }
+          ],
+          "promo_stacking": {
+            "is_promo": 0,
+            "promo_code": "",
+            "title": "",
+            "shipper_id": 0,
+            "shipper_product_id": 0,
+            "shipper_name": "",
+            "shipper_desc": "",
+            "promo_detail": "",
+            "benefit_desc": "",
+            "point_change": 0,
+            "user_point": 0,
+            "promo_tnc_html": "",
+            "shipper_disable_text": "",
+            "service_id": 0,
+            "is_applied": 0,
+            "image_url": "",
+            "image_url_chosen": "",
+            "quota_message": "",
+            "discounted_rate": 0,
+            "shipping_rate": 0,
+            "benefit_amount": 0,
+            "disabled": false,
+            "hide_shipper_name": false,
+            "cod": {
+              "is_cod_available": 0,
+              "cod_text": "",
+              "cod_price": 0,
+              "formatted_price": "",
+              "tnc_text": "",
+              "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "",
+              "error_code": 0
+            },
+            "is_bebas_ongkir_extra": false,
+            "texts": {
+              "bottom_sheet": "",
+              "chosen_courier": "",
+              "ticker_courier": "",
+              "bottom_sheet_description": ""
+            },
+            "free_shipping_metadata": {
+              "sent_shipper_partner": false,
+              "benefit_class": "",
+              "shipping_subsidy": 0,
+              "additional_data": ""
+            }
+          },
+          "promo_stackings": [
+            {
+              "is_promo": 1,
+              "promo_code": "ACVTARBOREGINTRAOW",
+              "title": "Bebas Ongkir",
+              "shipper_id": 11,
+              "shipper_product_id": 18,
+              "shipper_name": "SiCepat",
+              "shipper_desc": "1-4 hari|1004",
+              "promo_detail": "",
+              "benefit_desc": "",
+              "point_change": 0,
+              "user_point": 0,
+              "promo_tnc_html": "Anda akan menggunakan promo \u003cb\u003eBebas Ongkir Tokopedia - MUB Targeting\u003c/b\u003e",
+              "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
+              "service_id": 1004,
+              "is_applied": 0,
+              "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+              "discounted_rate": 0,
+              "shipping_rate": 11500,
+              "benefit_amount": 20000,
+              "disabled": false,
+              "hide_shipper_name": true,
+              "cod": {
+                "is_cod_available": 0,
+                "cod_text": "",
+                "cod_price": 0,
+                "formatted_price": "",
+                "tnc_text": "",
+                "tnc_link": ""
+              },
+              "eta": {
+                "text_eta": "Estimasi tiba besok - 15 Sep",
+                "error_code": 0
+              },
+              "is_bebas_ongkir_extra": false,
+              "texts": {
+                "bottom_sheet": "\u003cb\u003eEstimasi tiba besok - 15 Sep (Rp0)\u003c/b\u003e",
+                "chosen_courier": "\u003cb\u003eBebas Ongkir (Rp0)\u003c/b\u003e",
+                "ticker_courier": "Tersedia Bebas Ongkir",
+                "bottom_sheet_description": "",
+                "promo_message": "",
+                "title_promo_message": ""
+              },
+              "free_shipping_metadata": {
+                "sent_shipper_partner": false,
+                "benefit_class": "",
+                "shipping_subsidy": 20000,
+                "additional_data": "{\"bo_feature_type\":[],\"fulfillment\":{\"chargeable_flag\":0}}"
+              },
+              "bo_campaign_id": 729
+            }
+          ],
+          "pre_order": {
+            "header": "",
+            "label": "",
+            "display": false
+          },
+          "info": {
+            "blackbox_info": {
+              "text_info": ""
+            }
+          }
+        }
+      }
+    }
+  }
+]

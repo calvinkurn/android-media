@@ -16,10 +16,10 @@ import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companio
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
-import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetCourierError
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
+import com.tokopedia.logisticcart.utils.ShippingWidgetUtils.toShippingWidgetUiModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
@@ -105,7 +105,7 @@ class CheckoutOrderViewHolder(
     }
 
     private fun CheckoutOrderModel.toShipmentWidgetModel(): ShippingWidgetUiModel {
-        val model = ShippingWidgetUiModel(
+        var model = ShippingWidgetUiModel(
             cartError = isError,
             loading = shipment.isLoading,
             courierError = toErrorState(),
@@ -115,36 +115,13 @@ class CheckoutOrderViewHolder(
             isTriggerShippingVibrationAnimation = isTriggerShippingVibrationAnimation
         )
         val courierItemData = shipment.courierItemData
-        if (courierItemData == null) {
-            return model
+        return if (courierItemData == null) {
+            model
         } else {
-            return model.copy(
-                etaErrorCode = courierItemData.etaErrorCode,
-                estimatedTimeArrival = courierItemData.etaText ?: "",
-                hideShipperName = courierItemData.isHideShipperName,
-                freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
-                freeShippingLogo = courierItemData.freeShippingChosenImage,
-                logPromoDesc = courierItemData.logPromoDesc ?: "",
-                voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
-                logisticPromoCode = courierItemData.selectedShipper.logPromoCode,
-                isWhitelabel = courierItemData.isHideChangeCourierCard,
-                isHasShownCourierError = false,
-                boOrderMessage = courierItemData.boOrderMessage,
-                estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
-                courierName = courierItemData.name ?: "",
-                courierShipperPrice = courierItemData.shipperPrice,
-                courierOrderMessage = courierItemData.courierOrderMessage,
-                merchantVoucher = courierItemData.merchantVoucherProductModel,
-                ontimeDelivery = courierItemData.ontimeDelivery,
-                cashOnDelivery = courierItemData.codProductData,
-                whitelabelEtaText = courierItemData.durationCardDescription,
-                scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel,
-                insuranceData = InsuranceWidgetUiModel(
+            model = courierItemData.toShippingWidgetUiModel(model)
+            model.copy(
+                insuranceData = model.insuranceData?.copy(
                     useInsurance = shipment.insurance.isCheckInsurance,
-                    insuranceType = courierItemData.selectedShipper.insuranceType,
-                    insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
-                    insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
-                    insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
                     isInsurance = isInsurance
                 )
             )

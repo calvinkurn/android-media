@@ -163,7 +163,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                 prepareLoadCourierState()
                 hideShippingStateLoading()
                 showContainerShippingExperience()
-                renderWhitelabelKurirRekomendasiService(shippingWidgetUiModel)
+                renderWhitelabelService(shippingWidgetUiModel)
             } else {
                 prepareLoadCourierState()
                 hideShippingStateLoading()
@@ -391,7 +391,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         showInsuranceInfo(shippingWidgetUiModel)
     }
 
-    private fun renderWhitelabelKurirRekomendasiService(
+    private fun renderWhitelabelService(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {

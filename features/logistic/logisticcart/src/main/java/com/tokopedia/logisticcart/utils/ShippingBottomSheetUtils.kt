@@ -11,7 +11,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-object ShippingViewUtils {
+object ShippingBottomSheetUtils {
 
     fun constructErrorUi(context: Context, errorMessage: String, errorId: String): CharSequence? {
         errorMessage.takeIf { it.isNotEmpty() }?.let { errorMessage ->

@@ -1,30 +1,62 @@
 package com.tokopedia.logisticcart
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.dummy.toDummyData
 import com.tokopedia.logisticcart.dummy.toDummyType
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
+import com.tokopedia.logisticcart.utils.ShippingWidgetUtils.toShippingWidgetUiModel
 import com.tokopedia.logisticcart.test.R as logisticcarttestR
 
 class ShippingWidgetCheckoutActivity :
     FragmentActivity(),
-    ShippingCheckoutRevampWidget.ShippingWidgetListener {
+    ShippingCheckoutRevampWidget.ShippingWidgetListener,
+    ShippingDurationBottomsheetListener {
 
+    var model: ShippingWidgetUiModel = ShippingWidgetUiModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(logisticcarttestR.layout.activity_shipping_widget_checkout_test)
         val modelType = intent.getStringExtra("WIDGET_UI_MODEL_KEY")!!.toDummyType()
-        val model = modelType.toDummyData()
+        model = modelType.toDummyData()
+        findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget).run {
+            setupListener(this@ShippingWidgetCheckoutActivity)
+        }
+        render()
+    }
+
+    private fun render() {
         findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget).render(
             model
         )
     }
 
     override fun onChangeDurationClickListener() {
+        ShippingDurationBottomsheet.show(
+            fragmentManager = getHostFragmentManager(),
+            shippingDurationBottomsheetListener = this@ShippingWidgetCheckoutActivity,
+            cartPosition = 0,
+            isDisableOrderPrioritas = false,
+            isOcc = false,
+            isRatesTradeInApi = false,
+            ratesParam = RatesParam.Builder(listOf(), ShippingParam()).build(),
+            recipientAddressModel = RecipientAddressModel(),
+            selectedSpId = 0,
+            selectedServiceId = 0
+        )
     }
 
     override fun onChangeCourierClickListener() {
@@ -52,7 +84,7 @@ class ShippingWidgetCheckoutActivity :
     }
 
     override fun getHostFragmentManager(): FragmentManager {
-        return this@ShippingWidgetCheckoutActivity.getHostFragmentManager()
+        return this@ShippingWidgetCheckoutActivity.supportFragmentManager
     }
 
     override fun onInsuranceCheckedForTrackingAnalytics() {
@@ -81,5 +113,43 @@ class ShippingWidgetCheckoutActivity :
 
     override fun onRenderNoSelectedShippingLayout() {
 //        TODO("Not yet implemented")
+    }
+
+    override fun onShippingDurationChoosen(
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
+        selectedCourier: ShippingCourierUiModel?,
+        recipientAddressModel: RecipientAddressModel?,
+        cartPosition: Int,
+        selectedServiceId: Int,
+        serviceData: ServiceData,
+        flagNeedToSetPinpoint: Boolean,
+        isDurationClick: Boolean,
+        isClearPromo: Boolean
+    ) {
+        val courierItemData =
+            ShippingCourierConverter().convertToCourierItemDataNew(selectedCourier)
+        model = courierItemData.toShippingWidgetUiModel()
+        Log.d("shipping model", model.toString())
+        render()
+    }
+
+    override fun onLogisticPromoChosen(
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
+        courierData: ShippingCourierUiModel,
+        recipientAddressModel: RecipientAddressModel?,
+        cartPosition: Int,
+        serviceData: ServiceData,
+        flagNeedToSetPinpoint: Boolean,
+        promoCode: String,
+        selectedServiceId: Int,
+        logisticPromo: LogisticPromoUiModel
+    ) {
+        val courierItemData = ShippingCourierConverter().convertToCourierItemDataWithPromo(
+            courierData,
+            logisticPromo
+        )
+        model = courierItemData.toShippingWidgetUiModel()
+        Log.d("shipping model", model.toString())
+        render()
     }
 }

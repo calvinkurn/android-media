@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.databinding.ItemCourierBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticcart.utils.ShippingViewUtils.constructErrorUi
+import com.tokopedia.logisticcart.utils.ShippingBottomSheetUtils.constructErrorUi
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.logisticcart.R as logisticcartR
