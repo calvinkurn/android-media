@@ -70,7 +70,14 @@ class BmgmSectionViewHolder(
             }
             addOnSummaryViewHolder =
                 partialBmgmAddonSummaryBinding?.let {
-                    BmgmAddOnSummaryViewHolder(productBenefitListener, it, recyclerViewSharedPool)
+                    BmgmAddOnSummaryViewHolder(
+                        bmgmAddOnListener = productBenefitListener,
+                        binding = it,
+                        // don't pass recyclerViewSharedPool here for now because current
+                        // recyclerViewSharedPool might contain BmgmAddOnViewHolder for AddOn so we
+                        // can't share it with BmgmAddOnViewHolder for GWP
+                        recyclerViewSharedPool = null
+                    )
                 }
             addOnSummaryViewHolder?.bind(productBenefits)
             binding.dividerProductBenefit.show()

@@ -24,7 +24,7 @@ import com.tokopedia.unifycomponents.toPx
 class BmgmAddOnSummaryViewHolder(
     private val bmgmAddOnListener: BmgmAddOnViewHolder.Listener,
     private val binding: PartialBmgmAddOnSummaryBinding?,
-    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool?
 ) {
 
     companion object {
