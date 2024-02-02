@@ -35,7 +35,8 @@ class HomeRecommendationUseCase @Inject constructor(
             val recomData = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
                             pageName = currentBestSellerDataModel.pageName,
-                            queryParam = if(filterChip.isActivated) filterChip.value else ""
+                            queryParam = if(filterChip.isActivated) filterChip.value else "",
+                            hasNewProductCardEnabled = true
                     )
             )
             val recomWidget = recomData.firstOrNull()?.copy(
@@ -107,6 +108,7 @@ class HomeRecommendationUseCase @Inject constructor(
             GetRecommendationRequestParam(
                 pageName = currentBestSellerDataModel.pageName,
                 queryParam = selectedFilterChip.value,
+                hasNewProductCardEnabled = true
             )
         )
 
@@ -212,6 +214,7 @@ class HomeRecommendationUseCase @Inject constructor(
                     pageName = currentDataModel.channelModel.pageName,
                     queryParam = currentDataModel.channelModel.widgetParam,
                     shopIds = listOf(shopId),
+                    hasNewProductCardEnabled = true
                 )
             )
             ShopFlashSaleMapper.mapShopFlashSaleItemList(currentDataModel, recomData)

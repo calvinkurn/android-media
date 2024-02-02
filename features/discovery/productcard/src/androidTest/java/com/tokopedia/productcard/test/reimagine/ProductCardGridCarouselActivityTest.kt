@@ -1,21 +1,23 @@
 package com.tokopedia.productcard.test.reimagine
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.productcard.reimagine.productCardGridCarouselHeight
+import com.tokopedia.productcard.utils.getPixel
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.productcard.test.R as productcardtestR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -45,7 +47,8 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
             val view = LayoutInflater.from(parent.context)
                 .inflate(
                     productcardtestR.layout.product_card_reimagine_grid_carousel_item_test_layout,
-                    null
+                    parent,
+                    false,
                 )
 
             return ViewHolder(view)
@@ -70,26 +73,46 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         private val testDescription: TextView? by lazy {
             itemView.findViewById(productcardtestR.id.productCardReimagineTestDescription)
         }
+        private val productCardContainerCalculator: FrameLayout? by lazy {
+            itemView.findViewById(productcardtestR.id.productCardContainerHeightCalculator)
+        }
         private val productCardView: ProductCardGridCarouselView? by lazy {
             itemView.findViewById(productcardtestR.id.productCardReimagineGridCarouselView)
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
-            setBackgroundContainer(productCardModel, itemView)
-            testDescription?.text = description
+            val productCardGridCarouselHeight =
+                productCardGridCarouselHeight(itemView.context, productCardModel)
+                    .plus(compatPaddingTopBottomMargin(true, itemView.context))
 
-            productCardView?.findViewById<CardUnify2?>(
-                productcardR.id.productCardCardUnifyContainer
-            )?.run {
-                layoutParams = layoutParams?.apply { height = WRAP_CONTENT }
+            productCardContainerCalculator?.layoutParams?.apply {
+                height = productCardGridCarouselHeight
             }
 
-            productCardView?.run {
-                layoutParams = layoutParams?.apply { height = WRAP_CONTENT }
+            setBackgroundContainer(productCardModel, itemView)
 
+            testDescription?.text =
+                "$bindingAdapterPosition $description, " +
+                "\nHeight: $productCardGridCarouselHeight px; ${productCardGridCarouselHeight.toDp()} dp"
+
+            productCardView?.run {
                 setProductModel(productCardModel)
                 setOnClickListener { toast("Click") }
                 setAddToCartOnClickListener { toast("Click ATC") }
+            }
+        }
+
+        private fun compatPaddingTopBottomMargin(useCompatPadding: Boolean, context: Context?) =
+            if (useCompatPadding)
+                2 * context.getPixel(R.dimen.product_card_reimagine_use_compat_padding_size)
+            else 0
+
+        private fun setBackgroundContainer(productCardModel: ProductCardModel, view: View) {
+            val contextResource = view.context
+            if(productCardModel.isInBackground) {
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_GN100))
+            } else {
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_NN0))
             }
         }
 
@@ -99,15 +122,6 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         }
 
         fun recycle() {
-        }
-
-        private fun setBackgroundContainer(productCardModel: ProductCardModel, view: View) {
-            val contextResource = view.context
-            if(productCardModel.isInBackground) {
-                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_GN100))
-            } else {
-                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_NN0))
-            }
         }
     }
 }
