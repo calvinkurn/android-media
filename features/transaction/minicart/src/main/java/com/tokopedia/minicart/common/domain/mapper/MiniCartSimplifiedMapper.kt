@@ -45,7 +45,7 @@ object MiniCartSimplifiedMapper {
             val detail = group.cartDetails.firstOrNull { detail ->
                 val cartDetailInfo = detail.cartDetailInfo
                 cartDetailInfo.cartDetailType.equals(CART_DETAIL_TYPE, true) &&
-                        cartDetailInfo.bmgmData.offerId != Long.ZERO
+                    cartDetailInfo.bmgmData.offerId != Long.ZERO
             }
             if (detail != null) {
                 return detail
@@ -329,6 +329,8 @@ object MiniCartSimplifiedMapper {
             offerId = bmgmData.offerId,
             offerTypeId = bmgmData.offerTypeId,
             offerMessage = bmgmData.offerMessage,
+            tierImage = bmgmData.tierProductList.firstOrNull()?.productsBenefit?.firstOrNull()?.productImage.orEmpty(),
+            tierMessage = bmgmData.tierProductList.firstOrNull()?.tierMessage.orEmpty(),
             hasReachMaxDiscount = hasReachMaxDiscount,
             priceBeforeBenefit = shoppingSummary.totalOriginalValue,
             finalPrice = shoppingSummary.totalValue,

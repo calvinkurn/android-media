@@ -38,6 +38,7 @@ class BmgmMiniCartDataMapperTest : BaseMiniCartDataMapper() {
                 "Beli 10, <b>diskon 20%</b> di [Test] Square BMSM!",
                 "Tambah 4 lagi diskon 20% di [Test] Square BMSM"
             ),
+            tierMessage = "Tambah 4 lagi diskon 20% di [Test] Square BMSM",
             hasReachMaxDiscount = true,
             priceBeforeBenefit = 250000.0,
             finalPrice = 250000.0,
@@ -127,6 +128,7 @@ class BmgmMiniCartDataMapperTest : BaseMiniCartDataMapper() {
                 "Beli 10, <b>diskon 20%</b> di [Test] Square BMSM!",
                 "Tambah 4 lagi diskon 20% di [Test] Square BMSM"
             ),
+            tierMessage = "Tambah 4 lagi diskon 20% di [Test] Square BMSM",
             hasReachMaxDiscount = false,
             priceBeforeBenefit = 250000.0,
             finalPrice = 250000.0,
@@ -192,6 +194,7 @@ class BmgmMiniCartDataMapperTest : BaseMiniCartDataMapper() {
                 "Beli 10, <b>diskon 20%</b> di [Test] Square BMSM!",
                 "Tambah 4 lagi diskon 20% di [Test] Square BMSM"
             ),
+            tierMessage = "Tambah 4 lagi diskon 20% di [Test] Square BMSM",
             hasReachMaxDiscount = true,
             priceBeforeBenefit = 250000.0,
             finalPrice = 250000.0,
