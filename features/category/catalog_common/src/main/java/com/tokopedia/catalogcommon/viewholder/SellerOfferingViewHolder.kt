@@ -9,8 +9,11 @@ import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemSellerOfferingBinding
 import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.strikethrough
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
@@ -50,13 +53,16 @@ class SellerOfferingViewHolder(
             tvProductName.text = itemView.resources.getString(R.string.catalog_prefix_title_section,element.productName)
             tvPrice.text = element.productPrice
             tvSlashPrice.setTextAndCheckShow(element.productSlashPrice)
+            tvSlashPrice.strikethrough()
             tvLabelPromo.setTextAndCheckShow(element.labelPromo)
             tvLabelDisc.text = element.labelTotalDisc
             tvSalesRatingFloat.text = element.shopRating
             tvTotalSold.text = element.totalSold
             ivFreeOngkir.loadImage(element.freeOngkir)
             ivFreeOngkir.showWithCondition(element.freeOngkir.isNotEmpty())
-            tvGuarantee.showWithCondition(element.isShopGuarantee)
+            tvAdditionalService.setTextAndCheckShow(element.additionalService)
+            vFreeOngkir.showWithCondition(element.estimationShipping.isNotEmpty())
+            vGuarantee.showWithCondition(element.isShopGuarantee)
             tvInstallment.text = element.installment
             cgInstallment.showWithCondition(element.installment.isNotEmpty())
             tvEstimation.setTextAndCheckShow(element.estimationShipping)
@@ -69,7 +75,12 @@ class SellerOfferingViewHolder(
                 height = 15.toPx()
             )
             progressProduct.setValue(element.stockBar)
-            tvSalesRatingCount.setTextAndCheckShow("(${element.totalShopRating})")
+            if (element.totalShopRating.isNotEmpty()){
+                tvSalesRatingCount.visible()
+                tvSalesRatingCount.text = "(${element.totalShopRating})"
+            }else{
+                tvSalesRatingCount.gone()
+            }
         }
     }
 
@@ -89,7 +100,7 @@ class SellerOfferingViewHolder(
         tvSalesRatingCount.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvTotalSold.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvEstimation.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
-        tvGuarantee.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
+        tvAdditionalService.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvInstallment.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         lnBackgroundProductImage.setBackgroundColor(getColor(element.darkMode, lightColor = R.color.dms_static_catalog_color_secondary, darkColor = R.color.dms_static_catalog_color_tertiary))
 

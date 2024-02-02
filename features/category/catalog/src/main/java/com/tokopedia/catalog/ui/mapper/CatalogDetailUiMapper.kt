@@ -829,9 +829,10 @@ class CatalogDetailUiMapper @Inject constructor(
                 shopRating = credibility.rating + if (credibility.ratingCount.isEmpty()) "" else " (${credibility.ratingCount})",
                 totalSold = credibility.sold,
                 freeOngkir = bebasOngkirUrl,
-                estimationShipping = delivery.eta + " • " + additionalService.name,
+                estimationShipping = delivery.eta,
                 isShopGuarantee = paymentOption.desc.isNotEmpty(),
-                installment = paymentOption.desc
+                installment = paymentOption.desc,
+                additionalService = additionalService.name
             )
         } ?: SellerOfferingUiModel()
         // DummyData
