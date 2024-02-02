@@ -19,6 +19,7 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSubsidyProgramInformationBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProgramInformationDetailUiModel
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoUiModel
 import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -294,7 +295,10 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     private fun setSellerDiscountPercentageData() {
         val sellerDiscountPercentage =
             programInformationDetailUiModel?.subsidyInfo?.sellerDiscountPercentage.orZero()
-        if (sellerDiscountPercentage > Int.ZERO) {
+        val subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(
+            programInformationDetailUiModel?.subsidyInfo?.subsidyType?.value.orZero()
+        )
+        if (subsidyType != ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL) {
             sellerDiscountPercentageRow?.show()
             textSellerDiscountPercentageValue?.text = getString(
                 R.string.sd_subsidy_discount_percentage_format,
@@ -308,7 +312,10 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     private fun setSellerDiscountData() {
         val sellerDiscount =
             programInformationDetailUiModel?.subsidyInfo?.sellerDiscountPrice.orZero()
-        if (sellerDiscount > Int.ZERO) {
+        val subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(
+            programInformationDetailUiModel?.subsidyInfo?.subsidyType?.value.orZero()
+        )
+        if (subsidyType != ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL) {
             sellerDiscountRow?.show()
             textSellerDiscountValue?.text = getString(
                 R.string.sd_subsidy_minus_price_format,

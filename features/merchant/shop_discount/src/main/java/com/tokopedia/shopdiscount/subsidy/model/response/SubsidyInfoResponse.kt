@@ -17,7 +17,7 @@ data class SubsidyInfoResponse(
     val quotaSubsidy: Int = 0,
     @SerializedName("subsidy_date_start")
     val subsidyDateStart: String = "",
-    @SerializedName("subsidy_date_end")
+    @SerializedName("subsidy_date_stop")
     val subsidyDateEnd: String = "",
     @SerializedName("max_order")
     val maxOrder: Int = 0,
