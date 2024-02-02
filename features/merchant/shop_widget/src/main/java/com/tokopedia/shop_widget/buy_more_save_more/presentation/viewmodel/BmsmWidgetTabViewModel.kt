@@ -194,6 +194,10 @@ class BmsmWidgetTabViewModel @Inject constructor(
             } else {
                 emptyList()
             },
+            requestHeader = RequestHeader(
+                source = "shop_page",
+                useCase = "offer-shop-widget"
+            ),
             userLocation = UserLocation(
                 addressId = currentState.localCacheModel?.address_id.toLongOrZero(),
                 districtId = currentState.localCacheModel?.district_id.toLongOrZero(),

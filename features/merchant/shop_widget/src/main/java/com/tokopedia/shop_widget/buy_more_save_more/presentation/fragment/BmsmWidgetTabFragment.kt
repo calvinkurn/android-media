@@ -554,12 +554,11 @@ class BmsmWidgetTabFragment :
     }
 
     private fun SlidingTextSwitcher.setUpsellingGwp(messages: List<String>) {
-        showWithCondition(messages.isNotEmpty())
         val textColor = MethodChecker.getColor(
             context,
             R.color.dms_static_white
         )
-        if (childCount < 2){
+        if (childCount.isZero()){
             setFactory {
                 Typography(context).apply {
                     setType(Typography.SMALL)
@@ -593,7 +592,7 @@ class BmsmWidgetTabFragment :
                 R.color.dms_pd_sub_title_text_color
             )
         }
-        if (childCount < 2){
+        if (childCount.isZero()){
             setFactory {
                 Typography(context).apply {
                     setType(Typography.SMALL)
@@ -669,7 +668,7 @@ class BmsmWidgetTabFragment :
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = if (productCardModelList.size > TWO_PRODUCT_ITEM_SIZE) {
-            context?.resources?.getDimensionPixelSize(R.dimen.dp_132).orZero()
+            context?.resources?.getDimensionPixelSize(R.dimen.dp_145).orZero()
         } else {
             context?.resources?.getDimensionPixelSize(R.dimen.dp_200).orZero()
         }
