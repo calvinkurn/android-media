@@ -26,8 +26,6 @@ import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapt
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.productTab
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
@@ -129,22 +127,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun initSource() {
-        when (val source = viewModel.productPreviewSource.source) {
-            is ProductPreviewSourceModel.ProductSourceData -> {
-                if (source.hasReviewMedia) {
-                    pagerAdapter.insertFragment(productTab + reviewTab)
-                    isShowAllTab(true)
-                } else {
-                    pagerAdapter.insertFragment(productTab)
-                    isShowAllTab(false)
-                }
-            }
-            is ProductPreviewSourceModel.ReviewSourceData -> {
-                pagerAdapter.insertFragment(reviewTab)
-                isShowAllTab(false)
-            }
-            else -> activity?.finish()
-        }
+        viewModel.onAction(ProductPreviewAction.CheckInitialSource)
     }
 
     private fun isShowAllTab(isShow: Boolean) = with(binding) {
@@ -194,7 +177,7 @@ class ProductPreviewFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiEvent.flowWithLifecycle(
                 viewLifecycleOwner.lifecycle,
-                Lifecycle.State.RESUMED
+                Lifecycle.State.CREATED
             ).collect {
                 when (val event = it) {
                     is ProductPreviewEvent.LoginEvent<*> -> {
@@ -242,8 +225,16 @@ class ProductPreviewFragment @Inject constructor(
                     is ProductPreviewEvent.FailFetchMiniInfo -> {
                         binding.viewFooter.gone()
                     }
-                    is ProductPreviewEvent.LikeUpdate -> return@collect
-                    is ProductPreviewEvent.ShowMenuSheet -> return@collect
+                    is ProductPreviewEvent.InitialSourceEvent -> {
+                        if (event.tabs.isEmpty()) activity?.finish()
+
+                        val tabs = event.tabs
+                        pagerAdapter.insertFragment(tabs)
+
+                        val isShowAllTab = tabs.size > 1
+                        isShowAllTab(isShowAllTab)
+                    }
+                    else -> return@collect
                 }
             }
         }
