@@ -52,13 +52,14 @@ class MilestoneMapper @Inject constructor(
     override fun mapRemoteDataToUiData(
         response: GetMilestoneDataResponse,
         isFromCache: Boolean,
-        extra: Pair<String, Any?>
+        extra: Map<String, Any?>
     ): List<MilestoneDataUiModel> {
-        val (extraKey, extraObject) = extra
-        return if (extraKey == GetMilestoneDataUseCase.REWARD_KEY) {
+        val isContainReward = extra[GetMilestoneDataUseCase.REWARD_KEY] != null
+        return if (isContainReward) {
+            val rewardData = extra[GetMilestoneDataUseCase.REWARD_KEY]
             val data = response.fetchMilestoneWidgetData?.data.orEmpty()
             data.map {
-                mapToUiModel(it, isFromCache, extraObject as? GetRewardDetailByIdResponse)
+                mapToUiModel(it, isFromCache, rewardData as? GetRewardDetailByIdResponse)
             }
         } else {
             super.mapRemoteDataToUiData(response, isFromCache, extra)

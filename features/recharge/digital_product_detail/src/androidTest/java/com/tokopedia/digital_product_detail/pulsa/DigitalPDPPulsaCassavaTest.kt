@@ -19,8 +19,6 @@ import org.junit.Test
 
 class DigitalPDPPulsaCassavaTest : BaseDigitalPDPPulsaTest() {
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
@@ -103,8 +101,8 @@ class DigitalPDPPulsaCassavaTest : BaseDigitalPDPPulsaTest() {
 
         Thread.sleep(4000)
         clientNumberWidget_clickClearIcon()
-        clientNumberWidget_typeNumber("0812")
-        autoComplete_clickItem_withText("08121111112")
+        clientNumberWidget_typeNumber("Jessica")
+        autoComplete_clickItem_withText("Jessica")
         Espresso.closeSoftKeyboard()
     }
 
@@ -128,10 +126,7 @@ class DigitalPDPPulsaCassavaTest : BaseDigitalPDPPulsaTest() {
         denom_clickCard_withIndex(0)
     }
 
-    override fun getApplink(): String = APPLINK
-
     companion object {
-        const val APPLINK = "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2"
         const val PATH_ANALYTICS = "tracker/recharge/digital_product_detail/digital_pdp_pulsa.json"
     }
 }

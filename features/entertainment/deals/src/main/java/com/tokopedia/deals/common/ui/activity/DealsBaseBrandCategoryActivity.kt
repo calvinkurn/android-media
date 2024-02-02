@@ -7,14 +7,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.deals.R
-import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.common.ui.adapter.DealsFragmentPagerAdapter
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
 import com.tokopedia.deals.databinding.ActivityBaseBrandCategoryDealsBinding
+import com.tokopedia.deals.ui.category.DealsCategoryActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
@@ -40,7 +39,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         binding = ActivityBaseBrandCategoryDealsBinding.bind(viewGroup)
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        dealBrandCategoryActivityViewModel = viewModelProvider.get(DealsBrandCategoryActivityViewModel::class.java)
+        dealBrandCategoryActivityViewModel =
+            viewModelProvider.get(DealsBrandCategoryActivityViewModel::class.java)
         dealBrandCategoryActivityViewModel.getCategoryCombindedData()
 
         observerLayout()
@@ -48,72 +48,93 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     }
 
     private fun observerLayout() {
+        binding.tabDealsBrandCategory.tabLayout.addOnTabSelectedListener(object :
+                TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    tab.select()
+                    binding.vpDealsBrandCategory.currentItem = tab.position
 
-        binding.tabDealsBrandCategory.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                tab.select()
-                binding.vpDealsBrandCategory.currentItem = tab.position
-
-                if (isEnableTabClickAnalytics) tabAnalytics(tab.getCustomText(), tab.position)
-            }
-
-            override fun onTabUnselected(p0: TabLayout.Tab?) {
-
-            }
-
-            override fun onTabReselected(p0: TabLayout.Tab?) {
-
-            }
-        })
-
-        binding.vpDealsBrandCategory?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                val tab = binding.tabDealsBrandCategory?.getUnifyTabLayout()?.getTabAt(position)
-                tab?.select()
-            }
-        })
-
-        dealBrandCategoryActivityViewModel.curatedData.observe(this, Observer {
-            binding.tabsShimmering.root.hide()
-            val tabNameList: ArrayList<String> = arrayListOf()
-
-            if (showAllItemPage()) {
-                childCategoryList.add(null)
-                binding.tabDealsBrandCategory.addNewTab(ALL_ITEM_PAGE)
-                tabNameList.add(ALL_ITEM_PAGE)
-            }
-
-            childCategoryList.addAll(ArrayList(it.eventChildCategory.categories.filter { ct -> ct.isCard == 0 && ct.isHidden == 0 }
-                    .map { category -> category.id }))
-
-            val categoryId: String = intent.getStringExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID)
-                    ?: ""
-            val position = findCategoryPosition(categoryId)
-
-            if (position != null) {
-                it.eventChildCategory.categories.forEach { category ->
-                    if (category.isCard == 0 && category.isHidden == 0) {
-                        binding.tabDealsBrandCategory.addNewTab(category.title)
-                        tabNameList.add(category.title)
-                    }
+                    if (isEnableTabClickAnalytics) tabAnalytics(tab.getCustomText(), tab.position)
                 }
 
-                adapter = DealsFragmentPagerAdapter(this, childCategoryList.toList(), getPageTAG(), tabNameList.toList())
-                binding.vpDealsBrandCategory.offscreenPageLimit = 1
-                binding.vpDealsBrandCategory.adapter = adapter
+                override fun onTabUnselected(p0: TabLayout.Tab?) = Unit
+                override fun onTabReselected(p0: TabLayout.Tab?) = Unit
+            })
 
-                redirectsToSpecificCategory(position)
-            } else {
-                binding.tabDealsBrandCategory.hide()
-                adapter = DealsFragmentPagerAdapter(this, listOf(categoryId), getPageTAG(), listOf(categoryId))
-                binding.vpDealsBrandCategory.offscreenPageLimit = 1
-                binding.vpDealsBrandCategory.adapter = adapter
+        binding.vpDealsBrandCategory.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    val tab = binding.tabDealsBrandCategory.getUnifyTabLayout().getTabAt(position)
+                    tab?.select()
+                }
+            })
+
+        dealBrandCategoryActivityViewModel.curatedData.observe(
+            this,
+            Observer {
+                binding.tabsShimmering.root.hide()
+                val tabNameList: ArrayList<String> = arrayListOf()
+
+                if (showAllItemPage()) {
+                    childCategoryList.add(null)
+                    binding.tabDealsBrandCategory.addNewTab(ALL_ITEM_PAGE)
+                    tabNameList.add(ALL_ITEM_PAGE)
+                }
+
+                childCategoryList.addAll(
+                    ArrayList(
+                        it.eventChildCategory.categories
+                            .filter { ct -> ct.isCard == 0 && ct.isHidden == 0 }
+                            .map { category -> category.id }
+                    )
+                )
+
+                val categoryId = intent.getStringExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID) ?: ""
+                val position = findCategoryPosition(categoryId)
+
+                if (position != null) {
+                    it.eventChildCategory.categories.forEach { category ->
+                        if (category.isCard == 0 && category.isHidden == 0) {
+                            binding.tabDealsBrandCategory.addNewTab(category.title)
+                            tabNameList.add(category.title)
+                        }
+                    }
+
+                    adapter = DealsFragmentPagerAdapter(
+                        this,
+                        childCategoryList.toList(),
+                        getPageTAG(),
+                        tabNameList.toList()
+                    )
+                    binding.vpDealsBrandCategory.offscreenPageLimit = 1
+                    binding.vpDealsBrandCategory.adapter = adapter
+
+                    redirectsToSpecificCategory(position)
+                } else {
+                    binding.tabDealsBrandCategory.hide()
+                    adapter = DealsFragmentPagerAdapter(
+                        this,
+                        listOf(categoryId),
+                        getPageTAG(),
+                        listOf(categoryId)
+                    )
+                    binding.vpDealsBrandCategory.offscreenPageLimit = 1
+                    binding.vpDealsBrandCategory.adapter = adapter
+                }
             }
-        })
+        )
 
-        dealBrandCategoryActivityViewModel.errorMessage.observe(this, Observer {
-            Toaster.build(binding.container, it.localizedMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        })
+        dealBrandCategoryActivityViewModel.errorMessage.observe(
+            this,
+            Observer {
+                Toaster.build(
+                    binding.container,
+                    it.localizedMessage,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
+            }
+        )
     }
 
     private fun redirectsToSpecificCategory(position: Int?) {
@@ -123,7 +144,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             observer.dispatchOnGlobalLayout()
             observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    binding.tabDealsBrandCategory.getUnifyTabLayout().viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    binding.tabDealsBrandCategory.getUnifyTabLayout().viewTreeObserver
+                        .removeOnGlobalLayoutListener(this)
                     isEnableTabClickAnalytics = true
                     position?.let { tabLayout.getTabAt(it)?.select() }
                 }
@@ -148,19 +170,21 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     open fun getPageTAG(): String = ""
 
     open fun tabAnalytics(categoryName: String, position: Int) {
-        //no-op
+        // no-op
     }
 
     private fun setUpScrollView() {
-        binding.appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= - binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.height ) {
-                //collapse
-                ViewCompat.setElevation(appBarLayout,0f)
+        binding.appBarLayoutSearchContent?.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (abs(verticalOffset) - appBarLayout.totalScrollRange >=
+                -binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.height
+            ) {
+                // collapse
+                ViewCompat.setElevation(appBarLayout, 0f)
                 binding.contentBaseToolbar.imgDealsSearchIcon.show()
             } else {
                 binding.contentBaseToolbar.imgDealsSearchIcon.hide()
             }
-        })
+        }
 
         binding.contentBaseToolbar.imgDealsSearchIcon.setOnClickListener {
             searchBarActionListener?.onClickSearchBar()

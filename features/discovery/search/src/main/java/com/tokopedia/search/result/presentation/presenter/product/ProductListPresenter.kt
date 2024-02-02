@@ -13,6 +13,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET
 import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.SAVE_LAST_FILTER_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_POST_ATC_CAROUSEL_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE
@@ -33,6 +34,8 @@ import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
+import com.tokopedia.search.result.domain.usecase.getpostatccarousel.GetPostATCCarouselUseCase
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.model.ProductDataView
@@ -136,6 +139,8 @@ class ProductListPresenter @Inject constructor(
     @param:Named(SAVE_LAST_FILTER_USE_CASE)
     private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
     private val addToCartUseCase: AddToCartUseCase,
+    @param:Named(GET_POST_ATC_CAROUSEL_USE_CASE)
+    private val getPostATCCarouselUseCase: Lazy<UseCase<SearchInspirationCarousel>>,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val schedulersProvider: SchedulersProvider,
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
@@ -369,7 +374,6 @@ class ProductListPresenter @Inject constructor(
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
 
-        paginationImpl.totalData = productDataView.totalData
     }
 
     private fun createProductDataView(
@@ -1495,6 +1499,7 @@ class ProductListPresenter @Inject constructor(
         getLocalSearchRecommendationUseCase.get()?.unsubscribe()
         getInspirationCarouselChipsUseCase.get()?.unsubscribe()
         saveLastFilterUseCase.get()?.unsubscribe()
+        getPostATCCarouselUseCase.get()?.unsubscribe()
         recommendationPresenterDelegate.detachView()
         onSafeSearchViewDestroyed()
 

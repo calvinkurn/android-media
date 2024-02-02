@@ -14,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
@@ -112,6 +113,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val getInspirationCarouselChipsProductsUseCase =
         mockk<UseCase<InspirationCarouselChipsProductModel>>(relaxed = true)
     protected val saveLastFilterUseCase = mockk<UseCase<Int>>(relaxed = true)
+    protected val getPostATCCarouselUseCase = mockk<UseCase<SearchInspirationCarousel>>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
@@ -161,10 +163,12 @@ internal open class ProductListPresenterTestFixtures {
     private val pagination = PaginationImpl()
     private val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
     private val lastClickedProductIdProvider = LastClickedProductIdProviderImpl()
+    val deduplication = Deduplication(deduplicationView)
     private val requestParamsGenerator = RequestParamsGenerator(
         userSession,
         pagination,
         lastClickedProductIdProvider,
+        deduplication,
     )
     protected val bottomSheetFilterPresenter = BottomSheetFilterPresenterDelegate(
         bottomSheetFilterView,
@@ -181,7 +185,6 @@ internal open class ProductListPresenterTestFixtures {
     @Before
     open fun setUp() {
         val responseCodeImpl = ResponseCodeImpl()
-        val deduplication = Deduplication(deduplicationView)
         val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,
             requestParamsGenerator,
@@ -199,8 +202,11 @@ internal open class ProductListPresenterTestFixtures {
 
         val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
             addToCartUseCase,
+            getPostATCCarouselUseCase,
+            requestParamsGenerator,
             userSession,
             inspirationListAtcView,
+            viewUpdater,
             searchParameterProvider,
         )
         val suggestionPresenter = SuggestionPresenter()
@@ -276,6 +282,7 @@ internal open class ProductListPresenterTestFixtures {
             { getInspirationCarouselChipsProductsUseCase },
             { saveLastFilterUseCase },
             addToCartUseCase,
+            { getPostATCCarouselUseCase },
             topAdsUrlHitter,
             testSchedulersProvider,
             topAdsHeadlineHelper,
@@ -630,6 +637,10 @@ internal open class ProductListPresenterTestFixtures {
 
     protected fun `Given search reimagine rollence product card will return non control variant`() {
         every { reimagineRollence.search3ProductCard() } returns Search3ProductCard.VAR_1A
+    }
+
+    protected fun getListDeduplication() : String {
+        return deduplication.getProductIdList()
     }
 
     @After

@@ -37,11 +37,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
                 CommonDataView(applink = ApplinkConstInternalUserPlatform.ACCOUNT_SETTING, title = context.getString(R.string.menu_account_title_security), body = context.getString(R.string.menu_account_desc_security), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LOCK, id = AccountConstants.SettingCode.SETTING_SECURITY),
                 CommonDataView(applink = ApplinkConst.SETTING_NOTIFICATION, title = context.getString(R.string.menu_account_title_notification), body = context.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BELL_RING, id = AccountConstants.SettingCode.SETTING_NOTIFICATION),
                 CommonDataView(
-                    applink = if (!isUsingPrivacyCenter()) {
-                        ApplinkConstInternalUserPlatform.PRIVACY_ACCOUNT
-                    } else {
-                        ApplinkConstInternalUserPlatform.PRIVACY_CENTER
-                    },
+                    applink = ApplinkConstInternalUserPlatform.PRIVACY_CENTER,
                     title = context.getString(R.string.menu_account_title_privacy_account),
                     body = context.getString(R.string.menu_account_desc_privacy_account),
                     type = CommonViewHolder.TYPE_DEFAULT,
@@ -79,33 +75,6 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
                 isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, true)
             )
         )
-
-        if (!isUsingPrivacyCenter()) {
-            listSetting.addAll(
-                index = 0,
-                elements = listOf(
-                    CommonDataView(
-                        id = AccountConstants.SettingCode.SETTING_SHAKE_ID,
-                        title = context.getString(R.string.menu_account_title_shake),
-                        body = context.getString(R.string.menu_account_desc_shake),
-                        type = CommonViewHolder.TYPE_SWITCH,
-                        icon = IconUnify.SHAKE,
-                        isChecked = accountPref.isItemSelected(
-                            key = AccountConstants.KEY.KEY_PREF_SHAKE,
-                            defaultValue = true
-                        )
-                    ),
-                    CommonDataView(
-                        id = AccountConstants.SettingCode.SETTING_GEOLOCATION_ID,
-                        title = context.getString(R.string.menu_account_title_geolocation),
-                        body = context.getString(R.string.menu_account_desc_geolocation),
-                        type = CommonViewHolder.TYPE_SWITCH,
-                        icon = IconUnify.LOCATION,
-                        isChecked = permissionChecker.hasLocationPermission()
-                    )
-                )
-            )
-        }
 
         if (showDarkModeToggle) {
             listSetting.add(
@@ -148,18 +117,6 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
             CommonDataView(title = context.getString(R.string.menu_account_title_review), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.RATING, id = AccountConstants.SettingCode.SETTING_APP_REVIEW_ID)
         )
 
-        if (!isUsingPrivacyCenter()) {
-            listSettingMenu.add(
-                index = 2,
-                element = CommonDataView(
-                    title = context.getString(R.string.menu_account_title_privacy_policy),
-                    type = CommonViewHolder.TYPE_WITHOUT_BODY,
-                    icon = IconUnify.POLICY_PRIVACY,
-                    id = AccountConstants.SettingCode.SETTING_PRIVACY_ID
-                )
-            )
-        }
-
         return SettingDataView(
             title = context.getString(R.string.menu_account_section_title_about_us),
             items = listSettingMenu,
@@ -184,11 +141,5 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
         } catch (ignored: Throwable) {
             ""
         }
-    }
-
-    private fun isUsingPrivacyCenter(): Boolean {
-        return abTestPlatform
-            .getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
-            .isNotEmpty()
     }
 }

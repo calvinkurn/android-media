@@ -158,7 +158,22 @@
                 "textColor": "",
                 "bgColor": ""
               },
-              "tickers": [],
+              "tickers": [
+                {
+                  "action": {
+                    "actionType": "",
+                    "appURL": "",
+                    "webURL": "",
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "title": "",
+                  "text": "Dana telah dikembalikan ke metode pembayaran yang kamu pakai.",
+                  "type": "info",
+                  "isFull": false
+                }
+              ],
               "buttons": [
                 {
                   "Label": "Selesai",
@@ -266,7 +281,36 @@
                 "textColor": "",
                 "bgColor": ""
               },
-              "tickers": [],
+              "tickers": [
+                {
+                  "action": {
+                    "actionType": "",
+                    "appURL": "",
+                    "webURL": "",
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "title": "",
+                  "text": "Dana telah dikembalikan ke metode pembayaran yang kamu pakai.",
+                  "type": "info",
+                  "isFull": false
+                },
+                {
+                  "action": {
+                    "actionType": "",
+                    "appURL": "",
+                    "webURL": "",
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "title": "",
+                  "text": "Dana telah dikembalikan ke metode pembayaran yang kamu pakai.",
+                  "type": "info",
+                  "isFull": false
+                }
+              ],
               "buttons": [],
               "dotMenus": [
                 {

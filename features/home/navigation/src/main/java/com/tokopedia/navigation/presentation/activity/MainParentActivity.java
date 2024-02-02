@@ -1,5 +1,7 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
+import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_PARAM_TRUE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE;
@@ -14,6 +16,7 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,7 +40,6 @@ import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
@@ -52,6 +54,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
+import com.tokopedia.appdownloadmanager.AppDownloadManagerHelper;
+import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -64,6 +68,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
@@ -78,7 +83,7 @@ import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.customview.BottomMenu;
-import com.tokopedia.navigation.presentation.customview.HomeForYouMenu;
+import com.tokopedia.navigation.presentation.customview.IconJumper;
 import com.tokopedia.navigation.presentation.customview.IBottomClickListener;
 import com.tokopedia.navigation.presentation.customview.IBottomHomeForYouClickListener;
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar;
@@ -113,6 +118,7 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -138,8 +144,7 @@ public class MainParentActivity extends BaseActivity implements
         ITelemetryActivity,
         InAppCallback,
         HomeCoachmarkListener,
-        HomeBottomNavListener
-{
+        HomeBottomNavListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -192,6 +197,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int RANK_SHOP_SHORTCUT = 3;
     public static final int RANK_DIGITAL_SHORTCUT = 2;
     public static final int RANK_WISHLIST_SHORTCUT = 1;
+
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
     public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
     public static final String PARAM_HOME = "home";
@@ -250,6 +256,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private LottieBottomNavbar bottomNavigation;
 
+    private AppDownloadManagerHelper appDownloadManagerHelper;
+
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -297,6 +305,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         appUpdate = new FirebaseRemoteAppUpdate(this);
+        initDownloadManagerDialog();
         createView(savedInstanceState);
         WeaveInterface executeEventsWeave = new WeaveInterface() {
             @NotNull
@@ -314,6 +323,13 @@ public class MainParentActivity extends BaseActivity implements
         }
         sendNotificationUserSetting();
         showDarkModeIntroBottomSheet();
+    }
+
+    private void initDownloadManagerDialog() {
+        if (appDownloadManagerHelper == null) {
+            appDownloadManagerHelper = new AppDownloadManagerHelper(new WeakReference(this));
+            setDownloadManagerParameter();
+        }
     }
 
     private void sendNotificationUserSetting() {
@@ -548,6 +564,7 @@ public class MainParentActivity extends BaseActivity implements
         checkAgeVerificationExtra(intent);
 
         setIntent(intent);
+        setDownloadManagerParameter();
         showSelectedPage();
         handleAppLinkBottomNavigation(false);
     }
@@ -688,7 +705,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private Integer getRecommendationForYouIndex(Fragment fragment) {
         if (fragment instanceof HomeScrollViewListener) {
-           return ((HomeScrollViewListener) fragment).getRecommendationForYouIndex();
+            return ((HomeScrollViewListener) fragment).getRecommendationForYouIndex();
         }
         return null;
     }
@@ -735,6 +752,7 @@ public class MainParentActivity extends BaseActivity implements
         // if user is downloading the update (in app update feature),
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
+        showDownloadManagerBottomSheet();
         presenter.get().onResume();
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             int position = HOME_MENU;
@@ -796,8 +814,53 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (appDownloadManagerHelper != null) {
+            appDownloadManagerHelper.getActivityRef().clear();
+        }
+        appDownloadManagerHelper = null;
         if (presenter != null)
             presenter.get().onDestroy();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        checkWritePermissionResultAndInstallApk(requestCode, grantResults);
+    }
+
+    private void checkWritePermissionResultAndInstallApk(int requestCode, @NonNull int[] grantResults) {
+        if (GlobalConfig.IS_NAKAMA_VERSION) {
+            AppDownloadManagerPermission.checkRequestPermissionResult(grantResults, requestCode, hasPermission -> {
+                if (hasPermission) {
+                    if (appDownloadManagerHelper != null) {
+                        appDownloadManagerHelper.startDownloadApk();
+                    }
+                }
+                return null;
+            });
+        }
+    }
+
+    private void showDownloadManagerBottomSheet() {
+        if (appDownloadManagerHelper != null) {
+            appDownloadManagerHelper.showAppDownloadManagerBottomSheet();
+        }
+    }
+
+    private void setDownloadManagerParameter() {
+        if (appDownloadManagerHelper != null) {
+            appDownloadManagerHelper.setIsTriggeredViaApplink(checkApplinkShowDownloadManager());
+        }
+    }
+
+
+    private boolean checkApplinkShowDownloadManager() {
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            String paramValue = uri.getQueryParameter(DOWNLOAD_MANAGER_APPLINK_PARAM);
+            return paramValue != null && paramValue.equalsIgnoreCase(DOWNLOAD_MANAGER_PARAM_TRUE);
+        }
+        return false;
     }
 
     private void reloadPage(int position, boolean isJustLoggedIn) {
@@ -877,13 +940,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        if (bottomNavigation != null) {
-            if (notification.getHaveNewFeed()) {
-                Intent intent = new Intent(BROADCAST_FEED);
-                intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-            }
-        }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }
@@ -1327,36 +1383,45 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     public void populateBottomNavigationView() {
-        BottomMenu homeOrForYouMenu;
-        if (HomeRollenceController.isIconJumper()) {
-            homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.home),
-                    new HomeForYouMenu(
-                            getResources().getString(R.string.home),
-                            getResources().getString(R.string.for_you),
-                            R.drawable.ic_bottom_nav_home_active,
-                            R.drawable.ic_bottom_nav_home_for_you_active,
-                            R.raw.bottom_nav_home,
-                            R.raw.bottom_nav_thumb_idle,
-                            R.raw.bottom_nav_home_to_thumb,
-                            R.raw.bottom_nav_thumb_to_home
-                    ),
-                    R.raw.bottom_nav_home,
-                    R.raw.bottom_nav_home_to_enabled,
-                    R.raw.bottom_nav_home_dark,
-                    R.raw.bottom_nav_home_to_enabled_dark,
-                    R.drawable.ic_bottom_nav_home_for_you_active,
-                    R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f,
-                    1f);
-        } else {
-            homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), null, R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f);
-        }
-        menu.add(homeOrForYouMenu);
-        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed),  null, R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
-        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), null,  R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
+        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), getIconJumper(), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
+        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), null, R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
+        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), null, R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), null, R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), null, R.raw.bottom_nav_transaction, R.raw.bottom_nav_transaction_to_enabled, R.raw.bottom_nav_transaction_dark, R.raw.bottom_nav_transaction_to_enabled_dark, R.drawable.ic_bottom_nav_uoh_active, R.drawable.ic_bottom_nav_uoh_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         bottomNavigation.setMenu(menu);
         handleAppLinkBottomNavigation(true);
+    }
+
+    private IconJumper getIconJumper() {
+        if(HomeRollenceController.isIconJumper()) {
+            if(HomeRollenceController.isIconJumperSRE()) {
+                return getSREIconJumper();
+            } else {
+                return getForYouIconJumper();
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private IconJumper getForYouIconJumper() {
+        return new IconJumper(
+                getResources().getString(R.string.for_you),
+                R.drawable.ic_bottom_nav_home_for_you_active,
+                R.raw.bottom_nav_home_to_thumb,
+                R.raw.bottom_nav_thumb_idle,
+                R.raw.bottom_nav_thumb_to_home
+        );
+    }
+
+    private IconJumper getSREIconJumper() {
+        return new IconJumper(
+                getResources().getString(R.string.for_you),
+                R.drawable.ic_bottom_nav_home_sre,
+                R.raw.bottom_nav_home_to_sre,
+                R.raw.bottom_nav_sre_idle,
+                R.raw.bottom_nav_sre_to_home
+        );
     }
 
     private void gotoNewUserZonePage() {

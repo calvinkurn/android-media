@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.animation.Animator
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import com.google.android.exoplayer2.Player
@@ -52,7 +53,7 @@ class ProductVideoViewHolder(
         mVideoId = data.id
         thumbnail = data.urlOriginal
         listener?.getProductVideoCoordinator()?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
-        setThumbnail()
+        setThumbnail(data.prefetchResource)
         videoVolume?.setOnClickListener {
             listener?.onVideoVolumeCLicked(mPlayer?.isMute() != true)
             listener?.getProductVideoCoordinator()?.configureVolume(mPlayer?.isMute() != true, data.id)
@@ -62,8 +63,12 @@ class ProductVideoViewHolder(
         }
     }
 
-    private fun setThumbnail() = with(binding) {
-        pdpVideoOverlay.loadImageWithoutPlaceholder(thumbnail)
+    private fun setThumbnail(prefetchResource: Drawable? = null) = with(binding) {
+        if (prefetchResource == null) {
+            pdpVideoOverlay.loadImageWithoutPlaceholder(thumbnail)
+        } else {
+            pdpVideoOverlay.setImageDrawable(prefetchResource)
+        }
         pdpVideoOverlay.alpha = SHOW_VALUE
         pdpVideoOverlay.show()
     }
