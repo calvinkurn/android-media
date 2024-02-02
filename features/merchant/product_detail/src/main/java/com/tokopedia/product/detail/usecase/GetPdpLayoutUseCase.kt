@@ -47,6 +47,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
 ) {
 
     companion object {
+
         const val QUERY = """
             query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation, ${'$'}extParam: String, ${'$'}tokonow: pdpTokoNow) {
               pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation, extParam:${'$'}extParam, tokonow:${'$'}tokonow) {
@@ -148,6 +149,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         campaignID
                         campaignType
                         campaignTypeName
+                        campaignLogo
                         percentageAmount
                         originalPrice
                         discountedPrice
@@ -172,6 +174,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         icon
                         background
                         additionalInfo
+                        productID
+                        campaignLogo
+                        applink
+                        superGraphicURL
                       }
                     }
             		... on pdpDataProductContent {
@@ -194,6 +200,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         campaignID
                         campaignType
                         campaignTypeName
+                        campaignLogo
                         percentageAmount
                         originalPrice
                         discountedPrice
@@ -218,6 +225,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         icon
                         background
                         additionalInfo
+                        productID
+                        campaignLogo
+                        applink
+                        superGraphicURL
                       }
                       stock {
                         useStock
@@ -385,6 +396,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         campaignInfo {
                           campaignID
                           campaignType
+                          campaignLogo
                           campaignTypeName
                           campaignIdentifier
                           background
@@ -404,10 +416,14 @@ open class GetPdpLayoutUseCase @Inject constructor(
                           minOrder
                         }
                         thematicCampaign{
-                          campaignName
-                          icon
-                          background
-                          additionalInfo
+                            campaignName
+                            icon
+                            background
+                            additionalInfo
+                            productID
+                            campaignLogo
+                            applink
+                            superGraphicURL
                         }
                       }
                       componentType
@@ -479,7 +495,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
               }
             }
         """
-
         fun createParams(
             productId: String,
             shopDomain: String,
