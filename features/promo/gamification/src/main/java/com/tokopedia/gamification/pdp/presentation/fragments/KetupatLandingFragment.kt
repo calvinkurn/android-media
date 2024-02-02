@@ -222,7 +222,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                         IconList.ID_SHARE,
                         onClick = {
                             // Open share bottom sheet
-                            val sharingComponent = KetupatSharingComponent(view)
+                            val sharingComponent = KetupatSharingComponent(view, "landing_page-DirectRewardGame-$scratchCardId")
                             sharingComponent.show(
                                 childFragmentManager,
                                 ketupatLandingPageData.gamiGetScratchCardLandingPage.appBar?.shared,

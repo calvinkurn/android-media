@@ -3,6 +3,7 @@ package com.tokopedia.gamification.utils
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData.GamiGetScratchCardLandingPage.AppBar
+import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
@@ -11,7 +12,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 /**
  * @author by astidhiyaa on 15/08/23
  */
-class KetupatSharingComponent(rootView: View) {
+class KetupatSharingComponent(rootView: View, val trackerLabel: String) {
     private var mListener: Listener? = null
 
     private val universalShareBottomSheet =
@@ -19,10 +20,24 @@ class KetupatSharingComponent(rootView: View) {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     mListener?.onShareChannel(shareModel)
+                    shareTracker.trackClickShareChannel(
+                        trackerLabel,
+                        shareModel.channel ?: "",
+                        UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT,
+                        "thr ketupat",
+                        "49194",
+                        "tokopediamarketplace"
+                    )
                 }
 
                 override fun onCloseOptionClicked() {
                     mListener?.onDismissEvent(true, this@KetupatSharingComponent)
+                    shareTracker.trackCloseShare(
+                        trackerLabel,
+                        "thr ketupat",
+                        "49193",
+                        "tokopediamarketplace"
+                    )
                 }
             })
             enableDefaultShareIntent()
@@ -61,7 +76,12 @@ class KetupatSharingComponent(rootView: View) {
             )
             setShareText(data.message!!)
             setOnDismissListener { mListener?.onDismissEvent(false, this@KetupatSharingComponent) }
-            setShowListener { mListener?.onShowSharing(this@KetupatSharingComponent) }
+            setShowListener { shareTracker.trackViewShare(
+                trackerLabel,
+                "thr ketupat",
+                "49195",
+                "tokopediamarketplace"
+            ) }
         }.also {
             if (it.isAdded) return@also
             it.show(fg, TAG)
