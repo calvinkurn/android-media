@@ -47,7 +47,7 @@ class SellerOfferingViewHolder(
             tvShopResposiveChat.text = element.chatResponseTime
             tvShopResponsiveOrder.text = element.orderProcessTime
             ivProduct.loadImage(element.productImage)
-            tvProductName.text = element.productName
+            tvProductName.text = itemView.resources.getString(R.string.catalog_prefix_title_section,element.productName)
             tvPrice.text = element.productPrice
             tvSlashPrice.setTextAndCheckShow(element.productSlashPrice)
             tvLabelPromo.setTextAndCheckShow(element.labelPromo)

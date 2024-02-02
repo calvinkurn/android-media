@@ -10,5 +10,5 @@
     <string name="catalog_add_to_cart">Tambah keranjang</string>
     <string name="title_price_cta_seller_offering">Pilihan lain dari Tokopedia</string>
     <string name="catalog_prefix_price_cta_seller_offering">Dari %s</string>
-
+    <string name="catalog_prefix_title_section">Seller terbaik untuk %s</string>
 </resources>
