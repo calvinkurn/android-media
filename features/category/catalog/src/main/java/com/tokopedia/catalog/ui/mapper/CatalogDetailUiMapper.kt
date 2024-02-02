@@ -239,7 +239,8 @@ class CatalogDetailUiMapper @Inject constructor(
                 badge = topSeller.shop.badge,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
                 isDarkTheme = remoteModel.globalStyle?.darkMode == true,
-                isVisible = true
+                isVisible = true,
+                isVariant = topSeller.isVariant
             )
         } ?: PriceCtaSellerOfferingProperties()
     }
