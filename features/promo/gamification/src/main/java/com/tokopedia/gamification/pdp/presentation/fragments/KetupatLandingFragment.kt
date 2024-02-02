@@ -23,6 +23,7 @@ import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
 import com.tokopedia.gamification.pdp.data.di.components.PdpComponent
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.presentation.LandingPageRefreshCallback
+import com.tokopedia.gamification.pdp.presentation.RecommendationCallbackImpl
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.KetupatLandingViewModel
@@ -52,6 +53,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
     private var fragmentDataRendered: Boolean = false
     private var fragmentViewCreated: Boolean = false
     private var infiniteRecommendationManager: InfiniteRecommendationManager? = null
+    private var recommendationCallbackImpl: RecommendationCallbackImpl? = null
     private var ketupatRV: RecyclerView? = null
 
     @Inject
@@ -98,13 +100,13 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                 view?.let { view -> setSharingHeaderIconAndListener(view, it) }
             }
             scratchCardId = it.gamiGetScratchCardLandingPage.scratchCard?.id.toString()
-            GamificationAnalytics.sendDirectRewardLandingPageEvent("direct_reward_id: $scratchCardId")
+            GamificationAnalytics.sendDirectRewardLandingPageEvent("{'direct_reward_id':'${scratchCardId}'}")
         }
     }
 
     override fun onFragmentBackPressed(): Boolean {
         GamificationAnalytics.sendClickBackOnNavBarEvent(
-            "direct_reward_id: $scratchCardId",
+            "{'direct_reward_id':'${scratchCardId}'}",
             "gamification",
             "tokopediamarketplace"
         )
@@ -194,8 +196,11 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
         val concatAdapter = ConcatAdapter(adapter)
         ketupatRV?.adapter = concatAdapter
+        if(recommendationCallbackImpl == null){
+            recommendationCallbackImpl = RecommendationCallbackImpl(this::getScratchCardId)
+        }
         infiniteRecommendationManager =
-            context?.let { InfiniteRecommendationManager(it) }
+            context?.let { InfiniteRecommendationManager(it, recommendationCallbackImpl) }
         infiniteRecommendationManager?.adapter?.let {
             concatAdapter.addAdapter(it)
         }
@@ -204,9 +209,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
     private fun setUpRecommendation() {
         val requestParam = GetRecommendationRequestParam(pageName = "gami_direct_reward")
         infiniteRecommendationManager?.requestParam = requestParam
-        infiniteRecommendationManager?.fetchRecommendation().apply {
-            GamificationAnalytics.sendImpressProductRecommendationSectionEvent("direct_reward_id: $scratchCardId")
-        }
+        infiniteRecommendationManager?.fetchRecommendation()
     }
 
     fun setSharingHeaderIconAndListener(
@@ -229,7 +232,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                                 userSession.userId
                             )
                             GamificationAnalytics.sendClickShareOnNavBarEvent(
-                                "direct_reward_id: $scratchCardId",
+                                "{'direct_reward_id':'${scratchCardId}'}",
                                 "gamification",
                                 "tokopediamarketplace"
                             )
@@ -238,6 +241,10 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                     )
             )
         }
+    }
+
+    fun getScratchCardId(): String? {
+        return scratchCardId
     }
 
     override fun getViewModelType(): Class<KetupatLandingViewModel> {

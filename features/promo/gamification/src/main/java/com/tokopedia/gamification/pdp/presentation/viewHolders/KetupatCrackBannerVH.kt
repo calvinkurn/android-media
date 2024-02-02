@@ -46,7 +46,7 @@ class KetupatCrackBannerVH(itemView: View) :
                 override fun ketuPatSlashed() {
                     //change button state
                     GamificationAnalytics.sendClickClaimButtonEvent(
-                        "direct_reward_id: $scratchCardId", "gamification",
+                        "{'direct_reward_id':'${scratchCardId}'}", "gamification",
                         "tokopediamarketplace"
                     )
                     //refresh data
@@ -75,7 +75,7 @@ class KetupatCrackBannerVH(itemView: View) :
                         crackData?.cta?.find { it?.type == "redirection" }?.appLink
                     )
                     GamificationAnalytics.sendClickCaraMainEvent(
-                        "direct_reward_id: $scratchCardId", "gamification",
+                        "{'direct_reward_id':'${scratchCardId}'}", "gamification",
                         "tokopediamarketplace"
                     )
                 }
@@ -120,7 +120,7 @@ class KetupatCrackBannerVH(itemView: View) :
                     )
                 }
             }
-            GamificationAnalytics.sendImpressManualClaimSectionEvent("direct_reward_id: $scratchCardId")
+            GamificationAnalytics.sendImpressManualClaimSectionEvent("{'direct_reward_id':'${scratchCardId}'}")
         }
     }
 

@@ -263,9 +263,7 @@ object GamificationAnalytics {
     }
 
     fun sendClickProductInProductRecommendationSectionEvent(
-        eventLabel: String,
-        businessUnit: String,
-        currentSite: String
+        eventLabel: String
     ) {
         Tracker.Builder()
             .setEvent("clickLG")
@@ -273,9 +271,10 @@ object GamificationAnalytics {
             .setEventCategory("direct reward landing page")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "49417")
-            .setBusinessUnit(businessUnit)
-            .setCurrentSite(currentSite)
+            .setBusinessUnit("gamification")
+            .setCurrentSite("tokopediamarketplace")
             .build()
             .send()
     }
+
 }

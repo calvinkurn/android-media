@@ -41,7 +41,7 @@ class KetupatBenefitCouponVH(itemView: View) :
                     )
                 }
                 GamificationAnalytics.sendClickLihatSemuaInCouponWidgetByCategorySectionEvent(
-                    "direct_reward_id: $scratchCardId",
+                    "{'direct_reward_id':'${scratchCardId}'}",
                     "gamification",
                     "tokopediamarketplace"
                 )
@@ -67,6 +67,5 @@ class KetupatBenefitCouponVH(itemView: View) :
             itemView.findViewById<RecyclerView>(gamificationR.id.rv_benefit_coupon).adapter =
                 adapter
         }
-        GamificationAnalytics.sendImpressCouponWidgetByCategorySectionEvent("direct_reward_id: $scratchCardId")
     }
 }
