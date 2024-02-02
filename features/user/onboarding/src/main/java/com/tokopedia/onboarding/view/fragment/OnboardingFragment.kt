@@ -24,8 +24,6 @@ import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER
-import com.tokopedia.onboarding.data.OnboardingConstant.PARAM_SOURCE_ONBOARDING
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.onboarding.databinding.FragmentOnboardingBinding
 import com.tokopedia.onboarding.di.OnboardingComponent

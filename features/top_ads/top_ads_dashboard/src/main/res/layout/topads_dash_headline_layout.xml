@@ -36,6 +36,48 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
+            <include
+                android:id="@+id/empty_view_autops"
+                layout="@layout/topads_autops_iklan_toko_no_data_empty_screen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/progressView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:id="@+id/loaderImage"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_horizontal"
+                    app:loader_type="circular" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/progressiveView_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/topads_dash_reload_title"
+                    app:typographyType="heading_4" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/progressiveView_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:typographyType="body_3" />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -73,18 +115,45 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
+                        <include
+                            android:id="@+id/autoadsOnboarding"
+                            layout="@layout/topads_dash_auto_ads_onboarding_widget"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/insightCentreEntryPointHeadline"
+                            app:layout_constraintTop_toBottomOf="@+id/hari_ini" />
+
+                        <com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
+                            android:id="@+id/autoads_edit_widget"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginBottom="12dp"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/insightCentreEntryPointHeadline"
+                            app:layout_constraintTop_toBottomOf="@+id/hari_ini" />
+
                         <com.tokopedia.topads.common.recommendation.RecommendationWidget
                             android:id="@+id/insightCentreEntryPointHeadline"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:layout_constraintBottom_toTopOf="@+id/statistic_graph"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="16dp"
                             android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="12dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/hari_ini"/>
+                            app:layout_constraintBottom_toTopOf="@+id/statistic_graph"
+                            app:layout_constraintTop_toBottomOf="@+id/autoadsOnboarding"/>
 
                         <com.tokopedia.unifycomponents.CardUnify
                             android:id="@+id/statistic_graph"
@@ -104,6 +173,16 @@
 
                             </LinearLayout>
                         </com.tokopedia.unifycomponents.CardUnify>
+
+                        <include
+                            android:id="@+id/auto_ps_statistic_table"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            layout="@layout/headline_ads_auto_ps_enable_statistic_table_layout"
+                            app:layout_constraintTop_toBottomOf="@id/statistic_graph"
+                            android:layout_margin="8dp"
+                            android:visibility="gone"/>
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
