@@ -232,7 +232,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                                 userSession.userId
                             )
                             GamificationAnalytics.sendClickShareOnNavBarEvent(
-                                "{'direct_reward_id':'${scratchCardId}'}",
+                                "{'landing_page-DirectRewardGame':'${scratchCardId}'}",
                                 "gamification",
                                 "tokopediamarketplace"
                             )

@@ -11,7 +11,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.domain.data.GamiScratchCardPreEvaluate
 import com.tokopedia.notifications.domain.data.PopUpContent
-import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,9 +34,10 @@ class GamificationPopUpHandler {
                 // get active campaigns list for in app
                 // if list size > 0 show in app and return
                 // else show popup
-                if (!CMInAppManager.getInstance().existsActiveInAppCampaign(HomePageActivity, true) &&
-                    isAnimationPopupEnabled
-                ) {
+                if (!isAnimationPopEnable(activity)) {
+                    return
+                }
+                if (isAnimationPopupEnabled) {
                     if (!isAnimationPopupGQlCalled) {
                         isAnimationPopupGQlCalled = true
                         getScratchCardData(activity)
@@ -99,9 +99,6 @@ class GamificationPopUpHandler {
         ketupatSlashCallBack: KetupatSlashCallBack? = null
     ) {
         try {
-            if (pageSource == "tokopedia-home-page" && !isAnimationPopEnable(activity)) {
-                return
-            }
             val currentActivity: WeakReference<Activity> =
                 WeakReference(activity)
             val ketupatAnimationPopup = KetupatAnimationPopup(activity.applicationContext, null, activity)

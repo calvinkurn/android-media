@@ -32,11 +32,11 @@ object GamificationAnalytics {
 
     fun sendClickShareOnNavBarEvent(eventLabel: String, businessUnit: String, currentSite: String) {
         Tracker.Builder()
-            .setEvent("clickLG")
-            .setEventAction("click share on nav bar")
-            .setEventCategory("direct reward landing page")
+            .setEvent("clickCommunication")
+            .setEventAction("click - share button")
+            .setEventCategory("thr ketupat")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "49401")
+            .setCustomProperty("trackerId", "49192")
             .setBusinessUnit(businessUnit)
             .setCurrentSite(currentSite)
             .build()
