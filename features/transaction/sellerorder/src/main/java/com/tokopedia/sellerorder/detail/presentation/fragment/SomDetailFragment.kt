@@ -1231,6 +1231,7 @@ open class SomDetailFragment :
     }
 
     override fun onDetailIncomeClicked() {
+        SomAnalytics.eventDetailIncomeClicked()
         val somDetailTransparencyFeeBottomSheet =
             SomDetailTransparencyFeeBottomSheet.newInstance(orderId)
         somDetailTransparencyFeeBottomSheet.show(childFragmentManager)

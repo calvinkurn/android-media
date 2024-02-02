@@ -90,6 +90,8 @@ class Utils {
         const val DEVICE_VALUE = "Android"
         const val FILTERS = "filters"
         const val VERSION = "version"
+        const val SRE_IDENTIFIER = "l_name"
+        const val SRE_VALUE = "sre"
         const val SECTION_ID = "section_id"
         private const val COUNT_ONLY = "count_only"
         private const val RPC_USER_ID = "rpc_UserID"

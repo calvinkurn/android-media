@@ -20,22 +20,34 @@ class GetViewToViewRecommendationUseCase @Inject constructor(
     context: Context,
     graphqlRepository: GraphqlRepository
 ) : UseCase<GetRecommendationRequestParam, List<RecommendationWidget>>() {
+
     private val contextReference: WeakReference<Context> = WeakReference(context)
-    private val context: Context?
-        get() = contextReference.get()
+    private val context: Context? get() = contextReference.get()
 
     private val graphqlUseCase = GraphqlUseCase<RecommendationEntity>(graphqlRepository)
     private val getRecommendationQuery: GqlQueryInterface
         get() {
             return ListProductRecommendationQuery()
         }
+
     init {
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)
         graphqlUseCase.setGraphqlQuery(getRecommendationQuery)
     }
+
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
-        val queryParam = context?.let { ChooseAddressUtils.getLocalizingAddressData(it).toQueryParam(inputParameter.queryParam) } ?: inputParameter.queryParam
+        val queryParam = context?.let {
+            ChooseAddressUtils
+                .getLocalizingAddressData(it)
+                .toQueryParam(inputParameter.queryParam)
+        } ?: inputParameter.queryParam
+
         graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toViewToViewGqlRequest())
-        return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.mappingToRecommendationModel()
+
+        return graphqlUseCase
+            .executeOnBackground()
+            .productRecommendationWidget
+            .data
+            .mappingToRecommendationModel()
     }
 }

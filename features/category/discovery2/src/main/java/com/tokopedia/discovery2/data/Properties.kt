@@ -130,7 +130,10 @@ data class Properties(
     val warehouseTco: String? = null,
 
     @SerializedName("auto_refresh")
-    val shouldAutoRefresh: Boolean = false
+    val shouldAutoRefresh: Boolean = false,
+
+    @SerializedName("card_type")
+    val cardType: String? = null,
 ) {
     data class Header(
         @SerializedName("applink")

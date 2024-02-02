@@ -121,7 +121,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         reviewCount.show()
         ratingCount.show()
         freeOngkirImage.visibility = if (dataModel.recommendationItem.isFreeOngkirActive) View.VISIBLE else View.GONE
-        shopBadges.visibility = if (dataModel.recommendationItem.badgesUrl.isNotEmpty()) View.VISIBLE else View.GONE
+        shopBadges.visibility = if (dataModel.recommendationItem.badges.isNotEmpty()) View.VISIBLE else View.GONE
         ticker.visibility = if (model?.shopId != -1) View.VISIBLE else View.GONE
     }
 
@@ -192,7 +192,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         shopLocation.text = dataModel.recommendationItem.location
         reviewCount.text = "(${dataModel.recommendationItem.countReview})"
         ratingCount.text = dataModel.recommendationItem.rating.toString()
-        shopBadges.loadIcon(dataModel.recommendationItem.badgesUrl.firstOrNull() ?: "")
+        shopBadges.loadIcon(dataModel.recommendationItem.badges.firstOrNull()?.imageUrl ?: "")
         freeOngkirImage.loadIcon(dataModel.recommendationItem.freeOngkirImageUrl)
         ticker.tickerType = if (dataModel.recommendationItem.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
         ticker.setTextDescription(getString(if (dataModel.recommendationItem.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))

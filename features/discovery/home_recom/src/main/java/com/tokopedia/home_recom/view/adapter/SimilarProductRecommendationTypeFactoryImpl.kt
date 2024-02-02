@@ -15,14 +15,14 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
  * This class extends from [BaseAdapterTypeFactory] and implement from [HomeRecommendationTypeFactory]
  */
 class SimilarProductRecommendationTypeFactoryImpl (
-        private val recommendationListener: RecommendationListener,
-        private val recommendationErrorListener: RecommendationErrorListener,
-        private val recommendationEmptyStateListener: RecommendationEmptyViewHolder.RecommendationEmptyStateListener
+    private val recommendationListener: RecommendationListener,
+    private val recommendationErrorListener: RecommendationErrorListener,
+    private val recommendationEmptyStateListener: RecommendationEmptyViewHolder.RecommendationEmptyStateListener
 ): BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
 
     override fun type(dataModel: ProductInfoDataModel): Int = -1
 
-    override fun type(dataModel: RecommendationItemDataModel): Int = RecommendationItemDataModel.LAYOUT
+    override fun type(dataModel: RecommendationItemDataModel): Int = RecommendationItemDataModel.layout(true)
 
     override fun type(dataModel: RecommendationCarouselDataModel): Int = -1
 
@@ -50,7 +50,7 @@ class SimilarProductRecommendationTypeFactoryImpl (
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view, recommendationListener)
+            RecommendationItemDataModel.layout(REIMAGINE_ENABLED) -> RecommendationItemViewHolder(view, recommendationListener)
             LoadingShimmeringGridViewHolder.LAYOUT -> LoadingShimmeringGridViewHolder(view)
             SimilarProductLoadMoreViewHolder.LAYOUT -> SimilarProductLoadMoreViewHolder(view)
             RecommendationErrorDataModel.LAYOUT -> RecommendationErrorViewHolder(view, recommendationErrorListener)
@@ -59,5 +59,9 @@ class SimilarProductRecommendationTypeFactoryImpl (
             FirstLoadViewHolder.LAYOUT -> FirstLoadViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
+    }
+
+    companion object {
+        private const val REIMAGINE_ENABLED = true
     }
 }

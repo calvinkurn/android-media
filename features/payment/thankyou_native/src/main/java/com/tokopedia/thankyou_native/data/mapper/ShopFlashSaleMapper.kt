@@ -449,9 +449,10 @@ fun RecommendationItem.mapToChannelGrid(index: Int) = ChannelGrid(
     ratingFloat = ratingAverage,
     countReview = countReview,
     recommendationType = recommendationType,
-    badges = badgesUrl.map { badge ->
+    badges = badges.map {
         ChannelGridBadges(
-            imageUrl = badge
+            title = it.title,
+            imageUrl = it.imageUrl
         )
     },
     categoryBreadcrumbs = categoryBreadcrumbs,

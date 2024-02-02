@@ -62,6 +62,8 @@ object SomAnalytics {
     private const val EVENT_ACTION_CLICK_RESOLUTION_WIDGET = "click on resolution widget"
     private const val EVENT_ACTION_CLICK_POF_TICKER_WAITING = "click lihat detail pof - waiting confirmation"
     private const val EVENT_ACTION_CLICK_POF_TICKER_CONFIRMED = "click lihat detail pof - buyer confirmed"
+    private const val EVENT_ACTION_CLICK_DETAIL_INCOME = "click rincian penghasilan"
+    private const val EVENT_ACTION_CLICK_NOTE_LINK = "click detil rincian penghasilan"
 
     private const val TRACKER_ID_CLICK_ONBOARD_CONTINUE_SA = "33451"
     private const val TRACKER_ID_CLICK_ONBOARD_BACK_SA = "33452"
@@ -71,6 +73,8 @@ object SomAnalytics {
     private const val TRACKER_ID_CLICK_ONBOARD_OK_MA = "33448"
     private const val TRACKER_ID_CLICK_POF_TICKER_WAITING = "48676"
     private const val TRACKER_ID_CLICK_POF_TICKER_CONFIRMED = "48677"
+    private const val TRACKER_ID_CLICK_DETAIL_INCOME = "48290"
+    private const val TRACKER_ID_CLICK_NOTE_LINK = "48306"
 
     @JvmStatic
     fun sendScreenName(screenName: String) {
@@ -100,7 +104,30 @@ object SomAnalytics {
             )
         )
     }
-
+    fun eventNoteLinkClicked(){
+        val event = mapOf(
+            TrackAppUtils.EVENT to CLICK_PG,
+            TrackAppUtils.EVENT_ACTION to EVENT_ACTION_CLICK_NOTE_LINK,
+            TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+            TrackAppUtils.EVENT_LABEL to "",
+            CUSTOM_DIMENSION_TRACKER_ID to TRACKER_ID_CLICK_NOTE_LINK,
+            CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS_CAPITALIZE,
+            CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+    fun eventDetailIncomeClicked(){
+        val event = mapOf(
+            TrackAppUtils.EVENT to CLICK_PG,
+            TrackAppUtils.EVENT_ACTION to EVENT_ACTION_CLICK_DETAIL_INCOME,
+            TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+            TrackAppUtils.EVENT_LABEL to "",
+            CUSTOM_DIMENSION_TRACKER_ID to TRACKER_ID_CLICK_DETAIL_INCOME,
+            CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS_CAPITALIZE,
+            CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
     fun eventSubmitSearch(keyword: String) {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, SUBMIT_SEARCH, keyword)
     }

@@ -44,18 +44,33 @@ enum class ComponentNames(val componentName: String) {
     ProductCardRevampItem("product_card_revamp_item"),
     MasterProductCardItemList("master_product_card_item_list"),
 
+    // Reimagine
+    MasterProductCardItemReimagine("master_product_card_item_reimagine"),
+    MasterProductCardItemListReimagine("master_product_card_item_list_reimagine"),
+
     // Product Card Horizontal Carousel
     ProductCardCarousel("product_card_carousel"),
     ProductCardCarouselItem("product_card_carousel_item"),
     ProductCardCarouselItemList("product_card_carousel_item_list"),
 
+    // Reimagine
+    ProductCardCarouselItemReimagine("product_card_carousel_item_reimagine"),
+    ProductCardCarouselItemListReimagine("product_card_carousel_item_list_reimagine"),
+
     // Product Card Sprint Sale
     ProductCardSprintSale("product_card_sprint_sale"),
     ProductCardSprintSaleItem("product_card_sprint_sale_item"),
 
+    // Reimagine
+    ProductCardSprintSaleItemReimagine("product_card_sprint_sale_item_reimagine"),
+
     // Product Card Horizontal Sprint Sale
     ProductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
     ProductCardSprintSaleCarouselItem("product_card_sprint_sale_carousel_item"),
+
+    // Reimagine
+    ProductCardSprintSaleCarouselItemReimagine("product_card_sprint_sale_carousel_item_reimagine"),
+
     ProductListEmptyState("product_list_empty_state"),
     ContentCardEmptyState("content_card_empty_state"),
     SaleEndState("sale_end_state"),
@@ -63,6 +78,10 @@ enum class ComponentNames(val componentName: String) {
 //    Product Card Single
     ProductCardSingle("product_card_single"),
     ProductCardSingleItem("product_card_single_item"),
+
+    // Reimagine
+    ProductCardSingleReimagine("product_card_single_reimagine"),
+    ProductCardSingleItemReimagine("product_card_single_item_reimagine"),
 
 //    Empty Item for MixLeft
     MixLeftEmptyItem("mix_left_empty_item"),
@@ -146,10 +165,10 @@ enum class ComponentNames(val componentName: String) {
     FlashSaleTokoTab("tabs_flash_sale_toko"),
 
     ViewAllCardCarousel("view_all_card_carousel"),
-  
+
     MerchantVoucherGrid("merchant_voucher_grid_infinite"),
     MerchantVoucherGridItem("merchant_voucher_grid_infinite_item"),
-    
+
     ShopOfferHeroBrand("shop_offer_hero_brand"),
     ShopOfferHeroBrandProductItem("shop_offer_hero_brand_product_item"),
     ShopOfferSupportingBrand("shop_offer_supporting_brand"),
