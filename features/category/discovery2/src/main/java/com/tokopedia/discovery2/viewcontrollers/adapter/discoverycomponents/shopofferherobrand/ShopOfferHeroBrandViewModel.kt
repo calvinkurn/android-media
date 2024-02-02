@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.addLoadMore
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.addReload
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.TierData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.productcard.ProductCardModel
@@ -35,6 +36,7 @@ class ShopOfferHeroBrandViewModel(
         private const val PRODUCT_IMAGE_WIDTH = 165
 
         const val ERROR_MESSAGE_EMPTY_DATA = "empty data"
+        private const val HEADER_OFFER_TYPE_PD = "PD"
     }
 
     private val _header: MutableLiveData<Properties.Header?> = MutableLiveData()
@@ -115,7 +117,7 @@ class ShopOfferHeroBrandViewModel(
     }
 
     fun getHeader() {
-        _header.value = component.getPropertyHeader()
+        _header.value = component.getComponentsItem()?.firstOrNull()?.getPropertyHeader()
     }
 
     fun loadFirstPageProductCarousel() {
@@ -151,8 +153,8 @@ class ShopOfferHeroBrandViewModel(
                 handleErrorPagination()
             }
         }, onError = {
-                handleErrorPagination()
-            })
+            handleErrorPagination()
+        })
     }
 
     fun resetComponent() {
@@ -187,16 +189,19 @@ class ShopOfferHeroBrandViewModel(
 
     fun areFiltersApplied(): Boolean = ((component.selectedSort != null && component.selectedFilters != null) && (component.selectedSort?.isNotEmpty() == true || component.selectedFilters?.isNotEmpty() == true))
 
+    fun isGwp(): Boolean = header.value?.offerType.equals(HEADER_OFFER_TYPE_PD, true).not()
+
     fun changeTier(
         isShimmerShown: Boolean,
-        offerMessages: List<String> = emptyList()
+        bmGmTierData: BmGmTierData? = null,
     ) {
         if (!hasHeader()) return
-
         _tierChange.value = TierData(
-            isProgressBarShown = isShimmerShown || offerMessages.isNotEmpty(),
+            isProgressBarShown = isShimmerShown || bmGmTierData != null,
             isShimmerShown = isShimmerShown,
-            offerMessages = offerMessages
+            offerMessages = bmGmTierData?.offerMessages,
+            flipTierWording = bmGmTierData?.flipTierWording.orEmpty(),
+            flipTierImage = bmGmTierData?.flipTierImage.orEmpty()
         )
     }
 

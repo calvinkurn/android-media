@@ -162,6 +162,9 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                             price_after_benefit
                             cart_id
                           }
+                          products_benefit {
+                            product_cache_image_url
+                          }
                         }
                       }
                     }

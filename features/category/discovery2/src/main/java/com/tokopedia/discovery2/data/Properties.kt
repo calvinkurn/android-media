@@ -141,6 +141,10 @@ data class Properties(
         val offerName: String? = null,
         @SerializedName("offer_tiers")
         val offerTiers: List<OfferTier>? = null,
+        @SerializedName("atc_wording")
+        val atcWording: String? = null,
+        @SerializedName("offer_type")
+        val offerType: String? = null,
         @SerializedName("shop_badge")
         val shopBadge: String? = null,
         @SerializedName("shop_icon")
@@ -156,7 +160,9 @@ data class Properties(
             @SerializedName("tier_level")
             val tierLevel: Int? = null,
             @SerializedName("tier_wording")
-            val tierWording: String? = null
+            val tierWording: String? = null,
+            @SerializedName("image")
+            val image: String? = null
         )
     }
 }

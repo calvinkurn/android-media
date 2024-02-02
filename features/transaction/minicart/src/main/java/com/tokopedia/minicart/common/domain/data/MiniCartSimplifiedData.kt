@@ -2,6 +2,7 @@ package com.tokopedia.minicart.common.domain.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.cartcommon.data.response.common.ProductTagInfo
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class MiniCartSimplifiedData(
     var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
@@ -126,6 +127,8 @@ data class BmgmMiniCartDataUiModel(
     val offerId: Long = 0,
     val offerTypeId: Long = 0,
     val offerMessage: List<String> = listOf(),
+    val tierMessage: String = String.EMPTY,
+    val tierImage: String = String.EMPTY,
     val hasReachMaxDiscount: Boolean = false,
     val priceBeforeBenefit: Double = 0.0,
     val finalPrice: Double = 0.0,
