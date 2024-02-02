@@ -65,7 +65,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.tkpd"
         versionCode 391100000
-        versionName "3.150"
+        versionName "3.256"
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
@@ -156,5 +156,12 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-
+	implementation project(rootProject.ext.features.shopCommon)
+	implementation project(rootProject.ext.features.campaignList)
+	implementation project(rootProject.ext.features.catalog)
+	implementation project(rootProject.ext.features.shopPage)
+	implementation project(rootProject.ext.features.campaignCommon)
+	implementation project(rootProject.ext.features.catalogCommon)
+	implementation project(rootProject.ext.features.productAddEdit)
+	implementation project(rootProject.ext.features.productDetail)
 }
