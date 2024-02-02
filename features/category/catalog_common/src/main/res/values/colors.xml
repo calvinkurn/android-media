@@ -8,4 +8,11 @@
     <color name="dms_static_green_GN500">#00A958</color>
     <color name="dms_static_green_reviewer_status">#009C93</color>
     <color name="dms_static_fade_divider">#32AAB4C8</color>
+    <color name="dms_static_nn_600">#AEB2BF</color>
+    <color name="dms_static_color_secondary">#6D7588</color>
+    <color name="dms_static_catalog_color_yn_500">#FF7F17</color>
+    <color name="dms_static_catalog_color_error_light">#F94D63</color>
+    <color name="dms_static_catalog_color_error_dark">#FF425D</color>
+    <color name="dms_static_catalog_color_secondary">#F0F3F7</color>
+    <color name="dms_static_catalog_color_tertiary">#2E2F36</color>
 </resources>
