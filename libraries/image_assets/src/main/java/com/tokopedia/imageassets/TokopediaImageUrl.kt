@@ -1,9 +1,6 @@
 package com.tokopedia.imageassets
 
 object TokopediaImageUrl {
-    const val SRE_OTHER_MENU_RM_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_rm.png"
-    const val SRE_OTHER_MENU_PM_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_pm.png"
-    const val SRE_OTHER_MENU_OS_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_os.png"
     const val EMPTY_DATA_URL = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
     const val SHOP_BADGE = "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
     const val IMAGE_OUTSIDE_INDONESIA = "https://images.tokopedia.net/img/android/logistic/location_outside_indonesia.png"
@@ -410,5 +407,4 @@ object TokopediaImageUrl {
     const val TOKOPEDIANOW_IC_QUEST_LOCKED_DARK = "https://images.tokopedia.net/img/tokopedianow/icons/tokopedianow_ic_quest_locked_dark.png"
     const val TOKOPEDIANOW_IC_QUEST_LOCKED_LIGHT = "https://images.tokopedia.net/img/tokopedianow/icons/tokopedianow_ic_quest_locked_light.png"
     const val CATALOG_EMPTY_STATE = "https://images.tokopedia.net/img/illustration/global/Medium_Empty_Catalog.png"
-    const val SRE_SELLER_HOME_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/sah_ramadhan_thematic_backdrop.png"
 }
