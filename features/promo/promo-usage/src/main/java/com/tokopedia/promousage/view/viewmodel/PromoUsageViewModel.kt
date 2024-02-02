@@ -413,9 +413,9 @@ class PromoUsageViewModel @Inject constructor(
     }
 
     private fun autoApplyTracker(gopayItem: PromoItem) {
-        if ((gopayItem.state is PromoItemState.Normal) &&
-            gopayItem.couponType.contains(PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL) &&
-            gopayItem.cta.type != PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+        if (gopayItem.state is PromoItemState.Normal &&
+            gopayItem.isPromoGopayLater &&
+            !gopayItem.isPromoCtaRegisterGopayLater
         ) {
             _autoApplyAction.postValue(gopayItem)
         }
