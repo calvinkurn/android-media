@@ -67,7 +67,7 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
             }
 
             diff in 1..7 -> {
-                "${diff + 1} Hari lagi"
+                "${diff} Hari lagi"
             }
 
             diff < 0 -> {
