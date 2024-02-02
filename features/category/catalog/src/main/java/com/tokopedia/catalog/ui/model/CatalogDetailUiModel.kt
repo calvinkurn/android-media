@@ -38,7 +38,8 @@ data class PriceCtaSellerOfferingProperties(
     val colorBorderButton: Int = 0,
     val textColorPrice: Int = 0,
     val isDarkTheme: Boolean = false,
-    val isVisible: Boolean = false
+    val isVisible: Boolean = false,
+    val isVariant: Boolean = false
 )
 
 data class NavigationProperties(

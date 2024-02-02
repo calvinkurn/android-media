@@ -250,6 +250,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
                 isDarkTheme = remoteModel.globalStyle?.darkMode == true,
                 isVisible = true,
+                isVariant = topSeller.isVariant,
                 colorBorderButton = colorBorderButton,
                 textColorPrice = textColorPrice
             )

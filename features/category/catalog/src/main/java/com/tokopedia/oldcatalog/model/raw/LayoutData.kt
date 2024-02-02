@@ -295,6 +295,7 @@ data class LayoutData(
     data class TopSeller(
         @SerializedName("productID") val productID: String = "",
         @SerializedName("warehouseID") val warehouseID: String = "",
+        @SerializedName("isVariant") val isVariant: Boolean = false,
         @SerializedName("shop") val shop: Shop = Shop(),
         @SuppressLint("Invalid Data Type")
         @SerializedName("price")

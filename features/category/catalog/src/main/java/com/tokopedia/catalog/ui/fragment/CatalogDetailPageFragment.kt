@@ -147,6 +147,8 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.usecase.detail.InvalidCatalogComparisonException
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -279,6 +281,33 @@ class CatalogDetailPageFragment :
         )
     }
 
+    private fun addToCart(atcModel: CatalogProductAtcUiModel) {
+        if (viewModel.isUserLoggedIn()) {
+            if (atcModel.isVariant) {
+                openVariantBottomSheet(atcModel)
+            } else {
+                viewModel.addProductToCart(atcModel)
+            }
+        } else {
+            goToLoginPage()
+        }
+    }
+
+    private fun openVariantBottomSheet(atcModel: CatalogProductAtcUiModel) {
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                it,
+                atcModel.productId,
+                VariantPageSource.CATALOG_PAGESOURCE,
+                shopId = atcModel.shopId,
+                dismissAfterTransaction = true,
+                startActivitResult = { intent, reqCode ->
+                    startActivityForResult(intent, reqCode)
+                }
+            )
+        }
+    }
+
     override fun getScreenName() = CatalogDetailPageFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
@@ -338,6 +367,10 @@ class CatalogDetailPageFragment :
             val newComparedCatalogId =
                 data?.getStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID)
             if (!newComparedCatalogId.isNullOrEmpty()) changeComparison(newComparedCatalogId)
+        }
+        AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
+            viewModel.refreshNotification()
+            RouteManager.route(context, ApplinkConst.CART)
         }
     }
 
@@ -653,7 +686,8 @@ class CatalogDetailPageFragment :
             viewModel.atcModel = CatalogProductAtcUiModel(
                 productId = properties.productId,
                 shopId = properties.shopId,
-                warehouseId = properties.warehouseId
+                warehouseId = properties.warehouseId,
+                isVariant = properties.isVariant
             )
             root.showWithCondition(properties.isVisible)
             containerPriceCta.setBackgroundColor(properties.bgColor)
@@ -665,7 +699,7 @@ class CatalogDetailPageFragment :
             ctaAtc.setRating(properties.shopRating)
             ctaAtc.setTheme(properties.isDarkTheme)
             ctaAtc.setOnClick {
-                viewModel.addProductToCart(viewModel.atcModel)
+                addToCart(viewModel.atcModel)
             }
             btnProductList.setOnClickListener {
                 goToProductListPage()
@@ -1143,7 +1177,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun onSellerOfferingAtcButtonClicked() {
-        viewModel.addProductToCart(viewModel.atcModel)
+        addToCart(viewModel.atcModel)
     }
 
     override fun onSellerOfferingChatButtonClicked() {
