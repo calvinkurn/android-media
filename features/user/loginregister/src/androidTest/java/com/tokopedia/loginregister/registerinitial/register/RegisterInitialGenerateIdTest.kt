@@ -5,7 +5,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.ViewIdGenerator
-import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
+import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.utils.view.binding.internal.findRootView
 import org.junit.Test

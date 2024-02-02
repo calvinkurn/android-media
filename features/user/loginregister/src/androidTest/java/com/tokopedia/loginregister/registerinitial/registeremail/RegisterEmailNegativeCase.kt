@@ -9,12 +9,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.registerinitial.RegisterEmailBase
+import com.tokopedia.loginregister.registerinitial.base.RegisterEmailBase
 import com.tokopedia.test.application.annotations.UiTest
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.core.AnyOf.anyOf
 import org.junit.Test
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 @UiTest
 class RegisterEmailNegativeCase : RegisterEmailBase() {
@@ -49,7 +49,7 @@ class RegisterEmailNegativeCase : RegisterEmailBase() {
             inputPassword("abcdefg123456")
             onView(
                 allOf(
-                    withId(com.tokopedia.unifycomponents.R.id.text_field_input),
+                    withId(unifycomponentsR.id.text_field_input),
                     isDescendantOfA(withId(R.id.wrapper_password))
                 )
             ).perform(clearText())
@@ -61,7 +61,7 @@ class RegisterEmailNegativeCase : RegisterEmailBase() {
             inputName("Yoris Prayogo")
             onView(
                 allOf(
-                    withId(com.tokopedia.unifycomponents.R.id.text_field_input),
+                    withId(unifycomponentsR.id.text_field_input),
                     isDescendantOfA(withId(R.id.wrapper_name))
                 )
             ).perform(clearText())
@@ -73,11 +73,11 @@ class RegisterEmailNegativeCase : RegisterEmailBase() {
 
     @Test
     /* Show error when show password icon clicked while password is empty */
-    fun showError_IfShowPassClickedWhenEmpty() {
+    fun showError_IfShowPasswordClickedWhenEmpty() {
         runTest {
             onView(
                 allOf(
-                    withId(com.tokopedia.unifycomponents.R.id.text_field_icon_1),
+                    withId(unifycomponentsR.id.text_field_icon_1),
                     isDescendantOfA(withId(R.id.wrapper_password))
                 )
             ).perform(click())

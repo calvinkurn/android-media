@@ -2,8 +2,8 @@ package com.tokopedia.loginregister.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.loginregister.registerinitial.RegisterEmailBase
-import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
+import com.tokopedia.loginregister.registerinitial.base.RegisterEmailBase
+import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
 import com.tokopedia.loginregister.di.modules.MockRegisterInitialuseCaseModule
 import com.tokopedia.loginregister.registerinitial.di.*
 import dagger.Component

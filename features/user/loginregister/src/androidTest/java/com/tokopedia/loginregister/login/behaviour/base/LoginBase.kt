@@ -19,8 +19,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.scp.auth.GotoSdk
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -41,6 +39,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
+import com.tokopedia.header.R as headerR
 
 open class LoginBase : LoginRegisterBase() {
 
@@ -72,7 +71,7 @@ open class LoginBase : LoginRegisterBase() {
         val fakeComponentFactory = FakeActivityComponentFactory()
         ActivityComponentFactory.instance = fakeComponentFactory
         fakeComponentFactory.loginComponent.inject(this)
-        GotoSdk.init(applicationContext as BaseMainApplication)
+//        GotoSdk.init(applicationContext as BaseMainApplication)
     }
 
     @After
@@ -101,7 +100,7 @@ open class LoginBase : LoginRegisterBase() {
     }
 
     fun clickTopRegister() {
-        val viewInteraction = onView(withId(com.tokopedia.header.R.id.actionTextID)).check(matches(isDisplayed()))
+        val viewInteraction = onView(withId(headerR.id.actionTextID)).check(matches(isDisplayed()))
         viewInteraction.perform(click())
     }
 
@@ -147,7 +146,14 @@ open class LoginBase : LoginRegisterBase() {
     }
 
     protected fun mockOtpPageRegisterEmail() {
-        Intents.intending(IntentMatchers.hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()).toString())).respondWith(
+        Intents.intending(
+            IntentMatchers.hasData(
+                UriUtil.buildUri(
+                    ApplinkConstInternalUserPlatform.COTP,
+                    RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()
+                ).toString()
+            )
+        ).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
                 Intent().apply {
@@ -155,7 +161,10 @@ open class LoginBase : LoginRegisterBase() {
                         Bundle().apply {
                             putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
                             putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+                            putString(
+                                ApplinkConstInternalGlobal.PARAM_EMAIL,
+                                "yoris.prayogo@gmail.com"
+                            )
                         }
                     )
                 }

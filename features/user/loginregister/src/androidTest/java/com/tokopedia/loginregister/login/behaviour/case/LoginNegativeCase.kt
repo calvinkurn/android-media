@@ -39,18 +39,50 @@ class LoginNegativeCase : LoginBase() {
             /* text length is too short for phone number */
             inputEmailOrPhone("08224")
             shouldBeDisabled(R.id.register_btn)
+
+            /* text length is not valid for phone number */
+            inputEmailOrPhone("08224asdadsad")
+            shouldBeDisabled(R.id.register_btn)
         }
     }
 
     /* Disable button "Selanjutnya" when input text length is too long for phone number */
     @Test
-    fun phoneNumberTooLong() {
-        val errorMsg = "Phone too long"
+    fun showError_ifPhoneNumberTooLong() {
+        val errorMsg = "Nomor Handphone terlalu panjang, maksimum 15 angka."
         val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             inputEmailOrPhone("12345678901234567")
+            clickSubmit()
+            isDisplayingGivenText(errorMsg)
+        }
+    }
+
+    /* Disable button "Selanjutnya" when input text length is too short for phone number */
+    @Test
+    fun showError_ifPhoneNumberTooShort() {
+        val errorMsg = "Nomor Handphone terlalu pendek, minimum 8 angka."
+        val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
+
+        runTest {
+            inputEmailOrPhone("0812342")
+            clickSubmit()
+            isDisplayingGivenText(errorMsg)
+        }
+    }
+
+    /* Disable button "Selanjutnya" when input text length is blacklisted phone number */
+    @Test
+    fun showError_ifPhoneNumberIsBlacklisted() {
+        val errorMsg = "Nomor ponsel ini tidak dapat digunakan."
+        val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
+
+        runTest {
+            inputEmailOrPhone("081234224323")
             clickSubmit()
             isDisplayingGivenText(errorMsg)
         }
