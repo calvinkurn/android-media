@@ -782,7 +782,8 @@ object ProductListUiStateMapper {
                     totalPriceText = StringRes(order_management_commonR.string.om_gwp_collapsed_title_format, listOf(productBenefit.orderDetail?.count().orZero())),
                     addonsLogoUrl = productBenefit.iconUrl,
                     addonsTitle = productBenefit.label,
-                    addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId)
+                    addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId),
+                    canExpandCollapse = true
                 ).apply { isExpand = expanded }
             } else null
         }
@@ -1121,7 +1122,8 @@ object ProductListUiStateMapper {
                             orderId = "",
                             orderDetailId = ""
                         )
-                    }.orEmpty()
+                    }.orEmpty(),
+                    canExpandCollapse = true
                 ).also { addOnSummaryUiModel ->
                     addOnSummaryUiModel.isExpand = addOnsExpandableState.contains(addOnIdentifier)
                 }

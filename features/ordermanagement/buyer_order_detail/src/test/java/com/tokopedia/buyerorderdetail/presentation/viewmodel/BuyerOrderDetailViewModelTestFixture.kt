@@ -186,7 +186,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         totalPriceText = StringRes(Int.ZERO),
                         addonsLogoUrl = "",
                         addonsTitle = "",
-                        addonItemList = listOf()
+                        addonItemList = listOf(),
+                        canExpandCollapse = true
                     )
                 ),
                 ProductUiModel(
@@ -203,7 +204,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         totalPriceText = StringRes(Int.ZERO),
                         addonsLogoUrl = "",
                         addonsTitle = "",
-                        addonItemList = listOf()
+                        addonItemList = listOf(),
+                        canExpandCollapse = true
                     )
                 )
             ),

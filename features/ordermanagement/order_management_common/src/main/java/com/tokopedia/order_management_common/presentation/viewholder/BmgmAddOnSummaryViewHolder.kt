@@ -87,32 +87,45 @@ class BmgmAddOnSummaryViewHolder(
                 )
                 setupAddOnSummaryAddOns(element.addonItemList)
 
-                root.setOnClickListener {
-                    element.isExpand = !element.isExpand
-                    bmgmAddOnListener.onAddOnsBmgmExpand(element.isExpand, element.addOnIdentifier)
-                    setupChevronExpandable(element.isExpand, element.totalPriceText)
+                if (element.canExpandCollapse) {
+                    root.setOnClickListener {
+                        element.isExpand = !element.isExpand
+                        bmgmAddOnListener.onAddOnsBmgmExpand(element.isExpand, element.addOnIdentifier)
+                        setupChevronExpandable(
+                            isExpand = element.isExpand,
+                            totalPriceFmt = element.totalPriceText,
+                            canExpandCollapse = true
+                        )
+                    }
+                } else {
+                    root.setOnClickListener(null)
                 }
 
-                setupChevronExpandable(element.isExpand, element.totalPriceText)
+                setupChevronExpandable(
+                    isExpand = element.isExpand,
+                    totalPriceFmt = element.totalPriceText,
+                    canExpandCollapse = element.canExpandCollapse
+                )
             }
         }
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupChevronExpandable(
         isExpand: Boolean,
-        totalPriceFmt: StringRes
+        totalPriceFmt: StringRes,
+        canExpandCollapse: Boolean
     ) {
         if (isExpand) {
-            expandView()
+            expandView(canExpandCollapse)
         } else {
             collapseView(totalPriceFmt)
         }
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.expandView() {
+    private fun PartialBmgmAddOnSummaryBinding.expandView(canExpandCollapse: Boolean) {
         tvBomDetailBmgmAddonsTotalPrice.hide()
         rvAddOn.show()
-        icBomDetailBmgmAddonsIconArrowDown.rotateBackIcon()
+        icBomDetailBmgmAddonsIconArrowDown.showIfWithBlock(canExpandCollapse) { rotateBackIcon() }
     }
 
     private fun PartialBmgmAddOnSummaryBinding.collapseView(totalPriceFmt: StringRes) {

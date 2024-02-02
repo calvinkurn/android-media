@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -1343,14 +1344,16 @@ open class SomDetailFragment :
     }
 
     override fun onClickProduct(orderDetailId: Long) {
-        val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
-        val intent = RouteManager.getIntent(activity, appLinkSnapShot)
-        intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
-        startActivity(intent)
-        SomAnalytics.clickProductNameToSnapshot(
-            detailResponse?.statusText.orEmpty(),
-            userSession.userId.orEmpty()
-        )
+        if (orderDetailId.isMoreThanZero()) {
+            val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
+            val intent = RouteManager.getIntent(activity, appLinkSnapShot)
+            intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
+            startActivity(intent)
+            SomAnalytics.clickProductNameToSnapshot(
+                detailResponse?.statusText.orEmpty(),
+                userSession.userId.orEmpty()
+            )
+        }
     }
 
     override fun onRefresh(view: View?) {
