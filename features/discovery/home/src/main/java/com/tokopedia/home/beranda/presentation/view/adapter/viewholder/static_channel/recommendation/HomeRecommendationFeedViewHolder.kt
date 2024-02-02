@@ -100,6 +100,7 @@ class HomeRecommendationFeedViewHolder(
             tabRecommendation.onTabSelected(::onTabLayoutSelected)
             tabRecommendation.onTabReselected(::onTabLayoutReselected)
             tabRecommendation.show()
+            megatabStroke.show()
         }
     }
 

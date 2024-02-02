@@ -44,6 +44,14 @@
         app:tabPaddingBottom="0dp"
         tools:visibility="visible"/>
 
+    <View
+        android:id="@+id/megatab_stroke"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/Unify_NN50"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

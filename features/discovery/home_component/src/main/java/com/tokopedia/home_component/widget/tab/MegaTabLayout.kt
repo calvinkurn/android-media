@@ -87,7 +87,6 @@ class MegaTabLayout @JvmOverloads constructor(
 
     private var tabItemList = mutableListOf<MegaTabItem>()
     private var lastTabSelectedPosition = -1
-    private val linePaint = Paint()
 
     private var useInactiveImageState = false
 
@@ -97,18 +96,6 @@ class MegaTabLayout @JvmOverloads constructor(
         setSelectedTabIndicator(null)
         tabMode = MODE_SCROLLABLE
         tabRippleColor = null
-
-        createBottomLine()
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-
-        // Get the height of the view
-        val height = height.toFloat()
-
-        // Draw the line at the bottom of the view
-        canvas.drawLine(0f, height, width.toFloat(), height, linePaint)
     }
 
     private fun initAttrs(attrSet: AttributeSet?) {
@@ -238,11 +225,6 @@ class MegaTabLayout @JvmOverloads constructor(
         lastTabSelectedPosition = -1
     }
 
-    private fun createBottomLine() {
-        linePaint.color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN50)
-        linePaint.strokeWidth = resources.displayMetrics.density * BOTTOM_STROKE_WEIGHT
-    }
-
     /**
      * An view comes from [MegaTabView].
      *
@@ -270,7 +252,5 @@ class MegaTabLayout @JvmOverloads constructor(
     companion object {
         private val ACTIVE_STATE_COLOR = unifyprinciplesR.color.Unify_GN500
         private val INACTIVE_STATE_COLOR = unifyprinciplesR.color.Unify_NN950
-
-        private const val BOTTOM_STROKE_WEIGHT = 2
     }
 }
