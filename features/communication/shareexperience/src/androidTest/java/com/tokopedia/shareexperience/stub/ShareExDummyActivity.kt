@@ -13,12 +13,20 @@ class ShareExDummyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         ShareExInitializer(this).run {
             additionalCheck(ShareExInitializerArg())
-            openShareBottomSheet(ShareExBottomSheetArg(
-                identifier = "",
-                pageTypeEnum = ShareExPageTypeEnum.OTHERS,
-                defaultUrl = "",
-                trackerArg = ShareExTrackerArg()
-            ))
+            openShareBottomSheet(
+                ShareExBottomSheetArg(
+                    identifier = "",
+                    pageTypeEnum = ShareExPageTypeEnum.OTHERS,
+                    defaultUrl = DEFAULT_URL,
+                    trackerArg = ShareExTrackerArg(
+                        utmCampaign = ""
+                    )
+                )
+            )
         }
+    }
+
+    companion object {
+        var DEFAULT_URL = "https://www.tokopedia.com/"
     }
 }

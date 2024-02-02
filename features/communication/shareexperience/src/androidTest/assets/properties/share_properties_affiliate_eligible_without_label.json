@@ -2,7 +2,7 @@
   "getShareProperties": {
     "bottomsheet": {
       "title": "Belanja rame-rame pasti lebih seru!",
-      "subtitle": "Ini subtitle",
+      "subtitle": "",
       "properties": [
         {
           "shareId": "",
@@ -14,7 +14,13 @@
             ]
           },
           "affiliateRegistrationWidget": null,
-          "affiliateEligibility": null,
+          "affiliateEligibility": {
+            "eligible": true,
+            "message": "\u003cb style\u003d\"color:#00AA5B;\"\u003e\u003cfont color\u003d\"#00AA5B\"\u003eKomisi hingga Rp0\u003c/font\u003e\u003c/b\u003e/barang terjual",
+            "badge": "",
+            "expiredDataFormatted": ""
+
+          },
           "imageGeneratorPayload": {
             "args": [
               {
@@ -79,11 +85,11 @@
             "ogType": "product",
             "ogImageUrl": "",
             "ogVideo": "",
-            "desktopUrl": "https://staging.tokopedia.com/pacmanshop/full-update-product-kvi",
-            "androidUrl": "https://staging.tokopedia.com/pacmanshop/full-update-product-kvi",
-            "iosUrl": "https://staging.tokopedia.com/pacmanshop/full-update-product-kvi",
+            "desktopUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
+            "androidUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
+            "iosUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
             "iosDeeplinkPath": "product/2151123756",
-            "canonicalUrl": "https://staging.tokopedia.com/pacmanshop/full-update-product-kvi",
+            "canonicalUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
             "canonicalIdentifier": "2151123756",
             "customMetaTags": "",
             "anMinVersion": ""

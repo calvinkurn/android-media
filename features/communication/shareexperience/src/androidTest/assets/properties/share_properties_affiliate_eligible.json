@@ -1,100 +1,101 @@
 {
-  "data": {
-    "getShareProperties": {
-      "bottomsheet": {
-        "title": "Belanja rame-rame pasti lebih seru!",
-        "subtitle": "",
-        "properties": [
-          {
-            "shareId": "",
-            "chipTitle": "",
-            "shareBody": {
-              "title": "Jual Full Update Product KVI, lagi murah loh!",
-              "thumbnailUrls": [
-                "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/12/4/f7f14735-4e25-4cf1-9407-40287d471c3c.png"
-              ]
-            },
-            "affiliateRegistrationWidget": null,
-            "affiliateEligibility": {
-              "eligible": true,
-              "commission": "\u003cb style\u003d\"color:#00AA5B;\"\u003e\u003cfont color\u003d\"#00AA5B\"\u003eKomisi hingga Rp0\u003c/font\u003e\u003c/b\u003e/barang terjual"
-            },
-            "imageGeneratorPayload": {
-              "args": [
-                {
-                  "key": "product_id",
-                  "value": "2151123756"
-                },
-                {
-                  "key": "product_price",
-                  "value": "1230.000000"
-                },
-                {
-                  "key": "product_rating",
-                  "value": "0.000000"
-                },
-                {
-                  "key": "product_title",
-                  "value": "Full Update Product KVI"
-                },
-                {
-                  "key": "is_bebas_ongkir",
-                  "value": "false"
-                },
-                {
-                  "key": "bebas_ongkir_type",
-                  "value": "BEBAS_ONGKIR_UNKNOWN"
-                },
-                {
-                  "key": "has_ribbon",
-                  "value": "0"
-                },
-                {
-                  "key": "has_campaign",
-                  "value": "1"
-                },
-                {
-                  "key": "campaign_discount",
-                  "value": "99.000000"
-                },
-                {
-                  "key": "new_product_price",
-                  "value": "1230.000000"
-                },
-                {
-                  "key": "campaign_info",
-                  "value": ""
-                },
-                {
-                  "key": "campaign_name",
-                  "value": ""
-                },
-                {
-                  "key": "product_image_orientation",
-                  "value": ""
-                }
-              ],
-              "sourceId": "wmVUzt"
-            },
-            "generateLinkProperties": {
-              "message": "Halo ada barang bagus loh",
-              "ogTitle": "Full Update Product KVI",
-              "ogDescription": "Mantap bro",
-              "ogType": "product",
-              "ogImageUrl": "",
-              "ogVideo": "",
-              "desktopUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
-              "androidUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
-              "iosUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
-              "iosDeeplinkPath": "product/2151123756",
-              "canonicalUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
-              "canonicalIdentifier": "2151123756",
-              "customMetaTags": "",
-              "anMinVersion": ""
-            }
+  "getShareProperties": {
+    "bottomsheet": {
+      "title": "Belanja rame-rame pasti lebih seru!",
+      "subtitle": "",
+      "properties": [
+        {
+          "shareId": "",
+          "chipTitle": "",
+          "shareBody": {
+            "title": "Jual Full Update Product KVI, lagi murah loh!",
+            "thumbnailUrls": [
+              "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/12/4/f7f14735-4e25-4cf1-9407-40287d471c3c.png"
+            ]
+          },
+          "affiliateRegistrationWidget": null,
+          "affiliateEligibility": {
+            "eligible": true,
+            "message": "\u003cb style\u003d\"color:#00AA5B;\"\u003e\u003cfont color\u003d\"#00AA5B\"\u003eKomisi hingga Rp0\u003c/font\u003e\u003c/b\u003e/barang terjual",
+            "badge": "Komisi Extra",
+            "expiredDataFormatted": "Hingga 31 Des 2051"
+
+          },
+          "imageGeneratorPayload": {
+            "args": [
+              {
+                "key": "product_id",
+                "value": "2151123756"
+              },
+              {
+                "key": "product_price",
+                "value": "1230.000000"
+              },
+              {
+                "key": "product_rating",
+                "value": "0.000000"
+              },
+              {
+                "key": "product_title",
+                "value": "Full Update Product KVI"
+              },
+              {
+                "key": "is_bebas_ongkir",
+                "value": "false"
+              },
+              {
+                "key": "bebas_ongkir_type",
+                "value": "BEBAS_ONGKIR_UNKNOWN"
+              },
+              {
+                "key": "has_ribbon",
+                "value": "0"
+              },
+              {
+                "key": "has_campaign",
+                "value": "1"
+              },
+              {
+                "key": "campaign_discount",
+                "value": "99.000000"
+              },
+              {
+                "key": "new_product_price",
+                "value": "1230.000000"
+              },
+              {
+                "key": "campaign_info",
+                "value": ""
+              },
+              {
+                "key": "campaign_name",
+                "value": ""
+              },
+              {
+                "key": "product_image_orientation",
+                "value": ""
+              }
+            ],
+            "sourceId": "wmVUzt"
+          },
+          "generateLinkProperties": {
+            "message": "Halo ada barang bagus loh",
+            "ogTitle": "Full Update Product KVI",
+            "ogDescription": "Mantap bro",
+            "ogType": "product",
+            "ogImageUrl": "",
+            "ogVideo": "",
+            "desktopUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
+            "androidUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
+            "iosUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
+            "iosDeeplinkPath": "product/2151123756",
+            "canonicalUrl": "https://www.tokopedia.com/pacmanshop/full-update-product-kvi",
+            "canonicalIdentifier": "2151123756",
+            "customMetaTags": "",
+            "anMinVersion": ""
           }
-        ]
-      }
+        }
+      ]
     }
   }
 }

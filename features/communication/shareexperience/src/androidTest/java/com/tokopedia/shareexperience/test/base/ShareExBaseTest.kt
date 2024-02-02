@@ -9,7 +9,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
+import com.tokopedia.shareexperience.data.mapper.ShareExChannelMapper
 import com.tokopedia.shareexperience.stub.ShareExDummyActivity
+import com.tokopedia.shareexperience.stub.common.ShareExChannelMapperStub
 import com.tokopedia.shareexperience.stub.common.UserSessionStub
 import com.tokopedia.shareexperience.stub.data.GqlResponseStub
 import com.tokopedia.shareexperience.stub.di.ShareExFakeComponentFactory
@@ -37,6 +39,13 @@ abstract class ShareExBaseTest {
 
     protected val userSessionStub by lazy {
         userSession as UserSessionStub
+    }
+
+    @Inject
+    lateinit var channelMapper: ShareExChannelMapper
+
+    protected val channelMapperStub by lazy {
+        channelMapper as ShareExChannelMapperStub
     }
 
     @Before
