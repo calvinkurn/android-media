@@ -28,7 +28,6 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 import com.tokopedia.product.detail.view.widget.CenteredImageSpan
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.common_tradein.R as common_tradeinR
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -273,5 +272,8 @@ class PartialContentView(
             textSlashPrice.visibility = View.VISIBLE
             textDiscountRed.visibility = View.VISIBLE
         }
+    }
+
+    fun onViewRecycled() {
     }
 }
