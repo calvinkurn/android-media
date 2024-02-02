@@ -144,7 +144,9 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
             addonsLogoUrl = "",
             addonsTitle = "",
-            addonsItemList = listOf()
+            addonsItemList = listOf(),
+            canExpandCollapse = true,
+            showTotalPrice = true
         )
     )
 

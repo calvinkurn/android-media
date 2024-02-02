@@ -9,7 +9,9 @@ data class AddonsListUiModel(
     val totalPriceText: StringRes?,
     val addonsLogoUrl: String,
     val addonsTitle: String,
-    val addonsItemList: List<AddonItemUiModel>
+    val addonsItemList: List<AddonItemUiModel>,
+    val canExpandCollapse: Boolean,
+    val showTotalPrice: Boolean
 ) : Visitable<BuyerOrderDetailTypeFactory> {
 
     var isExpand: Boolean = true
