@@ -53,7 +53,9 @@ class BestSellerMapper (
         return productCardModels.getMaxHeightForGridView(
             context = context,
             coroutineDispatcher = Dispatchers.IO,
-            productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
+            productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width),
+            isReimagine = true,
+            useCompatPadding = true,
         )
     }
 }
