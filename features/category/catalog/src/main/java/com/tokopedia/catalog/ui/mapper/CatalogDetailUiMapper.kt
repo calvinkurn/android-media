@@ -227,6 +227,16 @@ class CatalogDetailUiMapper @Inject constructor(
             it.type == WidgetTypes.CATALOG_CTA_PRICE_TOP_SELLER.type
         }?.data?.run {
             if (style.isHidden || !style.isSticky) return@run PriceCtaSellerOfferingProperties()
+            val colorBorderButton = if (remoteModel.globalStyle?.darkMode.orFalse()){
+                catalogR.color.catalog_dms_light_color
+            }else{
+                catalogR.color.catalog_dm_green
+            }
+            val textColorPrice = if (remoteModel.globalStyle?.darkMode.orFalse()){
+                catalogR.color.catalog_dms_light_color
+            }else{
+                catalogR.color.catalog_dms_dark_color
+            }
             PriceCtaSellerOfferingProperties(
                 productId = topSeller.productID,
                 warehouseId = topSeller.warehouseID,
@@ -239,7 +249,9 @@ class CatalogDetailUiMapper @Inject constructor(
                 badge = topSeller.shop.badge,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
                 isDarkTheme = remoteModel.globalStyle?.darkMode == true,
-                isVisible = true
+                isVisible = true,
+                colorBorderButton = colorBorderButton,
+                textColorPrice = textColorPrice
             )
         } ?: PriceCtaSellerOfferingProperties()
     }

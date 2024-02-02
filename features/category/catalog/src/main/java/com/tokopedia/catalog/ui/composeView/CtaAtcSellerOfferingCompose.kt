@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -74,7 +75,9 @@ fun CtaSellerOffering(
     Row(
         modifier = Modifier
             .background(
-                color = NestGN.light._950,
+                color = colorResource(
+                    id = R.color.catalog_dms_dark_color
+                ).copy(alpha = 0.2f),
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { onClick?.invoke() },
@@ -133,7 +136,7 @@ fun CtaSellerOffering(
                         color = colorResource(
                             id = getColor(
                                 theme,
-                                R.color.catalog_dms_dark_color,
+                                R.color.catalog_dms_light_color_banner,
                                 R.color.catalog_dms_light_color
                             )
                         )
@@ -184,20 +187,20 @@ private fun ShopInfo(theme: Boolean, shopName: String, badge: String) {
                 color = colorResource(
                     id = getColor(
                         theme,
-                        R.color.catalog_dms_dark_color,
+                        R.color.catalog_dms_light_color_banner,
                         R.color.catalog_dms_light_color
                     )
-                ).copy(alpha = 0.5f)
+                ).copy(alpha = 0.8f)
             )
         )
 
         NestImage(
             ImageSource.Remote(badge),
             modifier = Modifier
-                .height(9.dp)
-                .width(9.dp)
-                .padding(start = 4.dp)
+                .height(16.dp)
+                .width(16.dp)
         )
+        Spacer(modifier = Modifier.padding(end = 4.dp))
         NestTypography(
             text = shopName,
             textStyle = NestTheme.typography.display3.copy(
@@ -205,10 +208,10 @@ private fun ShopInfo(theme: Boolean, shopName: String, badge: String) {
                 color = colorResource(
                     id = getColor(
                         theme,
-                        R.color.catalog_dms_dark_color,
+                        R.color.catalog_dms_light_color_banner,
                         R.color.catalog_dms_light_color
                     )
-                ).copy(alpha = 0.5f)
+                ).copy(alpha = 0.8f)
             ),
             modifier = Modifier.padding(start = 4.dp),
             maxLines = 1
@@ -234,10 +237,10 @@ private fun ShopCredibility(context: Context, theme: Boolean, rating: String, so
                 color = colorResource(
                     id = getColor(
                         theme,
-                        R.color.catalog_dms_dark_color,
+                        R.color.catalog_dms_light_color_banner,
                         R.color.catalog_dms_light_color
                     )
-                ).copy(alpha = 0.5f)
+                ).copy(alpha = 0.8f)
             ),
             modifier = Modifier.padding(end = 4.dp, start = 2.dp),
             maxLines = 1
@@ -255,7 +258,13 @@ private fun ShopCredibility(context: Context, theme: Boolean, rating: String, so
             text = sold,
             textStyle = NestTheme.typography.display3.copy(
                 fontWeight = FontWeight.Normal,
-                color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
+                color = colorResource(
+                    id = getColor(
+                        theme,
+                        R.color.catalog_dms_light_color_banner,
+                        R.color.catalog_dms_light_color
+                    )
+                ).copy(alpha = 0.8f)
             ),
             modifier = Modifier.padding(start = 4.dp),
             maxLines = 1
@@ -278,7 +287,9 @@ private fun CtaSellerOfferingPreview() {
     Row(
         modifier = Modifier
             .background(
-                color = NestGN.light._950,
+                color = colorResource(
+                    id = R.color.catalog_dms_dark_color
+                ).copy(alpha = 0.2f),
                 shape = RoundedCornerShape(8.dp)
             )
             .height(50.dp),

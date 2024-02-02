@@ -146,6 +146,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.usecase.detail.InvalidCatalogComparisonException
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -669,6 +670,14 @@ class CatalogDetailPageFragment :
             btnProductList.setOnClickListener {
                 goToProductListPage()
             }
+
+            if (properties.isDarkTheme){
+                btnProductList.cardType = CardUnify2.TYPE_BORDER
+            }else{
+                btnProductList.cardType = CardUnify2.TYPE_BORDER_ACTIVE
+
+            }
+            tvOther.setTextColor(MethodChecker.getColor(context,properties.colorBorderButton))
         }
     }
 

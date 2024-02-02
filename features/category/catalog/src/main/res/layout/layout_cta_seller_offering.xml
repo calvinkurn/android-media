@@ -23,20 +23,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        app:card_type="border"
+        app:card_border_color ="@color/catalog_dms_light_color"
         android:layout_weight="0.3">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:background="@color/Unify_NN0"
+            android:background="@color/transparent"
             android:gravity="center">
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tgp_price_ranges"
+                android:id="@+id/tvOther"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Unify_NN950"
+                android:textColor="@color/catalog_dms_light_color"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
                 android:text="@string/catalog_text_lainnya" />

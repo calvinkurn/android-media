@@ -34,10 +34,9 @@ data class PriceCtaSellerOfferingProperties(
     val shopRating: String = "",
     val sold: String = "0",
     val badge: String = "",
-    val textColor: Int = 0,
-    val iconColor: Int = 0,
     val bgColor: Int = 0,
-    val bgColorAtc: Int = 0,
+    val colorBorderButton: Int = 0,
+    val textColorPrice: Int = 0,
     val isDarkTheme: Boolean = false,
     val isVisible: Boolean = false
 )
