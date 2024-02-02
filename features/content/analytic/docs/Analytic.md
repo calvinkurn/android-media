@@ -55,7 +55,7 @@ Content has a lot of module and each module has its own analytic implementation.
 | Key | contains possible analytic key | - event<br/>- eventLabel<br/>- businessUnit<br/>- trackerId<br/>- …<br/> |
 | Value | contains possible reusable analytic value | - user<br/>- shop<br/>- follow<br/>- unfollow<br/>- …<br/> |
 
-Besides Constant, Android CMP developers are required to use analytic manager class called `ContentAnalyticManager` to send trackers. The reason is to centralize all content tracker behavior & make developers easier to use tracker. There are number of functions that you can use to help you sending trackers:
+Besides Constant, Android CMP developers are required to use analytic manager class called `ContentAnalyticManager` to send trackers within content modules. The reason is to centralize all content tracker behavior & make developers easier to use tracker. There are number of functions that you can use to help you sending trackers:
 
 | **Sender Function** | **Description** |
 | --- | --- |
@@ -128,12 +128,12 @@ class YourTrackerImpl @Inject constructor(
 ) {
     
     private val analyticManager = analyticManagerFactory.create(
-        // Please provide this value from particular constant object.
+        /** Please provide this value from particular constant object. */
         businessUnit = "your_business_unit",
         eventCategory = "your_event_category",
     )
     
-    // Send normal event
+    /** Send normal event */
     fun clickUploadButton(author: ContentAccountUiModel, creationId: String) {
         analyticManager.sendClickContent(
             eventAction = "click - upload",
@@ -143,7 +143,7 @@ class YourTrackerImpl @Inject constructor(
         )
     }
     
-    // Send open screen event
+    /** Send open screen event */
     fun openScreenReviewTab() {
         analyticManager.sendOpenScreen(
             screenName = "/user profile - review tab",
