@@ -129,11 +129,6 @@ class ProductPreviewFragment @Inject constructor(
         }
     }
 
-    private fun initSource() {
-        viewModel.onAction(InitializeProductMainData)
-        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
-    }
-
     private fun initViews() = with(binding) {
         vpProductPreview.apply {
             registerOnPageChangeCallback(pagerListener)
