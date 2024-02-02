@@ -33,10 +33,12 @@ import com.tokopedia.buy_more_get_more.minicart.presentation.model.effect.MiniCa
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.event.MiniCartEditorEvent
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.state.MiniCartEditorState
 import com.tokopedia.buy_more_get_more.minicart.presentation.viewmodel.MiniCartEditorViewModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
@@ -79,6 +81,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
     private var binding: BottomSheetGwpMiniCartEditorBinding? = null
     private var adapter: GwpMiniCartEditorAdapter? = null
     private var miniCartV2WidgetListener: MiniCartV2WidgetListener? = null
+    private val impressionHolder by lazy { ImpressHolder() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -249,6 +252,37 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
 
         updateList(data.tiers)
         showSummary(data)
+        sendAnalyticImpressionBottomSheet(data)
+        sendAnalyticCloseClicked(data)
+    }
+
+    private fun sendAnalyticCloseClicked(data: BmgmMiniCartDataUiModel) {
+        super.setCloseClickListener {
+            val warehouseId = param.warehouseIds.firstOrNull()?.toString().orEmpty()
+            val shopId = param.shopIds.firstOrNull()?.toString().orEmpty()
+            val userSession = viewModel.getUserId()
+            BmgmMiniCartTracker.sendClickCloseMinicartEvent(
+                offerId = data.offerId.toString(),
+                warehouseId = warehouseId,
+                shopId = shopId,
+                userId = userSession
+            )
+            dismiss()
+        }
+    }
+
+    private fun sendAnalyticImpressionBottomSheet(data: BmgmMiniCartDataUiModel) {
+        binding?.root?.addOnImpressionListener(impressionHolder) {
+            val warehouseId = param.warehouseIds.firstOrNull()?.toString().orEmpty()
+            val shopId = param.shopIds.firstOrNull()?.toString().orEmpty()
+            val userSession = viewModel.getUserId()
+            BmgmMiniCartTracker.sendImpressionMinicartEvent(
+                offerId = data.offerId.toString(),
+                warehouseId = warehouseId,
+                userId = shopId,
+                shopId = userSession
+            )
+        }
     }
 
     private fun showSummary(data: BmgmMiniCartDataUiModel) {
@@ -334,10 +368,24 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
 
             override fun onPrimaryButtonClickListener() {
                 setCartListCheckboxState()
+                sendAnalyticCheckCart()
             }
         }
         miniCartV2WidgetListener = listener
         return listener
+    }
+
+    private fun sendAnalyticCheckCart() {
+        val offerId = param.offerIds.firstOrNull()?.toString().orEmpty()
+        val warehouseId = param.warehouseIds.firstOrNull()?.toString().orEmpty()
+        val shopId = param.shopIds.firstOrNull()?.toString().orEmpty()
+
+        BmgmMiniCartTracker.sendClickCekKeranjangEvent(
+            offerId = offerId,
+            warehouseId = warehouseId,
+            userId = shopId,
+            shopId = viewModel.getUserId()
+        )
     }
 
     private fun setCartListCheckboxState() {
