@@ -217,7 +217,6 @@ class LoaderFragment : BaseDaggerFragment() {
         loaderAnimation.showWithCondition(isV2Enabled)
         if (isV2Enabled) return
 
-        tvWaitForMinute.visible()
         tvProcessingPayment.visible()
         lottieAnimationView.visible()
         if (lottieTask == null)
@@ -227,7 +226,6 @@ class LoaderFragment : BaseDaggerFragment() {
 
     private fun hideLoaderView() {
         lottieAnimationView.gone()
-        tvWaitForMinute.hide()
         tvProcessingPayment.hide()
         loaderAnimation.hide()
         triggerHaptics()

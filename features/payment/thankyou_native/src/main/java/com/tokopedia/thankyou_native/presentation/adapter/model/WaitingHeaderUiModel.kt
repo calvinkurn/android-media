@@ -14,6 +14,7 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
 import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
 import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment.Companion.JENIUS
+import com.tokopedia.unifycomponents.ticker.TickerData
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 
 data class WaitingHeaderUiModel(
@@ -33,6 +34,7 @@ data class WaitingHeaderUiModel(
     val secondaryButtonText: String,
     val highlightLastThreeDigits: Boolean,
     val bankBranch: String,
+    val tickerData: List<TickerData> = arrayListOf(),
 ) : Visitable<BottomContentFactory>, WidgetTag(TAG) {
 
     override fun type(typeFactory: BottomContentFactory): Int {

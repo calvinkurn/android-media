@@ -34,29 +34,16 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvWaitForMinute"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:gravity="center"
-        android:text="@string/thank_wait_for_minute"
-        android:textColor="@color/Unify_NN950_96"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/loaderBarrier"
-        app:typographyType="heading_3" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProcessingPayment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="@string/thank_processing_payment"
+        android:text="@string/thank_processing_payment_2"
         android:textColor="@color/Unify_NN950_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvWaitForMinute"
+        app:layout_constraintTop_toBottomOf="@+id/loaderBarrier"
         app:typographyType="body_3" />
 
 
