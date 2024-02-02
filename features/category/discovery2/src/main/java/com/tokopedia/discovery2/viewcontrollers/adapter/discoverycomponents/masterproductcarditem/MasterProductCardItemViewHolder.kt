@@ -271,6 +271,26 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         set3DotsWishlistWithAtc(dataItem)
         setSimilarProductWishlist(dataItem)
         checkProductIsFulfillment(productCardModel)
+        setButtonATCOnClickListener()
+    }
+
+    private fun setButtonATCOnClickListener() {
+        masterProductCardListView?.setAddToCartOnClickListener {
+            handleATC(
+                masterProductCardItemViewModel?.getProductDataItem()?.minQuantity ?: 1,
+                masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
+            )
+        }
+        masterProductCardGridView?.setAddToCartOnClickListener {
+            if (checkForVariantProductCard(masterProductCardItemViewModel?.getProductDataItem()?.parentProductId)) {
+                openVariantSheet()
+            } else {
+                handleATC(
+                    masterProductCardItemViewModel?.getProductDataItem()?.minQuantity ?: 1,
+                    masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
+                )
+            }
+        }
     }
 
     private fun checkProductIsFulfillment(productCardModel: ProductCardModel) {
