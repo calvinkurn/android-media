@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.order_management_common.util.rotateBackIcon
@@ -27,22 +28,31 @@ class PartialProductAddonViewHolder(
     private fun setupViews(element: AddonsListUiModel) {
         partialItemBuyerOrderDetailAddonsBinding.run {
             tvBomDetailAddonsTitle.text = element.addonsTitle
-            tvBomDetailAddonsTotalPriceValue.text = element.totalPriceText?.getString(root.context).orEmpty()
-            tvBomDetailAddonsTotalPriceLabel.text =
-                root.context.getString(R.string.order_addons_total_price_label, element.addonsTitle)
-
-            root.setOnClickListener {
-                element.isExpand = !element.isExpand
-                listener.onAddOnsExpand(element.addOnIdentifier, element.isExpand)
-                setupChevronExpandable(
-                    element.isExpand,
-                    element.totalPriceText
-                )
+            tvBomDetailAddonsTotalPriceValue.showIfWithBlock(element.showTotalPrice) {
+                text = element.totalPriceText?.getString(root.context).orEmpty()
+            }
+            tvBomDetailAddonsTotalPriceLabel.showIfWithBlock(element.showTotalPrice) {
+                text = root.context.getString(R.string.order_addons_total_price_label, element.addonsTitle)
             }
 
-            setupChevronExpandable(
+            if (element.canExpandCollapse) {
+                root.setOnClickListener {
+                    element.isExpand = !element.isExpand
+                    listener.onAddOnsExpand(element.addOnIdentifier, element.isExpand)
+                    setupExpandCollapseChevron(
+                        isExpand = element.isExpand,
+                        totalPriceFmt = element.totalPriceText,
+                        canExpandCollapse = element.canExpandCollapse,
+                        showTotalPrice = element.showTotalPrice
+                    )
+                }
+            }
+
+            setupExpandCollapseChevron(
                 isExpand = element.isExpand,
-                totalPriceFmt = element.totalPriceText
+                totalPriceFmt = element.totalPriceText,
+                canExpandCollapse = element.canExpandCollapse,
+                showTotalPrice = element.showTotalPrice
             )
             setupAddOnSummaryIcon(element.addonsLogoUrl)
         }
@@ -52,24 +62,29 @@ class PartialProductAddonViewHolder(
         icBomDetailAddonsIcon.loadImage(icon)
     }
 
-    private fun PartialItemBuyerOrderDetailAddonsBinding.setupChevronExpandable(
+    private fun PartialItemBuyerOrderDetailAddonsBinding.setupExpandCollapseChevron(
         isExpand: Boolean,
-        totalPriceFmt: StringRes?
+        totalPriceFmt: StringRes?,
+        canExpandCollapse: Boolean,
+        showTotalPrice: Boolean
     ) {
         if (isExpand) {
-            expandView()
+            expandView(canExpandCollapse, showTotalPrice)
         } else {
             collapseView(totalPriceFmt)
         }
     }
 
-    private fun PartialItemBuyerOrderDetailAddonsBinding.expandView() {
+    private fun PartialItemBuyerOrderDetailAddonsBinding.expandView(
+        canExpandCollapse: Boolean,
+        showTotalPrice: Boolean
+    ) {
         tvBomDetailAddonsTotalPrice.hide()
         rvAddonsList.show()
 
-        icBomDetailAddonsIconArrowDown.rotateBackIcon()
-        tvBomDetailAddonsTotalPriceLabel.show()
-        tvBomDetailAddonsTotalPriceValue.show()
+        icBomDetailAddonsIconArrowDown.showIfWithBlock(canExpandCollapse) { rotateBackIcon() }
+        tvBomDetailAddonsTotalPriceLabel.showWithCondition(showTotalPrice)
+        tvBomDetailAddonsTotalPriceValue.showWithCondition(showTotalPrice)
     }
 
     private fun PartialItemBuyerOrderDetailAddonsBinding.collapseView(totalPriceFmt: StringRes?) {

@@ -110,10 +110,9 @@ open class ProductViewHolder(
         if (addonsListUiModel?.addonsItemList?.isNotEmpty() == true) {
             if (addonsViewStub is ViewStub) addonsViewStub.inflate() else addonsViewStub.show()
             setupAddonsBinding()
-            partialProductAddonViewHolder =
-                partialItemBuyerOrderDetailAddonsBinding?.let {
-                    PartialProductAddonViewHolder(listener, it)
-                }
+            partialProductAddonViewHolder = partialItemBuyerOrderDetailAddonsBinding?.let {
+                PartialProductAddonViewHolder(listener, it)
+            }
             partialProductAddonViewHolder?.bindViews(addonsListUiModel)
         } else {
             addonsViewStub.hide()

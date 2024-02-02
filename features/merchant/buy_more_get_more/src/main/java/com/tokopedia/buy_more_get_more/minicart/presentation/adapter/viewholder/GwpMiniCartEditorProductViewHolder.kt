@@ -97,9 +97,9 @@ class GwpMiniCartEditorProductViewHolder(
             val newQty = qty.toString().replace(".", "").toIntOrZero()
             val prevQty = element.quantity
             if (newQty <= Int.ZERO) {
+                delay(ADJUST_QTY_DEBOUNCE)
                 withContext(Dispatchers.Main) {
-                    delay(ADJUST_QTY_DEBOUNCE)
-                    binding.gwpQtyEditor.setValue(prevQty)
+                    binding.gwpQtyEditor.setValue(element.minQuantity)
                 }
                 return@launch
             }

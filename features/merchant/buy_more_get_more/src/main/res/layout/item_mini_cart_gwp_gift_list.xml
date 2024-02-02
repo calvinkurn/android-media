@@ -12,6 +12,8 @@
         android:layout_marginStart="6dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_mini_cart_gift"
+        android:paddingEnd="2dp"
+        android:paddingStart="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
