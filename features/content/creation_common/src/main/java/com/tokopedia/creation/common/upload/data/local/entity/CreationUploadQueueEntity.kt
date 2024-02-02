@@ -71,6 +71,9 @@ data class CreationUploadQueueEntity(
 
         @SerializedName("source_id")
         val sourceId: String = "",
+
+        @SerializedName("is_interspersed")
+        val isInterspersed: Boolean = false,
     )
 
     data class Stories(
