@@ -269,7 +269,7 @@ class MegaTabLayout @JvmOverloads constructor(
 
     companion object {
         private val ACTIVE_STATE_COLOR = unifyprinciplesR.color.Unify_GN500
-        private val INACTIVE_STATE_COLOR = unifyprinciplesR.color.Unify_NN400
+        private val INACTIVE_STATE_COLOR = unifyprinciplesR.color.Unify_NN950
 
         private const val BOTTOM_STROKE_WEIGHT = 2
     }
