@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 class SizeLargeBusinessViewHolder (
         itemView: View,
@@ -27,6 +27,8 @@ class SizeLargeBusinessViewHolder (
         const val MAX_LINES_1 = 1
         const val MAX_LINES_2 = 2
         const val MAX_LINES_3 = 3
+        private const val LEFT_MARGIN = 12
+        private const val TOP_MARGIN = 44
     }
 
     override fun getProductName(): TextView {
@@ -86,7 +88,7 @@ class SizeLargeBusinessViewHolder (
                 && element?.desc2nd.isNullOrEmpty()
         ) {
             val param = desc1st?.layoutParams as ViewGroup.MarginLayoutParams
-            param.setMargins(12,44,0,0)
+            param.setMargins(LEFT_MARGIN, TOP_MARGIN, Int.ZERO, Int.ZERO)
             desc1st?.layoutParams = param
             if (hasPrice(element) || hasTagLabel(element)) {
                 desc1st?.maxLines = MAX_LINES_2
