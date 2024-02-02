@@ -22,13 +22,11 @@ class MissionWidgetClearUtil: MissionWidgetUtil() {
     ): Int {
         var maxHeight = 0
 
-        val titleWidth = context.resources.getDimensionPixelSize(home_componentR.dimen.home_mission_widget_clear_big_image_size)
-
         for (missionWidget in data.missionWidgetList) {
             val heightText = measureTextHeight(
                 context = context,
                 text = missionWidget.subTitle,
-                textWidth = titleWidth,
+                textWidth = width,
                 typographyType = Typography.DISPLAY_3,
                 typographyWeight = Typography.REGULAR,
                 maxLines = MAX_LINES,
