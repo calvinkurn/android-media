@@ -179,8 +179,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
-    implementation project(rootProject.ext.libraries.foldable)
-
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
