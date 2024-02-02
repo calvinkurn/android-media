@@ -1,9 +1,7 @@
 package com.tokopedia.notifications.inApp.ketupat
 
 import android.app.Activity
-import android.app.Application
 import android.content.Context
-import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -13,22 +11,21 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.domain.data.GamiScratchCardPreEvaluate
 import com.tokopedia.notifications.domain.data.PopUpContent
-import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD
+import com.tokopedia.utils.date.DateUtil.getCurrentDate
+import com.tokopedia.utils.date.getDayDiffFromToday
+import com.tokopedia.utils.date.toDate
 import java.lang.ref.WeakReference
-import java.util.concurrent.TimeUnit
+import kotlin.math.absoluteValue
 
-open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
+class GamificationPopUpHandler {
 
     private var isAnimationPopupGQlCalled = false
 
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        isAnimationPopupGQlCalled = false
-    }
-
-    override fun onActivityResumed(activity: Activity) {
+    fun onFragmentResume(activity: Activity) {
         try {
             val activityName = activity::class.java.simpleName
             val isAnimationPopupEnabled = FirebaseRemoteConfigImpl(activity.applicationContext)
@@ -37,14 +34,13 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                 // get active campaigns list for in app
                 // if list size > 0 show in app and return
                 // else show popup
-                if (!CMInAppManager.getInstance().existsActiveInAppCampaign(HomePageActivity, true) &&
-                    isAnimationPopupEnabled
-                ) {
-                    if(!isAnimationPopupGQlCalled) {
+                if (!isAnimationPopEnable(activity)) {
+                    return
+                }
+                if (isAnimationPopupEnabled) {
+                    if (!isAnimationPopupGQlCalled) {
                         isAnimationPopupGQlCalled = true
-                        Handler().postDelayed({
-                            getScratchCardData(activity)
-                        }, 2000)
+                        getScratchCardData(activity)
                     }
                 }
             }
@@ -61,7 +57,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    open fun getScratchCardData(
+    fun getScratchCardData(
         activity: Activity,
         pageSource: String = "tokopedia-home-page",
         ketupatSlashCallBack: KetupatSlashCallBack? = null
@@ -88,24 +84,21 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    private fun enableGQLCall(){
+    private fun enableGQLCall() {
         Handler().postDelayed({
             isAnimationPopupGQlCalled = false
-                              }, 5000)
+        }, 2000)
     }
 
     open fun showLottiePopup(
         activity: Activity,
-        pageSource:String,
+        pageSource: String,
         slug: String?,
         popUpContent: PopUpContent,
         scratchCardId: String,
         ketupatSlashCallBack: KetupatSlashCallBack? = null
     ) {
         try {
-            if (pageSource == "tokopedia-home-page" && !isAnimationPopEnable(activity)) {
-                return
-            }
             val currentActivity: WeakReference<Activity> =
                 WeakReference(activity)
             val ketupatAnimationPopup = KetupatAnimationPopup(activity.applicationContext, null, activity)
@@ -116,8 +109,9 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                 .findViewById<View>(android.R.id.content)
                 .rootView as FrameLayout
             root.addView(ketupatAnimationPopup)
-            if(pageSource == "tokopedia-home-page")
+            if (pageSource == "tokopedia-home-page") {
                 setTimeStampForKetupat(activity)
+            }
         } catch (e: Exception) {
             ServerLogger.log(
                 Priority.P2,
@@ -132,24 +126,28 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     }
 
     private fun isAnimationPopEnable(activity: Activity): Boolean {
-        val ketupatShownTime: Long = getShownTime(activity, "ketupat_shown_time")
-        val inappShownTime: Long = getShownTime(activity, "inapp_shown_time")
+        val ketupatShownTime: String? = getShownTime(activity, "ketupat_shown_time")
+        val inappShownTime: String? = getShownTime(activity, "inapp_shown_time")
 
         // IF inshown or ketupat dialog shown before 24 hours then simply return
 
-        return (is24HourBefore(ketupatShownTime) && is24HourBefore(inappShownTime))
+        return ketupatShownTime?.let { is24HourBefore(it) } ?: true &&
+            inappShownTime?.let { is24HourBefore(it) } ?: true
     }
 
-    private fun getShownTime(context: Context, key: String): Long {
-        return getSharedPref(context, key).getLong(key, 0)
+    private fun getShownTime(context: Context, key: String): String? {
+        return getSharedPref(context, key).getString(key, null)
     }
 
-    private fun is24HourBefore(time: Long): Boolean {
-        return TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - time) >= 5
+    private fun is24HourBefore(date: String): Boolean {
+        return date.toDate(YYYY_MM_DD).getDayDiffFromToday().absoluteValue.toInt() >= 1
     }
 
     private fun setTimeStampForKetupat(activity: Activity) {
-        getSharedPref(activity, "ketupat_shown_time").edit().putLong("ketupat_shown_time", System.currentTimeMillis()).apply()
+        getSharedPref(activity, "ketupat_shown_time").edit().putString(
+            "ketupat_shown_time",
+            getCurrentDate().toString()
+        ).apply()
     }
 
     private fun getSharedPref(context: Context, key: String) = context.applicationContext.getSharedPreferences(
@@ -166,17 +164,17 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     private fun createUserSession(activity: Activity): UserSessionInterface =
         UserSession(activity)
 
-    override fun onActivityStarted(activity: Activity) { }
-
-    override fun onActivityPaused(activity: Activity) { }
-
-    override fun onActivityStopped(activity: Activity) {
-//        isAnimationPopupGQlCalled = false
-    }
-
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
-
-    override fun onActivityDestroyed(activity: Activity) { }
+//    override fun onActivityStarted(activity: Activity) { }
+//
+//    override fun onActivityPaused(activity: Activity) { }
+//
+//    override fun onActivityStopped(activity: Activity) {
+// //        isAnimationPopupGQlCalled = false
+//    }
+//
+//    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
+//
+//    override fun onActivityDestroyed(activity: Activity) { }
 
     companion object {
         private const val HomePageActivity = "MainParentActivity"

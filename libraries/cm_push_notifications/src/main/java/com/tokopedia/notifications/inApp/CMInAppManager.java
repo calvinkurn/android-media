@@ -38,6 +38,8 @@ import com.tokopedia.notifications.inApp.viewEngine.CMInAppProcessor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.utils.date.DateUtil;
+import com.tokopedia.utils.date.DateUtilKt;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,6 +59,7 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConverto
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
+import static com.tokopedia.utils.date.DateUtil.YYYY_MM_DD;
 
 /**
  * @author lalit.singh
@@ -220,12 +223,15 @@ public class CMInAppManager implements CmInAppListener,
 
     private void showDialog(CMInApp data, String screenName) {
         if(screenName.equals("com.tokopedia.navigation.presentation.activity.MainParentActivity")) {
-            long ketupatShownTime = application.getApplicationContext().getSharedPreferences(
+            String ketupatShownTime = application.getApplicationContext().getSharedPreferences(
                     "ketupat_shown_time",
                     Context.MODE_PRIVATE
-            ).getLong("ketupat_shown_time", 0);
-            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - ketupatShownTime) < 5) {
-                return;
+            ).getString("ketupat_shown_time", null);
+            if(ketupatShownTime != null) {
+              int diff = (int) Math.abs(DateUtilKt.getDayDiffFromToday(DateUtilKt.toDate(ketupatShownTime,YYYY_MM_DD)));
+              if(diff < 1) {
+                  return;
+              }
             }
         }
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
@@ -247,7 +253,7 @@ public class CMInAppManager implements CmInAppListener,
             application.getApplicationContext().getSharedPreferences(
                     "inapp_shown_time",
                     Context.MODE_PRIVATE
-            ).edit().putLong("inapp_shown_time", System.currentTimeMillis()).apply();
+            ).edit().putString("inapp_shown_time", DateUtil.INSTANCE.getCurrentDate().toString()).apply();
         }
     }
 

@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 
-import com.newrelic.agent.android.FeatureFlag;
 import com.scp.auth.GotoSdk;
 
 import androidx.annotation.NonNull;
@@ -88,7 +87,6 @@ import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
 import com.tokopedia.common.network.cdn.MonitoringActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
-import com.tokopedia.notifications.inApp.ketupat.ActivityLifecycleHandler;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
 import com.tokopedia.notifications.utils.PushTokenRefreshUtil;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
@@ -399,7 +397,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }));
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new MonitoringActivityLifecycle(getApplicationContext()));
-        registerActivityLifecycleCallbacks(new ActivityLifecycleHandler());
     }
 
     private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
