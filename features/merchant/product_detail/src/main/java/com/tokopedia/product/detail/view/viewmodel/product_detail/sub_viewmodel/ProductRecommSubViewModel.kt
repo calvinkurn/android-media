@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -76,6 +75,7 @@ class ProductRecommSubViewModel @Inject constructor(
 
     @OptIn(FlowPreview::class)
     override val resultData by lazy {
+        var initial: MutableList<ProductRecommUiState> = mutableListOf()
         _recomPageName
             .buffer()
             .flatMapMerge {
@@ -88,33 +88,34 @@ class ProductRecommSubViewModel @Inject constructor(
                     thematicId = it.thematicId
                 )
             }
-            .scan(mutableListOf<ProductRecommUiState>()) { accumulator, value ->
+            .map {
                 if (_refreshPage.value) {
-                    accumulator.clear()
+                    initial.clear()
                 }
-
-                accumulator.add(value)
                 _refreshPage.emit(false)
-                accumulator
+
+                initial.add(it)
+                initial
             }
             .debounce(150)
             .map {
-                val filteredData = it.filterNot {
-                    it.alreadyCollected
-                }
-                filteredData.toMutableList()
-            }
-            .map {
-                val alreadyCollectedData = it.map {
-                    it.copy(alreadyCollected = true)
-                }
-                alreadyCollectedData.toMutableList()
+                initial = markRecomAsCollected(initial)
+                initial
             }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = mutableListOf()
             )
+    }
+
+    private fun markRecomAsCollected(initial: MutableList<ProductRecommUiState>)
+        : MutableList<ProductRecommUiState> {
+        return initial.filterNot {
+            it.alreadyCollected
+        }.map {
+            it.copy(alreadyCollected = true)
+        }.toMutableList()
     }
 
     override fun onEvent(event: ProductRecommendationEvent) {
