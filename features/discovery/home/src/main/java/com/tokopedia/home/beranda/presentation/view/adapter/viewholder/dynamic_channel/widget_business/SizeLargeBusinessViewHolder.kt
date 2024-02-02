@@ -3,10 +3,12 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import androidx.appcompat.widget.AppCompatImageView
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.unifycomponents.toDp
 
 class SizeLargeBusinessViewHolder (
         itemView: View,
@@ -83,6 +85,9 @@ class SizeLargeBusinessViewHolder (
                 && element?.title2nd.isNullOrEmpty()
                 && element?.desc2nd.isNullOrEmpty()
         ) {
+            val param = desc1st?.layoutParams as ViewGroup.MarginLayoutParams
+            param.setMargins(12,44,0,0)
+            desc1st?.layoutParams = param
             if (hasPrice(element) || hasTagLabel(element)) {
                 desc1st?.maxLines = MAX_LINES_2
                 desc1st?.gravity = Gravity.START
