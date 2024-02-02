@@ -324,4 +324,7 @@ public class RemoteConfigKey {
 
     public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
 
+    public static final String ANDROID_PDP_THEMATIC_CAMPAIGN_COMPOSE_ENABLE = "android_pdp_thematic_campaign_compose";
+
+    public static final String ANDROID_PDP_UPCOMING_CAMPAIGN_COMPOSE_ENABLE = "android_pdp_upcoming_campaign_compose";
 }
