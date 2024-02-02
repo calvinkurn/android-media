@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder.campaign.ui.model
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TabletPosition
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
@@ -12,6 +13,10 @@ data class ProductNotifyMeUiModel(
     var shouldShow: Boolean = false,
     var data: UpcomingCampaignUiModel = UpcomingCampaignUiModel()
 ) : DynamicPdpDataModel {
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
