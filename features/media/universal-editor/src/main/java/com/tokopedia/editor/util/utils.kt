@@ -35,7 +35,7 @@ internal fun View.animateSlide(yPosTarget: Int): ObjectAnimator {
     }
 }
 
-internal suspend fun clearStoriesCache() {
+internal suspend fun clearEditorCache() {
     val rootFolder = File(getEditorCacheFolderPath())
     val now = System.currentTimeMillis()
     rootFolder.listFiles()?.forEach {

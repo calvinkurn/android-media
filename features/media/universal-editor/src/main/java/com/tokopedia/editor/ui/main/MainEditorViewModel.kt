@@ -15,7 +15,7 @@ import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.util.clearStoriesCache
+import com.tokopedia.editor.util.clearEditorCache
 import com.tokopedia.editor.util.provider.ResourceProvider
 import com.tokopedia.editor.util.setValue
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -129,7 +129,7 @@ class MainEditorViewModel @Inject constructor(
             }
             is MainEditorEvent.CacheClearChecker -> {
                 viewModelScope.launch(dispatchers.io) {
-                    clearStoriesCache()
+                    clearEditorCache()
                 }
             }
         }

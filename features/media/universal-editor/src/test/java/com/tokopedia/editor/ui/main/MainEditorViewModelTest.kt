@@ -11,7 +11,7 @@ import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.util.clearStoriesCache
+import com.tokopedia.editor.util.clearEditorCache
 import com.tokopedia.editor.util.provider.ResourceProvider
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -560,16 +560,16 @@ class MainEditorViewModelTest {
         // Given
         mockParamFetcher()
         mockNavigationTool()
-        mockkStatic(::clearStoriesCache)
+        mockkStatic(::clearEditorCache)
 
         // When
-        coEvery { clearStoriesCache() } just runs
+        coEvery { clearEditorCache() } just runs
         onEvent(
             MainEditorEvent.CacheClearChecker
         )
 
         // Then
-        coVerify { clearStoriesCache() }
+        coVerify { clearEditorCache() }
     }
 
     private fun mockParamFetcher() {
