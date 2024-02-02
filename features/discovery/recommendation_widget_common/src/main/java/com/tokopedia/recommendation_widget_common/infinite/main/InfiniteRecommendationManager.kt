@@ -11,13 +11,12 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 
 class InfiniteRecommendationManager(
-    private val context: Context
+    private val context: Context,
+    val listener: InfiniteRecommendationListener? = null
 ) : InfiniteRecommendationCallback {
 
     val adapter: InfiniteRecommendationAdapter by getAdapter()
     private val viewModel: InfiniteRecommendationViewModel? by getViewModel()
-
-    var listener: InfiniteRecommendationListener? = null
 
     var requestParam: GetRecommendationRequestParam = GetRecommendationRequestParam()
         set(value) {
