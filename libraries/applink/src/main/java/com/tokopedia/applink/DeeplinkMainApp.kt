@@ -292,7 +292,7 @@ object DeeplinkMainApp {
             }
         ),
         "feed" to mutableListOf(
-            DLP.matchPattern("browse") { _: Context, deeplink: String ->
+            DLP.startsWith("browse") { _: Context, deeplink: String ->
                 DeeplinkMapperContent.getRegisteredNavigation(deeplink)
             },
             DLP.goTo { deeplink: String ->
@@ -737,8 +737,8 @@ object DeeplinkMainApp {
             DLP.matchPattern("benefit_package") { _: String ->
                 ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE
             },
-            DLP.startsWith("interrupt") { deeplink: String ->
-                PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(deeplink)
+            DLP.startsWith("interrupt") { context: Context, _: Uri, deeplink: String ->
+                PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(context, deeplink)
             }
         ),
         "privacy-center" to mutableListOf(
@@ -1248,7 +1248,7 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("bottomsheet/{type}") { deeplink: String ->
                 DeeplinkMapperCommunication.getRegisteredNavigation(deeplink)
-            },
+            }
         ),
         "tokopoints" to mutableListOf(
             DLP.goTo { deeplink: String ->

@@ -20,7 +20,13 @@ data class ShopPageColorSchema(
         ICON_CTA_LINK_COLOR("iconCtaLinkColor"),
         BG_PRIMARY_COLOR("bgPrimaryColor"),
         DIVIDER("divider"),
-        NAV_TEXT_ACTIVE("navTextActive")
+        NAV_TEXT_ACTIVE("navTextActive");
+
+        companion object {
+            fun fromValue(value: String): ColorSchemaName? {
+                return values().find { it.value == value }
+            }
+        }
     }
 
     @Parcelize

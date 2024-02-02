@@ -67,7 +67,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         }
     }
 
-    fun removeTyping() {
+    open fun removeTyping() {
         var index = visitables.indexOf(typingModel)
         if (index != -1) {
             this.visitables.removeAt(index)

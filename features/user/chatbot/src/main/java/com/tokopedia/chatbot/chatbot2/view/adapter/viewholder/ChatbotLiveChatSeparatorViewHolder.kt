@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.uimodel.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatBotTimeConverter
@@ -23,11 +24,12 @@ class ChatbotLiveChatSeparatorViewHolder(itemView: View) : AbstractViewHolder<Ch
     }
 
     override fun bind(element: ChatSepratorUiModel) {
-        liveChatSeprator.text = String.format(
+        val text = String.format(
             Locale.getDefault(),
             "%s. %s",
             element.sepratorMessage,
             ChatBotTimeConverter.getHourTime(element.dividerTiemstamp)
         )
+        liveChatSeprator.text = MethodChecker.fromHtml(text)
     }
 }

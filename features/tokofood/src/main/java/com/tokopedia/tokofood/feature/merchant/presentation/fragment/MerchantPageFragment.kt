@@ -274,6 +274,9 @@ class MerchantPageFragment :
     }
 
     override fun onDestroyView() {
+        removeBottomSheets()
+        binding?.rvProductList?.adapter = null
+        binding?.rvMerchantInfoCarousel?.adapter = null
         super.onDestroyView()
         binding = null
         currentPromoName = null
@@ -1144,6 +1147,7 @@ class MerchantPageFragment :
     private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
         hideKeyboard()
         customOrderDetailBottomSheet?.dismiss()
+        customOrderDetailBottomSheet = null
         viewModel.productMap[productUiModel.id] = cardPositions
         val bundle = Bundle().apply {
             putInt(
@@ -1665,6 +1669,8 @@ class MerchantPageFragment :
         onScrollChangedListenerList.forEach {
             view?.viewTreeObserver?.removeOnScrollChangedListener(it)
         }
+        productListAdapter?.removeListeners()
+        carouselAdapter?.removeListener()
     }
 
     private fun goToPromoPage() {
@@ -1780,6 +1786,28 @@ class MerchantPageFragment :
                 }
             }
         }
+    }
+
+    private fun removeBottomSheets() {
+        if (universalShareBottomSheet?.isVisible == true) {
+            universalShareBottomSheet?.dismiss()
+        }
+        universalShareBottomSheet = null
+
+        if (merchantInfoBottomSheet?.isVisible == true) {
+            merchantInfoBottomSheet?.dismiss()
+        }
+        merchantInfoBottomSheet = null
+
+        if (orderNoteBottomSheet?.isVisible == true) {
+            orderNoteBottomSheet?.dismiss()
+        }
+        orderNoteBottomSheet = null
+
+        if (customOrderDetailBottomSheet?.isVisible == true) {
+            customOrderDetailBottomSheet?.dismiss()
+        }
+        customOrderDetailBottomSheet = null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

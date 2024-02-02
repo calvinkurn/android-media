@@ -173,7 +173,8 @@ internal class MiniCartV2ViewModel @Inject constructor(
                         quantity = miniCartItem.quantity.toString(),
                         notes = miniCartItem.notes,
                         warehouseId = miniCartItem.warehouseId,
-                        attribution = miniCartItem.attribution
+                        attribution = miniCartItem.attribution,
+                        shopName = miniCartItem.shopName
                     )
                 )
             }

@@ -6,10 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.databinding.ItemMerchantInfoCarouselBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MerchantCarouseItemViewHolder(
-        private val binding: ItemMerchantInfoCarouselBinding,
-        private val clickListener: OnCarouselItemClickListener
+    private val binding: ItemMerchantInfoCarouselBinding,
+    private val clickListener: OnCarouselItemClickListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnCarouselItemClickListener {
@@ -21,7 +22,7 @@ class MerchantCarouseItemViewHolder(
     init {
         context = binding.root.context
         binding.root.setOnClickListener {
-            clickListener.onCarouselItemClicked()
+            clickListener?.onCarouselItemClicked()
         }
     }
 
@@ -34,10 +35,10 @@ class MerchantCarouseItemViewHolder(
         binding.tpgMerchantInfoContent.text = carouselData.information
         context?.run {
             // normal text color by default
-            var textColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            var textColor = ContextCompat.getColor(this, unifyprinciplesR.color.Unify_NN950)
             if (carouselData.isWarning) {
                 // red text color for warning
-                textColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                textColor = ContextCompat.getColor(this, unifyprinciplesR.color.Unify_RN500)
             }
             binding.tpgMerchantInfoContent.setTextColor(textColor)
         }

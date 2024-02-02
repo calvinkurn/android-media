@@ -406,4 +406,6 @@ object TokopediaImageUrl {
     const val TOKOPEDIANOW_LOTTIE_QUEST_STAR = "https://assets.tokopedia.net/asts/tokopedianow/lottie/quest_widget_star.json"
     const val TOKOPEDIANOW_IC_QUEST_LOCKED_DARK = "https://images.tokopedia.net/img/tokopedianow/icons/tokopedianow_ic_quest_locked_dark.png"
     const val TOKOPEDIANOW_IC_QUEST_LOCKED_LIGHT = "https://images.tokopedia.net/img/tokopedianow/icons/tokopedianow_ic_quest_locked_light.png"
+    const val CATALOG_EMPTY_STATE = "https://images.tokopedia.net/img/illustration/global/Medium_Empty_Catalog.png"
+    const val IMG_PLUS_BADGE = "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
 }

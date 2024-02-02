@@ -1,36 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-    <FrameLayout
+    android:background="@color/Unify_Background">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieSuccess"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName="thanks_success_lottie.json"
+        app:lottie_imageAssetsFolder="images"/>
 
-        <com.tokopedia.searchbar.navigation_component.NavToolbar
-            android:id="@+id/globalNabToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top"
-            app:toolbarInitialTheme="light"
-            android:minHeight="?actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            android:visibility="visible"/>
-
-        <com.tokopedia.header.HeaderUnify
-            android:id="@+id/thank_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
-
-    </FrameLayout>
-
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/header_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/typ_header"/>
 
     <FrameLayout
         android:id="@+id/thank_parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</LinearLayout>
+    <View
+        android:id="@+id/toolbarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:background="@color/Unify_Background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/globalNabToolbar"/>
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/globalNabToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        app:toolbarInitialTheme="light"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarInitialFillColor="transparent"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

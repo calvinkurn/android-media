@@ -16,7 +16,9 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -115,4 +117,21 @@ class PlayShortsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateStatus(
+        creationId: String,
+        authorId: String,
+        status: PlayChannelStatusType
+    ) {
+        return withContext(dispatchers.io) {
+            updateChannelUseCase.apply {
+                setQueryParams(
+                    UpdateChannelUseCase.createUpdateStatusRequest(
+                        channelId = creationId,
+                        authorId = authorId,
+                        status = status
+                    )
+                )
+            }.executeOnBackground()
+        }
+    }
 }
