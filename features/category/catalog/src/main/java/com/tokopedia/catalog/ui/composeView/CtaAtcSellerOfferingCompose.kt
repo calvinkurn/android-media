@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.ui.composeView
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -27,10 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.catalog.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestImage
@@ -51,22 +55,29 @@ fun CtaSellerOffering(
     rating: String,
     sold: String,
     theme: Boolean,
-    onClick: (() -> Unit)?,
+    onClick: (() -> Unit)?
 ) {
-    var switchState by remember { mutableStateOf(true) }
+    var switchState by remember { mutableStateOf(1) }
+
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         while (true) {
             delay(2000)
-            switchState = !switchState
+            switchState += 1
+            if (switchState == 3) {
+                switchState = 1
+            }
         }
     }
 
     Row(
-        modifier = Modifier.background(
-            color = NestGN.light._950,
-            shape = RoundedCornerShape(8.dp)
-        ).clickable { onClick?.invoke() },
+        modifier = Modifier
+            .background(
+                color = NestGN.light._950,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clickable { onClick?.invoke() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -89,54 +100,94 @@ fun CtaSellerOffering(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-
             Box {
                 this@Column.AnimatedVisibility(
-                    visible = switchState,
+                    visible = switchState == 1,
                     enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
-                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
                 ) {
-                    ShopInfo(shopName = shopName, badge = badge)
+                    ShopInfo(theme, shopName = shopName, badge = badge)
                 }
                 this@Column.AnimatedVisibility(
-                    visible = !switchState,
+                    visible = switchState == 2,
                     enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
-                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
                 ) {
-                    ShopCredibility(rating, sold)
+                    ShopCredibility(context, theme, rating, sold)
+                }
+                // If need variant
+//                this@Column.AnimatedVisibility(
+//                    visible = switchState == 3,
+//                    enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
+//                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+//                ) {
+//                    ProductVariant(rating)
+//                }
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                NestTypography(
+                    text = price,
+                    textStyle = NestTheme.typography.display2.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = colorResource(
+                            id = getColor(
+                                theme,
+                                R.color.catalog_dms_dark_color,
+                                R.color.catalog_dms_light_color
+                            )
+                        )
+                    ),
+                    maxLines = 1
+                )
+                if (slashPrice.isNotEmpty()) {
+                    NestTypography(
+                        text = slashPrice,
+                        textStyle = NestTheme.typography.small.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colorResource(
+                                id = getColor(
+                                    theme,
+                                    R.color.catalog_dms_dark_color,
+                                    R.color.catalog_dms_light_color
+                                )
+                            ).copy(alpha = 0.5f),
+                            textDecoration = TextDecoration.LineThrough
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier.padding(start = 2.dp)
+                    )
                 }
             }
-
-            Row {
-                NestTypography(
-                    text = price, textStyle = NestTheme.typography.display2.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                        color = NestTheme.colors.NN._0
-                    ),
-                    maxLines = 1
-                )
-                NestTypography(
-                    text = slashPrice, textStyle = NestTheme.typography.display2.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                        color = NestTheme.colors.NN._0.copy(alpha = 0.5f),
-                        textDecoration = TextDecoration.LineThrough,
-                    ),
-                    maxLines = 1
-                )
-            }
-
         }
-
     }
 }
 
 @Composable
-private fun ShopInfo(shopName: String, badge: String) {
+private fun ProductVariant(productVariant: String) {
+    NestTypography(
+        text = productVariant,
+        textStyle = NestTheme.typography.display3.copy(
+            fontWeight = FontWeight.Normal,
+            color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
+        )
+    )
+}
+
+@Composable
+private fun ShopInfo(theme: Boolean, shopName: String, badge: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         NestTypography(
-            text = "Beli dari:", textStyle = NestTheme.typography.display3.copy(
+            text = "Beli dari:",
+            textStyle = NestTheme.typography.display3.copy(
                 fontWeight = FontWeight.Normal,
-                color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
+                color = colorResource(
+                    id = getColor(
+                        theme,
+                        R.color.catalog_dms_dark_color,
+                        R.color.catalog_dms_light_color
+                    )
+                ).copy(alpha = 0.5f)
             )
         )
 
@@ -148,9 +199,16 @@ private fun ShopInfo(shopName: String, badge: String) {
                 .padding(start = 4.dp)
         )
         NestTypography(
-            text = shopName, textStyle = NestTheme.typography.display3.copy(
+            text = shopName,
+            textStyle = NestTheme.typography.display3.copy(
                 fontWeight = FontWeight.Normal,
-                color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
+                color = colorResource(
+                    id = getColor(
+                        theme,
+                        R.color.catalog_dms_dark_color,
+                        R.color.catalog_dms_light_color
+                    )
+                ).copy(alpha = 0.5f)
             ),
             modifier = Modifier.padding(start = 4.dp),
             maxLines = 1
@@ -159,19 +217,27 @@ private fun ShopInfo(shopName: String, badge: String) {
 }
 
 @Composable
-private fun ShopCredibility(rating: String, sold: String) {
+private fun ShopCredibility(context: Context, theme: Boolean, rating: String, sold: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         NestIcon(
             iconId = IconUnify.STAR_FILLED,
             colorLightEnable = NestYN.light._300,
-            colorNightEnable = NestNN.dark._300, modifier = Modifier
+            colorNightEnable = NestNN.dark._300,
+            modifier = Modifier
                 .height(12.dp)
                 .width(12.dp)
         )
         NestTypography(
-            text = rating, textStyle = NestTheme.typography.display3.copy(
+            text = rating,
+            textStyle = NestTheme.typography.display3.copy(
                 fontWeight = FontWeight.Normal,
-                color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
+                color = colorResource(
+                    id = getColor(
+                        theme,
+                        R.color.catalog_dms_dark_color,
+                        R.color.catalog_dms_light_color
+                    )
+                ).copy(alpha = 0.5f)
             ),
             modifier = Modifier.padding(end = 4.dp, start = 2.dp),
             maxLines = 1
@@ -186,7 +252,8 @@ private fun ShopCredibility(rating: String, sold: String) {
                 .width(2.dp)
         )
         NestTypography(
-            text = sold, textStyle = NestTheme.typography.display3.copy(
+            text = sold,
+            textStyle = NestTheme.typography.display3.copy(
                 fontWeight = FontWeight.Normal,
                 color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
             ),
@@ -196,11 +263,11 @@ private fun ShopCredibility(rating: String, sold: String) {
     }
 }
 
-
 @Composable
 @Preview
 private fun CtaSellerOfferingPreview() {
     var switchState by remember { mutableStateOf(true) }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -209,10 +276,12 @@ private fun CtaSellerOfferingPreview() {
         }
     }
     Row(
-        modifier = Modifier.background(
-            color = NestGN.light._950,
-            shape = RoundedCornerShape(8.dp)
-        ).height(50.dp),
+        modifier = Modifier
+            .background(
+                color = NestGN.light._950,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .height(50.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -236,34 +305,44 @@ private fun CtaSellerOfferingPreview() {
         ) {
             Crossfade(
                 targetState = switchState,
-                animationSpec = tween(durationMillis = 1000), label = ""
+                animationSpec = tween(durationMillis = 1000),
+                label = ""
             ) { targetState ->
                 if (targetState) {
                     ShopInfo(
+                        true,
                         shopName = "Samsung",
                         badge = "https://images.tokopedia.net/img/official_store_badge.png"
                     )
                 } else {
-                    ShopCredibility("5.0", "20rb Terjual")
+                    ShopCredibility(context, true, "5.0", "20rb Terjual")
                 }
             }
             Row {
                 NestTypography(
-                    text = "Rp9.000.000", textStyle = NestTheme.typography.display2.copy(
+                    text = "Rp9.000.000",
+                    textStyle = NestTheme.typography.display2.copy(
                         fontWeight = FontWeight.ExtraBold,
                         color = NestTheme.colors.NN._0
                     )
                 )
                 NestTypography(
-                    text = "Rp9.000.000", textStyle = NestTheme.typography.display2.copy(
+                    text = "Rp9.000.000",
+                    textStyle = NestTheme.typography.display2.copy(
                         fontWeight = FontWeight.ExtraBold,
                         color = NestTheme.colors.NN._0.copy(alpha = 0.5f),
-                        textDecoration = TextDecoration.LineThrough,
+                        textDecoration = TextDecoration.LineThrough
                     )
                 )
             }
-
         }
+    }
+}
 
+private fun getColor(isDark: Boolean, lightColor: Int, darkColor: Int): Int {
+    return if (isDark) {
+        darkColor
+    } else {
+        lightColor
     }
 }
