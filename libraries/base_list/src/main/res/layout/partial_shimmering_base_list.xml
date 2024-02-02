@@ -6,38 +6,26 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/imageShimmer1"
-        android:layout_width="match_parent"
-        android:layout_height="96dp"
+        android:id="@+id/loaderUnify1"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
         android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/loaderUnify2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/textViewShimmer1"
-        app:loader_corner_radius="10dp"
-        app:loader_type="rect" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/textViewShimmer1"
-        android:layout_width="0dp"
-        android:layout_height="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageShimmer1"
-        app:layout_constraintBottom_toTopOf="@id/textViewShimmer2"
         app:layout_constraintWidth_percent="0.8"
         app:loader_corner_radius="10dp"
-        app:loader_type="rect" />
+        app:loader_type="rect"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/textViewShimmer2"
+        android:id="@+id/loaderUnify2"
         android:layout_width="0dp"
         android:layout_height="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewShimmer1"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loaderUnify1"
         app:layout_constraintWidth_percent="0.6"
         app:loader_corner_radius="10dp"
-        app:loader_type="rect" />
-
+        app:loader_type="rect"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
