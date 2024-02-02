@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.view.fragment
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,17 +56,18 @@ class ProductPreviewFragment @Inject constructor(
     private val router: Router
 ) : TkpdBaseV4Fragment() {
 
+    private val productPreviewSource: ProductPreviewSourceModel by lazyThreadSafetyNone {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(
+                PRODUCT_PREVIEW_SOURCE,
+                ProductPreviewSourceModel::class.java
+            )
+        } else {
+            arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
+        } ?: ProductPreviewSourceModel.Empty
+    }
+
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        val productPreviewSource: ProductPreviewSourceModel by lazyThreadSafetyNone {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getParcelable(
-                    PRODUCT_PREVIEW_SOURCE,
-                    ProductPreviewSourceModel::class.java
-                )
-            } else {
-                arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
-            } ?: ProductPreviewSourceModel.Empty
-        }
         viewModelFactory.create(productPreviewSource)
     }
 
@@ -93,8 +95,6 @@ class ProductPreviewFragment @Inject constructor(
         if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
         viewModel.onAction(ProductPreviewAction.ProductActionFromResult)
     }
-
-    //TODO: seperate coachmark
 
     private val coachMark by lazyThreadSafetyNone {
         CoachMark2(requireContext())
@@ -131,19 +131,19 @@ class ProductPreviewFragment @Inject constructor(
         viewModel.onAction(InitializeProductMainData)
     }
 
-    //TODO: seperate coachmark later
     private val coachMarkItems by lazyThreadSafetyNone {
         arrayListOf(
-            //TOD: if entry souce non ATF
             CoachMark2Item(
                 anchorView = binding.layoutProductPreviewTab.icBack,
                 title = "",
-                description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard)
+                description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard),
+                position = CoachMark2.POSITION_BOTTOM
             ),
             CoachMark2Item(
-                anchorView = binding.vpProductPreview,
+                anchorView = binding.anchorAtc,
                 title = "",
-                description = getString(contentproductpreviewR.string.product_prev_coachmark_bottomnav)
+                description = getString(contentproductpreviewR.string.product_prev_coachmark_bottomnav),
+                position = CoachMark2.POSITION_TOP
             )
         )
     }
@@ -263,6 +263,7 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
+
                     ProductPreviewEvent.ShowCoachMark -> handleCoachMark()
                     else -> {}
                 }
@@ -300,11 +301,14 @@ class ProductPreviewFragment @Inject constructor(
     private fun handleCoachMark() {
         coachMarkJob?.cancel()
         coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
-            delay(6000L)
-            coachMark.showCoachMark(
-                step = coachMarkItems,
-                index = CoachMark2.POSITION_BOTTOM
-            )
+            delay(DELAY_COACH_MARK)
+            val finalList = coachMarkItems.filter {
+                if (productPreviewSource.productPreviewSource is ProductPreviewSourceModel.ProductSourceData)
+                    true
+                else
+                    it.anchorView == binding.anchorAtc
+            } as ArrayList<CoachMark2Item>
+            coachMark.showCoachMark(step = finalList)
         }
     }
 
@@ -317,6 +321,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     companion object {
+        private const val DELAY_COACH_MARK = 6000L
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
