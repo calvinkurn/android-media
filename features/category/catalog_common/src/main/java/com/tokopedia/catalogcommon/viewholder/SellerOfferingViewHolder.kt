@@ -9,6 +9,7 @@ import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemSellerOfferingBinding
 import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -48,8 +49,8 @@ class SellerOfferingViewHolder(
             tvVariantValue.text = element.variantsName
             ivBadge.loadImage(element.shopBadge)
             tvShopName.text = element.shopName
-            tvShopResposiveChat.text = element.chatResponseTime
-            tvShopResponsiveOrder.text = element.orderProcessTime
+            tvShopResposiveChat.setTextAndCheckShow(element.chatResponseTime)
+            tvShopResponsiveOrder.setTextAndCheckShow(element.orderProcessTime)
             ivProduct.loadImage(element.productImage)
             tvProductName.text = itemView.resources.getString(R.string.catalog_prefix_title_section,element.productName)
             tvPrice.text = element.productPrice
@@ -85,7 +86,7 @@ class SellerOfferingViewHolder(
         }
     }
 
-    fun setStyleWidget(element: SellerOfferingUiModel) = binding?.apply {
+    private fun setStyleWidget(element: SellerOfferingUiModel) = binding?.apply {
         clProductCard.setBackgroundResource(element.cardColor)
         clShopInfo.setBackgroundResource(element.cardColor)
         tvVariantValue.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
@@ -106,7 +107,9 @@ class SellerOfferingViewHolder(
         tvAdditionalService.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvInstallment.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         lnBackgroundProductImage.setBackgroundColor(getColor(element.darkMode, lightColor = R.color.dms_static_catalog_color_secondary, darkColor = R.color.dms_static_catalog_color_tertiary))
-
+        ivButtonRightVariant.setImage(IconUnify.CHEVRON_RIGHT, newLightEnable = getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark),
+            newDarkEnable =getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light,
+                darkColor = R.color.dms_static_text_color_dark) )
     }
 
 
