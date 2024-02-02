@@ -26,7 +26,7 @@ class InfiniteRecommendationAdapter(
         delegatesManager
             .addDelegate(InfiniteLoadingDelegate())
             .addDelegate(InfiniteProductDelegate(callback))
-            .addDelegate(InfiniteTitleDelegate())
+            .addDelegate(InfiniteTitleDelegate(callback))
     }
 
     private fun determineFullSpan(
