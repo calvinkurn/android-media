@@ -31,6 +31,7 @@ data class SellerOfferingUiModel(
     val installment:String = "",
     val cardColor: Int = R.drawable.bg_rounded_border_dark,
     val additionalService:String = "",
+    val variantsName: String = ""
 ) : BaseCatalogUiModel(
     idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor,
     darkMode

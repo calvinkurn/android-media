@@ -855,7 +855,8 @@ class CatalogDetailUiMapper @Inject constructor(
 //            freeOngkir = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/116496e7-df32-4c13-a485-9b9607cfdd02.png",
 //            estimationShipping = "Tiba hari ini",
 //            isShopGuarantee = false,
-//            installment = "Cicil dari Rp450.000/bulan"
+//            installment = "Cicil dari Rp450.000/bulan",
+//            variantsName = "Varian 1, Variant 2"
 //        )
     }
 

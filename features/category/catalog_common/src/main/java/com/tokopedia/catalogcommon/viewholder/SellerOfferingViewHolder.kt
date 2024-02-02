@@ -44,7 +44,8 @@ class SellerOfferingViewHolder(
     override fun bind(element: SellerOfferingUiModel) {
         binding?.apply {
             setStyleWidget(element)
-
+            cgVariant.showWithCondition(element.variantsName.isNotEmpty())
+            tvVariantValue.text = element.variantsName
             ivBadge.loadImage(element.shopBadge)
             tvShopName.text = element.shopName
             tvShopResposiveChat.text = element.chatResponseTime
@@ -87,6 +88,8 @@ class SellerOfferingViewHolder(
     fun setStyleWidget(element: SellerOfferingUiModel) = binding?.apply {
         clProductCard.setBackgroundResource(element.cardColor)
         clShopInfo.setBackgroundResource(element.cardColor)
+        tvVariantValue.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
+        tvVariantLabel.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvShopName.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvShopLocation.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvShopResposiveChat.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))

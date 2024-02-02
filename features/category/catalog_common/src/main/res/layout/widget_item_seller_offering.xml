@@ -129,11 +129,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textColor="@color/Unify_NN950"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/dms_static_text_color_dark"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5"
-            tools:text="Pilih varian: " />
+            android:text="@string/catalog_label_variant" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvVariantValue"
@@ -141,7 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:alpha="0.5"
-            android:textColor="@color/Unify_NN600"
+            android:textColor="@color/dms_static_nn_600"
             app:layout_constraintBottom_toBottomOf="@id/tvVariantLabel"
             app:layout_constraintStart_toEndOf="@id/tvVariantLabel"
             app:layout_constraintTop_toTopOf="@id/tvVariantLabel"
@@ -154,13 +155,16 @@
             android:layout_height="1dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
+            android:alpha="0.2"
+            android:background="@color/dms_static_divider"
             app:layout_constraintBottom_toTopOf="@id/barrierTop"
             app:layout_constraintTop_toBottomOf="@id/tvVariantLabel" />
 
         <androidx.constraintlayout.widget.Group
+            android:id="@+id/cgVariant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             app:constraint_referenced_ids="tvVariantValue,tvVariantLabel,dividerVariant" />
 
         <androidx.constraintlayout.widget.Barrier
