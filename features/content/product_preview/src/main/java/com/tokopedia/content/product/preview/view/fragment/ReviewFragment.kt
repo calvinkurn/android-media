@@ -6,7 +6,6 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -39,7 +38,6 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
-import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -124,7 +122,7 @@ class ReviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fetchReviews()
+        initializeReviewMainData()
 
         setupView()
 
@@ -132,18 +130,8 @@ class ReviewFragment @Inject constructor(
         observeEvent()
     }
 
-    private fun fetchReviews() {
-        when (viewModel.productPreviewSource.source) {
-            is ProductPreviewSourceModel.ProductSourceData -> {
-                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
-            }
-            is ProductPreviewSourceModel.ReviewSourceData -> {
-                viewModel.onAction(ProductPreviewAction.FetchReviewByIds)
-            }
-            ProductPreviewSourceModel.UnknownSource -> {
-                activity?.finish()
-            }
-        }
+    private fun initializeReviewMainData() {
+        viewModel.onAction(ProductPreviewAction.InitializeReviewMainData)
     }
 
     private fun setupView() {
@@ -234,8 +222,11 @@ class ReviewFragment @Inject constructor(
         setActionClickListener {
             hide()
             binding.reviewLoader.show()
-            if (state.fromFetchByIds) viewModel.onAction(ProductPreviewAction.FetchReviewByIds)
-            else viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
+            if (state.fromFetchByIds) {
+                viewModel.onAction(ProductPreviewAction.FetchReviewByIds)
+            } else {
+                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
+            }
         }
     }
 

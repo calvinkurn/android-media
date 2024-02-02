@@ -8,9 +8,10 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiM
  * @author by astidhiyaa on 12/12/23
  */
 sealed interface ProductPreviewAction {
-    object InitializeProductMainData : ProductPreviewAction
     object CheckInitialSource : ProductPreviewAction
+    object InitializeProductMainData : ProductPreviewAction
     object FetchMiniInfo : ProductPreviewAction
+    object InitializeReviewMainData : ProductPreviewAction
     object ProductActionFromResult : ProductPreviewAction
     object LikeFromResult : ProductPreviewAction
     object FetchReviewByIds : ProductPreviewAction

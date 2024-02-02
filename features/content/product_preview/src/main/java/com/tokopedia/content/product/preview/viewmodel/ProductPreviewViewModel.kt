@@ -20,6 +20,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReview
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReviewByIds
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Like
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.LikeFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Navigate
@@ -29,8 +30,13 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.UpdateReviewPosition
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
+import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent.InitialSourceEvent
+import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent.UnknownSourceData
 import com.tokopedia.content.product.preview.viewmodel.state.ProductReviewUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
+import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel.ProductSourceData
+import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel.ReviewSourceData
+import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel.UnknownSource
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -60,9 +66,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val reviewSourceId: String
         get() {
             return when (val source = productPreviewSource.source) {
-                is ProductPreviewSourceModel.ReviewSourceData -> {
+                is ReviewSourceData -> {
                     source.reviewSourceId
                 }
+
                 else -> ""
             }
         }
@@ -70,9 +77,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val attachmentSourceId: String
         get() {
             return when (val source = productPreviewSource.source) {
-                is ProductPreviewSourceModel.ReviewSourceData -> {
+                is ReviewSourceData -> {
                     source.attachmentSourceId
                 }
+
                 else -> ""
             }
         }
@@ -82,7 +90,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val _bottomNavContentState = MutableStateFlow(BottomNavUiModel.Empty)
     private val _reviewPosition = MutableStateFlow(0)
 
-    private val _uiEvent = MutableSharedFlow<ProductPreviewEvent>(20)
+    private val _uiEvent = MutableSharedFlow<ProductPreviewEvent>(0)
     val uiEvent get() = _uiEvent
 
     val uiState: Flow<ProductReviewUiState>
@@ -111,9 +119,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
+            CheckInitialSource -> handleCheckInitialSource()
             InitializeProductMainData -> handleInitializeProductMainData()
             FetchMiniInfo -> handleFetchMiniInfo()
-            CheckInitialSource -> handleCheckInitialSource()
+            InitializeReviewMainData -> handleInitializeReviewMainData()
             ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
             LikeFromResult -> handleLikeFromResult()
             FetchReviewByIds -> handleFetchReviewByIds()
@@ -128,14 +137,27 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleCheckInitialSource() {
+        viewModelScope.launchCatchError(block = {
+            when (val source = productPreviewSource.source) {
+                is ProductSourceData -> {
+                    if (source.hasReviewMedia) {
+                        _uiEvent.emit(InitialSourceEvent(tabs = productTab + reviewTab))
+                    } else {
+                        _uiEvent.emit(InitialSourceEvent(tabs = productTab))
+                    }
+                }
+                is ReviewSourceData -> _uiEvent.emit(InitialSourceEvent(tabs = reviewTab))
+                else -> _uiEvent.emit(UnknownSourceData)
+            }
+        }) { _uiEvent.emit(UnknownSourceData) }
+    }
+
     private fun handleInitializeProductMainData() {
         when (val source = productPreviewSource.source) {
-            is ProductPreviewSourceModel.ProductSourceData -> {
-                _productContentState.update {
-                    it.copy(productList = source.productSourceList)
-                }
+            is ProductSourceData -> {
+                _productContentState.update { it.copy(productList = source.productSourceList) }
             }
-
             else -> return
         }
     }
@@ -148,32 +170,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleCheckInitialSource() {
+    private fun handleInitializeReviewMainData() {
         viewModelScope.launchCatchError(block = {
-            when (val source = productPreviewSource.source) {
-                is ProductPreviewSourceModel.ProductSourceData -> {
-                    if (source.hasReviewMedia) {
-                        _uiEvent.emit(
-                            ProductPreviewEvent.InitialSourceEvent(tabs = productTab + reviewTab)
-                        )
-                    } else {
-                        _uiEvent.emit(
-                            ProductPreviewEvent.InitialSourceEvent(tabs = productTab)
-                        )
-                    }
-                }
-                is ProductPreviewSourceModel.ReviewSourceData -> {
-                    _uiEvent.emit(
-                        ProductPreviewEvent.InitialSourceEvent(tabs = reviewTab)
-                    )
-                }
-                else -> {
-                    _uiEvent.emit(ProductPreviewEvent.InitialSourceEvent(tabs = emptyList()))
-                }
+            when (productPreviewSource.source) {
+                is ProductSourceData -> handleFetchReview(isRefresh = true)
+                is ReviewSourceData -> handleFetchReviewByIds()
+                UnknownSource -> _uiEvent.emit(UnknownSourceData)
             }
-        }) {
-            _uiEvent.emit(ProductPreviewEvent.InitialSourceEvent(tabs = emptyList()))
-        }
+        }) { _uiEvent.emit(UnknownSourceData) }
     }
 
     private fun handleProductSelected(position: Int) {

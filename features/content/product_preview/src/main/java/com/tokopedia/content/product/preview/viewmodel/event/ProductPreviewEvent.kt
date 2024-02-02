@@ -48,4 +48,6 @@ sealed interface ProductPreviewEvent {
     data class InitialSourceEvent(
         val tabs: List<ProductPreviewTabUiModel>
     ) : ProductPreviewEvent
+
+    object UnknownSourceData : ProductPreviewEvent
 }
