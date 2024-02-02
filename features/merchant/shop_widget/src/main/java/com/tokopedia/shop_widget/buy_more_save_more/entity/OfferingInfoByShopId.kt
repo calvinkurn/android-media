@@ -82,6 +82,7 @@ data class OfferingInfoByShopIdUiModel(
                     )
                 },
                 campaign = OfferingProductListUiModel.Product.Campaign(
+                    originalPrice = product.price,
                     discountedPrice = product.discountedPrice,
                     discountedPercentage = product.discountedPercentage.toIntOrZero()
                 ),
