@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
 import com.tokopedia.productcard.experiments.ProductCardExperiment
+import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
 
 data class GetRecommendationRequestParam(
     val pageNumber: Int = 1,
@@ -68,7 +69,8 @@ data class GetRecommendationRequestParam(
 
     private fun getProductCardReimagineVersion(): Int {
         val shouldReimagineEnabled = ProductCardExperiment.isReimagine()
-        return if (shouldReimagineEnabled && hasNewProductCardEnabled) {
+        val isQuantityEditor = pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)
+        return if (shouldReimagineEnabled && hasNewProductCardEnabled && isQuantityEditor.not()) {
             CARD_REIMAGINE_VERSION
         } else {
             CARD_REVERT_VERSION
