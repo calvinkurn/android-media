@@ -87,10 +87,12 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -3384,7 +3386,14 @@ open class DynamicProductDetailFragment :
 
     private fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
-        submitList(newData)
+
+        val finalData = if (isTabletMode()) {
+            manipulateDataTabletMode(newData)
+        } else {
+            newData
+        }
+
+        submitList(finalData)
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
@@ -3545,18 +3554,23 @@ open class DynamicProductDetailFragment :
     }
 
     private fun initNavigationTab(data: ProductInfoP2UiData) {
-        val items = data.navBar.items.map { item ->
-            NavigationTab.Item(item.title, item.componentName) {
-                adapter.getComponentPositionByName(item.componentName)
-            }
-        }
-
         val navigation = binding?.pdpNavigation
-        getRecyclerView()?.let { recyclerView ->
-            if (items.isEmpty()) {
-                navigation?.stop(recyclerView)
-            } else {
-                navigation?.start(recyclerView, items, this)
+
+        if (isTabletMode()) {
+            navigation?.hide()
+        } else {
+            val items = data.navBar.items.map { item ->
+                NavigationTab.Item(item.title, item.componentName) {
+                    adapter.getComponentPositionByName(item.componentName)
+                }
+            }
+
+            getRecyclerView()?.let { recyclerView ->
+                if (items.isEmpty()) {
+                    navigation?.stop(recyclerView)
+                } else {
+                    navigation?.start(recyclerView, items, this)
+                }
             }
         }
     }

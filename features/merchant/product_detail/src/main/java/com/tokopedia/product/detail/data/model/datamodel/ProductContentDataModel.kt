@@ -29,6 +29,8 @@ data class ProductContentDataModel(
         { false },
         "ProductContentDataModel"
     ) {
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
