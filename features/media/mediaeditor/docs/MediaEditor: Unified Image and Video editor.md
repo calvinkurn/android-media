@@ -54,6 +54,25 @@ Upload and content creation funnel
 Base component for Media’s experimentation plan
 - By centralizing the module to Media, we will be able to own and conduct experiments to improve image and video quality in Tokopedia
 
+
+## Flow Diagram
+
+### MediaEditor general flow 
+![MediaEditor general flow](https://docs-android.tokopedia.net/images/docs/media-docs-img/MediaEditor-main_flow.png "MediaEditor general flow ")
+
+### MediaEditor basic tools flow
+![MediaEditor basic tools flow](https://docs-android.tokopedia.net/images/docs/media-docs-img/MediaEditor-basic_tool_flow.png "MediaEditor basic tools flow")
+
+### MediaEditor RemoveBackground flow
+![MediaEditor RemoveBackground flow](https://docs-android.tokopedia.net/images/docs/media-docs-img/MediaEditor-remove_bg_flow.png "MediaEditor RemoveBackground flow")
+
+### MediaEditor AddText flow
+![MediaEditor AddText flow](https://docs-android.tokopedia.net/images/docs/images_in_zip/MediaEditor-add_text_flow.png "MediaEditor AddText flow")
+
+### MediaEditor AddLogo flow
+![MediaEditor AddLogo flow](https://docs-android.tokopedia.net/images/docs/media-docs-img/MediaEditor-add_logo_flow.png "MediaEditor AddLogo flow")
+
+
 ## How-to
 
 ### Default
