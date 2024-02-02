@@ -42,7 +42,7 @@ data class RecommendationItem(
     val minOrder: Int = 0,
     val maxOrder: Int = 0,
     val location: String = "",
-    val badgesUrl: List<String> = listOf(),
+    val badges: List<Badge> = listOf(),
     val type: String = "",
     val isFreeOngkirActive: Boolean = false,
     val freeOngkirImageUrl: String = "",
@@ -71,6 +71,11 @@ data class RecommendationItem(
         TopRight(GRID_POS_TOP_RIGHT),
         BottomRight(GRID_POS_BOTTOM_RIGHT)
     }
+
+    data class Badge(
+        val title: String,
+        val imageUrl: String,
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -111,7 +116,7 @@ data class RecommendationItem(
         if (pageName != other.pageName) return false
         if (minOrder != other.minOrder) return false
         if (location != other.location) return false
-        if (badgesUrl != other.badgesUrl) return false
+        if (badges != other.badges) return false
         if (type != other.type) return false
         if (isFreeOngkirActive != other.isFreeOngkirActive) return false
         if (freeOngkirImageUrl != other.freeOngkirImageUrl) return false
@@ -159,7 +164,7 @@ data class RecommendationItem(
         result = HASH_CODE * result + pageName.hashCode()
         result = HASH_CODE * result + minOrder
         result = HASH_CODE * result + location.hashCode()
-        result = HASH_CODE * result + badgesUrl.hashCode()
+        result = HASH_CODE * result + badges.hashCode()
         result = HASH_CODE * result + type.hashCode()
         result = HASH_CODE * result + isFreeOngkirActive.hashCode()
         result = HASH_CODE * result + freeOngkirImageUrl.hashCode()

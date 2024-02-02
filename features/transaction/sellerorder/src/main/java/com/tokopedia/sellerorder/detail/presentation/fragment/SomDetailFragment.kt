@@ -138,8 +138,8 @@ import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiMode
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
-import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -1217,6 +1217,7 @@ open class SomDetailFragment :
     }
 
     override fun onDetailIncomeClicked() {
+        SomAnalytics.eventDetailIncomeClicked()
         val somDetailTransparencyFeeBottomSheet =
             SomDetailTransparencyFeeBottomSheet.newInstance(orderId)
         somDetailTransparencyFeeBottomSheet.show(childFragmentManager)
