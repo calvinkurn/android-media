@@ -62,8 +62,9 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -427,8 +428,11 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
-        viewModel.submitAction(CommentAction.ExpandComment(item))
-        if (!item.isExpanded) analytics?.clickLihatBalasan() else analytics?.clickSembunyikan()
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(DELAY_EXPAND)
+            viewModel.submitAction(CommentAction.ExpandComment(item))
+            if (!item.isExpanded) analytics?.clickLihatBalasan() else analytics?.clickSembunyikan()
+        }
     }
 
     override fun onImpressedExpandable() {
@@ -631,6 +635,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140
+        private const val DELAY_EXPAND = 1000L
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
