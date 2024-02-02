@@ -11,7 +11,7 @@ import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.presentation.LandingPageRefreshCallback
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.notifications.inApp.ketupat.ActivityLifecycleHandler
+import com.tokopedia.notifications.inApp.ketupat.GamificationPopUpHandler
 import com.tokopedia.notifications.inApp.ketupat.KetupatSlashCallBack
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -39,8 +39,8 @@ class KetupatCrackBannerVH(itemView: View) :
         landingPageRefreshCallback: LandingPageRefreshCallback?
     ) {
         //show pop up and pass the callback for tracking slash
-        var activityLifecycleHandler = ActivityLifecycleHandler()
-        activityLifecycleHandler.getScratchCardData(activity,
+        var gamificationPopUpHandler = GamificationPopUpHandler()
+        gamificationPopUpHandler.getScratchCardData(activity,
             "scratch-card-landing-page",
             object : KetupatSlashCallBack {
                 override fun ketuPatSlashed() {

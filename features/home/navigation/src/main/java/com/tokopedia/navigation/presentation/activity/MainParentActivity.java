@@ -104,8 +104,6 @@ import com.tokopedia.navigation_common.listener.HomeScrollViewListener;
 import com.tokopedia.navigation_common.listener.MainParentStateListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
-import com.tokopedia.notifications.inApp.ketupat.ActivityLifecycleHandler;
-import com.tokopedia.notifications.inApp.ketupat.KetupatAnimationPopup;
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;

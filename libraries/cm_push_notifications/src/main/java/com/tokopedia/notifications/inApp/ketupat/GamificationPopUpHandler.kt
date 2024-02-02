@@ -1,9 +1,7 @@
 package com.tokopedia.notifications.inApp.ketupat
 
 import android.app.Activity
-import android.app.Application
 import android.content.Context
-import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -20,15 +18,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
-open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
+class GamificationPopUpHandler {
 
     private var isAnimationPopupGQlCalled = false
 
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        isAnimationPopupGQlCalled = false
-    }
-
-    override fun onActivityResumed(activity: Activity) {
+    fun onFragmentResume(activity: Activity) {
         try {
             val activityName = activity::class.java.simpleName
             val isAnimationPopupEnabled = FirebaseRemoteConfigImpl(activity.applicationContext)
@@ -42,9 +36,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
                 ) {
                     if(!isAnimationPopupGQlCalled) {
                         isAnimationPopupGQlCalled = true
-                        Handler().postDelayed({
-                            getScratchCardData(activity)
-                        }, 2000)
+                        getScratchCardData(activity)
                     }
                 }
             }
@@ -61,7 +53,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    open fun getScratchCardData(
+    fun getScratchCardData(
         activity: Activity,
         pageSource: String = "tokopedia-home-page",
         ketupatSlashCallBack: KetupatSlashCallBack? = null
@@ -91,7 +83,7 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     private fun enableGQLCall(){
         Handler().postDelayed({
             isAnimationPopupGQlCalled = false
-                              }, 5000)
+                              }, 2000)
     }
 
     open fun showLottiePopup(
@@ -166,17 +158,17 @@ open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     private fun createUserSession(activity: Activity): UserSessionInterface =
         UserSession(activity)
 
-    override fun onActivityStarted(activity: Activity) { }
-
-    override fun onActivityPaused(activity: Activity) { }
-
-    override fun onActivityStopped(activity: Activity) {
-//        isAnimationPopupGQlCalled = false
-    }
-
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
-
-    override fun onActivityDestroyed(activity: Activity) { }
+//    override fun onActivityStarted(activity: Activity) { }
+//
+//    override fun onActivityPaused(activity: Activity) { }
+//
+//    override fun onActivityStopped(activity: Activity) {
+////        isAnimationPopupGQlCalled = false
+//    }
+//
+//    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
+//
+//    override fun onActivityDestroyed(activity: Activity) { }
 
     companion object {
         private const val HomePageActivity = "MainParentActivity"
