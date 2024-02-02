@@ -8,10 +8,13 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.dummy.toDummyData
 import com.tokopedia.logisticcart.dummy.toDummyType
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
@@ -24,9 +27,11 @@ import com.tokopedia.logisticcart.test.R as logisticcarttestR
 class ShippingWidgetCheckoutActivity :
     FragmentActivity(),
     ShippingCheckoutRevampWidget.ShippingWidgetListener,
-    ShippingDurationBottomsheetListener {
+    ShippingDurationBottomsheetListener,
+    ShippingCourierBottomsheetListener {
 
     var model: ShippingWidgetUiModel = ShippingWidgetUiModel()
+    var courierList: List<ShippingCourierUiModel> = listOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(logisticcarttestR.layout.activity_shipping_widget_checkout_test)
@@ -60,7 +65,15 @@ class ShippingWidgetCheckoutActivity :
     }
 
     override fun onChangeCourierClickListener() {
-        //
+        ShippingCourierBottomsheet.show(
+            fragmentManager = getHostFragmentManager(),
+            cartPosition = 0,
+            isOcc = false,
+            recipientAddressModel = null,
+            shippingCourierUiModels = courierList,
+            shippingCourierBottomsheetListener = this@ShippingWidgetCheckoutActivity
+
+        )
     }
 
     override fun onOnTimeDeliveryClicked(url: String) {
@@ -129,6 +142,7 @@ class ShippingWidgetCheckoutActivity :
         val courierItemData =
             ShippingCourierConverter().convertToCourierItemDataNew(selectedCourier)
         model = courierItemData.toShippingWidgetUiModel()
+        courierList = shippingCourierUiModels
         Log.d("shipping model", model.toString())
         render()
     }
@@ -151,5 +165,24 @@ class ShippingWidgetCheckoutActivity :
         model = courierItemData.toShippingWidgetUiModel()
         Log.d("shipping model", model.toString())
         render()
+    }
+
+    override fun onCourierChoosen(
+        shippingCourierUiModel: ShippingCourierUiModel,
+        courierItemData: CourierItemData,
+        recipientAddressModel: RecipientAddressModel?,
+        cartPosition: Int,
+        isCod: Boolean,
+        isPromoCourier: Boolean,
+        isNeedPinpoint: Boolean,
+        shippingCourierList: List<ShippingCourierUiModel>
+    ) {
+        model = courierItemData.toShippingWidgetUiModel()
+        Log.d("shipping model", model.toString())
+        render()
+    }
+
+    override fun onCourierShipmentRecommendationCloseClicked() {
+        //
     }
 }

@@ -2,12 +2,17 @@ package com.tokopedia.logisticcart.robot
 
 import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import junit.framework.TestCase.assertEquals
+import com.tokopedia.logisticcart.R as logisticcartR
 
 fun shippingWidget(widget: ShippingCheckoutRevampWidget, func: ShippingWidgetRobot.() -> Unit) {
     ShippingWidgetRobot(widget).apply(func)
@@ -189,6 +194,33 @@ class ShippingWidgetRobot(private val widget: ShippingCheckoutRevampWidget) {
     fun assertInitialStateVisible() {
         assertEquals(View.VISIBLE, widget.binding?.labelChooseShipping?.visibility)
         assertEquals("Pilih Pengiriman", widget.binding?.labelChooseShipping?.text)
+    }
+
+    fun assertLoadingBottomSheetVisible() {
+        onView(withId(logisticcartR.id.pb_loading)).check(matches(isDisplayed()))
+    }
+
+    fun scrollToBottom() {
+        onView(withId(logisticcartR.id.rv_duration)).perform(ViewActions.swipeUp())
+        Thread.sleep(1000)
+    }
+
+    fun assertShippingOptionVisible(title: String, description: String) {
+        if (title.isNotEmpty()) {
+            onView(withText(title)).check(matches(isDisplayed()))
+        }
+        if (description.isNotEmpty()) {
+            onView(withText(description)).check(matches(isDisplayed()))
+        }
+    }
+
+    fun assertShippingDetailInfo(origin: String, preorder: String) {
+        if (origin.isNotEmpty()) {
+            onView(withText(origin)).check(matches(isDisplayed()))
+        }
+        if (preorder.isNotEmpty()) {
+            onView(withText(preorder)).check(matches(isDisplayed()))
+        }
     }
 
     fun clickShippingWidget(text: String) {

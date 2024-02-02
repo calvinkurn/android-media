@@ -213,7 +213,7 @@ class ShippingWidgetTest {
     }
 
     @Test
-    fun allShippingState() {
+    fun happyFlowRatesShipping() {
         val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
             putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.INITIAL_STATE.name)
         }
@@ -222,7 +222,24 @@ class ShippingWidgetTest {
         val widget =
             activityRule.activity.findViewById<ShippingCheckoutRevampWidget>(logisticcarttestR.id.shipping_checkout_widget)
         shippingWidget(widget) {
+            assertInitialStateVisible()
             clickShippingWidget("Pilih Pengiriman")
+            // check shipping options bottom sheet
+            assertShippingDetailInfo("Dikirim dari Kota Administrasi Jakarta Timur • Berat 0.001 kg", "")
+            assertShippingOptionVisible("Estimasi tiba besok - 15 Sep (Rp0)", "")
+            assertShippingOptionVisible(
+                "Instant 3 Jam (Rp103.400)",
+                "Estimasi tiba hari ini - besok, maks. 09:00 WIB"
+            )
+            assertShippingOptionVisible("Same Day 8 Jam (Rp47.000)", "Estimasi tiba hari ini - besok, maks. 16:00 WIB")
+            assertShippingOptionVisible("Same Day (Rp19.500)", "Estimasi tiba hari ini - besok, maks. 22:00 WIB")
+            assertShippingOptionVisible("Next Day (Rp13.000 - Rp15.300)", "Estimasi tiba 1 - 2 Feb")
+            assertShippingOptionVisible("Reguler (Rp10.000 - Rp11.500)", "Estimasi tiba 2 - 5 Feb")
+            assertShippingOptionVisible("Kargo (Rp15.000 - Rp35.000)", "Rekomendasi berat di atas 5kg")
+            scrollToBottom()
+            assertShippingOptionVisible("Kurir Toko", "Belum PinPoint Atur Pinpoint")
+
+            // normal shipment
             chooseShipment("Reguler (Rp10.000 - Rp11.500)")
             assertNormalShippingVisible()
             assertNormalShippingCodLabel("", View.GONE)
@@ -231,7 +248,16 @@ class ShippingWidgetTest {
             assertNormalShippingTitle("Reguler")
             assertMustInsurance(300.0)
 
-            // todo click courier
+            // choose kurir
+            clickShippingWidget("Kurir Rekomendasi (Rp11.500)")
+            chooseShipment("SiCepat (Rp10.000)")
+            assertNormalShippingVisible()
+            assertNormalShippingCodLabel("", View.GONE)
+            assertNormalShippingEta("Estimasi tiba 2 - 5 Feb")
+            assertNormalShippingCourier("SiCepat (Rp10.000)")
+            assertMustInsurance(300.0)
+
+            // choose whitelabel service
             clickShippingWidget("Reguler")
             chooseShipment("Instant 3 Jam (Rp103.400)")
             assertWhitelabelShippingVisible()
@@ -239,6 +265,7 @@ class ShippingWidgetTest {
             assertWhitelabelShippingEta("Estimasi tiba hari ini - besok, maks. 09:00 WIB")
             assertMustInsurance(800.0)
 
+            // choose free shipment
             clickShippingWidget("Instant 3 Jam (Rp103.400)")
             chooseShipment("Estimasi tiba besok - 15 Sep (Rp0)")
             assertBebasOngkirShippingVisible()
