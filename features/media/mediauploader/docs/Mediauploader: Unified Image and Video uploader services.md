@@ -37,6 +37,7 @@ Therefore, mediauploader has developed in Q4 so that it is possible to upload vi
 ## Flow Diagram
 
 Let's take a look at mediauploader's module architecture overview.
+![](https://docs-android.tokopedia.net/images/docs/images_in_zip/image_media_uploader_flow.png)
 
 ![](https://docs-android.tokopedia.net/images/docs/mediauploader/Untitled%20Diagram.drawio%20%281%29.png)
 
