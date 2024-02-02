@@ -74,7 +74,7 @@ class ReviewFragment @Inject constructor(
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvReview.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = false))
+                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = false, page = page))
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -220,13 +220,9 @@ class ReviewFragment @Inject constructor(
             setType(GlobalError.SERVER_ERROR)
         }
         setActionClickListener {
+            state.onRetry()
             hide()
             binding.reviewLoader.show()
-            if (state.fromFetchByIds) {
-                viewModel.onAction(ProductPreviewAction.FetchReviewByIds)
-            } else {
-                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
-            }
         }
     }
 

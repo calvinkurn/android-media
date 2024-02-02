@@ -8,9 +8,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.content.product.preview.view.fragment.ProductFragment
 import com.tokopedia.content.product.preview.view.fragment.ReviewFragment
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_KEY
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_KEY
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.ProductReviewTab
 
 class ProductPreviewPagerAdapter(
     private val fragmentManager: FragmentManager,
@@ -18,11 +18,11 @@ class ProductPreviewPagerAdapter(
     lifecycle: Lifecycle
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private val _fragments: MutableList<ProductPreviewTabUiModel> = mutableListOf()
-    private val fragments: List<ProductPreviewTabUiModel>
+    private val _fragments: MutableList<ProductReviewTab> = mutableListOf()
+    private val fragments: List<ProductReviewTab>
         get() = _fragments
 
-    fun insertFragment(listFragment: List<ProductPreviewTabUiModel>) {
+    fun insertFragment(listFragment: List<ProductReviewTab>) {
         _fragments.clear()
         _fragments.addAll(listFragment)
         notifyItemRangeChanged(0, fragments.size)
@@ -32,7 +32,7 @@ class ProductPreviewPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         val tabs = fragments[position]
-        return when (tabs.tabs.key) {
+        return when (tabs.key) {
             TAB_PRODUCT_KEY -> {
                 ProductFragment.getOrCreate(
                     fragmentManager = fragmentManager,

@@ -1,14 +1,8 @@
 package com.tokopedia.content.product.preview.view.uimodel.pager
 
-data class ProductPreviewTabUiModel(
-    val tabs: ProductReviewTab
-) {
-    enum class ProductReviewTab(
-        val key: String
-    ) {
-        ProductTab(key = TAB_PRODUCT_KEY),
-        ReviewTab(key = TAB_REVIEW_KEY)
-    }
+data class ProductPreviewTabUiModel(val tabs: List<ProductReviewTab>) {
+
+    data class ProductReviewTab(val key: String)
 
     companion object {
         const val TAB_PRODUCT_KEY = "product_tab"
@@ -16,16 +10,8 @@ data class ProductPreviewTabUiModel(
         const val TAB_PRODUCT_POS = 0
         const val TAB_REVIEW_POS = 1
 
-        val productTab = listOf(
-            ProductPreviewTabUiModel(
-                tabs = ProductReviewTab.ProductTab
-            )
-        )
-
-        val reviewTab = listOf(
-            ProductPreviewTabUiModel(
-                tabs = ProductReviewTab.ReviewTab
-            )
-        )
+        val Empty = ProductPreviewTabUiModel(tabs = emptyList())
+        val productTab = ProductReviewTab(key = TAB_PRODUCT_KEY)
+        val reviewTab = ProductReviewTab(key = TAB_REVIEW_KEY)
     }
 }

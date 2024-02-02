@@ -24,11 +24,11 @@ import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
@@ -101,22 +101,12 @@ class ProductPreviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initData()
         initViews()
         initSource()
 
         onClickHandler()
         observeData()
         observeEvent()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
-    }
-
-    private fun initData() {
-        viewModel.onAction(InitializeProductMainData)
     }
 
     private fun initViews() = with(binding) {
@@ -128,6 +118,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun initSource() {
         viewModel.onAction(ProductPreviewAction.CheckInitialSource)
+        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
     }
 
     private fun isShowAllTab(isShow: Boolean) = with(binding) {
@@ -168,6 +159,7 @@ class ProductPreviewFragment @Inject constructor(
             viewModel.uiState
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .withCache().collectLatest { (prev, curr) ->
+                    renderTabs(prev?.tabsUiModel, curr.tabsUiModel)
                     renderBottomNav(prev?.bottomNavUiModel, curr.bottomNavUiModel)
                 }
         }
@@ -177,7 +169,7 @@ class ProductPreviewFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiEvent.flowWithLifecycle(
                 viewLifecycleOwner.lifecycle,
-                Lifecycle.State.CREATED
+                Lifecycle.State.RESUMED
             ).collect {
                 when (val event = it) {
                     is ProductPreviewEvent.LoginEvent<*> -> {
@@ -225,19 +217,21 @@ class ProductPreviewFragment @Inject constructor(
                     is ProductPreviewEvent.FailFetchMiniInfo -> {
                         binding.viewFooter.gone()
                     }
-                    is ProductPreviewEvent.InitialSourceEvent -> {
-                        if (event.tabs.isEmpty()) activity?.finish()
-
-                        val tabs = event.tabs
-                        pagerAdapter.insertFragment(tabs)
-
-                        val isShowAllTab = tabs.size > 1
-                        isShowAllTab(isShowAllTab)
-                    }
+                    is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
                     else -> return@collect
                 }
             }
         }
+    }
+
+    private fun renderTabs(
+        prev: ProductPreviewTabUiModel?,
+        curr: ProductPreviewTabUiModel
+    ) {
+        if (prev == curr) return
+
+        isShowAllTab(curr.tabs.size > 1)
+        pagerAdapter.insertFragment(curr.tabs)
     }
 
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {

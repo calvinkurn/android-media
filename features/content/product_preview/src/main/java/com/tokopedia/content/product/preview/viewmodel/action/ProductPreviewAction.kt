@@ -9,13 +9,12 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiM
  */
 sealed interface ProductPreviewAction {
     object CheckInitialSource : ProductPreviewAction
-    object InitializeProductMainData : ProductPreviewAction
     object FetchMiniInfo : ProductPreviewAction
     object InitializeReviewMainData : ProductPreviewAction
     object ProductActionFromResult : ProductPreviewAction
     object LikeFromResult : ProductPreviewAction
     object FetchReviewByIds : ProductPreviewAction
-    data class FetchReview(val isRefresh: Boolean) : ProductPreviewAction
+    data class FetchReview(val isRefresh: Boolean, val page: Int) : ProductPreviewAction
     data class ProductAction(val model: BottomNavUiModel) : ProductPreviewAction
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReviewReportUiModel) : ProductPreviewAction

@@ -1,7 +1,6 @@
 package com.tokopedia.content.product.preview.viewmodel.event
 
 import com.tokopedia.content.product.preview.R
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
 
@@ -43,10 +42,6 @@ sealed interface ProductPreviewEvent {
 
     data class FailFetchMiniInfo(
         val message: Throwable
-    ) : ProductPreviewEvent
-
-    data class InitialSourceEvent(
-        val tabs: List<ProductPreviewTabUiModel>
     ) : ProductPreviewEvent
 
     object UnknownSourceData : ProductPreviewEvent
