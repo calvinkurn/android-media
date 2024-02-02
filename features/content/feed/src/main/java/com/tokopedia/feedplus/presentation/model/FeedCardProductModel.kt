@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.presentation.model
 
+import com.tokopedia.feedcomponent.data.pojo.feed.CardHighlight
+
 /**
  * Created By : Muhammad Furqan on 28/02/23
  */
@@ -37,6 +39,7 @@ data class FeedCardProductModel(
     val isCashback: Boolean = false,
     val cashbackFmt: String = "",
     val isAvailable: Boolean = false,
+    val isHighlight: Boolean,
 )
 
 data class FeedCardProductAffiliate(

@@ -175,7 +175,7 @@ fun ProductTagItems(
             isVisible = !needToBeShown,
             onClick = onProductLabelClick
         )
-        val highlightedProduct = products.firstOrNull() ?: return //TODO: adjust to isHiglighted
+        val highlightedProduct = products.firstOrNull { it.isHighlight } ?: return
         FeedProductHighlight(
             product = highlightedProduct,
             isVisible = needToBeShown,
