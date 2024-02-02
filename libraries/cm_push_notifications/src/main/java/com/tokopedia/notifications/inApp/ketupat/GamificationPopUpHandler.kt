@@ -15,8 +15,12 @@ import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD
+import com.tokopedia.utils.date.DateUtil.getCurrentDate
+import com.tokopedia.utils.date.getDayDiffFromToday
+import com.tokopedia.utils.date.toDate
 import java.lang.ref.WeakReference
-import java.util.concurrent.TimeUnit
+import kotlin.math.absoluteValue
 
 class GamificationPopUpHandler {
 
@@ -34,7 +38,7 @@ class GamificationPopUpHandler {
                 if (!CMInAppManager.getInstance().existsActiveInAppCampaign(HomePageActivity, true) &&
                     isAnimationPopupEnabled
                 ) {
-                    if(!isAnimationPopupGQlCalled) {
+                    if (!isAnimationPopupGQlCalled) {
                         isAnimationPopupGQlCalled = true
                         getScratchCardData(activity)
                     }
@@ -80,15 +84,15 @@ class GamificationPopUpHandler {
         }
     }
 
-    private fun enableGQLCall(){
+    private fun enableGQLCall() {
         Handler().postDelayed({
             isAnimationPopupGQlCalled = false
-                              }, 2000)
+        }, 2000)
     }
 
     open fun showLottiePopup(
         activity: Activity,
-        pageSource:String,
+        pageSource: String,
         slug: String?,
         popUpContent: PopUpContent,
         scratchCardId: String,
@@ -108,8 +112,9 @@ class GamificationPopUpHandler {
                 .findViewById<View>(android.R.id.content)
                 .rootView as FrameLayout
             root.addView(ketupatAnimationPopup)
-            if(pageSource == "tokopedia-home-page")
+            if (pageSource == "tokopedia-home-page") {
                 setTimeStampForKetupat(activity)
+            }
         } catch (e: Exception) {
             ServerLogger.log(
                 Priority.P2,
@@ -124,24 +129,28 @@ class GamificationPopUpHandler {
     }
 
     private fun isAnimationPopEnable(activity: Activity): Boolean {
-        val ketupatShownTime: Long = getShownTime(activity, "ketupat_shown_time")
-        val inappShownTime: Long = getShownTime(activity, "inapp_shown_time")
+        val ketupatShownTime: String? = getShownTime(activity, "ketupat_shown_time")
+        val inappShownTime: String? = getShownTime(activity, "inapp_shown_time")
 
         // IF inshown or ketupat dialog shown before 24 hours then simply return
 
-        return (is24HourBefore(ketupatShownTime) && is24HourBefore(inappShownTime))
+        return ketupatShownTime?.let { is24HourBefore(it) } ?: true &&
+            inappShownTime?.let { is24HourBefore(it) } ?: true
     }
 
-    private fun getShownTime(context: Context, key: String): Long {
-        return getSharedPref(context, key).getLong(key, 0)
+    private fun getShownTime(context: Context, key: String): String? {
+        return getSharedPref(context, key).getString(key, null)
     }
 
-    private fun is24HourBefore(time: Long): Boolean {
-        return TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - time) >= 5
+    private fun is24HourBefore(date: String): Boolean {
+        return date.toDate(YYYY_MM_DD).getDayDiffFromToday().absoluteValue.toInt() >= 1
     }
 
     private fun setTimeStampForKetupat(activity: Activity) {
-        getSharedPref(activity, "ketupat_shown_time").edit().putLong("ketupat_shown_time", System.currentTimeMillis()).apply()
+        getSharedPref(activity, "ketupat_shown_time").edit().putString(
+            "ketupat_shown_time",
+            getCurrentDate().toString()
+        ).apply()
     }
 
     private fun getSharedPref(context: Context, key: String) = context.applicationContext.getSharedPreferences(
@@ -163,7 +172,7 @@ class GamificationPopUpHandler {
 //    override fun onActivityPaused(activity: Activity) { }
 //
 //    override fun onActivityStopped(activity: Activity) {
-////        isAnimationPopupGQlCalled = false
+// //        isAnimationPopupGQlCalled = false
 //    }
 //
 //    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
