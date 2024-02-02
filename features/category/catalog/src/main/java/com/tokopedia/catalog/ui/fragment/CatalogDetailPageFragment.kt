@@ -141,7 +141,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -152,7 +151,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.activity_catalog_detail_page.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.debounce
@@ -423,6 +421,7 @@ class CatalogDetailPageFragment :
     }
 
     private fun setupObservers(view: View) {
+        observeAddToCartDataModel(view)
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
                 productSortingStatus = it.data.productSortingStatus
@@ -521,6 +520,22 @@ class CatalogDetailPageFragment :
                 if (selectNavigationFromScroll) {
                     widgetAdapter.autoSelectNavigation(it)
                 }
+            }
+        }
+    }
+
+    private fun observeAddToCartDataModel(view: View) {
+        viewModel.addToCartDataModel.observe(viewLifecycleOwner) {
+            if (it.isStatusError()) {
+                Toaster.build(
+                    view,
+                    it.getAtcErrorMessage().orEmpty(),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR
+                ).show()
+            } else {
+                RouteManager.route(context, ApplinkConst.CART)
+                viewModel.refreshNotification()
             }
         }
     }

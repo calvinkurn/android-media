@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
@@ -47,6 +48,10 @@ class CatalogDetailPageViewModel @Inject constructor(
     private val _comparisonUiModel = MutableLiveData<ComparisonUiModel?>()
     val comparisonUiModel: LiveData<ComparisonUiModel?>
         get() = _comparisonUiModel
+
+    private val _addToCartDataModel = MutableLiveData<AddToCartDataModel>()
+    val addToCartDataModel: LiveData<AddToCartDataModel>
+        get() = _addToCartDataModel
 
     private val _scrollEvents = MutableStateFlow("")
     val scrollEvents: Flow<String> = _scrollEvents.asStateFlow()
@@ -117,8 +122,7 @@ class CatalogDetailPageViewModel @Inject constructor(
                     warehouseId = atcUiModel.warehouseId
                 )
                 addToCartUseCase.setParams(param)
-                addToCartUseCase.executeOnBackground()
-                refreshNotification()
+                _addToCartDataModel.postValue(addToCartUseCase.executeOnBackground())
             },
             onError = {
                 _errorsToaster.postValue(it)
