@@ -7,6 +7,7 @@ import com.tokopedia.content.product.preview.data.mapper.ProductPreviewMapper
 import com.tokopedia.content.product.preview.data.usecase.MediaReviewUseCase
 import com.tokopedia.content.product.preview.data.usecase.ProductMiniInfoUseCase
 import com.tokopedia.content.product.preview.data.usecase.RemindMeUseCase
+import com.tokopedia.content.product.preview.data.usecase.ReviewByIdsUseCase
 import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class ProductPreviewRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val miniInfoUseCase: ProductMiniInfoUseCase,
+    private val getReviewByIdsUseCase: ReviewByIdsUseCase,
     private val getReviewUseCase: MediaReviewUseCase,
     private val likeUseCase: ReviewLikeUseCase,
     private val submitReportUseCase: SubmitReportUseCase,
@@ -39,6 +41,12 @@ class ProductPreviewRepositoryImpl @Inject constructor(
         withContext(dispatchers.io) {
             val response = miniInfoUseCase(ProductMiniInfoUseCase.Param(productId))
             mapper.mapMiniInfo(response)
+        }
+
+    override suspend fun getReviewByIds(ids: List<String>): ReviewUiModel =
+        withContext(dispatchers.io) {
+            val response = getReviewByIdsUseCase(ReviewByIdsUseCase.Param(ids = ids))
+            mapper.mapReviewsByIds(response)
         }
 
     override suspend fun getReview(productId: String, page: Int): ReviewUiModel =

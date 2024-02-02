@@ -5,10 +5,10 @@
     <string name="tab_title_review">Ulasan</string>
     <string name="product_prev_menu_opt_watch">Mode nonton</string>
     <string name="time_separator">/</string>
-    <string name="video_time_less_than_hour">%02d:%02d</string>
-    <string name="video_time_hours">%02d:%02d:%02d</string>
-    <string name="text_label_place_holder_empty_variant">%s/%s</string>
-    <string name="text_label_place_holder">%s/%s • %s</string>
+    <string name="video_time_less_than_hour">%1$02d:%2$02d</string>
+    <string name="video_time_hours">%1$02d:%2$02d:%3$02d</string>
+    <string name="text_label_place_holder_empty_variant">%1$s/%2$s</string>
+    <string name="text_label_place_holder">%1$s/%2$s • %3$s</string>
     <string name="circle_dot_divider">•</string>
     <string name="bottom_atc_success_toaster">Barang berhasil ditambahkan ke Keranjang.</string>
     <string name="bottom_atc_failed_toaster">Oops, barang gagal ditambahkan ke Keranjang. </string>
@@ -25,5 +25,6 @@
     <string name="review_report_success_toaster">Kamu berhasil melaporkan ulasan ini.</string>
     <string name="review_report_failed_toaster">Gagal mengirim laporan, coba lagi, ya.</string>
     <string name="product_prev_review_expand">Selengkapnya</string>
+    <string name="product_prev_review_collapse">Lihat sedikit</string>
     <string name="product_prev_review_ellipsize"> ... </string>
 </resources>
