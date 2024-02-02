@@ -140,6 +140,9 @@ RATIO_3_4
 RATIO_2_1
 ```
 
+### MediaEditor page
+![MediaEditor](https://docs-android.tokopedia.net/images/docs/images_in_zip/MediaEditor-page.png "MediaEditor")
+
 ## Action Items
 
 - Add video editor (TODO)
