@@ -9,7 +9,8 @@ data class AddOnSummaryUiModel(
     val totalPriceText: StringRes,
     val addonsLogoUrl: String,
     val addonsTitle: String,
-    val addonItemList: List<AddonItemUiModel>
+    val addonItemList: List<AddonItemUiModel>,
+    val canExpandCollapse: Boolean
 ) {
     var isExpand: Boolean = true
 

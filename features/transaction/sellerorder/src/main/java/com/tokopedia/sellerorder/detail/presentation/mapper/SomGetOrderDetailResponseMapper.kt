@@ -88,7 +88,8 @@ object SomGetOrderDetailResponseMapper {
                                         orderId = "",
                                         orderDetailId = ""
                                     )
-                                }
+                                },
+                                canExpandCollapse = true
                             ).also {
                                 it.isExpand = !addOnsExpandableState.contains(addOnsIdentifier)
                             }
@@ -118,7 +119,8 @@ object SomGetOrderDetailResponseMapper {
                     totalPriceText = StringRes(order_management_commonR.string.om_gwp_collapsed_title_format, listOf(productBenefit.orderDetail?.count().orZero())),
                     addonsLogoUrl = productBenefit.iconUrl,
                     addonsTitle = productBenefit.label,
-                    addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId)
+                    addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId),
+                    canExpandCollapse = true
                 ).apply { isExpand = expanded }
             } else null
         }
@@ -185,7 +187,7 @@ object SomGetOrderDetailResponseMapper {
     ): List<BaseProductUiModel> {
         return arrayListOf<BaseProductUiModel>().apply {
             includeProducts(products, addOnIcon, addOnLabel, addOnsExpandableState)
-            includeOrderAddOn(addOnInfo, addOnIcon, addOnLabel, addOnsExpandableState)
+            includeOrderAddOn(addOnInfo, addOnIcon, addOnLabel)
         }
     }
 
@@ -279,7 +281,8 @@ object SomGetOrderDetailResponseMapper {
                                     orderId = "",
                                     orderDetailId = ""
                                 )
-                            }
+                            },
+                            canExpandCollapse = true
                         ).also {
                             it.isExpand = !addOnsExpandableState.contains(addOnsIdentifier)
                         }
@@ -292,8 +295,7 @@ object SomGetOrderDetailResponseMapper {
     private fun ArrayList<BaseProductUiModel>.includeOrderAddOn(
         addOnInfo: AddOnInfo?,
         addOnIcon: String,
-        addOnLabel: String,
-        addOnsExpandableState: List<String>
+        addOnLabel: String
     ) {
         addOnInfo?.orderLevelAddOnSummary?.let { addOnSummary ->
             add(
@@ -330,10 +332,9 @@ object SomGetOrderDetailResponseMapper {
                                 orderId = "",
                                 orderDetailId = ""
                             )
-                        }
-                    ).also {
-                        it.isExpand = !addOnsExpandableState.contains(addOnSummary.label)
-                    }
+                        },
+                        canExpandCollapse = false
+                    )
                 )
             )
         }

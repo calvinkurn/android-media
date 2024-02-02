@@ -299,31 +299,32 @@ class GetBomGroupedOrderMapper @Inject constructor() {
         addonIcon: String,
         addonLabel: String,
         addOnList: List<Addon>?
-    )= AddOnSummaryUiModel(
-            addOnIdentifier = "testing",
-            totalPriceText = StringRes(Int.ZERO),
-            addonsLogoUrl = addonIcon,
-            addonsTitle = addonLabel,
-            addonItemList = addOnList?.map { addon ->
-                AddOnSummaryUiModel.AddonItemUiModel(
-                    priceText = addon.price,
-                    quantity = addon.quantity,
-                    addonsId = addon.id,
-                    addOnsName = addon.name,
-                    type = addon.type,
-                    addOnsThumbnailUrl = addon.imageUrl,
-                    toStr = "",
-                    fromStr = "",
-                    message = "",
-                    noteCopyable = false,
-                    providedByShopItself = true,
-                    infoLink = "",
-                    tips = "",
-                    orderId = "",
-                    orderDetailId = ""
-                )
-            }.orEmpty()
-        )
+    ) = AddOnSummaryUiModel(
+        addOnIdentifier = "testing",
+        totalPriceText = StringRes(Int.ZERO),
+        addonsLogoUrl = addonIcon,
+        addonsTitle = addonLabel,
+        addonItemList = addOnList?.map { addon ->
+            AddOnSummaryUiModel.AddonItemUiModel(
+                priceText = addon.price,
+                quantity = addon.quantity,
+                addonsId = addon.id,
+                addOnsName = addon.name,
+                type = addon.type,
+                addOnsThumbnailUrl = addon.imageUrl,
+                toStr = "",
+                fromStr = "",
+                message = "",
+                noteCopyable = false,
+                providedByShopItself = true,
+                infoLink = "",
+                tips = "",
+                orderId = "",
+                orderDetailId = ""
+            )
+        }.orEmpty(),
+        canExpandCollapse = true
+    )
 
     private fun mapToProductBundleItemUiModel(
         orderId: String,
