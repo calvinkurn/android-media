@@ -60,6 +60,13 @@ open class LoginRegisterBase {
             )
     }
 
+    fun isDisplayingSubstringGivenText(givenText: String) {
+        onView(withSubstring(givenText))
+            .check(matches(withSubstring(givenText))).check(
+                matches(isDisplayed())
+            )
+    }
+
     fun isDisplayingGivenText(id: Int, givenText: String) {
         onView(withId(id))
             .check(matches(withText(givenText))).check(
@@ -112,6 +119,7 @@ open class LoginRegisterBase {
             .perform(ViewActions.click())
     }
 
+    @Deprecated("SCP code need to be removed")
     protected fun setupRollence(isScpActive: Boolean = false) {
         val value = if (isScpActive) {
             DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION

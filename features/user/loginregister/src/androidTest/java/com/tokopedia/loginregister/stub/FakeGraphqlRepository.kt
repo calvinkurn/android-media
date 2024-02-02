@@ -56,11 +56,11 @@ class FakeGraphqlRepository : GraphqlRepository {
                                     "gplus",
                                     "Google",
                                     "https://accounts.tokopedia.com/gplus-login",
-                                    "",
+                                    "https://ecs7.tokopedia.net/img/icon/gplus_icon.png",
                                     "#FFFFFF"
                                 )
                             ),
-                            ""
+                            "https://ecs7.tokopedia.net/img/user/seller-app-background-2.png"
                         )
                     )
 

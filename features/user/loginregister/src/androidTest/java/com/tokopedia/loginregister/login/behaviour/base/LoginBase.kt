@@ -117,6 +117,13 @@ open class LoginBase : LoginRegisterBase() {
         waitOnView(withId(R.id.ub_forgot_password)).perform(click())
     }
 
+    fun clickInactivePhoneNumber() {
+        val viewInteraction = onView(withId(R.id.need_help)).check(matches(isDisplayed()))
+        viewInteraction.perform(click())
+
+        waitOnView(withId(R.id.ub_inactive_phone_number)).perform(click())
+    }
+
     fun clickUbahButton() {
         onView(withId(R.id.change_button)).check(matches(ViewMatchers.isDisplayed()))
             .perform(click())

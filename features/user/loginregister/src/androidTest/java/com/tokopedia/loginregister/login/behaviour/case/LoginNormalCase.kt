@@ -47,9 +47,36 @@ import org.junit.Test
 @UiTest
 class LoginNormalCase : LoginBase() {
 
-    /* Go to verification page if phone exist */
+    /* Test Case 1: Check if activity is finished when login success */
     @Test
-    fun gotoVerificationFragment_IfPhoneExist() {
+    fun testCase1_finishActivityIfLoginSuccess() {
+        val data = RegisterCheckPojo(
+            RegisterCheckData(
+                isExist = true,
+                userID = "123456",
+                registerType = "email",
+                view = "yoris.prayogo@tokopedia.com",
+                isPending = false
+            )
+        )
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
+
+        val loginToken = LoginToken(accessToken = "abc123")
+        val loginPojo = LoginTokenPojo(loginToken)
+        loginTokenUseCaseStub.response = loginPojo
+
+        runTest {
+            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
+            clickSubmit()
+            inputPassword("test123")
+            clickSubmit()
+            assertTrue(activityTestRule.activity.isFinishing)
+        }
+    }
+
+    /* Test Case 2: Go to verification page if phone exist */
+    @Test
+    fun testCase2_gotoVerificationFragment_IfPhoneExist() {
         val data = RegisterCheckPojo(
             RegisterCheckData(
                 isExist = true,
@@ -85,9 +112,9 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
-    /* Hide password input field when user click on Ubah button */
+    /* Test case 12: Hide password input field when user click on Ubah button */
     @Test
-    fun passwordInputField_Hidden() {
+    fun testCase12_passwordInputField_Hidden() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
@@ -104,26 +131,6 @@ class LoginNormalCase : LoginBase() {
         runTest {
             clickSocmedButton()
             shouldBeDisplayed(R.id.providerName)
-        }
-    }
-
-    /* Show not registered dialog if email not registered */
-    @Test
-    fun showNotRegisteredDialog_IfEmailNotRegistered() {
-        val data = RegisterCheckPojo(
-            RegisterCheckData(
-                isExist = false,
-                userID = "0",
-                registerType = "email",
-                view = "yoris.prayogo@tokopedia.com"
-            )
-        )
-        fakeRepo.registerCheckConfig = Config.WithResponse(data)
-
-        runTest {
-            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
-            clickSubmit()
-            isDialogDisplayed("Email Belum Terdaftar")
         }
     }
 
@@ -147,9 +154,12 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
-    /* Check if RegisterInitialActivity is launching when Daftar button in dialog clicked */
+    /**
+     * Test Case 8: Check if RegisterInitialActivity is launching
+     * when Daftar button in dialog clicked
+     * */
     @Test
-    fun goToRegisterInitial_IfNotRegistered() {
+    fun testCase8_goToRegisterInitial_IfNotRegistered() {
         val data = RegisterCheckPojo(
             RegisterCheckData(
                 isExist = false,
@@ -165,71 +175,57 @@ class LoginNormalCase : LoginBase() {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
 
-            onView(withText("Ya, Daftar"))
-                .inRoot(isDialog())
-                .check(matches(isDisplayed()))
-                .perform(click())
-
-            intended(hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()).toString()))
-        }
-    }
-
-    @Test
-    fun goToRegisterInitial_IfNotRegistered_WhenRollenceScpCvsdkActive() {
-        val data = RegisterCheckPojo(
-            RegisterCheckData(
-                isExist = false,
-                userID = "0",
-                registerType = "email",
-                view = "yoris.prayogo@tokopedia.com"
-            )
-        )
-        fakeRepo.registerCheckConfig = Config.WithResponse(data)
-
-        runTest {
-            setupRollence(isScpActive = true)
-            mockOtpPageRegisterEmail()
-            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
-            clickSubmit()
+            isDialogDisplayed("Email Belum Terdaftar")
 
             onView(withText("Ya, Daftar"))
                 .inRoot(isDialog())
                 .check(matches(isDisplayed()))
                 .perform(click())
 
-            intended(hasData(ApplinkConstInternalUserPlatform.SCP_OTP))
-        }
-    }
-
-    /* Check if activity is finished when login success */
-    @Test
-    fun finishActivityIfLoginSuccess() {
-        val data = RegisterCheckPojo(
-            RegisterCheckData(
-                isExist = true,
-                userID = "123456",
-                registerType = "email",
-                view = "yoris.prayogo@tokopedia.com",
-                isPending = false
+            intended(
+                hasData(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalUserPlatform.COTP,
+                        RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()
+                    )
+                )
             )
-        )
-        fakeRepo.registerCheckConfig = Config.WithResponse(data)
-
-        val loginToken = LoginToken(accessToken = "abc123")
-        val loginPojo = LoginTokenPojo(loginToken)
-        loginTokenUseCaseStub.response = loginPojo
-
-        runTest {
-            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
-            clickSubmit()
-            inputPassword("test123")
-            clickSubmit()
-            assertTrue(activityTestRule.activity.isFinishing)
         }
     }
 
+//    @Deprecated("SCP code need to be removed")
+//    @Test
+//    fun goToRegisterInitial_IfNotRegistered_WhenRollenceScpCvsdkActive() {
+//        val data = RegisterCheckPojo(
+//            RegisterCheckData(
+//                isExist = false,
+//                userID = "0",
+//                registerType = "email",
+//                view = "yoris.prayogo@tokopedia.com"
+//            )
+//        )
+//        fakeRepo.registerCheckConfig = Config.WithResponse(data)
+//
+//        runTest {
+//            setupRollence(isScpActive = true)
+//            mockOtpPageRegisterEmail()
+//            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
+//            clickSubmit()
+//
+//            onView(withText("Ya, Daftar"))
+//                .inRoot(isDialog())
+//                .check(matches(isDisplayed()))
+//                .perform(click())
+//
+//            intended(hasData(ApplinkConstInternalUserPlatform.SCP_OTP))
+//        }
+//    }
+
+    /**
+     * Success redirection to tokopedia://addname if user able to login
+     */
     @Test
-    fun gotoChangeNameIfLoginSuccess() {
+    fun gotoChangeName_IfLoginSuccess() {
         val data = RegisterCheckPojo(
             RegisterCheckData(
                 isExist = true,
@@ -250,21 +246,7 @@ class LoginNormalCase : LoginBase() {
         getProfileUseCaseStub.response = profilePojo
 
         runTest {
-            intending(hasData(ApplinkConst.ADD_NAME_PROFILE)).respondWith(
-                Instrumentation.ActivityResult(
-                    Activity.RESULT_OK,
-                    Intent().apply {
-                        putExtras(
-                            Bundle().apply {
-                                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-                                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
-                            }
-                        )
-                    }
-                )
-            )
-
+            mockAddNameProfilePage()
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
             inputPassword("test123")
@@ -273,6 +255,9 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
+    /**
+     * test case forgot password applink
+     */
     @Test
     fun whenForgotPasswordIsClicked_TheApplinkPageIsLaunched() {
         runTest {
@@ -280,6 +265,21 @@ class LoginNormalCase : LoginBase() {
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
             )
             clickForgotPass()
+            intended(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD))
+        }
+    }
+
+    /**
+     * test case inactive phone number applink
+     */
+    @Test
+    fun whenInactivePhoneNumberIsClicked_TheApplinkPageIsLaunched() {
+        runTest {
+            intending(hasData(ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER)).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+            )
+            clickInactivePhoneNumber()
+            intended(hasData(ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER))
         }
     }
 
@@ -356,18 +356,39 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
-    @Test
-    fun gotoVerification_true() {
-        runTest {
-            Thread.sleep(1000)
+//    @Deprecated("SCP code need to be removed")
+//    @Test
+//    fun gotoVerification_true() {
+//        runTest {
+//            Thread.sleep(1000)
+//
+//            val viewDevOpts = onView(withText("Developer Options"))
+//            if (GlobalConfig.isAllowDebuggingTools()) {
+//                viewDevOpts.check(matches(isDisplayed()))
+//            } else {
+//                viewDevOpts.check(matches(not(isDisplayed())))
+//            }
+//        }
+//    }
 
-            val viewDevOpts = onView(withText("Developer Options"))
-            if (GlobalConfig.isAllowDebuggingTools()) {
-                viewDevOpts.check(matches(isDisplayed()))
-            } else {
-                viewDevOpts.check(matches(not(isDisplayed())))
-            }
-        }
+    private fun mockAddNameProfilePage() {
+        intending(hasData(ApplinkConst.ADD_NAME_PROFILE)).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtras(
+                        Bundle().apply {
+                            putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
+                            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
+                            putString(
+                                ApplinkConstInternalGlobal.PARAM_EMAIL,
+                                "yoris.prayogo@gmail.com"
+                            )
+                        }
+                    )
+                }
+            )
+        )
     }
 
     private fun clickOnViewChild(viewId: Int) = object : ViewAction {
