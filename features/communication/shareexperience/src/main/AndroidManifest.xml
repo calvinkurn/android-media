@@ -18,10 +18,10 @@
             android:authorities="com.tokopedia.tkpd.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-        <meta-data
-            android:name="android.support.FILE_PROVIDER_PATHS"
-            android:resource="@xml/shareex_file_paths" />
-    </provider>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/shareex_file_paths" />
+        </provider>
 
     </application>
 

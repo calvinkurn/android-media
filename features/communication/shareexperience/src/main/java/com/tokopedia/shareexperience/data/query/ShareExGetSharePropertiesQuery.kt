@@ -30,6 +30,9 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
                 affiliateEligibility {
                   eligible
                   commission
+                  message
+                  badge
+                  expiredDataFormatted
                 }
                 imageGeneratorPayload {
                   args {

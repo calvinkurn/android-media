@@ -22,7 +22,7 @@ import org.json.JSONArray
 import timber.log.Timber
 import javax.inject.Inject
 
-class ShareExChannelMapper @Inject constructor(
+open class ShareExChannelMapper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val resourceProvider: ShareExResourceProvider,
     private val telephony: ShareExTelephonyUtil,
@@ -30,7 +30,7 @@ class ShareExChannelMapper @Inject constructor(
     private val userSession: UserSessionInterface
 ) {
 
-    fun generateSocialMediaChannel(): ShareExChannelModel {
+    open fun generateSocialMediaChannel(): ShareExChannelModel {
         var socialMediaChannelList = generateSocialMediaChannelList()
         val orderingArray = getSocialMediaOrderingArray()
         socialMediaChannelList = socialMediaChannelList.sortedWith(
@@ -103,7 +103,7 @@ class ShareExChannelMapper @Inject constructor(
         }
     }
 
-    private fun generateSocialMediaChannelList(): List<ShareExChannelItemModel> {
+    protected fun generateSocialMediaChannelList(): List<ShareExChannelItemModel> {
         val socialMediaChannelList = arrayListOf<ShareExChannelItemModel>()
         socialMediaChannelList.add(
             ShareExChannelItemModel(
@@ -193,7 +193,7 @@ class ShareExChannelMapper @Inject constructor(
     }
 
     @SuppressLint("PII Data Exposure")
-    fun generateDefaultChannel(): ShareExChannelModel {
+    open fun generateDefaultChannel(): ShareExChannelModel {
         val generalChannelList = arrayListOf<ShareExChannelItemModel>()
         generalChannelList.add(
             ShareExChannelItemModel(

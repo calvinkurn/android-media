@@ -7,6 +7,6 @@ data class ShareExAffiliateEligibilityResponseDto(
     val message: String = "",
     @SerializedName("badge")
     val badge: String = "",
-    @SerializedName("ExpiredDateFormatted")
+    @SerializedName("expiredDataFormatted")
     val expiredDate: String = ""
 )
