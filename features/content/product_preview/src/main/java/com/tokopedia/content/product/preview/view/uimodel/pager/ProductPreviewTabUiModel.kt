@@ -16,15 +16,6 @@ data class ProductPreviewTabUiModel(
         const val TAB_PRODUCT_POS = 0
         const val TAB_REVIEW_POS = 1
 
-        val productReviewTab = listOf(
-            ProductPreviewTabUiModel(
-                tabs = ProductReviewTab.ProductTab
-            ),
-            ProductPreviewTabUiModel(
-                tabs = ProductReviewTab.ReviewTab
-            )
-        )
-
         val productTab = listOf(
             ProductPreviewTabUiModel(
                 tabs = ProductReviewTab.ProductTab

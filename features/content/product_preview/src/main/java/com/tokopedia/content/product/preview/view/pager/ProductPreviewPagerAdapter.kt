@@ -25,7 +25,7 @@ class ProductPreviewPagerAdapter(
     fun insertFragment(listFragment: List<ProductPreviewTabUiModel>) {
         _fragments.clear()
         _fragments.addAll(listFragment)
-        notifyItemRangeChanged(0, listFragment.size)
+        notifyItemRangeChanged(0, fragments.size)
     }
 
     override fun getItemCount(): Int = fragments.size
