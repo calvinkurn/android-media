@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.extension
 
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -269,4 +270,18 @@ fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniC
         recomItemList.add(item)
     }
     recomWidget.recommendationItemList = recomItemList
+}
+
+fun RecommendationWidget.mapToChannelHeader(): ChannelHeader {
+    return ChannelHeader(
+        name = title,
+        subtitle = subtitle,
+        expiredTime = expiredTime,
+        serverTimeUnix = serverTimeUnix,
+        applink = seeMoreAppLink,
+        backColor = headerBackColor,
+        backImage = headerBackImage,
+        textColor = titleColor,
+        channelId = channelId
+    )
 }
