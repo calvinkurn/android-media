@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.stub.common
+package com.tokopedia.shareexperience.stub
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

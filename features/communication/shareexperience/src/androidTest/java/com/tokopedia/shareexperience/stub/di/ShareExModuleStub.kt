@@ -8,9 +8,9 @@ import com.tokopedia.shareexperience.data.mapper.ShareExChannelMapper
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.ShareExResourceProviderImpl
 import com.tokopedia.shareexperience.data.util.ShareExTelephonyUtil
+import com.tokopedia.shareexperience.stub.ShareExChannelMapperStub
+import com.tokopedia.shareexperience.stub.ShareExTelephonyUtilStub
 import com.tokopedia.shareexperience.stub.common.RemoteConfigStub
-import com.tokopedia.shareexperience.stub.common.ShareExChannelMapperStub
-import com.tokopedia.shareexperience.stub.common.ShareExTelephonyUtilStub
 import com.tokopedia.shareexperience.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

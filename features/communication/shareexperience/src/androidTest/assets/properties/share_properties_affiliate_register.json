@@ -18,7 +18,7 @@
             "title": "\u003cb\u003eTokopedia Affiliate\u003c/b\u003e",
             "label": "BARU",
             "description": "User Is Not Registered",
-            "link": "https://tokopedia.link/xnnqVSxE7sb"
+            "link": "tokopedia://affiliate"
           },
           "affiliateEligibility": null,
           "imageGeneratorPayload": {

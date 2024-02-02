@@ -2,6 +2,8 @@ package com.tokopedia.shareexperience.test.robot.properties
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
@@ -234,5 +236,11 @@ object PropertiesResult {
                 )
             )
         }
+    }
+
+    fun assertAffiliateAppLink() {
+        Intents.intended(
+            IntentMatchers.hasData("tokopedia://affiliate")
+        )
     }
 }

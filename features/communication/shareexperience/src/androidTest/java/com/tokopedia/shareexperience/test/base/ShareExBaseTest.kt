@@ -10,8 +10,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
 import com.tokopedia.shareexperience.data.mapper.ShareExChannelMapper
+import com.tokopedia.shareexperience.stub.ShareExChannelMapperStub
 import com.tokopedia.shareexperience.stub.ShareExDummyActivity
-import com.tokopedia.shareexperience.stub.common.ShareExChannelMapperStub
 import com.tokopedia.shareexperience.stub.common.UserSessionStub
 import com.tokopedia.shareexperience.stub.data.GqlResponseStub
 import com.tokopedia.shareexperience.stub.di.ShareExFakeComponentFactory
