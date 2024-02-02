@@ -42,7 +42,7 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
         }
         element?.scratchCard?.let {
             setDate(it.startTime, it.endTime)
-            GamificationAnalytics.sendImpressHeaderSectionEvent("direct_reward_id: ${it.id.toString()}")
+            GamificationAnalytics.sendImpressHeaderSectionEvent("{'direct_reward_id':'${it.id.toString()}'}")
         }
     }
 
@@ -125,7 +125,7 @@ class KetupatTopBannerVH(itemView: View) : AbstractViewHolder<KetupatTopBannerVH
             val fromFormat: DateFormat = SimpleDateFormat(currentFormat, Locale.ENGLISH)
             fromFormat.isLenient = false
             fromFormat.timeZone = TimeZone.getTimeZone("UTC")
-            val toFormat: DateFormat = SimpleDateFormat(newFormat, Locale.ENGLISH)
+            val toFormat: DateFormat = SimpleDateFormat(newFormat,  Locale("in", "ID"))
             toFormat.isLenient = false
             toFormat.timeZone = TimeZone.getDefault()
 

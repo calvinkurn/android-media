@@ -33,7 +33,7 @@ class KetupatRedirectionBannerVH(itemView: View) :
                         bannerData?.cta?.get(0)?.appLink
                     )
                     GamificationAnalytics.sendClickBannersInFooterBannerSectionEvent(
-                        "direct_reward_id: $scratchCardId",
+                        "{'direct_reward_id':'${scratchCardId}'}",
                         "gamification",
                         "tokopediamarketplace"
                     )
@@ -53,7 +53,7 @@ class KetupatRedirectionBannerVH(itemView: View) :
                     )
                 }
             }
-            GamificationAnalytics.sendImpressFooterBannerSectionEvent("direct_reward_id: $scratchCardId")
+            GamificationAnalytics.sendImpressFooterBannerSectionEvent("{'direct_reward_id':'${scratchCardId}'}")
         }
     }
 }

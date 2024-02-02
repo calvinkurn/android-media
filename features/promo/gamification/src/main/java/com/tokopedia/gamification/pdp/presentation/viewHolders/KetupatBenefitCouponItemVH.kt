@@ -24,6 +24,7 @@ class KetupatBenefitCouponItemVH(itemView: View) :
     override fun bind(element: KetupatBenefitCouponItemVHModel?) {
         val scratchCardId = element?.scratchCard?.id.toString()
         element?.benefitCouponData.let { couponData ->
+            GamificationAnalytics.sendImpressCouponWidgetByCategorySectionEvent("{'direct_reward_id':'${scratchCardId}','catalog_slug':'${couponData?.code}'}")
             couponData?.imageUrlMobile?.let {
                 itemView.findViewById<CouponImageView>(gamificationR.id.ketupat_benefit_coupon_banner_image)
                     .apply {
@@ -36,7 +37,7 @@ class KetupatBenefitCouponItemVH(itemView: View) :
                                 "tokopedia://rewards/kupon-saya/detail/${couponData.code}"
                             )
                             GamificationAnalytics.sendClickCouponInCouponWidgetByCategorySectionEvent(
-                                "direct_reward_id: $scratchCardId",
+                                "{'direct_reward_id':'${scratchCardId}','catalog_slug':'${couponData.code}'}",
                                 "gamification",
                                 "tokopediamarketplace"
                             )
