@@ -28,18 +28,18 @@ import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.productReviewTab
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -105,7 +105,6 @@ class ProductPreviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initData()
         initViews()
         initSource()
 
@@ -128,12 +127,6 @@ class ProductPreviewFragment @Inject constructor(
                 bottom = padding.bottom + if (isNavVisible) navInsets.bottom else 0
             )
         }
-
-        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
-    }
-
-    private fun initData() {
-        viewModel.onAction(InitializeProductMainData)
     }
 
     private fun initViews() = with(binding) {
@@ -144,20 +137,11 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun initSource() {
-        when (viewModel.productPreviewSource.productPreviewSource) {
-            is ProductPreviewSourceModel.ProductSourceData -> {
-                pagerAdapter.insertFragment(productReviewTab)
-                isShowProductTab(true)
-            }
-            is ProductPreviewSourceModel.ReviewSourceData -> {
-                pagerAdapter.insertFragment(reviewTab)
-                isShowProductTab(false)
-            }
-            else -> activity?.finish()
-        }
+        viewModel.onAction(ProductPreviewAction.CheckInitialSource)
+        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
     }
 
-    private fun isShowProductTab(isShow: Boolean) = with(binding) {
+    private fun isShowAllTab(isShow: Boolean) = with(binding) {
         layoutProductPreviewTab.tvProductTabTitle.showWithCondition(isShow)
         layoutProductPreviewTab.tvReviewTabTitle.showWithCondition(isShow)
         layoutProductPreviewTab.viewTabIndicator.showWithCondition(isShow)
@@ -195,6 +179,7 @@ class ProductPreviewFragment @Inject constructor(
             viewModel.uiState
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .withCache().collectLatest { (prev, curr) ->
+                    renderTabs(prev?.tabsUiModel, curr.tabsUiModel)
                     renderBottomNav(prev?.bottomNavUiModel, curr.bottomNavUiModel)
                 }
         }
@@ -249,17 +234,31 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
-
-                    else -> {}
+                    is ProductPreviewEvent.FailFetchMiniInfo -> {
+                        binding.viewFooter.gone()
+                    }
+                    is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
+                    else -> return@collect
                 }
             }
         }
+    }
+
+    private fun renderTabs(
+        prev: ProductPreviewTabUiModel?,
+        curr: ProductPreviewTabUiModel
+    ) {
+        if (prev == curr) return
+
+        isShowAllTab(curr.tabs.size > 1)
+        pagerAdapter.insertFragment(curr.tabs)
     }
 
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
         if (prev == model) return
 
         binding.viewFooter.apply {
+            show()
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {

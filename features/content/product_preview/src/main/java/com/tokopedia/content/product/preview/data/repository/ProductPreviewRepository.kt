@@ -10,6 +10,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
  */
 interface ProductPreviewRepository {
     suspend fun getProductMiniInfo(productId: String): BottomNavUiModel
+    suspend fun getReviewByIds(ids: List<String>): ReviewUiModel
     suspend fun getReview(productId: String, page: Int): ReviewUiModel
     suspend fun addToCart(
         productId: String,

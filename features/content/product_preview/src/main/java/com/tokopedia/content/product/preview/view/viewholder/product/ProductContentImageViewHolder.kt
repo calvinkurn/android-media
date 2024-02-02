@@ -7,6 +7,7 @@ import com.tokopedia.content.product.preview.databinding.ItemProductContentImage
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class ProductContentImageViewHolder(
@@ -18,11 +19,15 @@ class ProductContentImageViewHolder(
         renderImage(content.url)
     }
 
+    internal fun onRecycled() {
+        binding.ivProductContentImage.clearImage()
+    }
+
     private fun renderImage(imageUrl: String) = with(binding.ivProductContentImage) {
         loadImageWithoutPlaceholder(imageUrl) {
             listener(
                 onSuccess = { _, _ -> hideLoading() },
-                onError = { hideLoading() }
+                onError = { showErrorImage() }
             )
         }
     }
@@ -37,6 +42,16 @@ class ProductContentImageViewHolder(
     private fun hideLoading() {
         binding.apply {
             ivProductContentImage.show()
+            loaderImage.invisible()
+        }
+    }
+
+    private fun showErrorImage() {
+        binding.apply {
+            ivProductContentImage.apply {
+                clearImage()
+                show()
+            }
             loaderImage.invisible()
         }
     }

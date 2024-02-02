@@ -6,6 +6,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -47,6 +48,7 @@ import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewFragment @Inject constructor(
     private val router: Router
@@ -72,7 +74,7 @@ class ReviewFragment @Inject constructor(
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvReview.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = false))
+                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = false, page = page))
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -120,11 +122,16 @@ class ReviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializeReviewMainData()
+
         setupView()
+
         observeReview()
         observeEvent()
+    }
 
-        viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
+    private fun initializeReviewMainData() {
+        viewModel.onAction(ProductPreviewAction.InitializeReviewMainData)
     }
 
     private fun setupView() {
@@ -175,7 +182,7 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun renderList(prev: ReviewUiModel?, data: ReviewUiModel) {
-        if (prev?.reviewContent == data.reviewContent) return
+        if (prev == data) return
 
         val state = data.reviewPaging
 
@@ -194,8 +201,11 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun showError(state: ReviewPaging.Error) = with(binding.reviewGlobalError) {
-        // TODO: why is it in dark mode.
+        errorTitle.setTextColor(getColor(requireContext(), unifyprinciplesR.color.Unify_Static_White))
+        errorDescription.setTextColor(getColor(requireContext(), unifyprinciplesR.color.Unify_Static_White))
+
         show()
+        binding.reviewLoader.hide()
         if (state.throwable is UnknownHostException) {
             setType(GlobalError.NO_CONNECTION)
             errorSecondaryAction.show()
@@ -210,7 +220,9 @@ class ReviewFragment @Inject constructor(
             setType(GlobalError.SERVER_ERROR)
         }
         setActionClickListener {
-            viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
+            state.onRetry()
+            hide()
+            binding.reviewLoader.show()
         }
     }
 

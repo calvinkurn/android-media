@@ -5,6 +5,7 @@ import com.tokopedia.content.product.preview.view.uimodel.product.ProductContent
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
+import com.tokopedia.product.detail.common.data.model.pdplayout.SocialProofData
 
 class ProductPreviewSourceMapper(
     private val productId: String
@@ -18,7 +19,7 @@ class ProductPreviewSourceMapper(
     ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
-            productPreviewSource = ProductPreviewSourceModel.ProductSourceData(
+            source = ProductPreviewSourceModel.ProductSourceData(
                 productSourceList = productData.data.getGalleryItems().mapIndexed { index, item ->
                     ProductContentUiModel(
                         contentId = item.id,
@@ -34,6 +35,9 @@ class ProductPreviewSourceMapper(
                         videoLastDuration = videoLastDuration,
                         videoTotalDuration = videoTotalDuration
                     )
+                },
+                hasReviewMedia = productData.data.socialProof.any {
+                    it.socialProofId == SocialProofData.MEDIA_ID
                 }
             )
         )
@@ -45,7 +49,7 @@ class ProductPreviewSourceMapper(
     ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
-            productPreviewSource = ProductPreviewSourceModel.ReviewSourceData(
+            source = ProductPreviewSourceModel.ReviewSourceData(
                 reviewSourceId = reviewId,
                 attachmentSourceId = attachmentId
             )
