@@ -252,14 +252,10 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         val uniqueId = childViewModel.component.properties?.header?.offerId
         if (uniqueId == payload.identifier) {
-            val offerMessages = payload.data as? List<String> ?: emptyList()
+            val bmGmTierData = payload.data as? BmGmTierData
             childViewModel.changeTier(
                 false,
-                BmGmTierData(
-                    flipTierWording = "",
-                    flipTierImage = "",
-                    offerMessages = offerMessages
-                )
+                bmGmTierData
             )
 
             return true

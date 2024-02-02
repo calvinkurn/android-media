@@ -199,7 +199,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.searchbar.R as searchbarR
@@ -1028,7 +1027,11 @@ open class DiscoveryFragment :
                     } else if (discoveryBaseViewModel is SectionViewModel) {
                         discoveryBaseViewModel.notifyChildViewModel(
                             data.offerId,
-                            bmGmTierData.offerMessages.orEmpty(),
+                            BmGmTierData(
+                                offerMessages = bmGmTierData.offerMessages,
+                                flipTierImage = bmGmTierData.flipTierImage,
+                                flipTierWording = bmGmTierData.flipTierWording
+                            ),
                             ComponentsList.ShopOfferHeroBrand
                         )
                     }
