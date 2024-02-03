@@ -14,6 +14,7 @@ import com.tokopedia.notifications.domain.data.PopUpContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD
 import com.tokopedia.utils.date.DateUtil.getCurrentDate
 import com.tokopedia.utils.date.getDayDiffFromToday
 import java.lang.ref.WeakReference
@@ -142,13 +143,13 @@ class GamificationPopUpHandler {
     }
 
     private fun is24HourBefore(date: String): Boolean {
-        return date.toDate("EEE MMM dd HH:mm:ss zzz yyyy").getDayDiffFromToday().absoluteValue.toInt() >= 1
+        return date.toDate(YYYY_MM_DD).getDayDiffFromToday().absoluteValue.toInt() >= 1
     }
 
     private fun setTimeStampForKetupat(activity: Activity) {
         getSharedPref(activity, "ketupat_shown_time").edit().putString(
             "ketupat_shown_time",
-            getCurrentDate().toString()
+            getCurrentDate()
         ).apply()
     }
 
@@ -170,11 +171,18 @@ class GamificationPopUpHandler {
         @JvmStatic
         fun String?.toDate(format: String): Date {
             this?.let {
-                val fromFormat: DateFormat = SimpleDateFormat(format, Locale.ENGLISH)
+                val fromFormat: DateFormat = SimpleDateFormat(format, Locale.getDefault())
                 return fromFormat.parse(it)
                     ?: throw ParseException("Date doesn't valid ($this) with format $format", 0)
             }
             throw ParseException("Date doesn't valid ($this) with format $format", 0)
+        }
+
+        @JvmStatic
+        fun getCurrentDate(): String {
+            val calendar = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(YYYY_MM_DD, Locale.getDefault())
+            return dateFormat.format(calendar.time)
         }
 
         private const val HomePageActivity = "MainParentActivity"

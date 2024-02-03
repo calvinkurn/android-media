@@ -254,7 +254,7 @@ public class CMInAppManager implements CmInAppListener,
             application.getApplicationContext().getSharedPreferences(
                     "inapp_shown_time",
                     Context.MODE_PRIVATE
-            ).edit().putString("inapp_shown_time", DateUtil.INSTANCE.getCurrentDate().toString()).apply();
+            ).edit().putString("inapp_shown_time", GamificationPopUpHandler.getCurrentDate()).apply();
         }
     }
 
