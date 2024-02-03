@@ -15,13 +15,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.utils.respondWithOk
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic

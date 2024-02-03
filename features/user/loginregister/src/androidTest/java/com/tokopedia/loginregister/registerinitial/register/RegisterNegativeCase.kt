@@ -4,7 +4,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
+import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.stub.Config
@@ -54,7 +54,7 @@ class RegisterNegativeCase: RegisterInitialBase() {
     @Test
     /* Show snackbar if discover providers is empty */
     fun forbiddenPage_discoverEmpty() {
-        fakeGraphqlRepository.discoverConfig = Config.Error
+        fakeRepo.discoverConfig = Config.Error
         runTest {
             onView(
                 withText(containsString("Terjadi kesalahan. Ulangi beberapa saat lagi"))
