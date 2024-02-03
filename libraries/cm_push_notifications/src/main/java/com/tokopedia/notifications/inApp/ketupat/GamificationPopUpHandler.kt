@@ -14,11 +14,13 @@ import com.tokopedia.notifications.domain.data.PopUpContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD
 import com.tokopedia.utils.date.DateUtil.getCurrentDate
 import com.tokopedia.utils.date.getDayDiffFromToday
-import com.tokopedia.utils.date.toDate
 import java.lang.ref.WeakReference
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.absoluteValue
 
 class GamificationPopUpHandler {
@@ -140,7 +142,7 @@ class GamificationPopUpHandler {
     }
 
     private fun is24HourBefore(date: String): Boolean {
-        return date.toDate(YYYY_MM_DD).getDayDiffFromToday().absoluteValue.toInt() >= 1
+        return date.toDate("EEE MMM dd HH:mm:ss zzz yyyy").getDayDiffFromToday().absoluteValue.toInt() >= 1
     }
 
     private fun setTimeStampForKetupat(activity: Activity) {
@@ -164,19 +166,17 @@ class GamificationPopUpHandler {
     private fun createUserSession(activity: Activity): UserSessionInterface =
         UserSession(activity)
 
-//    override fun onActivityStarted(activity: Activity) { }
-//
-//    override fun onActivityPaused(activity: Activity) { }
-//
-//    override fun onActivityStopped(activity: Activity) {
-// //        isAnimationPopupGQlCalled = false
-//    }
-//
-//    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
-//
-//    override fun onActivityDestroyed(activity: Activity) { }
-
     companion object {
+        @JvmStatic
+        fun String?.toDate(format: String): Date {
+            this?.let {
+                val fromFormat: DateFormat = SimpleDateFormat(format, Locale("in", "ID"))
+                return fromFormat.parse(it)
+                    ?: throw ParseException("Date doesn't valid ($this) with format $format", 0)
+            }
+            throw ParseException("Date doesn't valid ($this) with format $format", 0)
+        }
+
         private const val HomePageActivity = "MainParentActivity"
     }
 }

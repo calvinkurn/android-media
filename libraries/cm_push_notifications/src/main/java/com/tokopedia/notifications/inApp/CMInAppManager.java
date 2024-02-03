@@ -24,6 +24,7 @@ import com.tokopedia.notifications.inApp.external.CmEventListener;
 import com.tokopedia.notifications.inApp.external.ExternalCallbackImpl;
 import com.tokopedia.notifications.inApp.external.IExternalInAppCallback;
 import com.tokopedia.notifications.inApp.external.PushIntentHandler;
+import com.tokopedia.notifications.inApp.ketupat.GamificationPopUpHandler;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -228,7 +229,7 @@ public class CMInAppManager implements CmInAppListener,
                     Context.MODE_PRIVATE
             ).getString("ketupat_shown_time", null);
             if(ketupatShownTime != null) {
-              int diff = (int) Math.abs(DateUtilKt.getDayDiffFromToday(DateUtilKt.toDate(ketupatShownTime,YYYY_MM_DD)));
+              int diff = (int) Math.abs(DateUtilKt.getDayDiffFromToday(GamificationPopUpHandler.toDate(ketupatShownTime,"EEE MMM dd HH:mm:ss zzz yyyy")));
               if(diff < 1) {
                   return;
               }
