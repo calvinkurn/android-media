@@ -6,15 +6,13 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.scp.auth.GotoSdk
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.user.DeeplinkMapperUser
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.di.RegisterInitialComponentStub
 import com.tokopedia.loginregister.login.behaviour.base.LoginRegisterBase
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
@@ -92,7 +90,8 @@ open class RegisterInitialBase : LoginRegisterBase() {
             isExist = true,
             userID = "123456",
             registerType = "email",
-            view = "yoris.prayogooooo@tokopedia.com")
+            view = "yoris.prayogooooo@tokopedia.com"
+        )
         registerCheckUseCase.response = RegisterCheckPojo(data)
     }
 

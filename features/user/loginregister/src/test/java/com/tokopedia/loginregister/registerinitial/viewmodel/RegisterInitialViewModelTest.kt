@@ -10,15 +10,16 @@ import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.common.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestErrorData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
@@ -64,7 +65,7 @@ class RegisterInitialViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val registerCheckUseCase = mockk<GraphqlUseCase<RegisterCheckPojo>>(relaxed = true)
+    val registerCheckUseCase = mockk<RegisterCheckUseCase>(relaxed = true)
     val registerRequestUseCase = mockk<GraphqlUseCase<RegisterRequestPojo>>(relaxed = true)
     val activateUserUseCase = mockk<ActivateUserUseCase>(relaxed = true)
     val discoverUseCase = mockk<DiscoverUseCase>(relaxed = true)
@@ -152,7 +153,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterCheckData()
         val response = RegisterCheckPojo(data = responseData)
 
-        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+        coEvery { registerCheckUseCase(any()) } returns response
 
         viewModel.registerCheck(testId)
 
@@ -169,7 +170,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterCheckData(errors = errors)
         val response = RegisterCheckPojo(data = responseData)
 
-        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+        coEvery { registerCheckUseCase(any()) } returns response
 
         viewModel.registerCheck(testId)
 
@@ -187,7 +188,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterCheckData(errors = errors)
         val response = RegisterCheckPojo(data = responseData)
 
-        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+        coEvery { registerCheckUseCase(any()) } returns response
 
         viewModel.registerCheck(testId)
 
@@ -200,7 +201,7 @@ class RegisterInitialViewModelTest {
     fun `on Failed Register Check`() {
         val testId = "123456"
 
-        coEvery { registerCheckUseCase.executeOnBackground() } throws throwable
+        coEvery { registerCheckUseCase(any()) } throws throwable
 
         viewModel.registerCheck(testId)
 
@@ -766,7 +767,6 @@ class RegisterInitialViewModelTest {
         viewModel.clearBackgroundTask()
         verify {
             registerRequestUseCase.cancelJobs()
-            registerCheckUseCase.cancelJobs()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
         }

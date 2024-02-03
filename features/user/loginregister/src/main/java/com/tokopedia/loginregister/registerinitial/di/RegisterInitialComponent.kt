@@ -10,12 +10,14 @@ import dagger.Component
  * @author by nisie on 10/25/18.
  */
 @ActivityScope
-@Component(modules = [
-    RegisterInitialModule::class,
-    RegisterInitialQueryModule::class,
-    RegisterInitialUseCaseModule::class,
-    RegisterInitialViewModelModule::class
-], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+        RegisterInitialModule::class,
+        RegisterInitialQueryModule::class,
+        RegisterInitialUseCaseModule::class,
+        RegisterInitialViewModelModule::class
+    ], dependencies = [BaseAppComponent::class]
+)
 interface RegisterInitialComponent {
     fun inject(fragment: RegisterInitialFragment)
     fun inject(fragment: RegisterEmailFragment)

@@ -8,10 +8,10 @@ import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.domain.pojo.ProviderData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoData
 import com.tokopedia.loginregister.common.domain.pojo.TickersInfoPojo
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.test.application.graphql.GqlMockUtil
@@ -27,21 +27,20 @@ class FakeGraphqlRepository : GraphqlRepository {
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
-        Timber.d("Passed through FakeGraphql: ${requests.first().query.slice(0..20)}")
+        Timber.d("Passed through FakeGraphql $this: ${requests.first().query.slice(0..20)}")
         return when (GqlQueryParser.parse(requests).first()) {
             "registerCheck" -> {
                 val obj: RegisterCheckPojo = when (registerCheckConfig) {
                     is Config.WithResponse -> (registerCheckConfig as Config.WithResponse).response as RegisterCheckPojo
                     is Config.Default -> RegisterCheckPojo(
-                        RegisterCheckData(
-                            isExist = true,
-                            useHash = true,
-                            userID = "123456",
-                            registerType = "email",
-                            view = "yoris.prayogo@tokopedia.com"
+                            RegisterCheckData(
+                                isExist = true,
+                                useHash = true,
+                                userID = "123456",
+                                registerType = "email",
+                                view = "yoris.prayogo@tokopedia.com"
+                            )
                         )
-                    )
-
                     else -> throw IllegalStateException()
                 }
                 GqlMockUtil.createSuccessResponse(obj)

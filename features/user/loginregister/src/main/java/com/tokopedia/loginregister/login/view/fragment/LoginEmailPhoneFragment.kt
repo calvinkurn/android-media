@@ -76,6 +76,7 @@ import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.domain.pojo.ProviderData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.error.LoginErrorCode
 import com.tokopedia.loginregister.common.error.getMessage
@@ -94,7 +95,6 @@ import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.model.LoginOption
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -138,6 +138,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.sessioncommon.R as sessioncommonR
 
 /**
  * @author by nisie on 18/01/19.
@@ -252,7 +254,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             context?.let {
                 devOpsText.setSpan(
                     ForegroundColorSpan(
-                        MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
+                        MethodChecker.getColor(it, unifyprinciplesR.color.Unify_NN950_96)
                     ),
                     0,
                     devOpsText.length,
@@ -344,7 +346,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun setupBackgroundColor() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(
-                MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                MethodChecker.getColor(it, unifyprinciplesR.color.Unify_Background)
             )
         }
     }
@@ -839,7 +841,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     override fun updateDrawState(ds: TextPaint) {
                         ds.color = MethodChecker.getColor(
                             activity,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                            unifyprinciplesR.color.Unify_GN500
                         )
                         ds.typeface = Typeface.create(
                             "sans-serif",
@@ -1033,7 +1035,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onErrorDiscoverLogin(throwable: Throwable) {
         stopTrace()
         val forbiddenMessage = context?.getString(
-            com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth
+            sessioncommonR.string.default_request_error_forbidden_auth
         )
         val errorMessage = throwable.getMessage(requireActivity())
         if (errorMessage.removeErrorCode() == forbiddenMessage) {
