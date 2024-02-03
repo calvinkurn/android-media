@@ -170,7 +170,7 @@ class GamificationPopUpHandler {
         @JvmStatic
         fun String?.toDate(format: String): Date {
             this?.let {
-                val fromFormat: DateFormat = SimpleDateFormat(format, Locale("in", "ID"))
+                val fromFormat: DateFormat = SimpleDateFormat(format, Locale.ENGLISH)
                 return fromFormat.parse(it)
                     ?: throw ParseException("Date doesn't valid ($this) with format $format", 0)
             }
