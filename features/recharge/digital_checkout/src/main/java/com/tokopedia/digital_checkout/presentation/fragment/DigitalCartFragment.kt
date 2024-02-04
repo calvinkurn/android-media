@@ -688,7 +688,7 @@ class DigitalCartFragment :
     }
 
     private fun renderMyBillsLayout(cartInfo: CartDigitalInfoData) {
-        myBillsAdapter = DigitalMyBillsAdapter(this)
+        myBillsAdapter = DigitalMyBillsAdapter(this, isGotoPlus())
 
         binding?.rvMyBills?.let {
             it.layoutManager = LinearLayoutManager(context)
