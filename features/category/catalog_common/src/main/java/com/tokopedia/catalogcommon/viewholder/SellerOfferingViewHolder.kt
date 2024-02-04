@@ -66,7 +66,7 @@ class SellerOfferingViewHolder(
             vFreeOngkir.showWithCondition(element.estimationShipping.isNotEmpty())
             vGuarantee.showWithCondition(element.isShopGuarantee)
             tvInstallment.text = element.installment
-            cgInstallment.showWithCondition(element.installment.isNotEmpty())
+            lnInstallment.showWithCondition(element.installment.isNotEmpty())
             tvEstimation.setTextAndCheckShow(element.estimationShipping)
             progressProduct.setProgressIcon(
                 icon = ContextCompat.getDrawable(
@@ -110,7 +110,19 @@ class SellerOfferingViewHolder(
         ivButtonRightVariant.setImage(IconUnify.CHEVRON_RIGHT, newLightEnable = getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark),
             newDarkEnable =getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light,
                 darkColor = R.color.dms_static_text_color_dark) )
+
+        ivChat.setImage(IconUnify.CHAT, newLightEnable = getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark),
+            newDarkEnable =getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light,
+                darkColor = R.color.dms_static_text_color_dark) )
+        btnChat.setBackgroundResource(
+            getBackgroundTheme(
+                element.darkMode,
+                R.drawable.bg_rounded_border_color_primary_light,
+                R.drawable.bg_rounded_border_color_primary_dark
+            )
+        )
     }
+
 
 
     private fun getColor(isDark: Boolean, lightColor: Int, darkColor: Int): Int {
@@ -118,6 +130,14 @@ class SellerOfferingViewHolder(
             MethodChecker.getColor(itemView.context, darkColor)
         } else {
             MethodChecker.getColor(itemView.context, lightColor)
+        }
+    }
+
+    private fun getBackgroundTheme(isDark: Boolean, lightColor: Int, darkColor: Int): Int {
+        return if (isDark) {
+            darkColor
+        } else {
+            lightColor
         }
     }
 }
