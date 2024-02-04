@@ -72,7 +72,7 @@ public class CMInAppManager implements CmInAppListener,
         CMInAppController.OnNewInAppDataStoreListener {
 
     private static final CMInAppManager inAppManager;
-
+    public static Boolean isInappFlowChecked = false;
 
     private Application application;
     private CmInAppListener cmInAppListener;
@@ -191,11 +191,15 @@ public class CMInAppManager implements CmInAppListener,
             if (canShowInApp(inAppDataList)) {
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
-                if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
+                if (checkForOtherSources(cmInApp, entityHashCode, screenName)) {
+                    isInappFlowChecked = true;
+                    return;
+                }
                 if (canShowDialog()) {
                     showDialog(cmInApp, screenName);
                 }
             }
+            isInappFlowChecked = true;
         }
     }
 
@@ -224,6 +228,7 @@ public class CMInAppManager implements CmInAppListener,
 
     private void showDialog(CMInApp data, String screenName) {
         if(screenName.equals("com.tokopedia.navigation.presentation.activity.MainParentActivity")) {
+            isInappFlowChecked = true;
             String ketupatShownTime = application.getApplicationContext().getSharedPreferences(
                     "ketupat_shown_time",
                     Context.MODE_PRIVATE
@@ -234,6 +239,12 @@ public class CMInAppManager implements CmInAppListener,
                   return;
               }
             }
+        }
+        if(screenName.equals("com.tokopedia.navigation.presentation.activity.MainParentActivity")) {
+            application.getApplicationContext().getSharedPreferences(
+                    "inapp_shown_time",
+                    Context.MODE_PRIVATE
+            ).edit().putString("inapp_shown_time", GamificationPopUpHandler.getCurrentDate()).apply();
         }
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
         String type = data.type;
@@ -249,12 +260,6 @@ public class CMInAppManager implements CmInAppListener,
                     showLegacyDialog(currentActivity, data);
                     break;
             }
-        }
-        if(screenName.equals("com.tokopedia.navigation.presentation.activity.MainParentActivity")) {
-            application.getApplicationContext().getSharedPreferences(
-                    "inapp_shown_time",
-                    Context.MODE_PRIVATE
-            ).edit().putString("inapp_shown_time", GamificationPopUpHandler.getCurrentDate()).apply();
         }
     }
 

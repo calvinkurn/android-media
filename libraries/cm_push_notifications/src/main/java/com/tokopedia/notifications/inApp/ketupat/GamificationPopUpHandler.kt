@@ -11,12 +11,18 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.domain.data.GamiScratchCardPreEvaluate
 import com.tokopedia.notifications.domain.data.PopUpContent
+import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD
 import com.tokopedia.utils.date.DateUtil.getCurrentDate
 import com.tokopedia.utils.date.getDayDiffFromToday
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.text.DateFormat
 import java.text.ParseException
@@ -28,24 +34,14 @@ class GamificationPopUpHandler {
 
     private var isAnimationPopupGQlCalled = false
 
-    fun onFragmentResume(activity: Activity) {
+    fun onFragmentResume(activity: Activity, isFromHomeFragment: Boolean = false) {
         try {
             val activityName = activity::class.java.simpleName
-            val isAnimationPopupEnabled = FirebaseRemoteConfigImpl(activity.applicationContext)
-                .getBoolean("ketupat_animation_popup_enable", true)
             if (activityName == HomePageActivity) {
                 // get active campaigns list for in app
                 // if list size > 0 show in app and return
                 // else show popup
-                if (!isAnimationPopEnable(activity)) {
-                    return
-                }
-                if (isAnimationPopupEnabled) {
-                    if (!isAnimationPopupGQlCalled) {
-                        isAnimationPopupGQlCalled = true
-                        getScratchCardData(activity)
-                    }
-                }
+                startRepeatingJob(2000, ::handleAnimationPopup, activity)
             }
         } catch (e: Exception) {
             ServerLogger.log(
@@ -57,6 +53,32 @@ class GamificationPopUpHandler {
                     "data" to ""
                 )
             )
+        }
+    }
+
+    private fun startRepeatingJob(timeInterval: Long, callback: (Activity) -> Unit, activity: Activity): Job {
+        return CoroutineScope(Dispatchers.Default).launch {
+            var i = 1
+            while (!CMInAppManager.isInappFlowChecked && i < 3) {
+                // repeate Task Here
+                delay(timeInterval)
+                i++
+            }
+            callback(activity)
+        }
+    }
+
+    private fun handleAnimationPopup(activity: Activity) {
+        val isAnimationPopupEnabled = FirebaseRemoteConfigImpl(activity.applicationContext)
+            .getBoolean("ketupat_animation_popup_enable", true)
+        if (!isAnimationPopEnable(activity)) {
+            return
+        }
+        if (isAnimationPopupEnabled) {
+            if (!isAnimationPopupGQlCalled) {
+                isAnimationPopupGQlCalled = true
+                getScratchCardData(activity)
+            }
         }
     }
 

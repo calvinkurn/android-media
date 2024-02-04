@@ -1093,12 +1093,12 @@ open class HomeRevampFragment :
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
-        //trigger gamification popup flow
+        // trigger gamification popup flow
         executeGamificationPopUpFlow()
     }
 
-    private fun executeGamificationPopUpFlow(){
-        if(gamificationPopUpHandler == null){
+    private fun executeGamificationPopUpFlow() {
+        if (gamificationPopUpHandler == null) {
             gamificationPopUpHandler = GamificationPopUpHandler()
         }
         activity?.let { gamificationPopUpHandler?.onFragmentResume(it) }
