@@ -228,7 +228,6 @@ public class CMInAppManager implements CmInAppListener,
 
     private void showDialog(CMInApp data, String screenName) {
         if(screenName.equals("com.tokopedia.navigation.presentation.activity.MainParentActivity")) {
-            isInappFlowChecked = true;
             String ketupatShownTime = application.getApplicationContext().getSharedPreferences(
                     "ketupat_shown_time",
                     Context.MODE_PRIVATE
@@ -246,6 +245,7 @@ public class CMInAppManager implements CmInAppListener,
                     Context.MODE_PRIVATE
             ).edit().putString("inapp_shown_time", GamificationPopUpHandler.getCurrentDate()).apply();
         }
+        isInappFlowChecked = true;
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
         String type = data.type;
         if (!TextUtils.isEmpty(type)) {
