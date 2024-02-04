@@ -229,7 +229,7 @@ public class CMInAppManager implements CmInAppListener,
                     Context.MODE_PRIVATE
             ).getString("ketupat_shown_time", null);
             if(ketupatShownTime != null) {
-              int diff = (int) Math.abs(DateUtilKt.getDayDiffFromToday(GamificationPopUpHandler.toDate(ketupatShownTime,"EEE MMM dd HH:mm:ss zzz yyyy")));
+              int diff = (int) Math.abs(DateUtilKt.getDayDiffFromToday(GamificationPopUpHandler.toDate(ketupatShownTime,YYYY_MM_DD)));
               if(diff < 1) {
                   return;
               }
