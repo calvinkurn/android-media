@@ -23,14 +23,18 @@ class DigitalMyBillsViewHolder(
             itemView.show()
             listener.onSubscriptionImpression(subscription)
 
-            widgetMyBills.hasMoreInfo(!isGotoPlus)
             if (isGotoPlus) {
+                widgetMyBills.hideSeparator()
+                widgetMyBills.hasMoreInfo(false)
+            } else {
+                widgetMyBills.showSeparator()
+                widgetMyBills.hasMoreInfo(true)
+            }
+            if (subscription.info.title.isEmpty()) {
+                widgetMyBills.hideTitle()
+            } else {
                 widgetMyBills.setTitle(subscription.info.title)
                 widgetMyBills.showTitle()
-                widgetMyBills.showSeparator()
-            } else {
-                widgetMyBills.hideTitle()
-                widgetMyBills.hideSeparator()
             }
             if (subscription.optIn) {
                 widgetMyBills.setDescription(subscription.info.checkedSubtitle)
