@@ -11,7 +11,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_title"
-        app:typographyType="heading_2"
+        app:typographyType="display_1"
         app:typographyWeight="bold"
         android:layout_marginLeft="@dimen/home_component_header_margin_default"
         android:layout_marginRight="@dimen/home_component_header_margin_default"

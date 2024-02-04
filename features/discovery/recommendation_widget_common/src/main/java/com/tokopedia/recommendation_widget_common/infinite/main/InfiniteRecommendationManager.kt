@@ -12,7 +12,8 @@ import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContex
 
 class InfiniteRecommendationManager(
     private val context: Context,
-    val listener: InfiniteRecommendationListener? = null
+    val listener: InfiniteRecommendationListener? = null,
+    private val headingType: Int = 0
 ) : InfiniteRecommendationCallback {
 
     val adapter: InfiniteRecommendationAdapter by getAdapter()
@@ -36,7 +37,7 @@ class InfiniteRecommendationManager(
     }
 
     private fun getAdapter() = lazy {
-        InfiniteRecommendationAdapter(this)
+        InfiniteRecommendationAdapter(this, headingType)
     }
 
     private fun getViewModel() = InfiniteRecommendationViewModelDelegate {

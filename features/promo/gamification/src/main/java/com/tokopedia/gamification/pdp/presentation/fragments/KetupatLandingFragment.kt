@@ -38,6 +38,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -200,7 +201,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
             recommendationCallbackImpl = RecommendationCallbackImpl(this::getScratchCardId)
         }
         infiniteRecommendationManager =
-            context?.let { InfiniteRecommendationManager(it, recommendationCallbackImpl) }
+            context?.let { InfiniteRecommendationManager(it, recommendationCallbackImpl, Typography.HEADING_2) }
         infiniteRecommendationManager?.adapter?.let {
             concatAdapter.addAdapter(it)
         }

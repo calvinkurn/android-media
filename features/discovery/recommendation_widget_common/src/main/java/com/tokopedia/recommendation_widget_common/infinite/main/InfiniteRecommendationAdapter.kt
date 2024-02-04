@@ -15,7 +15,8 @@ import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRec
 import com.tokopedia.recommendation_widget_common.infinite.utils.InfiniteDiffItemCallback
 
 class InfiniteRecommendationAdapter(
-    private val callback: InfiniteRecommendationCallback
+    private val callback: InfiniteRecommendationCallback,
+    headingType: Int = 0
 ) : ListAdapter<InfiniteRecommendationUiModel, InfiniteRecommendationViewHolder<*>>(
     InfiniteDiffItemCallback
 ) {
@@ -26,7 +27,7 @@ class InfiniteRecommendationAdapter(
         delegatesManager
             .addDelegate(InfiniteLoadingDelegate())
             .addDelegate(InfiniteProductDelegate(callback))
-            .addDelegate(InfiniteTitleDelegate(callback))
+            .addDelegate(InfiniteTitleDelegate(callback, headingType))
     }
 
     private fun determineFullSpan(

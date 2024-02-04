@@ -2,7 +2,6 @@ package com.tokopedia.notifications.inApp.ketupat
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -269,13 +268,13 @@ class CrackCouponHandler(
     }
 
     private fun setCloseButtonMargin() {
-//        binding.icClose.translationY = bottomMargin
-        binding.icClose.translationX = 30.0f
+        binding.icClose.translationX = 180.0f
+        binding.icClose.translationY = -80.0f
     }
 
     private fun resetCloseButtonMargin() {
-//        binding.icClose.translationY = 180.0f
         binding.icClose.translationX = 0.0f
+        binding.icClose.translationY = 0.0f
     }
 
     private fun setCloseButtonMargin(margin: Float) {

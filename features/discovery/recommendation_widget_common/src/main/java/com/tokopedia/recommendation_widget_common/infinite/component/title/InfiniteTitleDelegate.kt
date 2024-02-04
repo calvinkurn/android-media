@@ -9,7 +9,8 @@ import com.tokopedia.recommendation_widget_common.infinite.main.InfiniteRecommen
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 
 class InfiniteTitleDelegate(
-    private val callback: InfiniteRecommendationCallback
+    private val callback: InfiniteRecommendationCallback,
+    private val headingType: Int = 0
 ) :
     TypedAdapterDelegate<InfiniteTitleUiModel, InfiniteRecommendationUiModel, InfiniteTitleViewHolder>(
         R.layout.item_infinite_title
@@ -20,6 +21,6 @@ class InfiniteTitleDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): InfiniteTitleViewHolder {
         val binding = ItemInfiniteTitleBinding.bind(basicView)
-        return InfiniteTitleViewHolder(binding, callback)
+        return InfiniteTitleViewHolder(binding, callback, headingType)
     }
 }

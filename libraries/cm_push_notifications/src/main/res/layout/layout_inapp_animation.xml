@@ -93,8 +93,8 @@
         android:id="@+id/animationErrorState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="94dp"
-        app:cardBackgroundColor="@color/Unify_GN500"
+        android:layout_marginHorizontal="15dp"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/dp_20"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -102,10 +102,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/error_state_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/unify_globalerrors_500" />
+
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
@@ -115,7 +126,7 @@
                 android:layout_marginTop="42dp"
                 android:text="Oops, ada gangguan"
                 android:textAlignment="center"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="heading_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -123,10 +134,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_12"
                 android:text="Tunggu sebentar, biar Toped beresin. Coba lagi atau kembali nanti, ya."
                 android:textAlignment="center"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_NN600"
                 app:typographyType="paragraph_2" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -134,24 +145,22 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
-                android:layout_marginBottom="@dimen/dp_36"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
                 android:text="Error Code: 1234"
                 android:textAlignment="center"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_NN600"
                 app:typographyType="small" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnErrorState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:visibility="visible"
+                android:text="Coba Lagi" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnErrorState"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="50dp"
-        android:visibility="gone"
-        android:text="Coba Lagi"
-        app:layout_constraintTop_toBottomOf="@+id/animationErrorState" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
