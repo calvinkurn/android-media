@@ -735,6 +735,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
             channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
                 channel,
                 verticalPosition
+            ),
+            coupons = listOf(
+                CouponWidgetDataItemModel() // TODO???
             )
         )
     }

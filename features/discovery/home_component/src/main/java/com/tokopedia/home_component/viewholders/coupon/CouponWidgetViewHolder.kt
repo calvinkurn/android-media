@@ -19,9 +19,9 @@ class CouponWidgetViewHolder constructor(
     private val binding: HomeComponentCouponWidgetBinding? by viewBinding()
 
     private val mockData = listOf(
-        CouponWidgetDataItemModel("Loren Ipsum"),
-        CouponWidgetDataItemModel("Foo"),
-        CouponWidgetDataItemModel("Bar"),
+        CouponWidgetDataItemModel(shopName = "Loren Ipsum"),
+        CouponWidgetDataItemModel(shopName = "Foo"),
+        CouponWidgetDataItemModel(shopName = "Bar"),
     )
 
     init {

@@ -5,7 +5,8 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 
 data class CouponWidgetDataModel(
-    val channelModel: ChannelModel
+    val channelModel: ChannelModel,
+    val coupons: List<CouponWidgetDataItemModel>
 ) : HomeComponentVisitable {
 
     override fun visitableId() = channelModel.id
