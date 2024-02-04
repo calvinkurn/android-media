@@ -101,6 +101,7 @@ import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CategoryWidgetV2ViewHolder
+import com.tokopedia.home_component.viewholders.CouponWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CueWidgetCategoryViewHolder
 import com.tokopedia.home_component.viewholders.DealsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
@@ -125,6 +126,7 @@ import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
 import com.tokopedia.home_component.visitable.DealsDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
@@ -452,6 +454,10 @@ class HomeAdapterFactory(
         return Lego3AutoViewHolder.LAYOUT
     }
 
+    override fun type(couponWidgetModel: CouponWidgetDataModel): Int {
+        return CouponWidgetViewHolder.LAYOUT
+    }
+
     override fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int {
         return ShopFlashSaleWidgetViewHolder.LAYOUT
     }
@@ -631,6 +637,7 @@ class HomeAdapterFactory(
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
+            CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

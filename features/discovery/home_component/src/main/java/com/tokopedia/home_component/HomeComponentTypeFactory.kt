@@ -6,6 +6,7 @@ import com.tokopedia.home_component.visitable.BestSellerDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
 import com.tokopedia.home_component.visitable.DealsDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
@@ -61,4 +62,5 @@ interface HomeComponentTypeFactory {
     fun type(specialReleaseDataModel: SpecialReleaseRevampDataModel): Int = 0
     fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int = 0
     fun type(lego3AutoModel: Lego3AutoModel): Int = 0
+    fun type(couponWidgetModel: CouponWidgetDataModel): Int = 0
 }
