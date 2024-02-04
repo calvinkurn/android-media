@@ -41,7 +41,7 @@ class GamificationPopUpHandler {
                 // get active campaigns list for in app
                 // if list size > 0 show in app and return
                 // else show popup
-                startRepeatingJob(2000, ::handleAnimationPopup, activity)
+                startRepeatingJob(1500, ::handleAnimationPopup, activity)
             }
         } catch (e: Exception) {
             ServerLogger.log(
@@ -59,7 +59,8 @@ class GamificationPopUpHandler {
     private fun startRepeatingJob(timeInterval: Long, callback: (Activity) -> Unit, activity: Activity): Job {
         return CoroutineScope(Dispatchers.Default).launch {
             var i = 1
-            while (!CMInAppManager.isInappFlowChecked && i < 3) {
+            delay(timeInterval)
+            while (!CMInAppManager.isInappFlowChecked && i <= 3) {
                 // repeate Task Here
                 delay(timeInterval)
                 i++
