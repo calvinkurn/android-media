@@ -9,6 +9,7 @@ import com.tokopedia.shareexperience.test.robot.propertiesRobot
 import org.junit.Test
 
 class ShareExAppLinkTest : ShareExBaseTest() {
+
     @Test
     fun open_affiliate_registration() {
         // Given

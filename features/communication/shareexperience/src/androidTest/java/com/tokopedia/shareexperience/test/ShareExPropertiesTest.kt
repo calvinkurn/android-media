@@ -1,6 +1,7 @@
 package com.tokopedia.shareexperience.test
 
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
+import com.tokopedia.shareexperience.stub.ShareExDummyActivity
 import com.tokopedia.shareexperience.stub.data.GqlResponseStub
 import com.tokopedia.shareexperience.test.base.ShareExBaseTest
 import com.tokopedia.shareexperience.test.robot.generalResult
@@ -37,6 +38,7 @@ class ShareExPropertiesTest : ShareExBaseTest() {
     @Test
     fun assert_share_error_view() {
         // Given
+        ShareExDummyActivity.DEFAULT_URL = ""
         GqlResponseStub.sharePropertiesResponse.isError = true
 
         // When
@@ -248,6 +250,7 @@ class ShareExPropertiesTest : ShareExBaseTest() {
     fun assert_share_with_affiliate_eligible_without_label() {
         // Given
         GqlResponseStub.sharePropertiesResponse.filePath = "properties/share_properties_affiliate_eligible_without_label.json"
+        GqlResponseStub.sharePropertiesResponse.updateResponseObject()
 
         // When
         launchActivity()
@@ -289,7 +292,6 @@ class ShareExPropertiesTest : ShareExBaseTest() {
         stubAllIntents()
 
         // Then
-        Thread.sleep(10000)
         propertiesResult {
             assertCommonChannelAt(0)
             assertCommonChannelTotal(4)

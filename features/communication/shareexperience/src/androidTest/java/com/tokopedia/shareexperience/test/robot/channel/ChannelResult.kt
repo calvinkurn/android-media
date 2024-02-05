@@ -13,7 +13,7 @@ import org.hamcrest.CoreMatchers.allOf
 object ChannelResult {
     fun assertWhatsapp() {
         val actionMatcher = hasAction(Intent.ACTION_SEND)
-        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://www.tokopedia.com/")
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
         val packageMatcher = hasPackage(ShareExConstants.PackageName.WHATSAPP)
         val typeMatcher = hasType(ShareExMimeTypeEnum.TEXT.textType)
 
@@ -22,7 +22,7 @@ object ChannelResult {
 
     fun assertFbFeed() {
         val actionMatcher = hasAction(Intent.ACTION_SEND)
-        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://www.tokopedia.com/")
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
         val packageMatcher = hasPackage(ShareExConstants.PackageName.FACEBOOK)
         val typeMatcher = hasType(ShareExMimeTypeEnum.ALL.textType)
 
@@ -31,7 +31,7 @@ object ChannelResult {
 
     fun assertFbStory() {
         val actionMatcher = hasAction(ShareExConstants.IntentAction.FB_STORY)
-        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://www.tokopedia.com/")
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
         val packageMatcher = hasPackage(ShareExConstants.PackageName.FACEBOOK)
         val typeMatcher = hasType(ShareExMimeTypeEnum.IMAGE.textType)
 
@@ -40,7 +40,7 @@ object ChannelResult {
 
     fun assertIgFeed() {
         val actionMatcher = hasAction(ShareExConstants.IntentAction.IG_FEED)
-        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://www.tokopedia.com/")
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
         val packageMatcher = hasPackage(ShareExConstants.PackageName.INSTAGRAM)
         val typeMatcher = hasType(ShareExMimeTypeEnum.IMAGE.textType)
 
@@ -49,7 +49,7 @@ object ChannelResult {
 
     fun assertIgStory() {
         val actionMatcher = hasAction(ShareExConstants.IntentAction.IG_STORY)
-        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://www.tokopedia.com/")
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
         val packageMatcher = hasPackage(ShareExConstants.PackageName.INSTAGRAM)
         val typeMatcher = hasType(ShareExMimeTypeEnum.IMAGE.textType)
 
@@ -58,7 +58,7 @@ object ChannelResult {
 
     fun assertIgDm() {
         val actionMatcher = hasAction(Intent.ACTION_SEND)
-        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://www.tokopedia.com/")
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
         val packageMatcher = hasPackage(ShareExConstants.PackageName.INSTAGRAM)
         val typeMatcher = hasType(ShareExMimeTypeEnum.TEXT.textType)
 
@@ -67,7 +67,7 @@ object ChannelResult {
 
     fun assertLine() {
         val actionMatcher = hasAction(Intent.ACTION_SEND)
-        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://www.tokopedia.com/")
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
         val packageMatcher = hasPackage(ShareExConstants.PackageName.LINE)
         val typeMatcher = hasType(ShareExMimeTypeEnum.TEXT.textType)
 
@@ -76,7 +76,7 @@ object ChannelResult {
 
     fun assertTwitter() {
         val actionMatcher = hasAction(Intent.ACTION_SEND)
-        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://www.tokopedia.com/")
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
         val packageMatcher = hasPackage(ShareExConstants.PackageName.TWITTER)
         val typeMatcher = hasType(ShareExMimeTypeEnum.IMAGE.textType)
 
@@ -85,7 +85,7 @@ object ChannelResult {
 
     fun assertTelegram() {
         val actionMatcher = hasAction(Intent.ACTION_SEND)
-        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://www.tokopedia.com/")
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
         val packageMatcher = hasPackage(ShareExConstants.PackageName.TELEGRAM)
         val typeMatcher = hasType(ShareExMimeTypeEnum.IMAGE.textType)
 

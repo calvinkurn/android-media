@@ -15,6 +15,8 @@ import com.tokopedia.shareexperience.stub.ShareExDummyActivity
 import com.tokopedia.shareexperience.stub.common.UserSessionStub
 import com.tokopedia.shareexperience.stub.data.GqlResponseStub
 import com.tokopedia.shareexperience.stub.di.ShareExFakeComponentFactory
+import com.tokopedia.shareexperience.stub.domain.ShareExBranchRepositoryImplStub
+import com.tokopedia.shareexperience.test.robot.generalRobot
 import com.tokopedia.test.application.environment.ActivityScenarioTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -48,11 +50,15 @@ abstract class ShareExBaseTest {
         channelMapper as ShareExChannelMapperStub
     }
 
+    @Inject
+    lateinit var branchRepository: ShareExBranchRepositoryImplStub
+
     @Before
     open fun beforeTest() {
         Intents.init()
         resetResponses()
         setupDaggerComponent()
+        ShareExDummyActivity.reset()
     }
 
     @After
@@ -85,6 +91,9 @@ abstract class ShareExBaseTest {
         val intent = Intent(context, ShareExDummyActivity::class.java)
         intentModifier(intent)
         activityScenarioRule.launchActivity(intent)
+        generalRobot {
+            waitingForLayout()
+        }
     }
 
     protected fun stubAllIntents() {

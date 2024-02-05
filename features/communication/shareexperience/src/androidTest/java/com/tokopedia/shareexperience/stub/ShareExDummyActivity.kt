@@ -27,6 +27,10 @@ class ShareExDummyActivity : AppCompatActivity() {
     }
 
     companion object {
-        var DEFAULT_URL = "https://www.tokopedia.com/"
+        var DEFAULT_URL = ""
+
+        fun reset() {
+            DEFAULT_URL = "https://www.tokopedia.com/"
+        }
     }
 }
