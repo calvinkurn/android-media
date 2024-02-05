@@ -143,6 +143,7 @@ fun FeedProductHighlight(
                             start.linkTo(ogPrice.start)
                             end.linkTo(btnAtc.start, 4.dp)
                         })
+                    NestRibbon(text = product.discountFmt, top = 0.dp)
                 }
             }
         }
