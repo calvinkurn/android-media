@@ -227,14 +227,14 @@ class CatalogDetailUiMapper @Inject constructor(
             it.type == WidgetTypes.CATALOG_CTA_PRICE_TOP_SELLER.type
         }?.data?.run {
             if (style.isHidden || !style.isSticky) return@run PriceCtaSellerOfferingProperties()
-            val colorBorderButton = if (remoteModel.globalStyle?.darkMode.orFalse()){
+            val colorBorderButton = if (remoteModel.globalStyle?.darkMode.orFalse()) {
                 catalogR.color.catalog_dms_light_color
-            }else{
+            } else {
                 catalogR.color.catalog_dm_green
             }
-            val textColorPrice = if (remoteModel.globalStyle?.darkMode.orFalse()){
+            val textColorPrice = if (remoteModel.globalStyle?.darkMode.orFalse()) {
                 catalogR.color.catalog_dms_light_color
-            }else{
+            } else {
                 catalogR.color.catalog_dms_dark_color
             }
             PriceCtaSellerOfferingProperties(
@@ -819,60 +819,60 @@ class CatalogDetailUiMapper @Inject constructor(
         darkMode: Boolean,
         catalogName: String
     ): BaseCatalogUiModel {
-//        return data?.topSeller?.run {
-//            val bebasOngkirUrl =
-//                labelGroups.firstOrNull { it.position == "overlay_2" }?.url.orEmpty()
-//            val productBenefit =
-//                labelGroups.firstOrNull { it.position == "ri_product_benefit" }?.title.orEmpty()
-//            val productOffer =
-//                labelGroups.firstOrNull { it.position == "ri_product_offer" }?.title.orEmpty()
-//            SellerOfferingUiModel(
-//                productImage = mediaUrl.thumbnailUrl,
-//                shopBadge = shop.badge,
-//                shopName = shop.name,
-//                stockBar = stock.soldPercentage,
-//                productName = catalogName,
-//                productPrice = price.text,
-//                productSlashPrice = price.original,
-//                shopLocation = shop.city,
-//                chatResponseTime = shop.stats.chatEta,
-//                orderProcessTime = shop.stats.orderProcessEta,
-//                labelPromo = productBenefit,
-//                labelTotalDisc = productOffer,
-//                shopRating = credibility.rating,
-//                totalShopRating = credibility.ratingCount,
-//                totalSold = credibility.sold,
-//                freeOngkir = bebasOngkirUrl,
-//                estimationShipping = delivery.eta,
-//                isShopGuarantee = paymentOption.desc.isNotEmpty(),
-//                installment = paymentOption.desc,
-//                additionalService = additionalService.name
-//            )
-//        } ?: SellerOfferingUiModel()
+        return data?.topSeller?.run {
+            val bebasOngkirUrl =
+                labelGroups.firstOrNull { it.position == "overlay_2" }?.url.orEmpty()
+            val productBenefit =
+                labelGroups.firstOrNull { it.position == "ri_product_benefit" }?.title.orEmpty()
+            val productOffer =
+                labelGroups.firstOrNull { it.position == "ri_product_offer" }?.title.orEmpty()
+            SellerOfferingUiModel(
+                productImage = mediaUrl.thumbnailUrl,
+                shopBadge = shop.badge,
+                shopName = shop.name,
+                stockBar = stock.soldPercentage,
+                productName = catalogName,
+                productPrice = price.text,
+                productSlashPrice = price.original,
+                shopLocation = shop.city,
+                chatResponseTime = shop.stats.chatEta,
+                orderProcessTime = shop.stats.orderProcessEta,
+                labelPromo = productBenefit,
+                labelTotalDisc = productOffer,
+                shopRating = credibility.rating,
+                totalShopRating = credibility.ratingCount,
+                totalSold = credibility.sold,
+                freeOngkir = bebasOngkirUrl,
+                estimationShipping = delivery.eta,
+                isShopGuarantee = paymentOption.desc.isNotEmpty(),
+                installment = paymentOption.desc,
+                additionalService = additionalService.name
+            )
+        } ?: SellerOfferingUiModel()
         // DummyData
-        return SellerOfferingUiModel(
-            productImage = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/9/11/5a1321a4-fd2c-4060-b2b7-005d65175504.jpg",
-            shopBadge = "https://images.tokopedia.net/img/official_store_badge.png",
-            shopName = "toko purchase platform os",
-            stockBar = 95,
-            productName = "Samsung",
-            productPrice = "Rp9.000.000",
-            productSlashPrice = "Rp10.000.000",
-            shopLocation = "Jakarta",
-            chatResponseTime = "± 40 menit balas chat",
-            orderProcessTime = "± 3 jam pesanan diproses",
-            labelPromo = "Promo 500rb",
-            labelTotalDisc = "+2 lain, disc 10%",
-            shopRating = "5.0",
-            totalShopRating = "100",
-            totalSold = "10rb+ terjual",
-            freeOngkir = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/116496e7-df32-4c13-a485-9b9607cfdd02.png",
-            estimationShipping = "Tiba hari ini",
-            isShopGuarantee = false,
-            installment = "Cicil dari Rp450.000/bulan",
-            variantsName = "Varian 1, Variant 2",
-            additionalService = "Garansi Toko"
-        )
+//        return SellerOfferingUiModel(
+//            productImage = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/9/11/5a1321a4-fd2c-4060-b2b7-005d65175504.jpg",
+//            shopBadge = "https://images.tokopedia.net/img/official_store_badge.png",
+//            shopName = "toko purchase platform os",
+//            stockBar = 95,
+//            productName = "Samsung",
+//            productPrice = "Rp9.000.000",
+//            productSlashPrice = "Rp10.000.000",
+//            shopLocation = "Jakarta",
+//            chatResponseTime = "± 40 menit balas chat",
+//            orderProcessTime = "± 3 jam pesanan diproses",
+//            labelPromo = "Promo 500rb",
+//            labelTotalDisc = "+2 lain, disc 10%",
+//            shopRating = "5.0",
+//            totalShopRating = "100",
+//            totalSold = "10rb+ terjual",
+//            freeOngkir = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/116496e7-df32-4c13-a485-9b9607cfdd02.png",
+//            estimationShipping = "Tiba hari ini",
+//            isShopGuarantee = false,
+//            installment = "Cicil dari Rp450.000/bulan",
+//            variantsName = "Varian 1, Variant 2",
+//            additionalService = "Garansi Toko"
+//        )
     }
 
 //    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToSellerOffering(
