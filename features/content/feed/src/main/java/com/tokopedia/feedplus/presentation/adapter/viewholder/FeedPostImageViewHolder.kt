@@ -44,6 +44,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.util.extension.changeConstraint
 import kotlinx.coroutines.*
 import kotlin.math.abs
@@ -737,6 +738,9 @@ class FeedPostImageViewHolder(
                         absoluteAdapterPosition
                     )
                 })
+        }
+        binding.productTagView.rootView.addImpressionListener {
+
         }
     }
 

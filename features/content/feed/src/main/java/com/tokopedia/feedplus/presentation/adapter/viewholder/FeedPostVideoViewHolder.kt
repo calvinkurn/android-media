@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.util.extension.changeConstraint
 
 /**
@@ -573,6 +574,7 @@ class FeedPostVideoViewHolder(
                     listener.onHighlightClose(trackerDataModel)
                 })
         }
+        binding.productTagView.rootView.addImpressionListener {}
     }
 
     private fun onNotSelected() {

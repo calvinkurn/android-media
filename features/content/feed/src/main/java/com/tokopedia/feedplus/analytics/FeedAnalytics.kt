@@ -827,7 +827,7 @@ class FeedAnalytics @AssistedInject constructor(
         putString(EnhanceEcommerce.KEY_SHOP_ID, shopId)
         putString(EnhanceEcommerce.KEY_SHOP_NAME, shopName)
         putString(EnhanceEcommerce.KEY_SHOP_TYPE, "")
-        putString(EnhanceEcommerce.KEY_DIMENSION45, cartId)
+        if (cartId.isNotBlank()) putString(EnhanceEcommerce.KEY_DIMENSION45, cartId)
         putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
     }
 
@@ -942,8 +942,17 @@ class FeedAnalytics @AssistedInject constructor(
             .setCurrentSite(CURRENT_SITE_MARKETPLACE)
             .setUserId(userId)
             .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
+            .setCustomProperty("items", getProductTrackerBundle(
+                shopId = product.shopId,
+                shopName = product.shopName,
+                cartId = "",
+                productId = product.id,
+                productName = product.name,
+                productPrice = product.price
+            ))
+            .setCustomProperty("items_list", "")
             .build()
-            .send() //TODO: add product bundle
+            .send()
     }
 
     fun sendClickProductHighlight(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel) {
@@ -958,12 +967,21 @@ class FeedAnalytics @AssistedInject constructor(
             .setCurrentSite(CURRENT_SITE_MARKETPLACE)
             .setUserId(userId)
             .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
+            .setCustomProperty("items", getProductTrackerBundle(
+                shopId = product.shopId,
+                shopName = product.shopName,
+                cartId = "",
+                productId = product.id,
+                productName = product.name,
+                productPrice = product.price
+            ))
+            .setCustomProperty("items_list", "")
             .build()
-            .send() //TODO: add product bundle
+            .send()
     }
 
-    fun atcFromProductHighlight(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel) {
-        val eventLabel = getEventLabel(trackerModel) + "- ${product.id}"
+    fun atcFromProductHighlight(product: FeedProductActionModel, trackerModel: FeedTrackerDataModel) {
+        val eventLabel = getEventLabel(trackerModel) + "- ${product.product.id}"
         Tracker.Builder()
             .setEvent("add_to_cart")
             .setEventAction("click - keranjang button on card highlight")
@@ -974,8 +992,17 @@ class FeedAnalytics @AssistedInject constructor(
             .setCurrentSite(CURRENT_SITE_MARKETPLACE)
             .setUserId(userId)
             .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
+            .setCustomProperty("items", getProductTrackerBundle(
+                shopId = product.product.shop.id,
+                shopName = product.product.shop.name,
+                cartId = "",
+                productId = product.product.id,
+                productName = product.product.title,
+                productPrice = product.product.finalPrice
+            ))
+            .setCustomProperty("items_list", "")
             .build()
-            .send() //TODO: add product bundle
+            .send()
     }
     fun closeProductHighlight(trackerModel: FeedTrackerDataModel) {
         val eventLabel =" ${getPrefix(trackerModel.tabType)} - ${entrySource.entryPoint} - ${trackerModel.authorType.name.lowercase()} - ${trackerModel.authorId}"
@@ -993,7 +1020,7 @@ class FeedAnalytics @AssistedInject constructor(
             .send()
     }
 
-    fun atcFromProductHighlightWithVariant(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel) {
+    fun atcFromProductHighlightWithVariant(product: FeedProductActionModel, trackerModel: FeedTrackerDataModel) {
         Tracker.Builder()
             .setEvent(Event.CLICK_CONTENT)
             .setEventAction("click - keranjang button on card highlight bottomsheet")
@@ -1004,6 +1031,15 @@ class FeedAnalytics @AssistedInject constructor(
             .setCurrentSite(CURRENT_SITE_MARKETPLACE)
             .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
             .setUserId(userId)
+            .setCustomProperty("items", getProductTrackerBundle(
+                shopId = product.product.shop.id,
+                shopName = product.product.shop.name,
+                cartId = "",
+                productId = product.product.id,
+                productName = product.product.title,
+                productPrice = product.product.finalPrice
+            ))
+            .setCustomProperty("items_list", "")
             .build()
             .send()
     }

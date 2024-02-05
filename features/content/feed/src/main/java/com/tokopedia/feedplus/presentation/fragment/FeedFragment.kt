@@ -1453,10 +1453,24 @@ class FeedFragment :
             when (it) {
                 is Success -> {
                     currentTrackerData?.let { data ->
-                        feedAnalytics?.eventClickBuyButton(
-                            trackerData = data,
-                            productInfo = it.data
-                        )
+                        if (it.data.source == FeedProductActionModel.Source.CardHighlight) {
+                            if (it.data.product.showGlobalVariant) {
+                                feedAnalytics?.atcFromProductHighlightWithVariant(
+                                    trackerModel = data,
+                                    product = it.data
+                                )
+                            } else {
+                                feedAnalytics?.atcFromProductHighlight(
+                                    trackerModel = data,
+                                    product = it.data
+                                )
+                            }
+                        } else {
+                            feedAnalytics?.eventClickBuyButton(
+                                trackerData = data,
+                                productInfo = it.data
+                            )
+                        }
                     }
 
                     productBottomSheet?.doShowToaster(
@@ -2272,6 +2286,10 @@ class FeedFragment :
             isNewData = true,
             postSource = postSourceModel
         )
+    }
+
+    override fun impressHighlightCard() {
+        //feedAnalytics?.impressProductHighlight()
     }
 
     companion object {
