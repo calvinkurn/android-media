@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.ui.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.catalog.R
 
 data class CatalogDetailUiModel(
     val widgets: List<Visitable<*>> = emptyList(),
@@ -35,8 +36,8 @@ data class PriceCtaSellerOfferingProperties(
     val sold: String = "0",
     val badge: String = "",
     val bgColor: Int = 0,
-    val colorBorderButton: Int = 0,
-    val textColorPrice: Int = 0,
+    val colorBorderButton: Int = R.color.catalog_dms_light_color,
+    val textColorPrice: Int = R.color.catalog_dms_light_color,
     val isDarkTheme: Boolean = false,
     val isVisible: Boolean = false,
     val isVariant: Boolean = false
