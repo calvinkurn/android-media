@@ -375,6 +375,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         optionID
                         optionName
                         productName
+                        labelIcons {
+                          label
+                          iconURL
+                          type
+                        }
                         productURL
                         isCOD
                         isWishlist

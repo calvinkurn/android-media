@@ -5,6 +5,7 @@ import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.VariantConstant.DEFAULT_MAX_ORDER
+import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 
 /**
@@ -55,6 +56,10 @@ data class VariantChild(
     @SerializedName("productName")
     @Expose
     val name: String = "",
+
+    @SerializedName("labelIcons")
+    @Expose
+    val labelIcons: List<LabelIcons> = emptyList(),
 
     @SerializedName("productURL")
     @Expose
