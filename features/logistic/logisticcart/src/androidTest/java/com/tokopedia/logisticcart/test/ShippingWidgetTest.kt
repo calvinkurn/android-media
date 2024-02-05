@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.test
 
-import android.content.Intent
 import android.view.View
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -38,9 +37,8 @@ class ShippingWidgetTest {
 
     @Test
     fun normalRatesTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.NORMAL_FLOW.name)
-        }
+        val intent =
+            ShippingWidgetCheckoutActivity.newInstance(context, ShippingWidgetDummyType.NORMAL_FLOW)
         activityRule.launchActivity(intent)
 
         val widget =
@@ -59,9 +57,10 @@ class ShippingWidgetTest {
 
     @Test
     fun initialTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.INITIAL_STATE.name)
-        }
+        val intent = ShippingWidgetCheckoutActivity.newInstance(
+            context,
+            ShippingWidgetDummyType.INITIAL_STATE
+        )
         activityRule.launchActivity(intent)
 
         val widget =
@@ -75,9 +74,11 @@ class ShippingWidgetTest {
 
     @Test
     fun whitelabelTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.WHITELABEL_FLOW.name)
-        }
+        val intent = ShippingWidgetCheckoutActivity.newInstance(
+            context,
+            ShippingWidgetDummyType.WHITELABEL_FLOW
+        )
+
         activityRule.launchActivity(intent)
 
         val widget =
@@ -94,9 +95,10 @@ class ShippingWidgetTest {
 
     @Test
     fun bebasOngkirTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.BEBAS_ONGKIR.name)
-        }
+        val intent = ShippingWidgetCheckoutActivity.newInstance(
+            context,
+            ShippingWidgetDummyType.BEBAS_ONGKIR
+        )
         activityRule.launchActivity(intent)
 
         val widget =
@@ -115,9 +117,8 @@ class ShippingWidgetTest {
 
     @Test
     fun now2HourWithPromoTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.NOW_2_HOUR.name)
-        }
+        val intent =
+            ShippingWidgetCheckoutActivity.newInstance(context, ShippingWidgetDummyType.NOW_2_HOUR)
         activityRule.launchActivity(intent)
 
         val widget =
@@ -134,9 +135,10 @@ class ShippingWidgetTest {
 
     @Test
     fun schellyWithRatesTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.SCHELLY_WITH_RATES.name)
-        }
+        val intent = ShippingWidgetCheckoutActivity.newInstance(
+            context,
+            ShippingWidgetDummyType.SCHELLY_WITH_RATES
+        )
         activityRule.launchActivity(intent)
 
         val widget =
@@ -150,9 +152,10 @@ class ShippingWidgetTest {
 
     @Test
     fun unavailableCourierTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.UNAVAILABLE_COURIER.name)
-        }
+        val intent = ShippingWidgetCheckoutActivity.newInstance(
+            context,
+            ShippingWidgetDummyType.UNAVAILABLE_COURIER
+        )
         activityRule.launchActivity(intent)
 
         val widget =
@@ -166,9 +169,10 @@ class ShippingWidgetTest {
 
     @Test
     fun errorPinpointTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.ERROR_PINPOINT.name)
-        }
+        val intent = ShippingWidgetCheckoutActivity.newInstance(
+            context,
+            ShippingWidgetDummyType.ERROR_PINPOINT
+        )
         activityRule.launchActivity(intent)
 
         val widget =
@@ -182,9 +186,8 @@ class ShippingWidgetTest {
 
     @Test
     fun loadingTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.LOADING.name)
-        }
+        val intent =
+            ShippingWidgetCheckoutActivity.newInstance(context, ShippingWidgetDummyType.LOADING)
         activityRule.launchActivity(intent)
 
         val widget =
@@ -198,9 +201,8 @@ class ShippingWidgetTest {
 
     @Test
     fun safErrorTest() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.SAF_ERROR.name)
-        }
+        val intent =
+            ShippingWidgetCheckoutActivity.newInstance(context, ShippingWidgetDummyType.SAF_ERROR)
         activityRule.launchActivity(intent)
 
         val widget =
@@ -214,9 +216,10 @@ class ShippingWidgetTest {
 
     @Test
     fun happyFlowRatesShipping() {
-        val intent = Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
-            putExtra("WIDGET_UI_MODEL_KEY", ShippingWidgetDummyType.INITIAL_STATE.name)
-        }
+        val intent = ShippingWidgetCheckoutActivity.newInstance(
+            context,
+            ShippingWidgetDummyType.INITIAL_STATE
+        )
         activityRule.launchActivity(intent)
 
         val widget =
@@ -225,17 +228,29 @@ class ShippingWidgetTest {
             assertInitialStateVisible()
             clickShippingWidget("Pilih Pengiriman")
             // check shipping options bottom sheet
-            assertShippingDetailInfo("Dikirim dari Kota Administrasi Jakarta Timur • Berat 0.001 kg", "")
+            assertShippingDetailInfo(
+                "Dikirim dari Kota Administrasi Jakarta Timur • Berat 0.001 kg",
+                ""
+            )
             assertShippingOptionVisible("Estimasi tiba besok - 15 Sep (Rp0)", "")
             assertShippingOptionVisible(
                 "Instant 3 Jam (Rp103.400)",
                 "Estimasi tiba hari ini - besok, maks. 09:00 WIB"
             )
-            assertShippingOptionVisible("Same Day 8 Jam (Rp47.000)", "Estimasi tiba hari ini - besok, maks. 16:00 WIB")
-            assertShippingOptionVisible("Same Day (Rp19.500)", "Estimasi tiba hari ini - besok, maks. 22:00 WIB")
+            assertShippingOptionVisible(
+                "Same Day 8 Jam (Rp47.000)",
+                "Estimasi tiba hari ini - besok, maks. 16:00 WIB"
+            )
+            assertShippingOptionVisible(
+                "Same Day (Rp19.500)",
+                "Estimasi tiba hari ini - besok, maks. 22:00 WIB"
+            )
             assertShippingOptionVisible("Next Day (Rp13.000 - Rp15.300)", "Estimasi tiba 1 - 2 Feb")
             assertShippingOptionVisible("Reguler (Rp10.000 - Rp11.500)", "Estimasi tiba 2 - 5 Feb")
-            assertShippingOptionVisible("Kargo (Rp15.000 - Rp35.000)", "Rekomendasi berat di atas 5kg")
+            assertShippingOptionVisible(
+                "Kargo (Rp15.000 - Rp35.000)",
+                "Rekomendasi berat di atas 5kg"
+            )
             scrollToBottom()
             assertShippingOptionVisible("Kurir Toko", "Belum PinPoint Atur Pinpoint")
 
