@@ -705,14 +705,13 @@ class DigitalCartFragment :
     }
 
     override fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
-        if (!isGotoPlus()) {
-            digitalAnalytics.eventClickSubscription(
-                isChecked,
-                getCategoryName(),
-                getOperatorName(),
-                userSession.userId
-            )
-        }
+        digitalAnalytics.eventClickSubscription(
+            isChecked,
+            getCategoryName(),
+            getOperatorName(),
+            fintechProduct.id,
+            userSession.userId
+        )
         binding?.run {
             handleCrossSellConsent(fintechProduct, isChecked)
             viewModel.onSubscriptionChecked(fintechProduct, isChecked)
@@ -813,7 +812,8 @@ class DigitalCartFragment :
             userSession.userId,
             fintechProduct.checkBoxDisabled,
             getCategoryName(),
-            getOperatorName()
+            getOperatorName(),
+            fintechProduct.id
         )
     }
 
