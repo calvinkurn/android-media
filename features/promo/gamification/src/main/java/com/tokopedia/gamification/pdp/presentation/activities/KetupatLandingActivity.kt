@@ -18,7 +18,7 @@ class KetupatLandingActivity :
     BaseSimpleActivity(),
     HasComponent<PdpComponent> {
 
-    private lateinit var fm: FrameLayout
+    private var fm: FrameLayout? = null
 
     private val pdpComponent: PdpComponent by lazy(LazyThreadSafetyMode.NONE) { initInject() }
 
@@ -38,10 +38,12 @@ class KetupatLandingActivity :
             return
         }
 
-        supportFragmentManager
-            .beginTransaction()
-            .add(fm.id, getDestinationFragment())
-            .commit()
+        fm?.id?.let {
+            supportFragmentManager
+                .beginTransaction()
+                .add(it, getDestinationFragment())
+                .commit()
+        }
     }
 
     override fun onStart() {
