@@ -18,7 +18,7 @@ data class ShopDiscountProductDetailUiModel(
         val productId: String = "",
         val productImageUrl: String = "",
         val productName: String = "",
-        val variantName: String = "",
+        val parentName: String = "",
         val minOriginalPrice: Int = 0,
         val maxOriginalPrice: Int = 0,
         val minPriceDiscounted: Int = 0,

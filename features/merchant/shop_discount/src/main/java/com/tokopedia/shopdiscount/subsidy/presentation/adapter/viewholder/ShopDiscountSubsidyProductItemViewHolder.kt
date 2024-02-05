@@ -77,14 +77,15 @@ class ShopDiscountSubsidyProductItemViewHolder(
     }
 
     private fun setProductData(uiModel: ShopDiscountProductSubsidyUiModel) {
-        val variantName = uiModel.productDetailData.variantName
+        val parentName = uiModel.productDetailData.parentName
+        val productName =  uiModel.productDetailData.productName
         val subsidyStatusText = uiModel.productDetailData.subsidyStatusText
         imageProduct.loadImage(uiModel.productDetailData.productImageUrl)
-        textProductName.text = uiModel.productDetailData.productName
-        textVariantName.shouldShowWithAction(variantName.isNotEmpty()) {
-            textVariantName.text = variantName
+        textProductName.text = parentName
+        textVariantName.shouldShowWithAction(productName.isNotEmpty()) {
+            textVariantName.text = productName
         }
-        if (subsidyStatusText.isEmpty() || variantName.isEmpty()) {
+        if (subsidyStatusText.isEmpty() || productName.isEmpty()) {
             verticalDivider.hide()
         } else {
             verticalDivider.show()
@@ -96,7 +97,7 @@ class ShopDiscountSubsidyProductItemViewHolder(
             text = uiModel.productDetailData.maxDiscount.getPercentFormatted()
         }
         textProductPriceOriginal?.apply {
-            text = uiModel.productDetailData.maxOriginalPrice.getPercentFormatted()
+            text = uiModel.productDetailData.maxOriginalPrice.getCurrencyFormatted()
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
     }

@@ -20,6 +20,9 @@ import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSubsi
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProgramInformationDetailUiModel
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoUiModel
+import com.tokopedia.shopdiscount.utils.constant.DateConstant
+import com.tokopedia.shopdiscount.utils.extension.parseTo
+import com.tokopedia.shopdiscount.utils.extension.toDate
 import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -163,9 +166,11 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
 
     private fun setSubsidyPeriodSection() {
         val subsidyPeriodStart =
-            programInformationDetailUiModel?.subsidyInfo?.subsidyDateStart.orEmpty()
+            programInformationDetailUiModel?.subsidyInfo?.subsidyDateStart?.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE)
+                ?.parseTo(DateConstant.DATE_TIME_MINUTE_PRECISION).orEmpty()
         val subsidyPeriodEnd =
-            programInformationDetailUiModel?.subsidyInfo?.subsidyDateEnd.orEmpty()
+            programInformationDetailUiModel?.subsidyInfo?.subsidyDateEnd?.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE)
+                ?.parseTo(DateConstant.DATE_TIME_MINUTE_PRECISION).orEmpty()
         if (subsidyPeriodStart.isNotEmpty() && subsidyPeriodEnd.isNotEmpty()) {
             subsidyPeriodSection?.show()
             textSubsidyPeriodValue?.text = getString(
@@ -298,7 +303,7 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
         val subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(
             programInformationDetailUiModel?.subsidyInfo?.subsidyType?.value.orZero()
         )
-        if (subsidyType != ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL) {
+        if (subsidyType == ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN) {
             sellerDiscountPercentageRow?.show()
             textSellerDiscountPercentageValue?.text = getString(
                 R.string.sd_subsidy_discount_percentage_format,
@@ -315,7 +320,7 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
         val subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(
             programInformationDetailUiModel?.subsidyInfo?.subsidyType?.value.orZero()
         )
-        if (subsidyType != ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL) {
+        if (subsidyType == ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN) {
             sellerDiscountRow?.show()
             textSellerDiscountValue?.text = getString(
                 R.string.sd_subsidy_minus_price_format,

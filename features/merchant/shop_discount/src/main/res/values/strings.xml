@@ -214,7 +214,7 @@
     <string name="sd_subsidy_max_order_info_label">Maks. Pembelian</string>
     <string name="sd_subsidy_handled_by_tokopedia">Diatur oleh Tokopedia</string>
     <string name="sd_subsidy_period_subsidy_info_label_section">Info Periode Subsidi</string>
-    <string name="sd_subsidy_period_format">%1s - %2s</string>
+    <string name="sd_subsidy_period_format">%1s - %2s WIB</string>
     <string name="sd_subsidy_minus_price_format">-%1s</string>
     <string name="sd_subsidy_multiple_product_opt_out_edit_mode_title">Ada diskon yang tidak bisa langsung diubah</string>
     <string name="sd_subsidy_multiple_product_opt_out_delete_mode_title">Yakin hapus produk dari Diskon Toko?</string>

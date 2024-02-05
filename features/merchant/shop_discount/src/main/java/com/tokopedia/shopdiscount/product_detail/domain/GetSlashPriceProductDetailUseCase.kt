@@ -97,6 +97,10 @@ class GetSlashPriceProductDetailUseCase @Inject constructor(
                   }
                   join_subsidy
                   subsidy_status_text
+                  parent_info{
+                    is_parent
+                    name
+                  }
                 }
               }
             }
