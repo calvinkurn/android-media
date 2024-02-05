@@ -827,6 +827,7 @@ class CatalogDetailUiMapper @Inject constructor(
             val productOffer =
                 labelGroups.firstOrNull { it.position == "ri_product_offer" }?.title.orEmpty()
             SellerOfferingUiModel(
+                productId = productID,
                 productImage = mediaUrl.thumbnailUrl,
                 shopBadge = shop.badge,
                 shopName = shop.name,
