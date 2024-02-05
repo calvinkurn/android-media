@@ -115,6 +115,9 @@ object ProductDetailConstant {
     const val RECOM_VERTICAL = "pdp_vertical"
     const val RECOM_STEAL_THE_LOOK = "steal_the_look"
     const val A_PLUS_IMAGE = "product_detail_media"
+    const val TABLET_TYPE = "tablet_mode"
+    const val TABLET_RIGHT = "tablet_right"
+    const val TABLET_LEFT = "tablet_right"
 
     // custom info title as component type
     const val CUSTOM_INFO_TITLE = "custom_info_title"
@@ -209,4 +212,5 @@ object ProductDetailConstant {
     const val WEBVIEW_URL_PARAM = "url"
 
     const val A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE = false
+    const val TABLET_PAYLOAD = "TABLET_PAYLOAD"
 }

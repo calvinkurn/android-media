@@ -318,6 +318,16 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     /**
+     * Call this method first before another method
+     */
+    fun setIconAndNavRecyclerCustomColor(darkColor: Int?, lightColor: Int?) {
+        darkIconColor = darkColor
+        lightIconColor = lightColor
+        navToolbarIconCustomDarkColor = lightColor
+        navToolbarIconCustomLightColor = darkColor
+    }
+
+    /**
      * Show shadow and adjust padding
      */
     fun showShadow(lineShadow: Boolean = true) {
@@ -341,8 +351,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
      * @see
      * NavRecyclerViewScrollListener
      */
-    fun switchToDarkToolbar() {
-        if (toolbarThemeType != TOOLBAR_DARK_TYPE) {
+    fun switchToDarkToolbar(force: Boolean = false) {
+        if (toolbarThemeType != TOOLBAR_DARK_TYPE || force) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
             toolbarThemeType = TOOLBAR_DARK_TYPE
             setBackButtonColorBasedOnTheme()
@@ -363,8 +373,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
      * @see
      * NavRecyclerViewScrollListener
      */
-    fun switchToLightToolbar() {
-        if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
+    fun switchToLightToolbar(force: Boolean = false) {
+        if (toolbarThemeType != TOOLBAR_LIGHT_TYPE || force) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
             tvToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
@@ -578,7 +588,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
-    internal fun setBackgroundAlpha(alpha: Float) {
+    fun setBackgroundAlpha(alpha: Float) {
         val drawable = background
         drawable.alpha = alpha.toInt()
         background = drawable

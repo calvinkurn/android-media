@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.productcard.ProductCardGridView
+        android:id="@+id/productCardView"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:forceWidth="@dimen/comparison_widget_product_card_width"
+        app:reimagine="true"
+        app:reimagine_template="gridCarousel"
+        app:useCompatPadding="true" />
+
+    <com.tokopedia.recommendation_widget_common.widget.comparison.compareditem.specs.SpecsComparedView
+        android:id="@+id/specsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_difference_card_use_compat_padding" />
+
+</LinearLayout>

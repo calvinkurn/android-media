@@ -23,7 +23,7 @@ sealed interface UniversalInboxAction {
 
     // Recommendation Actions
     object RefreshRecommendation : UniversalInboxAction
-    object LoadNextPage : UniversalInboxAction
+    data class LoadNextPage(val page: Int) : UniversalInboxAction
     object ResetUserScrollState : UniversalInboxAction
     object AutoScrollRecommendation : UniversalInboxAction
 }

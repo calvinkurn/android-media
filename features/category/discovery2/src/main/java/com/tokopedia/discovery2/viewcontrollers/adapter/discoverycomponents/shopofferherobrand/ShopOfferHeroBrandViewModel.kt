@@ -93,7 +93,13 @@ class ShopOfferHeroBrandViewModel(
         productList.forEach { item ->
             item.data?.firstOrNull()?.let { dataItem ->
                 dataItem.hasNotifyMe = dataItem.notifyMe != null
-                productCardModels.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, component.name))
+                productCardModels.add(
+                    DiscoveryDataMapper().mapDataItemToProductCardModel(
+                        dataItem,
+                        component.name,
+                        component.properties?.cardType
+                    )
+                )
             }
         }
         this._productMaxHeight.value = productCardModels.getMaxHeightForGridView(
