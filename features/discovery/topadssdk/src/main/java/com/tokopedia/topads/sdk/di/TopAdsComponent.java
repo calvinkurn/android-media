@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.topads.sdk.widget.TdnBannerView;
+import com.tokopedia.topads.sdk.widget.TdnVerticalView;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView;
 import com.tokopedia.topads.sdk.widget.TopAdsImageView;
@@ -13,6 +14,8 @@ import dagger.Component;
 public interface TopAdsComponent {
 
     void inject(TdnBannerView tdnBannerView);
+
+    void inject(TdnVerticalView tdnVerticalView);
 
     void inject(TopAdsImageView topAdsImageView);
 

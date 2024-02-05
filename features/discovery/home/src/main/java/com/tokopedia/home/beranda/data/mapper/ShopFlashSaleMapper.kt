@@ -6,6 +6,7 @@ import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMap
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToHomeComponentHeader
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToTrackingAttributionModel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.mapper.ChannelModelMapper.mapToProductCardModel
 import com.tokopedia.home_component.model.ChannelViewAllCard
 import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
@@ -127,11 +128,13 @@ object ShopFlashSaleMapper {
         trackingModel: TrackingAttributionModel,
     ): List<CarouselProductCardDataModel> {
         return recomWidget.recommendationItemList.mapIndexed { index, item ->
+            val grid = item.mapToChannelGrid(index)
             CarouselProductCardDataModel(
-                productModel = item.toProductCardModel(
-                    cardType = CardUnify2.TYPE_BORDER,
+                productModel = mapToProductCardModel(
+                    channelGrid = grid,
+                    cardType = CardUnify2.TYPE_BORDER
                 ),
-                grid = item.mapToChannelGrid(index),
+                grid = grid,
                 trackingAttributionModel = trackingModel,
                 applink = item.appUrl,
             )

@@ -81,6 +81,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.play_common.util.extension.withCache
+import kotlinx.coroutines.flow.filterNotNull
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -370,6 +372,7 @@ class FeedBaseFragment :
                 }
 
                 override fun onPageSelected(position: Int) {
+                    feedMainViewModel.setActiveTab(position)
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
@@ -441,10 +444,14 @@ class FeedBaseFragment :
     private fun observeFeedTabData() {
         viewLifecycleOwner.lifecycleScope.launch {
             feedMainViewModel.feedTabs
+                .filterNotNull()
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
-                .collectLatest { state ->
-                    if (state == null) return@collectLatest
-                    when (state) {
+                .withCache()
+                .collectLatest {
+                    val prevValue = it.prevValue
+                    val currValue = it.value
+
+                    when (currValue) {
                         NetworkResult.Loading -> {
                             hideErrorView()
                             showLoading()
@@ -454,12 +461,19 @@ class FeedBaseFragment :
                             hideErrorView()
                             hideLoading()
 
-                            initTabsView(state.data)
-                            handleActiveTab(state.data)
+                            if (
+                                currValue.data.data.indexOf(feedMainViewModel.selectedTab) == binding.vpFeedTabItemsContainer.currentItem ||
+                                currValue.data.data == (prevValue as? NetworkResult.Success)?.data?.data
+                            ) {
+                                return@collectLatest
+                            }
+
+                            initTabsView(currValue.data)
+                            handleActiveTab(currValue.data)
                         }
 
                         is NetworkResult.Error -> {
-                            showErrorView(state.error)
+                            showErrorView(currValue.error)
                         }
 
                         NetworkResult.Unknown -> {
@@ -530,7 +544,17 @@ class FeedBaseFragment :
                                     is CreationUploadData.Post -> {
                                         showNormalToaster(
                                             getString(R.string.feed_upload_content_success),
-                                            duration = Toaster.LENGTH_LONG
+                                            duration = Toaster.LENGTH_LONG,
+                                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                                            actionListener = {
+                                                val intent = RouteManager.getIntent(
+                                                    context,
+                                                    ApplinkConst.FEED_RELEVANT_POST,
+                                                    uploadData.activityId,
+                                                )
+
+                                                router.route(requireActivity(), intent)
+                                            }
                                         )
                                     }
 
@@ -585,7 +609,7 @@ class FeedBaseFragment :
 
                                     override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                         launch {
-                                            creationUploader.deleteTopQueue()
+                                            creationUploader.deleteQueueAndChannel(uploadResult.data)
                                             creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
                                             binding.uploadView.hide()
                                         }
@@ -680,7 +704,7 @@ class FeedBaseFragment :
             binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.text = firstTabData.title
             binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickForYouTab()
-                selectActiveTab(TAB_FIRST_INDEX)
+                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
             }
 
             if (firstTabData.hasNewContent && userSession.isLoggedIn) {
@@ -698,7 +722,7 @@ class FeedBaseFragment :
             binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.text = secondTabData.title
             binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickFollowingTab()
-                selectActiveTab(TAB_SECOND_INDEX)
+                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
             }
 
             if (secondTabData.hasNewContent && userSession.isLoggedIn) {

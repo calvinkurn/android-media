@@ -119,10 +119,7 @@ class AppPerformanceTrace {
 
                 override fun onActivityPaused(activity: Activity) {
                     if (performanceTrace != null) {
-                        cancelPerformanceTracing(
-                            Error("err: Activity Closed. Performance trace cancelled"),
-                            activity
-                        )
+                        stopOngoingActivityPerformanceTrace(activity.javaClass.simpleName)
                     }
                 }
 
@@ -233,7 +230,7 @@ class AppPerformanceTrace {
                     performanceTrace?.let { trace ->
                         if (trace.traceId() == activityName) {
                             trace.stopMonitoring(
-                                Error("Activity paused")
+                                Error("err: Activity Closed. Performance trace cancelled")
                             )
                         }
                     }

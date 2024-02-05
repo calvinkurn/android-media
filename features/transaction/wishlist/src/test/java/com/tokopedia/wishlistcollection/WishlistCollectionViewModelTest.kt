@@ -12,21 +12,21 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
-import com.tokopedia.wishlist.detail.domain.DeleteWishlistProgressUseCase
-import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
-import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlist.collection.data.response.AffiliateUserDetailOnBoardingBottomSheetResponse
 import com.tokopedia.wishlist.collection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionSharingDataResponse
-import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
 import com.tokopedia.wishlist.collection.domain.AffiliateUserDetailOnBoardingBottomSheetUseCase
 import com.tokopedia.wishlist.collection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionSharingDataUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionUseCase
-import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlist.collection.view.viewmodel.WishlistCollectionViewModel
+import com.tokopedia.wishlist.detail.data.model.WishlistCollectionState
+import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
+import com.tokopedia.wishlist.detail.domain.DeleteWishlistProgressUseCase
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
+import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -213,15 +213,16 @@ class WishlistCollectionViewModelTest {
                 updateWishlistCollectionUseCase
             )
         )
-        val badgesUrl = arrayListOf<String>()
-        badgesUrl.add("url")
+        val badges = arrayListOf<RecommendationItem.Badge>()
+        badges.add(RecommendationItem.Badge("loren", "url"))
+        badges.add(RecommendationItem.Badge("ipsum", "url"))
 
         val listRecommLabel = arrayListOf<RecommendationLabel>()
         listRecommLabel.add(RecommendationLabel(title = "test", imageUrl = "testUrl"))
 
-        val recommItem1 = RecommendationItem(name = "recomm1", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
-        val recommItem2 = RecommendationItem(name = "recomm2", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
-        val recommItem3 = RecommendationItem(name = "recomm3", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
+        val recommItem1 = RecommendationItem(name = "recomm1", badges = badges, labelGroupList = listRecommLabel)
+        val recommItem2 = RecommendationItem(name = "recomm2", badges = badges, labelGroupList = listRecommLabel)
+        val recommItem3 = RecommendationItem(name = "recomm3", badges = badges, labelGroupList = listRecommLabel)
         listRecommendationItem = listOf(recommItem1, recommItem2, recommItem3)
 
         recommendationWidget = RecommendationWidget(
@@ -424,7 +425,7 @@ class WishlistCollectionViewModelTest {
         wishlistCollectionViewModel.loadRecommendation(0)
 
         // then
-        assert(wishlistCollectionViewModel.collectionData.value is Success<List<WishlistCollectionTypeLayoutData>>)
+        assert(wishlistCollectionViewModel.collectionData.value is WishlistCollectionState.Update)
     }
 
     // recommendation_failed
@@ -444,6 +445,20 @@ class WishlistCollectionViewModelTest {
         SoftAssertions.assertSoftly {
             timber.lastLogMessage() contentEquals throwable.localizedMessage
         }
+    }
+
+    @Test
+    fun loadRecommendation_getRecommendationFailed() {
+        // given
+        coEvery {
+            wishlistCollectionViewModel.getRecommendationWishlistV2(any(), any(), any())
+        } throws RuntimeException("error")
+
+        // when
+        wishlistCollectionViewModel.loadRecommendation(0)
+
+        // then
+        assert(wishlistCollectionViewModel.collectionData.value is WishlistCollectionState.Error)
     }
 
     @Test

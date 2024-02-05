@@ -3,8 +3,8 @@ package com.tokopedia.recommendation_widget_common.domain.request
 internal class GetRecommendationUseCaseRequest {
     companion object {
         val widgetListQuery = """
-            query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!, ${'$'}keywords: [String!]!, ${'$'}tokoNow: Boolean) {
-                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs, keywords: ${'$'}keywords, tokoNow : ${'$'}tokoNow) {
+            query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!, ${'$'}keywords: [String!]!, ${'$'}tokoNow: Boolean, ${'$'}productCardVersion: Int) {
+                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs, keywords: ${'$'}keywords, tokoNow : ${'$'}tokoNow, productCardVersion : ${'$'}productCardVersion) {
                     data {
                       tID
                       source
@@ -66,6 +66,10 @@ internal class GetRecommendationUseCaseRequest {
                             title
                             type
                             url
+                            styles {
+                              key
+                              value
+                            }
                         }
                         badges {
                           title
@@ -99,8 +103,8 @@ internal class GetRecommendationUseCaseRequest {
         """.trimIndent()
 
         val singleQuery = """
-            query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!) {
-                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam){
+            query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!, ${'$'}productCardVersion: Int) {
+                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam, productCardVersion : ${'$'}productCardVersion){
                    data {
                        tID
                        source
@@ -154,6 +158,10 @@ internal class GetRecommendationUseCaseRequest {
                             title
                             type
                             url
+                            styles {
+                              key
+                              value
+                            }
                           }
                           badges {
                               title

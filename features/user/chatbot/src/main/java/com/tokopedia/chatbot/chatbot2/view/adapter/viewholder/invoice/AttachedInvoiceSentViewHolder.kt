@@ -7,7 +7,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
@@ -16,6 +16,7 @@ import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -73,7 +74,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     }
 
     private fun bindViewWithModel(invoice: AttachInvoiceSentUiModel) {
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, invoice.imageUrl, radiusInvoice)
+        thumbnail?.loadImageRounded(invoice.imageUrl, radiusInvoice)
         setStatus(invoice)
         invoiceName?.text = invoice.message
         invoiceDesc?.text = invoice.description
@@ -128,7 +129,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
 
     override fun onViewRecycled() {
         if (thumbnail != null) {
-            ImageHandler.clearImage(thumbnail)
+            thumbnail.clearImage()
         }
     }
 

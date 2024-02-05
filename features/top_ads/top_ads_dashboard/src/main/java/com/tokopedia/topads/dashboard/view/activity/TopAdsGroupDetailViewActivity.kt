@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -21,12 +22,17 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.analytics.TopAdsGroupDetailTrackerImpl
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.AD_TYPE_HEADLINE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SOURCE_AUTOPS_ONBOARDING
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SOURCE_PACKAGE
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
@@ -71,6 +77,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
+import com.tokopedia.topads.dashboard.databinding.TopadsAutopsHeadlineUpsellDailogBinding
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
@@ -89,6 +96,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Success
 import java.util.HashMap
 import javax.inject.Inject
 import kotlin.math.abs
@@ -141,6 +149,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
+    private var source: String? = null
     private var groupId: String? = "0"
     private var priceSpent: String? = "0"
     private var groupStatus: String? = ""
@@ -163,6 +172,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         )
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
+    private var isAutoPsWhitelisted: Boolean = false
 
     private var descAutoAds: View? = null
 
@@ -372,6 +382,16 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun setUpObserver() {
+        viewModel.shopVariant.observe(this) { shopVariants ->
+            isAutoPsWhitelisted = shopVariants.isNotEmpty() && shopVariants.filter {
+                it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
+                    it.variant == TopAdsCommonConstant.AUTOPS_VARIANT
+            }
+                .isNotEmpty()
+            if(isAutoPsWhitelisted) {
+                viewModel.getShopInfo()
+            }
+        }
         viewModel.groupInsightCount.observe(this) {
             if (it is TopAdsListAllInsightState.Success) {
                 entryPointProductGroup?.renderWidgetOnDetailPage(it.data.topAdsBatchGetInsightCountByAdGroupID.groups.firstOrNull()?.groupData?.count
@@ -391,6 +411,48 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 }
             }
         }
+
+        viewModel.shopInfoResult.observe(this){
+            when(it){
+                is Success -> {
+                    val headlineAdsUsed = it.data.topadsGetShopInfo.data.ads.filter { ads -> ads.type == AD_TYPE_HEADLINE }.getOrNull(Int.ZERO)?.isUsed
+                    if(headlineAdsUsed == false){
+                        if(source == SOURCE_AUTOPS_ONBOARDING) {
+                            showHeadlineUpSellModal()
+                        }
+                    }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun showHeadlineUpSellModal(){
+        val binding = TopadsAutopsHeadlineUpsellDailogBinding.inflate(this.layoutInflater)
+        val upsellDailog = DialogUnify(
+            this,
+            DialogUnify.HORIZONTAL_ACTION,
+            DialogUnify.WITH_ILLUSTRATION
+        )
+        upsellDailog.setUnlockVersion()
+        upsellDailog.setChild(binding.root)
+        binding.accordianText.setOnClickListener { expandAccordian(binding.accordianGroup) }
+        binding.accordianIcon.setOnClickListener { expandAccordian(binding.accordianGroup) }
+        binding.image.urlSrc = TopAdsDashboardConstant.IKLAN_TOKO_AD_TYPE_IMG_URL
+        binding.cancel.setOnClickListener {
+            upsellDailog.dismiss()
+        }
+        binding.submit.setOnClickListener {
+            RouteManager.route(
+                this@TopAdsGroupDetailViewActivity,
+                ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
+            )
+        }
+        upsellDailog.show()
+    }
+
+    private fun expandAccordian(accordianData: Group?){
+        accordianData?.let { it.showWithCondition(!it.isVisible) }
     }
 
     private fun setClick() {
@@ -540,6 +602,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun loadData() {
+        viewModel.getVariantById()
         viewModel.getGroupInfo(resources, groupId ?: "0", GROUP_DETAIL_PAGE, ::onSuccessGroupInfo)
         viewModel.getTopAdsStatistic(
             startDate!!,
@@ -665,6 +728,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun getBundleArguments() {
+        source = intent?.extras?.getString(SOURCE_PACKAGE)
         groupId = intent?.extras?.getString(GROUP_ID)
         priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
     }

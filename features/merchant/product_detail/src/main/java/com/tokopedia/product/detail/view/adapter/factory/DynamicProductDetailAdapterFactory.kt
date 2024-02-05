@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataMode
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
-import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
@@ -28,7 +28,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
@@ -38,6 +38,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTabletLeftSectionDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTabletRightSectionDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
@@ -53,7 +55,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductGeneralInfoDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int
     fun type(data: PageErrorDataModel): Int
-    fun type(data: ProductNotifyMeDataModel): Int
+    fun type(data: ProductNotifyMeUiModel): Int
     fun type(data: ProductMediaDataModel): Int
     fun type(data: ProductContentDataModel): Int
     fun type(data: ProductMiniSocialProofDataModel): Int
@@ -86,11 +88,13 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ViewToViewWidgetDataModel): Int
     fun type(data: ProductCustomInfoTitleDataModel): Int
     fun type(data: ProductShopReviewDataModel): Int
-    fun type(data: OngoingCampaignDataModel): Int
+    fun type(data: OngoingCampaignUiModel): Int
     fun type(data: DynamicOneLinerDataModel): Int
     fun type(data: APlusImageUiModel): Int
     fun type(data: BMGMUiModel): Int
     fun type(data: ShipmentUiModel): Int
+    fun type(data: ProductTabletLeftSectionDataModel): Int
+    fun type(data: ProductTabletRightSectionDataModel): Int
 
     // This is the new centralized recom widget model.
     // After migration, all recom widgets will only be mapped into this model
