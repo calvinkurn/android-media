@@ -2745,7 +2745,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     qty = recommItem.minOrder,
                     shopId = recommItem.shopId.toString(),
                     custId = userSession?.userId ?: "",
-                    warehouseId = recommItem.warehouseId.toString()
+                    warehouseId = recommItem.warehouseId.toString(),
+                    shopName = recommItem.shopName
                 )
             ),
             recommItem,

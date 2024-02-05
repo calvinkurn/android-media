@@ -18,14 +18,20 @@ object TopAdsCommonConstant {
     const val ISO8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     const val TOPADS_MOVE_TO_DASHBOARD = "move_to_dashboard"
     const val TOPADS_AUTOADS_BUDGET_UPDATED = "budget_updated"
+    const val TOPADS_AUTOPS_ON = "autops_on"
+    const val TOPADS_AUTOPS_OFF = "autops_off"
     const val PARAM_TOPADS_HOMEPAGE = 0
     const val PARAM_PRODUK_IKLAN = 1
     const val PARAM_IKLAN_TOKO = 2
     const val PARAM_AUTOADS_BUDGET = 1
+    const val PARAM_AUTOPS_ON = 1
+    const val PARAM_AUTOPS_OFF = 2
     const val ERROR_TOO_MANY_REQUEST = "TOO_MANY_REQUESTS"
     const val ERROR_INVALID_ITEM_ID = "INVALID_ITEM_ID"
     const val ERROR_INVALID_KEYWORD = "INVALID_KEYWORD_TAG"
     const val EROOR_GROUP_NAME_EXIST = "GRUP_NAME_ALREADY_EXIST"
+    const val AUTOPS_EXPERIMENT = "autoads_auto_ps"
+    const val AUTOPS_VARIANT = "auto_ps_v1"
 
     /*keyword specific*/
     const val BROAD_TYPE = "Luas"
@@ -51,6 +57,13 @@ object TopAdsCommonConstant {
     const val PARAM_AD_GROUP_TYPE = "adGroupType"
     const val PARAM_PRODUCT_IDS = "productIDs"
     const val MAXIMUM_DAILY_BUDGET = "10000000"
+    const val PARAM_FEATURE = "feature"
+    const val ONBOARDING_PARAM = "onboarding"
+    const val GROUP_ID_PARAM = "group_id"
+    const val SOURCE_PACKAGE = "source_package"
+    const val SOURCE_AUTOPS_ONBOARDING = "autops_onboarding"
+    const val AD_TYPE_HEADLINE = "headline"
+    const val AD_TYPE_PRODUCT = "product"
 
     var TOPADS_GRAPHQL_TA_URL = when (TokopediaUrl.getInstance().TYPE) {
         Env.STAGING -> "https://gql-staging.tokopedia.com/graphql/ta"

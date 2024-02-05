@@ -350,6 +350,9 @@ object DeeplinkMainApp {
             }
         ),
         "gamification" to mutableListOf(
+            DLP.matchPattern("ketupat_rewards_landing_page"){ context: Context, deeplink: String ->
+                DeeplinkMapperGamification.getKetupatFallBackLink(deeplink, context)
+            },
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
             }
@@ -734,8 +737,8 @@ object DeeplinkMainApp {
             DLP.matchPattern("benefit_package") { _: String ->
                 ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE
             },
-            DLP.startsWith("interrupt") { deeplink: String ->
-                PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(deeplink)
+            DLP.startsWith("interrupt") { context: Context, _: Uri, deeplink: String ->
+                PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(context, deeplink)
             }
         ),
         "privacy-center" to mutableListOf(
