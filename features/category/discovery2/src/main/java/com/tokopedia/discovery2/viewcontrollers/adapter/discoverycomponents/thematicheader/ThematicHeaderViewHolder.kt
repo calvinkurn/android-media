@@ -51,7 +51,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
                 if (thematicData != null) {
                     setupUi(thematicData)
                 } else {
-                    hideWidget(null)
+                    hideWidget()
                 }
             }
         }
@@ -63,19 +63,11 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
         viewModel?.thematicData?.removeObservers(lifecycleOwner)
     }
 
-    private fun DiscoThematicHeaderLayoutBinding.hideWidget(color: String?) {
+    private fun DiscoThematicHeaderLayoutBinding.hideWidget() {
         title.hide()
         subtitle.hide()
         backgroundImage.hide()
         lottieAnimation.hide()
-        try {
-            if (!color.isNullOrEmpty()) {
-                balanceWidgetView.setBackgroundColor(Color.parseColor(color))
-            }
-        } catch (e: Exception) {
-            Timber.d(e)
-            /* do nothing */
-        }
     }
 
     private fun DiscoThematicHeaderLayoutBinding.setupUi(
@@ -98,7 +90,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
             title.text = dataItem.title
             subtitle.text = dataItem.subtitle
         } else {
-            hideWidget(dataItem.color)
+            hideWidget()
         }
     }
 
@@ -138,7 +130,6 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
             try {
                 mFragment.setupBackgroundColorForHeader(dataItem.color)
                 backgroundImage.setBackgroundColor(Color.parseColor(dataItem.color))
-                balanceWidgetView.setBackgroundColor(Color.TRANSPARENT)
                 if (dataItem.lottieImage.isNullOrEmpty() && dataItem.image.isNotBlank()) {
                     backgroundImage.loadImageWithoutPlaceholder(dataItem.image)
                 } else {
@@ -146,7 +137,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
                 }
             } catch (e: Exception) {
                 Timber.d(e)
-                hideWidget(dataItem.color)
+                hideWidget()
             }
         }
     }

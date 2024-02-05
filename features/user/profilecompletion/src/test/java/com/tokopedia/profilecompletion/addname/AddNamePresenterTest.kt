@@ -2,8 +2,8 @@ package com.tokopedia.profilecompletion.addname
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.profilecompletion.addname.listener.AddNameListener
-import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
+import com.tokopedia.profilecompletion.settingprofile.addname.listener.AddNameListener
+import com.tokopedia.profilecompletion.settingprofile.addname.presenter.AddNamePresenter
 import com.tokopedia.sessioncommon.data.Error
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase

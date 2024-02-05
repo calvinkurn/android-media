@@ -3085,6 +3085,7 @@ open class ShopPageHomeFragment :
                     viewModel?.addProductToCartOcc(
                         product,
                         shopId,
+                        shopName,
                         {
                             onSuccessAddToCart(
                                 it,

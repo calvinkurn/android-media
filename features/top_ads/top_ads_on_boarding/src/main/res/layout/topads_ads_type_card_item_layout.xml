@@ -6,7 +6,8 @@
     android:padding="@dimen/unify_space_16"
     android:layout_marginStart="@dimen/unify_space_16"
     android:background="@drawable/topads_onboarding_rounded_corners"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/adsTypeTitle"
