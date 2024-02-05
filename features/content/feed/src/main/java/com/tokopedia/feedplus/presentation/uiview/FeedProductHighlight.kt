@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.presentation.uiview
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -20,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -61,7 +59,6 @@ fun FeedProductHighlight(
                     .background(color = Color(0xB22E3137), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp)
                     .clickable {
-                        Log.d("hello in", product.applink)
                         onProductClick(product)
                     }
             ) {
@@ -111,11 +108,12 @@ fun FeedProductHighlight(
                     size = ButtonSize.SMALL,
                     trailingIcon = unifycomponentsR.drawable.iconunify_cart,
                     onClick = { },
-                    modifier = Modifier.constrainAs(btnAtc) {
-                        width = Dimension.fillToConstraints
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                    }
+                    modifier = Modifier
+                        .constrainAs(btnAtc) {
+                            width = Dimension.fillToConstraints
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        }
                         .clickable { onAtcClick(product) })
                 //Close Button: close show label again
                 NestIcon(iconId = IconUnify.CLOSE,
@@ -162,6 +160,7 @@ fun ProductTagItems(
     onProductHighlightClose: () -> Unit
 ) {
     var needToBeShown by remember { mutableStateOf(false) }
+    val highlightedProduct = products.firstOrNull { it.isHighlight }
 
     Column {
         LaunchedEffect(key1 = key, block = {
@@ -172,24 +171,20 @@ fun ProductTagItems(
         FeedProductLabel(
             products = products,
             totalProducts = totalProducts,
-            isVisible = !needToBeShown,
+            isVisible = !needToBeShown || highlightedProduct == null,
             onClick = onProductLabelClick
         )
-        val highlightedProduct = products.firstOrNull { it.isHighlight } ?: return
-        FeedProductHighlight(
-            product = highlightedProduct,
-            isVisible = needToBeShown,
-            onClose = {
-                onProductHighlightClose.invoke()
-                needToBeShown = false
-            },
-            onAtcClick = onAtcClick, onProductClick = onProductClick
-        )
+
+        if (highlightedProduct != null) {
+            FeedProductHighlight(
+                product = highlightedProduct,
+                isVisible = needToBeShown,
+                onClose = {
+                    onProductHighlightClose.invoke()
+                    needToBeShown = false
+                },
+                onAtcClick = onAtcClick, onProductClick = onProductClick
+            )
+        }
     }
-}
-
-@Preview
-@Composable
-fun FeedHighlight() {
-
 }
