@@ -43,8 +43,10 @@ class SDUIViewHolder(
         val cardJson = sduiJson.getJSONObject("card")
 
         binding.sduiViewContainer.removeAllViews()
-        binding.sduiViewContainer.addView(sduiManager.value.createView(context,
-            templateJson, "divKitView", cardJson))
+        binding.sduiViewContainer.addView(sduiManager.value.createView(
+            context,
+            templateJson, cardJson, "divKitView"
+        ))
     }
 
 }

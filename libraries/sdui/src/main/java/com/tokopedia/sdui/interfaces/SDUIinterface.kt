@@ -8,10 +8,13 @@ import org.json.JSONArray
 interface SDUIinterface {
     fun initSDUI(context: Context,
                  sduiTrackingInterface: SDUITrackingInterface? = null)
-    fun createView(context: Context, templateJson: JSONObject,
-                   viewType:String = "divKit", cardsJsonObject: JSONObject) : View?
     fun createView(
         context: Context, templateJson: JSONObject,
-        viewType: String = "divKit", cardsJsonArray: JSONArray) : View?
+        cardsJsonObject: JSONObject, viewType: String = "divKit"
+    ) : View?
+    fun createView(
+        context: Context, templateJson: JSONObject,
+        cardsJsonArray: JSONArray, viewType: String = "divKit"
+    ) : View?
 
 }

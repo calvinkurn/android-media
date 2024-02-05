@@ -8,7 +8,6 @@ import com.tokopedia.home_component.databinding.HomeComponentOrigamiSduiBinding
 import com.tokopedia.home_component.listener.CampaignWidgetComponentListener
 import com.tokopedia.sdui.SDUIManager
 import com.tokopedia.sdui.interfaces.SDUITrackingInterface
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.utils.view.binding.viewBinding
 import org.json.JSONObject
 
@@ -43,7 +42,7 @@ open class OrigamiSDUIViewHolder(
         binding?.homeComponentOrigamiContainer?.addView(
             sduiManager.value.createView(
                 itemView.context,
-                templateJson, "", cardJson
+                templateJson, cardJson, ""
             )
         )
     }

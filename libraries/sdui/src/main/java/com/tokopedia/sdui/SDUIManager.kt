@@ -54,8 +54,8 @@ class SDUIManager : SDUIinterface {
     override fun createView(
         context: Context,
         templateJson: JSONObject,
-        viewType: String,
-        cardsJsonObject: JSONObject
+        cardsJsonObject: JSONObject,
+        viewType: String
     ) : View? {
         parsingEnvironment = DivParsingEnvironment(ParsingErrorLogger.LOG).apply {
             parseTemplates(templateJson)
@@ -74,8 +74,8 @@ class SDUIManager : SDUIinterface {
     override fun createView(
         context: Context,
         templateJson: JSONObject,
-        viewType: String,
-        cardsJsonArray: JSONArray
+        cardsJsonArray: JSONArray,
+        viewType: String
     ) : View? {
         //Do not use yet
         return null
