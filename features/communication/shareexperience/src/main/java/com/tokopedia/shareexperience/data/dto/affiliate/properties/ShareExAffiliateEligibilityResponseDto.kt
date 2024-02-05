@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.data.dto.affiliate
+package com.tokopedia.shareexperience.data.dto.affiliate.properties
 
 import com.google.gson.annotations.SerializedName
 
@@ -7,6 +7,6 @@ data class ShareExAffiliateEligibilityResponseDto(
     val message: String = "",
     @SerializedName("badge")
     val badge: String = "",
-    @SerializedName("ExpiredDateFormatted")
+    @SerializedName("expiredDataFormatted")
     val expiredDate: String = ""
 )

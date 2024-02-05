@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.provider.Telephony.Sms.getDefaultSmsPackage
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
+import com.tokopedia.shareexperience.data.util.ShareExTelephonyUtil
 import com.tokopedia.shareexperience.data.util.toArray
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
@@ -22,14 +22,15 @@ import org.json.JSONArray
 import timber.log.Timber
 import javax.inject.Inject
 
-class ShareExChannelMapper @Inject constructor(
+open class ShareExChannelMapper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val resourceProvider: ShareExResourceProvider,
+    private val telephony: ShareExTelephonyUtil,
     private val remoteConfig: RemoteConfig,
     private val userSession: UserSessionInterface
 ) {
 
-    fun generateSocialMediaChannel(): ShareExChannelModel {
+    open fun generateSocialMediaChannel(): ShareExChannelModel {
         var socialMediaChannelList = generateSocialMediaChannelList()
         val orderingArray = getSocialMediaOrderingArray()
         socialMediaChannelList = socialMediaChannelList.sortedWith(
@@ -102,7 +103,7 @@ class ShareExChannelMapper @Inject constructor(
         }
     }
 
-    private fun generateSocialMediaChannelList(): List<ShareExChannelItemModel> {
+    protected fun generateSocialMediaChannelList(): List<ShareExChannelItemModel> {
         val socialMediaChannelList = arrayListOf<ShareExChannelItemModel>()
         socialMediaChannelList.add(
             ShareExChannelItemModel(
@@ -192,7 +193,7 @@ class ShareExChannelMapper @Inject constructor(
     }
 
     @SuppressLint("PII Data Exposure")
-    fun generateDefaultChannel(): ShareExChannelModel {
+    open fun generateDefaultChannel(): ShareExChannelModel {
         val generalChannelList = arrayListOf<ShareExChannelItemModel>()
         generalChannelList.add(
             ShareExChannelItemModel(
@@ -209,7 +210,7 @@ class ShareExChannelMapper @Inject constructor(
                 title = resourceProvider.getSMSChannelTitle(),
                 icon = IconUnify.CHAT,
                 mimeType = ShareExMimeTypeEnum.ALL,
-                packageName = getDefaultSmsPackage(context)
+                packageName = telephony.getSMSPackageName()
             )
         )
         generalChannelList.add(

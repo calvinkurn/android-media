@@ -6,8 +6,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ShareExTrackerArg(
     /**
-     * Add [SHARE_ID_KEY] to any label, it will be replaced to actual share id (for session tracking)
+     * Add [SHARE_ID_KEY] to any field, it will be replaced to actual share id (for session tracking)
      */
+    val utmCampaign: String, // Mandatory for link generation!
+
     val labelImpressionBottomSheet: String = "",
     val labelActionClickShareIcon: String = "",
     val labelActionCloseIcon: String = "",

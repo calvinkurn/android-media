@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.shareexperience.test">
+
+    <application>
+        <activity android:name="com.tokopedia.shareexperience.stub.ShareExDummyActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WhiteUnify"/>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.tokopedia.shareexperience.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/shareex_file_paths" />
+        </provider>
+    </application>
+</manifest>

@@ -128,6 +128,7 @@ import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 import java.text.SimpleDateFormat
+import java.util.*
 
 object DynamicProductDetailMapper {
     /**
@@ -907,6 +908,7 @@ object DynamicProductDetailMapper {
             pageTypeEnum = ShareExPageTypeEnum.PDP,
             defaultUrl = productUrl,
             trackerArg = ShareExTrackerArg(
+                utmCampaign = "pdp-${ShareExTrackerArg.SHARE_ID_KEY}-$productId-$campaignId",
                 labelImpressionBottomSheet = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionClickShareIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionCloseIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",

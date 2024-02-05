@@ -11,13 +11,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shareexperience.data.analytic.ShareExAnalytics
-import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
+import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
@@ -37,6 +36,7 @@ import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
+import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import com.tokopedia.shareexperience.ui.util.ShareExMediaCleanupStorageWorker
 import com.tokopedia.shareexperience.ui.util.copyTextToClipboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -47,6 +47,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * Use [com.tokopedia.shareexperience.ui.util.ShareExInitializer] to open this bottom sheet
+ */
 class ShareExBottomSheet :
     BottomSheetUnify(),
     ShareExChipsListener,
@@ -104,12 +107,10 @@ class ShareExBottomSheet :
     }
 
     private fun initInjector() {
-        val baseMainApplication = activity?.applicationContext as? BaseMainApplication
-        baseMainApplication?.let {
-            DaggerShareExComponent
-                .builder()
-                .baseAppComponent(it.baseAppComponent)
-                .build()
+        activity?.application?.let {
+            ShareExComponentFactoryProvider
+                .instance
+                .createShareExComponent(application = it)
                 .inject(this)
         }
     }
@@ -200,41 +201,56 @@ class ShareExBottomSheet :
             viewBinding?.shareexLayoutLoading?.showWithCondition(it.isLoading)
             /**
              * If loading, then do nothing
-             * If error and affiliate, continue until success and dismiss bottom sheet, show toaster, and user manually copy
-             * If error and not affiliate, skip then act like success
-             * If channel copy link, copy text & show toaster
-             * If channel others, show native chooser
-             * If show toaster is true and error message not null/empty, show toaster
+             * If error then do logging
+             ** error affiliate, continue until success and dismiss bottom sheet, show toaster, and user manually copy
+             ** error branch, skip and do nothing until success
+             ** error default should not be possible
+             ** error image downloader, counted as success
+             * If success
+             ** success channel copy link, copy text & show toaster
+             ** success channel others, show native chooser
+             ** success channels, open the app
              */
-            if (!it.isLoading && it.error == null) {
-                if (it.isAffiliateError) {
-                    dismiss()
-                    listener?.onFailGenerateAffiliateLink(it.shortLink)
-                } else {
-                    trackActionClickChannel(
-                        it.channelEnum,
-                        it.imageType
-                    )
-                    when (it.channelEnum) {
-                        ShareExChannelEnum.COPY_LINK -> {
-                            val isSuccessCopy = context?.copyTextToClipboard(it.shortLink)
-                            if (isSuccessCopy == true) {
-                                dismiss()
-                                listener?.onSuccessCopyLink()
-                            }
-                        }
-                        ShareExChannelEnum.OTHERS -> {
-                            openIntentChooser(it)
+            if (it.isLoading) return@collect
+
+            if (it.error != null) {
+                Timber.d(it.error)
+                ShareExLogger.logExceptionToServerLogger(
+                    it.error,
+                    userSession.deviceId,
+                    it.errorEnum.toString()
+                )
+            }
+
+            if (it.error != null && it.errorEnum == ShareExIntentErrorEnum.AFFILIATE_ERROR) {
+                dismiss()
+                listener?.onFailGenerateAffiliateLink(it.shortLink)
+            }
+
+            if (it.error == null || it.errorEnum == ShareExIntentErrorEnum.IMAGE_DOWNLOADER) {
+                trackActionClickChannel(
+                    it.channelEnum,
+                    it.imageType
+                )
+                when (it.channelEnum) {
+                    ShareExChannelEnum.COPY_LINK -> {
+                        val isSuccessCopy = context?.copyTextToClipboard(it.shortLink)
+                        if (isSuccessCopy == true) {
                             dismiss()
+                            listener?.onSuccessCopyLink()
                         }
-                        else -> {
-                            it.intent?.let { intent ->
-                                if (intent.type == ShareExMimeTypeEnum.IMAGE.textType) {
-                                    context?.copyTextToClipboard(it.message)
-                                }
-                                navigateWithIntent(intent)
-                                dismiss()
+                    }
+                    ShareExChannelEnum.OTHERS -> {
+                        openIntentChooser(it)
+                        dismiss()
+                    }
+                    else -> {
+                        it.intent?.let { intent ->
+                            if (intent.type == ShareExMimeTypeEnum.IMAGE.textType) {
+                                context?.copyTextToClipboard(it.message)
                             }
+                            navigateWithIntent(intent)
+                            dismiss()
                         }
                     }
                 }

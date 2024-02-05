@@ -1,6 +1,7 @@
 package com.tokopedia.shareexperience.ui.util
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.ContextWrapper
 import android.view.View
@@ -9,11 +10,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.analytic.ShareExAnalytics
-import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
+import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateEligibilityRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
-import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -77,12 +76,11 @@ class ShareExInitializer(
     }
 
     private fun initInjector() {
-        val baseMainApplication = weakContext.get()?.applicationContext as? BaseMainApplication
-        baseMainApplication?.let {
-            DaggerShareExComponent
-                .builder()
-                .baseAppComponent(it.baseAppComponent)
-                .build()
+        val application = weakContext.get()?.applicationContext as? Application
+        application?.let {
+            ShareExComponentFactoryProvider
+                .instance
+                .createShareExComponent(it)
                 .inject(this)
         }
     }
@@ -91,7 +89,6 @@ class ShareExInitializer(
         weakContext.get()?.let {
             val lifecycleScope = (it as? LifecycleOwner)?.lifecycleScope
             lifecycleScope?.launch {
-                UUID.randomUUID()
                 try {
                     /**
                      * Add more checker and args here if needed

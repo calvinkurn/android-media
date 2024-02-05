@@ -2,6 +2,7 @@ package com.tokopedia.shareexperience.domain.model.property
 
 import android.os.Parcelable
 import com.tokopedia.shareexperience.domain.model.ShareExFeatureEnum
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -24,12 +25,8 @@ data class ShareExLinkProperties(
     val anMinVersion: String = "",
     val feature: ShareExFeatureEnum = ShareExFeatureEnum.SHARE,
     /**
-     Fill the campaignName with following format: {Page} - {Page ID} - {User ID} - {Sharing Date} - {Image Generator Source}
-     Page: Whether page using this feature eg: PDP, Shop Page, Feed, etc
-     Page ID: Specific id for the page eg: Product ID, Shop ID, Channel ID
-     For non login user, you can skip the user ID part
-     Sharing Date use DDMMYY format
-     Example: PDP - 123456 - 765389 - 230321 - RXAbs1
+     * Fill the campaignName from [ShareExTrackerArg] utmCampaign
+     * Different implementation of utm campaign each page
      */
     val campaign: String = ""
 ) : Parcelable

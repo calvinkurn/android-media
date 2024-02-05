@@ -16,7 +16,6 @@ import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
-import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorWrapperRequest
@@ -31,9 +30,11 @@ import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExImageGeneratorUiState
+import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import com.tokopedia.shareexperience.ui.util.getImageGeneratorProperty
 import com.tokopedia.shareexperience.ui.util.getSelectedChipPosition
 import com.tokopedia.shareexperience.ui.util.getSelectedImageUrl
@@ -54,8 +55,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 class ShareExViewModel @Inject constructor(
@@ -253,7 +252,7 @@ class ShareExViewModel @Inject constructor(
                 val channelEnum = channelItemModel.channelEnum
                 val chipPosition = bottomSheetModel.getSelectedChipPosition(bottomSheetArgs.selectedChip).orZero()
                 val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
-                val campaign = generateCampaign(shareProperty, bottomSheetArgs.identifier, bottomSheetArgs.pageTypeEnum)
+                val campaign = bottomSheetArgs.trackerArg.utmCampaign.replace(ShareExTrackerArg.SHARE_ID_KEY, shareProperty.shareId.toString())
                 val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
                     androidUrl = generateUrlWithUTM(shareProperty.linkProperties.androidUrl, channelEnum, campaign),
                     iosUrl = generateUrlWithUTM(shareProperty.linkProperties.iosUrl, channelEnum, campaign),
@@ -304,8 +303,8 @@ class ShareExViewModel @Inject constructor(
             channelEnum = channelItemModel.channelEnum,
             isLoading = false,
             error = throwable,
-            isAffiliateError = false,
-            imageType = ShareExImageTypeEnum.NO_IMAGE
+            imageType = ShareExImageTypeEnum.NO_IMAGE,
+            errorEnum = null
         )
     }
 
@@ -332,28 +331,6 @@ class ShareExViewModel @Inject constructor(
             newUri.query(query)
         }
         return newUri.build().toString()
-    }
-
-    private fun generateCampaign(
-        shareProperty: ShareExPropertyModel,
-        identifier: String,
-        pageTypeEnum: ShareExPageTypeEnum
-    ): String {
-        var campaign = "${pageTypeEnum.name}-$identifier"
-        campaign += if (userSession.isLoggedIn) {
-            "-${userSession.userId}"
-        } else {
-            "-0"
-        }
-        campaign += "-${getSimpleDate()}"
-        if (shareProperty.imageGenerator?.sourceId?.isNotBlank() == true) {
-            campaign += "-${shareProperty.imageGenerator.sourceId}"
-        }
-        return campaign
-    }
-
-    private fun getSimpleDate(): String {
-        return SimpleDateFormat("ddMMyy", Locale.getDefault()).format(Date())
     }
 
     private fun generateShortLinkRequest(
@@ -385,29 +362,21 @@ class ShareExViewModel @Inject constructor(
                     downloadImageAndShare(shortLinkRequest, channelItemModel, result.data, imageType)
                 }
                 is ShareExResult.Error -> {
-                    if (apiType == ShareExShortLinkFallbackPriorityEnum.AFFILIATE) {
-                        updateIntentUiState(
-                            intent = null,
-                            message = "",
-                            shortLink = "",
-                            channelEnum = shortLinkRequest.channelEnum,
-                            isLoading = false,
-                            error = result.throwable,
-                            isAffiliateError = true,
-                            imageType = imageType
-                        )
-                    } else {
-                        updateIntentUiState(
-                            intent = null,
-                            message = "",
-                            shortLink = "",
-                            channelEnum = shortLinkRequest.channelEnum,
-                            isLoading = false,
-                            error = result.throwable,
-                            imageType = imageType
-                            // do not update affiliate error
-                        )
+                    val errorEnum = when (apiType) {
+                        ShareExShortLinkFallbackPriorityEnum.AFFILIATE -> ShareExIntentErrorEnum.AFFILIATE_ERROR
+                        ShareExShortLinkFallbackPriorityEnum.BRANCH -> ShareExIntentErrorEnum.BRANCH_ERROR
+                        ShareExShortLinkFallbackPriorityEnum.DEFAULT -> ShareExIntentErrorEnum.DEFAULT_URL_ERROR
                     }
+                    updateIntentUiState(
+                        intent = null,
+                        message = "",
+                        shortLink = "",
+                        channelEnum = shortLinkRequest.channelEnum,
+                        isLoading = false,
+                        error = result.throwable,
+                        imageType = imageType,
+                        errorEnum = errorEnum
+                    )
                 }
                 ShareExResult.Loading -> setLoadingIntentUiState(channelItemModel.channelEnum)
             }
@@ -422,8 +391,8 @@ class ShareExViewModel @Inject constructor(
             channelEnum = channelEnum,
             isLoading = true,
             error = null,
-            isAffiliateError = false,
-            imageType = ShareExImageTypeEnum.NO_IMAGE
+            imageType = ShareExImageTypeEnum.NO_IMAGE,
+            errorEnum = null
         )
     }
 
@@ -434,34 +403,20 @@ class ShareExViewModel @Inject constructor(
         channelEnum: ShareExChannelEnum?,
         isLoading: Boolean,
         error: Throwable?,
-        isAffiliateError: Boolean? = null,
-        imageType: ShareExImageTypeEnum
+        imageType: ShareExImageTypeEnum,
+        errorEnum: ShareExIntentErrorEnum?
     ) {
-        if (isAffiliateError != null) {
-            _channelIntentUiState.update {
-                it.copy(
-                    intent = intent,
-                    message = message,
-                    shortLink = shortLink,
-                    channelEnum = channelEnum,
-                    isLoading = isLoading,
-                    error = error,
-                    imageType = imageType,
-                    isAffiliateError = isAffiliateError
-                )
-            }
-        } else {
-            _channelIntentUiState.update {
-                it.copy(
-                    intent = intent,
-                    message = message,
-                    shortLink = shortLink,
-                    channelEnum = channelEnum,
-                    isLoading = isLoading,
-                    error = error,
-                    imageType = imageType
-                )
-            }
+        _channelIntentUiState.update {
+            it.copy(
+                intent = intent,
+                message = message,
+                shortLink = shortLink,
+                channelEnum = channelEnum,
+                isLoading = isLoading,
+                error = error,
+                imageType = imageType,
+                errorEnum = errorEnum
+            )
         }
     }
 
@@ -582,8 +537,8 @@ class ShareExViewModel @Inject constructor(
                         channelEnum = channelItemModel.channelEnum,
                         isLoading = false,
                         error = null,
-                        imageType = imageType
-                        // do not update affiliate error flag
+                        imageType = imageType,
+                        errorEnum = null
                     )
                 }
                 is ShareExResult.Error -> {
@@ -594,8 +549,8 @@ class ShareExViewModel @Inject constructor(
                         channelEnum = channelItemModel.channelEnum,
                         isLoading = false,
                         error = it.throwable,
-                        imageType = imageType
-                        // do not update affiliate error flag
+                        imageType = imageType,
+                        errorEnum = ShareExIntentErrorEnum.IMAGE_DOWNLOADER
                     )
                 }
                 ShareExResult.Loading -> Unit

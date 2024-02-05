@@ -3,6 +3,7 @@ package com.tokopedia.shareexperience.ui.uistate
 import android.content.Intent
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
+import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 
 data class ShareExChannelIntentUiState(
     val intent: Intent? = null,
@@ -12,11 +13,5 @@ data class ShareExChannelIntentUiState(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
     val imageType: ShareExImageTypeEnum = ShareExImageTypeEnum.NO_IMAGE,
-
-    /**
-     * Special case for affiliate
-     * Do not change the value when updating except when affiliate is error
-     *
-     */
-    val isAffiliateError: Boolean = false
+    val errorEnum: ShareExIntentErrorEnum? = null
 )
