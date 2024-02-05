@@ -23,8 +23,7 @@ class InfiniteTitleViewHolder(
             }
         )
         if(headingType != 0) {
-            binding.recommendationHeaderView.findViewById<Typography>(home_component_headerR.id.header_title)
-                .setType(headingType)
+            binding.recommendationHeaderView.findViewById<Typography?>(home_component_headerR.id.header_title)?.setType(headingType)
         }
     }
 }
