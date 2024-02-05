@@ -1,18 +1,16 @@
-package com.tokopedia.home.beranda.data.model
+package com.tokopedia.home_component.usecase.thematic
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by frenzel
- */
-data class HomeThematicResponse (
+
+data class ThematicResponse(
     @Expose
     @SerializedName("getHomeThematic")
-    val getHomeThematic: GetHomeThematic
+    val getThematic: GetThematic
 
 ) {
-    data class GetHomeThematic(
+    data class GetThematic(
         @Expose
         @SerializedName("thematic")
         val thematic: Thematic
