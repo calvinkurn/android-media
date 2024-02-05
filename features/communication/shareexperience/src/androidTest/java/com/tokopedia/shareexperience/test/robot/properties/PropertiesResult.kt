@@ -124,8 +124,7 @@ object PropertiesResult {
         label: String,
         date: String
     ) {
-        onView(withId(R.id.shareex_tv_title_link))
-            .check(matches(withText(title)))
+        assertShareLinkTitle(title)
 
         if (commissionText.isNotBlank()) {
             onView(withId(R.id.shareex_tv_commision_link))
@@ -156,6 +155,11 @@ object PropertiesResult {
             onView(withId(R.id.shareex_tv_date))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
         }
+    }
+
+    fun assertShareLinkTitle(title: String) {
+        onView(withId(R.id.shareex_tv_title_link))
+            .check(matches(withText(title)))
     }
 
     fun assertSeparatorLine(position: Int) {

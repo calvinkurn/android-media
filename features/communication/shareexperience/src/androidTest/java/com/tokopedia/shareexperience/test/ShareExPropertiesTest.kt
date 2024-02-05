@@ -5,6 +5,7 @@ import com.tokopedia.shareexperience.stub.data.GqlResponseStub
 import com.tokopedia.shareexperience.test.base.ShareExBaseTest
 import com.tokopedia.shareexperience.test.robot.generalResult
 import com.tokopedia.shareexperience.test.robot.propertiesResult
+import com.tokopedia.shareexperience.test.robot.propertiesRobot
 import org.junit.Test
 
 class ShareExPropertiesTest : ShareExBaseTest() {
@@ -315,6 +316,102 @@ class ShareExPropertiesTest : ShareExBaseTest() {
         }
         generalResult {
             assertRvTotalItem(1)
+        }
+    }
+
+    @Test
+    fun assert_chip_click() {
+        // Given
+        GqlResponseStub.sharePropertiesResponse.filePath = "properties/share_properties_with_chips.json"
+        GqlResponseStub.sharePropertiesResponse.updateResponseObject()
+
+        // When
+        launchActivity()
+        stubAllIntents()
+
+        // Then
+        propertiesResult {
+            assertChipsAt(0)
+            assertChipTotal(4)
+            assertChipItemAt(0, "One")
+            assertChipItemAt(1, "Two")
+            assertChipItemAt(2, "Three")
+            assertChipItemAt(3, "Four")
+
+            assertShareLinkTitle("Jual Full Update Product KVI, lagi murah loh!")
+        }
+
+        // When
+        propertiesRobot {
+            clickChipOn(1)
+        }
+
+        // Then
+        propertiesResult {
+            assertShareLinkTitle("Properties tab ke 2")
+        }
+
+        // When
+        propertiesRobot {
+            clickChipOn(2)
+        }
+
+        // Then
+        propertiesResult {
+            assertShareLinkTitle("Properties tab ke 3")
+        }
+
+        // When
+        propertiesRobot {
+            clickChipOn(3)
+        }
+
+        // Then
+        propertiesResult {
+            assertShareLinkTitle("Properties tab ke 4")
+        }
+    }
+
+    @Test
+    fun assert_image_click() {
+        // Given
+        GqlResponseStub.sharePropertiesResponse.filePath = "properties/share_properties_with_image_thumbnails.json"
+        GqlResponseStub.sharePropertiesResponse.updateResponseObject()
+
+        // When
+        launchActivity()
+        stubAllIntents()
+
+        // Then
+        propertiesResult {
+            assertImageCarouselTotal(3)
+            assertImageAt(0, true)
+            assertImageAt(1, false)
+            assertImageAt(2, false)
+        }
+
+        // When
+        propertiesRobot {
+            clickImageOn(1)
+        }
+
+        // Then
+        propertiesResult {
+            assertImageAt(0, false)
+            assertImageAt(1, true)
+            assertImageAt(2, false)
+        }
+
+        // When
+        propertiesRobot {
+            clickImageOn(2)
+        }
+
+        // Then
+        propertiesResult {
+            assertImageAt(0, false)
+            assertImageAt(1, false)
+            assertImageAt(2, true)
         }
     }
 }
