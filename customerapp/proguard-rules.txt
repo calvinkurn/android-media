@@ -396,4 +396,9 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -keep class com.tokopedia.emoney.integration.BCALibrary {*;}
 -keep class com.tokopedia.emoney.integration.data.JNIResult {*;}
 
+-keep class com.yandex.div.core.util.Assert {*;}
+-keep class com.yandex.div.core.util.KAssert {*;}
+-dontwarn com.yandex.div.core.util.Assert
+-dontwarn com.yandex.div.core.util.KAssert
+
 -dontwarn sun.nio.ch.DirectBuffer
