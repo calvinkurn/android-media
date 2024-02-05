@@ -446,6 +446,7 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
           topSeller {
             productID
             warehouseID
+            isVariant
             stock {
               soldPercentage
               isHidden

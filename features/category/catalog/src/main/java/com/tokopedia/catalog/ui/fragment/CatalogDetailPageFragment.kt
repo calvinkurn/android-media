@@ -689,6 +689,7 @@ class CatalogDetailPageFragment :
                 warehouseId = properties.warehouseId,
                 isVariant = properties.isVariant
             )
+            if (properties.isVariant) viewModel.getVariantInfo(viewModel.atcModel)
             root.showWithCondition(properties.isVisible)
             containerPriceCta.setBackgroundColor(properties.bgColor)
             ctaAtc.setPrice(properties.price)
@@ -1192,6 +1193,6 @@ class CatalogDetailPageFragment :
     }
 
     override fun onSellerOfferingVariantArrowClicked(productId: String) {
-        TODO("Not yet implemented")
+        openVariantBottomSheet(viewModel.atcModel)
     }
 }
