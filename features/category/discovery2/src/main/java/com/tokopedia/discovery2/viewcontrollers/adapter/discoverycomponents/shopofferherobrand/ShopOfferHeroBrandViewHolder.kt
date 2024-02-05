@@ -1,12 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand
 
 import android.animation.AnimatorSet
+import android.content.Context
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.Space
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,7 +52,9 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_MAIN_APP_ENABLE_DISCO_
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.modeAware
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
@@ -72,6 +76,8 @@ class ShopOfferHeroBrandViewHolder(
         private const val PROGRESS_BAR_TIER_DELAY = 2500L
         private const val PROGRESS_BAR_SHIMMERING_DELAY = 500L
         private const val NO_ANIMATION_SIZE = 1
+        private const val TEXT_LIGHT_MODE = "light"
+        private const val TEXT_DARK_MODE = "dark"
     }
 
     internal val mLayoutManager: LinearLayoutManager
@@ -288,6 +294,9 @@ class ShopOfferHeroBrandViewHolder(
                     )
                 )
             }
+
+            header.colorMode?.let { setHeaderTextColor(it) }
+
             if (header.shopBadge.isNullOrEmpty()) {
                 sivShopBadge.gone()
             } else {
@@ -300,6 +309,26 @@ class ShopOfferHeroBrandViewHolder(
             tpShopName.route(header.applink)
             tpShopTierWording.route(header.applink)
         }
+    }
+
+    private fun setHeaderTextColor(mode: String) {
+        val colorInt = ContextCompat.getColor(
+            getColorModeContext(mode),
+            unifyprinciplesR.color.Unify_NN1000
+        )
+
+        tpShopName.setTextColor(colorInt)
+        tpShopTierWording.setTextColor(colorInt)
+    }
+
+    private fun getColorModeContext(mode: String): Context {
+        val colorMode = when (mode) {
+            TEXT_LIGHT_MODE -> ColorMode.DARK_MODE
+            TEXT_DARK_MODE -> ColorMode.LIGHT_MODE
+            else -> ColorMode.DEFAULT
+        }
+
+        return itemView.context.modeAware(colorMode) ?: itemView.context
     }
 
     private fun renderShopIcon(header: Properties.Header) {
