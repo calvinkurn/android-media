@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils.Companion.flipImage
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.Utils.Companion.verticalScrollAnimation
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -26,6 +27,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.CarouselProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.PRODUCT_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.getErrorStateComponent
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.TierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -38,8 +40,10 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND
@@ -90,6 +94,13 @@ class ShopOfferHeroBrandViewHolder(
 
     private val rvProductCarousel = itemView.findViewById<RecyclerView>(R.id.rv_product_carousel)
     private val sivShopIcon = itemView.findViewById<ShapeableImageView>(R.id.siv_shop_icon)
+    private val sivShopIconRounded =
+        itemView.findViewById<ShapeableImageView>(R.id.siv_shop_icon_rounded)
+    private val sivShadowShopIcon =
+        itemView.findViewById<ShapeableImageView>(R.id.siv_shadow_shop_icon)
+    private val layoutShopIcon = itemView.findViewById<ConstraintLayout>(R.id.layout_shop_icon)
+    private val sivShopBadge = itemView.findViewById<ShapeableImageView>(R.id.siv_shop_badge)
+    private val layoutShopInfo = itemView.findViewById<ConstraintLayout>(R.id.layout_shop_info)
     private val sivSeeAll = itemView.findViewById<ShapeableImageView>(R.id.siv_see_all)
     private val headerSpace = itemView.findViewById<Space>(R.id.header_space)
     private val progressBar = itemView.findViewById<CardView>(R.id.progress_bar)
@@ -107,6 +118,8 @@ class ShopOfferHeroBrandViewHolder(
     private var viewModel: ShopOfferHeroBrandViewModel? = null
     private var progressBarJob: Job? = null
     private var hasRunScrollingAnimation: Boolean = false
+    private var hasRunFlipGwpAnimation: Boolean = false
+    private var currentBmGmTierData: BmGmTierData? = null
 
     init {
         if (isShopOfferHeroBrandEnabled()) {
@@ -156,6 +169,7 @@ class ShopOfferHeroBrandViewHolder(
             }
 
             tierChange.observe(lifecycleOwner) {
+                executeShopTierWordingAnimation()
                 showProgressBar(it)
             }
         }
@@ -182,14 +196,13 @@ class ShopOfferHeroBrandViewHolder(
     }
 
     private fun executeShopTierWordingAnimation() {
-        if (!hasRunScrollingAnimation) {
+        if (!hasRunScrollingAnimation || !hasRunFlipGwpAnimation) {
             tpShopTierWording.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (tpShopTierWording.lineCount.isMoreThanZero()) {
                             tpShopTierWording.postDelayed({
                                 val animatorSet = AnimatorSet()
-
                                 val firstAnimation = tpShopTierWording.verticalScrollAnimation(
                                     duration = SHOP_TIER_WORDING_ANIMATION_DURATION,
                                     isReverse = false,
@@ -197,16 +210,16 @@ class ShopOfferHeroBrandViewHolder(
                                 )
                                 val secondAnimation = tpShopTierWording.verticalScrollAnimation(
                                     duration = SHOP_TIER_WORDING_ANIMATION_DURATION,
-                                    isReverse = true,
+                                    isReverse = viewModel?.isGwp() == false,
                                     isFromHtml = true
                                 )
-
-                                animatorSet.playSequentially(
-                                    firstAnimation,
-                                    secondAnimation
-                                )
-
+                                if (viewModel?.isGwp() == true) {
+                                    animatorSet.play(secondAnimation)
+                                } else {
+                                    animatorSet.playSequentially(firstAnimation, secondAnimation)
+                                }
                                 animatorSet.start()
+                                hasRunFlipGwpAnimation = viewModel?.isGwp() == true
                                 hasRunScrollingAnimation = true
                             }, SHOP_TIER_WORDING_DELAY_DURATION)
                         }
@@ -226,7 +239,8 @@ class ShopOfferHeroBrandViewHolder(
                     super.onScrolled(recyclerView, dx, dy)
                     val visibleItemCount: Int = mLayoutManager.childCount
                     val totalItemCount: Int = mLayoutManager.itemCount
-                    val firstVisibleItemPosition: Int = mLayoutManager.findFirstVisibleItemPosition()
+                    val firstVisibleItemPosition: Int =
+                        mLayoutManager.findFirstVisibleItemPosition()
                     viewModel?.let { mProductCarouselComponentViewModel ->
                         if (!mProductCarouselComponentViewModel.isLoading && mProductCarouselComponentViewModel.hasNextPage()) {
                             if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= PRODUCT_PER_PAGE) {
@@ -251,30 +265,66 @@ class ShopOfferHeroBrandViewHolder(
     ) {
         if (header == null) {
             sivShopIcon.hide()
+            sivShopIconRounded.hide()
             tpShopName.hide()
             tpShopTierWording.hide()
             sivSeeAll.hide()
             headerSpace.hide()
         } else {
-            sivShopIcon.show()
+            renderShopIcon(header)
             tpShopName.show()
             tpShopTierWording.show()
             sivSeeAll.show()
             headerSpace.show()
-
-            sivShopIcon.loadImage(header.shopIcon.orEmpty())
             tpShopName.text = header.shopName.orEmpty().toDecodedString()
-            tpShopTierWording.text = getFirstLastOfferTiers(header.offerTiers)
-
-            executeShopTierWordingAnimation()
+            if (viewModel?.isGwp() == false) {
+                tpShopTierWording.text = getFirstLastOfferTiers(header.offerTiers)
+                executeShopTierWordingAnimation()
+            } else {
+                tpShopTierWording.text = setFlippingWordGwp(
+                    listOf(
+                        viewModel?.header?.value?.offerTiers?.firstOrNull()?.tierWording.orEmpty(),
+                        viewModel?.header?.value?.atcWording.orEmpty()
+                    )
+                )
+            }
+            if (header.shopBadge.isNullOrEmpty()) {
+                sivShopBadge.gone()
+            } else {
+                sivShopBadge.loadImage(header.shopBadge)
+            }
 
             if (header.applink.isNullOrBlank()) return
 
             sivSeeAll.route(header.applink)
-            sivShopIcon.route(header.applink)
             tpShopName.route(header.applink)
             tpShopTierWording.route(header.applink)
         }
+    }
+
+    private fun renderShopIcon(header: Properties.Header) {
+        if (viewModel?.isGwp() == false) {
+            sivShopIcon.show()
+            sivShadowShopIcon.gone()
+            sivShopIconRounded.gone()
+            sivShopIcon.route(header.applink)
+            sivShopIcon.loadImage(header.shopIcon.orEmpty())
+        } else {
+            sivShadowShopIcon.isVisible = (header.offerTiers?.size ?: 0) > 1
+            sivShopIconRounded.show()
+            sivShadowShopIcon.visible()
+            sivShopIconRounded.loadImage(header.offerTiers?.firstOrNull()?.image.orEmpty())
+            sivShopIconRounded.route(header.applink)
+            currentBmGmTierData = BmGmTierData(
+                offerMessages = listOf(),
+                flipTierImage = header.offerTiers?.firstOrNull()?.image.orEmpty(),
+                flipTierWording = header.offerTiers?.firstOrNull()?.tierWording.orEmpty()
+            )
+        }
+    }
+
+    private fun flipImageTier(tierImage: String) {
+        layoutShopIcon.flipImage(sivShopIconRounded, tierImage)
     }
 
     private fun showProgressBar(
@@ -282,17 +332,25 @@ class ShopOfferHeroBrandViewHolder(
     ) {
         progressBarJob?.cancel()
         if (tierData.isProgressBarShown) {
-            if (tierData.isShimmerShown) {
-                showProgressBarShimmering()
-            } else if (tierData.offerMessages.isNullOrEmpty()) {
-                hideProgressBar()
-            } else {
-                showProgressBarInfo()
+            when {
+                tierData.isShimmerShown -> {
+                    showProgressBarShimmering()
+                }
 
-                tpProgressBarTierWording.text =
-                    MethodChecker.fromHtml(tierData.offerMessages.firstOrNull())
-                if (tierData.offerMessages.size.isMoreThanZero()) {
-                    changeProgressBarInfoWithDelay(tierData.offerMessages)
+                tierData.offerMessages.isNullOrEmpty() -> {
+                    hideProgressBar()
+                }
+
+                else -> {
+                    showProgressBarInfo()
+                    tpProgressBarTierWording.text =
+                        MethodChecker.fromHtml(tierData.offerMessages.firstOrNull())
+                    if (tierData.offerMessages.size.isMoreThanZero()) {
+                        changeProgressBarInfoWithDelay(tierData.offerMessages)
+                    }
+                    if (viewModel?.isGwp() == true) {
+                        flipTier(tierData)
+                    }
                 }
             }
         } else {
@@ -300,13 +358,22 @@ class ShopOfferHeroBrandViewHolder(
         }
     }
 
+    private fun flipTier(tierData: TierData) {
+        if (currentBmGmTierData?.flipTierImage != tierData.flipTierImage) {
+            flipImageTier(tierData.flipTierImage)
+        }
+        currentBmGmTierData = BmGmTierData(
+            offerMessages = tierData.offerMessages,
+            flipTierImage = tierData.flipTierImage,
+            flipTierWording = tierData.flipTierWording
+        )
+    }
+
     private fun showProgressBarShimmering() {
         progressBar.show()
         progressBarSpace.show()
-
         iuProgressBarIcon.hide()
         tpProgressBarTierWording.hide()
-
         progressBarShimmer.show()
         progressBarLayout.setBackgroundColor(
             MethodChecker.getColor(
@@ -415,6 +482,11 @@ class ShopOfferHeroBrandViewHolder(
         } else {
             MethodChecker.fromHtml(offerTiers.joinToString())
         }
+    }
+
+    private fun setFlippingWordGwp(listWords: List<String>): CharSequence {
+        val flippingWording = arrayListOf(listWords.first(), listWords.last())
+        return MethodChecker.fromHtml(flippingWording.joinToString(SHOP_TIER_WORDING_SEPARATOR))
     }
 
     private fun setMaxHeight(height: Int) {

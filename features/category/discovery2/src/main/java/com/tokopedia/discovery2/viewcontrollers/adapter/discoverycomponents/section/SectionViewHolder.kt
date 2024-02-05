@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.model.NotifyPayload
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
@@ -251,8 +252,11 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         val uniqueId = childViewModel.component.properties?.header?.offerId
         if (uniqueId == payload.identifier) {
-            val offerMessages = payload.data as? List<String> ?: emptyList()
-            childViewModel.changeTier(false, offerMessages)
+            val bmGmTierData = payload.data as? BmGmTierData
+            childViewModel.changeTier(
+                false,
+                bmGmTierData
+            )
 
             return true
         }

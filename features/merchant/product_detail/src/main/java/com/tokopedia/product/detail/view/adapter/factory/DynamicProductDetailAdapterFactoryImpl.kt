@@ -98,6 +98,8 @@ import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiM
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMViewHolder
+import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
+import com.tokopedia.product.detail.view.viewholder.gwp.GWPViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.review.ui.ProductReviewViewHolder
@@ -308,6 +310,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return TabletRightSectionViewHolder.LAYOUT
     }
 
+    override fun type(data: GWPUiModel): Int {
+        return GWPViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
@@ -449,6 +455,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
             TabletLeftSectionViewHolder.LAYOUT -> TabletLeftSectionViewHolder(view, listener, this)
             TabletRightSectionViewHolder.LAYOUT -> TabletRightSectionViewHolder(view, listener, this)
+            GWPViewHolder.LAYOUT -> GWPViewHolder(view, pdpCallback.gwp)
             else -> super.createViewHolder(view, type)
         }
     }

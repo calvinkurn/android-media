@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.order_management_common.domain.data.ProductBenefit
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import kotlinx.parcelize.Parcelize
@@ -173,7 +174,9 @@ data class SomDetailOrder(
             @SerializedName("tier_discount_amount")
             val tierDiscountAmount: Int = 0,
             @SerializedName("tier_discount_amount_formatted")
-            val tierDiscountAmountFormatted: String = ""
+            val tierDiscountAmountFormatted: String = "",
+            @SerializedName("product_benefit")
+            val productBenefit: ProductBenefit? = null
         ) {
             data class OrderDetail(
                 @SerializedName("id")
@@ -193,7 +196,7 @@ data class SomDetailOrder(
                 @SerializedName("note")
                 val note: String = "",
                 @SerializedName("addon_summary")
-                val addonSummary: AddOnSummary? = AddOnSummary()
+                val addonSummary: AddOnSummary? = null
             )
         }
 
