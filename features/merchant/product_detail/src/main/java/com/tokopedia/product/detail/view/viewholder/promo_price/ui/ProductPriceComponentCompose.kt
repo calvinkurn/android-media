@@ -233,7 +233,7 @@ fun PromoPriceFooter(
                             end = boImage.start,
                             horizontalBias = 0F
                         )
-                        width = Dimension.preferredWrapContent
+                        width = Dimension.fillToConstraints
                     }
                     .padding(start = 4.dp, end = 4.dp),
                 textStyle = NestTheme.typography.small.copy(
@@ -362,10 +362,10 @@ fun PromoPriceCardPreview() {
             Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 PromoPriceCard(
                     PromoPriceUiModel(
-                        priceAdditionalFmt = "",
+                        priceAdditionalFmt = "Tanpa Promo: Rp.70.000",
                         promoPriceFmt = "Rp.9.000.000",
                         promoSubtitle = "Diskon 200rb Cashback 300rb",
-                        slashPriceFmt = "",
+                        slashPriceFmt = "Rp.120.000.000.000.000.000",
                         separatorColor = "#FFDBE2",
                         mainTextColor = "#F94D63",
                         cardBackgroundColor = "#FFF5F6",

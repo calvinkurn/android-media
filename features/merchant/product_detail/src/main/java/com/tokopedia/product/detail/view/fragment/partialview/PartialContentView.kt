@@ -14,9 +14,8 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
-import com.tokopedia.common_tradein.R as common_tradeinR
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -47,7 +46,6 @@ class PartialContentView(
         renderPriceCampaignSection(
             data = data,
             isUpcomingNplType = isUpcomingNplType,
-            shouldShowCampaign = shouldShowCampaign,
             freeOngkirImgUrl = freeOngkirImgUrl
         )
 
@@ -91,14 +89,12 @@ class PartialContentView(
     private fun renderPriceCampaignSection(
         data: ProductContentMainData,
         isUpcomingNplType: Boolean,
-        shouldShowCampaign: Boolean,
         freeOngkirImgUrl: String
     ) {
         if (data.isShowPrice) {
             showPriceSection(
                 data = data,
                 isUpcomingNplType = isUpcomingNplType,
-                shouldShowCampaign = shouldShowCampaign,
                 cashbackPercentage = data.cashbackPercentage,
                 freeOngkirImgUrl = freeOngkirImgUrl
             )
@@ -111,7 +107,6 @@ class PartialContentView(
     private fun showPriceSection(
         data: ProductContentMainData,
         isUpcomingNplType: Boolean,
-        shouldShowCampaign: Boolean,
         cashbackPercentage: Int,
         freeOngkirImgUrl: String
     ) = with(binding) {
@@ -119,13 +114,9 @@ class PartialContentView(
         imgFreeOngkir.show()
         discountContainer.show()
 
-        campaignRibbon.setCampaignCountDownCallback(this@PartialContentView)
-        campaignRibbon.setDynamicProductDetailListener(listener)
-
         renderCampaignPrice(
             data = data,
             isUpcomingNplType = isUpcomingNplType,
-            shouldShowCampaign = shouldShowCampaign
         )
         renderCashBackSection(cashbackPercentage)
         renderFreeOngkir(
@@ -145,9 +136,8 @@ class PartialContentView(
 
     private fun renderCampaignPrice(
         data: ProductContentMainData,
-        isUpcomingNplType: Boolean,
-        shouldShowCampaign: Boolean
-    ) = with(binding) {
+        isUpcomingNplType: Boolean
+    ) {
         when {
             isUpcomingNplType -> {
                 if (data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN
@@ -170,12 +160,6 @@ class PartialContentView(
             else -> {
                 setTextCampaignActive(data.campaign)
             }
-        }
-
-        renderStockAvailable(data.campaign, data.isVariant, data.stockWording, data.isProductActive)
-
-        if (!shouldShowCampaign) {
-            campaignRibbon.hide()
         }
     }
 

@@ -70,8 +70,7 @@ class ProductContentViewHolder(
 
     private fun initializeClickListener(element: ProductContentDataModel?) = with(binding) {
         val content = element ?: return@with
-
-        itemProductContent.fabDetailPdp.apply {
+        fabDetailPdp.apply {
             setOnClickListener {
                 listener.onFabWishlistClicked(activeState, getComponentTrackData(content))
             }

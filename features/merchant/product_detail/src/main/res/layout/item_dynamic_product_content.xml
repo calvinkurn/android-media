@@ -7,44 +7,11 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tradein_header_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_tradein_half_rounded"
-        android:drawablePadding="8dp"
-        android:paddingStart="16dp"
-        android:paddingLeft="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="24dp"
-        android:paddingRight="24dp"
-        android:paddingBottom="8dp"
-        android:text="@string/tukar_tambah"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3"
-        app:typographyWeight="bold"
-        tools:visibility="visible" />
-
-    <com.tokopedia.product.detail.view.widget.CampaignRibbon
-        android:id="@+id/campaign_ribbon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tradein_header_container"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_main_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_NN950"
@@ -80,7 +47,7 @@
         android:layout_height="32dp"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toStartOf="@id/universal_share_widget"
-        app:layout_constraintTop_toBottomOf="@+id/campaign_ribbon"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginEnd="12dp"
         app:wishlist_active="false"
         tools:visibility="gone" />
@@ -90,11 +57,11 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginEnd="12dp"
+        android:layout_marginTop="4dp"
         android:padding="3dp"
         app:channel_share="WHATSAPP"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/product_name" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/discount_container"
@@ -160,7 +127,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toStartOf="@+id/fab_detail_pdp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/campaign_ribbon"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_2"
         tools:text="Simple Minimalistic Ergonomic White Chair" />
 
