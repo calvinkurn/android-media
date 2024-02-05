@@ -37,17 +37,18 @@ class ProductContentAdapter(
         }
     }
 
-    override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
-        if (holder is ProductContentImageViewHolder) holder.onRecycled()
-    }
-
     internal class ProductContentDiffUtil : DiffUtil.ItemCallback<ProductContentUiModel>() {
-        override fun areItemsTheSame(oldItem: ProductContentUiModel, newItem: ProductContentUiModel): Boolean {
+        override fun areItemsTheSame(
+            oldItem: ProductContentUiModel,
+            newItem: ProductContentUiModel
+        ): Boolean {
             return oldItem.contentId == newItem.contentId
         }
 
-        override fun areContentsTheSame(oldItem: ProductContentUiModel, newItem: ProductContentUiModel): Boolean {
+        override fun areContentsTheSame(
+            oldItem: ProductContentUiModel,
+            newItem: ProductContentUiModel
+        ): Boolean {
             return oldItem == newItem
         }
     }
