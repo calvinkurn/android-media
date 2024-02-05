@@ -63,7 +63,7 @@ internal fun productCardGridCarouselHeight(
 }
 
 private fun gridCarouselCardPaddingBottom(context: Context?) =
-    context.getPixel(productcardR.dimen.product_card_reimagine_carousel_padding_bottom)
+    context.getPixel(productcardR.dimen.product_card_reimagine_padding_bottom)
 
 private fun gridCarouselNameHeight(context: Context?): Int =
     context.getPixel(productcardR.dimen.product_card_reimagine_name_image_margin_top)

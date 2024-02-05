@@ -169,5 +169,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ShopOfferSupportingBrandItem(
         id = R.layout.item_discovery_shop_offer_supporting_brand_layout,
         componentName = ComponentNames.ShopOfferSupportingBrandItem.componentName
-    )
+    ),
+
+    TabsImage(R.layout.tabs_layout, ComponentNames.TabsImage.componentName),
+    TabsImageItem(R.layout.tabs_image_item_layout, ComponentNames.TabsImageItem.componentName)
 }

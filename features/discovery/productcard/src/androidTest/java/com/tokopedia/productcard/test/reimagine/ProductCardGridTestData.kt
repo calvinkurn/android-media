@@ -134,7 +134,7 @@ private fun threeDots(): ProductCardReimagineMatcher {
     )
     val shopBadge = ProductCardModel.ShopBadge(
         imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name",
+        title = "Shop Name panjangggg bangettttt",
     )
     val model = ProductCardModel(
         imageUrl = productImageUrl,

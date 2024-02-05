@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.shorts.domain
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -49,4 +50,6 @@ interface PlayShortsRepository {
         authorId: String,
         status: PlayChannelStatusType
     )
+
+    suspend fun checkProductCustomVideo(channelId: String): ProductVideoUiModel
 }

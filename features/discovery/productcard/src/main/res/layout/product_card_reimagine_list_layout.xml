@@ -408,12 +408,8 @@
             <ImageView
                 android:id="@+id/productCardThreeDots"
                 android:contentDescription="@string/content_desc_imageThreeDots"
-                android:layout_width="32dp"
+                android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:paddingLeft="8dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingRight="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"

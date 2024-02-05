@@ -114,6 +114,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spac
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemImageViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemImageViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
@@ -229,6 +231,16 @@ class DiscoveryHomeFactory {
                 ComponentsList.TabsIconItem,
                 ::TabsItemIconViewHolder,
                 ::TabsItemIconViewModel
+            )
+            initializeComponent(
+                ComponentsList.TabsImage,
+                ::TabsViewHolder,
+                ::TabsViewModel
+            )
+            initializeComponent(
+                ComponentsList.TabsImageItem,
+                ::TabsItemImageViewHolder,
+                ::TabsItemImageViewModel
             )
             initializeComponent(
                 ComponentsList.TimerSprintSale,
