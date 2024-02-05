@@ -122,6 +122,7 @@ ext {
     fragmentTest = "1.4.1"
     androidxFragment = '1.5.7'
     divKitVersion = '29.1.0'
+    divKitLottieVersion = '3.0.1'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
@@ -379,7 +380,7 @@ ext {
             divcore               : "com.yandex.div:div-core:$divKitVersion",
             div                   : "com.yandex.div:div:$divKitVersion",
             divjson               : "com.yandex.div:div-json:$divKitVersion",
-            divlottie             : "com.yandex.div:div-lottie:$divKitVersion",
+            divlottie             : "com.yandex.div:div-lottie:$divKitLottieVersion",
             divutils              : "com.yandex.div:utils:$divKitVersion",
     ]
 
