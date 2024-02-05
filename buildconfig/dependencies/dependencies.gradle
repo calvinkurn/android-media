@@ -121,7 +121,7 @@ ext {
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
     androidxFragment = '1.5.7'
-    divKitVersion = '28.4.0'
+    divKitVersion = '27.3.0'
     divKitLottieVersion = '3.0.1'
     debugToolsEnabled = true
 
