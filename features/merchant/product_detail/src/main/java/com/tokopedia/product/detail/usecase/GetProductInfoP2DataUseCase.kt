@@ -327,6 +327,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                campaignID
                campaignType
                campaignTypeName
+               campaignLogo
                startDate
                endDate
                notifyMe

@@ -35,11 +35,10 @@ class ProductContentViewHolder(
             ) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            header.renderData(it, element.isNpl(), element.freeOngkirImgUrl, element.shouldShowCampaign)
+            header.renderData(it, element.isNpl, element.freeOngkirImgUrl)
         }
 
         header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-        header.renderTradein(element.showTradeIn())
         header.updateUniversalShareWidget(element.shouldShowShareWidget)
     }
 
@@ -51,9 +50,7 @@ class ProductContentViewHolder(
 
         when (payloads[0] as Int) {
             ProductContentDataModel.PAYLOAD_WISHLIST -> header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-            ProductContentDataModel.PAYLOAD_TRADEIN_BOE_SHARE -> {
-                header.renderTradein(element.showTradeIn())
-
+            ProductContentDataModel.PAYLOAD_BOE_SHARE -> {
                 header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
                 // only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
                 header.renderFreeOngkir(element.freeOngkirImgUrl, element.data?.isShowPrice == true)
@@ -74,11 +71,7 @@ class ProductContentViewHolder(
     private fun initializeClickListener(element: ProductContentDataModel?) = with(binding) {
         val content = element ?: return@with
 
-        tradeinHeaderContainer.setOnClickListener {
-            listener.txtTradeinClicked(getComponentTrackData(content))
-        }
-
-        fabDetailPdp.apply {
+        itemProductContent.fabDetailPdp.apply {
             setOnClickListener {
                 listener.onFabWishlistClicked(activeState, getComponentTrackData(content))
             }

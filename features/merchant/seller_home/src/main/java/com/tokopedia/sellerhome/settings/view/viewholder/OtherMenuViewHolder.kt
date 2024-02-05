@@ -238,6 +238,10 @@ class OtherMenuViewHolder(
         otherMenuAdapter?.addIklanTopadsMenu(isUsed)
     }
 
+    fun setTopAdsAutoPsStatus(autoPsStatus: Int) {
+        otherMenuAdapter?.setTopAdsAutoPsStatus(autoPsStatus)
+    }
+
     private fun initView() {
         view?.run {
             contentMotionLayout = findViewById<MotionLayout?>(R.id.motion_layout_sah_new_other).apply {

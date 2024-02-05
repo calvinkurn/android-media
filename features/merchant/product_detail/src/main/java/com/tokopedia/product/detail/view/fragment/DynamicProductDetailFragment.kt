@@ -87,10 +87,12 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -173,7 +175,6 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
@@ -266,6 +267,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
@@ -309,7 +311,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
@@ -375,8 +376,6 @@ open class DynamicProductDetailFragment :
     companion object {
 
         private const val DEBOUNCE_CLICK = 750
-        private const val TOOLBAR_TRANSITION_START = 10
-        private const val TOOLBAR_TRANSITION_RANGES = 50
         private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
 
         fun newInstance(
@@ -614,31 +613,6 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    private val scrollListener by lazy {
-        navToolbar?.let {
-            NavRecyclerViewScrollListener(
-                navToolbar = it,
-                startTransitionPixel = TOOLBAR_TRANSITION_START,
-                toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANGES,
-                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                    override fun onAlphaChanged(offsetAlpha: Float) {
-                    }
-
-                    override fun onSwitchToDarkToolbar() {
-                        setupToolbarWithStatusBarDark()
-                    }
-
-                    override fun onSwitchToLightToolbar() {
-                        setupToolbarWithStatusBarLight()
-                    }
-
-                    override fun onYposChanged(yOffset: Int) {
-                    }
-                }
-            )
-        }
-    }
-
     private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
         ProductMediaRecomBottomSheetManager(childFragmentManager, this)
     }
@@ -661,7 +635,6 @@ open class DynamicProductDetailFragment :
         initBtnAction()
 
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
-        setupToolbarState()
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
@@ -2753,8 +2726,12 @@ open class DynamicProductDetailFragment :
 
         pdpUiUpdater?.updateNotifyMeAndContent(
             productId = selectedChild?.productId.toString(),
-            upcomingData = viewModel.p2Data.value?.upcomingCampaigns,
+            upcomingData = viewModel.getP2()?.upcomingCampaigns,
             freeOngkirImgUrl = boeData.imageURL
+        )
+
+        pdpUiUpdater?.updateTradeInRibbon(
+            isEligible = viewModel.getP2()?.validateTradeIn?.isEligible.orFalse()
         )
 
         val selectedTicker = viewModel.p2Data.value?.getTickerByProductId(productId ?: "")
@@ -3442,7 +3419,14 @@ open class DynamicProductDetailFragment :
 
     private fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
-        submitList(newData)
+
+        val finalData = if (isTabletMode()) {
+            manipulateDataTabletMode(newData)
+        } else {
+            newData
+        }
+
+        submitList(finalData)
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
@@ -3603,19 +3587,23 @@ open class DynamicProductDetailFragment :
     }
 
     private fun initNavigationTab(data: ProductInfoP2UiData) {
-        val items = data.navBar.items.map { item ->
-            NavigationTab.Item(item.title, item.componentName) {
-                adapter.getComponentPositionByName(item.componentName)
-            }
-        }
-
         val navigation = binding?.pdpNavigation
-        getRecyclerView()?.let { recyclerView ->
-            if (items.isEmpty()) {
-                navigation?.stop(recyclerView)
-            } else {
-                val offsetY = navToolbar?.height.orZero()
-                navigation?.start(recyclerView, items, this, offsetY = offsetY)
+
+        if (isTabletMode()) {
+            navigation?.hide()
+        } else {
+            val items = data.navBar.items.map { item ->
+                NavigationTab.Item(item.title, item.componentName) {
+                    adapter.getComponentPositionByName(item.componentName)
+                }
+            }
+
+            getRecyclerView()?.let { recyclerView ->
+                if (items.isEmpty()) {
+                    navigation?.stop(recyclerView)
+                } else {
+                    navigation?.start(recyclerView, items, this)
+                }
             }
         }
     }
@@ -4654,46 +4642,6 @@ open class DynamicProductDetailFragment :
         return ContextCompat.getColor(requireContext(), unifyColor)
     }
 
-    private fun setupToolbarState() {
-        setupToolbarWithStatusBarDark()
-        addRecyclerViewScrollListener()
-    }
-
-    private fun setupToolbarWithStatusBarLight() {
-        disableFitsSystemWindows()
-
-        navToolbar?.setupToolbarWithStatusBar(
-            requireActivity(),
-            NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT
-        )
-    }
-
-    private fun setupToolbarWithStatusBarDark() {
-        disableFitsSystemWindows()
-
-        navToolbar?.setupToolbarWithStatusBar(
-            requireActivity(),
-            NavToolbar.Companion.StatusBar.STATUS_BAR_DARK
-        )
-    }
-
-    private fun disableFitsSystemWindows() {
-        binding?.apply {
-            containerDynamicProductDetail.fitsSystemWindows = false
-            containerDynamicProductDetail.requestApplyInsets()
-        }
-    }
-
-    /**
-     * add [NavRecyclerViewScrollListener] to set toolbar transparent transition
-     * active when [RollenceKey.PdpToolbar.transparent]
-     */
-    private fun addRecyclerViewScrollListener() {
-        scrollListener?.let {
-            getRecyclerView()?.addOnScrollListener(it)
-        }
-    }
-
     private fun getLocalSearchApplink(): String {
         val basic = viewModel.getDynamicProductInfoP1?.basic
         val isTokoNow = basic?.isTokoNow == true
@@ -5410,17 +5358,17 @@ open class DynamicProductDetailFragment :
             ctaText = getString(productdetailcommonR.string.pdp_common_oke)
         )
         if (dataModel != null) {
-            pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)
+            pdpUiUpdater?.updateNotifyMeButton(dataModel.data.notifyMe)
             updateUi()
         }
     }
 
     override fun onNotifyMeClicked(
-        data: ProductNotifyMeDataModel,
+        data: UpcomingCampaignUiModel,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
         doActionOrLogin({
-            pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe ->
+            pdpUiUpdater?.notifyMeMap?.data?.notifyMe?.let { notifyMe ->
                 trackToggleNotifyMe(componentTrackDataModel, notifyMe)
             }
             pdpUiUpdater?.updateNotifyMeButton(data.notifyMe)

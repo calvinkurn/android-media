@@ -16,7 +16,6 @@ import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
@@ -25,6 +24,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -312,7 +312,7 @@ interface DynamicProductDetailListener {
      * ProductNotifyMeViewHolder
      */
     fun onNotifyMeClicked(
-        data: ProductNotifyMeDataModel,
+        data: UpcomingCampaignUiModel,
         componentTrackDataModel: ComponentTrackDataModel
     )
 

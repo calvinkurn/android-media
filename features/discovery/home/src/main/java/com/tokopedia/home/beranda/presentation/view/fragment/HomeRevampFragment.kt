@@ -83,7 +83,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -149,7 +148,8 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.ImageHandler
+import com.tokopedia.home_component.usecase.thematic.ThematicModel
+import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.iris.Iris
@@ -920,7 +920,7 @@ open class HomeRevampFragment :
         getHomeViewModel().thematicLiveData.observe(viewLifecycleOwner) { thematic ->
             if (thematic.isShown) {
                 context?.let { ctx ->
-                    val thematicImageLoadListener = object : ImageHandler.ImageLoaderStateListener {
+                    val thematicImageLoadListener = object : ImageLoaderStateListener {
                         override fun successLoad(view: ImageView) {
                             view.show()
                             if (view == thematicBackground) {
@@ -968,7 +968,7 @@ open class HomeRevampFragment :
     }
 
     private fun notifyHomeThematicChanges(
-        thematicModel: HomeThematicModel,
+        thematicModel: ThematicModel,
         isBackgroundLoaded: Boolean = false
     ) {
         getThematicUtil().thematicModel = thematicModel

@@ -302,5 +302,9 @@ data class VariantCampaign(
     val campaignIdentifier: Int = 0,
 
     @SerializedName("background")
-    val background: String = ""
+    val background: String = "",
+
+    @SerializedName("campaignLogo")
+    @Expose
+    val campaignLogo: String = ""
 )

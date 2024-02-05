@@ -28,6 +28,7 @@ data class FestiveEligibilityPolicy(
         val componentsSupportBG = arrayOf(
             ComponentNames.LihatSemua.componentName,
             ComponentNames.ProductCardSingle.componentName,
+            ComponentNames.ProductCardSingleReimagine.componentName,
             ComponentNames.SingleBanner.componentName,
             ComponentNames.DoubleBanner.componentName,
             ComponentNames.TripleBanner.componentName,

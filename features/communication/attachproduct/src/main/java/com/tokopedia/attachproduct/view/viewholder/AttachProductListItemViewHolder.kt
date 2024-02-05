@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.databinding.ItemProductAttachBinding
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
@@ -50,7 +50,7 @@ class AttachProductListItemViewHolder
     }
 
     private fun bindImage(element: AttachProductItemUiModel) {
-        ImageHandler.loadImageRounded2(binding?.attachProductItemImage?.context, binding?.attachProductItemImage, element.productImage)
+        binding?.attachProductItemImage?.loadImageRounded(element.productImage)
     }
 
     private fun bindPrice(element: AttachProductItemUiModel) {
