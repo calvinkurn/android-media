@@ -39,6 +39,11 @@ As a user, I want to edit the media I have captured/selected with various editin
 As page owner, I can integrate Immersive Editor to my creation flow, and adjust the tools to my needs
 Development in the MVP will be focused on Story Creation, but the aim is to unify the creation flow for all use cases
 
+## Flow Diagram
+
+### UniversalEditor general flow
+![UniversalEditor general flow](https://docs-android.tokopedia.net/images/docs/asd/MediaUniversalEditor-main_flow.png "UniversalEditor general flow ")
+
 ## How-to
 
 ### Default

@@ -52,6 +52,11 @@ Modular and unified modules for Adopters
 Upload and content creation funnel
 - We need to be able to track and measure the ease of use for each step in the media upload journey
 
+## Flow Diagram
+
+### MediaPicker general flow
+![MediaPicker general flow](https://docs-android.tokopedia.net/images/docs/asd/MediaPicker-main_flow.png "MediaPicker general flow ")
+
 
 ## How-to
 
