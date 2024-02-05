@@ -260,7 +260,7 @@ class StoriesCreationPreparationViewModelTest {
     }
 
     @Test
-    fun `storiesCreation_clickUpload`() {
+    fun `storiesCreation_clickUpload_success`() {
         val mockConfig = configModelBuilder.build()
         val mockAccountList = accountModelBuilder.build()
         val mockMediaFilePath = "asdf"
@@ -268,6 +268,7 @@ class StoriesCreationPreparationViewModelTest {
 
         coEvery { mockRepo.getCreationAccountList() } returns mockAccountList
         coEvery { mockRepo.getStoryPreparationInfo(any()) } returns mockConfig
+        coEvery { mockRepo.updateStoryStatus(any(), any()) } returns Unit
 
         val robot = StoriesCreationViewModelRobot(
             dispatchers = testDispatcher,
@@ -283,6 +284,35 @@ class StoriesCreationPreparationViewModelTest {
             }
 
             coVerify(exactly = 1) { mockCreationUploader.upload(any()) }
+        }
+    }
+
+    @Test
+    fun `storiesCreation_clickUpload_updateChannelFaiked`() {
+        val mockConfig = configModelBuilder.build()
+        val mockAccountList = accountModelBuilder.build()
+        val mockMediaFilePath = "asdf"
+        val mockMediaType = ContentMediaType.Video
+
+        coEvery { mockRepo.getCreationAccountList() } returns mockAccountList
+        coEvery { mockRepo.getStoryPreparationInfo(any()) } returns mockConfig
+        coEvery { mockRepo.updateStoryStatus(any(), any()) } throws Exception("Network Issue")
+
+        val robot = StoriesCreationViewModelRobot(
+            dispatchers = testDispatcher,
+            repo = mockRepo,
+            creationUploader = mockCreationUploader,
+        )
+
+        robot.use {
+            val events = it.recordEvent {
+                submitAction(StoriesCreationAction.Prepare)
+                submitAction(StoriesCreationAction.SetMedia(StoriesMedia(mockMediaFilePath, mockMediaType)))
+                submitAction(StoriesCreationAction.ClickUpload)
+            }
+
+            coVerify(exactly = 0) { mockCreationUploader.upload(any()) }
+            events.last().assertType<StoriesCreationUiEvent.ShowError>()
         }
     }
 }

@@ -110,6 +110,8 @@
     <string name="label_credit_history">Riwayat Kredit</string>
     <string name="label_topads_automatic_topup">Tambah Kredit Otomatis</string>
     <string name="topads_active">Aktif</string>
+    <string name="topads_not_delivered">Tidak Tampil</string>
+    <string name="topads_in_progress">Dalam Proses</string>
     <string name="label_credit_addition">Total Penambahan</string>
     <string name="label_credit_used">Total Terpakai</string>
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
@@ -309,7 +311,7 @@
     <string name="topads_dash_reload_title">Sedang diproses</string>
     <string name="topads_dash_auto_ads_enable_msg">Iklanmu sedang dibuat. Setelah 5-10 menit, coba muat ulang halaman.</string>
     <string name="topads_dash_auto_ads_disable_msg">Iklanmu sedang dimatikan. Setelah 5-10 menit, coba muat ulang halaman.</string>
-    <string name="topads_dashboard_ad_type_selection_title">Tambah Iklan</string>
+    <string name="topads_dashboard_ad_type_selection_title">Pilih Jenis Iklan Manual</string>
     <string name="topads_dashboard_ad_product_type_selection_title">Iklan Produk</string>
     <string name="topads_dashboard_ad_product_type_selection_subtitle">Produk pilihanmu akan tampil di halaman strategis Tokopedia.</string>
     <string name="topads_dashboard_ad_headline_type_selection_title">Iklan Toko</string>
@@ -317,7 +319,7 @@
     <string name="topads_dashboard_no_product_sheet_header">Kamu belum punya produk</string>
     <string name="topads_dashboard_no_product_sheet_body">Tambah produk terlebih dahulu untuk mulai beriklan</string>
     <string name="topads_dashboard_no_product_sheet_button">Tambah produk</string>
-    <string name="topads_dashboard_updated_daily_budget">Anggaran harian diperbaharui</string>
+    <string name="topads_dashboard_updated_daily_budget">Anggaran harian berhasil diubah.</string>
 
     <string name="topads_insight_select_ads_type">Pilih tipe iklan</string>
     <string name="topads_insight_title_bid_keyword">Rekomendasi biaya kata kunci (%d)</string>
@@ -527,8 +529,21 @@
     <string name="top_ads_tool_tip_frequency_description">Seberapa sering tambah kredit dalam sehari untuk menjaga iklanmu terus aktif.</string>
     <string name="top_ads_tool_tip_max_credit_limit_description">Kredit TopAds akan bertambah secara otomatis setiap kreditmu kurang dari angka yang tertera di sini.</string>
     <string name="topads_layout_chips_text">Semua</string>
+    <string name="topads_ad_type_selection_product_subtitle">Iklan Produk meningkatkan potensi produkmu diklik lebih cepat dan muncul paling atas di halaman pencarian dan rekomendasi.</string>
+    <string name="topads_ad_type_selection_product_accordian_title">Tentang Iklan Produk</string>
+    <string name="topads_ad_type_selection_product_accordian_item1">Pilih produk yang ingin diiklankan secara spesifik</string>
+    <string name="topads_ad_type_selection_product_accordian_item2">Atur biaya iklan sesuai kebutuhan produk</string>
+    <string name="topads_ad_type_selection_product_accordian_item3">Performa Iklan tiap produk dapat dipantau dengan mudah</string>
+    <string name="topads_dashboard_create_product_advertisement">Buat Iklan Produk</string>
+    <string name="topads_ad_type_selection_shop_subtitle">Iklan Toko akan muncul di tempat strategis yang meningkatkan probabilitas toko dan produkmu dilihat pembeli.</string>
+    <string name="topads_ad_type_selection_shop_accordian_title">Tentang Iklan Toko</string>
+    <string name="topads_ad_type_selection_shop_accordian_item1">Tampil dengan tampilan dan posisi yang lebih eksklusif</string>
+    <string name="topads_ad_type_selection_shop_accordian_item2">Berpotensi meningkatkan kunjungan tokomu</string>
+    <string name="topads_ad_type_selection_shop_accordian_item3">Biaya iklan diatur sesuai kebutuhan tokomu</string>
+    <string name="topads_dashboard_create_shop_advertisement">Buat Iklan Toko</string>
+    <string name="topads_dashboard_create_produk_advertisement">Buat Iklan Produk</string>
 
-<!--    <string name="topads_group_card_insight_count_format">%s saran untukmu</string>-->
+    <!--    <string name="topads_group_card_insight_count_format">%s saran untukmu</string>-->
     <string name="topads_group_card_insight_count_format"><![CDATA["<b>%s</b> ]]> saran untukmu</string>
     <string name="topads_beranda_saran">Saran Topads</string>
     <string name="topads_beranda_saran_see_full">Lihat Selengkapnya</string>
@@ -582,8 +597,6 @@
     <string name="topads_insight_negative_keywords_cta_text_format">Tambah %d Kata Kunci Negatif</string>
     <string name="topads_insight_ads_in_search">Iklan di Pencarian</string>
     <string name="topads_insight_ads_in_recommendations">Iklan di Rekomendasi</string>
-    <string name="topads_insight_min_bid_error_msg_format">Min. biaya Rp%d.</string>
-    <string name="topads_insight_max_bid_error_msg_format">Maks. biaya Rp%d.</string>
     <string name="topads_insight_recommended_bid_apply">Disarankan Rp%d. Terapkan</string>
     <string name="topads_insight_kata_kunci_accordian_subtitle">Kunjungan pembeli menurun. Pakai kata kunci populer untuk potensi tampil +%s kali/hari.</string>
     <string name="topads_insight_biaya_kata_kunci_accordian_subtitle">Kata kuncimu kalah saing. Sesuaikan biaya kata kunci untuk potensi tampil +%s kali/hari.</string>
@@ -638,4 +651,30 @@
     <string name="topads_insight_centre_create_new_group">Buat Grup Baru</string>
     <string name="topads_insight_centre_add_to_another_group">Tambah ke Grup Lain</string>
     <string name="topads_insight_centre_create_group_title_info">Nama grup dapat disesuaikan berdasarkan kategori atau tema iklanmu.</string>
+
+<!--    Auto PS-->
+    <string name="topads_auto_ps_turn_on_msg">Iklan berhasil dibuat. Pantau terus Performa Iklan-mu di sini, ya!</string>
+    <string name="topads_auto_ps_turn_off_msg">Kamu telah menonaktifkan pengaturan Iklan Otomatis.</string>
+    <string name="topads_auto_ps_add_ad_group">Tambah Grup Iklan</string>
+    <string name="topads_auto_ps_confirming_to_activate_auto_ps">Ingin iklankan produk dan tokomu lebih praktis?</string>
+    <string name="topads_enable_auto_ps">Aktifkan Iklan Otomatis</string>
+    <string name="topads_auto_ps_edit_ads">Atur Iklan</string>
+    <string name="topads_auto_ps_beranda_modal_title">Buat atau atur iklanmu, yuk!</string>
+    <string name="topads_auto_ps_confirmation_title_to_activate_auto_ps">Waktunya beriklan lebih praktis dengan Iklan Otomatis!</string>
+    <string name="topads_auto_ps_activation_confirmation_desc">Atur Iklan Produk dan Iklan Tokomu secara otomatis, yuk! Grup Iklan Produk &amp; Toko yang telah dibuat akan tersimpan dan tetap bisa digunakan kembali nanti.</string>
+    <string name="topads_auto_ps_iklan_toko_empty_view_title">🚀 Tingkatkan kunjungan lewat Iklan Toko!</string>
+    <string name="topads_auto_ps_iklan_toko_empty_view_desc">Iklan toko akan muncul di tempat strategis yang meningkatkan probabilitas toko dan produkmu dilihat pembeli. Baca Artikel</string>
+    <string name="topads_auto_ps_iklan_toko_empty_view_list_title">Iklan Toko juga akan membuat tokomu:</string>
+    <string name="topads_auto_ps_iklan_produk_empty_view_title">🚀 Maksimalkan penjualan lewat Iklan Produk!</string>
+    <string name="topads_auto_ps_iklan_produk_empty_view_desc">Iklan Produk meningkatkan potensi produk diklik dan muncul paling atas di halaman pencarian &amp; rekomendasi. Baca Artikel</string>
+    <string name="topads_auto_ps_iklan_produk_empty_view_list_title">Dengan Iklan Produk, kamu bisa:</string>
+    <string name="topads_beranda_model_autops_subtitle_format">%s • Anggaran Harian Rp%s</string>
+    <string name="topads_see_the_benefits">Lihat Keuntungannya</string>
+    <string name="topads_doesnt_have_product_advertisements_yet">Belum memiliki Iklan Produk.</string>
+    <string name="topads_doesnt_have_shop_advertisements_yet">Belum memiliki Iklan Toko.</string>
+    <string name="topads_product_advertised_count"><![CDATA[<b>%d</b> Grup Iklan Aktif]]></string>
+    <string name="topads_autops_deactivation_inprogress_title">Sedang dinonaktifkan</string>
+    <string name="topads_autops_deactivation_inprogress_description">Iklanmu sedang dalam proses dinonaktifkan. Setelah 5-10 menit, coba muat lagi halaman ini, ya.</string>
+    <string name="topads_autops_headline_upsell_modal_title">Yay, iklanmu berhasil dibuat. Buat Iklan Toko juga, yuk~</string>
+    <string name="topads_autops_product_upsell_modal_title">Yay, iklanmu berhasil dibuat. Buat Iklan Produk juga, yuk~</string>
 </resources>

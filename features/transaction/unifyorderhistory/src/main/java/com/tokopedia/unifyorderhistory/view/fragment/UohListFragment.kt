@@ -2256,7 +2256,12 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 }
 
                 var actionStatus = ""
-                if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
+                val statusValue = if (status.isNotEmpty() && status.contains("-")) {
+                    status.split("-")[0].toIntOrZero()
+                } else {
+                    status.toIntOrZero()
+                }
+                if (statusValue < STATUS_600) actionStatus = ACTION_FINISH_ORDER
 
                 val paramFinishOrder = userSession?.userId?.let { it1 ->
                     UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)

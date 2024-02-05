@@ -21,7 +21,9 @@ class InfiniteRecommendationManager(
 
     var requestParam: GetRecommendationRequestParam = GetRecommendationRequestParam()
         set(value) {
-            field = value
+            field = value.copy(
+                hasNewProductCardEnabled = true
+            )
             viewModel?.init()
         }
 

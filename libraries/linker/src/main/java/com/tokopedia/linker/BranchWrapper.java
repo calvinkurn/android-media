@@ -5,8 +5,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.linker.helper.BranchHelper;
@@ -14,7 +15,6 @@ import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.interfaces.WrapperInterface;
-import com.tokopedia.linker.model.Link;
 import com.tokopedia.linker.model.LinkerCommerceData;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
@@ -34,15 +34,18 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.ServerRequestGetLATD;
+import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.LinkProperties;
 import timber.log.Timber;
 
@@ -183,12 +186,24 @@ public class BranchWrapper implements WrapperInterface {
         BranchHelperValidation helper = new BranchHelperValidation();
         String branchUrl = getBranchUrl(linkerDeeplinkRequest);
         return new Branch.BranchReferralInitListener() {
+            /**
+             * There are 2 ways to add min version, directly and inside custom meta tags
+             * {
+             *     "an_min_version" : "3.250",
+             *     "custom_meta_tags" : "{
+             *          "an_min_version" : "3.250"
+             *          }"
+             * }
+             */
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
                 if (error == null) {
                     String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
                     String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
                     String minVersion = referringParams.optString(LinkerConstants.KEY_MIN_ANDROID_VERSION);
+                    String customMetaTagsMinVersion = getCustomMetaTagsMinVersion(
+                            referringParams.optString(LinkerConstants.KEY_CUSTOM_META_TAGS)
+                    );
                     if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://") &&
                             !TextUtils.isEmpty(deeplink)) {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
@@ -196,8 +211,14 @@ public class BranchWrapper implements WrapperInterface {
                         deferredDeeplinkPath = deeplink;
                     }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
+                        String androidMinVersion = !customMetaTagsMinVersion.isBlank() ? customMetaTagsMinVersion : minVersion;
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
-                                LinkerUtils.createDeeplinkData(deeplink, promoCode, minVersion));
+                                LinkerUtils.createDeeplinkData(
+                                        deeplink,
+                                        promoCode,
+                                        androidMinVersion
+                                )
+                        );
                     }
                     checkAndSendUtmParams(context, referringParams);
                     if (!TextUtils.isEmpty(deeplink)) {
@@ -215,6 +236,18 @@ public class BranchWrapper implements WrapperInterface {
                 updateFirstOpenCache(context);
             }
         };
+    }
+
+    private String getCustomMetaTagsMinVersion(String customMetaTagsJson) {
+        // Define the Type for a Map<String, String>
+        Type type = new TypeToken<Map<String, String>>(){}.getType();
+        Map<String, String> map = new Gson().fromJson(customMetaTagsJson, type);
+        return map != null ?
+                Objects.requireNonNullElse(
+                        map.get(
+                                LinkerConstants.KEY_MIN_ANDROID_VERSION
+                        ), ""
+                ) : "";
     }
 
     private Branch.BranchReferralInitListener getBranchCallbackForUtmParams(Context context, boolean uriHaveCampaignData) {
@@ -407,11 +440,37 @@ public class BranchWrapper implements WrapperInterface {
                 .setContentDescription(data.getDescription())
                 .setContentImageUrl(data.getImgUri())
                 .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC);
+        additionalCustomMetadata(branchUniversalObject, data);
         return branchUniversalObject;
     }
 
-    private void generateAffiliateLink() {
-
+    private void additionalCustomMetadata(
+            BranchUniversalObject branchUniversalObject,
+            LinkerData data
+    ) {
+        if (data == null) {
+            return; // Return if data is null
+        }
+        String minVersionAndroid = data.getMinVersionAndroid();
+        String minVersionIOS = data.getMinVersionIOS();
+        if (minVersionAndroid == null && minVersionIOS == null) {
+            return; // No custom metadata to add, return
+        }
+        ContentMetadata contentMetadata = new ContentMetadata();
+        Map<String, String> map = new HashMap<>();
+        if (minVersionAndroid != null && !minVersionAndroid.isBlank()) {
+            map.put(LinkerConstants.KEY_MIN_ANDROID_VERSION, minVersionAndroid);
+        }
+        if (minVersionIOS != null && !minVersionIOS.isBlank()) {
+            map.put(LinkerConstants.KEY_MIN_IOS_VERSION, minVersionIOS);
+        }
+        if (!map.isEmpty()) {
+            contentMetadata.addCustomMetadata(
+                    LinkerConstants.KEY_CUSTOM_META_TAGS,
+                    new Gson().toJson(map)
+            );
+            branchUniversalObject.setContentMetadata(contentMetadata);
+        }
     }
 
     private void generateFirebaseLink(final LinkerData data, final Context context,

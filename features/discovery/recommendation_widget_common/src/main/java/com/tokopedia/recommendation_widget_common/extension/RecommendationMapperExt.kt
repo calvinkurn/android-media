@@ -31,6 +31,14 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
     return RecommendationWidget(
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
+            val badges = if (isTokonow()) emptyList()
+            else recommendation.badges.map {
+                RecommendationItem.Badge(
+                    title = it.title,
+                    imageUrl = it.imageUrl
+                )
+            }
+
             RecommendationItem(
                 productId = recommendation.id,
                 name = recommendation.name,
@@ -65,12 +73,23 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 minOrder = recommendation.minOrder,
                 maxOrder = recommendation.maxOrder,
                 location = if (isTokonow()) "" else recommendation.shop.city,
-                badgesUrl = if (isTokonow()) listOf<String>() else recommendation.badges.map { it.imageUrl },
+                badges = badges,
                 type = layoutType,
                 isFreeOngkirActive = if (isTokonow()) false else recommendation.freeOngkirInformation.isActive,
                 freeOngkirImageUrl = if (isTokonow()) "" else recommendation.freeOngkirInformation.imageUrl,
                 labelGroupList = recommendation.labelGroups.map {
-                    RecommendationLabel(title = it.title, type = it.type, position = it.position, imageUrl = it.imageUrl)
+                    RecommendationLabel(
+                        title = it.title,
+                        type = it.type,
+                        position = it.position,
+                        imageUrl = it.imageUrl,
+                        styles = it.styles.map { style ->
+                            RecommendationLabel.Style(
+                                key = style.key,
+                                value = style.value
+                            )
+                        }
+                    )
                 },
                 isGold = recommendation.shop.isGold,
                 isOfficial = recommendation.shop.isOfficial,
@@ -155,15 +174,29 @@ fun RecommendationItem.toProductCardModel(
         ratingCount = rating,
         shopLocation = location,
         countSoldRating = ratingAverage,
-        shopBadgeList = badgesUrl.map {
-            ProductCardModel.ShopBadge(imageUrl = it)
+        shopBadgeList = badges.map {
+            ProductCardModel.ShopBadge(
+                title = it.title,
+                imageUrl = it.imageUrl
+            )
         },
         freeOngkir = ProductCardModel.FreeOngkir(
             isActive = isFreeOngkirActive,
             imageUrl = freeOngkirImageUrl
         ),
         labelGroupList = labelGroupList.map {
-            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
+            ProductCardModel.LabelGroup(
+                position = it.position,
+                title = it.title,
+                type = it.type,
+                imageUrl = it.imageUrl,
+                styleList = it.styles.map { style ->
+                    ProductCardModel.LabelGroup.Style(
+                        key = style.key,
+                        value = style.value
+                    )
+                }
+            )
         },
         hasAddToCartButton = when (addToCartType) {
             RecommendationItem.AddToCartType.None -> hasAddToCartButton

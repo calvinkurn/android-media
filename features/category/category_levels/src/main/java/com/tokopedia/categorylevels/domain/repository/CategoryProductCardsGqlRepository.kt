@@ -138,8 +138,11 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             dataItem.goldMerchant = it.isGold
             dataItem.officialStore = it.isOfficial
             dataItem.labelsGroupList = labelsGroupList
-            dataItem.badges = it.badgesUrl.map {
-                Badges("", image_url = it)
+            dataItem.badges = it.badges.map {
+                Badges(
+                    title = it.title,
+                    image_url = it.imageUrl
+                )
             }
             dataItems.add(dataItem)
             componentsItem.id = it.productId.toString()

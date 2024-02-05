@@ -19,7 +19,7 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
-import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
+import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
@@ -240,7 +240,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             )
         )
         if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination().isNotEmpty() &&
-            !HomeComponentRemoteConfigController.isUsingNewLegoTracking(remoteConfig)) {
+            !HomeComponentFeatureFlag.isUsingNewLegoTracking(remoteConfig)) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                 trackingQueue,
                 channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
@@ -555,7 +555,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             isCache = isCache,
             cardInteraction = true
         )
-        if (!isCache && !HomeComponentRemoteConfigController.isUsingNewLegoTracking(remoteConfig)) {
+        if (!isCache && !HomeComponentFeatureFlag.isUsingNewLegoTracking(remoteConfig)) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                 trackingQueue,
                 channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
@@ -574,7 +574,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
             isCache = isCache
         )
-        if (!isCache && !HomeComponentRemoteConfigController.isUsingNewLegoTracking(remoteConfig)) {
+        if (!isCache && !HomeComponentFeatureFlag.isUsingNewLegoTracking(remoteConfig)) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                 trackingQueue,
                 LegoBannerTracking.convertLegoSixAutoBannerDataLayerForCombination(channel, verticalPosition)
