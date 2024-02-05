@@ -1,10 +1,13 @@
 package com.tokopedia.logisticcart
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticcart.dummy.ShippingWidgetDummyType
 import com.tokopedia.logisticcart.dummy.toDummyData
 import com.tokopedia.logisticcart.dummy.toDummyType
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
@@ -28,6 +31,16 @@ class ShippingWidgetCheckoutActivity :
     ShippingCheckoutRevampWidget.ShippingWidgetListener,
     ShippingDurationBottomsheetListener,
     ShippingCourierBottomsheetListener {
+
+    companion object {
+        fun newInstance(context: Context, type: ShippingWidgetDummyType): Intent {
+            return Intent(context, ShippingWidgetCheckoutActivity::class.java).apply {
+                putExtra(WIDGET_INITIAL_KEY, type.name)
+            }
+        }
+
+        private const val WIDGET_INITIAL_KEY = "WIDGET_UI_MODEL_KEY"
+    }
 
     var model: ShippingWidgetUiModel = ShippingWidgetUiModel()
     var courierList: List<ShippingCourierUiModel> = listOf()
