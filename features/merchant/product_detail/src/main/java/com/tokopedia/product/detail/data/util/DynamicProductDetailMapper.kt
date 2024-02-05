@@ -97,6 +97,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CARO
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
+import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
@@ -375,6 +376,11 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHIPMENT_V3 -> {
                     listOfComponent.add(
                         ShipmentUiModel(type = component.type, name = component.componentName)
+                    )
+                }
+                ProductDetailConstant.GWP_TYPE -> {
+                    listOfComponent.add(
+                        GWPUiModel(type = component.type, name = component.componentName)
                     )
                 }
                 ProductDetailConstant.SDUI_VIEW -> {
