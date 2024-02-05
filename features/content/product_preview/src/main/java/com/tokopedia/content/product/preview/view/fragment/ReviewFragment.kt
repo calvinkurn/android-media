@@ -240,7 +240,7 @@ class ReviewFragment @Inject constructor(
         _binding = null
     }
 
-    override fun onMenuClicked(menu: ReviewMenuStatus) {
+    override fun onMenuClicked() {
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
 

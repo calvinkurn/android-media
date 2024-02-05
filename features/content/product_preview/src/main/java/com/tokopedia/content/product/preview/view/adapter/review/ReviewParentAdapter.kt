@@ -10,7 +10,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiSta
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 
 class ReviewParentAdapter(
-    private val reviewInteractionListener: ReviewInteractionListener,
+    private val reviewInteractionListener: ReviewInteractionListener
 ) : ListAdapter<ReviewContentUiModel, ViewHolder>(ReviewAdapterCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -18,7 +18,7 @@ class ReviewParentAdapter(
             TYPE_CONTENT -> {
                 ReviewParentContentViewHolder.create(
                     parent = parent,
-                    reviewInteractionListener = reviewInteractionListener,
+                    reviewInteractionListener = reviewInteractionListener
                 )
             }
             else -> super.createViewHolder(parent, viewType)
@@ -38,10 +38,11 @@ class ReviewParentAdapter(
         } else {
             payloads.forEach {
                 when (val payload = it) {
-                    is Payload.Like -> if (holder is ReviewParentContentViewHolder) {
-                        holder.bindLike(
-                            payload.state
-                        )
+                    is Payload.Like -> {
+                        (holder as ReviewParentContentViewHolder).bindLike(payload.state)
+                    }
+                    is Payload.WatchMode -> {
+                        (holder as ReviewParentContentViewHolder).bindWatchMode(payload.isWatchMode)
                     }
                 }
             }
@@ -58,6 +59,7 @@ class ReviewParentAdapter(
 
     sealed interface Payload {
         data class Like(val state: ReviewLikeUiState) : Payload
+        data class WatchMode(val isWatchMode: Boolean) : Payload
     }
 
     internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewContentUiModel>() {
@@ -79,12 +81,11 @@ class ReviewParentAdapter(
             oldItem: ReviewContentUiModel,
             newItem: ReviewContentUiModel
         ): Any? {
-            // TODO: changes in specified item please define
             return when {
                 oldItem.likeState != newItem.likeState -> Payload.Like(newItem.likeState)
+                oldItem.isWatchMode != newItem.isWatchMode -> Payload.WatchMode(newItem.isWatchMode)
                 else -> super.getChangePayload(oldItem, newItem)
             }
         }
     }
-
 }

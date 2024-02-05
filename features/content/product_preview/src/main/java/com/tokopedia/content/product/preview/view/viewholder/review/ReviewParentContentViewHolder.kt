@@ -121,7 +121,7 @@ class ReviewParentContentViewHolder(
         setupTap(item)
     }
 
-    private fun bindWatchMode(isWatchMode: Boolean) {
+    fun bindWatchMode(isWatchMode: Boolean) {
         binding.groupReviewDetails.showWithCondition(!isWatchMode)
         binding.groupReviewInteraction.showWithCondition(!isWatchMode)
         binding.icWatchMode.showWithCondition(isWatchMode)
@@ -242,7 +242,7 @@ class ReviewParentContentViewHolder(
 
     private fun setupTap(item: ReviewContentUiModel) {
         binding.ivReviewMenu.setOnClickListener {
-            reviewInteractionListener.onMenuClicked(item.menus)
+            reviewInteractionListener.onMenuClicked()
         }
 
         val gesture = GestureDetector(
@@ -286,7 +286,7 @@ class ReviewParentContentViewHolder(
 
     private fun setupPageControlMedia(
         mediaSize: Int,
-        mediaSelectedPosition: Int,
+        mediaSelectedPosition: Int
     ) = with(binding.pcReviewContent) {
         setIndicator(mediaSize)
         setCurrentIndicator(mediaSelectedPosition)
@@ -323,7 +323,7 @@ class ReviewParentContentViewHolder(
     data class DescriptionUiModel(
         var isExpanded: Boolean = false,
         var originalText: SpannedString = buildSpannedString { },
-        var truncatedText: SpannedString = buildSpannedString { },
+        var truncatedText: SpannedString = buildSpannedString { }
     )
 
     companion object {
