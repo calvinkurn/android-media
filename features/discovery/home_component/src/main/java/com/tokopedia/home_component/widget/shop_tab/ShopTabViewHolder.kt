@@ -35,11 +35,10 @@ internal class ShopTabViewHolder(
     }
 
     fun bindIndicator(tab: ShopTabDataModel) {
-        if (tab.useGradientBackground) {
-            setTabBackground(tab.isActivated)
+        tab.run {
+            setTabBackground(isActivated, useGradientBackground)
+            setTabIndicator(isActivated)
         }
-
-        setTabIndicator(tab.isActivated)
     }
 
     fun bindShop(tab: ShopTabDataModel) {
@@ -56,8 +55,8 @@ internal class ShopTabViewHolder(
         }
     }
 
-    private fun setTabBackground(isActivated: Boolean) {
-        if (isActivated) {
+    private fun setTabBackground(isActivated: Boolean, useGradientBackground: Boolean) {
+        if (isActivated && useGradientBackground) {
             binding?.containerShopFlashSaleTab?.setGradientBackground(
                 arrayListOf(
                     getHexColorFromIdColor(itemView.context, unifyprinciplesR.color.Unify_NN0),
