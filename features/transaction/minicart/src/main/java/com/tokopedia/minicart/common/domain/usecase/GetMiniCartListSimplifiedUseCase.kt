@@ -52,6 +52,21 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
         this.delay = delay
     }
 
+    fun setParams(shopIds: List<String>, source: MiniCartSource, bmGmParam: BmgmParamModel, usecase: String) {
+        params = mapOf(
+            GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
+            GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
+                GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
+                GetMiniCartListUseCase.PARAM_KEY_USE_CASE to usecase,
+                GetMiniCartListUseCase.PARAM_KEY_BMGM to bmGmParam
+            )
+        )
+        this.shopIds = shopIds
+        this.delay = delay
+    }
+
     fun setParams(shopIds: List<String>, promoId: String, promoCode: String, source: MiniCartSource, delay: Long = 0) {
         params = mapOf(
             GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,

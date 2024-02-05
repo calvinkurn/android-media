@@ -85,4 +85,10 @@ sealed interface MiniCartSource {
         override val value: MiniCartSourceValue
             get() = "bottomsheet_offer_page"
     }
+
+    object DiscoveryPage : MiniCartSource {
+
+        override val value: MiniCartSourceValue
+            get() = "disco_page"
+    }
 }
