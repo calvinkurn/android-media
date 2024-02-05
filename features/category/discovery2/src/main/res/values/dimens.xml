@@ -15,6 +15,7 @@
     <dimen name="dp_6">6dp</dimen>
     <dimen name="dp_8">8dp</dimen>
     <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_14">14dp</dimen>
     <dimen name="dp_16">16dp</dimen>
     <dimen name="dp_90">90dp</dimen>
     <dimen name="dp_4">4dp</dimen>
@@ -32,6 +33,7 @@
     <dimen name="anchor_tab_size">72dp</dimen>
     <dimen name="anchor_tab_card_padding">6dp</dimen>
     <dimen name="disco_product_card_width">165dp</dimen>
+    <dimen name="disco_carousel_product_card_grid_width">140dp</dimen>
     <dimen name="dp_34">34dp</dimen>
     <dimen name="dp_19">19dp</dimen>
     <dimen name="dp_40">40dp</dimen>

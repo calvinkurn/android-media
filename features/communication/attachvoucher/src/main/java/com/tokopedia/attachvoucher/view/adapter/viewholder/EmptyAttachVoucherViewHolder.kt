@@ -5,7 +5,7 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithCacheData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachvoucher.R
@@ -24,7 +24,7 @@ class EmptyAttachVoucherViewHolder(itemView: View?) : AbstractViewHolder<EmptyMo
     }
 
     private fun bindEmptyImage() {
-        ImageHandler.loadImageAndCache(binding?.ivEmpty, emptyIconUrl)
+        binding?.ivEmpty?.loadImageWithCacheData(emptyIconUrl)
     }
 
     private fun bindButtonClick() {

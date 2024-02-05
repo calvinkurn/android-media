@@ -20,6 +20,7 @@ import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeExc
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadExecutionResult
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -92,8 +93,18 @@ class CreationUploaderWorker(
                                 progress: Int,
                                 uploadStatus: CreationUploadStatus,
                             ) {
-                                launch(coroutineDispatcher) {
+                                launchCatchError(coroutineDispatcher, block = {
                                     saveProgress(progress, uploadData, uploadStatus)
+                                }) {
+                                    logger.sendLog(uploadData, it)
+                                }
+                            }
+
+                            override fun updateData(uploadData: CreationUploadData) {
+                                launchCatchError(coroutineDispatcher, block = {
+                                    queueRepository.updateData(uploadData.queueId, uploadData.mapDataToJson(gson))
+                                }) {
+                                    logger.sendLog(uploadData, it)
                                 }
                             }
                         }
@@ -103,8 +114,12 @@ class CreationUploaderWorker(
 
                     when (result) {
                         is CreationUploadExecutionResult.Success -> {
-                            launch(coroutineDispatcher) {
-                                queueRepository.delete(data.queueId)
+                            withContext(coroutineDispatcher) {
+                                try {
+                                    queueRepository.delete(data.queueId)
+                                } catch (throwable: Throwable) {
+                                    logger.sendLog(result.toString(), throwable)
+                                }
                             }
                         }
                         is CreationUploadExecutionResult.Error -> {

@@ -1,14 +1,11 @@
 package com.tokopedia.autocompletecomponent.suggestion.singleline
 
-import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteSingleLineItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
@@ -20,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -93,11 +91,7 @@ class SuggestionSingleLineViewHolder(
 
     private fun bindShortcutButton(item: BaseSuggestionDataView){
         binding?.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
-            ImageHandler.loadImage2(
-                binding?.actionShortcutButton,
-                item.shortcutImage,
-                R.drawable.autocomplete_ic_copy_to_search_bar
-            )
+            binding?.actionShortcutButton?.loadImageWithError(item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
         }
     }
 

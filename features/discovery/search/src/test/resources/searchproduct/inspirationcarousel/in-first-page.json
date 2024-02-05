@@ -792,12 +792,36 @@
             {
               "position": "credibility",
               "type": "lightBlue",
-              "title": "Terbaru"
+              "title": "Terbaru",
+              "style": [
+                {
+                  "key": "background-color",
+                  "value": "#F0F3F7"
+                },
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                },
+                {
+                  "key": "text-color",
+                  "value": "#212121"
+                }
+              ]
             },
             {
               "position": "gimmick",
               "type": "textDarkOrange",
-              "title": "Produk Terbaru"
+              "title": "Produk Terbaru",
+              "style": [
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                },
+                {
+                  "key": "text-color",
+                  "value": "#212121"
+                }
+              ]
             }
           ]
         },
@@ -879,7 +903,17 @@
             {
               "position": "gimmick",
               "type": "textDarkOrange",
-              "title": "Produk Terbaru"
+              "title": "Produk Terbaru",
+              "style": [
+                {
+                  "key": "background-color",
+                  "value": "#F0F3F7"
+                },
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                }
+              ]
             }
           ]
         },
@@ -982,7 +1016,28 @@
                 "count_review": 100,
                 "url": "",
                 "applink": "tokopedia://product/12345",
-                "component_id": "03.02.01.01"
+                "component_id": "03.02.01.01",
+                "label_groups": [
+                  {
+                    "position": "offers",
+                    "type": "lightGrey",
+                    "title": "Grosir",
+                    "styles": [
+                      {
+                        "key": "background-color",
+                        "value": "#F0F3F7"
+                      },
+                      {
+                        "key": "background-opacity",
+                        "value": "1"
+                      },
+                      {
+                        "key": "text-color",
+                        "value": "#212121"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
@@ -1000,7 +1055,28 @@
                 "rating": 4,
                 "count_review": 100,
                 "url": "",
-                "applink": "tokopedia://product/12345"
+                "applink": "tokopedia://product/12345",
+                "label_groups": [
+                  {
+                    "position": "offers",
+                    "type": "lightGrey",
+                    "title": "Grosir",
+                    "styles": [
+                      {
+                        "key": "background-color",
+                        "value": "#F0F3F7"
+                      },
+                      {
+                        "key": "background-opacity",
+                        "value": "1"
+                      },
+                      {
+                        "key": "text-color",
+                        "value": "#212121"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
@@ -1018,7 +1094,28 @@
                 "rating": 4,
                 "count_review": 100,
                 "url": "",
-                "applink": "tokopedia://product/12345"
+                "applink": "tokopedia://product/12345",
+                "label_groups": [
+                  {
+                    "position": "offers",
+                    "type": "lightGrey",
+                    "title": "Grosir",
+                    "styles": [
+                      {
+                        "key": "background-color",
+                        "value": "#F0F3F7"
+                      },
+                      {
+                        "key": "background-opacity",
+                        "value": "1"
+                      },
+                      {
+                        "key": "text-color",
+                        "value": "#212121"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -1041,10 +1138,35 @@
                 "price": 0,
                 "image_url": "http://images.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb-4e98-4a9d.jpg",
                 "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
-                "rating" : 0,
+                "rating": 0,
                 "count_review": 0,
                 "applink": "tokopedia://search?st=product&q=rattle%20stick",
-                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
+                "description": [
+                  "Melatih memegang",
+                  "Mengenal bunyi",
+                  "Aman masuk mulut"
+                ],
+                "label_groups": [
+                  {
+                    "position": "offers",
+                    "type": "lightGrey",
+                    "title": "Grosir",
+                    "styles": [
+                      {
+                        "key": "background-color",
+                        "value": "#F0F3F7"
+                      },
+                      {
+                        "key": "background-opacity",
+                        "value": "1"
+                      },
+                      {
+                        "key": "text-color",
+                        "value": "#212121"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
@@ -1057,7 +1179,11 @@
                 "image_url": "http://images.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb-4e98-4a9d-b051.jpg",
                 "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
                 "applink": "tokopedia://search?st=product&q=rattle%20stick",
-                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
+                "description": [
+                  "Melatih memegang",
+                  "Mengenal bunyi",
+                  "Aman masuk mulut"
+                ]
               }
             ]
           },
@@ -1070,7 +1196,11 @@
                 "image_url": "http://images.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb.jpg",
                 "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
                 "applink": "tokopedia://search?st=product&q=rattle%20stick",
-                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
+                "description": [
+                  "Melatih memegang",
+                  "Mengenal bunyi",
+                  "Aman masuk mulut"
+                ]
               }
             ]
           }
@@ -1350,10 +1480,14 @@
                 "price": 0,
                 "image_url": "http://images.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb-4e98-4a9d.jpg",
                 "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
-                "rating" : 0,
+                "rating": 0,
                 "count_review": 0,
                 "applink": "tokopedia://search?st=product&q=rattle%20stick",
-                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
+                "description": [
+                  "Melatih memegang",
+                  "Mengenal bunyi",
+                  "Aman masuk mulut"
+                ]
               }
             ]
           },
@@ -1366,7 +1500,11 @@
                 "image_url": "http://images.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb-4e98-4a9d-b051.jpg",
                 "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
                 "applink": "tokopedia://search?st=product&q=rattle%20stick",
-                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
+                "description": [
+                  "Melatih memegang",
+                  "Mengenal bunyi",
+                  "Aman masuk mulut"
+                ]
               }
             ]
           },
@@ -1379,7 +1517,11 @@
                 "image_url": "http://images.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb.jpg",
                 "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
                 "applink": "tokopedia://search?st=product&q=rattle%20stick",
-                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
+                "description": [
+                  "Melatih memegang",
+                  "Mengenal bunyi",
+                  "Aman masuk mulut"
+                ]
               }
             ]
           }

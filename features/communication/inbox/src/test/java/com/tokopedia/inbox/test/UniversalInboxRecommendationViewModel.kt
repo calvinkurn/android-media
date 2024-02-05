@@ -13,7 +13,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -62,12 +62,6 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
 
                 cancelAndConsumeRemainingEvents()
             }
-
-            // Then
-            Assert.assertEquals(
-                2,
-                viewModel.getRecommendationPage()
-            )
         }
     }
 
@@ -98,12 +92,6 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
 
                 cancelAndConsumeRemainingEvents()
             }
-
-            // Then
-            Assert.assertEquals(
-                2,
-                viewModel.getRecommendationPage()
-            )
         }
     }
 
@@ -140,16 +128,10 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                     errorState.error?.first?.message
                 )
                 Assert.assertEquals(
-                    "handleResultProductRecommendation",
+                    "loadProductRecommendation",
                     errorState.error?.second
                 )
             }
-
-            // Then
-            Assert.assertEquals(
-                1,
-                viewModel.getRecommendationPage()
-            )
         }
     }
 
@@ -168,7 +150,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 skipItems(1)
 
                 // When update state
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(1))
 
                 // Then updated state
                 assertUpdatedState(
@@ -179,12 +161,6 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
 
                 println(cancelAndConsumeRemainingEvents())
             }
-
-            // Then
-            Assert.assertEquals(
-                viewModel.getRecommendationPage(),
-                2 // init 1 + load more 1
-            )
         }
     }
 
@@ -200,7 +176,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 skipItems(1)
 
                 // When update state
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(1))
 
                 // Then updated state
                 assertUpdatedState(
@@ -212,12 +188,6 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
 
                 cancelAndConsumeRemainingEvents()
             }
-
-            // Then
-            Assert.assertEquals(
-                2, // init 1 + load more 1
-                viewModel.getRecommendationPage()
-            )
         }
     }
 
@@ -232,7 +202,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 viewModel.setupViewModelObserver()
 
                 // When update state
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(1))
 
                 // Then updated state
                 assertErrorState(awaitItem())
@@ -242,7 +212,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
 
             viewModel.errorUiState.test {
                 // When update state 2
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(2))
                 // Then show error
                 val errorState = awaitItem()
                 Assert.assertEquals(
@@ -250,16 +220,10 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                     errorState.error?.first?.message
                 )
                 Assert.assertEquals(
-                    "handleResultProductRecommendation",
+                    "loadProductRecommendation",
                     errorState.error?.second
                 )
             }
-
-            // Then
-            Assert.assertEquals(
-                1,
-                viewModel.getRecommendationPage()
-            )
         }
     }
 
@@ -276,7 +240,7 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
                 skipItems(1)
 
                 // When update state
-                viewModel.processAction(UniversalInboxAction.LoadNextPage)
+                viewModel.processAction(UniversalInboxAction.LoadNextPage(2))
                 // Then update state
                 assertLoadingState(awaitItem())
 
@@ -350,16 +314,10 @@ class UniversalInboxRecommendationViewModel : UniversalInboxViewModelTestFixture
     private fun mockRecommendationFlow(
         expectedResult: Result<RecommendationWidget>
     ) {
-        val recommendationFlow = MutableSharedFlow<Result<RecommendationWidget>>()
-
-        coEvery {
-            getRecommendationUseCase.observe()
-        } returns recommendationFlow
-
         coEvery {
             getRecommendationUseCase.fetchProductRecommendation(any())
-        } coAnswers {
-            recommendationFlow.emit(expectedResult)
+        } returns flow {
+            emit(expectedResult)
         }
     }
 

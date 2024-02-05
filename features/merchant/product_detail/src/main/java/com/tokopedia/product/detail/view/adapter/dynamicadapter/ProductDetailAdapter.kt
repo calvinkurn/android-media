@@ -29,6 +29,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
+import com.tokopedia.product.detail.view.viewholder.TabletLeftSectionViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 
@@ -142,6 +143,7 @@ class ProductDetailAdapter(
         super.onViewDetachedFromWindow(holder)
         when (holder) {
             is ProductMediaViewHolder -> holder.detachView()
+            is TabletLeftSectionViewHolder -> holder.detachView()
             is ProductRecommendationVerticalPlaceholderViewHolder -> shouldRedrawLayout = false
         }
     }

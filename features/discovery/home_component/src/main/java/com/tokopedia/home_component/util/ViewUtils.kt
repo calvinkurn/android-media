@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Lukas on 2019-08-20
@@ -126,9 +127,13 @@ fun View.setGradientBackgroundRounded(colorArray: ArrayList<String>, cornerRadiu
     } catch (_: Exception) { }
 }
 
+fun ArrayList<String>.hasGradientBackground(context: Context): Boolean {
+    return !getGradientBackgroundViewAllWhite(this, context)
+}
+
 // function check is gradient all white, if empty default color is white
 fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>, context: Context): Boolean {
-    val colorWhite = getHexColorFromIdColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+    val colorWhite = getHexColorFromIdColor(context, unifyprinciplesR.color.Unify_Static_White)
     if (colorArray.isNotEmpty()) {
         if (colorArray.size > 1) {
             val colorArrayNotWhite = colorArray.filter { it.uppercase().take(7) != colorWhite }

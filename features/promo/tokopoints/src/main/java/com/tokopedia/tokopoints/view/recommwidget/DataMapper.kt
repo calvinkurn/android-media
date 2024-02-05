@@ -30,10 +30,10 @@ class DataMapper {
             shopRating = element.ratingAverage,
             isShopRatingYellow = true,
             shopLocation = element.location,
-            shopBadgeList = element.badgesUrl.map {
+            shopBadgeList = element.badges.map {
                 ProductCardModel.ShopBadge(
-                    imageUrl = it
-                        ?: ""
+                    title = it.title,
+                    imageUrl = it.imageUrl
                 )
             },
             freeOngkir = ProductCardModel.FreeOngkir(
