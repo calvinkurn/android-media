@@ -157,7 +157,8 @@ fun ProductTagItems(
     onAtcClick: (FeedCardProductModel) -> Unit,
     onProductClick: (FeedCardProductModel) -> Unit,
     onProductLabelClick: () -> Unit,
-    onProductHighlightClose: () -> Unit
+    onProductHighlightClose: () -> Unit,
+    impressHighlight: (FeedCardProductModel) -> Unit,
 ) {
     var needToBeShown by remember { mutableStateOf(false) }
     val highlightedProduct = products.firstOrNull { it.isHighlight }
@@ -166,6 +167,9 @@ fun ProductTagItems(
         LaunchedEffect(key1 = key, block = {
             delay(5000L)
             needToBeShown = true
+            if (highlightedProduct != null) {
+                impressHighlight.invoke(highlightedProduct)
+            }
         })
 
         FeedProductLabel(

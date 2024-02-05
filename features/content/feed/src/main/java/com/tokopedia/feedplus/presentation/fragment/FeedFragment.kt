@@ -2288,8 +2288,13 @@ class FeedFragment :
         )
     }
 
-    override fun impressHighlightCard() {
-        //feedAnalytics?.impressProductHighlight()
+    override fun impressHighlightCard(
+        product: FeedCardProductModel,
+        trackerModel: FeedTrackerDataModel?
+    ) {
+        if (trackerModel != null) {
+            feedAnalytics?.impressProductHighlight(product, trackerModel)
+        }
     }
 
     companion object {

@@ -732,6 +732,9 @@ class FeedPostImageViewHolder(
                 onProductHighlightClose = {
                     listener.onHighlightClose(trackerDataModel)
                 },
+                impressHighlight = {
+                   listener.impressHighlightCard(it, trackerDataModel)
+                },
                 onProductClick = {
                     listener.onHighlightClick(
                         it,

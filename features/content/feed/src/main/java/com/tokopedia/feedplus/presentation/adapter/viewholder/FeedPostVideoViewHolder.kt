@@ -570,6 +570,9 @@ class FeedPostVideoViewHolder(
                         absoluteAdapterPosition
                     )
                 },
+                impressHighlight = {
+                    listener.impressHighlightCard(it, trackerDataModel)
+                },
                 onProductHighlightClose = {
                     listener.onHighlightClose(trackerDataModel)
                 })

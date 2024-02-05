@@ -144,5 +144,5 @@ interface FeedListener {
 
     fun onHighlightClose(trackerModel: FeedTrackerDataModel?)
 
-    fun impressHighlightCard()
+    fun impressHighlightCard(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel?)
 }
