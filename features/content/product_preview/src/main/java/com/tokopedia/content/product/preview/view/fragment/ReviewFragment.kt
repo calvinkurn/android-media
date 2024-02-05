@@ -156,7 +156,7 @@ class ReviewFragment @Inject constructor(
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiEvent
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.CREATED)
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .collect {
                     when (val event = it) {
                         is ProductPreviewEvent.ShowMenuSheet -> {
