@@ -55,14 +55,14 @@ internal class ProductNameDelegate(
     }
 
     private fun hasChanged(title: String, labelIcons: List<LabelIcons> = emptyList()): Boolean {
-        val isNewValue = previousTitle != title && previousLabelIcons != labelIcons
+        val hasChanged = previousTitle != title || previousLabelIcons != labelIcons
 
-        if (isNewValue) {
+        if (hasChanged) {
             previousTitle = title
             previousLabelIcons = labelIcons
         }
 
-        return isNewValue
+        return hasChanged
     }
 
     private fun setProductNameText(title: String) {
