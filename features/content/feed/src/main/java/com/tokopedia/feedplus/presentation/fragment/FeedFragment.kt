@@ -2198,7 +2198,6 @@ class FeedFragment :
         feedAnalytics = feedFactory.create(userSession, feedEntrySource)
     }
 
-<<<<<<< HEAD
     //TODO: for atc handle source atc from bottom sheet or highlight etc. For analytics purpose
     override fun addToCartHighlight(product: FeedCardProductModel, campaign: FeedCardCampaignModel, position: Int) {
         val taggedProduct = MapperProductsToXProducts.transform(product, campaign, ContentTaggedProductUiModel.SourceType.Organic)
