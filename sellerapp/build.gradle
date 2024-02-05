@@ -402,6 +402,7 @@ dependencies {
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
