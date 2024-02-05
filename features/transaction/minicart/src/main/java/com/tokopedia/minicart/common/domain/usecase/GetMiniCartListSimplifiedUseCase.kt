@@ -14,6 +14,13 @@ import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
+@Deprecated(
+    "This usecase is no longer maintained since Feb 2023",
+    ReplaceWith(
+        "GetMiniCartWidgetUseCase",
+        "com.tokopedia.minicart.domain.GetMiniCartWidgetUseCase"
+    )
+)
 class GetMiniCartListSimplifiedUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
