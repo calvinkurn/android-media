@@ -142,7 +142,7 @@
         <activity
             android:name=".buyer_request_cancel.presentation.BuyerRequestCancelRespondActivity"
             android:exported="false"
-            android:theme="@style/Brc.Translucent"
+            android:theme="@style/NonDialogTransparent"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
