@@ -7,10 +7,15 @@ android {
     testNamespace 'com.tokopedia.play.widget.test'
     buildFeatures {
         viewBinding true
+        compose true
     }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 
     defaultConfig {
@@ -64,6 +69,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

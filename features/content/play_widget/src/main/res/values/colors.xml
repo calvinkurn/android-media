@@ -44,4 +44,7 @@
     <color name="play_widget_carousel_dms_bg_product_img">#BFC9D9</color>
     <color name="play_widget_carousel_dms_bg_action_button">#B32E3137</color>
 
+    <!--Play Live Indicator-->
+    <color name="play_widget_live_indicator_dms_bg">#E02954</color>
+
 </resources>
