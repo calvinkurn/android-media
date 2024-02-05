@@ -5,8 +5,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class DivActionUtils {
-companion object{
+object DivActionUtils {
     fun toMap(jsonobj: JSONObject): HashMap<String, Any> {
         val map: HashMap<String, Any> = HashMap()
         try {
@@ -44,5 +43,4 @@ companion object{
         }
         return list
     }
-}
 }
