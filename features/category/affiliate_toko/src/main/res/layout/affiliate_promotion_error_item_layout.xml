@@ -15,7 +15,7 @@
         android:layout_marginTop="16dp"
         />
 
-    `<com.tkpd.remoteresourcerequest.view.DeferredImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/error_image_deffered"
         android:layout_width="96dp"
         android:layout_height="96dp"
@@ -26,7 +26,7 @@
         tools:ignore="ContentDescription"
         app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_product_not_found.png"
         app:imageDpiSupportType="singleDpi"
-        />`
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/error_title"

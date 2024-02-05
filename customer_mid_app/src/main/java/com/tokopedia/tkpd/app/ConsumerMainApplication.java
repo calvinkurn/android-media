@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 
+import com.newrelic.agent.android.FeatureFlag;
 import com.scp.auth.GotoSdk;
 
 import androidx.annotation.NonNull;

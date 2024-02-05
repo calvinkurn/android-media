@@ -358,7 +358,7 @@ open class GiftBoxBaseFragment : Fragment() {
         }
     }
 
-    fun playPrizeSound() {
+    fun playPrizeSound(resID: Int) {
         if (isSoundEnabled()) {
             context?.let { soundIt ->
                 if (rewardSoundManager == null) {
