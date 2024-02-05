@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.add
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addEmptyStockProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addHeader
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addHeaderSpace
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addProductInCartWidget
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addRecommendationProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addTitle
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addWishlistProducts
@@ -73,9 +74,17 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
         layout.addDivider()
         layout.addTitle(
+            title = "5 produk ada di keranjang"
+        )
+        layout.addProductInCartWidget()
+
+        layout.addDivider()
+        layout.addTitle(
             title = "Rekomendasi untukmu"
         )
         layout.addRecommendationProducts()
+
+
         _firstPage.value = layout
     }
 }

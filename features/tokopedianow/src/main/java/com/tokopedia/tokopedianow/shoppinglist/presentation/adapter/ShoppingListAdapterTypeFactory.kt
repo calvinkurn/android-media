@@ -19,8 +19,10 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderSpaceViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTitleViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListHorizontalProductCardItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListProductInCartViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListTopCheckAllViewHolder
 
 class ShoppingListAdapterTypeFactory(
@@ -41,6 +43,7 @@ class ShoppingListAdapterTypeFactory(
     override fun type(uiModel: TokoNowTitleUiModel): Int = TokoNowTitleViewHolder.LAYOUT
 
     override fun type(uiModel: ShoppingListHorizontalProductCardItemUiModel): Int = ShoppingListHorizontalProductCardItemViewHolder.LAYOUT
+    override fun type(uiModel: ShoppingListProductInCartUiModel): Int = ShoppingListProductInCartViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListTopCheckAllUiModel): Int = ShoppingListTopCheckAllViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -62,6 +65,9 @@ class ShoppingListAdapterTypeFactory(
             )
 
             ShoppingListHorizontalProductCardItemViewHolder.LAYOUT -> ShoppingListHorizontalProductCardItemViewHolder(
+                itemView = parent
+            )
+            ShoppingListProductInCartViewHolder.LAYOUT -> ShoppingListProductInCartViewHolder(
                 itemView = parent
             )
             ShoppingListTopCheckAllViewHolder.LAYOUT -> ShoppingListTopCheckAllViewHolder(

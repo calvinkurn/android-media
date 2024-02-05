@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.ImageUtil.applyBrightnessFilter
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHorizontalProductCardItemBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListHorizontalProductCardBinding
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.ATC_WISHLIST
@@ -31,10 +31,10 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         private const val OOS_BRIGHTNESS = 0.5f
 
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_horizontal_product_card_item
+        val LAYOUT = R.layout.item_tokopedianow_shopping_list_horizontal_product_card
     }
 
-    private var binding: ItemTokopedianowHorizontalProductCardItemBinding? by viewBinding()
+    private var binding: ItemTokopedianowShoppingListHorizontalProductCardBinding? by viewBinding()
 
     override fun bind(
         data: ShoppingListHorizontalProductCardItemUiModel
@@ -53,7 +53,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initImage(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initImage(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         iuProduct.loadImage(data.image) {
@@ -65,7 +65,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initEta(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initEta(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpEta.showIfWithBlock(data.eta.isNotBlank()) {
@@ -74,7 +74,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initPrice(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initPrice(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpPrice.showIfWithBlock(data.price.isNotBlank()) {
@@ -83,7 +83,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initName(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initName(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpName.showIfWithBlock(data.name.isNotBlank()) {
@@ -92,7 +92,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initWeight(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initWeight(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpWeight.showIfWithBlock(data.weight.isNotBlank()) {
@@ -100,7 +100,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initPercentage(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initPercentage(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpPercentage.showIfWithBlock(data.percentage.isNotBlank()) {
@@ -109,7 +109,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initSlashPrice(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initSlashPrice(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpSlashPrice.showIfWithBlock(data.slashPrice.isNotBlank()) {
@@ -118,7 +118,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initOtherOption(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initOtherOption(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpOtherOption.showIfWithBlock(isOos(data.type)) {
@@ -126,7 +126,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initRightButton(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initRightButton(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpAddWishlist.showIfWithBlock(data.type == PRODUCT_RECOMMENDATION) {
@@ -161,7 +161,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHorizontalProductCardItemBinding.initCheckbox(
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initCheckbox(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         if (data.type == ATC_WISHLIST) {

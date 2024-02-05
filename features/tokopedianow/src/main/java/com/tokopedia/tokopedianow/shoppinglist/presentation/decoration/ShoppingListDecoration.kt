@@ -37,7 +37,7 @@ class ShoppingListDecoration: RecyclerView.ItemDecoration() {
             }
             isTitle(parent, absolutePos) -> {
                 outRect.top = view.getDimens(unifycomponentsR.dimen.spacing_lvl2)
-                outRect.bottom = view.getDimens(unifycomponentsR.dimen.unify_space_16)
+                outRect.bottom = view.getDimens(unifycomponentsR.dimen.unify_space_12)
                 outRect.right = view.getDimens(unifycomponentsR.dimen.unify_space_16)
                 outRect.left = view.getDimens(unifycomponentsR.dimen.unify_space_16)
             }

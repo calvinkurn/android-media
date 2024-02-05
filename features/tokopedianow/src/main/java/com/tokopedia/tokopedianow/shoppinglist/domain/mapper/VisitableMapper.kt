@@ -10,6 +10,8 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.ATC_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.EMPTY_STOCK
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListTopCheckAllUiModel
 
 object VisitableMapper {
@@ -236,5 +238,50 @@ object VisitableMapper {
             )
         )
         addAll(list)
+    }
+
+    fun MutableList<Visitable<*>>.addProductInCartWidget() {
+        add(
+            ShoppingListProductInCartUiModel(
+                productList = listOf(
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    ),
+                    ShoppingListProductInCartItemUiModel(
+                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
+                    )
+                )
+            )
+        )
     }
 }
