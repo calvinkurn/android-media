@@ -35,6 +35,7 @@ import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -163,10 +164,21 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
 
         binding?.run {
             ticker.isVisible = !isPreviouslyDismissed
+            ticker.closeButtonVisibility = View.GONE
+            ticker.tickerShape = Ticker.SHAPE_LOOSE
+            ticker.tickerTitle = getString(R.string.sd_ticker_announcement_wording_title)
             ticker.setHtmlDescription(getString(R.string.sd_ticker_announcement_wording))
             ticker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    showSellerInfoBottomSheet()
+                    RouteManager.route(
+                        context,
+                        String.format(
+                            Locale.getDefault(),
+                            "%s?url=%s",
+                            ApplinkConst.WEBVIEW,
+                            linkUrl
+                        )
+                    )
                 }
 
                 override fun onDismiss() {
