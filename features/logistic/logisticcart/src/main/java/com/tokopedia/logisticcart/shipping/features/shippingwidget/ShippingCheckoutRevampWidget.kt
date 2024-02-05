@@ -408,8 +408,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateHasSelectedWhitelabelShipping.setOnClickListener {
                 mListener?.onChangeDurationClickListener()
             }
-            if (shippingWidgetUiModel.estimatedTimeDelivery.isNotEmpty()) {
-                val titleText = "${shippingWidgetUiModel.estimatedTimeDelivery} (${
+            if (shippingWidgetUiModel.serviceName.isNotEmpty()) {
+                val titleText = "${shippingWidgetUiModel.serviceName} (${
                 convertPriceValueToIdrFormat(
                     shippingWidgetUiModel.courierShipperPrice,
                     false
@@ -724,7 +724,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateHasSelectedNormalShipping.visible()
             TextAndContentDescriptionUtil.setTextAndContentDescription(
                 labelSelectedShippingDuration,
-                shippingWidgetUiModel.estimatedTimeDelivery ?: "",
+                shippingWidgetUiModel.serviceName ?: "",
                 context.getString(logisticcartR.string.content_desc_label_selected_shipping_duration)
             )
 

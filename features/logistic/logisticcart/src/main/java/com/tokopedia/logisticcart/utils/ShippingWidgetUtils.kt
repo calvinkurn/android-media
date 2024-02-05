@@ -19,7 +19,7 @@ object ShippingWidgetUtils {
             isWhitelabel = isHideChangeCourierCard,
             isHasShownCourierError = false,
             boOrderMessage = boOrderMessage,
-            estimatedTimeDelivery = estimatedTimeDelivery ?: "",
+            serviceName = estimatedTimeDelivery ?: "",
             courierName = name ?: "",
             courierShipperPrice = shipperPrice,
             courierOrderMessage = courierOrderMessage,

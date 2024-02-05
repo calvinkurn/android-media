@@ -27,7 +27,7 @@ data class ShippingWidgetUiModel(
     val boOrderMessage: String = "",
 
     // CourierItemData.estimatedTimeDelivery
-    val estimatedTimeDelivery: String = "",
+    val serviceName: String = "",
 
     // CourierItemData.name
     val courierName: String = "",

@@ -67,7 +67,7 @@ private object ShippingWidgetDummyData {
             isDisableChangeCourier = false,
             voucherLogisticExists = false,
             isWhitelabel = false,
-            estimatedTimeDelivery = "Reguler",
+            serviceName = "Reguler",
             courierName = "Kurir Rekomendasi",
             courierShipperPrice = 11500,
             etaErrorCode = 0,
@@ -89,7 +89,7 @@ private object ShippingWidgetDummyData {
             isDisableChangeCourier = false,
             voucherLogisticExists = false,
             isWhitelabel = true,
-            estimatedTimeDelivery = "Instan",
+            serviceName = "Instan",
             courierShipperPrice = 30000,
             whitelabelEtaText = "Estimasi Tiba 1 - 3 Feb",
             insuranceData = InsuranceWidgetUiModel(
