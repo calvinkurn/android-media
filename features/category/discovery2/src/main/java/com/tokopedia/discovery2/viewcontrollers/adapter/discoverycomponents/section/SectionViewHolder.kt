@@ -128,8 +128,8 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         festiveForeground.loadImageWithoutPlaceholder(
             imageUrl,
-            listener = object : ImageHandler.ImageLoaderStateListener {
-                override fun successLoad(view: ImageView?) {
+            listener = object : ImageLoaderStateListener {
+                override fun successLoad(view: ImageView) {
                     festiveForeground.minimumHeight = 0
                 }
 
@@ -145,8 +145,8 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         festiveBackground.loadImageWithoutPlaceholder(
             imageUrl,
-            listener = object : ImageHandler.ImageLoaderStateListener {
-                override fun successLoad(view: ImageView?) {
+            listener = object : ImageLoaderStateListener {
+                override fun successLoad(view: ImageView) {
                     festiveBackground.minimumHeight = 0
                 }
 
