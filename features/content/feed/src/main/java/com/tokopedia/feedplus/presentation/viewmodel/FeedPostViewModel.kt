@@ -1029,30 +1029,38 @@ class FeedPostViewModel @Inject constructor(
         get() = _observeBuyProduct
     private val _observeBuyProduct = MutableLiveData<Result<FeedProductActionModel>>()
 
-    private val _suspendedAddProductToCartData = MutableLiveData<ContentTaggedProductUiModel>()
-    private val _suspendedBuyProductData = MutableLiveData<ContentTaggedProductUiModel>()
+    private val _suspendedAddProductToCartData = MutableLiveData<FeedProductActionModel>()
+    private val _suspendedBuyProductData = MutableLiveData<FeedProductActionModel>()
 
-    fun suspendAddProductToCart(product: ContentTaggedProductUiModel) {
-        _suspendedAddProductToCartData.value = product
+    fun suspendAddProductToCart(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
+        _suspendedAddProductToCartData.value = FeedProductActionModel(
+            cartId = "",
+            product = product,
+            source = source
+        )
     }
 
-    fun suspendBuyProduct(product: ContentTaggedProductUiModel) {
-        _suspendedBuyProductData.value = product
+    fun suspendBuyProduct(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
+        _suspendedBuyProductData.value = FeedProductActionModel(
+            cartId = "",
+            product = product,
+            source = source
+        )
     }
 
     fun processSuspendedAddProductToCart() {
         _suspendedAddProductToCartData.value?.let { product ->
-            addProductToCart(product)
+            addProductToCart(product.product, product.source)
         }
     }
 
     fun processSuspendedBuyProduct() {
         _suspendedBuyProductData.value?.let { product ->
-            buyProduct(product)
+            buyProduct(product.product, product.source)
         }
     }
 
-    fun addProductToCart(product: ContentTaggedProductUiModel) {
+    fun addProductToCart(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
@@ -1062,7 +1070,8 @@ class FeedPostViewModel @Inject constructor(
                 _observeAddProductToCart.value = Success(
                     FeedProductActionModel(
                         cartId = response.data.cartId,
-                        product = product
+                        product = product,
+                        source = source,
                     )
                 )
             }
@@ -1071,7 +1080,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun buyProduct(product: ContentTaggedProductUiModel) {
+    fun buyProduct(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
@@ -1081,7 +1090,8 @@ class FeedPostViewModel @Inject constructor(
                 _observeBuyProduct.value = Success(
                     FeedProductActionModel(
                         cartId = response.data.cartId,
-                        product = product
+                        product = product,
+                        source = source,
                     )
                 )
             }

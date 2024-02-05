@@ -91,6 +91,7 @@ import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
+import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
@@ -1818,18 +1819,18 @@ class FeedFragment :
                 product.campaign.isExclusiveForMember
             ) {}
         ) {
-            checkAddToCartAction(product)
+            checkAddToCartAction(product, FeedProductActionModel.Source.BottomSheet)
         }
     }
 
-    private fun checkAddToCartAction(product: ContentTaggedProductUiModel) {
+    private fun checkAddToCartAction(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
         when {
             userSession.isLoggedIn -> {
                 if (product.showGlobalVariant) {
                     dismissFeedProductBottomSheet()
                     openVariantBottomSheet(product)
                 } else {
-                    feedPostViewModel.addProductToCart(product)
+                    feedPostViewModel.addProductToCart(product, source)
                 }
             }
 
@@ -1837,7 +1838,7 @@ class FeedFragment :
                 if (product.showGlobalVariant) {
                     RouteManager.route(context, ApplinkConst.LOGIN)
                 } else {
-                    feedPostViewModel.suspendAddProductToCart(product)
+                    feedPostViewModel.suspendAddProductToCart(product, source)
                     addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
                 }
             }
@@ -1968,10 +1969,10 @@ class FeedFragment :
                     dismissFeedProductBottomSheet()
                     openVariantBottomSheet(product)
                 } else {
-                    feedPostViewModel.buyProduct(product)
+                    feedPostViewModel.buyProduct(product, FeedProductActionModel.Source.BottomSheet)
                 }
             } else {
-                feedPostViewModel.suspendBuyProduct(product)
+                feedPostViewModel.suspendBuyProduct(product, FeedProductActionModel.Source.BottomSheet)
                 buyLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
             }
         }
@@ -2224,7 +2225,7 @@ class FeedFragment :
                 taggedProduct.campaign.isExclusiveForMember
             ) {}
         ) {
-            checkAddToCartAction(taggedProduct)
+            checkAddToCartAction(taggedProduct, FeedProductActionModel.Source.CardHighlight)
         }
     }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.presentation.model
 
-import com.tokopedia.feedcomponent.data.pojo.feed.CardHighlight
 
 /**
  * Created By : Muhammad Furqan on 28/02/23
