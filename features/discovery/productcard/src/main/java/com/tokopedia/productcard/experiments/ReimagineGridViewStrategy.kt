@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,6 +22,7 @@ import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
 import com.tokopedia.productcard.reimagine.ProductCardType.Grid
+import com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -35,13 +37,13 @@ import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ReimagineGridViewStrategy(
-    private val productCardView: ViewGroup,
-): ProductCardStrategy {
+    private val productCardView: ViewGroup
+) : ProductCardStrategy {
 
     private val context: Context?
         get() = productCardView.context
 
-    private fun <T: View?> lazyView(@IdRes id: Int) = productCardView.lazyView<T>(id)
+    private fun <T : View?> lazyView(@IdRes id: Int) = productCardView.lazyView<T>(id)
 
     private val renderer = ProductCardRenderer(productCardView, Grid)
 
@@ -49,6 +51,12 @@ internal class ReimagineGridViewStrategy(
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageView?>(R.id.productCardImage)
     private val nameText by lazyView<Typography?>(R.id.productCardName)
+    private val priceText by lazyView<Typography?>(R.id.productCardPrice)
+    private val slashedPriceText by lazyView<Typography?>(R.id.productCardSlashedPrice)
+    private val discountText by lazyView<Typography?>(R.id.productCardDiscount)
+    private val credibilityText by lazyView<Typography?>(R.id.productCardLabelCredibility)
+    private val ratingText by lazyView<Typography?>(R.id.productCardRating)
+    private val benefitLabel by lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val videoIdentifier by lazyView<ImageView?>(R.id.productCardVideoIdentifier)
     private val threeDots by lazyView<ImageView?>(R.id.productCardThreeDots)
     private val video: VideoPlayerController by lazyThreadSafetyNone {
@@ -75,10 +83,6 @@ internal class ReimagineGridViewStrategy(
             elevation = 0f
             radius = context.getPixel(R.dimen.product_card_reimagine_image_radius).toFloat()
             cornerRadius = 0f
-
-            setCardUnifyBackgroundColor(
-                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
-            )
         }
 
         nameText?.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12.toPx().toFloat())
@@ -93,8 +97,7 @@ internal class ReimagineGridViewStrategy(
 
         return try {
             useCompatPadding = typedArray.getBoolean(R.styleable.ProductCardView_useCompatPadding, false)
-        } catch(_: Throwable) {
-
+        } catch (_: Throwable) {
         } finally {
             typedArray.recycle()
         }
@@ -102,6 +105,7 @@ internal class ReimagineGridViewStrategy(
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         setProductModel(ProductCardModelReimagine.from(productCardModel))
+        handleForceLightModeColor(productCardModel.forceLightModeColor)
     }
 
     fun setProductModel(productCardModel: ProductCardModelReimagine) {
@@ -139,10 +143,12 @@ internal class ReimagineGridViewStrategy(
 
     private fun renderContentPaddingHorizontal(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
         val paddingHorizontal =
-            if (productCardModel.isInBackground)
+            if (productCardModel.isInBackground) {
                 context?.getPixel(R.dimen.product_card_reimagine_content_guideline_padding_in_background)
                     ?: 0
-            else 0
+            } else {
+                0
+            }
 
         guidelineStart?.setGuidelineBegin(paddingHorizontal)
         guidelineEnd?.setGuidelineEnd(paddingHorizontal)
@@ -150,8 +156,11 @@ internal class ReimagineGridViewStrategy(
 
     private fun renderContentPaddingBottom(productCardModel: ProductCardModelReimagine) {
         val paddingBottomConstraintLayout =
-            if (productCardModel.isInBackground) 0
-            else context?.getPixel(R.dimen.product_card_reimagine_padding_bottom) ?: 0
+            if (productCardModel.isInBackground) {
+                0
+            } else {
+                context?.getPixel(R.dimen.product_card_reimagine_padding_bottom) ?: 0
+            }
 
         cardConstraintLayout?.let {
             it.setPadding(
@@ -163,9 +172,12 @@ internal class ReimagineGridViewStrategy(
         }
 
         val paddingBottomGuideline =
-            if (productCardModel.isInBackground) context?.getPixel(R.dimen.product_card_reimagine_padding_bottom)
-                ?: 0
-            else 0
+            if (productCardModel.isInBackground) {
+                context?.getPixel(R.dimen.product_card_reimagine_padding_bottom)
+                    ?: 0
+            } else {
+                0
+            }
 
         guidelineBottom?.setGuidelineEnd(paddingBottomGuideline)
     }
@@ -201,4 +213,25 @@ internal class ReimagineGridViewStrategy(
     }
 
     override fun getVideoPlayerController(): VideoPlayerController = video
+
+    private fun handleForceLightModeColor(forceLightModeColor: Boolean) {
+        if (forceLightModeColor) {
+            forceLightModeColor()
+        }
+    }
+
+    private fun forceLightModeColor() {
+        val context = context ?: return
+        nameText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+        priceText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+        slashedPriceText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_44))
+        credibilityText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        discountText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_RN500))
+        ratingText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+
+        // Make card view transparent
+        cardContainer?.setCardUnifyBackgroundColor(MethodChecker.getColor(cardContainer?.context ?: return, android.R.color.transparent))
+
+        benefitLabel?.forceLightMode()
+    }
 }
