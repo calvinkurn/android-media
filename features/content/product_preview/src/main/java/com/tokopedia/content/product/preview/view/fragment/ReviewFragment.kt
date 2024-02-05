@@ -253,8 +253,8 @@ class ReviewFragment @Inject constructor(
                 MenuBottomSheet.getOrCreate(
                     childFragmentManager,
                     requireActivity().classLoader
-                ).apply { dismissNow() }
-                viewModel.onAction(ProductPreviewAction.ReviewWatchMode)
+                ).dismissNow()
+                viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
             }
             ContentMenuIdentifier.Report ->
                 ReviewReportBottomSheet.getOrCreate(
@@ -270,7 +270,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun updateReviewWatchMode() {
-        viewModel.onAction(ProductPreviewAction.ReviewWatchMode)
+        viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
     }
 
     /**

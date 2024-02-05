@@ -27,8 +27,8 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewWatchMode
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ToggleReviewWatchMode
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.UpdateReviewPosition
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent.UnknownSourceData
@@ -111,9 +111,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private val currentReview: ReviewContentUiModel
         get() {
-            return if (_reviewContentState.value.reviewContent.isEmpty() &&
-                _reviewPosition.value in 0 until _reviewContentState.value.reviewContent.size
-            ) {
+            val isEmpty = _reviewContentState.value.reviewContent.isEmpty()
+            val isInScope = _reviewPosition.value in 0 until _reviewContentState.value.reviewContent.size
+            return if (isEmpty || !isInScope) {
                 ReviewContentUiModel.Empty
             } else {
                 _reviewContentState.value.reviewContent[_reviewPosition.value]
@@ -128,7 +128,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
             LikeFromResult -> handleLikeFromResult()
             FetchReviewByIds -> handleFetchReviewByIds()
-            ReviewWatchMode -> handleReviewWatchMode()
+            ToggleReviewWatchMode -> handleReviewWatchMode()
             is ProductSelected -> handleProductSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
             is ProductAction -> addToChart(action.model)
@@ -440,10 +440,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 reviewContent = review.reviewContent.map { reviewContent ->
                     if (reviewContent.reviewId == currentReview.reviewId) {
                         reviewContent.copy(isWatchMode = !reviewContent.isWatchMode)
-                    } else reviewContent.copy(isWatchMode = false)
+                    } else {
+                        reviewContent.copy(isWatchMode = false)
+                    }
                 }
             )
         }
     }
-
 }
