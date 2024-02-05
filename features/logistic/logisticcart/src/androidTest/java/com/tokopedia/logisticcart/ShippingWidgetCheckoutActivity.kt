@@ -1,7 +1,6 @@
 package com.tokopedia.logisticcart
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -77,23 +76,18 @@ class ShippingWidgetCheckoutActivity :
     }
 
     override fun onOnTimeDeliveryClicked(url: String) {
-        //
     }
 
     override fun onClickSetPinpoint() {
-//        TODO("Not yet implemented")
     }
 
     override fun onClickLayoutFailedShipping() {
-//        TODO("Not yet implemented")
     }
 
     override fun onViewErrorInCourierSection(logPromoDesc: String) {
-//        TODO("Not yet implemented")
     }
 
     override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
-//        TODO("Not yet implemented")
     }
 
     override fun getHostFragmentManager(): FragmentManager {
@@ -101,31 +95,24 @@ class ShippingWidgetCheckoutActivity :
     }
 
     override fun onInsuranceCheckedForTrackingAnalytics() {
-//        TODO("Not yet implemented")
     }
 
     override fun onInsuranceChecked(shippingWidgetUiModel: ShippingWidgetUiModel) {
-//        TODO("Not yet implemented")
     }
 
     override fun onInsuranceInfoTooltipClickedTrackingAnalytics() {
-//        TODO("Not yet implemented")
     }
 
     override fun showInsuranceBottomSheet(description: String) {
-//        TODO("Not yet implemented")
     }
 
     override fun onViewCartErrorState(shippingWidgetUiModel: ShippingWidgetUiModel) {
-//        TODO("Not yet implemented")
     }
 
     override fun onRenderVibrationAnimation(shippingWidgetUiModel: ShippingWidgetUiModel) {
-//        TODO("Not yet implemented")
     }
 
     override fun onRenderNoSelectedShippingLayout() {
-//        TODO("Not yet implemented")
     }
 
     override fun onShippingDurationChoosen(
@@ -143,7 +130,6 @@ class ShippingWidgetCheckoutActivity :
             ShippingCourierConverter().convertToCourierItemDataNew(selectedCourier)
         model = courierItemData.toShippingWidgetUiModel()
         courierList = shippingCourierUiModels
-        Log.d("shipping model", model.toString())
         render()
     }
 
@@ -163,7 +149,6 @@ class ShippingWidgetCheckoutActivity :
             logisticPromo
         )
         model = courierItemData.toShippingWidgetUiModel()
-        Log.d("shipping model", model.toString())
         render()
     }
 
@@ -178,7 +163,6 @@ class ShippingWidgetCheckoutActivity :
         shippingCourierList: List<ShippingCourierUiModel>
     ) {
         model = courierItemData.toShippingWidgetUiModel()
-        Log.d("shipping model", model.toString())
         render()
     }
 
