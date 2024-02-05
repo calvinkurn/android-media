@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -141,14 +142,14 @@ class HomeRecommendationFeedViewHolder(
     }
 
     override fun onFeedContentScrolled(dy: Int, totalScrollY: Int) {
-        binding.tabLayoutHomeFeeds.adjustTabCollapseOnScrolled(dy, totalScrollY)
+        binding.tabLayoutHomeFeeds.ifVisible { adjustTabCollapseOnScrolled(dy, totalScrollY) }
     }
 
     override fun onFeedContentScrollStateChanged(newState: Int) {
         if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-            binding.tabLayoutHomeFeeds.scrollActiveTabToLeftScreen()
+            binding.tabLayoutHomeFeeds.ifVisible { scrollActiveTabToLeftScreen() }
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            binding.tabLayoutHomeFeeds.snapCollapsingTab()
+            binding.tabLayoutHomeFeeds.ifVisible { snapCollapsingTab() }
         }
     }
 
@@ -162,6 +163,10 @@ class HomeRecommendationFeedViewHolder(
 
     // rollout handler
     private fun isMegaTabEnabled() = true
+
+    private inline fun <T : CollapsingTabLayout> T.ifVisible(invoke: T.() -> Unit) {
+        if (visibility == View.VISIBLE && isMegaTabEnabled()) invoke()
+    }
 
     companion object {
         @LayoutRes
