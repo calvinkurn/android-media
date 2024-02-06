@@ -224,7 +224,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         showcaseAddAdapter?.deleteSelectedProduct(position)
         tracking.addShowcaseClickDeleteButtonProductCard(shopId, shopType, isActionEdit)
         showSelectedProductList()
-        // TODO: Update flag delete product here
     }
 
     override fun showChooseProduct() {
@@ -515,7 +514,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         observe(shopShowcaseAddViewModel.listOfUpdateShowcaseNameResponse) {
             val responseList = it
             if (responseList.isNotEmpty()) {
-                val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
+                val updateShowcaseNameResult = responseList.getOrNull(0) as Result<UpdateShopShowcaseResponse>
                 validateShowcaseNameUpdateResponse(
                     updateShowcaseNameResult = updateShowcaseNameResult,
                     isUpdateShowcaseNameOnly = true
@@ -528,8 +527,8 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         observe(shopShowcaseAddViewModel.listOfAppendResponse) {
             val responseList = it
             if (responseList.size > 1) {
-                val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
-                val appendShowcaseProductResult = responseList[1] as Result<AppendShowcaseProductResponse>
+                val updateShowcaseNameResult = responseList.getOrNull(0) as Result<UpdateShopShowcaseResponse>
+                val appendShowcaseProductResult = responseList.getOrNull(1) as Result<AppendShowcaseProductResponse>
                 validateShowcaseNameUpdateResponse(
                     updateShowcaseNameResult = updateShowcaseNameResult,
                     isUpdateShowcaseNameOnly = false
@@ -559,8 +558,8 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         observe(shopShowcaseAddViewModel.listOfRemoveResponse) {
             val responseList = it
             if (responseList.size > 1) {
-                val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
-                val removeShowcaseProductResult = responseList[1] as Result<RemoveShowcaseProductResponse>
+                val updateShowcaseNameResult = responseList.getOrNull(0) as Result<UpdateShopShowcaseResponse>
+                val removeShowcaseProductResult = responseList.getOrNull(1) as Result<RemoveShowcaseProductResponse>
                 validateShowcaseNameUpdateResponse(
                     updateShowcaseNameResult = updateShowcaseNameResult,
                     isUpdateShowcaseNameOnly = false
@@ -590,9 +589,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         observe(shopShowcaseAddViewModel.listOfAppendAndRemoveResponse) {
             val responseList = it
             if (responseList.size > 2) {
-                val updateShowcaseNameResult = responseList[0] as Result<UpdateShopShowcaseResponse>
-                val appendShowcaseProductResult = responseList[1] as Result<AppendShowcaseProductResponse>
-                val removeShowcaseProductResult = responseList[2] as Result<RemoveShowcaseProductResponse>
+                val updateShowcaseNameResult = responseList.getOrNull(0) as Result<UpdateShopShowcaseResponse>
+                val appendShowcaseProductResult = responseList.getOrNull(1) as Result<AppendShowcaseProductResponse>
+                val removeShowcaseProductResult = responseList.getOrNull(2) as Result<RemoveShowcaseProductResponse>
                 var isSuccessRemove: Boolean = false
                 var isSuccessAppend: Boolean = false
                 var isSuccessUpdateShowcaseName: Boolean = false
