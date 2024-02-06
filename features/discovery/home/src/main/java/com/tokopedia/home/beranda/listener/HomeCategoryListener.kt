@@ -138,4 +138,6 @@ interface HomeCategoryListener {
     fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?)
 
     fun onLoginWidgetClick()
+
+    fun onCouponWidgetClaim(catalogId: String, couponPosition: Int)
 }
