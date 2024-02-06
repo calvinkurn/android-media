@@ -138,6 +138,7 @@ const val CART_REVAMP_V4_QUERY =
                   }
                   group_shop_v2_cart {
                     cart_string_order
+                    order_metadata
                     shop {
                       shop_ticker
                       maximum_weight_wording
@@ -253,6 +254,7 @@ const val CART_REVAMP_V4_QUERY =
                         }
                       }
                       products {
+                          product_metadata
                           add_ons_product {
                             data {
                                 id

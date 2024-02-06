@@ -456,6 +456,7 @@ object CartUiModelMapper {
                         isTokoNow = availableShop.shop.isTokoNow
                         cartString = group.cartString
                         cartStringOrder = availableShop.cartStringOrder
+                        orderMetadata = availableShop.orderMetadata
                         isFulfillment = group.isFulfillment
                         shouldValidateWeight =
                             availableShop.shop.maximumShippingWeight > 0.0 && availableShop.shop.maximumWeightWording.isNotEmpty()
@@ -600,6 +601,7 @@ object CartUiModelMapper {
             showBundlePrice = cartData.showBundlePrice
             cartBmGmTickerData = mapCartBmGmTickerData(cartDetail, shopData, productId)
             showBmGmBottomDivider = shouldShowBmGmBottomDivider
+            productMetadata = product.productMetadata
         }
     }
 

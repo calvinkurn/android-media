@@ -16,7 +16,8 @@ object CartShopGroupTickerGroupMetadataRequestMapper {
                             CartShopGroupTickerGroupMetadata.OrderData.GroupProduct.Product(
                                 uniqueId = cartItem.cartId,
                                 productId = cartItem.productId,
-                                quantity = cartItem.quantity
+                                quantity = cartItem.quantity,
+                                productMetadata = cartItem.productMetadata
                             )
                         )
                     }
@@ -55,7 +56,8 @@ object CartShopGroupTickerGroupMetadataRequestMapper {
                     uniqueId = groupedByCartString.key,
                     shop = CartShopGroupTickerGroupMetadata.OrderData.Shop(shopId = groupedByCartString.value[0].shopHolderData.shopId),
                     warehouseId = groupedByCartString.value[0].warehouseId,
-                    listGroupProduct = listGroupProductData
+                    listGroupProduct = listGroupProductData,
+                    orderMetadata = groupedByCartString.value[0].orderMetadata
                 )
             )
         }

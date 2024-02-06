@@ -35,7 +35,9 @@ data class CartShopGroupTickerGroupMetadata(
                 @SerializedName("product_id")
                 val productId: String = "",
                 @SerializedName("quantity")
-                val quantity: Int = 0
+                val quantity: Int = 0,
+                @SerializedName("product_metadata")
+                val productMetadata: String = ""
             )
         }
     }
