@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder.promo_price.tracker
 
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -37,12 +38,13 @@ object PromoPriceTracker {
         slashPriceFmt: String,
         promoPriceFmt: String,
         promoId: List<String>,
-        trackerData: CommonTracker?,
+        layoutData: ComponentTrackDataModel?,
+        commonTracker: CommonTracker?
     ) {
-        trackerData ?: return
+        layoutData ?: return
+        commonTracker ?: return
         val action = "click - review chips filter"
         val event = "select_content"
-        val component = trackerData.componentTracker
         val itemName =
             "default_price:$defaultPriceFmt;slash_price:$slashPriceFmt;coupon_price:$promoPriceFmt"
         val mapEvent = hashMapOf<String, Any>(
@@ -53,16 +55,16 @@ object PromoPriceTracker {
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
             "trackerId" to "49311",
-            "productId" to trackerData.productId,
-            "shopId" to trackerData.shopId,
-            "layout" to TrackingUtil.generateLayoutValue(productInfo = trackerData.productInfo),
-            "component" to component.getComponentData(action),
+            "productId" to commonTracker.productId,
+            "shopId" to commonTracker.shopId,
+            "layout" to TrackingUtil.generateLayoutValue(productInfo = commonTracker.productInfo),
+            "component" to layoutData.getComponentData(action),
             "ecommerce" to hashMapOf(
                 event to hashMapOf(
                     "promotions" to arrayListOf(
                         hashMapOf(
                             "creative_name" to "promo_list:$subtitle",
-                            "creative_slot" to "position:${component.adapterPosition}",
+                            "creative_slot" to "position:${layoutData.adapterPosition}",
                             "item_id" to "promo_id:${
                                 promoId.joinToString(
                                     separator = ",",
@@ -74,7 +76,7 @@ object PromoPriceTracker {
                     )
                 )
             ),
-            "userId" to trackerData.userId
+            "userId" to commonTracker.userId
         )
         queueTracker.putEETracking(mapEvent)
     }

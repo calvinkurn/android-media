@@ -30,7 +30,8 @@ class ProductPriceCallback(
             slashPriceFmt = data.slashPriceFmt,
             promoPriceFmt = data.promoPriceFmt,
             promoId = data.promoId,
-            trackerData = data.trackerData.asCommonTracker()
+            layoutData = data.trackerData,
+            commonTracker = getCommonTracker()
         )
 
         PromoBenefitBottomSheet.newInstance(

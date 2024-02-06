@@ -1,9 +1,9 @@
 package com.tokopedia.product.detail.view.viewholder.promo_price.event
 
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.view.fragment.delegate.BaseComponentEvent
+import com.tokopedia.product.detail.view.componentization.ComponentEvent
 
-sealed interface ProductPriceEvent : BaseComponentEvent {
+sealed interface ProductPriceEvent : ComponentEvent {
 
     data class OnPromoPriceClicked(
         val url: String,

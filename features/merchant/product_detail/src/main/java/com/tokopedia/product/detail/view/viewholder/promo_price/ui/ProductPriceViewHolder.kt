@@ -3,9 +3,7 @@ package com.tokopedia.product.detail.view.viewholder.promo_price.ui
 import android.view.View
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.databinding.ProductPromoPriceViewHolderBinding
-import com.tokopedia.product.detail.view.fragment.delegate.GoToApplink
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.promo_price.delegate.ProductPriceCallback
 import com.tokopedia.product.detail.view.viewholder.promo_price.event.ProductPriceEvent
@@ -55,11 +53,7 @@ class ProductPriceViewHolder(
                 slashPriceFmt = slashPriceFmt,
                 promoId = promoIds,
                 bottomSheetParams = bottomSheetParams,
-                trackerData = ComponentTrackDataModel(
-                    componentType = element.type,
-                    componentName = element.name,
-                    adapterPosition = bindingAdapterPosition
-                )
+                trackerData = getComponentTrackData(element)
             )
         )
     }
