@@ -188,6 +188,12 @@ data class ComponentData(
     val socialProof: List<SocialProofData> = emptyList(),
     // endregion
 
+    //region SDUI Data
+    @SerializedName("template")
+    @Expose
+    val sduiData: String = "",
+    // endregion
+
     // region promo price
     @SerializedName("componentPriceType")
     val componentPriceType: Int = 0,

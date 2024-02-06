@@ -101,12 +101,12 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                         viewModel.state.collect { model ->
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 drawable?.colorFilter = BlendModeColorFilter(
-                                    Color.parseColor(model.bgColor),
+                                    requireContext().getUnifyColorFromHex(model.bgColor),
                                     BlendMode.SRC_ATOP
                                 )
                             } else {
                                 drawable?.setColorFilter(
-                                    Color.parseColor(model.bgColor),
+                                    requireContext().getUnifyColorFromHex(model.bgColor),
                                     PorterDuff.Mode.SRC_ATOP
                                 )
                             }
@@ -140,12 +140,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                             }
 
                             usablePromoAdapter.submitList(model.usablePromo)
-//                        infoAdapter.submitList(model.promoInfo)
-
-                            tvTnc.text = MethodChecker.fromHtml(model.tnc.html)
-                            tvTnc.setTextColor(
-                                requireContext().getUnifyColorFromHex(model.tnc.color)
-                            )
+                            infoAdapter.submitList(model.tnc.tncTexts, model.tnc.color)
                         }
                     }
                     launch {
@@ -175,7 +170,6 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
                 infoStateIsShown = !infoStateIsShown
                 rvInfo.isVisible = infoStateIsShown
-                tvTnc.isVisible = infoStateIsShown
             }
             globalError.errorAction.gone()
         }

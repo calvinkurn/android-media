@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
+import com.tokopedia.product.detail.data.model.gwp.GWPData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
@@ -73,8 +74,10 @@ data class ProductInfoP2UiData(
     var bottomSheetEdu: BottomSheetEduUiModel = BottomSheetEduUiModel(),
     var dynamicOneLiner: List<DynamicOneLiner> = emptyList(),
     var bmgm: BMGMData = BMGMData(),
+    var gwp: GWPData = GWPData(),
     var promoPriceStyle: List<PromoPriceStyle> = emptyList()
 ) {
+
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
             productId in it.productIDs
@@ -96,5 +99,11 @@ data class ProductInfoP2UiData(
 
     fun getRatesProductMetadata(productId: String): String {
         return ratesEstimate.firstOrNull { productId in it.listfProductId }?.productMetadata?.firstOrNull { it.productId == productId }?.value ?: ""
+    }
+
+    fun getOfferIdPriority(pid: String?): String {
+        val gwpOfferId = gwp.data.firstOrNull { it.productIDs.contains(pid) }?.offerId.orEmpty()
+        val bmgmOfferId = bmgm.data.firstOrNull { it.productIDs.contains(pid) }?.offerId.orEmpty()
+        return gwpOfferId.ifBlank { bmgmOfferId }
     }
 }

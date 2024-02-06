@@ -26,7 +26,10 @@ class UsablePromoAdapter :
     class ItemViewHolder(private val binding: LayoutItemUsablePromoBinding) :
         ViewHolder(binding.root) {
         fun bind(item: UsablePromoModel) {
-            binding.ivIcon.urlSrc = item.icon
+            binding.ivIcon.run {
+                urlSrc = item.icon
+                cornerRadius = 0
+            }
             binding.tvName.setAttribute(
                 item.title,
                 binding.root.context.getUnifyColorFromHex(item.titleColor),
