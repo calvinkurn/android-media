@@ -1,10 +1,10 @@
-package com.tokopedia.cartrevamp.view.bottomsheet
+package com.tokopedia.cart.view.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.cart.databinding.LayoutBottomsheetCartOnboardingBinding
-import com.tokopedia.cartrevamp.view.uimodel.CartOnBoardingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartOnBoardingBottomSheetData
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable

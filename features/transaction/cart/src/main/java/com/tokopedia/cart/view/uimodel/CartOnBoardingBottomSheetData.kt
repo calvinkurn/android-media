@@ -1,4 +1,4 @@
-package com.tokopedia.cartrevamp.view.uimodel
+package com.tokopedia.cart.view.uimodel
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
