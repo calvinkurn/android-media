@@ -9,7 +9,6 @@ import com.yandex.div.core.DivActionHandler
 import com.yandex.div.core.DivViewFacade
 import com.yandex.div.json.expressions.ExpressionResolver
 import com.yandex.div2.DivAction
-import com.yandex.div2.DivSightAction
 import org.json.JSONObject
 import com.yandex.div2.DivVisibilityAction
 import java.lang.Exception
@@ -50,7 +49,7 @@ class ActionHandler(
         return super.handleAction(action, view, actionUid)
     }
 
-    override fun handleAction(action: DivSightAction, view: DivViewFacade): Boolean {
+    override fun handleAction(action: DivVisibilityAction, view: DivViewFacade): Boolean {
         //Send impression tracker
         if (sduiTrackingInterface != null) {
             sduiTrackingInterface.onViewVisible(action.payload)
