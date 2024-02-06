@@ -401,6 +401,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    implementation rootProject.ext.ktorDependencies.ktorSerializationJson
     debugImplementation project.ext.debugToolsDependencies.leakCanary
     debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 

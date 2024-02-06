@@ -142,7 +142,7 @@ object ShopPageHeaderMapper {
         shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
     ): String {
         return if (hexStringValue.isEmpty()) {
-            shopPageColorSchemaDefaultConfigColor[ShopPageColorSchema.ColorSchemaName.valueOf(name)].orEmpty()
+            shopPageColorSchemaDefaultConfigColor.get(ShopPageColorSchema.ColorSchemaName.fromValue(name)).orEmpty()
         } else {
             parseFormattedHexString(hexStringValue)
         }

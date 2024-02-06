@@ -177,6 +177,7 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notifications.inApp.ketupat.GamificationPopUpHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
@@ -354,6 +355,8 @@ open class HomeRevampFragment :
 
     @Inject
     lateinit var homeRemoteConfigController: HomeRemoteConfigController
+
+    var gamificationPopUpHandler: GamificationPopUpHandler? = null
 
     @Inject
     lateinit var homePrefController: HomePrefController
@@ -1090,6 +1093,15 @@ open class HomeRevampFragment :
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
+        // trigger gamification popup flow
+        executeGamificationPopUpFlow()
+    }
+
+    private fun executeGamificationPopUpFlow() {
+        if (gamificationPopUpHandler == null) {
+            gamificationPopUpHandler = GamificationPopUpHandler()
+        }
+        activity?.let { gamificationPopUpHandler?.onFragmentResume(it) }
     }
 
     private fun conditionalViewModelRefresh() {
