@@ -14,6 +14,8 @@ data class PlayShortsConfigUiModel(
     val maxTitleCharacter: Int,
     val maxTaggedProduct: Int,
     val shortsVideoSourceId: String,
+    val eligibleInterspersing: Boolean,
+    val productCountForInterspersing: Int,
 ) {
     companion object {
 
@@ -26,7 +28,9 @@ data class PlayShortsConfigUiModel(
                 tncList = emptyList(),
                 maxTitleCharacter = 0,
                 maxTaggedProduct = 0,
-                shortsVideoSourceId = ""
+                shortsVideoSourceId = "",
+                eligibleInterspersing = false,
+                productCountForInterspersing = 0,
             )
     }
 }

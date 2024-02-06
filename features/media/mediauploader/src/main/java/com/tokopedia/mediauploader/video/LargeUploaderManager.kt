@@ -144,16 +144,29 @@ class LargeUploaderManager @Inject constructor(
 
         while (true) {
             if (maxRetryTranscoding >= maxRetry) {
-                return UploadResult.Error(TRANSCODING_FAILED).also { resetUpload() }
+                // transcode timeout
+                return getTranscodeError()
             }
 
-            if (transcodingUseCase(mUploadId).isCompleted()) break
+            val transcodeStatus = transcodingUseCase(mUploadId)
+
+            // transcode success
+            if (transcodeStatus.isCompleted()) break
+
+            // transcode failed
+            if (transcodeStatus.requestId().isNotEmpty() || transcodeStatus.isFailed()) {
+                return getTranscodeError(transcodeStatus.requestId())
+            }
 
             maxRetryTranscoding++
             delay(policy.retryIntervalInSec())
         }
 
         return null
+    }
+
+    private fun getTranscodeError(requestId: String? = null): UploadResult.Error {
+        return UploadResult.Error(TRANSCODING_FAILED, requestId ?: TRANSCODE_FAILED_CODE).also { resetUpload() }
     }
 
     private suspend fun uploadFirstPart(
@@ -437,5 +450,7 @@ class LargeUploaderManager @Inject constructor(
 
         private const val UPLOAD_FIRST_INDEX = 1
         private const val UPLOAD_PART_INDEX = 2
+
+        private const val TRANSCODE_FAILED_CODE = "-2"
     }
 }

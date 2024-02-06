@@ -319,6 +319,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                campaignID
                campaignType
                campaignTypeName
+               campaignLogo
                startDate
                endDate
                notifyMe
@@ -630,6 +631,35 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 }
                 contents {
                   imageUrl
+                }
+                loadMoreText
+                productIDs
+                offerID
+              }
+            }
+            gwp {
+              separator
+              data {
+                backgroundColor
+                titleColor
+                iconUrl
+                title
+                action {
+                  type
+                  link
+                }
+                cards {
+                  title
+                  productName
+                  subtitle
+                  action {
+                    type
+                    link
+                  }
+                  contents {
+                    imageUrl
+                    loadMoreText
+                  }
                 }
                 loadMoreText
                 productIDs

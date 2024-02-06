@@ -9,6 +9,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.interceptor.CheckoutInterceptor
 import com.tokopedia.checkout.interceptor.SAF_BMSM_DISCOUNT_RESPONSE_PATH
+import com.tokopedia.checkout.interceptor.SAF_BMSM_GWP_RESPONSE_PATH
 import com.tokopedia.checkout.robot.checkoutPageRevamp
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -55,6 +56,69 @@ class CheckoutRevampBmsmTest {
                 bmsmTitle = "Potongan Rp20rb • BMTH1"
             )
             waitForData()
+
+            expandShoppingSummary(activityRule)
+            assertShoppingSummary(
+                activityRule,
+                itemTotalPrice = "Rp20.000",
+                itemOriginalPrice = "Rp40.000",
+                shippingTotalPrice = null,
+                shippingOriginalPrice = null,
+                totalPrice = "-"
+            )
+
+            // choose shipping
+            clickChooseDuration(activityRule)
+            waitForData()
+            selectDurationOptionWithText("Reguler (Rp93.000)")
+            waitForData()
+
+            // assert add ons value
+            expandShoppingSummary(activityRule)
+            assertShoppingSummary(
+                activityRule,
+                itemTotalPrice = "Rp20.000",
+                itemOriginalPrice = "Rp40.000",
+                shippingTotalPrice = "Rp93.000",
+                shippingOriginalPrice = null,
+                totalPrice = "Rp116.000"
+            )
+            assertPlatformFee(activityRule, fee = "Rp3.000", originalFee = null)
+
+            clickChoosePaymentButton(activityRule)
+        }
+    }
+
+    @Test
+    fun bmsm_gwp() {
+        interceptor.cartInterceptor.customSafResponsePath =
+            SAF_BMSM_GWP_RESPONSE_PATH
+        activityRule.launchActivity(null)
+
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        checkoutPageRevamp {
+            // Wait for SAF
+            waitForData()
+            assertBmsmProduct(
+                activityRule,
+                productIndex = 0,
+                bmsmTitle = "Potongan Rp20rb • BMTH1"
+            )
+            waitForData()
+            assertBmsmProductBenefit(
+                activityRule,
+                productIndex = 2,
+                title = "gift 1 nih",
+                description = "1 x Rp0"
+            )
+            waitForData()
+            assertBmsmProductBenefit(
+                activityRule,
+                productIndex = 3,
+                title = "gift 2 nih",
+                description = "2 x Rp0"
+            )
 
             expandShoppingSummary(activityRule)
             assertShoppingSummary(

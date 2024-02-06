@@ -8,8 +8,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.ItemOlpOfferingInfoBinding
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
+import com.tokopedia.buy_more_get_more.olp.presentation.adapter.widget.GwpTierListAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.widget.TierListAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
 import com.tokopedia.utils.view.binding.viewBinding
@@ -21,11 +23,14 @@ class OfferingInfoViewHolder(
     AbstractViewHolder<OfferInfoForBuyerUiModel>(itemView) {
 
     private val binding: ItemOlpOfferingInfoBinding? by viewBinding()
-    private val tierListAdapter by lazy { TierListAdapter() }
+    private val pdTierListAdapter by lazy { TierListAdapter() }
+    private val gwpTierListAdapter by lazy { GwpTierListAdapter() }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_olp_offering_info
+        private const val PD_TIER_ID = 1L
+        private const val GWP_TIER_ID = 2L
     }
 
     override fun bind(data: OfferInfoForBuyerUiModel) {
@@ -46,30 +51,84 @@ class OfferingInfoViewHolder(
                     setImageUrl(data.offerings.firstOrNull()?.shopData?.badge.orEmpty())
                 }
             }
-            tpgTnc.setOnClickListener { listener.onTncClicked() }
         }
-        setupTierList(data)
+
+        when (data.offerings.firstOrNull()?.offerTypeId) {
+            PD_TIER_ID -> {
+                setupTncProgressiveDiscount()
+                setupTierListProgressiveDiscount(data)
+            }
+            GWP_TIER_ID -> {
+                setupTncGwp()
+                setupTierListGwp(data)
+            }
+        }
     }
 
-    private fun setupTierList(data: OfferInfoForBuyerUiModel) {
-        tierListAdapter.let { adapter ->
+    private fun setupTncProgressiveDiscount() {
+        binding?.apply {
+            tpgTnc.apply {
+                visible()
+                setOnClickListener { listener.onTncClicked() }
+            }
+            btnGwpTnc.gone()
+        }
+    }
+
+    private fun setupTncGwp() {
+        binding?.apply {
+            tpgTnc.gone()
+            btnGwpTnc.apply {
+                visible()
+                setOnClickListener { listener.onTncClicked() }
+            }
+        }
+    }
+
+    private fun setupTierListProgressiveDiscount(data: OfferInfoForBuyerUiModel) {
+        pdTierListAdapter.let { adapter ->
             data.offerings.firstOrNull()?.tierList?.let { adapter.tierList = it }
         }
         binding?.run {
-            cardTierInfo.setCardUnifyBackgroundColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                    Unify_Static_White
+            cardPdTierInfo.apply {
+                setCardUnifyBackgroundColor(
+                    MethodChecker.getColor(
+                        itemView.context,
+                        Unify_Static_White
+                    )
                 )
-            )
+                visible()
+            }
             rvTierList.apply {
                 layoutManager = LinearLayoutManager(
                     itemView.context,
                     LinearLayoutManager.HORIZONTAL,
                     false
                 )
-                adapter = tierListAdapter
+                adapter = pdTierListAdapter
             }
+            rvGwpTierList.gone()
+        }
+    }
+
+    private fun setupTierListGwp(data: OfferInfoForBuyerUiModel) {
+        gwpTierListAdapter.let { adapter ->
+            data.offerings.firstOrNull()?.tierList?.let { adapter.tierList = it }
+            adapter.setOnTierClick { selectedTier ->
+                listener.onTierClicked(selectedTier, data)
+            }
+        }
+        binding?.run {
+            rvGwpTierList.apply {
+                layoutManager = LinearLayoutManager(
+                    itemView.context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+                adapter = gwpTierListAdapter
+                visible()
+            }
+            cardPdTierInfo.gone()
         }
     }
 }

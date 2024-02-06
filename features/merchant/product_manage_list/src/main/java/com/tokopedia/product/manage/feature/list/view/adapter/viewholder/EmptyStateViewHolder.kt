@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.ProductManageEmptyStateBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -25,7 +25,7 @@ class EmptyStateViewHolder(itemView: View): AbstractViewHolder<EmptyModel>(itemV
         setupEmptyStateContainer(data)
         binding?.title?.text = getString(data.contentRes)
         binding?.image?.let { iv ->
-            ImageHandler.LoadImage(iv, data.urlRes)
+            iv?.loadImageFitCenter(data.urlRes)
         }
     }
 

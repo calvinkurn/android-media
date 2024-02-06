@@ -11,6 +11,8 @@ class FlashSaleTokoUseCase @Inject constructor(private val repository: FlashSale
     suspend fun getData(componentId: String, pageIdentifier: String): Boolean {
         val component = getComponent(componentId, pageIdentifier) ?: return false
 
+        if (!component.parentSectionId.isNullOrEmpty()) return false
+
         repository.getTabData(componentId, pageIdentifier).component?.let { flashSaleTab ->
             component.data = flashSaleTab.data
             component.properties = flashSaleTab.properties

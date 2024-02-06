@@ -45,17 +45,18 @@ data class AddonSummary(
     ) {
         data class Metadata(
             @SerializedName("add_on_note")
-            val addOnNote: AddOnNote = AddOnNote()
+            val addOnNote: AddOnNote = AddOnNote(),
+            @SerializedName("info_link")
+            val infoLink: String = ""
         ) {
             data class AddOnNote(
                 @SerializedName("from")
                 val from: String = "",
-                @SerializedName("is_custom_note")
-                val isCustomNote: Boolean = false,
                 @SerializedName("notes")
                 val notes: String = "",
-                @SerializedName("short_notes")
-                val shortNotes: String = "",
+                //Render as HTML and no need to truncate with "selengkapnya"
+                @SerializedName("tips")
+                val tips: String = "",
                 @SerializedName("to")
                 val to: String = ""
             )
