@@ -162,8 +162,6 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                 adapter = usablePromoAdapter
             }
             containerTnc.setOnClickListener {
-            containerTnc.setOnClickListener {
-            containerTnc.setOnClickListener {
                 val start = if (infoStateIsShown) 0f else 180f
                 val end = if (infoStateIsShown) 180f else 0f
                 val animator = ObjectAnimator.ofFloat(toggleInfo, "rotation", start, end)
@@ -191,3 +189,4 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
             }
     }
 }
+
