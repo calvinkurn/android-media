@@ -10,7 +10,6 @@ data class BenefitUiModel(
     val estimatePrice: BenefitText = BenefitText(),
     val basePrice: BenefitText = BenefitText(),
     val usablePromo: List<UsablePromoModel> = listOf(),
-    val promoTnc: List<String> = listOf(),
     val tnc: BenefitTnc = BenefitTnc(),
 ) : Parcelable
 
@@ -26,7 +25,7 @@ data class BenefitText(
 
 @Parcelize
 data class BenefitTnc(
-    val html: String = "",
+    val tncTexts: List<String> = listOf(),
     val color: String = "#6D7588"
 ) : Parcelable
 
