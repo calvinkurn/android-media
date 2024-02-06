@@ -100,7 +100,7 @@ import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
-import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.uiview.PRODUCT_COUNT_ONE
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.feedplus.presentation.util.OverscrollEdgeEffectFactory
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -961,7 +961,7 @@ class FeedFragment :
         currentTrackerData = trackerModel
 
         val action: () -> Unit = {
-            if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
+            if (products.size == PRODUCT_COUNT_ONE) {
                 val appLink = products.firstOrNull()?.applink
                 if (appLink?.isNotEmpty() == true) {
                     trackerModel?.let {

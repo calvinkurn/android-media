@@ -31,7 +31,6 @@ import com.tokopedia.nest.principles.ui.NestTheme
  * @author by astidhiyaa on 24/01/24
  */
 
-//listener: FeedListener,
 @Composable
 fun FeedProductLabel(
     products: List<FeedCardProductModel>,
@@ -41,21 +40,21 @@ fun FeedProductLabel(
 ) {
     val ctx = LocalContext.current
     val wording: String = when {
-        products.size == FeedProductTagView.PRODUCT_COUNT_ZERO && totalProducts == FeedProductTagView.PRODUCT_COUNT_ZERO -> {
+        products.size == PRODUCT_COUNT_ZERO && totalProducts == PRODUCT_COUNT_ZERO -> {
             return
         }
 
-        products.size == FeedProductTagView.PRODUCT_COUNT_ONE -> {
+        products.size == PRODUCT_COUNT_ONE -> {
             products.firstOrNull()?.name.orEmpty()
         }
 
-        totalProducts > FeedProductTagView.PRODUCT_COUNT_NINETY_NINE -> {
+        totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
             ctx.getString(R.string.feeds_tag_product_99_more_text)
         }
 
         else -> {
             val total =
-                if (totalProducts > FeedProductTagView.PRODUCT_COUNT_ZERO) totalProducts else products.size
+                if (totalProducts > PRODUCT_COUNT_ZERO) totalProducts else products.size
             ctx.getString(R.string.feeds_tag_product_text, total)
         }
     }
@@ -99,3 +98,7 @@ fun FeedProductLabel(
         }
     }
 }
+
+internal const val PRODUCT_COUNT_ZERO = 0
+internal const val PRODUCT_COUNT_ONE = 1
+internal const val PRODUCT_COUNT_NINETY_NINE = 99
