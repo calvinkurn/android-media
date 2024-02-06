@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.byteio.IAppLogActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -37,7 +38,7 @@ import javax.inject.Inject
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
-open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface, HasComponent<ProductDetailComponent> {
+open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface, HasComponent<ProductDetailComponent>, IAppLogActivity {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -445,6 +446,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     private fun getSource() = intent.data?.query ?: ""
+    override fun getPageName(): String {
+        return "PDP"
+    }
 }
 
 interface ProductDetailActivityInterface {

@@ -50,6 +50,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.analytics.byteio.IAppLogActivity;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -144,7 +145,8 @@ public class MainParentActivity extends BaseActivity implements
         ITelemetryActivity,
         InAppCallback,
         HomeCoachmarkListener,
-        HomeBottomNavListener {
+        HomeBottomNavListener,
+        IAppLogActivity {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -1492,5 +1494,11 @@ public class MainParentActivity extends BaseActivity implements
         if (isSameValue)
             return;
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
+    }
+
+    @NonNull
+    @Override
+    public String getPageName() {
+        return "MainPage";
     }
 }

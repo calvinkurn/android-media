@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutionException
  * @author YuHuiJun  <yuhuijun></yuhuijun>@bytedance.com>
  * @since 十一月 22, 2017
  */
-class AppLogNetworkClient : INetworkClient {
+internal class AppLogNetworkClient : INetworkClient {
     @Volatile
     private var getApi: AppLogGetApi? = null
 

@@ -8,7 +8,7 @@ import com.bytedance.applog.compress.CompressManager
 import com.bytedance.bdinstall.Env
 import com.bytedance.bdinstall.InstallUrl
 
-fun initAppLog(context: Context) {
+internal fun initAppLog(context: Context) {
     val config = InitConfig("573733", "local_test");
     config.setAppName("Tokopedia");
 
