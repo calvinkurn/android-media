@@ -30,7 +30,6 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.customview.BmGmWidgetView
 import com.tokopedia.cart.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cart.view.customview.CartViewBinderHelper
-import com.tokopedia.cart.view.customview.HexColor
 import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
@@ -76,7 +75,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 import com.tokopedia.nest.components.R as nestcomponentsR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -1907,67 +1906,7 @@ class CartItemViewHolder(
     }
 
     private fun renderCartCampaignFestivityTicker(data: CartItemHolderData) {
-        // val productLabelData = data.cartProductLabelData
-        val productLabelData = when (bindingAdapterPosition) {
-            2 -> {
-                // Default Image 1
-                CartProductLabelData(
-                    type = CartProductLabelData.TYPE_DEFAULT,
-                    imageLogoUrl = "https://images.tokopedia.net/img/ios/cart/ramadhan-extra-seru.png",
-                    backgroundStartColor = HexColor("#004B40"),
-                    backgroundEndColor = HexColor("#009245")
-                )
-            }
-
-            3 -> {
-                // Default Image 2
-                CartProductLabelData(
-                    type = CartProductLabelData.TYPE_DEFAULT,
-                    imageLogoUrl = "https://images.tokopedia.net/img/ios/cart/ramadan.png",
-                    backgroundStartColor = HexColor("#004B40"),
-                    backgroundEndColor = HexColor("#009245")
-                )
-            }
-
-            4 -> {
-                // Default Text 1
-                CartProductLabelData(
-                    type = CartProductLabelData.TYPE_DEFAULT,
-                    text = "Tokopedia 100000th Anniversary",
-                    textColor = HexColor("#FFFFFF"),
-                    backgroundStartColor = HexColor("#00A958"),
-                    backgroundEndColor = HexColor("#00A958")
-                )
-            }
-
-            5 -> {
-                // Default Text 2
-                CartProductLabelData(
-                    type = CartProductLabelData.TYPE_DEFAULT,
-                    text = "Tokopedia Anniversary",
-                    textColor = HexColor("#FFFFFF"),
-                    backgroundStartColor = HexColor("#00A958"),
-                    backgroundEndColor = HexColor("#00A958")
-                )
-            }
-
-            6 -> {
-                // Timer
-                CartProductLabelData(
-                    type = CartProductLabelData.TYPE_TIMER,
-                    remainingTimeMillis = 3600000,
-                    iconUrl = "https://images.tokopedia.net/img/ios/cart/electricity-white.png",
-                    textColor = HexColor("#F94D63"),
-                    lineColor = HexColor("#F94D63"),
-                    backgroundStartColor = HexColor("#F94D63")
-                )
-            }
-
-            else -> {
-                // None
-                CartProductLabelData()
-            }
-        }
+        val productLabelData = data.cartProductLabelData
         when (productLabelData.type) {
             CartProductLabelData.TYPE_DEFAULT -> {
                 val useImageLogo = productLabelData.imageLogoUrl.isNotBlank()
