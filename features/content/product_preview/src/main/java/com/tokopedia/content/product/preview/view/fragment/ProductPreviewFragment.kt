@@ -3,7 +3,6 @@ package com.tokopedia.content.product.preview.view.fragment
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -303,10 +302,11 @@ class ProductPreviewFragment @Inject constructor(
         coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(DELAY_COACH_MARK)
             val finalList = coachMarkItems.filter {
-                if (productPreviewSource.productPreviewSource is ProductPreviewSourceModel.ProductSourceData)
+                if (productPreviewSource.productPreviewSource is ProductPreviewSourceModel.ProductSourceData) {
                     true
-                else
+                } else {
                     it.anchorView == binding.anchorAtc
+                }
             } as ArrayList<CoachMark2Item>
             coachMark.showCoachMark(step = finalList)
         }
@@ -321,7 +321,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     companion object {
-        private const val DELAY_COACH_MARK = 6000L
+        private const val DELAY_COACH_MARK = 3000L
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
