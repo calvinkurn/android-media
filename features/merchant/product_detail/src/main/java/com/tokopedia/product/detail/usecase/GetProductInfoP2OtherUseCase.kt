@@ -54,7 +54,7 @@ class GetProductInfoP2OtherUseCase @Inject constructor(
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
 
         //region Discussion/Talk
-        val discussionMostHelpfulParams = generateDiscussionMosthelpfulParam(productId, shopId.toString())
+        val discussionMostHelpfulParams = generateDiscussionMosthelpfulParam(productId, shopId)
         val discussionMostHelpfulRequest = GraphqlRequest(
             rawQueries[RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL],
             DiscussionMostHelpfulResponseWrapper::class.java,
