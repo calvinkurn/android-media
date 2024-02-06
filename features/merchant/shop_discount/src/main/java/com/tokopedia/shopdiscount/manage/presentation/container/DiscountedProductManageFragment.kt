@@ -165,7 +165,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         binding?.run {
             ticker.isVisible = !isPreviouslyDismissed
             ticker.closeButtonVisibility = View.GONE
-            ticker.tickerShape = Ticker.SHAPE_LOOSE
+            ticker.tickerShape = Ticker.SHAPE_FULL
             ticker.tickerTitle = getString(R.string.sd_ticker_announcement_wording_title)
             ticker.setHtmlDescription(getString(R.string.sd_ticker_announcement_wording))
             ticker.setDescriptionClickEvent(object : TickerCallback {
