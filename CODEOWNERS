@@ -422,6 +422,7 @@
 /libraries/foldable                                     @tokopedia/android-miniondarth-dev
 /features/samples                                       @tokopedia/android-miniondarth-dev
 /libraries/gqlquery_ksp_processor                        @tokopedia/android-miniondarth-dev
+/libraries/sdui/                                        @tokopedia/android-core-dev
 
 /config/detekt/                                         @tokopedia/android-gatekeeper-linter
 /buildconfig/                                           @tokopedia/android-core-dev
