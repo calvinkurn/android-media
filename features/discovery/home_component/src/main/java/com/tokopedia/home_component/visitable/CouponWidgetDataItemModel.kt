@@ -4,12 +4,13 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponMo
 
 data class CouponWidgetDataItemModel(
     val coupon: AutomateCouponModel,
-    val button: CtaState
-) {
+    var button: CouponCtaState
+)
 
-    sealed class CtaState {
-        object Claim : CtaState()
-        object Redirect : CtaState()
-        object OutOfStock : CtaState()
-    }
+sealed class CouponCtaState(val model: Data?) {
+    data class Data(val catalogId: String, val url: String, val appLink: String)
+
+    data class Claim(val data: Data) : CouponCtaState(data)
+    data class Redirect(val data: Data) : CouponCtaState(data)
+    object OutOfStock : CouponCtaState(null)
 }
