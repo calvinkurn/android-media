@@ -50,8 +50,8 @@ object CouponWidgetMapper {
             tnc = labelGroup.toText("tnc-text"),
             backgroundUrl = labelGroup.toUrl("background-image"),
             timeLimit = TimeLimit.Text(
-                prefix = labelGroup.toText("exoired-text"),
-                endText = labelGroup.toText("exoired-value").value
+                prefix = labelGroup.toText("expired-text"),
+                endText = labelGroup.toText("expired-value").value
             ),
             iconUrl = labelGroup.toUrl("icon-image"),
             shopName = labelGroup.toText("shop-name"),
@@ -70,8 +70,8 @@ object CouponWidgetMapper {
         )
 
     private fun List<LabelGroup>.getCtaState(): CouponWidgetDataItemModel.CtaState {
-        val label = first { it.position == "cta-text" }
-        return when (label.type) {
+        val label = firstOrNull { it.position == "cta-text" }
+        return when (label?.type) {
             "claim" -> CouponWidgetDataItemModel.CtaState.Claim
             "redirect" -> CouponWidgetDataItemModel.CtaState.Redirect
             else -> CouponWidgetDataItemModel.CtaState.OutOfStock
@@ -79,12 +79,12 @@ object CouponWidgetMapper {
     }
 
     private fun List<LabelGroup>.toText(positionType: String): DynamicColorText {
-        val label = first { it.position == positionType }
+        val label = firstOrNull { it.position == positionType } ?: return DynamicColorText("", "")
         val textColor = label.styles.first { it.key == LabelGroupStyle.TEXT_COLOR }
         return DynamicColorText(label.title, textColor.value)
     }
 
     private fun List<LabelGroup>.toUrl(position: String): String {
-        return first { it.position == position }.url
+        return firstOrNull { it.position == position }?.url ?: ""
     }
 }
