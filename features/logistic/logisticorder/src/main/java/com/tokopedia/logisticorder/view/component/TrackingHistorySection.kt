@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -134,13 +136,19 @@ fun TrackingHistoryItem(
             textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950),
             text = "Kurir: ${trackHistoryModel.partnerName}"
         )
+        Spacer(
+            modifier = Modifier.height(4.dp).constrainAs(endSpacing) {
+                top.linkTo(pod.bottom)
+                start.linkTo(day.start)
+            }
+        )
         Box(
             Modifier
                 .constrainAs(line) {
                     top.linkTo(circle.bottom)
                     start.linkTo(circle.start)
                     end.linkTo(circle.end)
-                    bottom.linkTo(pod.bottom)
+                    bottom.linkTo(endSpacing.bottom)
                     height = Dimension.fillToConstraints
                     visibility = if (isLast) Visibility.Gone else Visibility.Visible
                 }
@@ -151,9 +159,8 @@ fun TrackingHistoryItem(
             modifier = Modifier
                 .size(58.dp, 58.dp)
                 .constrainAs(pod) {
-                    top.linkTo(courier.bottom, margin = 10.dp)
+                    top.linkTo(courier.bottom, margin = 4.dp, goneMargin = 4.dp)
                     start.linkTo(description.start)
-                    bottom.linkTo(endSpacing.bottom)
                     visibility =
                         if (trackHistoryModel.proof.imageId.isNotEmpty()) Visibility.Visible else Visibility.Gone
                 }
@@ -241,7 +248,17 @@ private fun TrackingHistoryNormalPreview() {
                 date = "2021-11-12",
                 status = "Pesanan dalam perjalanan",
                 city = "Bandung",
-                time = "22:38:55"
+                time = "22:38:55",
+                partnerName = "JNT",
+                proof = ProofModel(imageId = "bbb")
+            ),
+            TrackHistoryModel(
+                dateTime = "2021-11-12 22:38:55",
+                date = "2021-11-12",
+                status = "Pesanan dalam perjalanan",
+                city = "Bandung",
+                time = "22:38:55",
+                partnerName = "JNT"
             ),
             TrackHistoryModel(
                 dateTime = "2021-11-10 22:38:55",
