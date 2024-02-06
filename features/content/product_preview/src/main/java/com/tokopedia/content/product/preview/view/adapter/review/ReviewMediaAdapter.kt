@@ -37,11 +37,6 @@ class ReviewMediaAdapter(
         }
     }
 
-    override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
-        if (holder is ReviewMediaImageViewHolder) holder.onRecycled()
-    }
-
     internal class ReviewMediaAdapterCallback : DiffUtil.ItemCallback<ReviewMediaUiModel>() {
         override fun areItemsTheSame(
             oldItem: ReviewMediaUiModel,
