@@ -1,70 +1,141 @@
 package com.tokopedia.cart.view.viewholder.now
 
+import android.graphics.drawable.GradientDrawable
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartCollapsedProductBinding
+import com.tokopedia.cart.databinding.ItemCartCollapsedProductRevampBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
+class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedProductRevampBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
 
     companion object {
-        var LAYOUT = R.layout.item_cart_collapsed_product
+        var LAYOUT = R.layout.item_cart_collapsed_product_revamp
+
+        private const val PRODUCT_WIDTH = 64
     }
 
     fun bind(cartItemHolderData: CartItemHolderData) {
-        renderBundlingIcon(cartItemHolderData)
+        validateContainerWidth()
         renderImage(cartItemHolderData)
+        renderBundlingIcon(cartItemHolderData)
         renderVariant(cartItemHolderData)
         renderPrice(cartItemHolderData)
         renderQuantity(cartItemHolderData)
     }
 
+    private fun validateContainerWidth() {
+        val layoutParams = viewBinding.containerCollapsedProduct.layoutParams
+        layoutParams.width = PRODUCT_WIDTH.dpToPx(itemView.resources.displayMetrics)
+        viewBinding.containerCollapsedProduct.layoutParams = layoutParams
+    }
+
     private fun renderBundlingIcon(cartItemHolderData: CartItemHolderData) {
-        if (cartItemHolderData.isBundlingItem) {
-            viewBinding.imageBundleIcon.show()
+        if (cartItemHolderData.isBundlingItem && !cartItemHolderData.isError) {
+            val n50Color = ResourcesCompat.getColor(
+                itemView.resources,
+                unifyprinciplesR.color.Unify_NN50,
+                null
+            )
+            val bundleIconBackground = ResourcesCompat.getDrawable(
+                itemView.resources,
+                R.drawable.bg_cart_rounded_collapsed_bundle_container,
+                null
+            )
+            val n50ColorAlpha = ColorUtils.setAlphaComponent(n50Color, 230)
+            val bundleIconBackgroundDrawable = bundleIconBackground as? GradientDrawable
+            bundleIconBackgroundDrawable?.mutate()
+            bundleIconBackgroundDrawable?.setColor(n50ColorAlpha)
+            viewBinding.cvImageBundleContainer.background = bundleIconBackgroundDrawable
             viewBinding.imageBundleIcon.loadImage(cartItemHolderData.bundleGrayscaleIconUrl)
+            viewBinding.cvImageBundleContainer.show()
+            viewBinding.imageBundleIcon.show()
         } else {
-            viewBinding.imageBundleIcon.hide()
+            viewBinding.cvImageBundleContainer.gone()
+            viewBinding.imageBundleIcon.gone()
         }
     }
 
     private fun renderPrice(cartItemHolderData: CartItemHolderData) {
-        viewBinding.textProductPrice.text = if (cartItemHolderData.isBundlingItem) {
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice, false)
+        if (cartItemHolderData.isError) {
+            viewBinding.textProductPrice.gone()
         } else {
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
-        }.removeDecimalSuffix()
+            viewBinding.textProductPrice.show()
+            viewBinding.textProductPrice.text = if (cartItemHolderData.isBundlingItem) {
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice, false)
+            } else {
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
+            }.removeDecimalSuffix()
+        }
     }
 
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
+        val frameBackground = ResourcesCompat.getDrawable(
+            viewBinding.root.resources,
+            R.drawable.bg_cart_product_image,
+            null
+        )
+        if (cartItemHolderData.isError) {
+            val nn900Color = ResourcesCompat.getColor(
+                viewBinding.root.resources,
+                unifyprinciplesR.color.Unify_NN900,
+                null
+            )
+            val nn900ColorAlpha = ColorUtils.setAlphaComponent(nn900Color, 127)
+            val loadingDrawable = frameBackground as? GradientDrawable
+            loadingDrawable?.mutate()
+            loadingDrawable?.setColor(nn900ColorAlpha)
+            viewBinding.flImageProduct.foreground = frameBackground
+        } else {
+            val transparentColor = ResourcesCompat.getColor(
+                viewBinding.root.resources,
+                android.R.color.transparent,
+                null
+            )
+            val loadingDrawable = frameBackground as? GradientDrawable
+            loadingDrawable?.mutate()
+            loadingDrawable?.setColor(transparentColor)
+            viewBinding.flImageProduct.foreground = frameBackground
+        }
         viewBinding.imageProduct.loadImage(cartItemHolderData.productImage)
         viewBinding.imageProduct.setOnClickListener {
-            val position = adapterPosition
+            val position = absoluteAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                actionListener.onCollapsedProductClicked(position, cartItemHolderData)
+                if (cartItemHolderData.isError) {
+                    actionListener.onToggleUnavailableItemAccordion()
+                } else {
+                    actionListener.onCollapsedProductClicked(position, cartItemHolderData)
+                }
             }
         }
     }
 
     private fun renderQuantity(cartItemHolderData: CartItemHolderData) {
-        viewBinding.textProductQuantity.text = if (cartItemHolderData.isBundlingItem) {
-            itemView.resources.getString(R.string.label_collapsed_product_bundle_quantity, cartItemHolderData.bundleQuantity)
+        if (cartItemHolderData.isError) {
+            viewBinding.textProductQuantity.gone()
         } else {
-            itemView.resources.getString(R.string.label_collapsed_product_quantity, cartItemHolderData.quantity)
+            viewBinding.textProductQuantity.show()
+            viewBinding.textProductQuantity.text = if (cartItemHolderData.isBundlingItem) {
+                itemView.resources.getString(R.string.label_collapsed_product_bundle_quantity, cartItemHolderData.bundleQuantity)
+            } else {
+                itemView.resources.getString(R.string.label_collapsed_product_quantity, cartItemHolderData.quantity)
+            }
         }
     }
 
     private fun renderVariant(cartItemHolderData: CartItemHolderData) {
-        if (cartItemHolderData.variant.isNotBlank()) {
+        if (cartItemHolderData.variant.isNotBlank() && !cartItemHolderData.isError) {
             viewBinding.textVariantName.text = cartItemHolderData.variant
             viewBinding.textVariantName.show()
         } else {
@@ -81,7 +152,7 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
             val margin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_2)
             constraintSet.connect(R.id.text_product_price, ConstraintSet.TOP, R.id.text_variant_name, ConstraintSet.BOTTOM, margin)
         } else {
-            val margin = itemView.context.resources.getDimensionPixelSize(com.tokopedia.cart.R.dimen.dp_4)
+            val margin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4)
             constraintSet.connect(R.id.text_product_price, ConstraintSet.TOP, R.id.text_variant_name, ConstraintSet.BOTTOM, margin)
         }
         constraintSet.applyTo(viewBinding.containerCollapsedProduct)
