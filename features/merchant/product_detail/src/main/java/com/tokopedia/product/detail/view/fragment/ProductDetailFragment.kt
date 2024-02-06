@@ -3911,7 +3911,7 @@ open class ProductDetailFragment :
                 productName,
                 productImageUrl,
                 it.data.variant.isVariant,
-                it.basic.getShopId(),
+                it.basic.shopID,
                 viewModel.getBebasOngkirDataByProductId().imageURL,
                 cartId = if (viewModel.getProductInfoP1?.basic?.isTokoNow == true) "" else cartId
             )
