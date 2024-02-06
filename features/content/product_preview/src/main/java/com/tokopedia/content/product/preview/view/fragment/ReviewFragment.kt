@@ -79,10 +79,9 @@ class ReviewFragment @Inject constructor(
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val index = getCurrentPosition()
-                    viewModel.onAction(ProductPreviewAction.UpdateReviewPosition(index))
-                }
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+                val index = getCurrentPosition()
+                viewModel.onAction(ProductPreviewAction.ReviewSelected(index))
             }
         }
     }

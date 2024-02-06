@@ -27,9 +27,9 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ToggleReviewWatchMode
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.UpdateReviewPosition
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent.UnknownSourceData
 import com.tokopedia.content.product.preview.viewmodel.state.ProductReviewUiState
@@ -130,12 +130,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
             FetchReviewByIds -> handleFetchReviewByIds()
             ToggleReviewWatchMode -> handleReviewWatchMode()
             is ProductSelected -> handleProductSelected(action.position)
+            is ReviewSelected -> handleReviewSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
             is ProductAction -> addToChart(action.model)
             is Navigate -> handleNavigate(action.appLink)
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
-            is UpdateReviewPosition -> handleUpdateReviewPosition(action.index)
             is Like -> handleLikeFromResult(action.item)
         }
     }
@@ -201,6 +201,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleReviewSelected(position: Int) {
+        if (_reviewPosition.value == position) return
+        _reviewPosition.value = position
+        updateReviewToUnWatchMode()
+    }
+
     private fun handleFetchReviewByIds() {
         viewModelScope.launchCatchError(block = {
             _reviewContentState.update { review -> review.copy(reviewPaging = ReviewPaging.Load) }
@@ -262,6 +268,20 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     }
                 )
             }
+        }
+    }
+
+    private fun updateReviewToUnWatchMode() {
+        _reviewContentState.update { review ->
+            review.copy(
+                reviewContent = review.reviewContent.map { reviewContent ->
+                    if (reviewContent.isWatchMode) {
+                        reviewContent.copy(isWatchMode = false)
+                    } else {
+                        reviewContent
+                    }
+                }
+            )
         }
     }
 
@@ -399,10 +419,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(status))
             }
         }
-    }
-
-    private fun handleUpdateReviewPosition(position: Int) {
-        _reviewPosition.value = position
     }
 
     private fun handleLikeFromResult(status: ReviewLikeUiState = currentReview.likeState) {

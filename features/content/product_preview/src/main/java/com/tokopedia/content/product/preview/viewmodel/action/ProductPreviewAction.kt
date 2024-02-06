@@ -15,12 +15,12 @@ sealed interface ProductPreviewAction {
     object LikeFromResult : ProductPreviewAction
     object ToggleReviewWatchMode : ProductPreviewAction
     object FetchReviewByIds : ProductPreviewAction
+    data class ProductSelected(val position: Int) : ProductPreviewAction
+    data class ReviewSelected(val position: Int) : ProductPreviewAction
     data class FetchReview(val isRefresh: Boolean, val page: Int) : ProductPreviewAction
     data class ProductAction(val model: BottomNavUiModel) : ProductPreviewAction
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReviewReportUiModel) : ProductPreviewAction
     data class ClickMenu(val isFromLogin: Boolean) : ProductPreviewAction
-    data class UpdateReviewPosition(val index: Int) : ProductPreviewAction
     data class Like(val item: ReviewLikeUiState) : ProductPreviewAction
-    data class ProductSelected(val position: Int) : ProductPreviewAction
 }
