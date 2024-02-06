@@ -3,7 +3,9 @@ package com.tokopedia.product.detail.view.viewholder.promo_price.ui
 import android.view.View
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnPdpImpressionListener
 import com.tokopedia.product.detail.databinding.ProductPromoPriceViewHolderBinding
+import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.promo_price.delegate.ProductPriceCallback
 import com.tokopedia.product.detail.view.viewholder.promo_price.event.ProductPriceEvent
@@ -33,6 +35,7 @@ class ProductPriceViewHolder(
                 }
             )
         }
+        setComponentImpression(element)
     }
 
     private fun onPromoPriceClicked(element: ProductPriceUiModel) {
@@ -56,5 +59,15 @@ class ProductPriceViewHolder(
                 trackerData = getComponentTrackData(element)
             )
         )
+    }
+
+    private fun setComponentImpression(element: ProductPriceUiModel) {
+        binding.root.addOnPdpImpressionListener(
+            holders = callback.impressionHolders,
+            name = element.impressionKey()
+        ) {
+            val trackerData = getComponentTrackData(element = element)
+            callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
+        }
     }
 }
