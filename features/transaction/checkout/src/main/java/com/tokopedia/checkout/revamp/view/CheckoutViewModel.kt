@@ -1322,7 +1322,7 @@ class CheckoutViewModel @Inject constructor(
             listData.value.promo()!!
         )
 
-        val result = logisticCartProcessor.getRates(ratesParam)
+        val result = logisticCartProcessor.getRatesGeneral(ratesParam)
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
         if (orderModel != null) {

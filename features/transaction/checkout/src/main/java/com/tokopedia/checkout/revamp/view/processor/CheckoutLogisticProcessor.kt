@@ -6,7 +6,6 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderInsurance
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
@@ -224,7 +223,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     fun getSchellyProcessorParam(
         orderModel: CheckoutOrderModel,
-        orderProducts: List<CheckoutItem>,
+        orderProducts: List<CheckoutProductModel>,
         address: RecipientAddressModel,
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,
@@ -265,7 +264,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     fun getRatesProcessorParam(
         order: CheckoutOrderModel,
-        orderProducts: List<CheckoutItem>,
+        orderProducts: List<CheckoutProductModel>,
         address: RecipientAddressModel,
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,
