@@ -60,6 +60,25 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    // applog
+    implementation 'com.bytedance.applog:bdtracker-global:5.6.9-bugfix.6'
+    implementation 'com.bytedance.applog:sampling:5.6.9-bugfix.6'
+    implementation 'com.bytedance.applog:compress:5.6.9-bugfix.6'
+    implementation 'com.bytedance.applog:monitor:5.6.9-bugfix.6'
+    implementation 'com.bytedance.frameworks.core:encrypt:1.2.2'
+    implementation 'com.bytedance.frameworks.baselib:utility:2.0.11'
+    implementation 'com.bytedance.common_business:alog:2.0.0-rc.10'
+    implementation 'com.bytedance.android:alog:1.0.0-rc.6@aar'
+    implementation 'com.ss.android.ugc.quota:BDNetworkTag:0.0.1-alpha.2-support'
+    implementation 'com.bytedance.applog:bdtracker-et_verify:5.6.9-bugfix.6' // debugOnly
+
+    // ttnet
+    implementation 'org.chromium.net:cronet:4.1.120.3-dut'
+    implementation 'com.bytedance.frameworks.baselib:ttnet:4.1.120.3-dut'
+    implementation 'com.bytedance.boringssl.so:boringssl-so:1.2.1'
+    implementation 'com.bytedance.ies.common:cpp_shared:21.1.4'
+
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
