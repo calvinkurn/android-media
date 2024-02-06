@@ -202,7 +202,6 @@ private fun ShopInfo(theme: Boolean, shopName: String, badge: String) {
                 .height(16.dp)
                 .width(16.dp)
         )
-        Spacer(modifier = Modifier.padding(end = 4.dp))
         NestTypography(
             text = shopName,
             textStyle = NestTheme.typography.display3.copy(
@@ -215,7 +214,7 @@ private fun ShopInfo(theme: Boolean, shopName: String, badge: String) {
                     )
                 ).copy(alpha = 0.8f)
             ),
-            modifier = Modifier.padding(start = 4.dp),
+            modifier = Modifier.padding(start = 2.dp),
             maxLines = 1
         )
     }

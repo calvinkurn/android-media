@@ -13,7 +13,6 @@ data class SellerOfferingUiModel(
     val productId: String = "",
     var productImage: String = "",
     var shopBadge: String = "",
-    var shopImage: String = "",
     var shopName: String = "",
     var stockBar: Int = 0,
     var productName: String = "",

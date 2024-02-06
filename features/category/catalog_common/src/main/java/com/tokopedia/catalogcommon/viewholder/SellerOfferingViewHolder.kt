@@ -65,7 +65,6 @@ class SellerOfferingViewHolder(
             lnVariant.showWithCondition(element.variantsName.isNotEmpty())
             tvVariantValue.text = element.variantsName
             ivBadge.loadImage(element.shopBadge)
-            ivShopImage.loadImage(element.shopImage)
             tvShopName.text = element.shopName
             tvShopLocation.text = element.shopLocation
             tvShopResponsiveChat.setTextAndCheckShow(element.chatResponseTime)
