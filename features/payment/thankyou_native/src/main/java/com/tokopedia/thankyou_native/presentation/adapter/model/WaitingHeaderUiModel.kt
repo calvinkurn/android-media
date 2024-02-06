@@ -33,7 +33,7 @@ data class WaitingHeaderUiModel(
     val secondaryButtonText: String,
     val highlightLastThreeDigits: Boolean,
     val bankBranch: String,
-) : Visitable<BottomContentFactory> {
+) : Visitable<BottomContentFactory>, WidgetTag(TAG) {
 
     override fun type(typeFactory: BottomContentFactory): Int {
         return typeFactory.type(this)
@@ -57,6 +57,13 @@ data class WaitingHeaderUiModel(
                 else -> context?.getString(R.string.thank_virtual_account_tag).orEmpty()
             }
 
+            val amount = if (PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType) == VirtualAccount
+                && thanksPageData.combinedAmount > thanksPageData.amount) {
+                thanksPageData.combinedAmount
+            } else {
+                thanksPageData.amount
+            }
+
             val note = Gson().fromJson(thanksPageData.customDataMessage?.customNotes, Array<String>::class.java)
 
             val primaryButtonText = if (thanksPageData.customDataMessage?.titleHomeButton.isNullOrEmpty()) context?.getString(R.string.thank_check_payment_status) else thanksPageData.customDataMessage?.titleHomeButton
@@ -70,7 +77,7 @@ data class WaitingHeaderUiModel(
                 thanksPageData.additionalInfo.accountDest,
                 thanksPageData.gatewayImage,
                 context?.getString(R.string.thank_invoice_total_bill).orEmpty(),
-                thanksPageData.amount,
+                amount.toLong(),
                 note.orEmpty().toList(),
                 thanksPageData.paymentType == BANK_TRANSFER,
                 thanksPageData.configFlagData?.shouldHideHomeButton == true,
@@ -81,5 +88,7 @@ data class WaitingHeaderUiModel(
                 thanksPageData.additionalInfo.bankBranch
             )
         }
+
+        const val TAG = "waiting_header"
     }
 }

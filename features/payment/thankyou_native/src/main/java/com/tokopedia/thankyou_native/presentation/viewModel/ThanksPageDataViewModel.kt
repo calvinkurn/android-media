@@ -207,9 +207,20 @@ class ThanksPageDataViewModel @Inject constructor(
     private fun getWidgetOrder(featureEngineData: FeatureEngineData?): List<String> {
         val featureEngineWidgetOrder = FeatureRecommendationMapper.getWidgetOrder(featureEngineData)
         return if (featureEngineWidgetOrder.isNotEmpty()) {
-            featureEngineWidgetOrder.replace(" ", "").split(",")
+            val defaultList = arrayListOf(
+                InstantHeaderUiModel.TAG,
+                WaitingHeaderUiModel.TAG,
+                ProcessingHeaderUiModel.TAG,
+                DividerUiModel.TAG,
+            )
+            val newList = featureEngineWidgetOrder.replace(" ", "").split(",")
+            defaultList + newList
         } else {
             arrayListOf(
+                InstantHeaderUiModel.TAG,
+                WaitingHeaderUiModel.TAG,
+                ProcessingHeaderUiModel.TAG,
+                DividerUiModel.TAG,
                 TopAdsRequestParams.TAG,
                 GyroRecommendationWidgetModel.TAG,
                 MarketplaceRecommendationWidgetModel.TAG,
