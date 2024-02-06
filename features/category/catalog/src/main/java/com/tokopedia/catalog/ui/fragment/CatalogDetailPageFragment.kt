@@ -1195,4 +1195,8 @@ class CatalogDetailPageFragment :
     override fun onSellerOfferingVariantArrowClicked(productId: String) {
         openVariantBottomSheet(viewModel.atcModel)
     }
+
+    override fun onSellerOfferingProductInfo(productId: String) {
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+    }
 }

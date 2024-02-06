@@ -101,8 +101,8 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
                 WidgetTypes.CATALOG_CTA_PRICE.type -> it.mapToCtaPrice(isDarkMode)
                 WidgetTypes.CATALOG_CARD_TOP_SELLER.type -> it.mapToCardTopSeller(
-                    isDarkMode,
-                    remoteModel.basicInfo.name.orEmpty()
+                    remoteModel.basicInfo.name.orEmpty(),
+                    "#${remoteModel.globalStyle?.bgColor}"
                 )
 
                 else -> {
@@ -816,8 +816,8 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToCardTopSeller(
-        darkMode: Boolean,
-        catalogName: String
+        catalogName: String,
+        bgColor: String
     ): BaseCatalogUiModel {
         return data?.topSeller?.run {
             val bebasOngkirUrl =
@@ -847,7 +847,8 @@ class CatalogDetailUiMapper @Inject constructor(
                 estimationShipping = delivery.eta,
                 isShopGuarantee = paymentOption.desc.isNotEmpty(),
                 installment = paymentOption.desc,
-                additionalService = additionalService.name
+                additionalService = additionalService.name,
+                cardColor = bgColor
             )
         } ?: SellerOfferingUiModel()
         // DummyData
@@ -855,6 +856,7 @@ class CatalogDetailUiMapper @Inject constructor(
 //            productImage = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/9/11/5a1321a4-fd2c-4060-b2b7-005d65175504.jpg",
 //            shopBadge = "https://images.tokopedia.net/img/official_store_badge.png",
 //            shopName = "toko purchase platform os",
+//            shopImage= "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/8/25/07b4f897-d605-40e6-80ad-3ed5f92d387b.jpg",
 //            stockBar = 95,
 //            productName = "Samsung",
 //            productPrice = "Rp9.000.000",
@@ -872,7 +874,9 @@ class CatalogDetailUiMapper @Inject constructor(
 //            isShopGuarantee = false,
 //            installment = "Cicil dari Rp450.000/bulan",
 //            variantsName = "Varian 1, Variant 2",
-//            additionalService = "Garansi Toko"
+//            additionalService = "Garansi Toko",
+//            cardColor = bgColor,
+//            courier = "Kurir Toko"
 //        )
     }
 

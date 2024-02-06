@@ -13,6 +13,7 @@ data class SellerOfferingUiModel(
     val productId: String = "",
     var productImage: String = "",
     var shopBadge: String = "",
+    var shopImage: String = "",
     var shopName: String = "",
     var stockBar: Int = 0,
     var productName: String = "",
@@ -30,9 +31,10 @@ data class SellerOfferingUiModel(
     var estimationShipping: String = "",
     var isShopGuarantee: Boolean = false,
     val installment: String = "",
-    val cardColor: Int = R.drawable.bg_rounded_border_dark,
+    val cardColor: String = "#212121",
     val additionalService: String = "",
-    val variantsName: String = ""
+    val variantsName: String = "",
+    val courier:String = ""
 ) : BaseCatalogUiModel(
     idWidget,
     widgetType,

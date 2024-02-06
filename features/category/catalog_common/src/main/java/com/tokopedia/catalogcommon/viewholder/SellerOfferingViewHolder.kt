@@ -1,5 +1,7 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -11,13 +13,16 @@ import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
+import java.lang.reflect.Method
 
 class SellerOfferingViewHolder(
     itemView: View,
@@ -46,6 +51,10 @@ class SellerOfferingViewHolder(
             ivButtonRightVariant.setOnClickListener {
                 sellerOfferingListener?.onSellerOfferingVariantArrowClicked(productId)
             }
+            clProductInfo.setOnClickListener {
+                sellerOfferingListener?.onSellerOfferingProductInfo(productId)
+            }
+
         }
     }
 
@@ -53,12 +62,15 @@ class SellerOfferingViewHolder(
         productId = element.productId
         binding?.apply {
             setStyleWidget(element)
-            cgVariant.showWithCondition(element.variantsName.isNotEmpty())
+            lnVariant.showWithCondition(element.variantsName.isNotEmpty())
             tvVariantValue.text = element.variantsName
             ivBadge.loadImage(element.shopBadge)
+            ivShopImage.loadImage(element.shopImage)
             tvShopName.text = element.shopName
-            tvShopResposiveChat.setTextAndCheckShow(element.chatResponseTime)
+            tvShopLocation.text = element.shopLocation
+            tvShopResponsiveChat.setTextAndCheckShow(element.chatResponseTime)
             tvShopResponsiveOrder.setTextAndCheckShow(element.orderProcessTime)
+            vPointCredibility.showWithCondition(element.orderProcessTime.isNotEmpty())
             ivProduct.loadImage(element.productImage)
             tvProductName.text = itemView.resources.getString(R.string.catalog_prefix_title_section, element.productName)
             tvPrice.text = element.productPrice
@@ -68,11 +80,13 @@ class SellerOfferingViewHolder(
             tvLabelDisc.text = element.labelTotalDisc
             tvSalesRatingFloat.text = element.shopRating
             tvTotalSold.text = element.totalSold
+            salesRatingFloatLine.showWithCondition(element.totalSold.isNotEmpty())
             ivFreeOngkir.loadImage(element.freeOngkir)
             ivFreeOngkir.showWithCondition(element.freeOngkir.isNotEmpty())
             tvAdditionalService.setTextAndCheckShow(element.additionalService)
-            vFreeOngkir.showWithCondition(element.estimationShipping.isNotEmpty())
-            vGuarantee.showWithCondition(element.isShopGuarantee)
+            vGuarantee.showWithCondition(element.additionalService.isNotEmpty())
+            vCourier.showWithCondition(element.courier.isNotEmpty())
+            tvCourier.text = element.courier
             tvInstallment.text = element.installment
             lnInstallment.showWithCondition(element.installment.isNotEmpty())
             tvEstimation.setTextAndCheckShow(element.estimationShipping)
@@ -91,29 +105,35 @@ class SellerOfferingViewHolder(
             } else {
                 tvSalesRatingCount.gone()
             }
+            ivRating.showWithCondition(element.shopRating.isNotEmpty())
+            tvSalesRatingFloat.showWithCondition(element.shopRating.isNotEmpty())
         }
     }
 
     private fun setStyleWidget(element: SellerOfferingUiModel) = binding?.apply {
-        clProductCard.setBackgroundResource(element.cardColor)
-        clShopInfo.setBackgroundResource(element.cardColor)
-        tvVariantValue.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
-        tvVariantLabel.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
+        clProductCard.setBackgroundResource(getBackgroundTheme(element.darkMode,
+            R.drawable.bg_rounded_border_light, R.drawable.bg_rounded_border_dark))
+        tvVariantValue.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvShopName.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvShopLocation.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
-        tvShopResposiveChat.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
+        tvShopResponsiveChat.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvShopResponsiveOrder.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvProductName.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvPrice.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvSlashPrice.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvLabelPromo.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_catalog_color_error_light, darkColor = R.color.dms_static_catalog_color_error_dark))
-        tvLabelPromo.setBackgroundResource(R.drawable.catalog_ic_promo)
+        tvLabelPromo.setBackgroundResource(getBackgroundTheme(
+            element.darkMode,
+            R.drawable.bg_red_rounded_border_light,
+            R.drawable.bg_red_rounded_border_dark
+        ))
         tvSalesRatingFloat.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvSalesRatingCount.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvTotalSold.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvEstimation.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvAdditionalService.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvInstallment.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
+        tvCourier.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         lnBackgroundProductImage.setBackgroundColor(getColor(element.darkMode, lightColor = R.color.dms_static_catalog_color_secondary, darkColor = R.color.dms_static_catalog_color_tertiary))
         ivButtonRightVariant.setImage(
             IconUnify.CHEVRON_RIGHT,
@@ -141,6 +161,12 @@ class SellerOfferingViewHolder(
                 R.drawable.bg_rounded_border_color_primary_dark
             )
         )
+
+        val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)
+        if (drawable is GradientDrawable) {
+            drawable.setColor(Color.parseColor(element.cardColor))
+            clProductCard.background = drawable
+        }
     }
 
     private fun getColor(isDark: Boolean, lightColor: Int, darkColor: Int): Int {

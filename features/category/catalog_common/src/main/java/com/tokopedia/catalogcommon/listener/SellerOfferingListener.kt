@@ -5,4 +5,6 @@ interface SellerOfferingListener {
     fun onSellerOfferingChatButtonClicked()
     fun onSellerOfferingProductImageClicked(productId: String)
     fun onSellerOfferingVariantArrowClicked(productId: String)
+    fun onSellerOfferingProductInfo(productId: String)
+
 }
