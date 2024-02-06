@@ -705,11 +705,12 @@ class DigitalCartFragment :
     }
 
     override fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
+        val targetedProductId = getCrossSellTargetedProductId(fintechProduct)
         digitalAnalytics.eventClickSubscription(
             isChecked,
             getCategoryName(),
             getOperatorName(),
-            fintechProduct.id,
+            targetedProductId,
             userSession.userId
         )
         binding?.run {
@@ -753,6 +754,11 @@ class DigitalCartFragment :
         }
 
         return CollectionPointMetadata()
+    }
+
+    private fun getCrossSellTargetedProductId(fintechProduct: FintechProduct): String {
+        val metadata = getCollectionPointData(fintechProduct)
+        return metadata.targetedProductId
     }
 
     private fun renderCrossSellConsentWidget(
@@ -808,12 +814,13 @@ class DigitalCartFragment :
     }
 
     override fun onSubscriptionImpression(fintechProduct: FintechProduct) {
+        val targetedProductId = getCrossSellTargetedProductId(fintechProduct)
         digitalAnalytics.eventImpressionSubscription(
             userSession.userId,
             fintechProduct.checkBoxDisabled,
             getCategoryName(),
             getOperatorName(),
-            fintechProduct.id
+            targetedProductId
         )
     }
 
