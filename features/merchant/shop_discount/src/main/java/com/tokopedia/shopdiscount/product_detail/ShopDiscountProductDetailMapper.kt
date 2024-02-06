@@ -82,6 +82,7 @@ object ShopDiscountProductDetailMapper {
             ShopDiscountProductDetailUiModel.ProductDetailData(
                 productId = it.productId,
                 productName = it.name,
+                isParent = it.parentInfo.isParent,
                 parentName = it.parentInfo.name,
                 productImageUrl = it.picture,
                 minOriginalPrice = it.price.min,

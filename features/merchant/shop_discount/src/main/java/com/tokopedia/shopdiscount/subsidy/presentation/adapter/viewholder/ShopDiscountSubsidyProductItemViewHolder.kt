@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.hide
@@ -77,15 +78,23 @@ class ShopDiscountSubsidyProductItemViewHolder(
     }
 
     private fun setProductData(uiModel: ShopDiscountProductSubsidyUiModel) {
-        val parentName = uiModel.productDetailData.parentName
-        val productName =  uiModel.productDetailData.productName
+        val parentName = if (uiModel.productDetailData.isParent) {
+            uiModel.productDetailData.parentName
+        } else {
+            uiModel.productDetailData.productName
+        }
+        val variantName = if (uiModel.productDetailData.isParent) {
+            uiModel.productDetailData.parentName
+        } else {
+            String.EMPTY
+        }
         val subsidyStatusText = uiModel.productDetailData.subsidyStatusText
         imageProduct.loadImage(uiModel.productDetailData.productImageUrl)
         textProductName.text = parentName
-        textVariantName.shouldShowWithAction(productName.isNotEmpty()) {
-            textVariantName.text = productName
+        textVariantName.shouldShowWithAction(variantName.isNotEmpty()) {
+            textVariantName.text = variantName
         }
-        if (subsidyStatusText.isEmpty() || productName.isEmpty()) {
+        if (subsidyStatusText.isEmpty() || variantName.isEmpty()) {
             verticalDivider.hide()
         } else {
             verticalDivider.show()
