@@ -39,7 +39,8 @@ object CartCalculator {
             if (cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId != "0") {
                 for (cartItemHolderDataTmp in allCartItemDataList) {
                     if (cartItemHolderData.productId != cartItemHolderDataTmp.productId &&
-                        cartItemHolderData.parentId == cartItemHolderDataTmp.parentId
+                        cartItemHolderData.parentId == cartItemHolderDataTmp.parentId &&
+                        cartItemHolderData.productPrice == cartItemHolderDataTmp.productPrice
                     ) {
                         val tmpQty =
                             if (cartItemHolderDataTmp.isBundlingItem) {
