@@ -13,16 +13,13 @@ import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
-import java.lang.reflect.Method
 
 class SellerOfferingViewHolder(
     itemView: View,
@@ -51,10 +48,9 @@ class SellerOfferingViewHolder(
             ivButtonRightVariant.setOnClickListener {
                 sellerOfferingListener?.onSellerOfferingVariantArrowClicked(productId)
             }
-            clProductInfo.setOnClickListener {
+            clProductCard.setOnClickListener {
                 sellerOfferingListener?.onSellerOfferingProductInfo(productId)
             }
-
         }
     }
 
@@ -110,8 +106,13 @@ class SellerOfferingViewHolder(
     }
 
     private fun setStyleWidget(element: SellerOfferingUiModel) = binding?.apply {
-        clProductCard.setBackgroundResource(getBackgroundTheme(element.darkMode,
-            R.drawable.bg_rounded_border_light, R.drawable.bg_rounded_border_dark))
+        clProductCard.setBackgroundResource(
+            getBackgroundTheme(
+                element.darkMode,
+                R.drawable.bg_rounded_border_light,
+                R.drawable.bg_rounded_border_dark
+            )
+        )
         tvVariantValue.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvShopName.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvShopLocation.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
@@ -121,11 +122,13 @@ class SellerOfferingViewHolder(
         tvPrice.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvSlashPrice.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvLabelPromo.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_catalog_color_error_light, darkColor = R.color.dms_static_catalog_color_error_dark))
-        tvLabelPromo.setBackgroundResource(getBackgroundTheme(
-            element.darkMode,
-            R.drawable.bg_red_rounded_border_light,
-            R.drawable.bg_red_rounded_border_dark
-        ))
+        tvLabelPromo.setBackgroundResource(
+            getBackgroundTheme(
+                element.darkMode,
+                R.drawable.bg_red_rounded_border_light,
+                R.drawable.bg_red_rounded_border_dark
+            )
+        )
         tvSalesRatingFloat.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvSalesRatingCount.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvTotalSold.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
