@@ -9,9 +9,7 @@ import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
-import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -105,7 +103,7 @@ internal class ReimagineGridViewStrategy(
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         setProductModel(ProductCardModelReimagine.from(productCardModel))
-        handleForceLightModeColor(productCardModel.forceLightModeColor)
+        handleCustomColor(productCardModel.productCardCustomColor)
     }
 
     fun setProductModel(productCardModel: ProductCardModelReimagine) {
@@ -214,23 +212,21 @@ internal class ReimagineGridViewStrategy(
 
     override fun getVideoPlayerController(): VideoPlayerController = video
 
-    private fun handleForceLightModeColor(forceLightModeColor: Boolean) {
-        if (forceLightModeColor) {
-            forceLightModeColor()
+    private fun handleCustomColor(productCardCustomColor: ProductCardCustomColor?) {
+        val shouldOverrideProductCardDefaultColor = productCardCustomColor != null
+        if (shouldOverrideProductCardDefaultColor) {
+            renderProductCardWithCustomColor(productCardCustomColor ?: return)
         }
     }
 
-    private fun forceLightModeColor() {
-        val context = context ?: return
-        nameText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
-        priceText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
-        slashedPriceText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_44))
-        credibilityText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
-        discountText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_RN500))
-        ratingText?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
-
-        // Make card view transparent
-        cardContainer?.setCardUnifyBackgroundColor(MethodChecker.getColor(cardContainer?.context ?: return, android.R.color.transparent))
+    private fun renderProductCardWithCustomColor(customColor: ProductCardCustomColor) {
+        nameText?.setTextColor(customColor.productNameColor)
+        priceText?.setTextColor(customColor.productPriceColor)
+        slashedPriceText?.setTextColor(customColor.productSlashPriceColor)
+        credibilityText?.setTextColor(customColor.productSoldCountColor)
+        discountText?.setTextColor(customColor.productDiscountColor)
+        ratingText?.setTextColor(customColor.productRatingColor)
+        cardContainer?.setCardUnifyBackgroundColor(customColor.cardBackgroundColor)
 
         benefitLabel?.forceLightMode()
     }
