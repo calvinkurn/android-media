@@ -17,7 +17,7 @@ import com.tokopedia.media.loader.loadImage
 class CartCampaignProductLabel @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
+    defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     companion object {
@@ -43,7 +43,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
     fun showImageLabel(
         logoUrl: String,
         backgroundStartColor: HexColor,
-        backgroundEndColor: HexColor,
+        backgroundEndColor: HexColor
     ) {
         with(binding) {
             iuCampaignIcon.gone()
@@ -79,7 +79,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         text: String,
         textColor: HexColor,
         backgroundStartColor: HexColor,
-        backgroundEndColor: HexColor,
+        backgroundEndColor: HexColor
     ) {
         with(binding) {
             iuCampaignIcon.gone()
@@ -104,7 +104,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
     fun showTimedLabel(
         remainingTimeMillis: Long = 0L,
         iconUrl: String,
-        backgroundColor: HexColor,
+        backgroundColor: HexColor
     ) {
         with(binding) {
             if (iconUrl.isNotBlank()) {
@@ -122,8 +122,14 @@ class CartCampaignProductLabel @JvmOverloads constructor(
                 val cornerRadius = context.dpToPx(LABEL_CORNER_RADIUS_DP)
                 shape = GradientDrawable.RECTANGLE
                 cornerRadii = floatArrayOf(
-                    cornerRadius, cornerRadius, 0f, 0f,
-                    0f, 0f, cornerRadius, cornerRadius
+                    cornerRadius,
+                    cornerRadius,
+                    0f,
+                    0f,
+                    0f,
+                    0f,
+                    cornerRadius,
+                    cornerRadius
                 )
             }
             clProductLabel.background = tickerBackgroundDrawable
@@ -132,8 +138,14 @@ class CartCampaignProductLabel @JvmOverloads constructor(
                 shape = GradientDrawable.RECTANGLE
                 val cornerRadius = context.dpToPx(LABEL_CORNER_RADIUS_DP)
                 cornerRadii = floatArrayOf(
-                    0f, 0f, cornerRadius, cornerRadius,
-                    cornerRadius, cornerRadius, 0f, 0f
+                    0f,
+                    0f,
+                    cornerRadius,
+                    cornerRadius,
+                    cornerRadius,
+                    cornerRadius,
+                    0f,
+                    0f
                 )
                 setStroke(
                     context.dpToPx(LABEL_STROKE_WIDTH_DP).toInt(),
@@ -148,9 +160,9 @@ class CartCampaignProductLabel @JvmOverloads constructor(
                     val minutes = (millisUntilFinished / (1000 * 60) % 60)
                     val hours = (millisUntilFinished / (1000 * 60 * 60))
 
-                    val hourText = "${if (hours < 10) 0.toString() else ""}${hours}"
-                    val minuteText = "${if (minutes < 10) 0.toString() else ""}${minutes}"
-                    val secondText = "${if (seconds < 10) 0.toString() else ""}${seconds}"
+                    val hourText = "${if (hours < 10) 0.toString() else ""}$hours"
+                    val minuteText = "${if (minutes < 10) 0.toString() else ""}$minutes"
+                    val secondText = "${if (seconds < 10) 0.toString() else ""}$seconds"
 
                     tpgProductLabelCountdown.text = "$hourText : $minuteText : $secondText"
 
@@ -181,4 +193,4 @@ class CartCampaignProductLabel @JvmOverloads constructor(
 }
 
 @JvmInline
-value class HexColor(val hexCode: String)
+value class HexColor(val hexCode: String = "")

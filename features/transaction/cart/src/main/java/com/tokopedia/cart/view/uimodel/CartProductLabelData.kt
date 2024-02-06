@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.uimodel
 
-import com.tokopedia.cartrevamp.view.customview.HexColor
+import com.tokopedia.cart.view.customview.HexColor
 
 data class CartProductLabelData(
     val type: String = "",
@@ -8,10 +8,10 @@ data class CartProductLabelData(
     val imageLogoUrl: String = "",
     val iconUrl: String = "",
     val text: String = "",
-    val textColor: HexColor = HexColor(""),
-    val backgroundStartColor: HexColor = HexColor(""),
-    val backgroundEndColor: HexColor = HexColor(""),
-    val lineColor: HexColor = HexColor(""),
+    val textColor: HexColor = HexColor(),
+    val backgroundStartColor: HexColor = HexColor(),
+    val backgroundEndColor: HexColor = HexColor(),
+    val lineColor: HexColor = HexColor()
 ) {
 
     companion object {
