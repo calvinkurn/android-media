@@ -13,6 +13,7 @@ import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
@@ -29,7 +30,9 @@ class ShortsUiModelBuilder {
         tncList: List<TermsAndConditionUiModel> = listOf(),
         maxTaggedProduct: Int = 30,
         maxTitleCharacter: Int = 24,
-        shortsVideoSourceId: String = "asdf"
+        shortsVideoSourceId: String = "asdf",
+        eligibleInterspersing: Boolean = false,
+        productCountForInterspersing: Int = 0,
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,
@@ -39,6 +42,8 @@ class ShortsUiModelBuilder {
         maxTitleCharacter = maxTitleCharacter,
         shortsVideoSourceId = shortsVideoSourceId,
         hasContent = hasContent,
+        eligibleInterspersing = eligibleInterspersing,
+        productCountForInterspersing = productCountForInterspersing,
     )
 
     fun buildAccountListModel(
@@ -212,4 +217,12 @@ class ShortsUiModelBuilder {
             nextCursor = nextCursor,
         )
     }
+
+    fun buildHasPdpVideo() = ProductVideoUiModel(
+        hasVideo = true,
+        videoUrl = "videoUrl",
+        coverUrl = "coverUrl",
+    )
+
+    fun buildHasNoPdpVideo() = ProductVideoUiModel.Empty
 }

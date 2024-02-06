@@ -35,6 +35,8 @@ import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
+import com.tokopedia.sellerhomecommon.domain.model.AutoAdsResponse
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsAutoAdsUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
@@ -63,6 +65,7 @@ class OtherMenuViewModel @Inject constructor(
     private val shopShareInfoUseCase: ShareInfoOtherUseCase,
     private val getNewPromotionUseCase: GetNewPromotionUseCase,
     private val getTopAdsShopInfoUseCase: GetTopAdsShopInfoUseCase,
+    private val getTopAdsAutoAdsUseCase: GetTopAdsAutoAdsUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
 ) : BaseViewModel(dispatcher.main) {
@@ -98,6 +101,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _isTopAdsAutoTopupLiveData = MutableLiveData<Result<Boolean>>()
     private val _isShowTagCentralizePromo = MutableLiveData<SettingResponseState<Boolean>>()
     private val _isTopAdsShopUsed = MutableLiveData<Boolean>()
+    private val _topadsAutoAdsData = MutableLiveData< AutoAdsResponse.TopAdsGetAutoAds.Data>()
 
     val shopBadgeLiveData: LiveData<SettingResponseState<String>>
         get() = _shopBadgeLiveData
@@ -121,6 +125,8 @@ class OtherMenuViewModel @Inject constructor(
         get() = _isShowTagCentralizePromo
     val isTopAdsShopUsed: LiveData<Boolean>
         get() = _isTopAdsShopUsed
+    val topadsAutoAdsData: LiveData<AutoAdsResponse.TopAdsGetAutoAds.Data>
+        get() = _topadsAutoAdsData
 
     private val _errorStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
         addSource(_shopBadgeLiveData) {
@@ -243,6 +249,7 @@ class OtherMenuViewModel @Inject constructor(
         getIsTopAdsAutoTopup()
         getIsShowTagCentralizePromo()
         getIsTopAdsShopUsed()
+        getTopAdsAutoAds()
     }
 
     fun onShownMultipleError(isShown: Boolean = false) {
@@ -415,6 +422,20 @@ class OtherMenuViewModel @Inject constructor(
             },
             onError = {
                 _isTopAdsShopUsed.value = false
+            }
+        )
+    }
+
+    fun getTopAdsAutoAds(){
+        launchCatchError(
+            block = {
+                val data = withContext(dispatcher.io) {
+                    getTopAdsAutoAdsUseCase.execute(userSession.shopId)
+                }
+                _topadsAutoAdsData.value = data
+            },
+            onError = {
+                _topadsAutoAdsData.value = AutoAdsResponse.TopAdsGetAutoAds.Data()
             }
         )
     }

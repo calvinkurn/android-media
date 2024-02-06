@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.loadImageWithPlaceholder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -55,12 +55,7 @@ class ChatbotFloatingInvoice(context: Context, attributeSet: AttributeSet) :
         invoiceLabel?.text = labelText
         invoiceLabel?.setLabelType(labelType)
         if (invoiceIconURL != null) {
-            ImageHandler.loadImage(
-                context,
-                invoiceImage,
-                invoiceIconURL,
-                R.drawable.ic_retry_image_send
-            )
+            invoiceImage?.loadImageWithPlaceholder(invoiceIconURL, R.drawable.ic_retry_image_send)
         }
     }
 

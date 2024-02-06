@@ -10,7 +10,7 @@ import android.widget.ImageView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithPlaceholder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.brandlist.R
 import com.tokopedia.unifyprinciples.Typography
@@ -115,7 +115,7 @@ class BrandlistCategoryTabLayout(context: Context, attrs: AttributeSet?) : TabLa
     }
 
     private fun setTabIcon(iconView: ImageView, iconUrl: String) {
-        ImageHandler.loadImage(context, iconView, iconUrl, com.tokopedia.utils.R.drawable.ic_loading_placeholder)
+        iconView?.loadImageWithPlaceholder(iconUrl, com.tokopedia.utils.R.drawable.ic_loading_placeholder)
     }
 
     private fun setActiveText(categoryView: Typography) {

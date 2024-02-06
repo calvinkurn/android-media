@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
@@ -62,7 +62,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
 
         intent.getParcelableExtra<ChatRoomHeaderUiModel>(ApplinkConst.Chat.PARAM_HEADER)?.let {
 
-            ImageHandler.loadImageCircle2(this@BaseChatToolbarActivity, findViewById<ImageView>(R.id.user_avatar), it.image)
+            findViewById<ImageView>(R.id.user_avatar).loadImageCircle(it.image)
             (findViewById<TextView>(R.id.title)).text = it.name
             (findViewById<TextView>(R.id.label)).visibility = View.GONE
             (findViewById<TextView>(R.id.subtitle)).visibility = View.GONE

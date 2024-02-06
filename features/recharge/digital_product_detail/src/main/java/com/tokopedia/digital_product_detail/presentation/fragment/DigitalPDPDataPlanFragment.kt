@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
@@ -117,6 +118,7 @@ import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBa
 import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceOTPBottomSheet
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeOmniWidget
+import com.tokopedia.recharge_component.widget.isNumeric
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -802,12 +804,31 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
+        fun getContactByPermission(): MutableList<TopupBillsContact> {
+            context?.let {
+                val hasContactPermission = permissionCheckerHelper.hasPermission(
+                    it,
+                    arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT)
+                )
+                return if (hasContactPermission) {
+                    val contacts = viewModel.getContactList()
+                    contacts
+                } else {
+                    mutableListOf()
+                }
+            }
+            return mutableListOf()
+        }
+
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
+                val contacts = getContactByPermission()
+                val mappedContacts = DigitalPDPWidgetMapper.mapContactToWidgetModels(contacts)
                 setAutoCompleteList(
                     DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
                         autoComplete
-                    )
+                    ),
+                    mappedContacts
                 )
             }
         }
@@ -1151,7 +1172,11 @@ class DigitalPDPDataPlanFragment :
     private fun initClientNumberWidget() {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             setCustomInputNumberFormatter { inputNumber ->
-                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                if (inputNumber.isNumeric()) {
+                    CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                } else {
+                    inputNumber
+                }
             }
             setInputFieldStaticLabel(
                 getString(
@@ -1756,17 +1781,17 @@ class DigitalPDPDataPlanFragment :
     //endregion
 
     //region ClientNumberAutoCompleteListener
-    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
+    override fun onClickAutoComplete(autoCompleteItem: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (favorite.name.isNotEmpty()) {
-            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
+        if (autoCompleteItem.isFavoriteNumber) {
+            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId
             )
         } else {
-            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
+            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,

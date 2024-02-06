@@ -42,7 +42,7 @@
         android:paddingTop="2dp"
         android:paddingRight="2dp"
         android:paddingBottom="2dp"
-        android:src="@drawable/ic_badge_gold"
+        app:srcCompat="@drawable/ic_shop_badge_gold"
         android:layout_marginRight="1dp"
         app:layout_constraintBottom_toBottomOf="@id/text_shop_name"
         app:layout_constraintHorizontal_bias="0"

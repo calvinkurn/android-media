@@ -8,8 +8,8 @@ import android.webkit.URLUtil
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.loader.loadImageCenterCrop
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.CatalogBanner
 
@@ -30,7 +30,7 @@ class CatalogBannerPagerAdapter(context: Context?, private val mItems: List<Cata
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
         val banner = mInflater.inflate(R.layout.tp_item_catalog_banner, view, false) as ImageView
-        ImageHandler.loadImageFit2(banner.context, banner, mItems[position].imageUrl)
+        banner.loadImageCenterCrop(mItems[position].imageUrl)
         banner.setOnClickListener {
             if (URLUtil.isValidUrl(mItems[position].redirectUrl)) {
                 mView.openWebView(mItems[position].redirectUrl)

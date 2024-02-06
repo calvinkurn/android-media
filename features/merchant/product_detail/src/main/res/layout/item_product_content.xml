@@ -8,39 +8,6 @@
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tradein_header_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_tradein_half_rounded"
-        android:drawablePadding="8dp"
-        android:paddingStart="16dp"
-        android:paddingLeft="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="24dp"
-        android:paddingRight="24dp"
-        android:paddingBottom="8dp"
-        android:text="@string/tukar_tambah"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3"
-        app:typographyWeight="bold"
-        tools:visibility="visible" />
-
-    <com.tokopedia.product.detail.view.widget.CampaignRibbon
-        android:id="@+id/campaign_ribbon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tradein_header_container"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_main_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -159,7 +126,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt_main_price"
-        app:layout_constraintTop_toBottomOf="@+id/campaign_ribbon"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_2"
         tools:text="Simple Minimalistic Ergonomic White Chair" />
 

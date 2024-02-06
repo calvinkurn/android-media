@@ -119,5 +119,17 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="false"
             android:name=".presentation.webview.RechargeCheckBalanceWebViewActivity"/>
+        <activity
+            android:name="com.tokopedia.digital_product_detail.pulsa.DigitalPDPPulsaActivityStub"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false"/>
+        <activity
+            android:name="com.tokopedia.digital_product_detail.dataplan.DigitalPDPDataPlanActivityStub"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false"/>
     </application>
 </manifest>

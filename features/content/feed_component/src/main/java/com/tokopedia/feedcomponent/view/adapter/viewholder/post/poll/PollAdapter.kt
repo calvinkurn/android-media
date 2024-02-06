@@ -1,8 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +10,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentModel
@@ -23,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.getBitmapImageUrl
 
 /**
  * @author by milhamj on 12/12/18.
@@ -87,32 +83,21 @@ class PollAdapter(private val contentPosition: Int,
 
             tvOption.text = element.option
             percent.text = element.percentage.toString()
-            val target = object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
 
-                }
+            element.imageUrl.getBitmapImageUrl(imageView.context) {
+                imageView.setImageBitmap(it)
+                imageView.post {
+                    shadowLayer.layoutParams = RelativeLayout.LayoutParams(
+                        imageView.height,
+                        imageView.width)
 
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    imageView.setImageBitmap(resource)
-                    imageView.post {
-                        shadowLayer.layoutParams = RelativeLayout.LayoutParams(
-                                imageView.height,
-                                imageView.width)
-
-                        if (element.selected == PollContentOptionModel.DEFAULT) {
-                            shadowLayer.gone()
-                        } else {
-                            shadowLayer.visible()
-                        }
+                    if (element.selected == PollContentOptionModel.DEFAULT) {
+                        shadowLayer.gone()
+                    } else {
+                        shadowLayer.visible()
                     }
                 }
-
             }
-            ImageHandler.loadImageWithTarget(
-                    imageView.context,
-                    element.imageUrl,
-                    target
-            )
 
             itemView.setOnClickListener {
                 listener?.onPollOptionClick(

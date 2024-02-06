@@ -1310,7 +1310,8 @@ class DynamicProductDetailViewModel @Inject constructor(
             pageNumber = DEFAULT_PAGE_NUMBER,
             pageName = pageName,
             productIds = arrayListOf(productId),
-            isTokonow = isTokoNow
+            isTokonow = isTokoNow,
+            hasNewProductCardEnabled = true
         )
         val response = getRecommendationUseCase
             .get()
