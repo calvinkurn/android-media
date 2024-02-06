@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentCouponWidgetBinding
+import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetAdapter
 import com.tokopedia.home_component.viewholders.layoutmanager.DynamicGridLayoutManager
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
@@ -26,6 +27,9 @@ class CouponWidgetViewHolder constructor(
 
     override fun bind(element: CouponWidgetDataModel?) {
         if (element == null) return
+
+        binding?.headerView?.bind(element.header())
+        binding?.root?.setGradientBackground(element.backgroundGradientColor)
 
         if (binding?.lstCoupon?.adapter == null) {
             val adapter = CouponWidgetAdapter()
