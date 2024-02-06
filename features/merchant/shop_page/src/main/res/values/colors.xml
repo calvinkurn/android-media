@@ -35,6 +35,7 @@
     <color name="dms_clr_NN_900_light">#2E3137</color>
     <color name="dms_static_white">#ffffff</color>
     <color name="dms_static_black">#000000</color>
+    <color name="dms_static_black_80000000">#80000000</color>
     
     <!--Shop Info Reimagine-->
     <color name="dms_clr_Unify_NN0_70_light">#B3121212</color>
