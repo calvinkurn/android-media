@@ -20,6 +20,9 @@ data class ProductMiniSocialProofDataModel(
         customBlocksName = "ProductMiniSocialProofDataModel"
     ) {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name

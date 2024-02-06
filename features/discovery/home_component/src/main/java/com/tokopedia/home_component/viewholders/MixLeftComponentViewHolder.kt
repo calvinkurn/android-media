@@ -173,6 +173,8 @@ class MixLeftComponentViewHolder (itemView: View,
                 }
             })
         } else {
+            image.invisible()
+            parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
             loadingBackground.hide()
         }
     }
@@ -254,7 +256,11 @@ class MixLeftComponentViewHolder (itemView: View,
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ChannelModelMapper.mapToProductCardModel(element, cardInteraction),
+                    ChannelModelMapper.mapToProductCardModel(
+                        element,
+                        cardInteraction,
+                        isInBackground = channel.channelBanner.gradientColor.hasGradientBackground(itemView.context)
+                    ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
@@ -282,7 +288,13 @@ class MixLeftComponentViewHolder (itemView: View,
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.product_card_flashsale_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+        return productCardModelList.getMaxHeightForGridView(
+            itemView.context,
+            Dispatchers.Default,
+            productCardWidth,
+            isReimagine = true,
+            useCompatPadding = true,
+        )
     }
 
     private fun setHeaderComponent(element: MixLeftDataModel) {

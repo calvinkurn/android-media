@@ -94,12 +94,13 @@
 /features/merchant/shop_discount/                       @tokopedia/android-minionken-dev
 /features/merchant/campaign_common/                     @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_flash_sale               @tokopedia/android-minionken-dev
-/features/promo/mvc_widget  					        @tokopedia/android-minionken-dev
+/features/promo/mvc_widget  				@tokopedia/android-minionken-dev
 /features/merchant/seller_tokopedia_flash_sale          @tokopedia/android-minionken-dev
 /features/merchant/seller_mvc_creation                  @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_nib                      @tokopedia/android-minionken-dev
 /features/promo/merchant_voucher                        @tokopedia/android-minionken-dev
-/features/merchant/buy_more_get_more                    @tokopedia/android-minionken-dev
+/features/merchant/buy_more_get_more  	                @tokopedia/android-minionken-dev
+/features/merchant/bmsm_widget				@tokopedia/android-minionken-dev
 
 /features/merchant/product_add_edit/                    @tokopedia/android-minionpaul-dev
 /features/merchant/product_service_widget/              @tokopedia/android-minionpaul-dev
@@ -169,6 +170,7 @@
 /features/recharge/recharge_component                   @tokopedia/android-minionoscar-dev
 /features/recharge/recharge_credit_card                 @tokopedia/android-minionoscar-dev
 /features/recharge/recharge_general                     @tokopedia/android-minionoscar-dev
+/features/recharge/rechargeocr                          @tokopedia/android-minionoscar-dev
 /features/recharge/voucher_game                         @tokopedia/android-minionoscar-dev
 /features/recharge/recharge_pdp_emoney                  @tokopedia/android-minionoscar-dev
 /features/recharge/digital_product_detail               @tokopedia/android-minionoscar-dev

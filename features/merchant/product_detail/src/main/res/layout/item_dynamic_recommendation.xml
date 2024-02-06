@@ -99,6 +99,7 @@
             android:clipToPadding="false"
             android:scrollbars="none"
             android:visibility="gone"
+            app:reimagine="true"
             tools:layoutManager="LinearLayoutManager"
             tools:orientation="horizontal"
             tools:visibility="visible" />
