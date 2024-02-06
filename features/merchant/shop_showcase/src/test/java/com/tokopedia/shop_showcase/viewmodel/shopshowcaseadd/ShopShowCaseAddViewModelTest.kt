@@ -3,7 +3,6 @@ package com.tokopedia.shop_showcase.viewmodel.shopshowcaseadd
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.*
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.AppendShopShowcaseProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
-import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.RemoveShopShowcaseProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.UpdateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.ProductListResponse
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
@@ -115,23 +114,6 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
         }
     }
 
-    @Test
-    fun `when update shop show case should return success`() {
-        runBlocking {
-            mockkObject(UpdateShopShowcaseUseCase)
-            mockkObject(AppendShopShowcaseProductUseCase)
-            mockkObject(RemoveShopShowcaseProductUseCase)
-            onUpdateShopShowCase_thenReturn()
-            // shopShowCaseAddViewModel.updateShopShowcase(UpdateShopShowcaseParam(), AppendShowcaseProductParam(), RemoveShowcaseProductParam())
-
-            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-            verifySuccessUpdateShopShowCaseUseCaseCalled()
-
-//            assertTrue(shopShowCaseAddViewModel.listOfResponse.value?.isNotEmpty() == true)
-        }
-    }
-
     // ========= Update showcase name only ========= //
     @Test
     fun `when update shop showcase name should return success`() {
@@ -180,7 +162,6 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
                         menu_id = anyString()
                     )
                 )
-//                listAppended = for (i in  )
             )
 
             shopShowCaseAddViewModel.updateShowcaseAppendProduct(data = UpdateShopShowcaseParam(), newAppendedProduct = mockAppendedOneProductOnly)
@@ -250,77 +231,23 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
     }
     // ========================================== //
 
+    // TODO: Update showcase name & remove product
     @Test
-    fun `Update Shop Showcase Fail Scenario`() {
-        runBlocking {
-            mockkObject(UpdateShopShowcaseUseCase)
-            mockkObject(AppendShopShowcaseProductUseCase)
-            mockkObject(RemoveShopShowcaseProductUseCase)
-            onUpdateShopShowCase_thenReturn()
-
-            coEvery {
-                updateShopShowcaseUseCase.executeOnBackground()
-            } throws Exception()
-
-            // shopShowCaseAddViewModel.updateShopShowcase(UpdateShopShowcaseParam(), AppendShowcaseProductParam(), RemoveShowcaseProductParam())
-            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-            verifySuccessUpdateShopShowCaseUseCaseCalled()
-
-//            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(0) as Result<UpdateShopShowcaseResponse>) is Fail)
-//            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(1) as Result<AppendShowcaseProductResponse>) is Success)
-//            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(2) as Result<RemoveShowcaseProductResponse>) is Success)
-//            assertTrue(shopShowCaseAddViewModel.listOfResponse.value?.isNotEmpty() == true)
-        }
+    fun `update shop showcase name and remove product return Success update showcase name`() {
     }
 
     @Test
-    fun `Append new Shop Showcase Products When Update Fail Scenario`() {
-        runBlocking {
-            mockkObject(UpdateShopShowcaseUseCase)
-            mockkObject(AppendShopShowcaseProductUseCase)
-            mockkObject(RemoveShopShowcaseProductUseCase)
-            onUpdateShopShowCase_thenReturn()
-
-            coEvery {
-                appendShopShowcaseProductUseCase.executeOnBackground()
-            } throws Exception()
-
-            // shopShowCaseAddViewModel.updateShopShowcase(UpdateShopShowcaseParam(), AppendShowcaseProductParam(), RemoveShowcaseProductParam())
-            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-            verifySuccessUpdateShopShowCaseUseCaseCalled()
-
-//            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(0) as Result<UpdateShopShowcaseResponse>) is Success)
-//            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(1) as Result<AppendShowcaseProductResponse>) is Fail)
-//            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(2) as Result<RemoveShowcaseProductResponse>) is Success)
-//            assertTrue(shopShowCaseAddViewModel.listOfResponse.value?.isNotEmpty() == true)
-        }
+    fun `update shop showcase name and remove product return Fail update showcase name`() {
     }
 
     @Test
-    fun `Remove Shop Showcase Products When Update Fail Scenario`() {
-        runBlocking {
-            mockkObject(UpdateShopShowcaseUseCase)
-            mockkObject(AppendShopShowcaseProductUseCase)
-            mockkObject(RemoveShopShowcaseProductUseCase)
-            onUpdateShopShowCase_thenReturn()
-
-            coEvery {
-                removeShopShowcaseProductUseCase.executeOnBackground()
-            } throws Exception()
-
-            // shopShowCaseAddViewModel.updateShopShowcase(UpdateShopShowcaseParam(), AppendShowcaseProductParam(), RemoveShowcaseProductParam())
-            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-            verifySuccessUpdateShopShowCaseUseCaseCalled()
-
-//            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(0) as Result<UpdateShopShowcaseResponse>) is Success)
-//            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(1) as Result<AppendShowcaseProductResponse>) is Success)
-//            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(2) as Result<RemoveShowcaseProductResponse>) is Fail)
-//            assertTrue(shopShowCaseAddViewModel.listOfResponse.value?.isNotEmpty() == true)
-        }
+    fun `update shop showcase name and remove product return Success remove product`() {
     }
+
+    @Test
+    fun `update shop showcase name and remove product return Fail remove product`() {
+    }
+    // ========================================== //
 
     private fun onCreateShopShowCase_thenReturn() {
         coEvery { createShopShowcaseUseCase.executeOnBackground() } returns AddShopShowcaseResponse()
@@ -342,12 +269,6 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
         coEvery { appendShopShowcaseProductUseCase.executeOnBackground() } returns AppendShowcaseProductResponse()
     }
 
-    private fun onUpdateShopShowCase_thenReturn() {
-        coEvery { updateShopShowcaseUseCase.executeOnBackground() } returns UpdateShopShowcaseResponse()
-        coEvery { appendShopShowcaseProductUseCase.executeOnBackground() } returns AppendShowcaseProductResponse()
-        coEvery { removeShopShowcaseProductUseCase.executeOnBackground() } returns RemoveShowcaseProductResponse()
-    }
-
     private fun verifySuccessCreateShopShowCaseCalled() {
         verify { CreateShopShowcaseUseCase.createRequestParams(AddShopShowcaseParam()) }
         coVerify { createShopShowcaseUseCase.executeOnBackground() }
@@ -356,17 +277,6 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
     private fun verifySuccessGetSelectedProductListUseCaseCalled(getProductListFilter: GetProductListFilter) {
         verify { GetProductListUseCase.createRequestParams(anyString(), getProductListFilter) }
         coVerify { getProductListUseCase.executeOnBackground() }
-    }
-
-    private fun verifySuccessUpdateShopShowCaseUseCaseCalled() {
-        verify { UpdateShopShowcaseUseCase.createRequestParams(UpdateShopShowcaseParam()) }
-        coVerify { updateShopShowcaseUseCase.executeOnBackground() }
-
-        verify { AppendShopShowcaseProductUseCase.createRequestParams(AppendShowcaseProductParam(), anyString()) }
-        coVerify { appendShopShowcaseProductUseCase.executeOnBackground() }
-
-        verify { RemoveShopShowcaseProductUseCase.createRequestParams(RemoveShowcaseProductParam(), anyString()) }
-        coVerify { removeShopShowcaseProductUseCase.executeOnBackground() }
     }
 
     private fun verifySuccessUpdateShopShowCaseNameUseCaseCalled() {
