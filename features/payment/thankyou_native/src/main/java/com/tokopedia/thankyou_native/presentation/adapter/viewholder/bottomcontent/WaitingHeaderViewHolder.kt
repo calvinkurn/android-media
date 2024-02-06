@@ -9,6 +9,7 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.databinding.ThankWaitingHeaderBinding
 import com.tokopedia.thankyou_native.presentation.adapter.model.WaitingHeaderUiModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
@@ -72,6 +73,7 @@ class WaitingHeaderViewHolder(
         binding?.seeDetailBtn?.setOnClickListener {
             listener.onSeeDetailInvoice()
         }
+        if (binding?.headerTicker?.isVisible == true) return
         binding?.headerTicker?.apply {
             shouldShowWithAction(data.tickerData.isNotEmpty()) {
                 val tickerViewPagerAdapter = TickerPagerAdapter(context, data.tickerData)

@@ -19,7 +19,7 @@
     <string name="thank_see_detail">Lihat Detail</string>
     <string name="thank_see_payment_methods">Lihat Cara Bayar</string>
     <string name="thank_bank_branch"><![CDATA[Atas nama <b>%s</b>]]></string>
-    <string name="thank_pay_before">Bayar Sebelum</string>
+    <string name="thank_pay_before">Bayar sebelum</string>
 
     <string name="thank_virtual_account_tag">Nomor Virtual Account</string>
     <string name="thank_klikBCA_virtual_account_tag">User ID KlikBCA</string>
