@@ -1201,13 +1201,6 @@ class OrderSummaryPageViewModel @Inject constructor(
                 else -> {
                     validateUsePromoRevampUiModel = null
                     updatePromoState(LastApplyUiModel())
-                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
-                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
-                            shopId = orderShop.value.shopId,
-                            userId = userSession.userId,
-                            isSuccess = false
-                        )
-                    }
                 }
             }
             updateCart()
