@@ -60,7 +60,6 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
-import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondBottomSheetManagerImpl
 import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondListenerImpl
 import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondBottomSheetManager
 import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondListener
@@ -185,8 +184,7 @@ open class SomDetailFragment :
     SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener,
     IBuyerRequestCancelRespondListener.Mediator,
     IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl(),
-    IBuyerRequestCancelRespondBottomSheetManager.Mediator,
-    IBuyerRequestCancelRespondBottomSheetManager by BuyerRequestCancelRespondBottomSheetManagerImpl() {
+    IBuyerRequestCancelRespondBottomSheetManager.Mediator {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -232,11 +230,7 @@ open class SomDetailFragment :
     protected val bottomSheetManager by lazy {
         view?.let {
             if (it is ViewGroup) {
-                BottomSheetManager(
-                    view = it,
-                    fragmentManager = childFragmentManager,
-                    buyerRequestCancelRespondBottomSheetManager = this
-                )
+                BottomSheetManager(view = it, fragmentManager = childFragmentManager)
             } else {
                 null
             }
@@ -453,7 +447,11 @@ open class SomDetailFragment :
     }
 
     private fun setupMediators() {
-        registerBuyerRequestCancelRespondBottomSheet(this, this, this)
+        bottomSheetManager?.registerBuyerRequestCancelRespondBottomSheet(
+            bottomSheetManagerMediator = this,
+            bottomSheetListenerMediator = this,
+            bottomSheetListener = this
+        )
     }
 
     private fun observingDetail() {

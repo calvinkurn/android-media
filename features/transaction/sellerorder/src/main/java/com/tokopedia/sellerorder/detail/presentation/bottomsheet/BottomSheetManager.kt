@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondBottomSheetManagerImpl
 import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondBottomSheetManager
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
@@ -13,9 +14,8 @@ import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderE
 
 class BottomSheetManager(
     private val view: ViewGroup,
-    private val fragmentManager: FragmentManager,
-    buyerRequestCancelRespondBottomSheetManager: IBuyerRequestCancelRespondBottomSheetManager
-): IBuyerRequestCancelRespondBottomSheetManager by buyerRequestCancelRespondBottomSheetManager {
+    private val fragmentManager: FragmentManager
+): IBuyerRequestCancelRespondBottomSheetManager by BuyerRequestCancelRespondBottomSheetManagerImpl() {
     private var secondaryBottomSheet: SomDetailSecondaryActionBottomSheet? = null
     private var somRejectReasonBottomSheet: SomRejectReasonBottomSheet? = null
     private var somProductEmptyBottomSheet: SomBottomSheetProductEmpty? = null
