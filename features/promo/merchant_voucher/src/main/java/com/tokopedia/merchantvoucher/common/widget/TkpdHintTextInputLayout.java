@@ -35,6 +35,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
 
 import com.tokopedia.merchantvoucher.R;
+import com.tokopedia.utils.text.currency.AfterTextWatcher;
 
 import java.util.Locale;
 
@@ -94,17 +95,6 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
     private int mPrefixLength;
     private String prefixString;
-
-    public abstract class AfterTextWatcher implements TextWatcher {
-        @Override
-        public final void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public final void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-        @Override
-        public abstract void afterTextChanged(Editable s);
-    }
 
     public TkpdHintTextInputLayout(Context context) {
         super(context);
