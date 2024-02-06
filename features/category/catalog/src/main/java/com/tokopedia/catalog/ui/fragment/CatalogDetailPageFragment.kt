@@ -115,6 +115,7 @@ import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.listener.PanelImageListener
+import com.tokopedia.catalogcommon.listener.PriceCtaSellerOfferingListener
 import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.listener.SliderImageTextListener
 import com.tokopedia.catalogcommon.listener.SupportFeatureListener
@@ -182,7 +183,8 @@ class CatalogDetailPageFragment :
     SliderImageTextListener,
     CharacteristicListener,
     PanelImageListener,
-    SellerOfferingListener {
+    SellerOfferingListener,
+    PriceCtaSellerOfferingListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -230,7 +232,8 @@ class CatalogDetailPageFragment :
                 imageTextListener = this,
                 characteristicListener = this,
                 panelImageListener = this,
-                sellerOfferingListener = this
+                sellerOfferingListener = this,
+                priceCtaSellerOfferingListener = this
             )
         )
     }
@@ -1198,5 +1201,9 @@ class CatalogDetailPageFragment :
 
     override fun onSellerOfferingProductInfo(productId: String) {
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+    }
+
+    override fun onSellerOfferingButtonRightClicked() {
+        goToProductListPage()
     }
 }

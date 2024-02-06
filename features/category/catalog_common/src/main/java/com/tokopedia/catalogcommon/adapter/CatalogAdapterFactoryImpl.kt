@@ -10,6 +10,7 @@ import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.listener.PanelImageListener
+import com.tokopedia.catalogcommon.listener.PriceCtaSellerOfferingListener
 import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.listener.SliderImageTextListener
 import com.tokopedia.catalogcommon.listener.SupportFeatureListener
@@ -81,7 +82,8 @@ class CatalogAdapterFactoryImpl(
     private val imageTextListener: SliderImageTextListener? = null,
     private val characteristicListener: CharacteristicListener? = null,
     private val panelImageListener: PanelImageListener? = null,
-    private val sellerOfferingListener: SellerOfferingListener? = null
+    private val sellerOfferingListener: SellerOfferingListener? = null,
+    private val priceCtaSellerOfferingListener: PriceCtaSellerOfferingListener? = null
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -105,7 +107,7 @@ class CatalogAdapterFactoryImpl(
             ColumnedInfoViewHolder.LAYOUT -> ColumnedInfoViewHolder(view, columnedInfoListener)
             BuyerReviewViewHolder.LAYOUT -> BuyerReviewViewHolder(view, buyerReviewListener)
             SellerOfferingViewHolder.LAYOUT -> SellerOfferingViewHolder(view, sellerOfferingListener)
-            PriceCtaSellerOfferingViewHolder.LAYOUT -> PriceCtaSellerOfferingViewHolder(view)
+            PriceCtaSellerOfferingViewHolder.LAYOUT -> PriceCtaSellerOfferingViewHolder(view, priceCtaSellerOfferingListener)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
