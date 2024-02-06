@@ -105,7 +105,7 @@ data class CartItemHolderData(
     var addOnsProduct: CartAddOnData = CartAddOnData(),
 
     // Cart Product Label
-    val cartProductLabelData: CartProductLabelData = CartProductLabelData(),
+    var cartProductLabelData: CartProductLabelData = CartProductLabelData(),
 
     // BMGM
     var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData(),

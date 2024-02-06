@@ -17,10 +17,12 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDetail
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.GiftingAddOn
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.GroupShopCart
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Product
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductLabel
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Shop
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
+import com.tokopedia.cart.view.customview.HexColor
 import com.tokopedia.cart.view.uimodel.CartAddOnData
 import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartAddOnWidgetData
@@ -31,6 +33,7 @@ import com.tokopedia.cart.view.uimodel.CartGroupBmGmHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartProductBenefitData
+import com.tokopedia.cart.view.uimodel.CartProductLabelData
 import com.tokopedia.cart.view.uimodel.CartPurchaseBenefitData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartShopCoachmarkPlusData
@@ -64,6 +67,9 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.utils.date.DateUtil
+import java.text.SimpleDateFormat
+import java.util.Date
 import kotlin.math.min
 
 object CartUiModelMapper {
@@ -339,6 +345,7 @@ object CartUiModelMapper {
                             availableShop = null,
                             shopData = shopUiModel,
                             shouldShowBmGmBottomDivider = false
+
                         )
                         productUiModelList.add(productUiModel)
                     }
@@ -594,6 +601,7 @@ object CartUiModelMapper {
             showBundlePrice = cartData.showBundlePrice
             cartBmGmTickerData = mapCartBmGmTickerData(cartDetail, shopData, productId)
             showBmGmBottomDivider = shouldShowBmGmBottomDivider
+            cartProductLabelData = mapProductLabel(product.productLabel)
         }
     }
 
@@ -926,5 +934,30 @@ object CartUiModelMapper {
         } else {
             return CartDetailInfo()
         }
+    }
+
+    private fun mapProductLabel(productLabel: ProductLabel): CartProductLabelData {
+        val expiredTime = productLabel.labelDetail.timer.expiredTime.toDate()?.time ?: 0L
+        val serverTime = productLabel.labelDetail.timer.serverTime.toDate()?.time ?: 0L
+        val remainingTimeMillis = expiredTime - serverTime
+        return CartProductLabelData(
+            type = productLabel.labelType,
+            remainingTimeMillis = remainingTimeMillis,
+            imageLogoUrl = productLabel.labelDetail.assetLabel.imageAsset.imageLabel,
+            iconUrl = productLabel.labelDetail.assetLabel.textAsset.squareIcon,
+            text = productLabel.labelDetail.assetLabel.textAsset.label,
+            textColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.fontColor),
+            backgroundStartColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.backgroundStartColor),
+            backgroundEndColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.backgroundEndColor),
+            lineColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.lineColor)
+        )
+    }
+}
+
+private fun String.toDate(): Date? {
+    return try {
+        SimpleDateFormat(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.DEFAULT_LOCALE).parse(this)
+    } catch (e: Exception) {
+        null
     }
 }
