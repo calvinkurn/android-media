@@ -101,7 +101,7 @@ import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CategoryWidgetV2ViewHolder
-import com.tokopedia.home_component.viewholders.coupon.CouponWidgetViewHolder
+import com.tokopedia.home_component.viewholders.CouponWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CueWidgetCategoryViewHolder
 import com.tokopedia.home_component.viewholders.DealsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.DynamicIconViewHolder

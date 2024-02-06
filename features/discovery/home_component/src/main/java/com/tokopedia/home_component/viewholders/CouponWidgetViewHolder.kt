@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.viewholders.coupon
+package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentCouponWidgetBinding
-import com.tokopedia.home_component.viewholders.layoutmanager.CouponGridLayoutManager
+import com.tokopedia.home_component.viewholders.coupon.CouponWidgetAdapter
+import com.tokopedia.home_component.viewholders.layoutmanager.DynamicGridLayoutManager
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -32,14 +33,14 @@ class CouponWidgetViewHolder constructor(
 
     override fun bind(element: CouponWidgetDataModel?) {
         if (binding?.lstCoupon?.adapter == null) {
-            val adapter = ItemCouponWidgetView.Adapter()
+            val adapter = CouponWidgetAdapter()
 
-            binding?.lstCoupon?.layoutManager = CouponGridLayoutManager()
+            binding?.lstCoupon?.layoutManager = DynamicGridLayoutManager(itemView.context)
             binding?.lstCoupon?.adapter = adapter
 
             adapter.setData(mockData)
         } else {
-            val adapter = binding?.lstCoupon?.adapter as? ItemCouponWidgetView.Adapter
+            val adapter = binding?.lstCoupon?.adapter as? CouponWidgetAdapter
             adapter?.setData(mockData)
         }
     }
