@@ -8,7 +8,6 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentCouponWidgetBinding
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetAdapter
 import com.tokopedia.home_component.viewholders.layoutmanager.DynamicGridLayoutManager
-import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -19,12 +18,6 @@ class CouponWidgetViewHolder constructor(
 
     private val binding: HomeComponentCouponWidgetBinding? by viewBinding()
 
-    private val mockData = listOf(
-        CouponWidgetDataItemModel(shopName = "Loren Ipsum"),
-        CouponWidgetDataItemModel(shopName = "Foo"),
-        CouponWidgetDataItemModel(shopName = "Bar"),
-    )
-
     init {
         if (recyclerViewPool != null) {
             binding?.lstCoupon?.setRecycledViewPool(recyclerViewPool)
@@ -32,16 +25,17 @@ class CouponWidgetViewHolder constructor(
     }
 
     override fun bind(element: CouponWidgetDataModel?) {
+        if (element == null) return
+
         if (binding?.lstCoupon?.adapter == null) {
             val adapter = CouponWidgetAdapter()
-
             binding?.lstCoupon?.layoutManager = DynamicGridLayoutManager(itemView.context)
             binding?.lstCoupon?.adapter = adapter
 
-            adapter.setData(mockData)
+            adapter.setData(element.coupons)
         } else {
             val adapter = binding?.lstCoupon?.adapter as? CouponWidgetAdapter
-            adapter?.setData(mockData)
+            adapter?.setData(element.coupons)
         }
     }
 
