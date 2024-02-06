@@ -6,17 +6,23 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.TimeLimit
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.LabelGroup
+import com.tokopedia.home_component.visitable.CouponCtaState
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.productcard.reimagine.LabelGroupStyle
+import com.tokopedia.utils.htmltags.HtmlUtil
 
 object CouponWidgetMapper {
+
+    private const val MAX_COUPON_SIZE = 3
 
     fun map(model: ChannelModel): CouponWidgetDataModel {
         return CouponWidgetDataModel(
             channelModel = model,
             backgroundGradientColor = model.channelBanner.gradientColor,
-            coupons = model.channelGrids.mapToAutomationCouponWidgetModel()
+            coupons = model.channelGrids
+                .take(MAX_COUPON_SIZE)
+                .mapToAutomationCouponWidgetModel()
         )
     }
 
@@ -51,7 +57,9 @@ object CouponWidgetMapper {
             backgroundUrl = labelGroup.toUrl("background-image"),
             timeLimit = TimeLimit.Text(
                 prefix = labelGroup.toText("expired-text"),
-                endText = labelGroup.toText("expired-value").value
+                endText = HtmlUtil
+                    .fromHtml(labelGroup.toText("expired-value").value)
+                    .toString()
             ),
             iconUrl = labelGroup.toUrl("icon-image"),
             shopName = null,
@@ -69,22 +77,29 @@ object CouponWidgetMapper {
             badgeText = null,
         )
 
-    private fun List<LabelGroup>.getCtaState(): CouponWidgetDataItemModel.CtaState {
-        val label = firstOrNull { it.position == "cta-text" }
-        return when (label?.type) {
-            "claim" -> CouponWidgetDataItemModel.CtaState.Claim
-            "redirect" -> CouponWidgetDataItemModel.CtaState.Redirect
-            else -> CouponWidgetDataItemModel.CtaState.OutOfStock
+    private fun List<LabelGroup>.getCtaState(): CouponCtaState {
+        val data = CouponCtaState.Data(
+            catalogId = findByPosition("catalog-id")?.url ?: "",
+            url = findByPosition("cta-redirect-url")?.url ?: "",
+            appLink = findByPosition("cta-redirect-applink")?.url ?: ""
+        )
+
+        return when (findByPosition("cta-text")?.type) {
+            "claim" -> CouponCtaState.Claim(data)
+            "redirect" -> CouponCtaState.Redirect(data)
+            else -> CouponCtaState.OutOfStock
         }
     }
 
     private fun List<LabelGroup>.toText(positionType: String): DynamicColorText {
-        val label = firstOrNull { it.position == positionType } ?: return DynamicColorText("", "")
+        val label = findByPosition(positionType) ?: return DynamicColorText("", "")
         val textColor = label.styles.first { it.key == LabelGroupStyle.TEXT_COLOR }
         return DynamicColorText(label.title, textColor.value)
     }
 
     private fun List<LabelGroup>.toUrl(position: String): String {
-        return firstOrNull { it.position == position }?.url ?: ""
+        return findByPosition(position)?.url ?: ""
     }
+
+    private fun List<LabelGroup>.findByPosition(position: String) = firstOrNull { it.position == position }
 }
