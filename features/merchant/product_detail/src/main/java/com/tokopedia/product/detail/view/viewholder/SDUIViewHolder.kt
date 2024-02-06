@@ -51,8 +51,8 @@ class SDUIViewHolder(
         val view = sduiManager.value.createView(
             context,
             templateJSON,
-            "divKitView",
-            cardJson
+            cardJson,
+            "divKitView"
         ) ?: return
 
         view.addOnImpressionListener(
@@ -70,12 +70,14 @@ class SDUIViewHolder(
 
     private fun generateActionHandler() = lazy {
         object : SDUITrackingInterface {
-            override var useClickTrackingDefaultImpl: Boolean = false
-            override var useViewTrackingDefaultImpl: Boolean = false
 
             override fun onViewClick(trackerPayload: JSONObject?) {
                 val element = element ?: return
                 listener.onClickDynamicOneLiner("", getComponentTrackData(element))
+            }
+
+            override fun onViewVisible(trackerPayload: JSONObject?) {
+                // No Op
             }
         }
     }
