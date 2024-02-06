@@ -63,7 +63,8 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     timestamp = it.createTimestamp,
                     description = Uri.decode(it.review)
                 ),
-                mediaSelectedPosition = 0
+                mediaSelectedPosition = 0,
+                isWatchMode = false
             )
         }
         return ReviewUiModel(
@@ -110,7 +111,8 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     timestamp = it.createTimestamp,
                     description = Uri.decode(it.review)
                 ),
-                mediaSelectedPosition = 0
+                mediaSelectedPosition = 0,
+                isWatchMode = false
             )
         }
         return ReviewUiModel(

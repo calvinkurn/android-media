@@ -79,10 +79,9 @@ class ReviewFragment @Inject constructor(
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val index = getCurrentPosition()
-                    viewModel.onAction(ProductPreviewAction.UpdateReviewPosition(index))
-                }
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+                val index = getCurrentPosition()
+                viewModel.onAction(ProductPreviewAction.ReviewSelected(index))
             }
         }
     }
@@ -240,7 +239,7 @@ class ReviewFragment @Inject constructor(
         _binding = null
     }
 
-    override fun onMenuClicked(menu: ReviewMenuStatus) {
+    override fun onMenuClicked() {
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
 
@@ -249,18 +248,25 @@ class ReviewFragment @Inject constructor(
      */
     override fun onOptionClicked(menu: ContentMenuItem) {
         when (menu.type) {
+            ContentMenuIdentifier.WatchMode -> {
+                MenuBottomSheet.get(childFragmentManager)?.dismiss()
+                viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
+            }
             ContentMenuIdentifier.Report ->
                 ReviewReportBottomSheet.getOrCreate(
                     childFragmentManager,
                     requireActivity().classLoader
                 ).show(childFragmentManager)
-
-            else -> {}
+            else -> return
         }
     }
 
     override fun onLike(status: ReviewLikeUiState) {
         viewModel.onAction(ProductPreviewAction.Like(status))
+    }
+
+    override fun updateReviewWatchMode() {
+        viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
     }
 
     /**
