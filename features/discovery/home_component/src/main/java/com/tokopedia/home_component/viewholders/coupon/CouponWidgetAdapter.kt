@@ -6,13 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
 
 class CouponWidgetAdapter constructor(
-    private val data: MutableList<CouponWidgetDataItemModel> = mutableListOf()
+    private val data: MutableList<CouponWidgetDataItemModel> = mutableListOf(),
+    private val listener: CouponWidgetListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            FULL -> SingleCouponWidgetViewHolder.create(parent)
-            GRID -> GridCouponWidgetViewHolder.create(parent)
+            FULL -> SingleCouponWidgetViewHolder.create(parent, listener)
+            GRID -> GridCouponWidgetViewHolder.create(parent, listener)
             else -> throw Throwable("Unsupported view type.")
         }
     }

@@ -121,6 +121,7 @@ import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.TodoWidgetViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
+import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
@@ -206,6 +207,7 @@ class HomeAdapterFactory(
     private val bestSellerListener: BestSellerListener,
     private val specialReleaseRevampListener: SpecialReleaseRevampListener,
     private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
+    private val couponWidgetListener: CouponWidgetListener,
     private val homeThematicUtil: HomeThematicUtil
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
@@ -637,7 +639,7 @@ class HomeAdapterFactory(
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
-            CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool)
+            CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool, couponWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

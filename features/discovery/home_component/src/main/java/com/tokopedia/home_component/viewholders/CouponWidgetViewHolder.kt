@@ -8,13 +8,15 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentCouponWidgetBinding
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetAdapter
+import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.viewholders.layoutmanager.DynamicGridLayoutManager
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CouponWidgetViewHolder constructor(
     view: View,
-    recyclerViewPool: RecyclerView.RecycledViewPool?
+    recyclerViewPool: RecyclerView.RecycledViewPool?,
+    private val listener: CouponWidgetListener
 ) : AbstractViewHolder<CouponWidgetDataModel>(view) {
 
     private val binding: HomeComponentCouponWidgetBinding? by viewBinding()
@@ -32,7 +34,7 @@ class CouponWidgetViewHolder constructor(
         binding?.root?.setGradientBackground(element.backgroundGradientColor)
 
         if (binding?.lstCoupon?.adapter == null) {
-            val adapter = CouponWidgetAdapter()
+            val adapter = CouponWidgetAdapter(listener = listener)
             binding?.lstCoupon?.layoutManager = DynamicGridLayoutManager(itemView.context)
             binding?.lstCoupon?.adapter = adapter
 

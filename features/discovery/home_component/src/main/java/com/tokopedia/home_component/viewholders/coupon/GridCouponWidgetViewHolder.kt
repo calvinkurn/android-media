@@ -11,22 +11,27 @@ import com.tokopedia.home_component.databinding.LayoutCouponWidgetGridBinding
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class GridCouponWidgetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class GridCouponWidgetViewHolder constructor(
+    view: View,
+    private val listener: CouponWidgetListener
+) : RecyclerView.ViewHolder(view) {
 
     private val binding: LayoutCouponWidgetGridBinding? by viewBinding()
 
     fun onBind(model: CouponWidgetDataItemModel) {
+        val state = ButtonStateHandler(model.button, bindingAdapterPosition, listener)
+
         binding?.couponView?.setModel(model.coupon as AutomateCouponModel.Grid)
+        binding?.couponView?.setState(state)
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_coupon_widget_grid
 
-        fun create(parent: ViewGroup): GridCouponWidgetViewHolder {
-            return GridCouponWidgetViewHolder(
-                LayoutInflater.from(parent.context).inflate(LAYOUT, parent, false)
-            )
+        fun create(parent: ViewGroup, listener: CouponWidgetListener): GridCouponWidgetViewHolder {
+            val parentView = LayoutInflater.from(parent.context).inflate(LAYOUT, parent, false)
+            return GridCouponWidgetViewHolder(parentView, listener)
         }
     }
 }
