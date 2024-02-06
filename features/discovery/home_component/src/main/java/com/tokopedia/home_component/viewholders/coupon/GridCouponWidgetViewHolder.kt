@@ -6,11 +6,17 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.databinding.LayoutCouponWidgetGridBinding
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 class GridCouponWidgetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    fun onBind(model: CouponWidgetDataItemModel) {}
+    private val binding: LayoutCouponWidgetGridBinding? by viewBinding()
+
+    fun onBind(model: CouponWidgetDataItemModel) {
+        binding?.couponView?.setModel(model.coupon)
+    }
 
     companion object {
         @LayoutRes
