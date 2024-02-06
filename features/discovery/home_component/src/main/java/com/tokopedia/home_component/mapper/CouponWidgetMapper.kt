@@ -54,7 +54,7 @@ object CouponWidgetMapper {
                 endText = labelGroup.toText("expired-value").value
             ),
             iconUrl = labelGroup.toUrl("icon-image"),
-            shopName = labelGroup.toText("shop-name"),
+            shopName = null,
             badgeText = null,
         )
 
@@ -65,7 +65,7 @@ object CouponWidgetMapper {
             tnc = labelGroup.toText("tnc-text"),
             backgroundUrl = labelGroup.toUrl("background-image"),
             iconUrl = labelGroup.toUrl("icon-image"),
-            shopName = labelGroup.toText("shop-name"),
+            shopName = null,
             badgeText = null,
         )
 
