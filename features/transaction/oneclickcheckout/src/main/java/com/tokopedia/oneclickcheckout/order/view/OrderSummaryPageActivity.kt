@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -33,10 +32,6 @@ open class OrderSummaryPageActivity :
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_SOURCE),
             listAutoApplyPromo
         )
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

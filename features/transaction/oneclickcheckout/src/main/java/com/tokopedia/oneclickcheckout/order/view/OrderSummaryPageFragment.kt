@@ -240,7 +240,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     private var tenor: Int = 0
     private var gatewayCode: String = ""
     private var shouldShowToaster: Boolean = false
-    private var listPromoExternalAutoApply: ArrayList<PromoExternalAutoApply> = arrayListOf()
 
     private var binding by autoCleared<FragmentOrderSummaryPageBinding> {
         try {
@@ -699,7 +698,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                         handleError(failure.throwable)
                     }
                 }
-                is OccState.FirstLoad -> showMainContent(it.data)
+                is OccState.FirstLoad -> {
+                    showMainContent(it.data)
+                }
                 is OccState.Success -> showMainContent(it.data)
             }
         }
@@ -1275,7 +1276,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateGone()
         binding.loaderContent.animateShow()
-        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor, listPromoExternalAutoApply)
+        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor)
     }
 
     private fun setSourceFromPDP() {
@@ -2229,7 +2230,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     private fun checkPromoFromPdp() {
         val listPromoAutoApply = arguments?.getParcelableArrayList<PromoExternalAutoApply>(QUERY_LIST_PROMO_AUTO_APPLY)
         if (listPromoAutoApply?.isNotEmpty() == true) {
-            listPromoExternalAutoApply = listPromoAutoApply
+            viewModel.listPromoExternalAutoApplyCode = listPromoAutoApply
         }
     }
 

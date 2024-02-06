@@ -40,7 +40,6 @@ object ApplinkConstInternalMarketplace {
         "gateway_code={gateway_code}&" +
         "tenure_type={tenure_type}&" +
         "source={source}"
-
     const val ADD_ON_GIFTING = "$INTERNAL_MARKETPLACE/add-on-gifting"
 
     // AddEditProductCategoryActivity
