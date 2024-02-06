@@ -179,7 +179,7 @@ object DeeplinkDFApp {
         DF_TRAVEL to getDfTravel(),
         DF_USER_LIVENESS to getDfUserLiveness(),
         DF_USER_SETTINGS to getDfUserSettings(),
-        DF_STORIES_CREATION to getDfStoriesCreationMainApp(),
+        DF_STORIES_CREATION to getDfStoriesCreationMainApp()
     )
 
     fun getDfSellerappMap() = mapOf(
@@ -192,7 +192,7 @@ object DeeplinkDFApp {
         DF_SELLER_TALK to getDfSellerTalk(),
         DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
         DF_SELLER_PDP to getDfSellerPdp(),
-        DF_STORIES_CREATION to getDfStoriesCreationSellerApp(),
+        DF_STORIES_CREATION to getDfStoriesCreationSellerApp()
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
@@ -401,7 +401,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOPADS, PathType.PATTERN, "/dashboard", TOP_ADS_DASHBOARD),
         DFP(SCHEME_SELLERAPP, HOST_TOPADS, PathType.PATH, "/buy"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/buy"),
-        DFP(SCHEME_SELLERAPP, HOST_TOPADS, PathType.PATH, "/add-credit"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/add-credit"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/headline-ad-detail"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/history-credit"),
@@ -438,6 +437,7 @@ object DeeplinkDFApp {
 
         // seller_menu
         DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-menu"),
+        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-menu-compose"),
         DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-settings"),
 
         // shop_admin
@@ -720,7 +720,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // mediaeditor
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-editor"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor")
     )
 
     private fun getDfStoriesCreationSellerApp() = mutableListOf(
@@ -731,7 +731,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // mediaeditor
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor")
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {

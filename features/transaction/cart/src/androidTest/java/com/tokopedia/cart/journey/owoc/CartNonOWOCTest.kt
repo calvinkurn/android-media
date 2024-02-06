@@ -4,9 +4,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.cart.CartActivity
 import com.tokopedia.cart.robot.cartPage
-import com.tokopedia.cart.test.R
-import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -16,6 +15,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.cart.test.R as carttestR
 
 @UiTest
 class CartNonOWOCTest {
@@ -33,26 +33,25 @@ class CartNonOWOCTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_non_owoc_ui_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, carttestR.raw.cart_non_owoc_ui_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
     @Test
-    fun happyFlowTest_SingleOWOCGroup() {
+    fun happyFlowTest_nonOWOCGroup() {
         activityRule.launchActivity(null)
 
-        val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_cart)
+        val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(carttestR.id.rv_cart)
 
         cartPage {
             waitForData()
 
-            initData(context, R.raw.cart_non_owoc_ui_response)
+            initData(context, carttestR.raw.cart_non_owoc_ui_response)
             assertMainContent()
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 2)
             assertFirstCartGroupViewHolder(
-                view = activityRule.activity.findViewById(R.id.parent_view),
-                position = 3,
+                position = 2,
                 shopIndex = 0
             )
 

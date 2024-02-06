@@ -14,6 +14,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
@@ -108,6 +109,76 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                     addressId = "1",
                     products = listOf(Product()),
                     boMetadata = BoMetadata()
+                )
+            ).apply { warehouseId("0") }.build(),
+            ratesParam
+        )
+    }
+
+    @Test
+    fun generate_rates_param_with_gift() {
+        // given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                productId = 1,
+                weight = 1.0,
+                weightActual = 1.0,
+                quantity = 1,
+                isFreeShipping = true
+            ),
+            CheckoutProductBenefitModel(
+                "123",
+                productId = "2",
+                weight = 1,
+                weightActual = 1,
+                quantity = 2
+            ),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        val ratesParam = viewModel.generateRatesParam(CheckoutOrderModel("123"), "")
+
+        // then
+        assertEquals(
+            RatesParam.Builder(
+                emptyList(),
+                ShippingParam(
+                    uniqueId = "123",
+                    destinationDistrictId = "1",
+                    destinationLatitude = "123",
+                    destinationLongitude = "321",
+                    destinationPostalCode = "123",
+                    shopId = "0",
+                    insurance = 1,
+                    categoryIds = "0",
+                    addressId = "1",
+                    products = listOf(
+                        Product(productId = 1, isFreeShipping = true),
+                        Product(productId = 2)
+                    ),
+                    boMetadata = BoMetadata(),
+                    weightInKilograms = 0.003,
+                    weightActualInKilograms = 0.003
                 )
             ).apply { warehouseId("0") }.build(),
             ratesParam

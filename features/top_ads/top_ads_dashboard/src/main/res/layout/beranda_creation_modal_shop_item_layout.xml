@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/create_product_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/topads_dash_headline_title"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/create_product_title"
+        app:layout_constraintStart_toStartOf="@id/create_product_title"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN600"
+        tools:text="8 Grup Iklan Aktif" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/submit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/topads_auto_ps_add_ad_group"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="small"
+        app:unifyButtonVariant="ghost"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/accordian_list_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_count"
+        android:textSize="12sp"
+        android:textColor="@color/Unify_GN500"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:text="@string/topads_see_the_benefits"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/accordian_icon"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        app:srcCompat="@drawable/ic_dropdown_arrow"
+        app:layout_constraintTop_toTopOf="@id/accordian_list_title"
+        app:layout_constraintBottom_toBottomOf="@id/accordian_list_title"
+        app:layout_constraintStart_toEndOf="@id/accordian_list_title"
+        android:layout_marginStart="5dp"
+        app:tint="@color/Unify_GN500"
+        android:visibility="gone"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/check1"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/accordian_list_title"
+        app:srcCompat="@drawable/ic_check_green_24dp"
+        app:tint="@color/Unify_GN500"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="@string/topads_ad_type_selection_shop_accordian_item1"
+        android:textColor="@color/Unify_NN950"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/check1"
+        app:layout_constraintTop_toTopOf="@id/check1"
+        app:typographyType="display_3"
+        android:layout_marginEnd="16dp" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/check2"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item1"
+        app:srcCompat="@drawable/ic_check_green_24dp"
+        app:tint="@color/Unify_GN500"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="@string/topads_ad_type_selection_shop_accordian_item2"
+        android:textColor="@color/Unify_NN950"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/check2"
+        app:layout_constraintTop_toTopOf="@id/check2"
+        app:typographyType="display_3"
+        android:layout_marginEnd="16dp"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/check3"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item2"
+        app:srcCompat="@drawable/ic_check_green_24dp"
+        app:tint="@color/Unify_GN500"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="@string/topads_ad_type_selection_shop_accordian_item3"
+        android:textColor="@color/Unify_NN950"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/check3"
+        app:layout_constraintTop_toTopOf="@id/check3"
+        app:typographyType="display_3"
+        android:layout_marginEnd="16dp"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/accordian_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="check1,check2,check3,item3,item2,item1"
+        android:visibility="gone"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

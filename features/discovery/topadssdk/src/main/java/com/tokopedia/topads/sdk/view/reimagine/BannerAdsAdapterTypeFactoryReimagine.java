@@ -27,14 +27,11 @@ public class BannerAdsAdapterTypeFactoryReimagine implements BannerAdsTypeFactor
 
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener itemImpressionListener;
-    private Boolean hasMultilineProductName;
 
     public BannerAdsAdapterTypeFactoryReimagine(TopAdsBannerClickListener topAdsBannerClickListener,
-                                                TopAdsItemImpressionListener itemImpressionListener,
-                                                Boolean hasMultilineProductName) {
+                                                TopAdsItemImpressionListener itemImpressionListener) {
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         this.itemImpressionListener = itemImpressionListener;
-        this.hasMultilineProductName = hasMultilineProductName;
     }
 
     @Override
@@ -63,7 +60,7 @@ public class BannerAdsAdapterTypeFactoryReimagine implements BannerAdsTypeFactor
         if (viewType == BannerShopViewHolder.LAYOUT) {
             holder = new BannerShopViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
         }  else if(viewType == BannerShopProductReimagineViewHolder.LAYOUT) {
-            holder = new BannerShopProductReimagineViewHolder(view, topAdsBannerClickListener, itemImpressionListener, hasMultilineProductName);
+            holder = new BannerShopProductReimagineViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
         } else if(viewType == BannerShowMoreReimagineViewHolder.LAYOUT){
             holder = new BannerShowMoreReimagineViewHolder(view, topAdsBannerClickListener);
         } else if (viewType == BannerProductShimmerViewHolder.Companion.getLAYOUT()) {

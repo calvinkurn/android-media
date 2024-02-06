@@ -184,7 +184,7 @@ internal fun ImageView.imageRounded(url: String?, radius: Float, cornerType: Cor
     if (cornerType == null || cornerType == CornerType.ALL) {
         this.loadImageRounded(url, radius)
     } else {
-        this.loadImageRounded(url,radius.roundToInt(), cornerType)
+        this.loadImageRounded(url, radius.roundToInt(), cornerType)
     }
 }
 
@@ -193,9 +193,7 @@ internal fun ImageView.loadImageRounded(
     roundingRadius: Int,
     cornerType: CornerType
 ){
-    val transformation = MultiTransformation(
-        RoundedCornersTransformation(roundingRadius, cornerType)
-    )
+    val transformation = RoundedCornersTransformation(roundingRadius, cornerType)
     Glide.with(context)
         .load(url)
         .transform(CenterCrop(), transformation)
@@ -203,33 +201,6 @@ internal fun ImageView.loadImageRounded(
         .into(this)
 }
 
-internal fun ImageView.loadImageRoundedBlurred(
-    url: String,
-    roundingRadius: Int,
-    cornerType: CornerType= CornerType.TOP,
-    listenerOnSuccessLoad: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
-){
-    val transformation = MultiTransformation(
-        RoundedCornersTransformation(roundingRadius, cornerType)
-    )
-
-    val transcodingCoverTarget: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
-        override fun onLoadCleared(placeholder: Drawable?) {
-
-        }
-
-        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-            listenerOnSuccessLoad(resource, null)
-        }
-    }
-
-    Glide.with(context)
-        .asBitmap()
-        .load(url)
-        .transform(CenterCrop(), transformation)
-        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-        .into(transcodingCoverTarget)
-}
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) {
         hide()
@@ -815,3 +786,6 @@ fun Label.forceLightGreen() {
 
     setBackgroundDrawable(drawable)
 }
+
+internal fun Context?.getPixel(@DimenRes id: Int): Int =
+    this?.resources?.getDimensionPixelSize(id) ?: 0

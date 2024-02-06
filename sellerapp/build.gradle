@@ -385,7 +385,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.startupRuntime
 
-    implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
@@ -403,6 +402,7 @@ dependencies {
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

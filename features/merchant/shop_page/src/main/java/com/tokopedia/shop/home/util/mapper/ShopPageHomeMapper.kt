@@ -28,6 +28,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseW
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
+import com.tokopedia.shop.home.view.model.ShopBmsmWidgetGwpUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
@@ -45,6 +46,9 @@ import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingDetail
+import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdUiModel
+import com.tokopedia.shop_widget.buy_more_save_more.entity.Product
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -417,20 +421,42 @@ object ShopPageHomeMapper {
                     WidgetNameEnum.SLIDER_BANNER.value,
                     WidgetNameEnum.SLIDER_SQUARE_BANNER.value,
                     WidgetNameEnum.VIDEO.value,
-                    WidgetNameEnum.ADVANCED_SLIDER_BANNER.value,
-                    WidgetNameEnum.BMGM_BANNER.value -> {
-                        mapToDisplayImageWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                    WidgetNameEnum.ADVANCED_SLIDER_BANNER.value -> {
+                        mapToDisplayImageWidget(
+                            widgetResponse,
+                            widgetLayout,
+                            false,
+                            ShopPageColorSchema()
+                        )
                     }
+
                     WidgetNameEnum.BANNER_TIMER.value -> {
-                        ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                        ShopPageWidgetMapper.mapToBannerTimerWidget(
+                            widgetResponse,
+                            widgetLayout,
+                            isOverrideTheme,
+                            colorSchema
+                        )
                     }
+
                     WidgetNameEnum.SHOWCASE_NAVIGATION_BANNER.value -> {
-                        ShopPageWidgetMapper.mapToHomeShowcaseNavigationWidget(widgetResponse, isOverrideTheme, widgetLayout, colorSchema)
+                        ShopPageWidgetMapper.mapToHomeShowcaseNavigationWidget(
+                            widgetResponse,
+                            isOverrideTheme,
+                            widgetLayout,
+                            colorSchema
+                        )
                     }
 
                     WidgetNameEnum.REIMAGINE_BANNER_PRODUCT_HOTSPOT.value -> {
-                        ShopPageWidgetMapper.mapToBannerProductHotspotWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+                        ShopPageWidgetMapper.mapToBannerProductHotspotWidget(
+                            widgetResponse,
+                            widgetLayout,
+                            isOverrideTheme,
+                            colorSchema
+                        )
                     }
+
                     else -> null
                 }
             }
@@ -447,6 +473,7 @@ object ShopPageHomeMapper {
                             colorSchema = colorSchema
                         )
                     }
+
                     WidgetNameEnum.PRODUCT_VERTICAL.value -> {
                         mapToProductTerlarisWidgetUiModel(
                             widgetModel = widgetResponse,
@@ -457,6 +484,7 @@ object ShopPageHomeMapper {
                             colorSchema = colorSchema
                         )
                     }
+
                     else -> null
                 }
             }
@@ -482,6 +510,7 @@ object ShopPageHomeMapper {
                     else -> null
                 }
             }
+
             WidgetTypeEnum.PERSONALIZATION.value.lowercase() -> {
                 when (widgetResponse.name) {
                     WidgetNameEnum.BUY_AGAIN.value,
@@ -498,6 +527,7 @@ object ShopPageHomeMapper {
                             colorSchema
                         )
                     }
+
                     WidgetNameEnum.PERSO_PRODUCT_COMPARISON.value -> {
                         mapToPersoProductComparisonUiModel(
                             widgetResponse,
@@ -506,15 +536,67 @@ object ShopPageHomeMapper {
                             colorSchema
                         )
                     }
+
                     else -> {
                         null
                     }
                 }
             }
-            WidgetTypeEnum.SHOWCASE.value.lowercase() -> mapToShowcaseListUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-            WidgetTypeEnum.CARD.value.lowercase() -> mapToCardDonationUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-            WidgetTypeEnum.BUNDLE.value.lowercase() -> mapToProductBundleListUiModel(widgetResponse, shopId, widgetLayout, isOverrideTheme, colorSchema)
-            WidgetTypeEnum.REIMAGINE_DIRECT_PURCHASE.value.lowercase() -> mapToDirectPurchaseTypeWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+
+            WidgetTypeEnum.SHOWCASE.value.lowercase() -> mapToShowcaseListUiModel(
+                widgetResponse,
+                widgetLayout,
+                isOverrideTheme,
+                colorSchema
+            )
+
+            WidgetTypeEnum.CARD.value.lowercase() -> mapToCardDonationUiModel(
+                widgetResponse,
+                widgetLayout,
+                isOverrideTheme,
+                colorSchema
+            )
+
+            WidgetTypeEnum.BUNDLE.value.lowercase() -> mapToProductBundleListUiModel(
+                widgetResponse,
+                shopId,
+                widgetLayout,
+                isOverrideTheme,
+                colorSchema
+            )
+
+            WidgetTypeEnum.REIMAGINE_DIRECT_PURCHASE.value.lowercase() -> mapToDirectPurchaseTypeWidget(
+                widgetResponse,
+                widgetLayout,
+                isOverrideTheme,
+                colorSchema
+            )
+
+            WidgetTypeEnum.GROUP_OFFERING_PRODUCT.value.lowercase() ->
+                when (widgetResponse.name) {
+                    WidgetNameEnum.BMSM_GWP_OFFERING_GROUP.value -> {
+                        mapToBmsmWidget(
+                            widgetResponse,
+                            widgetLayout,
+                            isOverrideTheme,
+                            colorSchema,
+                            shopId.toLongOrZero()
+                        )
+                    }
+
+                    WidgetNameEnum.BMSM_PD_OFFERING_GROUP.value -> {
+                        mapToBmsmWidget(
+                            widgetResponse,
+                            widgetLayout,
+                            isOverrideTheme,
+                            colorSchema,
+                            shopId.toLongOrZero()
+                        )
+                    }
+
+                    else -> null
+                }
+
             else -> {
                 null
             }
@@ -944,7 +1026,7 @@ object ShopPageHomeMapper {
                             type = labelGroup.type
                         )
                     },
-                    rating = it.rating.toDoubleOrZero(),
+                    rating = it.rating.toDouble(),
                     isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups),
                     warehouseId = it.warehouseId
                 )
@@ -1351,5 +1433,88 @@ object ShopPageHomeMapper {
             productImageUrl = bundleProductUiModel.productImageUrl,
             productAppLink = bundleProductUiModel.productAppLink
         )
+    }
+
+    private fun mapToBmsmWidget(
+        response: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema,
+        shopId: Long
+    ) = ShopBmsmWidgetGwpUiModel(
+        widgetId = response.widgetID,
+        layoutOrder = response.layoutOrder,
+        name = response.name,
+        type = response.type,
+        header = mapToHeaderModel(response.header, widgetLayout, isOverrideTheme, colorSchema),
+        isFestivity = widgetLayout?.isFestivity.orFalse(),
+        data = mapToBmsmItem(response.data, shopId)
+    )
+
+    private fun mapToBmsmItem(
+        listData: List<ShopLayoutWidget.Widget.Data>,
+        shopId: Long
+    ): List<OfferingInfoByShopIdUiModel> {
+        return listData.map {
+            OfferingInfoByShopIdUiModel(
+                offerId = it.offerId,
+                shopId = shopId,
+                offerType = it.offerType,
+                offerName = it.offerName,
+                warehouseIds = it.warehouseIds,
+                thumbnails = it.thumbnails,
+                offeringDetail = OfferingDetail(
+                    termAndConditions = it.offeringDetail.termAndConditions,
+                    startDate = it.offeringDetail.startDate,
+                    endDate = it.offeringDetail.endDate,
+                    tierList = it.offeringDetail.tierList.map { tier ->
+                        OfferingDetail.Tier(
+                            tierId = tier.tierId,
+                            level = tier.level,
+                            tierWording = tier.tierWording,
+                            rules = tier.rules.map { rule ->
+                                OfferingDetail.Tier.Rule(
+                                    typeId = rule.typeId,
+                                    operation = rule.operation,
+                                    value = rule.value
+                                )
+                            },
+                            benefits = tier.benefits.map { benefit ->
+                                OfferingDetail.Tier.Benefit(
+                                    typeId = benefit.typeId,
+                                    value = benefit.value
+                                )
+                            }
+                        )
+                    }
+                ),
+                products = it.bmsmListProduct.map { product ->
+                    Product(
+                        parentId = product.parentId.toLongOrZero(),
+                        productId = product.id.toLongOrZero(),
+                        warehouseId = product.warehouseId.toLongOrZero(),
+                        productUrl = product.url,
+                        imageUrl = product.imageUrl,
+                        name = product.name,
+                        price = product.displayedPrice,
+                        rating = product.rating,
+                        soldCount = product.countSold,
+                        stock = product.stock,
+                        isVbs = product.isVbs,
+                        minOrder = product.minimumOrder,
+                        discountedPrice = product.discountedPrice,
+                        discountedPercentage = product.discountPercentage,
+                        labelGroups = product.labelGroups.map { label ->
+                            Product.LabelGroup(
+                                position = label.position,
+                                title = label.title,
+                                type = label.type,
+                                url = label.url
+                            )
+                        }
+                    )
+                }
+            )
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.gql.feed
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -13,5 +14,17 @@ class LabelGroup (
         @SerializedName("position")
         val position: String = "",
         @SerializedName("url")
-        val imageUrl: String = ""
-)
+        val imageUrl: String = "",
+        @SerializedName("styles")
+        @Expose
+        val styles: List<Style> = listOf(),
+) {
+    data class Style(
+        @SerializedName("key")
+        @Expose
+        val key: String = "",
+        @SerializedName("value")
+        @Expose
+        val value: String = "",
+    )
+}

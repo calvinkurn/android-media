@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.viewmodel
 
-import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import io.mockk.every
 import junit.framework.TestCase.assertTrue
 import org.junit.Assert.assertFalse

@@ -16,15 +16,18 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4201
     // Tracker ID: 46752
-    fun sendOpenScreenEvent(shopId: String) {
+    fun sendOpenScreenEvent(shopId: String, offerId: String, warehouseId: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT_OPEN_SCREEN)
             .setCustomProperty(TrackerConstant.TRACKER_ID, "46752")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
-            .setCustomProperty(TrackerConstant.LOGIN_STATUS, userSession.isLoggedIn)
+            .setCustomProperty(TrackerConstant.LOGIN_STATUS, userSession.isLoggedIn.toString())
             .setCustomProperty(TrackerConstant.SCREEN_NAME, "OfferLandingPage")
             .setShopId(shopId)
+            .setEventLabel("$offerId - $warehouseId")
+            .setEventCategory(TrackerConstant.EVENT_CATEGORY_OLP_BMGM)
+            .setEventAction(TrackerConstant.EVENT_OPEN_SCREEN)
             .setUserId(userSession.userId)
             .build()
             .send()

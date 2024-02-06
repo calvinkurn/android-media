@@ -368,7 +368,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         val isAuthorized = (mIsProductManageAuthorized.value as? Success)?.data ?: false
         if (isAuthorized) {
             launchCatchError(block = {
-                val data = withContext(Dispatchers.IO) {
+                val data = withContext(dispatcher.io) {
                     getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                     getProductUseCase.executeOnBackground()
                 }
