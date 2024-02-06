@@ -476,7 +476,10 @@ object DynamicProductDetailMapper {
             media = mediaData.media,
             youtubeVideos = mediaData.youtubeVideos,
             containerType = mediaData.containerType,
-            productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo
+            productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
+            socialProof = data.components.find {
+                it.type == ProductDetailConstant.MINI_SOCIAL_PROOF
+            }?.componentData?.firstOrNull()?.socialProof ?: emptyList()
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)

@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -19,6 +21,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.doOnApplyWindowInsets
+import com.tokopedia.content.common.util.requestApplyInsetsWhenAttached
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
@@ -26,18 +30,18 @@ import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.productReviewTab
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -112,7 +116,6 @@ class ProductPreviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initData()
         initViews()
         initSource()
 
@@ -121,13 +124,20 @@ class ProductPreviewFragment @Inject constructor(
         observeEvent()
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
+    override fun onStart() {
+        super.onStart()
+        view?.requestApplyInsetsWhenAttached()
     }
 
-    private fun initData() {
-        viewModel.onAction(InitializeProductMainData)
+    override fun onResume() {
+        super.onResume()
+        view?.doOnApplyWindowInsets { _, insets, padding, _ ->
+            val isNavVisible = insets.isVisible(WindowInsetsCompat.Type.systemGestures())
+            val navInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
+            binding.root.updatePadding(
+                bottom = padding.bottom + if (isNavVisible) navInsets.bottom else 0
+            )
+        }
     }
 
     private val coachMarkItems by lazyThreadSafetyNone {
@@ -155,22 +165,11 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun initSource() {
-        when (viewModel.productPreviewSource.productPreviewSource) {
-            is ProductPreviewSourceModel.ProductSourceData -> {
-                pagerAdapter.insertFragment(productReviewTab)
-                isShowProductTab(true)
-            }
-
-            is ProductPreviewSourceModel.ReviewSourceData -> {
-                pagerAdapter.insertFragment(reviewTab)
-                isShowProductTab(false)
-            }
-
-            else -> activity?.finish()
-        }
+        viewModel.onAction(ProductPreviewAction.CheckInitialSource)
+        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
     }
 
-    private fun isShowProductTab(isShow: Boolean) = with(binding) {
+    private fun isShowAllTab(isShow: Boolean) = with(binding) {
         layoutProductPreviewTab.tvProductTabTitle.showWithCondition(isShow)
         layoutProductPreviewTab.tvReviewTabTitle.showWithCondition(isShow)
         layoutProductPreviewTab.viewTabIndicator.showWithCondition(isShow)
@@ -208,6 +207,7 @@ class ProductPreviewFragment @Inject constructor(
             viewModel.uiState
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .withCache().collectLatest { (prev, curr) ->
+                    renderTabs(prev?.tabsUiModel, curr.tabsUiModel)
                     renderBottomNav(prev?.bottomNavUiModel, curr.bottomNavUiModel)
                 }
         }
@@ -262,18 +262,32 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
-
+                    is ProductPreviewEvent.FailFetchMiniInfo -> {
+                        binding.viewFooter.gone()
+                    }
+                    is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
                     ProductPreviewEvent.ShowCoachMark -> handleCoachMark()
-                    else -> {}
+                    else -> return@collect
                 }
             }
         }
+    }
+
+    private fun renderTabs(
+        prev: ProductPreviewTabUiModel?,
+        curr: ProductPreviewTabUiModel
+    ) {
+        if (prev == curr) return
+
+        isShowAllTab(curr.tabs.size > 1)
+        pagerAdapter.insertFragment(curr.tabs)
     }
 
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
         if (prev == model) return
 
         binding.viewFooter.apply {
+            show()
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {
@@ -302,7 +316,7 @@ class ProductPreviewFragment @Inject constructor(
         coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(DELAY_COACH_MARK)
             val finalList = coachMarkItems.filter {
-                if (productPreviewSource.productPreviewSource is ProductPreviewSourceModel.ProductSourceData) {
+                if (productPreviewSource.source is ProductPreviewSourceModel.ProductSourceData) {
                     true
                 } else {
                     it.anchorView == binding.anchorAtc
