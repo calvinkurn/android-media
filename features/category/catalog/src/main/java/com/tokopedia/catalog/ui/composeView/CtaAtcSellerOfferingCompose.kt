@@ -62,12 +62,14 @@ fun CtaSellerOffering(
 
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(2000)
-            switchState += 1
-            if (switchState == 3) {
-                switchState = 1
+    if (rating.isNotEmpty()) {
+        LaunchedEffect(Unit) {
+            while (true) {
+                delay(2000)
+                switchState += 1
+                if (switchState == 3) {
+                    switchState = 1
+                }
             }
         }
     }
