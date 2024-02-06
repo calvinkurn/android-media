@@ -28,9 +28,9 @@ ext {
             larixBroadcaster        : "com.wmspanel.libstream:libstream:1.0@aar",
             byteplusEffectSdk       : "com.bef.effectsdk:effect-android:11.6.0@aar",
             logger                  : "com.tokopedia.library:logger:0.0.2",
-            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.4.0",
-            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.4.0",
-            cassavaTest             : "com.tokopedia.analyticsdebugger:cassavatest:1.4.0"
+            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.6.0-beta2",
+            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.6.0-beta",
+            cassavaTest             : "com.tokopedia.analyticsdebugger:cassavatest:1.5.0"
     ]
 
     // Sort and categorize alphabetically by folder name
