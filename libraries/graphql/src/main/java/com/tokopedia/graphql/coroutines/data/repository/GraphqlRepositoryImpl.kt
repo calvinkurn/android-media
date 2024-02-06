@@ -50,27 +50,38 @@ class GraphqlRepositoryImpl @Inject constructor(
                     try {
                         val responseCache =
                             graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
-                        val tempRequestCloud = ArrayList<GraphqlRequest>()
-                        responseCache.indexOfEmptyCached.forEachIndexed { index, i ->
-                            originalRequests.getOrNull(i)?.let { tempRequestCloud.add(it) }
-                        }
-                        var responseCloud: GraphqlResponseInternal? = null
-                        if (!tempRequestCloud.isNullOrEmpty()) {
-                            responseCloud = getCloudResponse(
+                        // fix java.lang.NullPointerException: responseCache.indexOfEmptyCached must not be null at
+                        if (responseCache.indexOfEmptyCached == null) {
+                            getCloudResponse(
                                 results,
                                 refreshRequests,
                                 isCachedData,
-                                tempRequestCloud.toMutableList(),
+                                originalRequests.toMutableList(),
                                 cacheStrategy
                             )
+                        } else {
+                            val tempRequestCloud = ArrayList<GraphqlRequest>()
+                            responseCache.indexOfEmptyCached.forEachIndexed { index, i ->
+                                originalRequests.getOrNull(i)?.let { tempRequestCloud.add(it) }
+                            }
+                            var responseCloud: GraphqlResponseInternal? = null
+                            if (tempRequestCloud.isNotEmpty()) {
+                                responseCloud = getCloudResponse(
+                                    results,
+                                    refreshRequests,
+                                    isCachedData,
+                                    tempRequestCloud.toMutableList(),
+                                    cacheStrategy
+                                )
+                            }
+                            responseCloud?.let {
+                                responseCache.originalResponse.addAll(it.originalResponse)
+                            }
+                            GraphqlResponseInternal(
+                                responseCache.originalResponse,
+                                responseCache.indexOfEmptyCached
+                            )
                         }
-                        responseCloud?.let {
-                            responseCache.originalResponse.addAll(it.originalResponse)
-                        }
-                        GraphqlResponseInternal(
-                            responseCache.originalResponse,
-                            responseCache.indexOfEmptyCached
-                        )
                     } catch (e: Exception) {
                         e.printStackTrace()
                         getCloudResponse(

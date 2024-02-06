@@ -27,7 +27,7 @@ class SpacingViewModel(val application: Application, private val components: Com
     fun setupSpacingView(context: Context?) {
         val spacingSize = components.data?.get(0)?.sizeMobile
         var convertedColor: UnifyColorRef? = null
-        if (!spacingSize.isNullOrEmpty()) {
+        if (!spacingSize.isNullOrEmpty() && !components.isBackgroundPresent) {
             viewHeight.value = spacingSize.toIntOrZero()
             val spacingBackgroundColor = components.data?.getOrNull(0)?.background
             if (context != null && spacingBackgroundColor != null) {

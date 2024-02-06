@@ -8,7 +8,6 @@ data class UniversalInboxTopAdsBannerUiModel constructor(
     var ads: List<TopAdsImageViewModel>? = null,
     var requested: Boolean = false
 ) : Visitable<UniversalInboxTypeFactory> {
-
     override fun type(typeFactory: UniversalInboxTypeFactory): Int {
         return typeFactory.type(this)
     }

@@ -81,6 +81,9 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_BACK_IN_POPUP_POF_CANCEL = "click kembali - popup pof cancel"
     const val EVENT_ACTION_CLICK_CANCELLATION_IN_POPUP_POF_CANCEL = "click batalkan - popup pof cancel"
 
+    // add ons
+    const val EVENT_ACTION_CLICK_ADD_ONS_INFO = "click add ons - "
+
     // event labels
     const val EVENT_LABEL_ATTEMPT_BUY_AGAIN = "attempt - order_id: "
     const val EVENT_LABEL_BUY_AGAIN_SUCCESS = "success - order_id: "
@@ -140,6 +143,7 @@ object BuyerOrderDetailTrackerConstant {
     const val TRACKER_ID_47433 = "47433"
     const val TRACKER_ID_48377 = "48377"
     const val TRACKER_ID_48479 = "48479"
+    const val TRACKER_ID_49004 = "49004"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"

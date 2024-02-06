@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
+import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -21,6 +22,7 @@ object HomeRollenceController {
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
         fetchHomeMegaTabRollenceValue()
+        HomeComponentFeatureFlag.fetchMissionRollenceValue()
     }
 
     @JvmStatic

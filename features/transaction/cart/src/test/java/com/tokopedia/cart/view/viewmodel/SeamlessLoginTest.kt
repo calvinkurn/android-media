@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.viewmodel
 
-import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
+import com.tokopedia.cart.view.uimodel.SeamlessLoginEvent
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import io.mockk.every
 import io.mockk.slot

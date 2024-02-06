@@ -19,8 +19,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ShopTabViewHolder(
     itemView: View,
-    private val shopTabListener: ShopTabListener? = null,
-): RecyclerView.ViewHolder(itemView) {
+    private val shopTabListener: ShopTabListener? = null
+) : RecyclerView.ViewHolder(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = home_componentR.layout.home_component_shop_flash_sale_tab_item
@@ -35,8 +35,10 @@ internal class ShopTabViewHolder(
     }
 
     fun bindIndicator(tab: ShopTabDataModel) {
-        setTabBackground(tab.isActivated)
-        setTabIndicator(tab.isActivated)
+        tab.run {
+            setTabBackground(isActivated, useGradientBackground)
+            setTabIndicator(isActivated)
+        }
     }
 
     fun bindShop(tab: ShopTabDataModel) {
@@ -53,8 +55,8 @@ internal class ShopTabViewHolder(
         }
     }
 
-    private fun setTabBackground(isActivated: Boolean) {
-        if(isActivated) {
+    private fun setTabBackground(isActivated: Boolean, useGradientBackground: Boolean) {
+        if (isActivated && useGradientBackground) {
             binding?.containerShopFlashSaleTab?.setGradientBackground(
                 arrayListOf(
                     getHexColorFromIdColor(itemView.context, unifyprinciplesR.color.Unify_NN0),
@@ -70,13 +72,13 @@ internal class ShopTabViewHolder(
 
     private fun setTabIndicator(isActivated: Boolean) {
         binding?.imgShopFlashSaleTabIndicator?.apply {
-            if(isActivated) show() else hide()
+            if (isActivated) show() else hide()
         }
     }
 
     private fun renderShopImage(tab: ShopTabDataModel) {
         binding?.imgShopFlashSaleTabShopImage?.loadImage(tab.imageUrl)
-        if(tab.badgesUrl.isEmpty()) {
+        if (tab.badgesUrl.isEmpty()) {
             binding?.containerShopFlashSaleTabShopBadge?.gone()
         } else {
             binding?.containerShopFlashSaleTabShopBadge?.visible()

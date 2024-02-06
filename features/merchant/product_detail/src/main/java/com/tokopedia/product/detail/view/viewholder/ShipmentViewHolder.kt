@@ -28,11 +28,13 @@ import com.tokopedia.product.detail.databinding.ViewShipmentPlusBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.util.renderHtmlBold
+import com.tokopedia.sdui.SDUIManager
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.toPx
+import org.json.JSONObject
 
 class ShipmentViewHolder(
     view: View,

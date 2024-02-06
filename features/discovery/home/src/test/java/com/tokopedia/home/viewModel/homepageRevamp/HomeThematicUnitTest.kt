@@ -1,13 +1,11 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeThematicUseCase
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
+import com.tokopedia.home_component.usecase.thematic.ThematicModel
+import com.tokopedia.home_component.usecase.thematic.ThematicUseCase
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
@@ -30,15 +28,15 @@ class HomeThematicUnitTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val homeThematicUseCase = mockk<HomeThematicUseCase>(relaxed = true)
+    private val homeThematicUseCase = mockk<ThematicUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
     private val testDispatcher = TestCoroutineDispatcher()
-    private val mockHomeThematicModel = HomeThematicModel(
+    private val mockHomeThematicModel = ThematicModel(
         isShown = true,
         colorMode = "light",
         heightPercentage = 50,
         backgroundImageURL = "https://images.tokopedia.net/img/metesI/2023/10/6/9a5497e3-0090-4b5e-8a48-a9f1b93808ee.png",
-        foregroundImageURL = "https://images.tokopedia.net/img/cache/300/metesI/2023/10/5/ee621656-60dd-4b12-b379-7971804fb27f.png.webp",
+        foregroundImageURL = "https://images.tokopedia.net/img/cache/300/metesI/2023/10/5/ee621656-60dd-4b12-b379-7971804fb27f.png.webp"
     )
 
     @Before
