@@ -4,10 +4,10 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.buyer_request_cancel.di.BuyerRequestCancelRespondComponent
 import com.tokopedia.sellerorder.buyer_request_cancel.di.DaggerBuyerRequestCancelRespondComponent
 import timber.log.Timber
@@ -23,7 +23,7 @@ class BuyerRequestCancelRespondActivity : BaseSimpleActivity(), HasComponent<Buy
     override fun getComponent(): BuyerRequestCancelRespondComponent {
         return DaggerBuyerRequestCancelRespondComponent
             .builder()
-            .somComponent(SomComponentInstance.getSomComponent(application))
+            .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
             .build()
     }
 
