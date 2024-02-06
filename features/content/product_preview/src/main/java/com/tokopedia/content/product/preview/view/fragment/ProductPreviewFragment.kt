@@ -335,7 +335,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     companion object {
-        private const val DELAY_COACH_MARK = 3000L
+        private const val DELAY_COACH_MARK = 2000L
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
