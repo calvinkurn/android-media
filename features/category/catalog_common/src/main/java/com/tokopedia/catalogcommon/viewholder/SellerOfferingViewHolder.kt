@@ -30,6 +30,7 @@ class SellerOfferingViewHolder(
     }
 
     private val binding by viewBinding<WidgetItemSellerOfferingBinding>()
+    private var productId: String = ""
 
     init {
         binding?.apply {
@@ -39,10 +40,17 @@ class SellerOfferingViewHolder(
             btnChat.setOnClickListener {
                 sellerOfferingListener?.onSellerOfferingChatButtonClicked()
             }
+            ivProduct.setOnClickListener {
+                sellerOfferingListener?.onSellerOfferingProductImageClicked(productId)
+            }
+            ivButtonRightVariant.setOnClickListener {
+                sellerOfferingListener?.onSellerOfferingVariantArrowClicked(productId)
+            }
         }
     }
 
     override fun bind(element: SellerOfferingUiModel) {
+        productId = element.productId
         binding?.apply {
             setStyleWidget(element)
             cgVariant.showWithCondition(element.variantsName.isNotEmpty())
@@ -52,7 +60,7 @@ class SellerOfferingViewHolder(
             tvShopResposiveChat.setTextAndCheckShow(element.chatResponseTime)
             tvShopResponsiveOrder.setTextAndCheckShow(element.orderProcessTime)
             ivProduct.loadImage(element.productImage)
-            tvProductName.text = itemView.resources.getString(R.string.catalog_prefix_title_section,element.productName)
+            tvProductName.text = itemView.resources.getString(R.string.catalog_prefix_title_section, element.productName)
             tvPrice.text = element.productPrice
             tvSlashPrice.setTextAndCheckShow(element.productSlashPrice)
             tvSlashPrice.strikethrough()
@@ -77,10 +85,10 @@ class SellerOfferingViewHolder(
                 height = 15.toPx()
             )
             progressProduct.setValue(element.stockBar)
-            if (element.totalShopRating.isNotEmpty()){
+            if (element.totalShopRating.isNotEmpty()) {
                 tvSalesRatingCount.visible()
                 tvSalesRatingCount.text = "(${element.totalShopRating})"
-            }else{
+            } else {
                 tvSalesRatingCount.gone()
             }
         }
@@ -107,13 +115,25 @@ class SellerOfferingViewHolder(
         tvAdditionalService.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvInstallment.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         lnBackgroundProductImage.setBackgroundColor(getColor(element.darkMode, lightColor = R.color.dms_static_catalog_color_secondary, darkColor = R.color.dms_static_catalog_color_tertiary))
-        ivButtonRightVariant.setImage(IconUnify.CHEVRON_RIGHT, newLightEnable = getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark),
-            newDarkEnable =getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light,
-                darkColor = R.color.dms_static_text_color_dark) )
+        ivButtonRightVariant.setImage(
+            IconUnify.CHEVRON_RIGHT,
+            newLightEnable = getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark),
+            newDarkEnable = getColor(
+                element.darkMode,
+                lightColor = R.color.dms_static_text_color_light,
+                darkColor = R.color.dms_static_text_color_dark
+            )
+        )
 
-        ivChat.setImage(IconUnify.CHAT, newLightEnable = getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark),
-            newDarkEnable =getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light,
-                darkColor = R.color.dms_static_text_color_dark) )
+        ivChat.setImage(
+            IconUnify.CHAT,
+            newLightEnable = getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark),
+            newDarkEnable = getColor(
+                element.darkMode,
+                lightColor = R.color.dms_static_text_color_light,
+                darkColor = R.color.dms_static_text_color_dark
+            )
+        )
         btnChat.setBackgroundResource(
             getBackgroundTheme(
                 element.darkMode,
@@ -122,8 +142,6 @@ class SellerOfferingViewHolder(
             )
         )
     }
-
-
 
     private fun getColor(isDark: Boolean, lightColor: Int, darkColor: Int): Int {
         return if (isDark) {

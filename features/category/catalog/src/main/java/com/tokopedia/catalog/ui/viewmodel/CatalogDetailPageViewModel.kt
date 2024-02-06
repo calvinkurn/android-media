@@ -2,6 +2,7 @@ package com.tokopedia.catalog.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tkpd.atcvariant.usecase.GetProductVariantAggregatorUseCase
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -12,6 +13,7 @@ import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,6 +27,7 @@ class CatalogDetailPageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val catalogDetailUseCase: CatalogDetailUseCase,
     private val getNotificationUseCase: GetNotificationUseCase,
+    private val aggregatorUseCase: GetProductVariantAggregatorUseCase,
     private val userSession: UserSessionInterface,
     private val addToCartUseCase: AddToCartUseCase
 ) : BaseViewModel(dispatchers.main) {
@@ -123,6 +126,27 @@ class CatalogDetailPageViewModel @Inject constructor(
                 )
                 addToCartUseCase.setParams(param)
                 _addToCartDataModel.postValue(addToCartUseCase.executeOnBackground())
+            },
+            onError = {
+                _errorsToaster.postValue(it)
+            }
+        )
+    }
+
+    fun getVariantInfo(atcUiModel: CatalogProductAtcUiModel) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val param = aggregatorUseCase.createRequestParams(
+                    productId = atcUiModel.productId,
+                    source = VariantPageSource.CATALOG_PAGESOURCE.source,
+                    isTokoNow = false,
+                    shopId = atcUiModel.shopId,
+                    extParams = "",
+                    warehouseId = atcUiModel.warehouseId,
+                    pdpSession = ""
+                )
+                val result = aggregatorUseCase.executeOnBackground(param)
             },
             onError = {
                 _errorsToaster.postValue(it)

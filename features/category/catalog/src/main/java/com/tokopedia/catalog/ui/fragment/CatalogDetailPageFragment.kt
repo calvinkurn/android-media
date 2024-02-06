@@ -146,9 +146,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.usecase.detail.InvalidCatalogComparisonException
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -689,6 +689,7 @@ class CatalogDetailPageFragment :
                 warehouseId = properties.warehouseId,
                 isVariant = properties.isVariant
             )
+            if (properties.isVariant) viewModel.getVariantInfo(viewModel.atcModel)
             root.showWithCondition(properties.isVisible)
             containerPriceCta.setBackgroundColor(properties.bgColor)
             ctaAtc.setPrice(properties.price)
@@ -705,13 +706,12 @@ class CatalogDetailPageFragment :
                 goToProductListPage()
             }
 
-            if (properties.isDarkTheme){
+            if (properties.isDarkTheme) {
                 btnProductList.cardType = CardUnify2.TYPE_BORDER
-            }else{
+            } else {
                 btnProductList.cardType = CardUnify2.TYPE_BORDER_ACTIVE
-
             }
-            tvOther.setTextColor(MethodChecker.getColor(context,properties.colorBorderButton))
+            tvOther.setTextColor(MethodChecker.getColor(context, properties.colorBorderButton))
         }
     }
 
@@ -737,7 +737,11 @@ class CatalogDetailPageFragment :
     }
 
     private fun goToChatPage(shopId: String) {
-        RouteManager.route(context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
+        if (viewModel.isUserLoggedIn()) {
+            RouteManager.route(context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
+        } else {
+            goToLoginPage()
+        }
     }
 
     private fun goToProductListPage() {
@@ -1182,5 +1186,13 @@ class CatalogDetailPageFragment :
 
     override fun onSellerOfferingChatButtonClicked() {
         goToChatPage(viewModel.atcModel.shopId)
+    }
+
+    override fun onSellerOfferingProductImageClicked(productId: String) {
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+    }
+
+    override fun onSellerOfferingVariantArrowClicked(productId: String) {
+        openVariantBottomSheet(viewModel.atcModel)
     }
 }

@@ -10,6 +10,7 @@ data class SellerOfferingUiModel(
     override var widgetBackgroundColor: Int? = null,
     override var widgetTextColor: Int? = null,
     override var darkMode: Boolean = false,
+    val productId: String = "",
     var productImage: String = "",
     var shopBadge: String = "",
     var shopName: String = "",
@@ -28,12 +29,16 @@ data class SellerOfferingUiModel(
     var freeOngkir: String = "",
     var estimationShipping: String = "",
     var isShopGuarantee: Boolean = false,
-    val installment:String = "",
+    val installment: String = "",
     val cardColor: Int = R.drawable.bg_rounded_border_dark,
-    val additionalService:String = "",
+    val additionalService: String = "",
     val variantsName: String = ""
 ) : BaseCatalogUiModel(
-    idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor,
+    idWidget,
+    widgetType,
+    widgetName,
+    widgetBackgroundColor,
+    widgetTextColor,
     darkMode
 ) {
 
