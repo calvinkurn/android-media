@@ -162,7 +162,6 @@ class FollowerFollowingListingFragment @Inject constructor(
         val header = view?.findViewById<HeaderUnify>(peopleR.id.header_follower)
         header?.apply {
             title = currName
-            subheaderView?.gone()
 
             setNavigationOnClickListener {
                 activity?.onBackPressed()

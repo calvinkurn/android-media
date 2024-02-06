@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
+import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.ImageView
@@ -17,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
@@ -107,8 +110,19 @@ class RecomEntityCardViewHolder(
         return ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN950)
     }
 
+    @SuppressLint("ResourcePackage")
     private fun setProductImageUrl(productImageUrl: String) {
-        binding.imgEntryPointCard.loadImage(productImageUrl)
+        binding.imgEntryPointCard.apply {
+            loadImage(productImageUrl)
+
+            setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    productcardR.color.dms_product_card_reimagine_image_overlay,
+                ),
+                PorterDuff.Mode.SRC_OVER
+            )
+        }
     }
 
     private fun setLabelTitle(labelState: RecomEntityCardUiModel.LabelState) {

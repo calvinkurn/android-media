@@ -1,27 +1,43 @@
 package com.tokopedia.iris
 
+import android.app.Application
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
+import com.tokopedia.iris.util.Cache
+import com.tokopedia.track.TrackApp
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
 import org.json.JSONObject
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.MockitoAnnotations
-import org.mockito.runners.MockitoJUnitRunner
+import org.robolectric.RobolectricTestRunner
+import java.util.*
 
 /**
  * Created by meta on 02/01/19.
  */
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(RobolectricTestRunner::class)
 class IrisMapperUnitTest {
 
     private lateinit var trackingMapper: TrackingMapper
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
+        MockKAnnotations.init(this)
         trackingMapper = TrackingMapper()
+    }
+
+    @After
+    fun finish() {
+        unmockkAll()
     }
 
     fun dataTest(): String {
@@ -32,10 +48,30 @@ class IrisMapperUnitTest {
 
     @Test
     fun testTransformSingleEvent() {
-        val result: String? = trackingMapper.transformSingleEvent(dataTest(), "session", "user", "device")
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        val cache = Cache(context)
+
+        TrackApp.initTrackApp(context as Application)
+
+        mockkObject(TrackApp.getInstance())
+        mockkStatic(Calendar::class)
+
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, DummyAnalyticsTest::class.java)
+
+        every {
+            TrackApp.getInstance().gtm.clientIDString
+        } returns "abc1234567"
+
+        every {
+            Calendar.getInstance().timeInMillis
+        } returns 1705590748754L
+
+        val result: String? = trackingMapper.transformSingleEvent(context, dataTest(), "session", "user", "device", cache)
         Assert.assertNotNull(result)
         Assert.assertTrue(result is String)
-        Assert.assertEquals("{\"data\":[{\"container\":\"gtm\",\"device_id\":\"device\",\"user_id\":\"user\",\"event_data\":[{\"iris_session_id\":\"session\",\"event\":\"data sample\"}],\"event_ga\":\"default_app\"}]}", result)
+
+        Assert.assertEquals("{\"data\":[{\"device_id\":\"device\",\"user_id\":\"user\",\"event_data\":[{\"event_ga\":\"data sample\",\"clientId\":\"abc1234567\",\"iris_session_id\":\"session\",\"container\":\"gtm\",\"event\":\"default_app\",\"hits_time\":1705590748754}],\"app_version\":\"android-1.0\"}]}", result)
     }
 
     @Test
@@ -100,76 +136,91 @@ class IrisMapperUnitTest {
 
     private fun singleUserData(): List<Tracking> {
         val list: MutableList<Tracking> = mutableListOf()
-        list.add(Tracking(
+        list.add(
+            Tracking(
                 this.dataList()[0].toString(),
                 deviceId = "",
                 userId = "",
                 timeStamp = 1554380700197
-        ))
+            )
+        )
 
-        list.add(Tracking(
+        list.add(
+            Tracking(
                 this.dataList()[1].toString(),
                 userId = "",
                 deviceId = "",
                 timeStamp = 1554380700643
-        ))
+            )
+        )
 
-        list.add(Tracking(
+        list.add(
+            Tracking(
                 this.dataList()[2].toString(),
                 userId = "",
                 deviceId = "",
                 timeStamp = 1554380700717
-        ))
+            )
+        )
         return list
     }
 
     private fun multiUserData(): List<Tracking> {
         val list: MutableList<Tracking> = mutableListOf()
-        list.add(Tracking(
+        list.add(
+            Tracking(
                 this.dataList()[0].toString(),
                 deviceId = "",
                 userId = "123",
                 timeStamp = 1554380700197
-        ))
+            )
+        )
 
-        list.add(Tracking(
+        list.add(
+            Tracking(
                 this.dataList()[1].toString(),
                 userId = "123",
                 deviceId = "",
                 timeStamp = 1554380700643
-        ))
+            )
+        )
 
-        list.add(Tracking(
+        list.add(
+            Tracking(
                 this.dataList()[2].toString(),
                 userId = "1234",
                 deviceId = "",
                 timeStamp = 1554380700717
-        ))
+            )
+        )
 
-        list.add(Tracking(
+        list.add(
+            Tracking(
                 this.dataList()[3].toString(),
                 userId = "1234",
                 deviceId = "",
                 timeStamp = 1554380700717
-        ))
+            )
+        )
 
-
-        list.add(Tracking(
+        list.add(
+            Tracking(
                 this.dataList()[4].toString(),
                 userId = "",
                 deviceId = "",
                 timeStamp = 1554380700717
-        ))
+            )
+        )
         return list
     }
 
     private fun dataList(): List<JSONObject> {
         return mutableListOf(
-                JSONObject("{\"event\": \"data0\"}"),
-                JSONObject("{\"event\": \"data1\"}"),
-                JSONObject("{\"event\": \"data2\"}"),
-                JSONObject("{\"event\": \"data3\"}"),
-                JSONObject("{\"event\": \"data4\"}")
+            JSONObject("{\"event\": \"data0\"}"),
+            JSONObject("{\"event\": \"data1\"}"),
+            JSONObject("{\"event\": \"data2\"}"),
+            JSONObject("{\"event\": \"data3\"}"),
+            JSONObject("{\"event\": \"data4\"}")
         )
     }
 }

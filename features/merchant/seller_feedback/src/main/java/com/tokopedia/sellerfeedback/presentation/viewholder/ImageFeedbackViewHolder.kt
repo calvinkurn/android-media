@@ -1,9 +1,9 @@
 package com.tokopedia.sellerfeedback.presentation.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.sellerfeedback.databinding.ItemImageChooserFeedbackBinding
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
+import com.tokopedia.media.loader.loadImageRounded
 
 class ImageFeedbackViewHolder(
     view: View,
@@ -21,8 +21,6 @@ class ImageFeedbackViewHolder(
         binding.removeImage.setOnClickListener {
             imageClickListener.onClickRemoveImage(element)
         }
-        ImageHandler.loadImageRounded(
-            context, binding.imageReview, element.imageUrl, IMAGE_ROUND_RADIUS
-        )
+        binding.imageReview.loadImageRounded(element.imageUrl, IMAGE_ROUND_RADIUS)
     }
 }

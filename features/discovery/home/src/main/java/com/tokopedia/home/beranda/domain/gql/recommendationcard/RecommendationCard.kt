@@ -92,7 +92,7 @@ data class RecommendationCard(
                     position = it.position,
                     title = it.title,
                     type = it.type,
-                    url = it.url
+                    url = it.url,
                 )
             },
             categoryBreadcrumbs = categoryBreadcrumbs,
@@ -164,8 +164,17 @@ data class RecommendationCard(
         @SerializedName("type")
         val type: String = "",
         @SerializedName("url")
-        val url: String = ""
-    )
+        val url: String = "",
+        @SerializedName("styles")
+        val styles: List<Styles> = listOf(),
+    ) {
+        data class Styles(
+            @SerializedName("key")
+            val key: String = "",
+            @SerializedName("value")
+            val value: String = "",
+        )
+    }
 
     data class Shop(
         @SerializedName("applink")

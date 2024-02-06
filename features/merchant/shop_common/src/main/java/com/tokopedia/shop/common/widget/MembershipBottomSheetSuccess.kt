@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -84,7 +84,7 @@ class MembershipBottomSheetSuccess : BottomSheetUnify() {
             imgBsMembership = findViewById(R.id.img_membership_success)
 
             if (resultCode != CODE_SUCCESS) {
-                ImageHandler.LoadImage(findViewById(R.id.img_membership_success), IMG_BS_MEMBERSHIP_FAIL)
+                findViewById<ImageView>(R.id.img_membership_success)?.loadImageFitCenter(IMG_BS_MEMBERSHIP_FAIL)
                 btnClaim.text = context?.getString(com.tokopedia.abstraction.R.string.title_try_again)
                 btnClaim.setOnClickListener {
                     listener?.onButtonClaimClicked(questId)
@@ -92,7 +92,7 @@ class MembershipBottomSheetSuccess : BottomSheetUnify() {
                 }
             } else {
                 //route to voucher
-                ImageHandler.LoadImage(findViewById(R.id.img_membership_success), IMG_BS_MEMBERSHIP_SUCCESS)
+                findViewById<ImageView>(R.id.img_membership_success)?.loadImageFitCenter(IMG_BS_MEMBERSHIP_SUCCESS)
                 btnClaim.text = context?.getString(R.string.bs_button_txt)
                 btnClaim.setOnClickListener {
                     listener?.goToVoucherOrRegister()
