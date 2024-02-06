@@ -79,10 +79,9 @@ class ReviewFragment @Inject constructor(
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val index = getCurrentPosition()
-                    viewModel.onAction(ProductPreviewAction.UpdateReviewPosition(index))
-                }
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+                val index = getCurrentPosition()
+                viewModel.onAction(ProductPreviewAction.ReviewSelected(index))
             }
         }
     }
@@ -156,7 +155,7 @@ class ReviewFragment @Inject constructor(
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiEvent
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.CREATED)
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .collect {
                     when (val event = it) {
                         is ProductPreviewEvent.ShowMenuSheet -> {
@@ -250,11 +249,8 @@ class ReviewFragment @Inject constructor(
     override fun onOptionClicked(menu: ContentMenuItem) {
         when (menu.type) {
             ContentMenuIdentifier.WatchMode -> {
-                MenuBottomSheet.getOrCreate(
-                    childFragmentManager,
-                    requireActivity().classLoader
-                ).apply { dismissNow() }
-                viewModel.onAction(ProductPreviewAction.ReviewWatchMode)
+                MenuBottomSheet.get(childFragmentManager)?.dismiss()
+                viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
             }
             ContentMenuIdentifier.Report ->
                 ReviewReportBottomSheet.getOrCreate(
@@ -270,7 +266,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun updateReviewWatchMode() {
-        viewModel.onAction(ProductPreviewAction.ReviewWatchMode)
+        viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
     }
 
     /**

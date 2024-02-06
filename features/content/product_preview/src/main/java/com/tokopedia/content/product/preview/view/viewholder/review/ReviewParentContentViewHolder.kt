@@ -56,7 +56,6 @@ class ReviewParentContentViewHolder(
             }
 
             override fun onViewDetachedFromWindow(p0: View) {
-                bindWatchMode(false)
                 mVideoPlayer = null
                 binding.rvReviewMedia.removeOnScrollListener(contentScrollListener)
             }
