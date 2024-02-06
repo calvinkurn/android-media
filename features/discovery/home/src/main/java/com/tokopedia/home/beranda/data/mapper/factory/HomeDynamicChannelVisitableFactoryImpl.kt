@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.mapper.ChannelModelMapper
+import com.tokopedia.home_component.mapper.CouponWidgetMapper
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
@@ -727,21 +728,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
-    private fun mapCouponWidgetComponent(
-        channel: DynamicHomeChannel.Channels,
-        verticalPosition: Int
-    ): Visitable<*> {
-        return CouponWidgetDataModel(
-            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                channel,
-                verticalPosition
-            ),
-            coupons = listOf(
-                CouponWidgetDataItemModel() // TODO???
-            )
-        )
-    }
-
     private fun mappingTodoWidgetComponent(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int
@@ -980,7 +966,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createCouponWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
-        visitableList.add(mapCouponWidgetComponent(channel, verticalPosition))
+        val model = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        visitableList.add(CouponWidgetMapper.map(model))
     }
 
     private fun createTodoWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
