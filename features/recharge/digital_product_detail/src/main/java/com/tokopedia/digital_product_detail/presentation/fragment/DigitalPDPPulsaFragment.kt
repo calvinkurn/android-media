@@ -337,6 +337,7 @@ class DigitalPDPPulsaFragment :
                     }
                 }
                 showEmptyState()
+                onHideBuyWidget()
             }
         }
     }
