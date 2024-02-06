@@ -68,6 +68,7 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.date.DateUtil
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.math.min
@@ -957,7 +958,8 @@ object CartUiModelMapper {
 private fun String.toDate(): Date? {
     return try {
         SimpleDateFormat(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.DEFAULT_LOCALE).parse(this)
-    } catch (e: Exception) {
+    } catch (exception: Exception) {
+        Timber.e(exception)
         null
     }
 }
