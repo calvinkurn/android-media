@@ -53,10 +53,15 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
     }
 
     testOptions {
         animationsDisabled = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 }
 
@@ -136,6 +141,11 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.unifyDependencies.nestComponents
+
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
@@ -165,6 +175,8 @@ dependencies {
         exclude group: 'com.google.firebase'
     }
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
+    androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.supportLibDependencies.kotlinMetaData

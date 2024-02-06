@@ -19,12 +19,14 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.OrigamiSDUIDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 
@@ -59,4 +61,6 @@ interface HomeComponentTypeFactory {
     fun type(bestSellerDataModel: BestSellerDataModel): Int = 0
     fun type(specialReleaseDataModel: SpecialReleaseRevampDataModel): Int = 0
     fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int = 0
+    fun type(origamiSDUIDataModel: OrigamiSDUIDataModel) : Int = 0
+    fun type(lego3AutoModel: Lego3AutoModel): Int = 0
 }

@@ -501,7 +501,7 @@ class CheckoutViewModel @Inject constructor(
         val enhancedECommerceCheckout = EnhancedECommerceCheckout()
         for (shipmentCartItemModel in listData.value) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-                val orderProducts = getOrderProducts(shipmentCartItemModel.cartStringGroup)
+                val orderProducts = getOrderProducts(shipmentCartItemModel.cartStringGroup).filterIsInstance(CheckoutProductModel::class.java)
                 for (cartItemModel in orderProducts) {
                     var courierItemData: CourierItemData? = null
                     if (shipmentCartItemModel.shipment.courierItemData != null
@@ -1139,7 +1139,8 @@ class CheckoutViewModel @Inject constructor(
                             this,
                             order
                         )
-                    } ?: CheckoutOrderInsurance()
+                    } ?: CheckoutOrderInsurance(),
+                    isHasShownCourierError = false
                 )
             )
             list[cartPosition] = newOrderModel
@@ -1282,7 +1283,8 @@ class CheckoutViewModel @Inject constructor(
                             this,
                             order
                         )
-                    } ?: CheckoutOrderInsurance()
+                    } ?: CheckoutOrderInsurance(),
+                    isHasShownCourierError = false
                 )
             )
             list[cartPosition] = newOrderModel
@@ -1428,7 +1430,8 @@ class CheckoutViewModel @Inject constructor(
                             this,
                             order
                         )
-                    } ?: CheckoutOrderInsurance()
+                    } ?: CheckoutOrderInsurance(),
+                    isHasShownCourierError = false
                 )
             )
             list[cartPosition] = newOrderModel
@@ -1494,7 +1497,8 @@ class CheckoutViewModel @Inject constructor(
                 isLoading = false,
                 courierItemData = courierItemData,
                 shippingCourierUiModels = shippingCourierUiModels,
-                insurance = generateCheckoutOrderInsuranceFromCourier(courierItemData, newOrder)
+                insurance = generateCheckoutOrderInsuranceFromCourier(courierItemData, newOrder),
+                isHasShownCourierError = false
             )
             newOrder = newOrder.copy(shipment = newShipment, isShippingBorderRed = false)
             list[cartPosition] = newOrder
@@ -1906,7 +1910,8 @@ class CheckoutViewModel @Inject constructor(
         val newShipment1 = shipment.copy(
             isLoading = false,
             courierItemData = newCourierItemData,
-            insurance = generateCheckoutOrderInsuranceFromCourier(newCourierItemData, newOrder1)
+            insurance = generateCheckoutOrderInsuranceFromCourier(newCourierItemData, newOrder1),
+            isHasShownCourierError = false
         )
         newOrder1 = newOrder1.copy(shipment = newShipment1, isShippingBorderRed = false)
         list[cartPosition] = newOrder1
@@ -1935,7 +1940,8 @@ class CheckoutViewModel @Inject constructor(
             insurance = generateCheckoutOrderInsuranceFromCourier(
                 newCourierItemData,
                 checkoutOrderModel
-            )
+            ),
+            isHasShownCourierError = false
         )
         val newOrder = checkoutOrderModel.copy(shipment = newShipment)
         if (scheduleDeliveryUiModel.isSelected) {
@@ -2010,7 +2016,7 @@ class CheckoutViewModel @Inject constructor(
                     }
                     if (checkoutEpharmacy?.epharmacy?.showImageUpload == true && checkoutEpharmacy.epharmacy.frontEndValidation && checkoutItem.hasEthicalProducts && !checkoutItem.isError) {
                         for (cartItemModel in getOrderProducts(checkoutItem.cartStringGroup)) {
-                            if (!cartItemModel.isError && cartItemModel.ethicalDrugDataModel.needPrescription) {
+                            if (cartItemModel is CheckoutProductModel && !cartItemModel.isError && cartItemModel.ethicalDrugDataModel.needPrescription) {
                                 val prescriptionIdsEmpty =
                                     checkoutItem.prescriptionIds.isEmpty()
                                 val consultationEmpty =
@@ -2874,7 +2880,7 @@ class CheckoutViewModel @Inject constructor(
         checkoutOrderModel.dropshipPhone = phone
     }
 
-    fun getOrderProducts(cartStringGroup: String): List<CheckoutProductModel> {
+    fun getOrderProducts(cartStringGroup: String): List<CheckoutItem> {
         return helper.getOrderProducts(listData.value, cartStringGroup)
     }
 

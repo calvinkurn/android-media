@@ -2,8 +2,10 @@ package com.tokopedia.checkout.revamp.view.processor
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderInsurance
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
@@ -25,15 +27,21 @@ class CheckoutLogisticProcessor @Inject constructor(
     private val schellyMapper: ScheduleDeliveryMapper
 ) {
 
-    fun getProductForRatesRequest(orderProducts: List<CheckoutProductModel>): ArrayList<Product> {
+    fun getProductForRatesRequest(orderProducts: List<CheckoutItem>): ArrayList<Product> {
         val products = arrayListOf<Product>()
         for (cartItemModel in orderProducts) {
-            if (!cartItemModel.isError) {
+            if (cartItemModel is CheckoutProductModel && !cartItemModel.isError) {
                 val product = Product()
                 product.productId = cartItemModel.productId
                 product.isFreeShipping = cartItemModel.isFreeShipping
                 product.isFreeShippingTc = cartItemModel.isFreeShippingExtra
                 products.add(product)
+            } else if (cartItemModel is CheckoutProductBenefitModel) {
+                products.add(
+                    Product(
+                        productId = cartItemModel.productId.toLongOrZero()
+                    )
+                )
             }
         }
         return products
@@ -58,7 +66,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     private fun generateShippingBottomsheetParam(
         order: CheckoutOrderModel,
-        orderProducts: List<CheckoutProductModel>,
+        orderProducts: List<CheckoutItem>,
         recipientAddressModel: RecipientAddressModel,
         isTradeIn: Boolean
     ): ShipmentDetailData {
@@ -68,33 +76,41 @@ class CheckoutLogisticProcessor @Inject constructor(
         var productFInsurance = 0
         var preOrder = false
         var productPreOrderDuration = 0
-        val productList: ArrayList<Product> = ArrayList()
         val categoryList: HashSet<String> = hashSetOf()
         orderProducts.forEach {
-            if (!it.isError) {
-                if (it.isBundlingItem) {
-                    if (it.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
-                        orderValue += (it.bundleQuantity * it.bundlePrice).toLong()
+            if (it is CheckoutProductModel) {
+                if (!it.isError) {
+                    if (it.isBundlingItem) {
+                        if (it.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                            orderValue += (it.bundleQuantity * it.bundlePrice).toLong()
+                        }
+                    } else {
+                        orderValue += (it.quantity * it.price).toLong()
                     }
-                } else {
-                    orderValue += (it.quantity * it.price).toLong()
+                    if (it.isBMGMItem && it.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
+                        orderValue -= it.bmgmTotalDiscount.toLong()
+                    }
+                    totalWeight += it.quantity * it.weight
+                    totalWeightActual += if (it.weightActual > 0) {
+                        it.quantity * it.weightActual
+                    } else {
+                        it.quantity * it.weight
+                    }
+                    if (it.fInsurance) {
+                        productFInsurance = 1
+                    }
+                    preOrder = it.isPreOrder
+                    productPreOrderDuration = it.preOrderDurationDay
+                    categoryList.add(it.productCatId.toString())
                 }
-                if (it.isBMGMItem && it.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
-                    orderValue -= it.bmgmTotalDiscount.toLong()
-                }
+            } else if (it is CheckoutProductBenefitModel) {
+                orderValue += (it.quantity * it.finalPrice).toLong()
                 totalWeight += it.quantity * it.weight
                 totalWeightActual += if (it.weightActual > 0) {
                     it.quantity * it.weightActual
                 } else {
                     it.quantity * it.weight
                 }
-                if (it.fInsurance) {
-                    productFInsurance = 1
-                }
-                preOrder = it.isPreOrder
-                productPreOrderDuration = it.preOrderDurationDay
-                categoryList.add(it.productCatId.toString())
-                productList.add(Product(it.productId, it.isFreeShipping, it.isFreeShippingExtra))
             }
         }
         return ShipmentDetailData().apply {
@@ -187,7 +203,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     fun getRatesParam(
         orderModel: CheckoutOrderModel,
-        orderProducts: List<CheckoutProductModel>,
+        orderProducts: List<CheckoutItem>,
         address: RecipientAddressModel,
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,

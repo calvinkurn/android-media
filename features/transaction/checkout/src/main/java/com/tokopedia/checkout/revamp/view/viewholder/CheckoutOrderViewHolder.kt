@@ -112,7 +112,8 @@ class CheckoutOrderViewHolder(
             isDisableChangeCourier = isDisableChangeCourier,
             courierErrorTitle = courierSelectionErrorTitle,
             isShippingBorderRed = isShippingBorderRed,
-            isTriggerShippingVibrationAnimation = isTriggerShippingVibrationAnimation
+            isTriggerShippingVibrationAnimation = isTriggerShippingVibrationAnimation,
+            isHasShownCourierError = shipment.isHasShownCourierError
         )
         val courierItemData = shipment.courierItemData
         return if (courierItemData == null) {
@@ -204,6 +205,9 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onViewErrorInCourierSection(logPromoDesc: String) {
+        order?.let {
+            it.shipment.isHasShownCourierError = true
+        }
         listener.onViewErrorInCourierSection(logPromoDesc)
     }
 

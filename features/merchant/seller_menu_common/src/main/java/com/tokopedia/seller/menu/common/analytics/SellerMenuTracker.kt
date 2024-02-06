@@ -3,7 +3,6 @@ package com.tokopedia.seller.menu.common.analytics
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.user.session.UserSessionInterface
@@ -12,10 +11,10 @@ import com.tokopedia.user.session.UserSessionInterface
  * Created By @ilhamsuaib on 04/09/20
  */
 
-//data layer : https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=412390831
+// data layer : https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=412390831
 class SellerMenuTracker(
-        private val analytics: Analytics,
-        private val userSession: UserSessionInterface
+    private val analytics: Analytics,
+    private val userSession: UserSessionInterface
 ) {
 
     companion object {
@@ -101,7 +100,7 @@ class SellerMenuTracker(
         // etc
         private const val UNDEFINED = "undefined"
 
-        //shop score revamp
+        // shop score revamp
         const val MY_SHOP = "toko saya"
         const val CLICK_SHOP_SCORE = "clickShopScore"
         const val CLICK_SHOP_SCORE_PERFORMANCE = "click - skor performa toko"
@@ -113,9 +112,9 @@ class SellerMenuTracker(
         private const val EVENT_CLICK_IKLAN_TOPADS_TRACKER_ID = "43164"
     }
 
-    fun sendEventViewShopAccount(shopInfo: SettingShopInfoUiModel) {
+    fun sendEventViewShopAccount(type: ShopType?) {
         val shopType = getShopType()
-        val shopStatus = getShopStatus(shopInfo)
+        val shopStatus = getShopStatus(type)
         val eventLabel = "$shopType - $shopStatus"
 
         val event = TrackAppUtils.gtmData(
@@ -361,36 +360,36 @@ class SellerMenuTracker(
 
     fun sendShopScoreEntryPoint(isNewSeller: Boolean) {
         val mapData = mapOf(
-                TrackAppUtils.EVENT to CLICK_SHOP_SCORE,
-                TrackAppUtils.EVENT_CATEGORY to MY_SHOP,
-                TrackAppUtils.EVENT_ACTION to CLICK_SHOP_SCORE_PERFORMANCE,
-                TrackAppUtils.EVENT_LABEL to if (isNewSeller) "$NEW_SELLER ${getShopType()}" else getShopType(),
-                KEY_CURRENT_SITE to TOKOPEDIA_MARKET_PALCE,
-                KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
-                KEY_USER_ID to userSession.userId
+            TrackAppUtils.EVENT to CLICK_SHOP_SCORE,
+            TrackAppUtils.EVENT_CATEGORY to MY_SHOP,
+            TrackAppUtils.EVENT_ACTION to CLICK_SHOP_SCORE_PERFORMANCE,
+            TrackAppUtils.EVENT_LABEL to if (isNewSeller) "$NEW_SELLER ${getShopType()}" else getShopType(),
+            KEY_CURRENT_SITE to TOKOPEDIA_MARKET_PALCE,
+            KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
+            KEY_USER_ID to userSession.userId
         )
         analytics.sendGeneralEvent(mapData)
     }
 
     fun impressShopScoreEntryPoint(isNewSeller: Boolean) {
         val mapData = mapOf(
-                TrackAppUtils.EVENT to VIEW_SHOP_SCORE_IRIS,
-                TrackAppUtils.EVENT_CATEGORY to MY_SHOP,
-                TrackAppUtils.EVENT_ACTION to IMPRESSION_SHOP_SCORE_PERFORMANCE,
-                TrackAppUtils.EVENT_LABEL to if (isNewSeller) "$NEW_SELLER ${getShopType()}" else getShopType(),
-                KEY_CURRENT_SITE to TOKOPEDIA_MARKET_PALCE,
-                KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
-                KEY_USER_ID to userSession.userId
+            TrackAppUtils.EVENT to VIEW_SHOP_SCORE_IRIS,
+            TrackAppUtils.EVENT_CATEGORY to MY_SHOP,
+            TrackAppUtils.EVENT_ACTION to IMPRESSION_SHOP_SCORE_PERFORMANCE,
+            TrackAppUtils.EVENT_LABEL to if (isNewSeller) "$NEW_SELLER ${getShopType()}" else getShopType(),
+            KEY_CURRENT_SITE to TOKOPEDIA_MARKET_PALCE,
+            KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
+            KEY_USER_ID to userSession.userId
         )
         analytics.sendGeneralEvent(mapData)
     }
 
     private fun createMenuItemEvent(actionName: String): Map<String, Any> {
         val event = TrackAppUtils.gtmData(
-                EVENT_CLICK_SHOP_ACCOUNT,
-                CATEGORY_MA_SHOP_ACCOUNT,
-                actionName,
-                ""
+            EVENT_CLICK_SHOP_ACCOUNT,
+            CATEGORY_MA_SHOP_ACCOUNT,
+            actionName,
+            ""
         )
         event[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PALCE
         event[KEY_USER_ID] = userSession.userId
@@ -420,8 +419,8 @@ class SellerMenuTracker(
         }
     }
 
-    private fun getShopStatus(shopInfo: SettingShopInfoUiModel): String {
-        return when(shopInfo.shopStatusUiModel?.userShopInfoWrapper?.shopType) {
+    private fun getShopStatus(shopType: ShopType?): String {
+        return when (shopType) {
             is PowerMerchantStatus.Active -> SHOP_STATUS_ACTIVE
             is PowerMerchantStatus.NotActive -> SHOP_STATUS_NOT_ACTIVE
             is RegularMerchant.NeedUpgrade -> SHOP_STATUS_UPGRADE
@@ -430,7 +429,7 @@ class SellerMenuTracker(
         }
     }
 
-    fun sendEventClickedTopAdsMenu(){
+    fun sendEventClickedTopAdsMenu() {
         val event = TrackAppUtils.gtmData(
             EVENT_CLICK_TOPADS,
             CATEGORY_OTHERS_TAB,

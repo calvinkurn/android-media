@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.view.activity
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.home_component.usecase.thematic.ThematicModule
 import com.tokopedia.search.di.module.CartLocalCacheHandlerModule
 import com.tokopedia.search.di.module.IrisModule
 import com.tokopedia.search.di.module.RemoteConfigModule
@@ -18,6 +19,7 @@ import dagger.Component
 @SearchScope
 @Component(
     modules = [
+        ThematicModule::class,
         SearchParameterModule::class,
         SearchShopViewModelModule::class,
         SearchViewModelModule::class,

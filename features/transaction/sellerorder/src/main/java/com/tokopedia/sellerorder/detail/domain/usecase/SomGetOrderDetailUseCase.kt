@@ -74,6 +74,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 }
                 shipment {
                   id
+                  title
                   name
                   product_id
                   product_name
@@ -269,10 +270,12 @@ class SomGetOrderDetailUseCase @Inject constructor(
                           type
                           image_url
                           metadata {
+                            info_link
                             add_on_note {
                               from
                               notes
                               to
+                              tips
                             }
                           }
                           create_time
@@ -307,10 +310,12 @@ class SomGetOrderDetailUseCase @Inject constructor(
                         type
                         image_url
                         metadata {
+                          info_link
                           add_on_note {
                             from
                             notes
                             to
+                            tips
                           }
                         }
                         create_time
@@ -359,12 +364,14 @@ class SomGetOrderDetailUseCase @Inject constructor(
                           type
                           image_url
                           metadata {
+                            info_link
                             add_on_note {
                               is_custom_note
                               from
                               to
                               notes
                               short_notes
+                              tips
                             }
                           }
                           create_time
@@ -373,6 +380,18 @@ class SomGetOrderDetailUseCase @Inject constructor(
                         total_price
                         total_price_str
                         total_quantity
+                      }
+                    }
+                    product_benefit {
+                      label
+                      icon_url
+                      order_detail {
+                        order_detail_id
+                        id
+                        name
+                        thumbnail
+                        quantity
+                        price_text
                       }
                     }
                   }
@@ -393,10 +412,12 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       type
                       image_url
                       metadata {
+                        info_link
                         add_on_note {
                           from
                           notes
                           to
+                          tips
                         }
                       }
                       create_time

@@ -7,7 +7,7 @@ import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -209,7 +209,7 @@ class ShippingDurationViewHolder(
                             flContainer.context,
                             logisticcartR.drawable.fg_enabled_item
                         )
-                    ImageHandler.LoadImage(imgMvc, mvcLogo)
+                    imgMvc.loadImageFitCenter(mvcLogo)
                     tvMvcText.text = mvcTitle
                     tvMvcError.gone()
                 }
@@ -221,7 +221,7 @@ class ShippingDurationViewHolder(
                             flContainer.context,
                             logisticcartR.drawable.fg_disabled_item
                         )
-                    ImageHandler.LoadImage(imgMvc, mvcLogo)
+                    imgMvc.loadImageFitCenter(mvcLogo)
                     tvMvcText.text = mvcTitle
                     tvMvcError.visible()
                     tvMvcError.text = mvcErrorMessage

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.product.manage.R
@@ -48,7 +47,6 @@ class NotifyMeBuyerInformationBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.product.manage.common.R.style.DialogStyle)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +63,7 @@ class NotifyMeBuyerInformationBottomSheet : BottomSheetUnify() {
     }
 
     fun show(
-        fm: FragmentManager,
+        fm: FragmentManager
     ) {
         show(fm, TAG)
     }

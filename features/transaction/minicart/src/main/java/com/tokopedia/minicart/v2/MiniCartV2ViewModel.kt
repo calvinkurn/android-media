@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 internal class MiniCartV2ViewModel @Inject constructor(
@@ -74,7 +75,9 @@ internal class MiniCartV2ViewModel @Inject constructor(
         launch {
             try {
                 updateMiniCartLoadingState(true)
-                val data = getMiniCartWidgetUseCase.invoke(param)
+                val data = withContext(executorDispatchers.io) {
+                    getMiniCartWidgetUseCase.invoke(param).toSimplifiedData()
+                }
                 setMiniCartABTestData(
                     isOCCFlow = data.miniCartWidgetData.isOCCFlow,
                     buttonBuyWording = data.miniCartWidgetData.buttonBuyWording
@@ -88,7 +91,7 @@ internal class MiniCartV2ViewModel @Inject constructor(
                 } else {
                     updateMiniCartSimplifiedData(MiniCartSimplifiedData())
                 }
-                _globalEvent.tryEmit(MiniCartV2GlobalEvent.FailToLoadMiniCart(e))
+                _globalEvent.tryEmit(MiniCartV2GlobalEvent.FailToLoadMiniCart(e.cause ?: e))
             }
         }
     }
@@ -173,7 +176,8 @@ internal class MiniCartV2ViewModel @Inject constructor(
                         quantity = miniCartItem.quantity.toString(),
                         notes = miniCartItem.notes,
                         warehouseId = miniCartItem.warehouseId,
-                        attribution = miniCartItem.attribution
+                        attribution = miniCartItem.attribution,
+                        shopName = miniCartItem.shopName
                     )
                 )
             }

@@ -4,8 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.getFailureType
 import com.tokopedia.media.loader.internal.NetworkResponseManager
@@ -15,26 +17,42 @@ import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dat
 
 internal object MediaListenerBuilder {
 
-    operator fun invoke(
+    inline operator fun <reified T> invoke(
         context: Context,
         properties: Properties,
         startTime: Long
-    ) = object : RequestListener<Bitmap> {
+    ) = object : RequestListener<T> {
 
         override fun onLoadFailed(
             e: GlideException?,
             model: Any?,
-            target: Target<Bitmap>?,
+            target: Target<T>?,
             isFirstResource: Boolean
-        ) = onLoadFailed(context, properties, startTime, e)
+        ): Boolean {
+            when (T::class) {
+                Bitmap::class -> onLoadFailed(context, properties, startTime, e)
+                GifDrawable::class -> properties.loaderListener?.onFailed(e)
+            }
+            return false
+        }
 
         override fun onResourceReady(
-            resource: Bitmap?,
+            resource: T?,
             model: Any?,
-            target: Target<Bitmap>?,
+            target: Target<T>?,
             dataSource: DataSource?,
             isFirstResource: Boolean
-        ) = onResourceReady(context, properties, startTime, resource, target, dataSource)
+        ): Boolean {
+            try {
+                when (T::class){
+                    Bitmap::class -> onResourceReady(context, properties, startTime, (resource as Bitmap), (target as Target<Bitmap>), dataSource)
+                    GifDrawable::class -> properties.loaderListener?.onLoaded((resource as GifDrawable), dataSource(dataSource))
+                }
+            }catch (e: Exception) {
+                properties.loaderListener?.onFailed(MediaException(e.message))
+            }
+            return false
+        }
     }
 
     private fun onLoadFailed(
