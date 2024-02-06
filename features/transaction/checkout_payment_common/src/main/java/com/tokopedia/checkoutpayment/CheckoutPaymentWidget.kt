@@ -1,6 +1,6 @@
 package com.tokopedia.checkoutpayment
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,8 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestImage
@@ -25,6 +26,7 @@ import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.purchase_platform.common.utils.LightAndDarkModePreview
 
 data class CheckoutPaymentWidgetData(
     val isLoading: Boolean = false,
@@ -68,6 +70,26 @@ fun CheckoutPaymentWidget(data: CheckoutPaymentWidgetData, modifier: Modifier = 
                     )
                 }
             }
+        } else if (data.isError) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(NestTheme.colors.YN._50)
+                    .padding(start = 16.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
+            ) {
+                NestTypography(
+                    text = "Pembayaran gagal ditampilkan. Coba lagi, yuk! Pembayaran gagal ditampilkan. Coba lagi, yuk!",
+                    textStyle = NestTheme.typography.display3.copy(
+                        color = NestTheme.colors.NN._950
+                    ),
+                    maxLines = 1,
+                    modifier = Modifier.weight(1f).align(Alignment.CenterVertically)
+                )
+                NestIcon(
+                    iconId = IconUnify.RELOAD,
+                    modifier = Modifier.size(32.dp).padding(4.dp)
+                )
+            }
         } else {
             Row(
                 modifier = Modifier
@@ -110,7 +132,7 @@ fun CheckoutPaymentWidget(data: CheckoutPaymentWidgetData, modifier: Modifier = 
                         )
                     )
                     NestTypography(
-                        text = "Cicil 3x Rp234.123.566",
+                        text = "Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566",
                         modifier = Modifier.padding(top = 2.dp),
                         textStyle = NestTheme.typography.display3.copy(
                             color = NestTheme.colors.NN._600
@@ -122,7 +144,7 @@ fun CheckoutPaymentWidget(data: CheckoutPaymentWidgetData, modifier: Modifier = 
     }
 }
 
-@Preview(showBackground = true)
+@LightAndDarkModePreview
 @Composable
 fun CheckoutPaymentWidgetPreview() {
     NestTheme {
