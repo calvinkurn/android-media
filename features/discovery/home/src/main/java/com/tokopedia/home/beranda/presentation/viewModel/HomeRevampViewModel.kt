@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeClaimCouponUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeListCarouselUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
@@ -57,6 +58,8 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
+import com.tokopedia.home_component.visitable.CouponCtaState
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -76,6 +79,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
@@ -109,6 +113,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeAtfUseCase: Lazy<HomeAtfUseCase>,
     private val todoWidgetRepository: Lazy<TodoWidgetRepository>,
     private val homeThematicUseCase: Lazy<HomeThematicUseCase>,
+    private val claimCouponUseCase: Lazy<HomeClaimCouponUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -898,6 +903,31 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    fun onCouponClaim(catalogId: String, couponPosition: Int) {
+        launch {
+            val isClaimSucceed = claimCouponUseCase.get().invoke(catalogId)
+
+            withContext(homeDispatcher.get().main) {
+                findWidget<CouponWidgetDataModel> { model, position ->
+                    val selectedCoupon = model.coupons[couponPosition]
+                    val currentCtaState = selectedCoupon.button
+
+                    selectedCoupon.button = if (isClaimSucceed) {
+                        val data = currentCtaState.model ?: return@findWidget
+                        CouponCtaState.Redirect(data)
+                    } else {
+                        currentCtaState
+                    }
+
+                    updateWidget(
+                        visitable = model,
+                        position = position
+                    )
+                }
+            }
+        }
     }
 
     private fun getThematicBackground() {

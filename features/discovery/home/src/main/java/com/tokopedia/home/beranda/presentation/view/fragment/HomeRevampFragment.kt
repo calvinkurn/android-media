@@ -112,6 +112,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetCompo
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CategoryWidgetV2Callback
 import com.tokopedia.home.beranda.presentation.view.listener.ChooseAddressWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CouponWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CueWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.DynamicIconComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
@@ -1596,6 +1597,7 @@ open class HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
+            CouponWidgetCallback(this),
             getThematicUtil()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -1897,6 +1899,10 @@ open class HomeRevampFragment :
                 }
             }
         }
+    }
+
+    override fun onCouponWidgetClaim(catalogId: String, couponPosition: Int) {
+        getHomeViewModel().onCouponClaim(catalogId, couponPosition)
     }
 
     override fun onChooseAddressServerDown() {
