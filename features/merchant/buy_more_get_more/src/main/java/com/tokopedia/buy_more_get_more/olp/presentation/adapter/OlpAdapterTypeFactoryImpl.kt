@@ -19,7 +19,7 @@ import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 class OlpAdapterTypeFactoryImpl(
     private val sortListener: ProductSortListener,
     private val atcProductListener: AtcProductListener,
-    private val offeringInfoListener: OfferingInfoListener
+    private val offeringInfoListener: OfferingInfoListener,
 ) : OlpAdapterTypeFactory, BaseAdapterTypeFactory() {
     override fun type(type: OfferInfoForBuyerUiModel) = OfferingInfoViewHolder.LAYOUT
     override fun type(type: OfferProductSortingUiModel) = OfferingProductSortingViewHolder.LAYOUT

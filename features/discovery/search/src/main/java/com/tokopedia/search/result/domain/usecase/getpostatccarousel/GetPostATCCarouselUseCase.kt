@@ -5,6 +5,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.usecase.InspirationCarouselQuery.createSearchInspirationCarouselRequest
+import com.tokopedia.search.result.domain.usecase.searchproduct.sreParams
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -16,7 +17,7 @@ class GetPostATCCarouselUseCase(
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchInspirationCarousel> =
         graphqlUseCase.run {
-            val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
+            val params = UrlParamUtils.generateUrlParamString(requestParams.parameters) + sreParams()
             val graphqlRequest = createSearchInspirationCarouselRequest(params)
 
             clearRequest()

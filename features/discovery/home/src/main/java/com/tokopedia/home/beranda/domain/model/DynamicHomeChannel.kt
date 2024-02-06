@@ -107,6 +107,9 @@ data class DynamicHomeChannel(
         @SerializedName("isShimmer")
         @Expose
         var isShimmer: Boolean = true,
+        @SerializedName("origami")
+        @Expose
+        var origami: String = "",
     ) : ImpressHolder() {
 
         private var position: Int = 0

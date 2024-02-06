@@ -6,63 +6,72 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class Option(@SerializedName("name")
-             @Expose
-             override var name: String = "",
+class Option(
+    @SerializedName("name")
+    @Expose
+    override var name: String = "",
 
-             @SerializedName("key")
-             @Expose
-             override var key: String = "",
+    @SerializedName("key")
+    @Expose
+    override var key: String = "",
 
-             @SerializedName("value")
-             @Expose
-             override var value: String = "",
+    @SerializedName("value")
+    @Expose
+    override var value: String = "",
 
-             @SerializedName(value = "input_type", alternate = ["inputType"])
-             @Expose
-             override var inputType: String = "",
+    @SerializedName(value = "input_type", alternate = ["inputType"])
+    @Expose
+    override var inputType: String = "",
 
-             @SerializedName(value = "hex_color", alternate = ["hexColor"])
-             @Expose
-             override var hexColor: String = "",
+    @SerializedName(value = "hex_color", alternate = ["hexColor"])
+    @Expose
+    override var hexColor: String = "",
 
-             @SerializedName("metric")
-             @Expose
-             var metric:String = "",
+    @SerializedName("metric")
+    @Expose
+    var metric: String = "",
 
-             @SerializedName(value = "total_data", alternate = ["totalData"])
-             @Expose
-             var totalData: String = "",
+    @SerializedName(value = "total_data", alternate = ["totalData"])
+    @Expose
+    var totalData: String = "",
 
-             @SerializedName(value = "val_min", alternate = ["valMin"])
-             @Expose
-             var valMin: String = "",
+    @SerializedName(value = "val_min", alternate = ["valMin"])
+    @Expose
+    var valMin: String = "",
 
-             @SerializedName(value = "val_max", alternate = ["valMax"])
-             @Expose
-             var valMax: String = "",
+    @SerializedName(value = "val_max", alternate = ["valMax"])
+    @Expose
+    var valMax: String = "",
 
-             @SerializedName("icon")
-             @Expose
-             override var iconUrl: String = "",
+    @SerializedName("icon")
+    @Expose
+    override var iconUrl: String = "",
 
-             @SerializedName(value = "description", alternate = ["Description"])
-             @Expose
-             override var description: String = "",
+    @SerializedName(value = "description", alternate = ["Description"])
+    @Expose
+    override var description: String = "",
 
-             @SerializedName(value = "is_popular", alternate = ["isPopular"])
-             @Expose
-             var isPopular: Boolean = false,
+    @SerializedName(value = "is_popular", alternate = ["isPopular"])
+    @Expose
+    var isPopular: Boolean = false,
 
-             @SerializedName(value = "is_new", alternate = ["isNew"])
-             @Expose
-             override var isNew: Boolean = false,
+    @SerializedName(value = "is_new", alternate = ["isNew"])
+    @Expose
+    override var isNew: Boolean = false,
 
-             @SerializedName("child")
-             @Expose
-             var levelTwoCategoryList: List<LevelTwoCategory> = listOf(),
+    @SerializedName("child")
+    @Expose
+    var levelTwoCategoryList: List<LevelTwoCategory> = listOf(),
 
-             override var inputState: String = ""
+    @SerializedName("image_url_active", alternate = ["imageUrlActive"])
+    @Expose
+    var imageUrlActive: String = "",
+
+    @SerializedName("image_url_inactive", alternate = ["imageUrlInactive"])
+    @Expose
+    var imageUrlInactive: String = "",
+
+    override var inputState: String = ""
 ) : Parcelable, Cloneable, IOption {
 
     public override fun clone(): Option {
@@ -99,7 +108,7 @@ class Option(@SerializedName("name")
         get() = INPUT_TYPE_RADIO == inputType
 
     val isTypeTextBox: Boolean
-        get() = Option.INPUT_TYPE_TEXTBOX == inputType
+        get() = INPUT_TYPE_TEXTBOX == inputType
 
     val isPriceRange: Boolean
         get() = key == KEY_PRICE_RANGE_1 || key == KEY_PRICE_RANGE_2 || key == KEY_PRICE_RANGE_3 || key == KEY_PRICE_RANGE_4 || key == KEY_PRICE_RANGE_5
@@ -126,9 +135,18 @@ class Option(@SerializedName("name")
 
         val option = other as Option
 
-        return (this.key == option.key
-            && this.value == option.value
-            && this.name == option.name)
+        return (
+            this.key == option.key &&
+                this.value == option.value &&
+                this.name == option.name
+            )
+    }
+
+    override fun hashCode(): Int {
+        var result = key.hashCode()
+        result = 31 * result + value.hashCode()
+        result = 31 * result + name.hashCode()
+        return result
     }
 
     companion object {
@@ -160,6 +178,5 @@ class Option(@SerializedName("name")
 
         const val RATING_ABOVE_FOUR_NAME = "4 Keatas"
         const val RATING_ABOVE_FOUR_VALUE = "4,5"
-
     }
 }

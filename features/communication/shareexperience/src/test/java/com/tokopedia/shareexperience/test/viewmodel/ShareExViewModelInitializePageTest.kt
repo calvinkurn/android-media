@@ -25,7 +25,7 @@ class ShareExViewModelInitializePageTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -62,7 +62,7 @@ class ShareExViewModelInitializePageTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 throwable = dummyThrowable
             )
             coEvery {

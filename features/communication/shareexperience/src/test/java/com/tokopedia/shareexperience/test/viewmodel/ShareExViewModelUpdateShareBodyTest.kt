@@ -24,7 +24,7 @@ class ShareExViewModelUpdateShareBodyTest : ShareExViewModelTestFixture() {
                 identifier = "testId",
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",

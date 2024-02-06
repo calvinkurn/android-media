@@ -31,8 +31,10 @@ object ComparisonBpcWidgetMapper {
 
         val productCardWidth = context.resources.getDimensionPixelSize(com.tokopedia.recommendation_widget_common.R.dimen.comparison_bpc_widget_product_card_width)
         val productCardHeight = recommendationWidget.recommendationItemList.toProductCardModels().getMaxHeightForListView(
-            context,
-            Dispatchers.IO
+            context = context,
+            coroutineDispatcher = Dispatchers.IO,
+            isReimagine = true,
+            useCompatPadding = true
         )
 
         val productList = recommendationItems.withIndex().map {
