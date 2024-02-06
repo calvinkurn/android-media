@@ -275,11 +275,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         _reviewContentState.update { review ->
             review.copy(
                 reviewContent = review.reviewContent.map { reviewContent ->
-                    if (reviewContent.isWatchMode) {
-                        reviewContent.copy(isWatchMode = false)
-                    } else {
-                        reviewContent
-                    }
+                    reviewContent.copy(isWatchMode = false)
                 }
             )
         }

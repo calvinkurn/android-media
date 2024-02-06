@@ -249,10 +249,7 @@ class ReviewFragment @Inject constructor(
     override fun onOptionClicked(menu: ContentMenuItem) {
         when (menu.type) {
             ContentMenuIdentifier.WatchMode -> {
-                MenuBottomSheet.getOrCreate(
-                    childFragmentManager,
-                    requireActivity().classLoader
-                ).dismissNow()
+                MenuBottomSheet.get(childFragmentManager)?.dismiss()
                 viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
             }
             ContentMenuIdentifier.Report ->
