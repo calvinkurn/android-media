@@ -72,6 +72,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
             clProductLabel.background = tickerBackgroundDrawable
             clProductLabel.visible()
             tpgProductLabelCountdown.gone()
+            container.visible()
         }
     }
 
@@ -98,6 +99,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
             clProductLabel.background = tickerBackgroundDrawable
             clProductLabel.visible()
             tpgProductLabelCountdown.gone()
+            container.visible()
         }
     }
 
@@ -176,12 +178,12 @@ class CartCampaignProductLabel @JvmOverloads constructor(
             tpgProductLabelCountdown.visible()
             timer?.start()
             iuCampaignLogo.gone()
+            container.visible()
         }
     }
 
     fun hideTicker() {
-        binding.clProductLabel.gone()
-        binding.tpgProductLabelCountdown.gone()
+        binding.container.gone()
     }
 
     private fun clearTimer() {
