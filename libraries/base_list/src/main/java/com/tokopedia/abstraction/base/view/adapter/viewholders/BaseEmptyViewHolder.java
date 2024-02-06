@@ -7,10 +7,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.baselist.R;
-import com.tokopedia.design.image.ImageLoader;
 
 
 /**
@@ -53,7 +53,9 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
             emptyIconImageView.setImageDrawable(MethodChecker.getDrawable(context, element.getIconRes()));
         }
         if (!TextUtils.isEmpty(element.getUrlRes())) {
-            ImageLoader.LoadImage(emptyIconImageView, element.getUrlRes());
+            if (context != null) {
+                Glide.with(context).load(element.getUrlRes()).into(emptyIconImageView);
+            }
         }
         if (element.getCallback() != null) {
             callback = element.getCallback();

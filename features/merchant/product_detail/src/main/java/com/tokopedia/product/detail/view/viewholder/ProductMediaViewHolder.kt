@@ -1,10 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicProductMediaBinding

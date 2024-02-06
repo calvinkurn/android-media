@@ -59,6 +59,24 @@ object BuyerOrderDetailTracker {
         }
     }
 
+    object AddOnsInformation {
+        fun clickAddOnsInfo(
+            orderId: String,
+            addOnsType: String
+        ) {
+            mutableMapOf<String, Any>().appendGeneralEventData(
+                eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+                eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+                eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_ADD_ONS_INFO +
+                        addOnsType,
+                eventLabel = orderId
+            ).appendBusinessUnit(BUSINESS_UNIT_PHYSICAL_GOODS)
+                .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+                .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_49004)
+                .sendGeneralEvent()
+        }
+    }
+
     private fun MutableMap<String, Any>.appendGeneralEventData(
         eventName: String,
         eventCategory: String,
