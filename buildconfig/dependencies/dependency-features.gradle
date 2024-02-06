@@ -252,6 +252,7 @@ ext {
             cart                            : ":features:transaction:cart",
             cart_common                     : ":features:transaction:cart_common",
             checkout                        : ":features:transaction:checkout",
+			checkoutPayment					: ":features:transaction:checkout_payment_common",
             promoCheckoutMarketplace        : ":features:transaction:promo_checkout_marketplace",
             minicart                        : ":features:transaction:minicart",
             addOnGifting                    : ":features:transaction:add_on_gifting",

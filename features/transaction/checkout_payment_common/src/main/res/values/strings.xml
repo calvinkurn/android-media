@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="checkout_payment_method_label">Metode Pembayaran</string>
+</resources>
