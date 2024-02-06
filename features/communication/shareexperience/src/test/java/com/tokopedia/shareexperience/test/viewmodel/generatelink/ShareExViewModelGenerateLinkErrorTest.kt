@@ -20,6 +20,7 @@ import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.ShareExAction
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.delay
@@ -106,7 +107,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(null, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -121,7 +122,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -186,7 +187,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(null, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -201,7 +202,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -276,7 +277,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error != null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(true, updatedValue.isAffiliateError)
+                assertEquals(ShareExIntentErrorEnum.AFFILIATE_ERROR, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -291,7 +292,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -366,7 +367,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error != null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(ShareExIntentErrorEnum.BRANCH_ERROR, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -381,7 +382,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -455,7 +456,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error != null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(ShareExIntentErrorEnum.IMAGE_DOWNLOADER, updatedValue.errorEnum)
 
                 expectNoEvents()
             }

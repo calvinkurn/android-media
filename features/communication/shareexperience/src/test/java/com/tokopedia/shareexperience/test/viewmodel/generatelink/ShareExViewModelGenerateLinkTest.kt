@@ -132,7 +132,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(null, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -147,7 +147,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -230,7 +230,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(null, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -245,7 +245,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -319,7 +319,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(null, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -334,7 +334,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -406,7 +406,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(null, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -421,7 +421,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 identifier = dummyIdentifier,
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -447,7 +447,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error != null)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(null, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -463,7 +463,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 identifier = "",
                 pageTypeEnum = ShareExPageTypeEnum.OTHERS,
                 defaultUrl = "defaultUrl",
-                trackerArg = ShareExTrackerArg(),
+                trackerArg = ShareExTrackerArg(""),
                 throwable = dummyThrowable
             )
 
@@ -489,7 +489,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals("", initialValue.shortLink)
                 assertEquals(null, initialValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, initialValue.imageType)
-                assertEquals(false, initialValue.isAffiliateError)
+                assertEquals(null, initialValue.errorEnum)
 
                 val updatedValue = awaitItem()
                 assert(updatedValue.intent != null)
@@ -497,7 +497,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals("defaultUrl", updatedValue.shortLink)
                 assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(null, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -529,7 +529,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals("", updatedValue.shortLink)
                 assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
-                assertEquals(false, updatedValue.isAffiliateError)
+                assertEquals(null, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -544,7 +544,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
         assertEquals(true, loadingImageGenerator.isLoading)
         assert(loadingImageGenerator.error == null)
         assertEquals(ShareExImageTypeEnum.NO_IMAGE, loadingImageGenerator.imageType)
-        assertEquals(false, loadingImageGenerator.isAffiliateError)
+        assertEquals(null, loadingImageGenerator.errorEnum)
     }
 
     private fun assertLoadingLinkGenerator(loadingLinkGenerator: ShareExChannelIntentUiState) {
@@ -555,6 +555,6 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
         assertEquals(true, loadingLinkGenerator.isLoading)
         assert(loadingLinkGenerator.error == null)
         assertEquals(ShareExImageTypeEnum.NO_IMAGE, loadingLinkGenerator.imageType)
-        assertEquals(false, loadingLinkGenerator.isAffiliateError)
+        assertEquals(null, loadingLinkGenerator.errorEnum)
     }
 }
