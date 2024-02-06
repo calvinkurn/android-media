@@ -37,7 +37,6 @@ class CartRecentViewItemViewHolder(private val binding: ItemProductRecentViewBin
                     shopBadgeList = element.badgesUrl.map {
                         ProductCardModel.ShopBadge(
                             imageUrl = it
-                                ?: ""
                         )
                     },
                     freeOngkir = ProductCardModel.FreeOngkir(

@@ -4,9 +4,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.merchantvoucher.DiscoMerchantAnalytics
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.databinding.MerchantVoucherGridItemLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -20,7 +20,7 @@ class MerchantVoucherGridItemViewHolder(
     val fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private val binding = MerchantVoucherGridItemLayoutBinding.bind(itemView)
+    private val merchantVoucherGrid = itemView.findViewById<MerchantVoucherViewCard>(R.id.merchant_voucher_grid)
 
     private var viewModel: MerchantVoucherGridItemViewModel? = null
 
@@ -47,7 +47,7 @@ class MerchantVoucherGridItemViewHolder(
     }
 
     private fun renderVoucher(item: DataItem) {
-        binding.merchantVoucherGrid.run {
+        merchantVoucherGrid.run {
             setData(item)
             handleClickAction(item)
         }
