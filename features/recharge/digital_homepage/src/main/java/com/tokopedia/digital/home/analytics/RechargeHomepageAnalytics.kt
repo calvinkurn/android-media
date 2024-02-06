@@ -357,5 +357,7 @@ class RechargeHomepageAnalytics {
         const val ACTION_IMPRESSION = "impression"
         const val ACTION_CLICK = "click"
         const val ACTION_CLOSE = "close"
+        const val ACTION_IMPRESSION_THREE_DOTS = "impression-3dots"
+        const val ACTION_CLICK_THREE_DOTS = "click-3dots"
     }
 }

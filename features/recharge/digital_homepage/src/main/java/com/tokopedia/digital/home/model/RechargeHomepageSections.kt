@@ -184,7 +184,7 @@ data class RechargeHomepageSections(
         @SerializedName("slashed_price")
         @Expose
         val slashedPrice: String = "",
-    )
+    ): ImpressHolder()
 
     data class Attributes(
         @SerializedName("title_color")
