@@ -161,10 +161,12 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
             layoutBenefit.rvUsablePromo.run {
                 adapter = usablePromoAdapter
             }
-            toggleInfo.setOnClickListener {
+            containerTnc.setOnClickListener {
+            containerTnc.setOnClickListener {
+            containerTnc.setOnClickListener {
                 val start = if (infoStateIsShown) 0f else 180f
                 val end = if (infoStateIsShown) 180f else 0f
-                val animator = ObjectAnimator.ofFloat(it, "rotation", start, end)
+                val animator = ObjectAnimator.ofFloat(toggleInfo, "rotation", start, end)
                 animator.duration = 400
                 animator.start()
 
