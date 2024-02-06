@@ -50,7 +50,7 @@ class GetProductInfoP2OtherUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ProductInfoP2Other {
         val p2GeneralData = ProductInfoP2Other()
-        val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
+        val shopId = requestParams.getString(ProductDetailCommonConstant.PARAM_SHOP_IDS, "")
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
 
         //region Discussion/Talk
