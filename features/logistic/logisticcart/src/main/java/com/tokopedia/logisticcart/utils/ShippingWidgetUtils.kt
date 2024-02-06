@@ -17,7 +17,6 @@ object ShippingWidgetUtils {
             voucherLogisticExists = !selectedShipper.logPromoCode.isNullOrEmpty(),
             logisticPromoCode = selectedShipper.logPromoCode,
             isWhitelabel = isHideChangeCourierCard,
-            isHasShownCourierError = false,
             boOrderMessage = boOrderMessage,
             serviceName = estimatedTimeDelivery ?: "",
             courierName = name ?: "",
