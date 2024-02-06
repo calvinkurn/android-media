@@ -1,33 +1,15 @@
 package com.tokopedia.home_component.visitable
 
+import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
+
 data class CouponWidgetDataItemModel(
-    val benefitType: BenefitType = BenefitType(),
-    val shopName: String = "",
-    val benefitValue: String = "",
-    val tnc: String = "",
-    val expiredText: String = "",
-    val expiredUnix: Long = 0L,
-    val ctaButton: CtaButton = CtaButton(),
-    val iconUrl: String = "",
-    val backgroundUrl: String = "",
-    val backgroundGradientColors: List<String> = emptyList()
+    val coupon: AutomateCouponModel,
+    val button: CtaState
 ) {
 
-    data class BenefitType(
-        val title: String = "",
-        val textColor: String = ""
-    )
-
-    data class CtaButton(
-        val text: String = "",
-        val type: Type = Type.Redirect,
-        val catalogId: String = "",
-        val url: String = ""
-    ) {
-
-        sealed class Type(val value: String) {
-            object Claim : Type("claim")
-            object Redirect : Type("redirect")
-        }
+    sealed class CtaState {
+        object Claim : CtaState()
+        object Redirect : CtaState()
+        object OutOfStock : CtaState()
     }
 }

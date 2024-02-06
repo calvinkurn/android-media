@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.ChannelModel
 
 data class CouponWidgetDataModel(
     val channelModel: ChannelModel,
+    val backgroundGradientColor: List<String>,
     val coupons: List<CouponWidgetDataItemModel>
 ) : HomeComponentVisitable {
 
