@@ -481,10 +481,7 @@ class CartItemViewHolder(
                         if (!data.isError) {
                             if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                 actionListener?.onCartItemCheckChanged(bindingAdapterPosition, data)
-                                viewHolderListener?.onNeedToRefreshSingleShop(
-                                    data,
-                                    bindingAdapterPosition
-                                )
+                                handleCheckboxRefresh(data)
                             }
                         }
                     }
@@ -535,15 +532,27 @@ class CartItemViewHolder(
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                             actionListener?.onBundleItemCheckChanged(data)
-                            viewHolderListener?.onNeedToRefreshSingleShop(
-                                data,
-                                bindingAdapterPosition
-                            )
+                            handleCheckboxRefresh(data)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun handleCheckboxRefresh(data: CartItemHolderData) {
+        if (data.wholesalePriceData.isEmpty() && shouldRefreshSingleProduct()) {
+            viewHolderListener?.onNeedToRefreshSingleProduct(bindingAdapterPosition)
+        } else {
+            viewHolderListener?.onNeedToRefreshSingleShop(
+                data,
+                bindingAdapterPosition
+            )
+        }
+    }
+
+    private fun shouldRefreshSingleProduct(): Boolean {
+        return true
     }
 
     private fun renderShopInfo(data: CartItemHolderData) {
