@@ -1,5 +1,7 @@
 package com.tokopedia.application;
 
+import static com.tokopedia.analytics.byteio.AppLogInitKt.initAppLog;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -197,6 +199,7 @@ public class MyApplication extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
+        initAppLog(this);
 
         PersistentCacheManager.init(this);
         RemoteConfigInstance.initAbTestPlatform(this);
