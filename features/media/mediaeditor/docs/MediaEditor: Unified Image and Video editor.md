@@ -149,4 +149,4 @@ RATIO_2_1
 
 ## Useful Links
 
-- 
+- [Figma](https://www.figma.com/file/24DDHxC8JWnsmgQ91YiDJc/WG---Universal-Media?node-id=3577%3A130551)

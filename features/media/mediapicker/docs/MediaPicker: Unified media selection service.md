@@ -123,10 +123,15 @@ PageSource: (manually added according to usage page)
 EditorParam & ConfigurableUniversalEditorParam please refer to MediaEditor & UniversalEditor for detail.
 ```
 
+## MediaPicker page
+![MediaPicker camera](https://docs-android.tokopedia.net/images/docs/mediapicker/MediaPicker-camera.png "MediaPicker camera")
+![MediaPicker gallery](https://docs-android.tokopedia.net/images/docs/mediapicker/MediaPicker-gallery.png "MediaPicker gallery")
+![MediaPicker album](https://docs-android.tokopedia.net/images/docs/mediapicker/MediaPicker-album.png "MediaPicker album")
+
 ## Action Items
 
 - -
 
 ## Useful Links
 
-- -
+- [Figma](https://www.figma.com/file/24DDHxC8JWnsmgQ91YiDJc/WG---Universal-Media?node-id=2507%3A92195)

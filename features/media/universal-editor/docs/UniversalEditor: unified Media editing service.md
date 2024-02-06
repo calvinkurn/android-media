@@ -74,6 +74,11 @@ var trackerExtra: Map<String, String>
 var videoFileResultAppendix: String
 ```
 
+
+## UniversalEditor page
+![UniversalEditor image](https://docs-android.tokopedia.net/images/docs/UniversalEditor/UniversalEditor-image.png "UniversalEditor image")
+![UniversalEditor video](https://docs-android.tokopedia.net/images/docs/UniversalEditor/UniversalEditor-video.png "UniversalEditor video")
+
 ## Action Items
 
 - Add video editor trim feature
@@ -81,4 +86,4 @@ var videoFileResultAppendix: String
 
 ## Useful Links
 
-- -
+- [Figma](https://www.figma.com/file/ONt2h5of5NUtORNnLSFXPB/%5BCreation%5D-Story?type=design&node-id=19107%3A291510&t=KQZRD7uhhI6hqPfM-1) 
