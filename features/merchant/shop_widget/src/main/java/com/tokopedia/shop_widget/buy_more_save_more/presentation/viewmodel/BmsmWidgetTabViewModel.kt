@@ -174,6 +174,7 @@ class BmsmWidgetTabViewModel @Inject constructor(
                             ?: currentState.offeringInfo.offerings.firstOrNull()?.tierList?.firstOrNull()?.tierId
                     it.copy(
                         isShowLoading = false,
+                        isWidgetOnInitialState = false,
                         miniCartData = miniCartSimplifiedData,
                         isUpdateGiftImage = appliedTierId == currentState.currentAppliedId,
                         currentAppliedId = appliedTierId.orZero()
