@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
+import com.tokopedia.product.detail.data.model.datamodel.TabletPosition
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
@@ -15,6 +16,9 @@ data class OngoingCampaignUiModel(
     var shouldShowTradeIn: Boolean = false,
     var data: ProductContentMainData? = null
 ) : DynamicPdpDataModel {
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
+
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
