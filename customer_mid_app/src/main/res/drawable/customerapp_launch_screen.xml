@@ -3,6 +3,7 @@
     <item android:drawable="@color/background_splash_screen"/>
     <item>
         <bitmap android:gravity="center"
+            android:scaleType="center"
             android:src="@drawable/ramadan_ekstra_customerapp_splash"/>
     </item>
 </layer-list>
