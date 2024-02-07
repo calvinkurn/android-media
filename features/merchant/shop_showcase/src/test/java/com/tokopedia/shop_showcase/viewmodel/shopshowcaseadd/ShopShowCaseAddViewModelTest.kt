@@ -3,7 +3,6 @@ package com.tokopedia.shop_showcase.viewmodel.shopshowcaseadd
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.*
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.AppendShopShowcaseProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
-import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.RemoveShopShowcaseProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.UpdateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.ProductListResponse
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
@@ -115,94 +114,140 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
         }
     }
 
+    // ========= Update showcase name only ========= //
     @Test
-    fun `when update shop show case should return success`() {
+    fun `when update shop showcase name should return success`() {
         runBlocking {
             mockkObject(UpdateShopShowcaseUseCase)
-            mockkObject(AppendShopShowcaseProductUseCase)
-            mockkObject(RemoveShopShowcaseProductUseCase)
-            onUpdateShopShowCase_thenReturn()
-            shopShowCaseAddViewModel.updateShopShowcase(UpdateShopShowcaseParam(), AppendShowcaseProductParam(), RemoveShowcaseProductParam())
+            onUpdateShopShowCaseName_thenReturn()
+            shopShowCaseAddViewModel.updateShowcaseName(UpdateShopShowcaseParam())
 
-            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+            verifySuccessUpdateShopShowCaseNameUseCaseCalled()
 
-            verifySuccessUpdateShopShowCaseUseCaseCalled()
-
-            assertTrue(shopShowCaseAddViewModel.listOfResponse.value?.isNotEmpty() == true)
+            assertTrue(shopShowCaseAddViewModel.listOfUpdateShowcaseNameResponse.value?.isNotEmpty() == true)
         }
     }
 
     @Test
-    fun `Update Shop Showcase Fail Scenario`() {
+    fun `update shop showcase name return Fail`() {
         runBlocking {
             mockkObject(UpdateShopShowcaseUseCase)
-            mockkObject(AppendShopShowcaseProductUseCase)
-            mockkObject(RemoveShopShowcaseProductUseCase)
-            onUpdateShopShowCase_thenReturn()
+            onUpdateShopShowCaseName_thenReturn()
 
             coEvery {
                 updateShopShowcaseUseCase.executeOnBackground()
             } throws Exception()
 
-            shopShowCaseAddViewModel.updateShopShowcase(UpdateShopShowcaseParam(), AppendShowcaseProductParam(), RemoveShowcaseProductParam())
+            shopShowCaseAddViewModel.updateShowcaseName(data = UpdateShopShowcaseParam())
+            verifySuccessUpdateShopShowCaseNameUseCaseCalled()
+
+            assertTrue(shopShowCaseAddViewModel.listOfUpdateShowcaseNameResponse.value?.isNotEmpty() == true)
+            assertTrue(shopShowCaseAddViewModel.listOfUpdateShowcaseNameResponse.value?.get(0) as Result<UpdateShopShowcaseResponse> is Fail)
+        }
+    }
+    // ========================================== //
+
+    // Update showcase name & append product
+    @Test
+    fun `update shop showcase name and append product should return success`() {
+        runBlocking {
+            mockkObject(UpdateShopShowcaseUseCase)
+            mockkObject(AppendShopShowcaseProductUseCase)
+            onUpdateShopShowCaseNameAndAppendProduct_thenReturn()
+
+            val mockAppendedOneProductOnly = AppendShowcaseProductParam(
+                listAppended = arrayListOf(
+                    AppendedProduct(
+                        product_id = anyString(),
+                        menu_id = anyString()
+                    )
+                )
+            )
+
+            shopShowCaseAddViewModel.updateShowcaseAppendProduct(data = UpdateShopShowcaseParam(), newAppendedProduct = mockAppendedOneProductOnly)
             shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+            verifySuccessUpdateShopShowCaseNameAndAppendProductUseCaseCalled(appendShowcaseProductParam = mockAppendedOneProductOnly)
 
-            verifySuccessUpdateShopShowCaseUseCaseCalled()
-
-            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(0) as Result<UpdateShopShowcaseResponse>) is Fail)
-            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(1) as Result<AppendShowcaseProductResponse>) is Success)
-            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(2) as Result<RemoveShowcaseProductResponse>) is Success)
-            assertTrue(shopShowCaseAddViewModel.listOfResponse.value?.isNotEmpty() == true)
+            assertTrue(shopShowCaseAddViewModel.listOfAppendResponse.value?.isNotEmpty() == true)
         }
     }
 
     @Test
-    fun `Append new Shop Showcase Products When Update Fail Scenario`() {
+    fun `update shop showcase name and append product return Fail update showcase name`() {
         runBlocking {
             mockkObject(UpdateShopShowcaseUseCase)
             mockkObject(AppendShopShowcaseProductUseCase)
-            mockkObject(RemoveShopShowcaseProductUseCase)
-            onUpdateShopShowCase_thenReturn()
+            onUpdateShopShowCaseNameAndAppendProduct_thenReturn()
+            val mockAppendedOneProductOnly = AppendShowcaseProductParam(
+                listAppended = arrayListOf(
+                    AppendedProduct(
+                        product_id = anyString(),
+                        menu_id = anyString()
+                    )
+                )
+            )
+
+            coEvery {
+                updateShopShowcaseUseCase.executeOnBackground()
+            } throws Exception()
+
+            shopShowCaseAddViewModel.updateShowcaseAppendProduct(data = UpdateShopShowcaseParam(), newAppendedProduct = mockAppendedOneProductOnly)
+            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+            verifySuccessUpdateShopShowCaseNameAndAppendProductUseCaseCalled(appendShowcaseProductParam = mockAppendedOneProductOnly)
+
+            assertTrue(shopShowCaseAddViewModel.listOfAppendResponse.value?.isNotEmpty() == true)
+            assertTrue(shopShowCaseAddViewModel.listOfAppendResponse.value?.get(0) as Result<UpdateShopShowcaseResponse> is Fail)
+            assertTrue(shopShowCaseAddViewModel.listOfAppendResponse.value?.get(1) as Result<AppendShowcaseProductResponse> is Success)
+        }
+    }
+
+    @Test
+    fun `update shop showcase name and append product return Fail append product`() {
+        runBlocking {
+            mockkObject(UpdateShopShowcaseUseCase)
+            mockkObject(AppendShopShowcaseProductUseCase)
+            onUpdateShopShowCaseNameAndAppendProduct_thenReturn()
+            val mockAppendedOneProductOnly = AppendShowcaseProductParam(
+                listAppended = arrayListOf(
+                    AppendedProduct(
+                        product_id = anyString(),
+                        menu_id = anyString()
+                    )
+                )
+            )
 
             coEvery {
                 appendShopShowcaseProductUseCase.executeOnBackground()
             } throws Exception()
 
-            shopShowCaseAddViewModel.updateShopShowcase(UpdateShopShowcaseParam(), AppendShowcaseProductParam(), RemoveShowcaseProductParam())
+            shopShowCaseAddViewModel.updateShowcaseAppendProduct(data = UpdateShopShowcaseParam(), newAppendedProduct = mockAppendedOneProductOnly)
             shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+            verifySuccessUpdateShopShowCaseNameAndAppendProductUseCaseCalled(appendShowcaseProductParam = mockAppendedOneProductOnly)
 
-            verifySuccessUpdateShopShowCaseUseCaseCalled()
-
-            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(0) as Result<UpdateShopShowcaseResponse>) is Success)
-            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(1) as Result<AppendShowcaseProductResponse>) is Fail)
-            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(2) as Result<RemoveShowcaseProductResponse>) is Success)
-            assertTrue(shopShowCaseAddViewModel.listOfResponse.value?.isNotEmpty() == true)
+            assertTrue(shopShowCaseAddViewModel.listOfAppendResponse.value?.isNotEmpty() == true)
+            assertTrue(shopShowCaseAddViewModel.listOfAppendResponse.value?.get(0) as Result<UpdateShopShowcaseResponse> is Success)
+            assertTrue(shopShowCaseAddViewModel.listOfAppendResponse.value?.get(1) as Result<AppendShowcaseProductResponse> is Fail)
         }
+    }
+    // ========================================== //
+
+    // TODO: Update showcase name & remove product
+    @Test
+    fun `update shop showcase name and remove product return Success update showcase name`() {
     }
 
     @Test
-    fun `Remove Shop Showcase Products When Update Fail Scenario`() {
-        runBlocking {
-            mockkObject(UpdateShopShowcaseUseCase)
-            mockkObject(AppendShopShowcaseProductUseCase)
-            mockkObject(RemoveShopShowcaseProductUseCase)
-            onUpdateShopShowCase_thenReturn()
-
-            coEvery {
-                removeShopShowcaseProductUseCase.executeOnBackground()
-            } throws Exception()
-
-            shopShowCaseAddViewModel.updateShopShowcase(UpdateShopShowcaseParam(), AppendShowcaseProductParam(), RemoveShowcaseProductParam())
-            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-            verifySuccessUpdateShopShowCaseUseCaseCalled()
-
-            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(0) as Result<UpdateShopShowcaseResponse>) is Success)
-            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(1) as Result<AppendShowcaseProductResponse>) is Success)
-            assertTrue((shopShowCaseAddViewModel.listOfResponse.value?.get(2) as Result<RemoveShowcaseProductResponse>) is Fail)
-            assertTrue(shopShowCaseAddViewModel.listOfResponse.value?.isNotEmpty() == true)
-        }
+    fun `update shop showcase name and remove product return Fail update showcase name`() {
     }
+
+    @Test
+    fun `update shop showcase name and remove product return Success remove product`() {
+    }
+
+    @Test
+    fun `update shop showcase name and remove product return Fail remove product`() {
+    }
+    // ========================================== //
 
     private fun onCreateShopShowCase_thenReturn() {
         coEvery { createShopShowcaseUseCase.executeOnBackground() } returns AddShopShowcaseResponse()
@@ -215,10 +260,13 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
         coEvery { getProductListUseCase.executeOnBackground() } returns showCaseProductList
     }
 
-    private fun onUpdateShopShowCase_thenReturn() {
+    private fun onUpdateShopShowCaseName_thenReturn() {
+        coEvery { updateShopShowcaseUseCase.executeOnBackground() } returns UpdateShopShowcaseResponse()
+    }
+
+    private fun onUpdateShopShowCaseNameAndAppendProduct_thenReturn() {
         coEvery { updateShopShowcaseUseCase.executeOnBackground() } returns UpdateShopShowcaseResponse()
         coEvery { appendShopShowcaseProductUseCase.executeOnBackground() } returns AppendShowcaseProductResponse()
-        coEvery { removeShopShowcaseProductUseCase.executeOnBackground() } returns RemoveShowcaseProductResponse()
     }
 
     private fun verifySuccessCreateShopShowCaseCalled() {
@@ -231,14 +279,16 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
         coVerify { getProductListUseCase.executeOnBackground() }
     }
 
-    private fun verifySuccessUpdateShopShowCaseUseCaseCalled() {
+    private fun verifySuccessUpdateShopShowCaseNameUseCaseCalled() {
+        verify { UpdateShopShowcaseUseCase.createRequestParams(UpdateShopShowcaseParam()) }
+        coVerify { updateShopShowcaseUseCase.executeOnBackground() }
+    }
+
+    private fun verifySuccessUpdateShopShowCaseNameAndAppendProductUseCaseCalled(appendShowcaseProductParam: AppendShowcaseProductParam) {
         verify { UpdateShopShowcaseUseCase.createRequestParams(UpdateShopShowcaseParam()) }
         coVerify { updateShopShowcaseUseCase.executeOnBackground() }
 
-        verify { AppendShopShowcaseProductUseCase.createRequestParams(AppendShowcaseProductParam(), anyString()) }
+        verify { AppendShopShowcaseProductUseCase.createRequestParams(appendShowcaseProductParam, anyString()) }
         coVerify { appendShopShowcaseProductUseCase.executeOnBackground() }
-
-        verify { RemoveShopShowcaseProductUseCase.createRequestParams(RemoveShowcaseProductParam(), anyString()) }
-        coVerify { removeShopShowcaseProductUseCase.executeOnBackground() }
     }
 }
