@@ -21,6 +21,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.network.ttnet.TTNetHelper;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
