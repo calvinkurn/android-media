@@ -1095,7 +1095,7 @@ class CartItemViewHolder(
             )
         }
 
-        if (data.wholesalePriceFormatted != null) {
+        if (data.wholesalePriceFormatted != null && data.isSelected) {
             binding.textProductPrice.text = data.wholesalePriceFormatted
                 ?: ""
         } else {
@@ -1108,7 +1108,7 @@ class CartItemViewHolder(
 
     private fun renderSlashPrice(data: CartItemHolderData) {
         val hasPriceOriginal = data.productOriginalPrice > 0
-        val hasWholesalePrice = data.wholesalePrice > 0
+        val hasWholesalePrice = data.wholesalePrice > 0 && data.isSelected
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
             data.productInitialPriceBeforeDrop > data.productPrice
         if (!data.isError && (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) && !data.isBundlingItem) {
@@ -1117,14 +1117,14 @@ class CartItemViewHolder(
                 renderSlashPriceFromCampaign(data)
             } else if (data.productInitialPriceBeforeDrop > 0) {
                 val wholesalePrice = data.wholesalePrice
-                if (wholesalePrice > 0 && wholesalePrice < data.productPrice) {
+                if (hasWholesalePrice && wholesalePrice < data.productPrice) {
                     // Wholesale
                     renderSlashPriceFromWholesale(data)
                 } else {
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.wholesalePrice > 0) {
+            } else if (hasWholesalePrice) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }
