@@ -70,6 +70,16 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
         trackShare(id, VALUE_EVENT_CLICK, eventCategory, VALUE_ACTION_CLOSE_SHARE, trackerId, currentSite)
     }
 
+    fun trackCloseShare(id: String, eventCategory: String,
+                        trackerId: String,
+                        currentSite: String,
+                        dataMap: HashMap<String, Any>) {
+        trackShare(id, VALUE_EVENT_CLICK, eventCategory, VALUE_ACTION_CLOSE_SHARE,
+            trackerId,
+            currentSite,
+            dataMap)
+    }
+
     fun trackClickShareChannel(id: String, channel: String, imageType: String, eventCategory: String, trackerId: String, currentSite: String) {
         trackShare("$channel - $id - $imageType", VALUE_EVENT_CLICK, eventCategory, VALUE_ACTION_CLICK_CHANNEL, trackerId, currentSite)
     }
