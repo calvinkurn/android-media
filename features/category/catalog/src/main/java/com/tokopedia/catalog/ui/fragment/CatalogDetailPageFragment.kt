@@ -551,6 +551,10 @@ class CatalogDetailPageFragment :
                 widgetAdapter.changeComparison(it)
             }
         }
+        viewModel.variantName.observe(viewLifecycleOwner) {
+            widgetAdapter.displayVariantTextToSellerOffering(it)
+            binding?.icCtaSellerOffering?.ctaAtc?.setVariantText(it)
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.scrollEvents.debounce(300).collect {
@@ -692,7 +696,7 @@ class CatalogDetailPageFragment :
                 warehouseId = properties.warehouseId,
                 isVariant = properties.isVariant
             )
-            if (properties.isVariant) viewModel.getVariantInfo(viewModel.atcModel)
+            if (properties.isVariant) viewModel.getVariantInfo()
             root.showWithCondition(properties.isVisible)
             containerPriceCta.setBackgroundColor(properties.bgColor)
             ctaAtc.setPrice(properties.price)

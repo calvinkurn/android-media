@@ -56,6 +56,10 @@ class CatalogDetailPageViewModel @Inject constructor(
     val addToCartDataModel: LiveData<AddToCartDataModel>
         get() = _addToCartDataModel
 
+    private val _variantName = MutableLiveData<String>()
+    val variantName: LiveData<String>
+        get() = _variantName
+
     private val _scrollEvents = MutableStateFlow("")
     val scrollEvents: Flow<String> = _scrollEvents.asStateFlow()
 
@@ -133,20 +137,23 @@ class CatalogDetailPageViewModel @Inject constructor(
         )
     }
 
-    fun getVariantInfo(atcUiModel: CatalogProductAtcUiModel) {
+    fun getVariantInfo() {
         launchCatchError(
             dispatchers.io,
             block = {
                 val param = aggregatorUseCase.createRequestParams(
-                    productId = atcUiModel.productId,
+                    productId = atcModel.productId,
                     source = VariantPageSource.CATALOG_PAGESOURCE.source,
                     isTokoNow = false,
-                    shopId = atcUiModel.shopId,
+                    shopId = atcModel.shopId,
                     extParams = "",
-                    warehouseId = atcUiModel.warehouseId,
+                    warehouseId = atcModel.warehouseId,
                     pdpSession = ""
                 )
-                val result = aggregatorUseCase.executeOnBackground(param)
+                val variantData = aggregatorUseCase.executeOnBackground(param).variantData
+                val defaultChild = variantData.defaultChild
+                val defaultChildVariant = variantData.getChildByProductId(defaultChild)?.optionName?.joinToString()
+                _variantName.postValue(defaultChildVariant)
             },
             onError = {
                 _errorsToaster.postValue(it)
