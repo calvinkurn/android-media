@@ -147,12 +147,6 @@ object AppLogAnalytics {
     @JvmField
     var globalRequestId: String? = null
 
-    @JvmField
-    var startActivityTime = 0L
-
-    @JvmField
-    var hasStartTime = false
-
     private val lock = Any()
 
     fun addPageName(activity: Activity) {
@@ -172,7 +166,9 @@ object AppLogAnalytics {
         synchronized(lock) {
             val pageNameToRemove =
                 pageNames.findLast { it.first == activity.javaClass.simpleName }
-            pageNames.remove(pageNameToRemove)
+            if (pageNameToRemove != null) {
+                pageNames.remove(pageNameToRemove)
+            }
         }
     }
 
@@ -305,13 +301,13 @@ object AppLogAnalytics {
         })
     }
 
-    fun sendStay(product: TrackStayProductDetail) {
+    fun sendStay(durationInMs: Long, product:TrackStayProductDetail) {
         if (sourcePageType == null) {
             return
         }
         send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
             it.addPage()
-            it.put("stay_time", System.currentTimeMillis() - startActivityTime)
+            it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", /*TODO*/ 1)
             it.put("source_module",/*TODO*/ "")

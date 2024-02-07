@@ -15,6 +15,8 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
 
+    private long startTime = 0L;
+
     @Nullable
     protected abstract Fragment getNewFragment();
 
@@ -53,5 +55,11 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
         return TAG_FRAGMENT;
     }
 
+    public long getStartTime() {
+        return startTime;
+    }
 
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
 }
