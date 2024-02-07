@@ -10,7 +10,6 @@ import com.tokopedia.remoteconfig.RollenceKey
 object HomeRollenceController {
     private const val EMPTY_VALUE = ""
 
-    var rollenceAtfValue: String = ""
     var rollenceLoadTime: String = ""
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
     var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
@@ -18,7 +17,6 @@ object HomeRollenceController {
     var isMegaTabEnabled = false
 
     fun fetchHomeRollenceValue() {
-        fetchAtfRollenceValue()
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
         fetchHomeMegaTabRollenceValue()
@@ -32,19 +30,6 @@ object HomeRollenceController {
             RollenceKey.ICON_JUMPER_DEFAULT
         )
         iconJumperSREValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.ICON_JUMPER_SRE_KEY)
-    }
-
-    private fun fetchAtfRollenceValue() {
-        rollenceAtfValue = try {
-            val rollenceAtf = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_ATF)
-            if (rollenceAtf == RollenceKey.HOME_COMPONENT_ATF_3) {
-                rollenceAtf
-            } else {
-                RollenceKey.HOME_COMPONENT_ATF_2
-            }
-        } catch (_: Exception) {
-            EMPTY_VALUE
-        }
     }
 
     private fun fetchLoadTimeRollenceValue() {
@@ -88,18 +73,6 @@ object HomeRollenceController {
 
     fun isLoadAtfFromCache(): Boolean {
         return rollenceLoadAtfCache == RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
-    }
-
-    fun isUsingAtf3Variant(forceAtf3: Boolean): Boolean {
-        return forceAtf3 || rollenceAtfValue == RollenceKey.HOME_COMPONENT_ATF_3
-    }
-
-    fun getAtfRollence(forceAtf3: Boolean): String {
-        return if (forceAtf3) {
-            RollenceKey.HOME_COMPONENT_ATF_3
-        } else {
-            rollenceAtfValue
-        }
     }
 
     @JvmStatic
