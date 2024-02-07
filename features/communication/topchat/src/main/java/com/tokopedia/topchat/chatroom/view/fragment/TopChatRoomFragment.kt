@@ -20,8 +20,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -118,6 +120,7 @@ import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastReceiver
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.util.TopChatRoomRedirectionUtil
+import com.tokopedia.topchat.chatroom.view.TopChatRoomAction
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -204,6 +207,7 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -3195,6 +3199,29 @@ open class TopChatRoomFragment :
         viewModel.roomMetaData.observe(viewLifecycleOwner) {
             it?.let {
                 webSocketViewModel.roomMetaData = it
+            }
+        }
+
+        setupWebSocketFlowObserver()
+    }
+
+    private fun setupWebSocketFlowObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    observeChatRoomUiState()
+                }
+            }
+        }
+        webSocketViewModel.setupViewModelObserver()
+    }
+
+    private suspend fun observeChatRoomUiState() {
+        webSocketViewModel.chatRoomUiState.collectLatest {
+            if (it.isRefresh) {
+                loadInitialData()
+                resetItemList()
+                webSocketViewModel.processAction(TopChatRoomAction.RefreshPage)
             }
         }
     }

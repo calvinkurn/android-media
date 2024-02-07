@@ -26,6 +26,8 @@ import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageM
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
+import com.tokopedia.topchat.chatroom.view.TopChatRoomAction
+import com.tokopedia.topchat.chatroom.view.TopChatRoomUiState
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
@@ -37,6 +39,13 @@ import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Response
@@ -105,6 +114,11 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
     val attachmentSent: LiveData<SendablePreview?>
         get() = _attachmentSent
 
+    private val _actionFlow = MutableSharedFlow<TopChatRoomAction>(extraBufferCapacity = 16)
+
+    private val _chatRoomUiState = MutableStateFlow(TopChatRoomUiState())
+    val chatRoomUiState = _chatRoomUiState.asStateFlow()
+
     var roomMetaData: RoomMetaData = RoomMetaData()
     var userLocationInfo: LocalCacheModel = LocalCacheModel()
     var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
@@ -115,6 +129,32 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
      */
     var isOnStop = false
     var isFromBubble = false
+
+    fun setupViewModelObserver() {
+        _actionFlow.process()
+    }
+
+    fun processAction(action: TopChatRoomAction) {
+        viewModelScope.launch {
+            _actionFlow.emit(action)
+        }
+    }
+
+    private fun Flow<TopChatRoomAction>.process() {
+        onEach {
+            when (it) {
+                is TopChatRoomAction.RefreshPage -> {
+                    refreshChatRoom()
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun refreshChatRoom() {
+        _chatRoomUiState.update {
+            it.copy(isRefresh = false)
+        }
+    }
 
     override fun onDestroy(owner: LifecycleOwner) {
         chatWebSocket.close()
@@ -222,6 +262,9 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
             WebsocketEvent.Event.EVENT_DELETE_MSG -> onReceiveDeleteMsgEvent(
                 incomingChatEvent
             )
+            WebsocketEvent.Event.EVENT_TOPCHAT_REFRESH_ROOM -> onReceiveRefreshRoomEvent(
+                incomingChatEvent
+            )
         }
     }
 
@@ -284,6 +327,14 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
 
     private fun onReceiveDeleteMsgEvent(chat: ChatSocketPojo) {
         updateLiveDataOnMainThread(_msgDeleted, chat.replyTime)
+    }
+
+    private fun onReceiveRefreshRoomEvent(chat: ChatSocketPojo) {
+        if (chat.msgId == roomMetaData.msgId) {
+            _chatRoomUiState.update {
+                it.copy(isRefresh = true)
+            }
+        }
     }
 
     /**
