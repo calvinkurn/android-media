@@ -36,6 +36,7 @@ class CouponWidgetViewHolder constructor(
         if (binding?.lstCoupon?.adapter == null) {
             val adapter = CouponWidgetAdapter(listener = listener)
             binding?.lstCoupon?.layoutManager = DynamicGridLayoutManager(itemView.context)
+            binding?.lstCoupon?.addItemDecoration(DynamicGridLayoutManager.Decorator())
             binding?.lstCoupon?.adapter = adapter
 
             adapter.setData(element.coupons)
