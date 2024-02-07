@@ -370,7 +370,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
-    implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
@@ -411,8 +410,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
-    implementation rootProject.ext.miscDependencies.rxAndroid
-    implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
@@ -432,8 +429,6 @@ dependencies {
     })
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
-    testImplementation rootProject.ext.miscDependencies.rxJava
-    androidTestImplementation rootProject.ext.miscDependencies.rxJava
     androidTestImplementation rootProject.ext.testDependencies.uiautomator
     androidTestImplementation rootProject.ext.testDependencies.spoon
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
