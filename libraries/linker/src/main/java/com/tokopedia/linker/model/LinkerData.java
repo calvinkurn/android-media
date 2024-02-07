@@ -45,6 +45,7 @@ public class LinkerData implements Parcelable {
     public static final String LABEL_PRODUCT_SHARE = "Product Share";
     public static final String LABEL_SPACE_SHARE = "%20Share";
     public static final String STORIES_TYPE = "Stories";
+    public static final String KETUPATLP_TYPE = "KetupatLP";
 
     private String type = "";
     private String typeUrl = "";

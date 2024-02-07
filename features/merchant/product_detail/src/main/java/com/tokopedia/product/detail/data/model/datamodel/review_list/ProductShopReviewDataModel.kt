@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel.review_list
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TabletPosition
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -17,6 +18,9 @@ data class ProductShopReviewDataModel(
     var shouldRender: Boolean = false,
     var data: ProductShopReviewUiModel = ProductShopReviewUiModel()
 ) : DynamicPdpDataModel {
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 

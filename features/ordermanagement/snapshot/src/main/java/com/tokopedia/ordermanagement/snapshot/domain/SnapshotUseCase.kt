@@ -101,6 +101,7 @@ class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
                   bundle_variant_name
                   product_bundling_icon
                   is_have_bundle_product
+                  is_sellable
                 }
             }
         """.trimIndent()

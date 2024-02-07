@@ -11,6 +11,10 @@ data class ArButtonDataModel(
         var applink: String = "",
         var message: String = ""
 ) : DynamicPdpDataModel {
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
+
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

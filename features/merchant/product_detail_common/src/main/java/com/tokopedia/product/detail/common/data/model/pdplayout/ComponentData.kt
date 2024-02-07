@@ -185,7 +185,13 @@ data class ComponentData(
     // region socialProof
     @SerializedName("socialProofContent")
     @Expose
-    val socialProof: List<SocialProofData> = emptyList()
+    val socialProof: List<SocialProofData> = emptyList(),
+    // endregion
+
+    //region SDUI Data
+    @SerializedName("template")
+    @Expose
+    val sduiData: String = ""
     // endregion
 ) {
     companion object {

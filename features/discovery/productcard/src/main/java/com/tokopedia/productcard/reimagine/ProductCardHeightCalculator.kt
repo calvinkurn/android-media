@@ -44,7 +44,6 @@ internal fun productCardGridCarouselHeight(
         stockInfoHeight(context, productCardModel),
         gridCarouselNameHeight(context),
         priceSectionHeight(context, productCardModel),
-        discountSectionBelowPriceHeight(context, productCardModel),
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
@@ -109,7 +108,6 @@ internal fun productCardListCarouselHeight(
     val productCardComponentHeightList = listOf(
         listCarouselNameHeight(context),
         priceSectionHeight(context, productCardModel),
-        discountSectionBelowPriceHeight(context, productCardModel),
         benefitSectionHeight(context, productCardModel),
         credibilitySectionHeight(context, productCardModel),
         shopSectionHeight(context, productCardModel),
@@ -141,7 +139,7 @@ private fun listCardPaddingInBackground(productCardModel: ProductCardModel, cont
     else 0
 
 private fun listCarouselNameHeight(context: Context?) =
-    context.getPixel(productcardR.dimen.product_card_reimagine_name_2_line_height)
+    context.getPixel(productcardR.dimen.product_card_reimagine_name_1_line_height)
 
 private fun stockInfoHeight(context: Context?, productCardModel: ProductCardModel) =
     if (productCardModel.stockInfo() != null)
@@ -191,20 +189,6 @@ private fun discountPercentageHeight(context: Context?, productCardModel: Produc
     if (productCardModel.discountPercentage != 0)
         context.getPixel(productcardR.dimen.product_card_reimagine_discount_percentage_height)
     else 0
-
-private fun discountSectionBelowPriceHeight(
-    context: Context?,
-    productCardModel: ProductCardModel
-): Int {
-    val hasDiscountSection =
-        productCardModel.slashedPrice.isNotEmpty() || productCardModel.discountPercentage != 0
-    val hasDiscountSectionBelowPrice = !productCardModel.hasRibbon() && hasDiscountSection
-
-    return if (hasDiscountSectionBelowPrice)
-        context.getPixel(productcardR.dimen.product_card_reimagine_slashed_price_margin_top)
-            .plus(discountSectionHeight(context, productCardModel))
-    else 0
-}
 
 private fun benefitSectionHeight(context: Context?, productCardModel: ProductCardModel): Int =
     if (productCardModel.labelBenefit() != null)

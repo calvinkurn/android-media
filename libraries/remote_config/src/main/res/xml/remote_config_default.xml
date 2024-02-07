@@ -674,4 +674,8 @@
         <key>android_pdp_upcoming_campaign_compose</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_pdp_enable_tablet_mode</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
