@@ -3,6 +3,7 @@ package com.tokopedia.shop.product.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -12,6 +13,7 @@ import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopNewproductBigGridBinding
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
+import com.tokopedia.shop.product.view.fragment.ShopProductTabInterface
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -22,7 +24,7 @@ class ShopProductItemBigGridViewHolder(
     private val shopProductImpressionListener: ShopProductImpressionListener?,
     private val shopTrackType: Int,
     private val isShowTripleDot: Boolean,
-    private val isOverrideTheme: Boolean
+    private val productTabInterface: ShopProductTabInterface?
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
 
     companion object {
@@ -48,7 +50,8 @@ class ShopProductItemBigGridViewHolder(
             shopProductUiModel = shopProductUiModel,
             isWideContent = true,
             isShowThreeDots = isShowTripleDot,
-            isForceLightMode = isOverrideTheme
+            isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
+            patternType = productTabInterface?.getPatternColorType().orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )

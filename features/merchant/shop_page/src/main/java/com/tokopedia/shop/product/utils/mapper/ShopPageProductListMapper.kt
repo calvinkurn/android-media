@@ -14,6 +14,7 @@ import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
+import com.tokopedia.shop.common.util.ShopProductCardColorHelper
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
@@ -28,6 +29,8 @@ object ShopPageProductListMapper {
     private const val POSTFIX_VIEW_COUNT = "%1s orang"
     private const val PRODUCT_RATING_DIVIDER = 20
     private const val ZERO_PRODUCT_DISCOUNT = "0"
+    
+    private val productCardColorHelper = ShopProductCardColorHelper()
 
     fun mapToShopProductEtalaseListDataModel(
         listShopEtalaseModel: List<ShopEtalaseModel>
@@ -216,7 +219,8 @@ object ShopPageProductListMapper {
         shopProductUiModel: ShopProductUiModel,
         isWideContent: Boolean,
         isShowThreeDots: Boolean = true,
-        isForceLightMode: Boolean = false
+        isForceLightMode: Boolean = false,
+        patternType: String = ""
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -255,7 +259,8 @@ object ShopPageProductListMapper {
                     imageUrl = it.imageUrl,
                     title = it.title
                 )
-            }
+            },
+            colorMode = productCardColorHelper.determineProductCardColorMode(isForceLightMode, patternType)
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
             val productCardModel = if (shopProductUiModel.isVariant) {

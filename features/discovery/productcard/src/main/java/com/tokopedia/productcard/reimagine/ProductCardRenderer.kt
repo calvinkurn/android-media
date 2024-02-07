@@ -19,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.experiments.ColorMode
+import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.LabelGroupStyle.TEXT_COLOR
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup.Style
@@ -31,6 +33,7 @@ import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.T
 import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -64,7 +67,9 @@ internal class ProductCardRenderer(
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
-
+    private val credibilityText by view.lazyView<Typography?>(R.id.productCardLabelCredibility)
+    private val ratingText by view.lazyView<Typography?>(R.id.productCardRating)
+    
     fun setProductModel(productCardModel: ProductCardModel) {
         renderOutline(productCardModel)
         renderCardContainer(productCardModel)
@@ -86,6 +91,7 @@ internal class ProductCardRenderer(
         renderRibbon(productCardModel)
         renderSafeContent(productCardModel)
         renderAddToCart(productCardModel)
+        handleColorMode(productCardModel.colorMode)
     }
 
     private fun renderOutline(productCardModel: ProductCardModel) {
@@ -378,5 +384,38 @@ internal class ProductCardRenderer(
         view.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
             AddToCartButton(cardConstraintLayout, type.addToCartConstraints())
         }
+    }
+
+
+    private fun handleColorMode(colorMode: ProductCardColor?) {
+        if (colorMode == null) return
+        
+        val shouldOverrideProductCardDefaultColor = colorMode == ColorMode.LIGHT || colorMode == ColorMode.DARK
+        if (shouldOverrideProductCardDefaultColor) {
+            overrideColor(colorMode)
+        }
+    }
+
+    private fun overrideColor(colorMode: ProductCardColor) {
+        val productNameColor = ContextCompat.getColor(context, colorMode.productNameColor)
+        val productPriceTextColor = ContextCompat.getColor(context, colorMode.productPriceColor)
+        val slashedPriceTextColor = ContextCompat.getColor(context, colorMode.productSlashPriceColor)
+        val credibilityTextColor = ContextCompat.getColor(context, colorMode.productSoldCountColor)
+        val discountTextColor = ContextCompat.getColor(context, colorMode.productDiscountColor)
+        val ratingTextColor = ContextCompat.getColor(context, colorMode.productRatingColor)
+
+        cardContainer?.setCardUnifyBackgroundColor(MethodChecker.getColor(context, colorMode.cardBackgroundColor))
+        nameText?.setTextColor(productNameColor)
+        priceText?.setTextColor(productPriceTextColor)
+        slashedPriceText?.setTextColor(slashedPriceTextColor)
+        
+        /*credibilityText?.setTextColor(credibilityTextColor)
+        discountText?.setTextColor(discountTextColor)
+        ratingText?.setTextColor(ratingTextColor)
+        
+        cardContainer?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, MethodChecker.getColor(context, android.R.color.transparent)))
+        buttonAddToCart?.applyColorMode(buttonColorMode)
+
+        benefitLabel?.forceLightMode()*/
     }
 }

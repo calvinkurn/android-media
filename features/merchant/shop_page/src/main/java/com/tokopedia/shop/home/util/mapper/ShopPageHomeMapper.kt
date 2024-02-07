@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.experiments.ColorMode
 import com.tokopedia.shop.campaign.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.HomeLayoutData
@@ -14,6 +15,7 @@ import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroupStyle
+import com.tokopedia.shop.common.util.ShopProductCardColorHelper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
@@ -44,6 +46,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
@@ -57,6 +60,8 @@ object ShopPageHomeMapper {
     private const val PRODUCT_RATING_DIVIDER = 20
     private const val ZERO_PRODUCT_DISCOUNT = "0"
 
+    private val productCardColorHelper = ShopProductCardColorHelper()
+    
     fun mapToHomeProductViewModelForAllProduct(
         shopProduct: ShopProduct,
         isMyOwnProduct: Boolean,
@@ -212,7 +217,8 @@ object ShopPageHomeMapper {
         shopHomeProductViewModel: ShopHomeProductUiModel,
         isWideContent: Boolean,
         productRating: String,
-        forceLightModeColor: Boolean
+        forceLightModeColor: Boolean,
+        patternColorType: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -228,6 +234,8 @@ object ShopPageHomeMapper {
             shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
         )
+        
+        val productCardColorMode = productCardColorHelper.determineProductCardColorMode(forceLightModeColor, patternColorType)
         val baseProductCardModel = ProductCardModel(
             productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
             productName = shopHomeProductViewModel.name,
@@ -243,7 +251,8 @@ object ShopPageHomeMapper {
             hasAddToCartButton = isHasAddToCartButton,
             addToCartButtonType = UnifyButton.Type.MAIN,
             isWideContent = isWideContent,
-            forceLightModeColor = forceLightModeColor
+            forceLightModeColor = forceLightModeColor,
+            colorMode = productCardColorMode
         )
         return if (shopHomeProductViewModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(
                 shopHomeProductViewModel.isSoldOut

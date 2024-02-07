@@ -20,7 +20,6 @@ import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
 import com.tokopedia.productcard.reimagine.ProductCardType.Grid
-import com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -49,12 +48,6 @@ internal class ReimagineGridViewStrategy(
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageView?>(R.id.productCardImage)
     private val nameText by lazyView<Typography?>(R.id.productCardName)
-    private val priceText by lazyView<Typography?>(R.id.productCardPrice)
-    private val slashedPriceText by lazyView<Typography?>(R.id.productCardSlashedPrice)
-    private val discountText by lazyView<Typography?>(R.id.productCardDiscount)
-    private val credibilityText by lazyView<Typography?>(R.id.productCardLabelCredibility)
-    private val ratingText by lazyView<Typography?>(R.id.productCardRating)
-    private val benefitLabel by lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val videoIdentifier by lazyView<ImageView?>(R.id.productCardVideoIdentifier)
     private val threeDots by lazyView<ImageView?>(R.id.productCardThreeDots)
     private val video: VideoPlayerController by lazyThreadSafetyNone {
@@ -103,7 +96,6 @@ internal class ReimagineGridViewStrategy(
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         setProductModel(ProductCardModelReimagine.from(productCardModel))
-        handleCustomColor(productCardModel.productCardCustomColor)
     }
 
     fun setProductModel(productCardModel: ProductCardModelReimagine) {
@@ -211,23 +203,4 @@ internal class ReimagineGridViewStrategy(
     }
 
     override fun getVideoPlayerController(): VideoPlayerController = video
-
-    private fun handleCustomColor(productCardCustomColor: ProductCardCustomColor?) {
-        val shouldOverrideProductCardDefaultColor = productCardCustomColor != null
-        if (shouldOverrideProductCardDefaultColor) {
-            renderProductCardWithCustomColor(productCardCustomColor ?: return)
-        }
-    }
-
-    private fun renderProductCardWithCustomColor(customColor: ProductCardCustomColor) {
-        nameText?.setTextColor(customColor.productNameColor)
-        priceText?.setTextColor(customColor.productPriceColor)
-        slashedPriceText?.setTextColor(customColor.productSlashPriceColor)
-        credibilityText?.setTextColor(customColor.productSoldCountColor)
-        discountText?.setTextColor(customColor.productDiscountColor)
-        ratingText?.setTextColor(customColor.productRatingColor)
-        cardContainer?.setCardUnifyBackgroundColor(customColor.cardBackgroundColor)
-
-        benefitLabel?.forceLightMode()
-    }
 }

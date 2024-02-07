@@ -124,7 +124,7 @@ class LabelBenefitView : FrameLayout {
 
     fun forceLightMode() {
         circleCutoutFillPaint = Paint(ANTI_ALIAS_FLAG).apply {
-            color = ContextCompat.getColor(context, R.color.dms_static_light_NN100)
+            color = Color.TRANSPARENT
             style = Paint.Style.FILL
             isDither = true
         }

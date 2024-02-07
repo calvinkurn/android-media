@@ -52,7 +52,8 @@ open class ShopHomeProductItemListViewHolder(
             shopHomeProductViewModel = shopHomeProductViewModel,
             isWideContent = false,
             productRating = shopHomeProductViewModel.averageRating,
-            forceLightModeColor = shopHomeListener.isOverrideTheme()
+            forceLightModeColor = shopHomeListener.isOverrideTheme(),
+            patternColorType = shopHomeListener.getPatternColorType()
         )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)
