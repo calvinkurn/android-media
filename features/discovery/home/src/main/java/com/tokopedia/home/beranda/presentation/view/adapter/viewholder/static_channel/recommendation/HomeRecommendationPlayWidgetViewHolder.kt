@@ -56,11 +56,11 @@ class HomeRecommendationPlayWidgetViewHolder(
 
     private fun setHomePlayWidgetVideoClick(element: HomeRecommendationPlayWidgetUiModel) {
         binding.homeRecomPlayWidgetVideo.setOnClickListener {
-            listener.onPlayVideoWidgetClick(element.toModel(), bindingAdapterPosition)
+            listener.onPlayCardClicked(element.toModel(), bindingAdapterPosition)
         }
 
         itemView.setOnClickListener {
-            listener.onPlayVideoWidgetClick(element.toModel(), bindingAdapterPosition)
+            listener.onPlayCardClicked(element.toModel(), bindingAdapterPosition)
         }
     }
 
@@ -69,7 +69,7 @@ class HomeRecommendationPlayWidgetViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onPlayVideoWidgetImpress(element.toModel(), bindingAdapterPosition)
+                    listener.onPlayCardImpressed(element.toModel(), bindingAdapterPosition)
                 }
             }
         )

@@ -1,9 +1,9 @@
 package com.tokopedia.recommendation_widget_common.widget.foryou
 
 import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.EmptyStateModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.ErrorStateModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.LoadMoreStateModel
@@ -15,10 +15,10 @@ import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.Hea
 
 interface ForYouRecommendationTypeFactory {
 
-    fun type(model: PlayWidgetModel): Int
-    fun type(model: HomeRecommendationModel): Int
+    fun type(model: PlayCardModel): Int
+    fun type(model: ContentCardModel): Int
+    fun type(model: RecommendationCardModel): Int
     fun type(model: BannerRecommendationModel): Int
-    fun type(model: RecomEntityModel): Int
 
     fun type(model: BannerTopAdsModel): Int
     fun type(model: BannerOldTopAdsModel): Int

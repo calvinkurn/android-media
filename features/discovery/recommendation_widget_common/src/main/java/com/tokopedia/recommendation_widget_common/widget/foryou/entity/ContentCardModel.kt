@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
 
-data class RecomEntityModel(
+data class ContentCardModel(
     val id: String,
     val layoutCard: String, // layout
     val layoutItem: String, // layoutTracker
@@ -27,7 +27,7 @@ data class RecomEntityModel(
     )
 
     override fun areItemsTheSame(other: Any): Boolean {
-        return other is RecomEntityModel && other.id == id
+        return other is ContentCardModel && other.id == id
     }
 
     override fun areContentsTheSame(other: Any): Boolean {

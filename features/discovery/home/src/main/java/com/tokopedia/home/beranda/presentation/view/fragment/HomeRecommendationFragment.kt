@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -62,10 +61,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
 import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
 import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayVideoWidgetManager
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
@@ -420,7 +419,7 @@ class HomeRecommendationFragment :
             }
     }
 
-    override fun onProductImpression(model: HomeRecommendationModel, position: Int) {
+    override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
@@ -467,7 +466,7 @@ class HomeRecommendationFragment :
         }
     }
 
-    override fun onProductClick(model: HomeRecommendationModel, position: Int) {
+    override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
@@ -515,14 +514,14 @@ class HomeRecommendationFragment :
         goToProductDetail(model.recommendationProductItem.id, position)
     }
 
-    override fun onProductThreeDotsClick(model: HomeRecommendationModel, position: Int) {
+    override fun onProductCardThreeDotsClicked(model: RecommendationCardModel, position: Int) {
         showProductCardOptions(
             this,
             createProductCardOptionsModel(model, position)
         )
     }
 
-    override fun onBannerImpression(model: BannerRecommendationModel) {
+    override fun onBannerImpressed(model: BannerRecommendationModel) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getBannerRecommendation(model) as HashMap<String, Any>
         )
@@ -596,7 +595,7 @@ class HomeRecommendationFragment :
         )
     }
 
-    override fun onEntityCardImpressionListener(item: RecomEntityModel, position: Int) {
+    override fun onContentCardImpressed(item: ContentCardModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressEntityCardTracking(
                 item,
@@ -606,7 +605,7 @@ class HomeRecommendationFragment :
         )
     }
 
-    override fun onEntityCardClickListener(item: RecomEntityModel, position: Int) {
+    override fun onContentCardClicked(item: ContentCardModel, position: Int) {
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
             position,
@@ -618,7 +617,7 @@ class HomeRecommendationFragment :
         }
     }
 
-    override fun onPlayVideoWidgetClick(element: PlayWidgetModel, position: Int) {
+    override fun onPlayCardClicked(element: PlayCardModel, position: Int) {
         HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
             element,
             position,
@@ -630,7 +629,7 @@ class HomeRecommendationFragment :
         }
     }
 
-    override fun onPlayVideoWidgetImpress(element: PlayWidgetModel, position: Int) {
+    override fun onPlayCardImpressed(element: PlayCardModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressPlayVideoWidgetTracking(
                 element,
@@ -648,7 +647,7 @@ class HomeRecommendationFragment :
         playVideoWidgetViewListener.onVideoError(view, error)
     }
 
-    override fun onBannerClick(model: BannerRecommendationModel) {
+    override fun onBannerClicked(model: BannerRecommendationModel) {
         HomePageTracking.eventClickOnBannerFeed(model, model.tabName)
         RouteManager.route(requireContext(), model.applink)
     }
@@ -756,7 +755,7 @@ class HomeRecommendationFragment :
     }
 
     private fun createProductCardOptionsModel(
-        model: HomeRecommendationModel,
+        model: RecommendationCardModel,
         position: Int
     ): ProductCardOptionsModel {
         val productCardOptionsModel = ProductCardOptionsModel()

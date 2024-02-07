@@ -5,7 +5,7 @@ import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
 
-data class PlayWidgetModel(
+data class PlayCardModel(
     val cardId: String,
     val appLink: String,
     val playVideoWidgetUiModel: PlayVideoWidgetUiModel,
@@ -17,7 +17,7 @@ data class PlayWidgetModel(
     }
 
     override fun areItemsTheSame(other: Any): Boolean {
-        return other is PlayWidgetModel && other.playVideoWidgetUiModel.id == playVideoWidgetUiModel.id
+        return other is PlayCardModel && other.playVideoWidgetUiModel.id == playVideoWidgetUiModel.id
     }
 
     override fun areContentsTheSame(other: Any): Boolean {
@@ -28,7 +28,7 @@ data class PlayWidgetModel(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PlayWidgetModel
+        other as PlayCardModel
 
         if (playVideoWidgetUiModel != other.playVideoWidgetUiModel) return false
 

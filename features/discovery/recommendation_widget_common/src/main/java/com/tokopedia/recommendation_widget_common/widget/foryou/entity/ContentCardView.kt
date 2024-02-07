@@ -29,7 +29,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.modeAware
 import timber.log.Timber
 
-class RecomEntityCardView @JvmOverloads constructor(
+class ContentCardView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null
 ) : FrameLayout(context, attributeSet) {
@@ -43,7 +43,7 @@ class RecomEntityCardView @JvmOverloads constructor(
         binding.entryPointCard.animateOnPress = CardUnify2.ANIMATE_BOUNCE
     }
 
-    fun setupView(model: RecomEntityModel) {
+    fun setupView(model: ContentCardModel) {
         if (listener == null) Timber.w(Throwable("RecomEntityCardView: You haven't set the listener yet."))
 
         setBackgroundCardColor(model.backgroundColor)
@@ -72,18 +72,18 @@ class RecomEntityCardView @JvmOverloads constructor(
         this.listener = listener
     }
 
-    private fun setOnCardClickListener(element: RecomEntityModel) {
+    private fun setOnCardClickListener(element: ContentCardModel) {
         binding.entryPointCard.setOnClickListener {
-            listener?.onEntityCardClickListener(element)
+            listener?.onContentCardClicked(element)
         }
     }
 
-    private fun setOnCardImpressionListener(element: RecomEntityModel) {
+    private fun setOnCardImpressionListener(element: ContentCardModel) {
         binding.entryPointCard.addOnImpressionListener(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener?.onEntityCardImpressionListener(element)
+                    listener?.onContentCardImpressed(element)
                 }
             }
         )
@@ -116,7 +116,7 @@ class RecomEntityCardView @JvmOverloads constructor(
         binding.imgEntryPointCard.loadImage(productImageUrl)
     }
 
-    private fun setLabelTitle(labelState: RecomEntityModel.LabelState) {
+    private fun setLabelTitle(labelState: ContentCardModel.LabelState) {
         with(binding.tvLabelState) {
             shouldShowWithAction(labelState.title.isNotBlank()) {
                 text = labelState.title
@@ -189,8 +189,8 @@ class RecomEntityCardView @JvmOverloads constructor(
     }
 
     interface Listener {
-        fun onEntityCardImpressionListener(item: RecomEntityModel)
-        fun onEntityCardClickListener(item: RecomEntityModel)
+        fun onContentCardImpressed(item: ContentCardModel)
+        fun onContentCardClicked(item: ContentCardModel)
     }
 
     companion object {

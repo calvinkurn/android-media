@@ -8,7 +8,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
 import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
 import java.util.*
@@ -23,7 +23,7 @@ class HomeGlobalRecommendationMapper {
     ): HomeGlobalRecommendationDataModel {
         val recommendationProduct = graphqlResponse.recommendationProduct
         val visitables = mutableListOf<ForYouRecommendationVisitable>()
-        val productStack = Stack<HomeRecommendationModel>()
+        val productStack = Stack<RecommendationCardModel>()
         // reverse stack because to get the first in
         Collections.reverse(productStack)
         productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product, recommendationProduct.pageName, recommendationProduct.layoutName, tabName, pageNumber))
@@ -89,14 +89,14 @@ class HomeGlobalRecommendationMapper {
         return bannerFeedViewModels
     }
 
-    private fun convertToHomeProductFeedModel(products: List<Product>, pageName: String, layoutName: String, tabName: String, pageNumber: Int): List<HomeRecommendationModel> {
-        val homeFeedViewModels = ArrayList<HomeRecommendationModel>()
+    private fun convertToHomeProductFeedModel(products: List<Product>, pageName: String, layoutName: String, tabName: String, pageNumber: Int): List<RecommendationCardModel> {
+        val homeFeedViewModels = ArrayList<RecommendationCardModel>()
         for (position in products.indices) {
             val product = products[position]
 
             val productCard = mapToProductCardModel(product)
             homeFeedViewModels.add(
-                HomeRecommendationModel(
+                RecommendationCardModel(
                     productCardModel = productCard,
                     recommendationProductItem = product.mapToHomeGlobalRecommendationProductItem(),
                     pageName,

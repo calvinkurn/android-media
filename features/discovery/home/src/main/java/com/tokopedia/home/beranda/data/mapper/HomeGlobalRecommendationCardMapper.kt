@@ -14,9 +14,9 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -113,8 +113,8 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
         layoutCard: String,
         layoutTracker: String,
         playVideoWidgetResponse: PlayVideoWidgetResponse
-    ): PlayWidgetModel {
-        return PlayWidgetModel(
+    ): PlayCardModel {
+        return PlayCardModel(
             cardId = cardId,
             appLink = playVideoWidgetResponse.link.applink,
             playVideoWidgetUiModel = PlayVideoWidgetUiModel(
@@ -130,7 +130,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                 isAutoPlay = playVideoWidgetResponse.basic.autoPlay,
                 shopAppLink = playVideoWidgetResponse.author.appLink
             ),
-            playVideoTrackerUiModel = PlayWidgetModel.PlayVideoTrackerUiModel(
+            playVideoTrackerUiModel = PlayCardModel.PlayVideoTrackerUiModel(
                 videoType = playVideoWidgetResponse.basic.type.text,
                 partnerId = playVideoWidgetResponse.author.id,
                 playChannelId = playVideoWidgetResponse.contentOriginID,
@@ -147,8 +147,8 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
 
     private fun mapToEntityCardRecommendationCard(
         recommendationCard: RecommendationCard
-    ): RecomEntityModel {
-        return RecomEntityModel(
+    ): ContentCardModel {
+        return ContentCardModel(
             id = recommendationCard.id,
             layoutCard = recommendationCard.layout,
             layoutItem = recommendationCard.layoutTracker,
@@ -158,7 +158,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             subTitle = recommendationCard.subtitle,
             imageUrl = recommendationCard.imageUrl,
             backgroundColor = recommendationCard.gradientColor,
-            labelState = RecomEntityModel.LabelState(
+            labelState = ContentCardModel.LabelState(
                 iconUrl = recommendationCard.label.imageUrl,
                 title = recommendationCard.label.title,
                 textColor = recommendationCard.label.textColor
@@ -219,10 +219,10 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
         index: Int,
         cardTotal: Int,
         tabName: String
-    ): HomeRecommendationModel {
+    ): RecommendationCardModel {
         val productCard = mapToProductCardModel(recommendationCard)
 
-        return HomeRecommendationModel(
+        return RecommendationCardModel(
             productCard,
             recommendationCard.mapToHomeGlobalRecommendationProductItem(),
             pageName,

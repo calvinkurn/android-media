@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
 
 data class Product(
@@ -116,8 +116,8 @@ data class Product(
     }
 
     @RecomTemporary
-    fun mapToHomeGlobalRecommendationProductItem(): HomeRecommendationModel.ProductItem {
-        return HomeRecommendationModel.ProductItem(
+    fun mapToHomeGlobalRecommendationProductItem(): RecommendationCardModel.ProductItem {
+        return RecommendationCardModel.ProductItem(
             id = id,
             name = name,
             imageUrl = imageUrl,
@@ -125,7 +125,7 @@ data class Product(
             priceInt = priceInt,
             freeOngkirIsActive = freeOngkirInformation.isActive,
             labelGroup = labelGroup.map {
-                HomeRecommendationModel.ProductItem.LabelGroup(
+                RecommendationCardModel.ProductItem.LabelGroup(
                     position = it.position,
                     title = it.title,
                     type = it.type,

@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.domain.gql.recommendationcard
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
 
 data class RecommendationCard(
@@ -106,8 +106,8 @@ data class RecommendationCard(
     }
 
     @RecomTemporary
-    fun mapToHomeGlobalRecommendationProductItem(): HomeRecommendationModel.ProductItem {
-        return HomeRecommendationModel.ProductItem(
+    fun mapToHomeGlobalRecommendationProductItem(): RecommendationCardModel.ProductItem {
+        return RecommendationCardModel.ProductItem(
             id = id,
             name = name,
             imageUrl = imageUrl,
@@ -115,7 +115,7 @@ data class RecommendationCard(
             priceInt = priceInt,
             freeOngkirIsActive = freeOngkir.isActive,
             labelGroup = labelGroup.map {
-                HomeRecommendationModel.ProductItem.LabelGroup(
+                RecommendationCardModel.ProductItem.LabelGroup(
                     position = it.position,
                     title = it.title,
                     type = it.type,

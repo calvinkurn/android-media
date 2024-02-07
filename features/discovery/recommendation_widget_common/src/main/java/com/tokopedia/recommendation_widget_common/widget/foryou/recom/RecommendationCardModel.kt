@@ -5,7 +5,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
 
-data class HomeRecommendationModel(
+data class RecommendationCardModel(
     val productCardModel: ProductCardModel,
     val recommendationProductItem: ProductItem,
     val pageName: String = "",
@@ -19,7 +19,7 @@ data class HomeRecommendationModel(
     }
 
     override fun areItemsTheSame(other: Any): Boolean {
-        return other is HomeRecommendationModel && other.recommendationProductItem.id == recommendationProductItem.id
+        return other is RecommendationCardModel && other.recommendationProductItem.id == recommendationProductItem.id
     }
 
     override fun areContentsTheSame(other: Any): Boolean {
@@ -30,7 +30,7 @@ data class HomeRecommendationModel(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as HomeRecommendationModel
+        other as RecommendationCardModel
 
         if (recommendationProductItem != other.recommendationProductItem) return false
 

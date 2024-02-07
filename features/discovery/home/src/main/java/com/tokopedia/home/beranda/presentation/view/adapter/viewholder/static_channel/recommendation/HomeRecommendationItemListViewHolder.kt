@@ -53,7 +53,7 @@ class HomeRecommendationItemListViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    homeRecommendationListener.onProductImpression(
+                    homeRecommendationListener.onProductCardImpressed(
                         element.toModel(),
                         bindingAdapterPosition
                     )
@@ -64,7 +64,7 @@ class HomeRecommendationItemListViewHolder(
 
     private fun setItemProductCardClickListener(element: HomeRecommendationItemDataModel) {
         productCardView.setOnClickListener {
-            homeRecommendationListener.onProductClick(
+            homeRecommendationListener.onProductCardClicked(
                 element.toModel(),
                 bindingAdapterPosition
             )
@@ -73,7 +73,7 @@ class HomeRecommendationItemListViewHolder(
 
     private fun setItemThreeDotsClickListener(element: HomeRecommendationItemDataModel) {
         productCardView.setThreeDotsOnClickListener {
-            homeRecommendationListener.onProductThreeDotsClick(
+            homeRecommendationListener.onProductCardThreeDotsClicked(
                 element.toModel(),
                 bindingAdapterPosition
             )

@@ -10,14 +10,14 @@ import com.tokopedia.recommendation_widget_common.databinding.WidgetPlayRecomBin
 import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
 import com.tokopedia.utils.view.binding.viewBinding
 
-class PlayWidgetViewHolder constructor(
+class PlayCardViewHolder constructor(
     view: View,
     manager: PlayVideoWidgetManager,
     private val listener: Listener,
     private val playListener: PlayVideoWidgetView.Listener
-) : BaseForYouViewHolder<PlayWidgetModel>(
+) : BaseForYouViewHolder<PlayCardModel>(
     view,
-    PlayWidgetModel::class.java
+    PlayCardModel::class.java
 ) {
 
     private val binding: WidgetPlayRecomBinding? by viewBinding()
@@ -32,40 +32,40 @@ class PlayWidgetViewHolder constructor(
         })
     }
 
-    override fun bind(element: PlayWidgetModel) {
+    override fun bind(element: PlayCardModel) {
         bindHomeRecomPlayWidgetVideo(element)
         setOnPlayVideoImpressionListener(element)
         setHomePlayWidgetVideoClick(element)
     }
 
-    private fun bindHomeRecomPlayWidgetVideo(element: PlayWidgetModel) {
+    private fun bindHomeRecomPlayWidgetVideo(element: PlayCardModel) {
         binding?.homeRecomPlayWidgetVideo?.bind(element.playVideoWidgetUiModel)
     }
 
-    private fun setHomePlayWidgetVideoClick(element: PlayWidgetModel) {
+    private fun setHomePlayWidgetVideoClick(element: PlayCardModel) {
         binding?.homeRecomPlayWidgetVideo?.setOnClickListener {
-            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
+            listener.onPlayCardClicked(element, bindingAdapterPosition)
         }
 
         itemView.setOnClickListener {
-            listener.onPlayVideoWidgetClick(element, bindingAdapterPosition)
+            listener.onPlayCardClicked(element, bindingAdapterPosition)
         }
     }
 
-    private fun setOnPlayVideoImpressionListener(element: PlayWidgetModel) {
+    private fun setOnPlayVideoImpressionListener(element: PlayCardModel) {
         binding?.homeRecomPlayWidgetVideo?.addOnImpressionListener(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onPlayVideoWidgetImpress(element, bindingAdapterPosition)
+                    listener.onPlayCardImpressed(element, bindingAdapterPosition)
                 }
             }
         )
     }
 
     interface Listener {
-        fun onPlayVideoWidgetClick(element: PlayWidgetModel, position: Int)
-        fun onPlayVideoWidgetImpress(element: PlayWidgetModel, position: Int)
+        fun onPlayCardClicked(element: PlayCardModel, position: Int)
+        fun onPlayCardImpressed(element: PlayCardModel, position: Int)
     }
 
     companion object {

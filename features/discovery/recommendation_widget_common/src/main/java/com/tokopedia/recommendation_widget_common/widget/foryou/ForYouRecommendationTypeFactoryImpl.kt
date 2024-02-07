@@ -6,14 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityCardViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.entity.ContentCardViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayVideoWidgetManager
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationGridViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationListViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayCardViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardGridViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardListViewHolder
+import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationUtil.getLayout
 import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.EmptyStateModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.ErrorStateModel
@@ -35,13 +35,13 @@ class ForYouRecommendationTypeFactoryImpl constructor(
     private val playVideoWidgetManager: PlayVideoWidgetManager
 ) : BaseAdapterTypeFactory(), ForYouRecommendationTypeFactory {
 
-    override fun type(model: HomeRecommendationModel) = model.getLayout()
+    override fun type(model: RecommendationCardModel) = model.getLayout()
 
     override fun type(model: BannerTopAdsModel) = BannerTopAdsViewHolder.LAYOUT
 
-    override fun type(model: PlayWidgetModel) = PlayWidgetViewHolder.LAYOUT
+    override fun type(model: PlayCardModel) = PlayCardViewHolder.LAYOUT
 
-    override fun type(model: RecomEntityModel) = RecomEntityCardViewHolder.LAYOUT
+    override fun type(model: ContentCardModel) = ContentCardViewHolder.LAYOUT
 
     override fun type(model: RetryButtonStateModel) = RetryButtonStateViewHolder.LAYOUT
 
@@ -61,10 +61,10 @@ class ForYouRecommendationTypeFactoryImpl constructor(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             // components
-            HomeRecommendationGridViewHolder.LAYOUT -> HomeRecommendationGridViewHolder(parent, listener)
-            HomeRecommendationListViewHolder.LAYOUT -> HomeRecommendationListViewHolder(parent, listener)
-            PlayWidgetViewHolder.LAYOUT -> PlayWidgetViewHolder(parent, playVideoWidgetManager, listener, listener)
-            RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(parent, listener)
+            RecommendationCardGridViewHolder.LAYOUT -> RecommendationCardGridViewHolder(parent, listener)
+            RecommendationCardListViewHolder.LAYOUT -> RecommendationCardListViewHolder(parent, listener)
+            PlayCardViewHolder.LAYOUT -> PlayCardViewHolder(parent, playVideoWidgetManager, listener, listener)
+            ContentCardViewHolder.LAYOUT -> ContentCardViewHolder(parent, listener)
 
             // topads
             BannerTopAdsViewHolder.LAYOUT -> BannerTopAdsViewHolder(parent, listener)

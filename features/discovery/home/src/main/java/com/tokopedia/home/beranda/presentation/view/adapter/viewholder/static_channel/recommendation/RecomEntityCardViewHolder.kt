@@ -69,7 +69,7 @@ class RecomEntityCardViewHolder(
 
     private fun setOnCardClickListener(element: RecomEntityCardUiModel) {
         binding.entryPointCard.setOnClickListener {
-            listener.onEntityCardClickListener(element.toModel(), bindingAdapterPosition)
+            listener.onContentCardClicked(element.toModel(), bindingAdapterPosition)
         }
     }
 
@@ -78,7 +78,7 @@ class RecomEntityCardViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onEntityCardImpressionListener(element.toModel(), bindingAdapterPosition)
+                    listener.onContentCardImpressed(element.toModel(), bindingAdapterPosition)
                 }
             }
         )

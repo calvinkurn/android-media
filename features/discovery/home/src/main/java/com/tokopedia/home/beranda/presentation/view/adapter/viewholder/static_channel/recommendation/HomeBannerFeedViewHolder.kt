@@ -48,7 +48,7 @@ class HomeBannerFeedViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    homeRecommendationListener.onBannerImpression(element.toModel())
+                    homeRecommendationListener.onBannerImpressed(element.toModel())
                 }
             }
         )
