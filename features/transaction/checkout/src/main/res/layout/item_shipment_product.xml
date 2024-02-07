@@ -34,7 +34,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="4dp"
             app:unify_image_type="rect"
-            tools:src="@drawable/ic_badge_shop_official"
+            tools:src="@drawable/ic_badge_shop_official_checkout"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
