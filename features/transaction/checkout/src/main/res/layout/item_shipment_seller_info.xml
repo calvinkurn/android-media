@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_shop_name"
         app:unify_image_type="rect"
-        tools:src="@drawable/ic_badge_shop_official_checkout"
+        tools:src="@color/colorGray"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
