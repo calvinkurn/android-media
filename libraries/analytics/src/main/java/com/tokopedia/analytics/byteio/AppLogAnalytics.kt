@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import com.bytedance.applog.AppLog
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
@@ -46,6 +45,11 @@ enum class ProductType(val type: Int) {
     NON_LIVE_REGION_NOT_AVAILABLE_OR_REMOVED(5),
 }
 
+object PageName {
+    const val MAINPAGE = "MainPage"
+    const val PDP = "PDP"
+}
+
 
 enum class EntranceForm(val str: String) {
     HORIZONTAL_GOODS_CARD("horizontal_goods_card"),
@@ -80,12 +84,17 @@ object AppLogAnalytics {
     var globalTrackId: String? = null
 
     @JvmField
-    var startTime = 0L
+    var startActivityTime = 0L
+
+    @JvmField
+    var hasStartTime = false
 
     fun sendEnterPage(product: TrackProductDetail) {
         if (sourcePageType == null) {
             return
         }
+        // TODO check if track id exist
+
         send(EventName.ENTER_PRODUCT_DETAIL.str, JSONObject().also {
             it.addPage()
             it.put("product_id", product.productId)
@@ -99,9 +108,6 @@ object AppLogAnalytics {
     }
 
     fun sendProductImpression(product: TrackProduct) {
-        if (currentPage() == null) {
-            return
-        }
         send(EventName.PRODUCT_SHOW.str, JSONObject().also {
             it.addPage()
             it.put("product_id", product)
@@ -124,7 +130,7 @@ object AppLogAnalytics {
     fun sendClickProduct(inputPageType: SourcePageType?, product: TrackProduct) {
         if (sourcePageType == null && inputPageType != null) {
             sourcePageType = inputPageType
-            //TODO Deeplink activity juga
+            //TODO Deeplink activity too
         }
         if (sourcePageType == null) {
             return
@@ -147,7 +153,7 @@ object AppLogAnalytics {
         }
         send(EventName.STAY_PRODUCT_DETAIL.str, JSONObject().also {
             it.addPage()
-            it.put("stay_time", System.currentTimeMillis() - startTime)
+            it.put("stay_time", System.currentTimeMillis() - startActivityTime)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", /*TODO*/ 1)
             it.put("source_module",/*TODO*/ "")
@@ -163,7 +169,7 @@ object AppLogAnalytics {
         })
     }
 
-    fun send(event: String, params: JSONObject) {
+    private fun send(event: String, params: JSONObject) {
         Cassava.save(params, event, "ByteIO")
         AppLog.onEventV3(event, params)
     }

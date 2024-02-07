@@ -3,13 +3,17 @@ package com.tokopedia.analytics.byteio
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import com.tokopedia.analytics.byteio.AppLogAnalytics.startTime
+import com.tokopedia.analytics.byteio.AppLogAnalytics.hasStartTime
+import com.tokopedia.analytics.byteio.AppLogAnalytics.startActivityTime
 import java.lang.ref.WeakReference
 
 class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        startTime = System.currentTimeMillis()
+        if (isPdpPage(activity)) {
+            startActivityTime = System.currentTimeMillis()
+            hasStartTime = true
+        }
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -25,13 +29,17 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
-        if (startTime == 0L) {
-            startTime = System.currentTimeMillis()
+        if (isPdpPage(activity)) {
+            if (hasStartTime) {
+                startActivityTime = System.currentTimeMillis()
+            }
         }
     }
 
     override fun onActivityPaused(activity: Activity) {
-        // noop
+        if (isPdpPage(activity)) {
+            hasStartTime = false
+        }
     }
 
     override fun onActivityStopped(activity: Activity) {
@@ -51,5 +59,9 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
 
     private fun getCurrentActivity(): Activity? {
         return AppLogAnalytics.currentActivityReference?.get()
+    }
+
+    private fun isPdpPage(activity: Activity): Boolean {
+        return (activity is IAppLogActivity && activity.getPageName() == PageName.PDP)
     }
 }
