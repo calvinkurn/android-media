@@ -3,7 +3,7 @@ package com.tokopedia.recommendation_widget_common.widget.foryou.banner
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
-import com.tokopedia.recommendation_widget_common.widget.foryou.TemporaryBackwardCompatible
+import com.tokopedia.recommendation_widget_common.widget.foryou.utils.TemporaryBackwardCompatible
 
 @TemporaryBackwardCompatible
 data class BannerRecommendationModel(

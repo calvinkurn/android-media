@@ -5,6 +5,7 @@ import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRec
 import com.tokopedia.recommendation_widget_common.widget.foryou.entity.ContentCardViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayCardViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.BannerTopAdsListener
+import com.tokopedia.recommendation_widget_common.widget.foryou.utils.TemporaryBackwardCompatible
 
 interface GlobalRecomListener : ParentRecommendationListener,
     BannerTopAdsListener,

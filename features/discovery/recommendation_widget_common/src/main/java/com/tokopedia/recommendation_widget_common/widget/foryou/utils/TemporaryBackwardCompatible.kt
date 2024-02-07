@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.foryou
+package com.tokopedia.recommendation_widget_common.widget.foryou.utils
 
 /**
  * A temporary class marker.
