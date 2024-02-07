@@ -4,6 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
@@ -43,7 +45,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(
         """.trimIndent()
 
         val QUERY_TOP_ADS_SHOP = """
-            query getTopAdsGetShopInfo(${'$'}shop_id: Int!){
+            query getTopAdsGetShopInfo(${'$'}shop_id: String!){
                   topAdsGetShopInfo(shop_id:${'$'}shop_id) {   
               data{
                 category
@@ -76,7 +78,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(
             isShopOwner: Boolean,
             isFromCache: Boolean
         ): RequestParams = RequestParams.create().apply {
-            putString(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
+            putLong(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId.toLongOrZero())
             putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
             putBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, isShopOwner)
             putBoolean(ProductDetailCommonConstant.PARAM_FROM_CACHE, isFromCache)
@@ -95,7 +97,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ProductInfoP2Login {
         val p2Login = ProductInfoP2Login()
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
-        val shopId = requestParams.getString(ProductDetailCommonConstant.PARAM_SHOP_IDS, "")
+        val shopId = requestParams.getLong(ProductDetailCommonConstant.PARAM_SHOP_IDS, Long.ZERO)
         val isShopOwner =
             requestParams.getBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, false)
         val fromCache =
