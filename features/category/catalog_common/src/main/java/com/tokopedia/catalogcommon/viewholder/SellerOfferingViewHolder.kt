@@ -45,7 +45,7 @@ class SellerOfferingViewHolder(
             ivProduct.setOnClickListener {
                 sellerOfferingListener?.onSellerOfferingProductImageClicked(productId)
             }
-            ivButtonRightVariant.setOnClickListener {
+            lnVariant.setOnClickListener {
                 sellerOfferingListener?.onSellerOfferingVariantArrowClicked(productId)
             }
             clProductCard.setOnClickListener {

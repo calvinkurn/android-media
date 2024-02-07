@@ -372,8 +372,10 @@ class CatalogDetailPageFragment :
             if (!newComparedCatalogId.isNullOrEmpty()) changeComparison(newComparedCatalogId)
         }
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
-            viewModel.refreshNotification()
-            RouteManager.route(context, ApplinkConst.CART)
+            if (cartId.isNotEmpty()) {
+                viewModel.refreshNotification()
+                RouteManager.route(context, ApplinkConst.CART)
+            }
         }
     }
 
@@ -1200,7 +1202,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun onSellerOfferingVariantArrowClicked(productId: String) {
-        openVariantBottomSheet(viewModel.atcModel)
+        addToCart(viewModel.atcModel)
     }
 
     override fun onSellerOfferingProductInfo(productId: String) {
