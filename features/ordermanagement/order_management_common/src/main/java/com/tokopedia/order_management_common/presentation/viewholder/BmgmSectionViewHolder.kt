@@ -45,9 +45,9 @@ class BmgmSectionViewHolder(
 
     private val binding = ItemOrderProductBmgmSectionBinding.bind(itemView)
 
-    private var addOnSummaryViewHolder: BmgmAddOnSummaryViewHolder? = null
+    private var productBenefitViewHolder: BmgmAddOnSummaryViewHolder? = null
 
-    private var partialBmgmAddonSummaryBinding: PartialBmgmAddOnSummaryBinding? = null
+    private var productBenefitBinding: PartialBmgmAddOnSummaryBinding? = null
 
     init {
         setupBundleAdapter()
@@ -66,10 +66,10 @@ class BmgmSectionViewHolder(
         val addonsViewStub: View = itemView.findViewById(R.id.itemBmgmProductBenefitViewStub)
         if (productBenefits != null) {
             if (addonsViewStub is ViewStub) {
-                partialBmgmAddonSummaryBinding = PartialBmgmAddOnSummaryBinding.bind(addonsViewStub.inflate())
+                productBenefitBinding = PartialBmgmAddOnSummaryBinding.bind(addonsViewStub.inflate())
             }
-            addOnSummaryViewHolder =
-                partialBmgmAddonSummaryBinding?.let {
+            productBenefitViewHolder =
+                productBenefitBinding?.let {
                     BmgmAddOnSummaryViewHolder(
                         bmgmAddOnListener = productBenefitListener,
                         binding = it,
@@ -79,7 +79,7 @@ class BmgmSectionViewHolder(
                         recyclerViewSharedPool = null
                     )
                 }
-            addOnSummaryViewHolder?.bind(productBenefits)
+            productBenefitViewHolder?.bind(productBenefits)
             binding.dividerProductBenefit.show()
         } else {
             if (addonsViewStub !is ViewStub) addonsViewStub.gone()
