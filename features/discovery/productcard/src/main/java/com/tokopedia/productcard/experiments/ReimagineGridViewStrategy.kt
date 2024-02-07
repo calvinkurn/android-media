@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
+import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -34,13 +35,13 @@ import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ReimagineGridViewStrategy(
-    private val productCardView: ViewGroup
-) : ProductCardStrategy {
+    private val productCardView: ViewGroup,
+): ProductCardStrategy {
 
     private val context: Context?
         get() = productCardView.context
 
-    private fun <T : View?> lazyView(@IdRes id: Int) = productCardView.lazyView<T>(id)
+    private fun <T: View?> lazyView(@IdRes id: Int) = productCardView.lazyView<T>(id)
 
     private val renderer = ProductCardRenderer(productCardView, Grid)
 
@@ -74,6 +75,10 @@ internal class ReimagineGridViewStrategy(
             elevation = 0f
             radius = context.getPixel(R.dimen.product_card_reimagine_image_radius).toFloat()
             cornerRadius = 0f
+
+            setCardUnifyBackgroundColor(
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
+            )
         }
 
         nameText?.setTextSize(TypedValue.COMPLEX_UNIT_PX, 12.toPx().toFloat())
@@ -88,7 +93,8 @@ internal class ReimagineGridViewStrategy(
 
         return try {
             useCompatPadding = typedArray.getBoolean(R.styleable.ProductCardView_useCompatPadding, false)
-        } catch (_: Throwable) {
+        } catch(_: Throwable) {
+
         } finally {
             typedArray.recycle()
         }
@@ -133,12 +139,10 @@ internal class ReimagineGridViewStrategy(
 
     private fun renderContentPaddingHorizontal(productCardModel: com.tokopedia.productcard.reimagine.ProductCardModel) {
         val paddingHorizontal =
-            if (productCardModel.isInBackground) {
+            if (productCardModel.isInBackground)
                 context?.getPixel(R.dimen.product_card_reimagine_content_guideline_padding_in_background)
                     ?: 0
-            } else {
-                0
-            }
+            else 0
 
         guidelineStart?.setGuidelineBegin(paddingHorizontal)
         guidelineEnd?.setGuidelineEnd(paddingHorizontal)
@@ -146,11 +150,8 @@ internal class ReimagineGridViewStrategy(
 
     private fun renderContentPaddingBottom(productCardModel: ProductCardModelReimagine) {
         val paddingBottomConstraintLayout =
-            if (productCardModel.isInBackground) {
-                0
-            } else {
-                context?.getPixel(R.dimen.product_card_reimagine_padding_bottom) ?: 0
-            }
+            if (productCardModel.isInBackground) 0
+            else context?.getPixel(R.dimen.product_card_reimagine_padding_bottom) ?: 0
 
         cardConstraintLayout?.let {
             it.setPadding(
@@ -162,12 +163,9 @@ internal class ReimagineGridViewStrategy(
         }
 
         val paddingBottomGuideline =
-            if (productCardModel.isInBackground) {
-                context?.getPixel(R.dimen.product_card_reimagine_padding_bottom)
-                    ?: 0
-            } else {
-                0
-            }
+            if (productCardModel.isInBackground) context?.getPixel(R.dimen.product_card_reimagine_padding_bottom)
+                ?: 0
+            else 0
 
         guidelineBottom?.setGuidelineEnd(paddingBottomGuideline)
     }
