@@ -927,7 +927,7 @@ class ShopPageReimagineHeaderFragment :
         }
     }
 
-    private fun refreshCartCounterData() {
+    fun refreshCartCounterData() {
         if (isLogin && !MvcLockedToProductUtil.isSellerApp()) {
             updateFragmentTabContentWrapperNavToolbarNotification()
         }

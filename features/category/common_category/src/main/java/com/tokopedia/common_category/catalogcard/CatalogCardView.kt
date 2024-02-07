@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.common_category.R
@@ -83,7 +83,7 @@ abstract class CatalogCardView : BaseCustomView {
 
     open fun setImageCatalogUrl(imageUrl: String) {
         imageCatalog?.let {
-            ImageHandler.loadImageThumbs(context, it, imageUrl)
+            it.loadImage(imageUrl)
         }
     }
 

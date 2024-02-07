@@ -29,17 +29,19 @@ class CarouselViewAllCardViewHolder(
     private val card: ViewAllCard by lazy { view.findViewById(R.id.card_view_all_banner) }
 
     override fun bind(element: CarouselViewAllCardDataModel) {
-        val isGradientWhite = getGradientBackgroundViewAllWhite(element.channelViewAllCard.gradientColor, itemView.context)
+        val isCardGradientWhite = getGradientBackgroundViewAllWhite(element.channelViewAllCard.gradientColor, itemView.context)
+        val isBannerGradientWhite = getGradientBackgroundViewAllWhite(element.gradientColor, itemView.context)
         when (element.channelViewAllCard.contentType) {
-            CONTENT_TITLE_AS_STRING -> renderTypeTitleAsString(element, isGradientWhite)
-            CONTENT_TITLE_AS_INTEGER -> renderTypeTitleAsInteger(element, isGradientWhite)
-            CONTENT_SINGLE_IMAGE -> renderTypeSingleImage(element, isGradientWhite)
+            CONTENT_TITLE_AS_STRING -> renderTypeTitleAsString(element, isCardGradientWhite, isBannerGradientWhite)
+            CONTENT_TITLE_AS_INTEGER -> renderTypeTitleAsInteger(element, isCardGradientWhite, isBannerGradientWhite)
+            CONTENT_SINGLE_IMAGE -> renderTypeSingleImage(element, isCardGradientWhite, isBannerGradientWhite)
             else -> renderTypeTitleAsString(
                 CarouselViewAllCardDataModel(
                     channelViewAllCard = element.channelViewAllCard,
                     listener = element.listener ?: listener
                 ),
-                true
+                true,
+                isBannerGradientWhite
             ) //other content type will show empty view all card
         }
         //set foreground to selectableItemBackground
@@ -54,15 +56,16 @@ class CarouselViewAllCardViewHolder(
         }
     }
 
-    private fun renderTypeSingleImage(element: CarouselViewAllCardDataModel, isGradientWhite: Boolean) {
+    private fun renderTypeSingleImage(
+        element: CarouselViewAllCardDataModel,
+        isCardGradientWhite: Boolean,
+        isBannerGradientWhite: Boolean
+    ) {
         card.imageDrawable = itemView.context.getDrawable(R.drawable.ic_graphic_element_green)
         card.imageView.loadImage(element.channelViewAllCard.imageUrl)
         card.description = element.channelViewAllCard.description
         if (element.layoutType == DynamicChannelLayout.LAYOUT_MIX_LEFT) {
-            if (element.imageUrl.isEmpty() || getGradientBackgroundViewAllWhite(
-                    element.gradientColor, itemView.context
-                )
-            ) {
+            if (element.imageUrl.isEmpty() || isBannerGradientWhite) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
@@ -70,7 +73,7 @@ class CarouselViewAllCardViewHolder(
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
             }
         } else if (element.layoutType == DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING) {
-            if (getGradientBackgroundViewAllWhite(element.gradientColor, itemView.context)) {
+            if (isBannerGradientWhite) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
@@ -78,7 +81,7 @@ class CarouselViewAllCardViewHolder(
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
             }
         } else {
-            if (isGradientWhite || getGradientBackgroundViewAllWhite(element.gradientColor, itemView.context)) {
+            if (isCardGradientWhite || isBannerGradientWhite) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
@@ -90,14 +93,15 @@ class CarouselViewAllCardViewHolder(
         card.setCta(itemView.context.getString(R.string.lihat_semua))
     }
 
-    private fun renderTypeTitleAsString(element: CarouselViewAllCardDataModel, isGradientWhite: Boolean) {
+    private fun renderTypeTitleAsString(
+        element: CarouselViewAllCardDataModel,
+        isCardGradientWhite: Boolean,
+        isBannerGradientWhite: Boolean
+    ) {
         card.title = element.channelViewAllCard.title
         card.description = element.channelViewAllCard.description
         if (element.layoutType == DynamicChannelLayout.LAYOUT_MIX_LEFT) {
-            if (element.imageUrl.isEmpty() || getGradientBackgroundViewAllWhite(
-                    element.gradientColor, itemView.context
-                )
-            ) {
+            if (element.imageUrl.isEmpty() || isBannerGradientWhite) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
@@ -105,7 +109,7 @@ class CarouselViewAllCardViewHolder(
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
             }
         } else if (element.layoutType == DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING) {
-            if (getGradientBackgroundViewAllWhite(element.gradientColor, itemView.context)) {
+            if (isBannerGradientWhite) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
@@ -113,7 +117,7 @@ class CarouselViewAllCardViewHolder(
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
             }
         } else {
-            if (isGradientWhite || getGradientBackgroundViewAllWhite(element.gradientColor, itemView.context)) {
+            if (isCardGradientWhite || isBannerGradientWhite) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
@@ -125,15 +129,16 @@ class CarouselViewAllCardViewHolder(
         card.setCta(itemView.context.getString(R.string.lihat_semua))
     }
 
-    private fun renderTypeTitleAsInteger(element: CarouselViewAllCardDataModel, isGradientWhite: Boolean) {
+    private fun renderTypeTitleAsInteger(
+        element: CarouselViewAllCardDataModel,
+        isCardGradientWhite: Boolean,
+        isBannerGradientWhite: Boolean
+    ) {
         card.title = element.channelViewAllCard.title
         card.isTitleNumberStyle = true
         card.description = element.channelViewAllCard.description
         if (element.layoutType == DynamicChannelLayout.LAYOUT_MIX_LEFT) {
-            if (element.imageUrl.isEmpty() || getGradientBackgroundViewAllWhite(
-                    element.gradientColor, itemView.context
-                )
-            ) {
+            if (element.imageUrl.isEmpty() || isBannerGradientWhite) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
@@ -141,7 +146,7 @@ class CarouselViewAllCardViewHolder(
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
             }
         } else if (element.layoutType == DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING) {
-            if (getGradientBackgroundViewAllWhite(element.gradientColor, itemView.context)) {
+            if (isBannerGradientWhite) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {
@@ -149,7 +154,7 @@ class CarouselViewAllCardViewHolder(
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_white)
             }
         } else {
-            if (isGradientWhite || getGradientBackgroundViewAllWhite(element.gradientColor, itemView.context)) {
+            if (isCardGradientWhite || isBannerGradientWhite) {
                 card.mode = MODE_NORMAL
                 card.backgroundView.setImageResource(R.drawable.ic_graphic_element_green)
             } else {

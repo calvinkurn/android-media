@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.search.listShouldBe
-import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.product.changeview.ViewType
@@ -73,7 +72,10 @@ fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: Pr
     productListView.sendTrackingGTMEventSearchAttempt(any())
 }
 
-fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductListSectionContract.View, visitableListSlot: CapturingSlot<List<Visitable<*>>>) {
+fun MockKVerificationScope.verifyProcessingNextPage(
+    productListView: ProductListSectionContract.View,
+    visitableListSlot: CapturingSlot<List<Visitable<*>>>
+) {
     productListView.lastProductItemPositionFromCache
     productListView.saveLastProductItemPositionToCache(16)
     productListView.removeLoading()
@@ -93,17 +95,23 @@ fun MockKVerificationScope.verifyIsAdded(productListView: ProductListSectionCont
 }
 
 internal fun WishlistTrackingModel.assert(
-        expectedWishlistTrackingModel: WishlistTrackingModel
+    expectedWishlistTrackingModel: WishlistTrackingModel
 ) {
 
-    isAddWishlist.shouldBe(expectedWishlistTrackingModel.isAddWishlist,
-            "Wishlist tracking model isAddWishlist should be ${expectedWishlistTrackingModel.isAddWishlist}")
+    isAddWishlist.shouldBe(
+        expectedWishlistTrackingModel.isAddWishlist,
+        "Wishlist tracking model isAddWishlist should be ${expectedWishlistTrackingModel.isAddWishlist}"
+    )
 
     productId shouldBe expectedWishlistTrackingModel.productId
-    isTopAds.shouldBe(expectedWishlistTrackingModel.isTopAds,
-            "Wishlist tracking model isTopAds should be ${expectedWishlistTrackingModel.isTopAds}")
-    isUserLoggedIn.shouldBe(expectedWishlistTrackingModel.isUserLoggedIn,
-            "Wishlist tracking model isUserLoggedIn should be ${expectedWishlistTrackingModel.isUserLoggedIn}")
+    isTopAds.shouldBe(
+        expectedWishlistTrackingModel.isTopAds,
+        "Wishlist tracking model isTopAds should be ${expectedWishlistTrackingModel.isTopAds}"
+    )
+    isUserLoggedIn.shouldBe(
+        expectedWishlistTrackingModel.isUserLoggedIn,
+        "Wishlist tracking model isUserLoggedIn should be ${expectedWishlistTrackingModel.isUserLoggedIn}"
+    )
     keyword shouldBe keyword
 }
 
@@ -136,6 +144,10 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
             actualLabelGroup.position shouldBe expectedLabelGroup.position
             actualLabelGroup.type shouldBe expectedLabelGroup.type
             actualLabelGroup.imageUrl shouldBe expectedLabelGroup.url
+            actualLabelGroup.styleList.listShouldBe(expectedLabelGroup.styleList) { actualStyle, expectedStyle ->
+                actualStyle.key shouldBe expectedStyle.key
+                actualStyle.value shouldBe expectedStyle.value
+            }
         }
         actualProduct.layout shouldBe inspirationCarouselLayout
         actualProduct.originalPrice shouldBe expectedProduct.originalPrice
@@ -145,7 +157,7 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
         actualProduct.optionTitle shouldBe optionTitle
         actualProduct.shopLocation shouldBe expectedProduct.shop.city
         actualProduct.badgeItemDataViewList.listShouldBe(expectedProduct.badgeList) { actual, expected ->
-            actual.title shouldBe  expected.title
+            actual.title shouldBe expected.title
             actual.imageUrl shouldBe expected.imageUrl
             actual.isShown shouldBe expected.isShown
         }

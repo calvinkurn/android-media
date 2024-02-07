@@ -112,7 +112,8 @@ class HomeRecommendationMapper {
                 position = it.position,
                 type = it.type,
                 title = it.title,
-                imageUrl = it.imageUrl
+                imageUrl = it.imageUrl,
+                styleList = it.styles.map { ProductCardModel.LabelGroup.Style(it.key, it.value) }
             )
         }
     }
@@ -134,7 +135,7 @@ class HomeRecommendationMapper {
             isWishlistVisible = true,
             isWishlisted = product.isWishlist,
             shopBadgeList = product.badges.map {
-                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                ProductCardModel.ShopBadge(title = it.title, imageUrl = it.imageUrl)
             },
             freeOngkir = ProductCardModel.FreeOngkir(
                 isActive = product.freeOngkirInformation.isActive,
