@@ -252,13 +252,13 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
             programInformationDetailUiModel?.subsidyInfo?.maxFinalDiscountPercentageSubsidy.orZero(), {
                 String.format(
                     getString(R.string.sd_subsidy_discount_percentage_format),
-                    it
+                    it.getPercentFormatted()
                 )
             }, { min, max ->
                 String.format(
                     getString(R.string.sd_subsidy_discount_percentage_format_range),
-                    min.thousandFormatted(),
-                    max.thousandFormatted()
+                    min.getPercentFormatted(),
+                    max.getPercentFormatted()
                 )
             }
         )
@@ -297,13 +297,13 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
             programInformationDetailUiModel?.subsidyInfo?.maxProgramDiscountPercentageSubsidy.orZero(), {
                 String.format(
                     getString(R.string.sd_subsidy_discount_percentage_format),
-                    it
+                    it.getPercentFormatted()
                 )
             }, { min, max ->
                 String.format(
                     getString(R.string.sd_subsidy_discount_percentage_format_range),
-                    min.thousandFormatted(),
-                    max.thousandFormatted()
+                    min.getPercentFormatted(),
+                    max.getPercentFormatted()
                 )
             }
         )
@@ -345,13 +345,13 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
             programInformationDetailUiModel?.subsidyInfo?.maxSellerDiscountPercentageSubsidy.orZero(), {
                 String.format(
                     getString(R.string.sd_subsidy_discount_percentage_format),
-                    it
+                    it.getPercentFormatted()
                 )
             }, { min, max ->
                 String.format(
                     getString(R.string.sd_subsidy_discount_percentage_format_range),
-                    min.thousandFormatted(),
-                    max.thousandFormatted()
+                    min.getPercentFormatted(),
+                    max.getPercentFormatted()
                 )
             }
         )

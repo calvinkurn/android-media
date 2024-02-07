@@ -236,7 +236,7 @@ class DiscountedProductListViewModel @Inject constructor(
         mode: String
     ) {
         launchCatchError(dispatchers.io, block = {
-            val productDetailData = getProductDetailData(listProductId, status)
+            val productDetailData = getProductDetailData(listProductId, status, true)
             val listProductDetailUiModel =
                 ShopDiscountProductDetailMapper.mapToShopDiscountProductDetailUiModel(
                     productDetailData
@@ -277,12 +277,14 @@ class DiscountedProductListViewModel @Inject constructor(
 
     private suspend fun getProductDetailData(
         listProductId: List<String>,
-        status: Int
+        status: Int,
+        isValidateSizeVariant: Boolean = false
     ): GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail {
         getSlashPriceProductDetailUseCase.setParams(
             ShopDiscountProductDetailMapper.getGetSlashPriceProductDetailRequestData(
                 listProductId,
-                status
+                status,
+                isValidateSizeVariant
             )
         )
         return getSlashPriceProductDetailUseCase.executeOnBackground().getSlashPriceProductDetail

@@ -120,7 +120,7 @@ class ShopDiscountSubsidyProductItemViewHolder(
                     it.getPercentFormatted()
                 }, { min, max ->
                     String.format(
-                        itemView.context.getString(R.string.shop_discount_product_detail_percent_format_range),
+                        itemView.context.getString(R.string.sd_subsidy_opt_out_multiple_product_item_discount_percentage_range_format),
                         min.getPercentFormatted(),
                         max.getPercentFormatted()
                     )

@@ -22,11 +22,13 @@ object ShopDiscountProductDetailMapper {
     private const val END_DATE_FORMAT = "dd MMM yyyy HH:mm z"
     fun getGetSlashPriceProductDetailRequestData(
         listProductId: List<String>,
-        status: Int
+        status: Int,
+        isValidateSizeVariant: Boolean
     ): GetSlashPriceProductDetailRequest {
         return GetSlashPriceProductDetailRequest(
             requestHeader = getRequestHeader(),
-            slashPriceProductDetailFilter = getSlashPriceProductDetailFilter(listProductId, status)
+            slashPriceProductDetailFilter = getSlashPriceProductDetailFilter(listProductId, status),
+            isValidateSizeVariant = isValidateSizeVariant
         )
     }
 

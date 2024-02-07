@@ -106,7 +106,8 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
         getSlashPriceProductDetailUseCase.setParams(
             ShopDiscountProductDetailMapper.getGetSlashPriceProductDetailRequestData(
                 listOf(productId),
-                status
+                status,
+                false
             )
         )
         return getSlashPriceProductDetailUseCase.executeOnBackground()
