@@ -400,7 +400,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOPADS, PathType.PATTERN, "/dashboard", TOP_ADS_DASHBOARD),
         DFP(SCHEME_SELLERAPP, HOST_TOPADS, PathType.PATH, "/buy"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/buy"),
-        DFP(SCHEME_SELLERAPP, HOST_TOPADS, PathType.PATH, "/add-credit"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/add-credit"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/headline-ad-detail"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/history-credit"),

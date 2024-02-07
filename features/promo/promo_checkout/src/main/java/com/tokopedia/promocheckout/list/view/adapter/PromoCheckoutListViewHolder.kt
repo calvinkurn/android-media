@@ -4,7 +4,7 @@ import android.text.TextUtils
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
@@ -17,7 +17,7 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
     override fun bind(element: PromoCheckoutListModel?) {
         listenerTrackingCoupon.onImpressionCoupon(element)
         var timerUsage = TimerPromoCheckout()
-        ImageHandler.loadImageRounded2(view?.context, view?.imageBanner, element?.imageUrlMobile)
+        view?.imageBanner?.loadImageRounded(element?.imageUrlMobile)
         view?.imagePeriod?.setImageResource(R.drawable.ic_promo_rp_new)
         view?.imageMinTrans?.setImageResource(R.drawable.ic_promo_time_new)
         view?.titlePeriod?.text = element?.usage?.text

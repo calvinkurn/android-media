@@ -3,6 +3,7 @@ package com.tokopedia.media.loader.data
 import android.graphics.Bitmap
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.listener.NetworkResponseListener
 import com.tokopedia.media.loader.utils.FeatureToggle
@@ -159,7 +160,8 @@ data class Properties(
     // use custom listener for the image loader callback
     fun listener(
         onSuccess: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
-        onError: (MediaException?) -> Unit = { _ -> }
+        onError: (MediaException?) -> Unit = { _ -> },
+        onSuccessGif: (GifDrawable?, MediaDataSource?) -> Unit = { _, _ -> }
     ) = apply {
         this.loaderListener = object : MediaListener {
             override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?) {
@@ -168,6 +170,10 @@ data class Properties(
 
             override fun onFailed(error: MediaException?) {
                 onError(error)
+            }
+
+            override fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) {
+                onSuccessGif(resource, dataSource)
             }
         }
     }

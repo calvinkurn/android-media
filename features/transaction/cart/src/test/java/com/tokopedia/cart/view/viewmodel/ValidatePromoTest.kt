@@ -1,9 +1,9 @@
 package com.tokopedia.cart.view.viewmodel
 
-import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel

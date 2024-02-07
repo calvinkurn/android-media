@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/header_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="3:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/top_banner_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="6dp"
+            android:text="Event dimulai"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/header_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_1" />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/top_banner_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="2dp"
+            app:timer_unify_single_variant="informative_alternate"
+            android:backgroundTint="@color/green_ketupat_timer"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/header_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:timer_unify_single_showClockIcon="true"
+            app:timer_unify_single_textWidth="full_radius"
+            app:timer_unify_single_type="hour" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_clock"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:icon_color_light_enable="@color/white"
+            app:icon_name="CLOCK"
+            app:layout_constraintBottom_toBottomOf="@id/header_image"
+            app:layout_constraintEnd_toStartOf="@id/top_banner_counter" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/top_banner_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="8dp"
+            android:text="15 days"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/header_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_1"
+            app:typographyWeight="bold" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
