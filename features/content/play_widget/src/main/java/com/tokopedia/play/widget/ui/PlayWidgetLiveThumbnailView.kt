@@ -58,6 +58,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import com.tokopedia.play.widget.R as playwidgetR
 
 class PlayWidgetLiveThumbnailView : AbstractComposeView {
@@ -124,7 +125,7 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
         if (visibility == View.GONE) videoPlayer.stop()
     }
 
-    fun playUrl(url: String, playFor: Duration) {
+    fun playUrl(url: String, playFor: Duration = 3.seconds) {
         videoPlayer.loadUri(
             Uri.parse(url),
             config = VideoPlayer.Config(playFor, isLive = true)
