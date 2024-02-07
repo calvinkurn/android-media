@@ -13,6 +13,7 @@ import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play_common.util.CacheUtil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -57,18 +58,34 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
 
     override suspend fun deleteTopQueue() {
         lockAndSwitchContext(dispatchers) {
+            val topQueue = creationUploadQueueDatabase.creationUploadQueueDao().getTopQueue()
             creationUploadQueueDatabase.creationUploadQueueDao().deleteTopQueue()
+
+            if (topQueue != null) {
+                deleteMediaCache(topQueue)
+            }
         }
     }
 
-    override suspend fun delete(queueId: Int) {
+    override suspend fun delete(data: CreationUploadData) {
         lockAndSwitchContext(dispatchers) {
-            creationUploadQueueDatabase.creationUploadQueueDao().delete(queueId)
+            try {
+                creationUploadQueueDatabase.creationUploadQueueDao().delete(data.queueId)
+
+                when (data) {
+                    is CreationUploadData.Stories -> {
+                        CacheUtil.deleteFileFromCache(data.firstMediaUri)
+                    }
+                    else -> {}
+                }
+            } catch (_: Throwable) {
+
+            }
         }
     }
 
     override suspend fun deleteQueueAndChannel(data: CreationUploadData) {
-        delete(data.queueId)
+        delete(data)
 
         withContext(dispatchers.io) {
             try {
@@ -103,7 +120,14 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
 
     override suspend fun clearQueue() {
         lockAndSwitchContext(dispatchers) {
+            val queueList = creationUploadQueueDatabase.creationUploadQueueDao().getAllQueue()
             creationUploadQueueDatabase.creationUploadQueueDao().deleteAll()
+
+            queueList
+                .filter { it.uploadType == CreationUploadType.Stories.type }
+                .forEach { queueEntity ->
+                    deleteMediaCache(queueEntity)
+                }
         }
     }
 
@@ -131,6 +155,17 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
                     queueId,
                     data,
                 )
+        }
+    }
+
+    private fun deleteMediaCache(queueEntity: CreationUploadQueueEntity) {
+
+        if (queueEntity.uploadType != CreationUploadType.Stories.type) return
+
+        val stories = CreationUploadData.parseFromEntity(queueEntity, gson) as? CreationUploadData.Stories
+
+        stories?.let {
+            CacheUtil.deleteFileFromCache(it.firstMediaUri)
         }
     }
 

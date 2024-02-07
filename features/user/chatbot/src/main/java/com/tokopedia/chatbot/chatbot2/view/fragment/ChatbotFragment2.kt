@@ -98,6 +98,7 @@ import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.chatbot2.attachinvoice.view.TransactionInvoiceBottomSheetListener
 import com.tokopedia.chatbot.chatbot2.attachinvoice.view.resultmodel.SelectedInvoice
+import com.tokopedia.chatbot.chatbot2.csat.view.CsatActivity
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
@@ -374,6 +375,9 @@ class ChatbotFragment2 :
         private const val SNACK_BAR_TEXT_OK = "OK"
         private const val BOT_OTHER_REASON_TEXT = "bot_other_reason"
         private const val SELECTED_ITEMS = "selected_items"
+        private const val SERVICE = "service"
+        private const val OTHER_REASON = "other_reason"
+        private const val DYNAMIC_REASON = "dynamic_reason"
         private const val EMOJI_STATE = "emoji_state"
         private const val TIME_STAMP = "time_stamp"
         private const val CSAT_ATTRIBUTES = "csat_attribute"
@@ -1738,8 +1742,15 @@ class ChatbotFragment2 :
             messageID = messageId
             caseID = data.getStringExtra(ChatBotCsatActivity.CASE_ID).orEmpty()
             caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID).orEmpty()
-            rating = data.extras?.getLong(EMOJI_STATE).orZero()
             reasonCode = data.getStringExtra(SELECTED_ITEMS).orEmpty()
+            service = data.getStringExtra(SERVICE).orEmpty()
+            otherReason = data.getStringExtra(OTHER_REASON).orEmpty()
+            dynamicReasons = data.getStringArrayListExtra(DYNAMIC_REASON).orEmpty()
+            rating = if (dynamicReasons.isNotEmpty()) {
+                data.extras?.getInt(EMOJI_STATE).orZero().toLong()
+            } else {
+                data.extras?.getLong(EMOJI_STATE).orZero()
+            }
         }
         viewModel.submitChatCsat(messageId, input)
     }
@@ -2275,13 +2286,23 @@ class ChatbotFragment2 :
         model: CsatOptionsUiModel?
     ) {
         csatOptionsUiModel = model
-        startActivityForResult(
-            context?.let {
-                ChatBotCsatActivity
-                    .getInstance(it, selected.value, model)
-            },
-            REQUEST_SUBMIT_CSAT
-        )
+        val dynamicCsatModel = model?.dynamicCsat
+        if (dynamicCsatModel != null) {
+            startActivityForResult(
+                context?.let {
+                    CsatActivity.getInstance(it, selected.value.toInt(), dynamicCsatModel) // converting to int is safe in this case
+                },
+                REQUEST_SUBMIT_CSAT
+            )
+        } else {
+            startActivityForResult(
+                context?.let {
+                    ChatBotCsatActivity
+                        .getInstance(it, selected.value, model)
+                },
+                REQUEST_SUBMIT_CSAT
+            )
+        }
     }
 
     override fun onRetrySendImage(element: ImageUploadUiModel) {
