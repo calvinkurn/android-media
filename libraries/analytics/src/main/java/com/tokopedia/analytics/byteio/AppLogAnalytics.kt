@@ -146,17 +146,6 @@ object AppLogAnalytics {
     // TODO check how to make this null again
     @JvmField
     var globalRequestId: String? = null
-//
-//    @JvmField
-//    var startActivityTime = 0L
-//    @JvmField
-//    var startActivityTimeCache = 0L
-//
-//    @JvmField
-//    var hasStartTime = false
-//
-//    @JvmField
-//    var startMultiple = false
 
     private val lock = Any()
 
