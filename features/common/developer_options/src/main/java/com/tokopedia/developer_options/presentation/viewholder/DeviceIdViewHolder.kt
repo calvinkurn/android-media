@@ -7,12 +7,15 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.bytedance.applog.AppLog
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.DeviceIdUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
+import org.json.JSONObject
 
 class DeviceIdViewHolder(
     itemView: View
@@ -33,6 +36,10 @@ class DeviceIdViewHolder(
 
         val didCopy = itemView.findViewById<IconUnify>(R.id.ic_copy)
         didCopy.setOnClickListener {
+            AppLogAnalytics.send("developer_options", JSONObject().apply {
+                put("event", "click")
+                put("userId", UserSession(it.context).userId)
+            })
             val clipboard = itemView.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("Applog Device ID", appLogDId)
             clipboard.setPrimaryClip(clip)
