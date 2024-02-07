@@ -909,7 +909,10 @@ class DiscoveryPageDataMapper(
                 Layout.Carousel -> ComponentNames.CarouselAutomateCoupon.componentName
             }
 
-            listComponents.add(component.copy(name = componentName))
+            val uniqueId = "${it}_${component.id}"
+            val parsedComponent = component.copy(id = uniqueId, name = componentName)
+            listComponents.add(parsedComponent)
+            setComponent(uniqueId, component.pageEndPoint, parsedComponent)
         }
     }
 }

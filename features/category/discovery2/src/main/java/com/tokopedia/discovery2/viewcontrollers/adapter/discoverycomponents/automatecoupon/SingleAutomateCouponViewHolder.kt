@@ -32,7 +32,7 @@ class SingleAutomateCouponViewHolder(
 
         lifecycleOwner?.let {
             viewModel?.getComponentList()?.observe(it) { items ->
-                items.first().automateCoupons?.first()?.let { model ->
+                items.firstOrNull()?.automateCoupons?.firstOrNull()?.let { model ->
                     binding?.couponView?.setModel(model)
                 }
             }

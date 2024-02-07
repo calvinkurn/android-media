@@ -168,15 +168,6 @@ class GetAutomateCouponUseCase @Inject constructor(
             subtitle?.firstOrNull()?.parent?.colorList?.hexColors?.firstOrNull().orEmpty()
         )
 
-        val prefixTimeLimit = DynamicColorText(
-            footer?.firstOrNull()?.parent?.text.orEmpty(),
-            footer?.firstOrNull()?.parent?.colorList?.hexColors?.firstOrNull().orEmpty()
-        )
-
-        val epoch = footer?.firstOrNull()?.children?.firstOrNull()?.values?.firstOrNull()?.value
-        val endDate = epoch?.epochToDate()
-        val timeLimit = TimeLimit.Timer(prefixTimeLimit, endDate)
-
         val badge = badges?.firstOrNull()?.value
 
         return AutomateCouponModel.Grid(
