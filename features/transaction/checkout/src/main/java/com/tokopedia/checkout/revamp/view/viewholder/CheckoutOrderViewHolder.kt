@@ -16,8 +16,9 @@ import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companio
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
+import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
-import com.tokopedia.logisticcart.shipping.model.ShippingWidgetCourierError
+import com.tokopedia.logisticcart.shipping.model.ShippingWidgetState
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
 import com.tokopedia.logisticcart.utils.ShippingWidgetUtils.toShippingWidgetUiModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
@@ -91,42 +92,20 @@ class CheckoutOrderViewHolder(
         binding.shippingWidget.render(uiModel)
     }
 
-    private fun CheckoutOrderModel.toErrorState(): ShippingWidgetCourierError? {
-        if (shipment.courierItemData != null) {
-            return null
-        }
-        return if (isCustomPinpointError) {
-            ShippingWidgetCourierError.NEED_PINPOINT
-        } else if (isDisableChangeCourier && hasGeolocation) {
-            ShippingWidgetCourierError.COURIER_UNAVAILABLE
-        } else {
-            ShippingWidgetCourierError.SHIPPING_NOT_SELECTED
-        }
-    }
-
     private fun CheckoutOrderModel.toShipmentWidgetModel(): ShippingWidgetUiModel {
-        var model = ShippingWidgetUiModel(
+        return shipment.courierItemData.toShippingWidgetUiModel(
             cartError = isError,
-            loading = shipment.isLoading,
-            courierError = toErrorState(),
+            cartErrorTitle = courierSelectionErrorTitle,
+            needPinpoint = isCustomPinpointError,
             isDisableChangeCourier = isDisableChangeCourier,
-            courierErrorTitle = courierSelectionErrorTitle,
+            hasGeolocation = hasGeolocation,
+            isLoading = shipment.isLoading,
+            isHasShownCourierError = shipment.isHasShownCourierError,
+            isCheckInsurance = shipment.insurance.isCheckInsurance,
+            isInsurance = isInsurance,
             isShippingBorderRed = isShippingBorderRed,
-            isTriggerShippingVibrationAnimation = isTriggerShippingVibrationAnimation,
-            isHasShownCourierError = shipment.isHasShownCourierError
+            isTriggerShippingVibrationAnimation = isTriggerShippingVibrationAnimation
         )
-        val courierItemData = shipment.courierItemData
-        return if (courierItemData == null) {
-            model
-        } else {
-            model = courierItemData.toShippingWidgetUiModel(model)
-            model.copy(
-                insuranceData = model.insuranceData?.copy(
-                    useInsurance = shipment.insurance.isCheckInsurance,
-                    isInsurance = isInsurance
-                )
-            )
-        }
     }
 
     private fun showMultiplePlusOrderCoachmark(
@@ -225,10 +204,10 @@ class CheckoutOrderViewHolder(
         listener.onInsuranceCheckedForTrackingAnalytics()
     }
 
-    override fun onInsuranceChecked(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    override fun onInsuranceChecked(insuranceData: InsuranceWidgetUiModel?) {
         order?.let {
             listener.onInsuranceChecked(
-                shippingWidgetUiModel.insuranceData!!.useInsurance!!,
+                insuranceData!!.useInsurance!!,
                 it,
                 bindingAdapterPosition
             )
@@ -251,11 +230,11 @@ class CheckoutOrderViewHolder(
         }
     }
 
-    override fun onViewCartErrorState(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    override fun onViewCartErrorState(error: ShippingWidgetState.CartError) {
         order?.run {
-            if (shippingWidgetUiModel.logisticPromoCode?.isNotEmpty() == true) {
+            if (error.logisticPromoCode?.isNotEmpty() == true) {
                 listener?.onCancelVoucherLogisticClicked(
-                    shippingWidgetUiModel.logisticPromoCode!!,
+                    error.logisticPromoCode!!,
                     bindingAdapterPosition,
                     this
                 )

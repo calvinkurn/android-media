@@ -17,11 +17,13 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.model.ShippingWidgetState
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
 import com.tokopedia.logisticcart.utils.ShippingWidgetUtils.toShippingWidgetUiModel
 import com.tokopedia.logisticcart.test.R as logisticcarttestR
@@ -110,7 +112,7 @@ class ShippingWidgetCheckoutActivity :
     override fun onInsuranceCheckedForTrackingAnalytics() {
     }
 
-    override fun onInsuranceChecked(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    override fun onInsuranceChecked(insuranceData: InsuranceWidgetUiModel?) {
     }
 
     override fun onInsuranceInfoTooltipClickedTrackingAnalytics() {
@@ -119,7 +121,7 @@ class ShippingWidgetCheckoutActivity :
     override fun showInsuranceBottomSheet(description: String) {
     }
 
-    override fun onViewCartErrorState(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    override fun onViewCartErrorState(error: ShippingWidgetState.CartError) {
     }
 
     override fun onRenderVibrationAnimation(shippingWidgetUiModel: ShippingWidgetUiModel) {
@@ -141,7 +143,19 @@ class ShippingWidgetCheckoutActivity :
     ) {
         val courierItemData =
             ShippingCourierConverter().convertToCourierItemDataNew(selectedCourier)
-        model = courierItemData.toShippingWidgetUiModel()
+        model = courierItemData.toShippingWidgetUiModel(
+            cartError = false,
+            cartErrorTitle = "",
+            needPinpoint = false,
+            isDisableChangeCourier = false,
+            hasGeolocation = false,
+            isLoading = false,
+            isHasShownCourierError = false,
+            isCheckInsurance = false,
+            isInsurance = false,
+            isShippingBorderRed = false,
+            isTriggerShippingVibrationAnimation = false
+        )
         courierList = shippingCourierUiModels
         render()
     }
@@ -161,7 +175,19 @@ class ShippingWidgetCheckoutActivity :
             courierData,
             logisticPromo
         )
-        model = courierItemData.toShippingWidgetUiModel()
+        model = courierItemData.toShippingWidgetUiModel(
+            cartError = false,
+            cartErrorTitle = "",
+            needPinpoint = false,
+            isDisableChangeCourier = false,
+            hasGeolocation = false,
+            isLoading = false,
+            isHasShownCourierError = false,
+            isCheckInsurance = false,
+            isInsurance = false,
+            isShippingBorderRed = false,
+            isTriggerShippingVibrationAnimation = false
+        )
         render()
     }
 
@@ -175,7 +201,19 @@ class ShippingWidgetCheckoutActivity :
         isNeedPinpoint: Boolean,
         shippingCourierList: List<ShippingCourierUiModel>
     ) {
-        model = courierItemData.toShippingWidgetUiModel()
+        model = courierItemData.toShippingWidgetUiModel(
+            cartError = false,
+            cartErrorTitle = "",
+            needPinpoint = false,
+            isDisableChangeCourier = false,
+            hasGeolocation = false,
+            isLoading = false,
+            isHasShownCourierError = false,
+            isCheckInsurance = false,
+            isInsurance = false,
+            isShippingBorderRed = false,
+            isTriggerShippingVibrationAnimation = false
+        )
         render()
     }
 
