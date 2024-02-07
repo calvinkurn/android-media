@@ -157,7 +157,11 @@ data class GetSlashPriceProductListResponse(
                 var warehouseType: Int = 0,
                 @SerializedName("original_price")
                 @Expose
-                var originalPrice: Double = 0.0
+                var originalPrice: Double = 0.0,
+                @SerializedName("subsidy_info")
+                val subsidyInfo: SubsidyInfoResponse = SubsidyInfoResponse(),
+                @SerializedName("join_subsidy")
+                val joinSubsidy: Boolean = false
             )
         }
     }
