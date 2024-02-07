@@ -2,6 +2,7 @@ package com.tokopedia.content.product.preview.view.viewholder.review
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.databinding.ItemImageProductPreviewBinding
 import com.tokopedia.content.product.preview.view.components.ItemImageProductPreview
@@ -10,6 +11,12 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiMo
 class ReviewMediaImageViewHolder(
     private val binding: ItemImageProductPreviewBinding
 ) : ViewHolder(binding.root) {
+
+    init {
+        binding.cvProductPreviewContentImage.setViewCompositionStrategy(
+            ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool
+        )
+    }
 
     fun bind(content: ReviewMediaUiModel) {
         binding.cvProductPreviewContentImage.apply {
