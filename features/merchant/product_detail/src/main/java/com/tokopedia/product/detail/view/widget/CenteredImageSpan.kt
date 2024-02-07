@@ -2,32 +2,33 @@ package com.tokopedia.product.detail.view.widget
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.text.style.ImageSpan
-import com.tokopedia.kotlin.extensions.view.ZERO
 
-class CenteredImageSpan(
-    drawable: Drawable,
-    private val lineSpacing: Float = Float.ZERO
-) : ImageSpan(drawable) {
+class CenteredImageSpan(drawable: Drawable) : ImageSpan(drawable) {
 
     companion object {
         private const val HALF_DIVIDER = 2f
     }
 
-    override fun getSize(paint: Paint, text: CharSequence?, start: Int, end: Int, fm: Paint.FontMetricsInt?): Int {
+    override fun getSize(
+        paint: Paint,
+        text: CharSequence?,
+        start: Int,
+        end: Int,
+        fontMetricsInt: Paint.FontMetricsInt?
+    ): Int {
         val rect = drawable.bounds
-        val pfm = paint.fontMetricsInt
+        val fm = fontMetricsInt ?: return rect.right
+        val fmPaint = paint.fontMetricsInt
+        val centerY = fmPaint.ascent + fmPaint.fontHeight.div(HALF_DIVIDER.toInt())
+        val halfDrawableHeight = rect.drawableHeight.div(HALF_DIVIDER.toInt())
 
-        if (fm != null) {
-            val halfDivider = HALF_DIVIDER.toInt()
-            val halfBound = rect.height().div(halfDivider)
-            val pfmAscent = pfm.ascent.div(halfDivider)
-            fm.ascent = -halfBound + pfmAscent
-            fm.descent = Int.ZERO.coerceAtLeast(minimumValue = halfBound + pfmAscent)
-            fm.top = fm.ascent
-            fm.bottom = fm.descent
-        }
+        fm.ascent = centerY - halfDrawableHeight
+        fm.top = fm.ascent
+        fm.bottom = centerY + halfDrawableHeight
+        fm.descent = fm.bottom
 
         return rect.right
     }
@@ -43,15 +44,23 @@ class CenteredImageSpan(
         bottom: Int,
         paint: Paint
     ) {
+        val drawable = drawable
+        val fmPaint = paint.fontMetricsInt
+        val centerY = y + fmPaint.descent - fmPaint.fontHeight.div(HALF_DIVIDER)
+        val transY = centerY - drawable.drawableHeight.div(HALF_DIVIDER)
+
         canvas.save()
-
-        val halfHeight = (bottom - top).div(HALF_DIVIDER)
-        val halfBoundHeight = drawable.bounds.height().div(HALF_DIVIDER)
-        val halfLineSpacing = lineSpacing.div(HALF_DIVIDER)
-        val transY = halfHeight - halfBoundHeight - halfLineSpacing
-
         canvas.translate(x, transY)
         drawable.draw(canvas)
         canvas.restore()
     }
+
+    private val Paint.FontMetricsInt.fontHeight
+        get() = descent - ascent
+
+    private val Rect.drawableHeight
+        get() = bottom - top
+
+    private val Drawable.drawableHeight
+        get() = bounds.drawableHeight
 }

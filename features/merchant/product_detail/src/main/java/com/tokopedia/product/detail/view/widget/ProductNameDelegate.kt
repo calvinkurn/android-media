@@ -8,7 +8,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
@@ -107,10 +106,9 @@ internal class ProductNameDelegate(
         // Exit if all icons have not finished load
         if (!allIconsLoaded(mapIcons)) return
 
-        val textViewLineSpacing = typography?.lineSpacingExtra.orZero()
         mapIcons.getIcons().forEach { resource ->
             resource.resizeLabelIconSpec()
-            setLabelIconSpan(drawable = resource, lineSpacing = textViewLineSpacing)
+            setLabelIconSpan(drawable = resource)
             setText(text = this)
         }
     }
@@ -134,8 +132,8 @@ internal class ProductNameDelegate(
         setBounds(Int.ZERO, Int.ZERO, right.toInt(), bottom)
     }
 
-    private fun SpannableStringBuilder.setLabelIconSpan(drawable: Drawable, lineSpacing: Float) {
-        val imageSpan = CenteredImageSpan(drawable, lineSpacing)
+    private fun SpannableStringBuilder.setLabelIconSpan(drawable: Drawable) {
+        val imageSpan = CenteredImageSpan(drawable)
 
         insert(Int.ZERO, "  ")
         setSpan(imageSpan, Int.ZERO, Int.ONE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
