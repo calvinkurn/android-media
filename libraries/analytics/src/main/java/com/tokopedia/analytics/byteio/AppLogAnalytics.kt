@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.byteio
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import com.bytedance.applog.AppLog
@@ -36,6 +37,51 @@ data class TrackStayProductDetail(
     val isAddCartSelected: Boolean,
 )
 
+data class TrackConfirmSku(
+    val productId: String,
+    val productCategory: String,
+//    val entrance_info: TODO
+    val productType: ProductType,
+    val originalPrice: String,
+    val salePrice: String,
+    val skuId: String,
+    val currency: String,
+    val isSkuSelected: Boolean,
+    val isAddCartSelected: Boolean,
+    val qty: String,
+    val isHaveAddress: Boolean,
+)
+
+data class TrackConfirmCart(
+    val productId: String,
+    val productCategory: String,
+//    val entrance_info: TODO
+    val productType: ProductType,
+    val originalPrice: String,
+    val salePrice: String,
+    val skuId: String,
+    val currency: String,
+    val addSkuNum: Int,
+    val skuNumBefore: Int,
+    val skuNumAfter: Int
+)
+
+data class TrackConfirmCartResult(
+    val productId: String,
+    val productCategory: String,
+//    val entrance_info: TODO
+    val productType: ProductType,
+    val originalPrice: String,
+    val salePrice: String,
+    val skuId: String,
+    val currency: String,
+    val addSkuNum: Int,
+    val skuNumBefore: Int,
+    val skuNumAfter: Int,
+    val isSuccess: String,
+    val failReason: String
+)
+
 
 enum class ProductType(val type: Int) {
     AVAILABLE(1),
@@ -60,11 +106,14 @@ enum class SourcePageType(val str: String) {
     HOME_FOR_YOU("mainPage_foryou")
 }
 
-enum class EventName(val str: String) {
-    PRODUCT_SHOW("tiktokec_product_show"),
-    PRODUCT_CLICK("tiktokec_product_click"),
-    ENTER_PRODUCT_DETAIL("tiktokec_enter_product_detail"),
-    STAY_PRODUCT_DETAIL("tiktokec_stay_product_detail"),
+object EventName {
+    const val PRODUCT_SHOW = "tiktokec_product_show"
+    const val PRODUCT_CLICK = "tiktokec_product_click"
+    const val ENTER_PRODUCT_DETAIL = "tiktokec_enter_product_detail"
+    const val STAY_PRODUCT_DETAIL = "tiktokec_stay_product_detail"
+    const val CONFIRM_SKU = "tiktokec_confirm_sku"
+    const val CONFIRM_CART = "tiktokec_confirm_cart"
+    const val CONFIRM_CART_RESULT = "tiktokec_confirm_cart_result"
 }
 
 object AppLogAnalytics {
@@ -91,6 +140,10 @@ object AppLogAnalytics {
     // TODO check how to make this null again
     @JvmField
     var globalTrackId: String? = null
+
+    // TODO check how to make this null again
+    @JvmField
+    var globalRequestId: String? = null
 
     @JvmField
     var startActivityTime = 0L
@@ -127,7 +180,7 @@ object AppLogAnalytics {
         }
         // TODO check if track id exist
 
-        send(EventName.ENTER_PRODUCT_DETAIL.str, JSONObject().also {
+        send(EventName.ENTER_PRODUCT_DETAIL, JSONObject().also {
             it.addPage()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
@@ -140,13 +193,72 @@ object AppLogAnalytics {
     }
 
     fun sendProductImpression(product: TrackProduct) {
-        send(EventName.PRODUCT_SHOW.str, JSONObject().also {
+        send(EventName.PRODUCT_SHOW, JSONObject().also {
             it.addPage()
             it.put("product_id", product)
             it.put("is_ad", if (product.isAd) "1" else "0")
             val reqId = product.requestId ?: ""
             it.put("request_id", reqId)
             it.put("track_id", reqId + "_" + product.requestId + product.orderFrom1)
+        })
+    }
+
+    @SuppressLint("PII Data Exposure")
+    fun sendConfirmSku(product: TrackConfirmSku) {
+        send(EventName.CONFIRM_SKU, JSONObject().also {
+            it.addPage()
+            it.put("product_id", product.productId)
+            it.put("product_category", product.productCategory)
+//            it.put("entrance_info", ) TODO
+            it.put("product_type", product.productType.type)
+            it.put("original_price_value", product.originalPrice)
+            it.put("sale_price_value", product.salePrice)
+            it.put("sku_id", product.skuId)
+            it.put("currency", product.currency)
+            it.put("quantity", product.qty)
+            it.put("is_have_address", (if (product.isHaveAddress) 1 else 0))
+            it.put("request_id", globalRequestId)
+            it.put("track_id", globalTrackId)
+        })
+    }
+
+    fun sendConfirmCart(product: TrackConfirmCart) {
+        send(EventName.CONFIRM_CART, JSONObject().also {
+            it.addPage()
+            it.put("product_id", product.productId)
+            it.put("product_category", product.productCategory)
+//            it.put("entrance_info", ) TODO
+            it.put("product_type", product.productType.type)
+            it.put("original_price_value", product.originalPrice)
+            it.put("sale_price_value", product.salePrice)
+            it.put("sku_id", product.skuId)
+            it.put("currency", product.currency)
+            it.put("add_sku_num", product.addSkuNum)
+            it.put("sku_num_before", product.skuNumBefore)
+            it.put("sku_num_after", product.skuNumAfter)
+            it.put("request_id", globalRequestId)
+            it.put("track_id", globalTrackId)
+        })
+    }
+
+    fun sendConfirmCartResult(product: TrackConfirmCartResult) {
+        send(EventName.CONFIRM_CART_RESULT, JSONObject().also {
+            it.addPage()
+            it.put("product_id", product.productId)
+            it.put("product_category", product.productCategory)
+//            it.put("entrance_info", ) TODO
+            it.put("product_type", product.productType.type)
+            it.put("original_price_value", product.originalPrice)
+            it.put("sale_price_value", product.salePrice)
+            it.put("sku_id", product.skuId)
+            it.put("currency", product.currency)
+            it.put("add_sku_num", product.addSkuNum)
+            it.put("sku_num_before", product.skuNumBefore)
+            it.put("sku_num_after", product.skuNumAfter)
+            it.put("is_success", product.isSuccess)
+            it.put("fail_reason", product.failReason)
+            it.put("request_id", globalRequestId)
+            it.put("track_id", globalTrackId)
         })
     }
 
@@ -172,11 +284,12 @@ object AppLogAnalytics {
         if (sourcePageType == null) {
             return
         }
-        send(EventName.PRODUCT_CLICK.str, JSONObject().also {
+        send(EventName.PRODUCT_CLICK, JSONObject().also {
             it.addPage()
             it.put("product_id", product)
             it.put("is_ad", if (product.isAd) "1" else "0")
             val reqId = product.requestId ?: ""
+            globalRequestId = reqId
             it.put("request_id", reqId)
             val trackId = reqId + "_" + product.requestId + product.orderFrom1
             it.put("track_id", trackId)
@@ -188,7 +301,7 @@ object AppLogAnalytics {
         if (sourcePageType == null) {
             return
         }
-        send(EventName.STAY_PRODUCT_DETAIL.str, JSONObject().also {
+        send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
             it.addPage()
             it.put("stay_time", System.currentTimeMillis() - startActivityTime)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
