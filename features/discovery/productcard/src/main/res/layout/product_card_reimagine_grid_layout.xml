@@ -77,34 +77,14 @@
                 app:layout_constraintEnd_toEndOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
 
-            <ImageView
-                android:id="@+id/productCardOverlay3"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:contentDescription="@string/content_desc_imageLabelOverlay"
+            <include
+                layout="@layout/product_card_reimagine_label_overlay"
+                android:id="@+id/productCardOverlayContainer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
-                app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
-
-            <ImageView
-                android:id="@+id/productCardOverlay2"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:contentDescription="@string/content_desc_imageLabelOverlay"
-                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
-                app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
-
-            <ImageView
-                android:id="@+id/productCardOverlay1"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:contentDescription="@string/content_desc_imageLabelOverlay"
-                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
+                app:layout_constraintTop_toTopOf="@id/productCardMediaAnchor"
+                app:layout_constraintEnd_toEndOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
 
             <ImageView
