@@ -1,9 +1,12 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetPriceCtaSellerOfferingBinding
 import com.tokopedia.catalogcommon.listener.PriceCtaSellerOfferingListener
 import com.tokopedia.catalogcommon.uimodel.PriceCtaSellerOfferingUiModel
@@ -34,6 +37,12 @@ class PriceCtaSellerOfferingViewHolder(itemView: View, val listener: PriceCtaSel
             )
             ivButtonRight.setOnClickListener {
                 listener?.onSellerOfferingButtonRightClicked()
+            }
+
+            val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)
+            if (drawable is GradientDrawable) {
+                element.widgetBackgroundColor?.let { drawable.setColor(it) }
+                clInfo.background = drawable
             }
         }
     }
