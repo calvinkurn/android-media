@@ -42,9 +42,10 @@ object ShareExModuleStub {
     @Provides
     @ActivityScope
     fun provideTelephonyUtil(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface
     ): ShareExTelephonyUtil {
-        return ShareExTelephonyUtilStub(context)
+        return ShareExTelephonyUtilStub(context, userSession)
     }
 
     @Provides
