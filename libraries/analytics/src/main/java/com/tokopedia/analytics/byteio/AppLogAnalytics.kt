@@ -126,6 +126,9 @@ object AppLogAnalytics {
     @JvmField
     var currentActivityName: String = ""
 
+    @JvmField
+    var createdInOnCreate: Boolean = false
+
     /**
      * key = activity name
      * value = page name.
@@ -301,7 +304,11 @@ object AppLogAnalytics {
         })
     }
 
-    fun sendStay(durationInMs: Long, product:TrackStayProductDetail) {
+    fun sendStayProductDetail(
+        durationInMs: Long,
+        product: TrackStayProductDetail,
+        quitType: String
+    ) {
         if (sourcePageType == null) {
             return
         }
@@ -309,7 +316,7 @@ object AppLogAnalytics {
             it.addPage()
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
-            it.put("quit_type", /*TODO*/ 1)
+            it.put("quit_type", quitType)
             it.put("source_module",/*TODO*/ "")
             it.put("product_id", product)
             it.put("product_category", product.productCategory)
