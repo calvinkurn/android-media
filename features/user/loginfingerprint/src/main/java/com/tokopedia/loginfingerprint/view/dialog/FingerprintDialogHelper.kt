@@ -5,9 +5,9 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentActivity
-import com.bumptech.glide.Glide
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.loginfingerprint.R
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -60,9 +60,7 @@ object FingerprintDialogHelper {
             val mainImgView = view?.findViewById<ImageUnify>(R.id.bottom_sheet_reg_biom_main_img)
 
             mainImgView?.run {
-                Glide.with(activity)
-                    .load(BIOMETRIC_OFFERING_MAIN_IMG)
-                    .into(this)
+                this.loadImage(BIOMETRIC_OFFERING_MAIN_IMG)
             }
 
             primaryBtn?.setOnClickListener {
@@ -90,9 +88,7 @@ object FingerprintDialogHelper {
             val mainImgView = view?.findViewById<ImageUnify>(R.id.bottom_sheet_success_biom_main_img)
 
             mainImgView?.run {
-                Glide.with(activity)
-                    .load(BIOMETRIC_OFFERING_SUCCESS_IMG)
-                    .into(this)
+                this.loadImage(BIOMETRIC_OFFERING_SUCCESS_IMG)
             }
 
             primaryBtn?.setOnClickListener {

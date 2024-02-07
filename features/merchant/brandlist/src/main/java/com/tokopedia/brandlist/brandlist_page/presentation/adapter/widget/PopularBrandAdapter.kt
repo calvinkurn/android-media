@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
+import com.tokopedia.media.loader.loadImage
 
 class PopularBrandAdapter(
         private val context: Context,
@@ -76,12 +77,9 @@ class PopularBrandAdapter(
         }
 
         private fun loadImageToImageView(imageUrl: String, brandView: ImageView) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .dontAnimate()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(brandView)
+            brandView.loadImage(imageUrl) {
+                useCache(false)
+            }
         }
     }
 }

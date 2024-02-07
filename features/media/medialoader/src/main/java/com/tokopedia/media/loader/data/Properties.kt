@@ -1,6 +1,7 @@
 package com.tokopedia.media.loader.data
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.gif.GifDrawable
@@ -22,6 +23,7 @@ data class Properties(
     internal var signatureKey: Key? = null,
     internal var error: Int = ERROR_RES_UNIFY,
     internal var placeHolder: Int = 0,
+    internal var drawablePlaceHolder: Drawable? = null,
     internal var isCache: Boolean = true,
     internal var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
     internal var overrideSize: Resize? = null,
@@ -132,9 +134,14 @@ data class Properties(
         this.error = resourceId
     }
 
-    // set custom placeholder drawable
+    // set custom placeholder via asset ref
     fun setPlaceHolder(resourceId: Int) = apply {
         this.placeHolder = resourceId
+    }
+
+    // set custom placeholder via drawable object
+    fun setPlaceHolder(drawable: Drawable) = apply {
+        this.drawablePlaceHolder = drawable
     }
 
     // set cache validation

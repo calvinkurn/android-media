@@ -25,8 +25,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -76,6 +74,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
@@ -1324,12 +1324,11 @@ open class TopChatRoomFragment :
 
     override fun renderBackground(url: String) {
         chatBackground?.let {
-            Glide.with(it.context)
-                .load(url)
-                .centerInside()
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .into(it)
+            it.loadImage(url) {
+                centerInside()
+                isAnimate(false)
+                setCacheStrategy(MediaCacheStrategy.DATA)
+            }
         }
     }
 

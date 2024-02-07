@@ -43,10 +43,17 @@ internal class PlaceholderOptions constructor(
             placeHolder.isZero() -> {
                 setStaticPlaceHolder()
             }
+            properties.drawablePlaceHolder != null -> {
+                setDrawablePlaceHolder()
+            }
             placeHolder.isMoreThanZero() -> {
                 setCustomPlaceHolder()
             }
         }
+    }
+
+    private fun setDrawablePlaceHolder() {
+        options.placeholder(properties.drawablePlaceHolder)
     }
 
     private fun setCustomPlaceHolder() {
