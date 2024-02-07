@@ -204,6 +204,7 @@
     <string name="sd_subsidy_original_price_label">Harga Normal</string>
     <string name="sd_subsidy_seller_discount_label">Diskon penjual</string>
     <string name="sd_subsidy_discount_percentage_format">*%1s dari harga sebelum diskon</string>
+    <string name="sd_subsidy_discount_percentage_format_range">*%1s-%2s dari harga sebelum diskon</string>
     <string name="sd_subsidy_tokopedia_subsidy_label">Diskon subsidi dari Tokopedia</string>
     <string name="sd_subsidy_final_price_label">Harga Final</string>
     <string name="sd_subsidy_main_stock_label">Stok utama</string>
@@ -216,6 +217,7 @@
     <string name="sd_subsidy_period_subsidy_info_label_section">Info Periode Subsidi</string>
     <string name="sd_subsidy_period_format">%1s - %2s WIB</string>
     <string name="sd_subsidy_minus_price_format">-%1s</string>
+    <string name="sd_subsidy_minus_price_format_range">-%1s - -%2s</string>
     <string name="sd_subsidy_multiple_product_opt_out_edit_mode_title">Ada diskon yang tidak bisa langsung diubah</string>
     <string name="sd_subsidy_multiple_product_opt_out_delete_mode_title">Yakin hapus produk dari Diskon Toko?</string>
     <string name="sd_subsidy_multiple_product_opt_out_description">Produk yang sedang disubsidi tidak bisa diubah, kecuali kamu keluar dari subsidi dulu. Jika yang keluar adalah produk disubsidi penuh, maka diskonnya akan dihapus.</string>

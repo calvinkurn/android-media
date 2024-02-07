@@ -14,6 +14,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutItemShopDiscountSubsidyProductBinding
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProductSubsidyUiModel
+import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -100,13 +101,45 @@ class ShopDiscountSubsidyProductItemViewHolder(
             verticalDivider.show()
         }
         textSubsidyStatus.text = subsidyStatusText
-        textDiscountedPrice.text =
-            uiModel.productDetailData.maxPriceDiscounted.getCurrencyFormatted()
+        textDiscountedPrice.text = RangeFormatterUtil.getFormattedRangeString(
+            uiModel.productDetailData.subsidyInfo.minFinalDiscountPriceSubsidy,
+            uiModel.productDetailData.subsidyInfo.maxFinalDiscountPriceSubsidy, {
+                it.getCurrencyFormatted()
+            }, { min, max ->
+                String.format(
+                    itemView.context.getString(R.string.product_detail_original_price_format),
+                    min.getCurrencyFormatted(),
+                    max.getCurrencyFormatted()
+                )
+            }
+        )
         labelDiscount.apply {
-            text = uiModel.productDetailData.maxDiscount.getPercentFormatted()
+            text = RangeFormatterUtil.getFormattedRangeString(
+                uiModel.productDetailData.subsidyInfo.minFinalDiscountPercentageSubsidy,
+                uiModel.productDetailData.subsidyInfo.maxFinalDiscountPercentageSubsidy, {
+                    it.getPercentFormatted()
+                }, { min, max ->
+                    String.format(
+                        itemView.context.getString(R.string.shop_discount_product_detail_percent_format_range),
+                        min.getPercentFormatted(),
+                        max.getPercentFormatted()
+                    )
+                }
+            )
         }
         textProductPriceOriginal?.apply {
-            text = uiModel.productDetailData.maxOriginalPrice.getCurrencyFormatted()
+            text = RangeFormatterUtil.getFormattedRangeString(
+                uiModel.productDetailData.subsidyInfo.minOriginalPriceSubsidy,
+                uiModel.productDetailData.subsidyInfo.maxOriginalPriceSubsidy, {
+                    it.getCurrencyFormatted()
+                }, { min, max ->
+                    String.format(
+                        itemView.context.getString(R.string.product_detail_original_price_format),
+                        min.getCurrencyFormatted(),
+                        max.getCurrencyFormatted()
+                    )
+                }
+            )
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
     }

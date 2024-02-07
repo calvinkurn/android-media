@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSubsidyProgramInformationBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
@@ -23,6 +24,7 @@ import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoU
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.toDate
+import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -245,21 +247,42 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setFinalPricePercentageData() {
-        val finalPricePercentage =
-            programInformationDetailUiModel?.formattedFinalDiscountedPercentage.orEmpty()
+        val finalPricePercentage = RangeFormatterUtil.getFormattedRangeString(
+            programInformationDetailUiModel?.subsidyInfo?.minFinalDiscountPercentageSubsidy.orZero(),
+            programInformationDetailUiModel?.subsidyInfo?.maxFinalDiscountPercentageSubsidy.orZero(), {
+                String.format(
+                    getString(R.string.sd_subsidy_discount_percentage_format),
+                    it
+                )
+            }, { min, max ->
+                String.format(
+                    getString(R.string.sd_subsidy_discount_percentage_format_range),
+                    min.thousandFormatted(),
+                    max.thousandFormatted()
+                )
+            }
+        )
         if (finalPricePercentage.isNotEmpty()) {
             finalPricePercentageRow?.show()
-            textFinalPricePercentageValue?.text = getString(
-                R.string.sd_subsidy_discount_percentage_format,
-                finalPricePercentage
-            )
+            textFinalPricePercentageValue?.text = finalPricePercentage
         } else {
             finalPricePercentageRow?.hide()
         }
     }
 
     private fun setFinalPriceData() {
-        val finalPrice = programInformationDetailUiModel?.formattedFinalDiscountedPrice.orEmpty()
+        val finalPrice = RangeFormatterUtil.getFormattedRangeString(
+            programInformationDetailUiModel?.subsidyInfo?.minFinalDiscountPriceSubsidy.orZero(),
+            programInformationDetailUiModel?.subsidyInfo?.maxFinalDiscountPriceSubsidy.orZero(), {
+                it.getCurrencyFormatted()
+            }, { min, max ->
+                String.format(
+                    getString(R.string.product_detail_original_price_format),
+                    min.getCurrencyFormatted(),
+                    max.getCurrencyFormatted()
+                )
+            }
+        )
         if (finalPrice.isNotEmpty()) {
             finalPriceRow?.show()
             textFinalPriceValue?.text = finalPrice
@@ -269,54 +292,96 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setTokopediaSubsidyPercentageData() {
-        val tokopediaSubsidyPercentage =
-            programInformationDetailUiModel?.subsidyInfo?.discountedPercentage.orZero()
-        if (tokopediaSubsidyPercentage > Int.ZERO) {
+        val tokopediaSubsidyPercentage = RangeFormatterUtil.getFormattedRangeString(
+            programInformationDetailUiModel?.subsidyInfo?.minProgramDiscountPercentageSubsidy.orZero(),
+            programInformationDetailUiModel?.subsidyInfo?.maxProgramDiscountPercentageSubsidy.orZero(), {
+                String.format(
+                    getString(R.string.sd_subsidy_discount_percentage_format),
+                    it
+                )
+            }, { min, max ->
+                String.format(
+                    getString(R.string.sd_subsidy_discount_percentage_format_range),
+                    min.thousandFormatted(),
+                    max.thousandFormatted()
+                )
+            }
+        )
+        if (tokopediaSubsidyPercentage.isNotEmpty()) {
             tokopediaSubsidyPercentageRow?.show()
-            textTokopediaSubsidyPercentageValue?.text = getString(
-                R.string.sd_subsidy_discount_percentage_format,
-                tokopediaSubsidyPercentage.getPercentFormatted()
-            )
+            textTokopediaSubsidyPercentageValue?.text = tokopediaSubsidyPercentage
         } else {
             tokopediaSubsidyPercentageRow?.hide()
         }
     }
 
     private fun setTokopediaSubsidyData() {
-        val tokopediaSubsidy =
-            programInformationDetailUiModel?.subsidyInfo?.discountedPrice?.getCurrencyFormatted()
-                .orEmpty()
+        val tokopediaSubsidy = RangeFormatterUtil.getFormattedRangeString(
+            programInformationDetailUiModel?.subsidyInfo?.minProgramDiscountPriceSubsidy.orZero(),
+            programInformationDetailUiModel?.subsidyInfo?.maxProgramDiscountPriceSubsidy.orZero(), {
+                String.format(
+                    getString(R.string.sd_subsidy_minus_price_format),
+                    it.getCurrencyFormatted()
+                )
+            }, { min, max ->
+                String.format(
+                    getString(R.string.sd_subsidy_minus_price_format_range),
+                    min.getCurrencyFormatted(),
+                    max.getCurrencyFormatted()
+                )
+            }
+        )
         if (tokopediaSubsidy.isNotEmpty()) {
             tokopediaSubsidyRow?.show()
-            textTokopediaSubsidyValue?.text = getString(
-                R.string.sd_subsidy_minus_price_format,
-                tokopediaSubsidy
-            )
+            textTokopediaSubsidyValue?.text = tokopediaSubsidy
         } else {
             tokopediaSubsidyRow?.hide()
         }
     }
 
     private fun setSellerDiscountPercentageData() {
-        val sellerDiscountPercentage =
-            programInformationDetailUiModel?.subsidyInfo?.sellerDiscountPercentage.orZero()
+        val sellerDiscountPercentage = RangeFormatterUtil.getFormattedRangeString(
+            programInformationDetailUiModel?.subsidyInfo?.minSellerDiscountPercentageSubsidy.orZero(),
+            programInformationDetailUiModel?.subsidyInfo?.maxSellerDiscountPercentageSubsidy.orZero(), {
+                String.format(
+                    getString(R.string.sd_subsidy_discount_percentage_format),
+                    it
+                )
+            }, { min, max ->
+                String.format(
+                    getString(R.string.sd_subsidy_discount_percentage_format_range),
+                    min.thousandFormatted(),
+                    max.thousandFormatted()
+                )
+            }
+        )
         val subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(
             programInformationDetailUiModel?.subsidyInfo?.subsidyType?.value.orZero()
         )
         if (subsidyType == ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN) {
             sellerDiscountPercentageRow?.show()
-            textSellerDiscountPercentageValue?.text = getString(
-                R.string.sd_subsidy_discount_percentage_format,
-                sellerDiscountPercentage.getPercentFormatted()
-            )
+            textSellerDiscountPercentageValue?.text = sellerDiscountPercentage
         } else {
             sellerDiscountPercentageRow?.hide()
         }
     }
 
     private fun setSellerDiscountData() {
-        val sellerDiscount =
-            programInformationDetailUiModel?.subsidyInfo?.sellerDiscountPrice.orZero()
+        val sellerDiscount = RangeFormatterUtil.getFormattedRangeString(
+            programInformationDetailUiModel?.subsidyInfo?.minSellerDiscountPriceSubsidy.orZero(),
+            programInformationDetailUiModel?.subsidyInfo?.maxSellerDiscountPriceSubsidy.orZero(), {
+                String.format(
+                    getString(R.string.sd_subsidy_minus_price_format),
+                    it.getCurrencyFormatted()
+                )
+            }, { min, max ->
+                String.format(
+                    getString(R.string.sd_subsidy_minus_price_format_range),
+                    min.getCurrencyFormatted(),
+                    max.getCurrencyFormatted()
+                )
+            }
+        )
         val subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(
             programInformationDetailUiModel?.subsidyInfo?.subsidyType?.value.orZero()
         )
@@ -324,7 +389,7 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
             sellerDiscountRow?.show()
             textSellerDiscountValue?.text = getString(
                 R.string.sd_subsidy_minus_price_format,
-                sellerDiscount.getCurrencyFormatted()
+                sellerDiscount
             )
         } else {
             sellerDiscountRow?.hide()
@@ -332,7 +397,18 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setOriginalPriceData() {
-        val originalPrice = programInformationDetailUiModel?.formattedOriginalPrice.orEmpty()
+        val originalPrice = RangeFormatterUtil.getFormattedRangeString(
+            programInformationDetailUiModel?.subsidyInfo?.minOriginalPriceSubsidy.orZero(),
+            programInformationDetailUiModel?.subsidyInfo?.maxOriginalPriceSubsidy.orZero(), {
+                it.getCurrencyFormatted()
+            }, { min, max ->
+                String.format(
+                    getString(R.string.product_detail_original_price_format),
+                    min.getCurrencyFormatted(),
+                    max.getCurrencyFormatted()
+                )
+            }
+        )
         if (originalPrice.isNotEmpty()) {
             originalPriceRow?.show()
             textOriginalPriceValue?.text = originalPrice
