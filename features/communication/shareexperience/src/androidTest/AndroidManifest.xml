@@ -9,7 +9,7 @@
             android:theme="@style/Theme.WhiteUnify"/>
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.tokopedia.shareexperience.provider"
+            android:authorities="com.tokopedia.tkpd.provider"
             android:exported="false"
             android:grantUriPermissions="true"
             tools:replace="android:authorities">
