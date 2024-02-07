@@ -46,5 +46,6 @@
 
     <!--Play Live Indicator-->
     <color name="play_widget_live_indicator_dms_bg">#E02954</color>
+    <color name="play_widget_live_thumbnail_dms_bg">#2E3137</color>
 
 </resources>
