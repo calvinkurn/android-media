@@ -3,7 +3,7 @@ package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model
 import androidx.annotation.DimenRes
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.orderextension.presentation.model.StringRes
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 
 sealed interface PofFooterUiState {
 

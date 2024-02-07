@@ -20,11 +20,6 @@
                      />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.ChatbotVideoActivity"/>
-        <activity
-            android:name=".view.activity.ChatbotOnboardingActivity"
-            android:theme="@style/Theme.AppCompat.Transparent">
-        </activity>
 
         <activity
             android:name=".view.activity.ChatbotActivity"
@@ -46,17 +41,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.activity.ChatBotProvideRatingActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ChatBotProvideRatingActivityTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".view.activity.ChatBotCsatActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ChatBotProvideRatingActivityTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
         <activity
             android:name=".chatbot2.view.activity.ChatbotOnboardingActivity"
             android:theme="@style/Theme.AppCompat.Transparent">

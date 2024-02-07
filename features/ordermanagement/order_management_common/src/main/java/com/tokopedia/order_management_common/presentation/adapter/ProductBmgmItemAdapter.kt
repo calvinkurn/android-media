@@ -96,7 +96,6 @@ class ProductBmgmItemAdapter(
                 setBmgmItemProductPriceQuantity(it.quantity, it.productPriceText)
                 setupBmgmItemProductNote(it.productNote)
                 setupAddonSection(it.addOnSummaryUiModel)
-                setupDividerAddonSummary(it)
                 setItemOnClickListener(it)
                 setupBmgmItemButton(it.button, it.isProcessing == true)
                 setupImpressionListener(it)
@@ -150,10 +149,6 @@ class ProductBmgmItemAdapter(
                 partialBmgmAddonSummaryBinding =
                     PartialBmgmAddOnSummaryBinding.bind(this.itemView.findViewById(R.id.itemBmgmAddonViewStub))
             }
-        }
-
-        private fun setupDividerAddonSummary(uiModel: ProductBmgmSectionUiModel.ProductUiModel?) {
-            binding.dividerAddOn.showWithCondition(uiModel?.addOnSummaryUiModel != null)
         }
 
         private fun setBmgmItemThumbnail(thumbnailUrl: String) {
@@ -226,7 +221,19 @@ class ProductBmgmItemAdapter(
             listener.onCopyAddOnDescription(label, description)
         }
 
+        override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
+            listener.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            listener.onAddOnsInfoLinkClicked(infoLink, type)
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
+
         interface Listener {
+            fun onAddOnsInfoLinkClicked(infoLink: String, type: String)
+            fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
             fun onCopyAddOnDescription(label: String, description: CharSequence)
             fun onBmgmItemClicked(item: ProductBmgmSectionUiModel.ProductUiModel)
             fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)

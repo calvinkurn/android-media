@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">ThankYou</string>
     <string name="thank_instant_payment_successful">Selamat, pembayaranmu berhasil!</string>
+    <string name="thank_instant_payment_successful_v2">Oke, pembayaran berhasil!</string>
 
     <string name="thank_instant_payment_check_order">Pesanan akan diteruskan ke penjual. Silakan cek status pesananmu di Daftar Transaksi.</string>
     <string name="thank_processing_payment_check_order">Pesananmu baru diteruskan ke penjual setelah pembayaran terverifikasi.</string>
 
     <string name="thank_instant_payment_total_pay">Total Bayar</string>
     <string name="thank_payment_method">Metode Pembayaran</string>
-    <string name="thank_see_transaction_list">Lihat Daftar Transaksi</string>
+    <string name="thank_see_transaction_list">Daftar Transaksi</string>
     <string name="thankyou_rp">Rp %s</string>
     <string name="thankyou_rp_without_space">Rp%s</string>
     <string name="thankyou_discounted_rp">- Rp%s</string>
@@ -16,18 +17,22 @@
     <string name="thank_copy">Salin</string>
     <string name="thank_total_amount_label">Total Pembayaran</string>
     <string name="thank_see_detail">Lihat Detail</string>
-    <string name="thank_see_payment_methods">Lihat Cara Pembayaran</string>
-
+    <string name="thank_see_payment_methods">Lihat Cara Bayar</string>
+    <string name="thank_bank_branch"><![CDATA[Atas nama <b>%s</b>]]></string>
+    <string name="thank_pay_before">Bayar Sebelum</string>
 
     <string name="thank_virtual_account_tag">Nomor Virtual Account</string>
     <string name="thank_klikBCA_virtual_account_tag">User ID KlikBCA</string>
+
     <string name="thank_payment_code">Kode Pembayaran</string>
     <string name="thank_phone_number">Nomor Ponsel</string>
     <string name="thank_account_number">Nomor Rekening</string>
     <string name="thank_order_will_be_deliver_after_payment">Pesananmu baru diteruskan ke penjual setelah pembayaran terverifikasi.</string>
-    <string name="thank_check_payment_status">Cek Status Pembayaran</string>
+    <string name="thank_check_payment_status">Cek Status Bayar</string>
     <string name="thank_shop_again">Belanja Lagi</string>
-
+    <string name="thank_dan_lainnya">&amp; Lainnya!</string>
+    <string name="thank_benefit_with_plus"><![CDATA[🎉 Kamu <b><span style="color:#04837E">Hemat %s</span></b> dari]]></string>
+    <string name="thank_benefit_without_plus"><![CDATA[🎉 Kamu <b><span style="color:#04837E">Hemat %s</span></b> di transaksi ini]]></string>
 
     <string name="thank_payment_success">Pembayaran Berhasil</string>
     <string name="thank_payment_success_description">Pembayaranmu telah terverifikasi. Silakan lihat status pesananmu di daftar transaksi.</string>
@@ -50,8 +55,11 @@
 
 
     <string name="thank_total_pay">Total Bayar</string>
+    <string name="thank_pay_method">Metode Bayar</string>
+    <string name="thank_total_pay_rp">Total Bayar %s</string>
     <string name="thank_type_of_payment">Jenis Pembayaran</string>
     <string name="thank_payment_in_progress">Pembayaran sedang diproses</string>
+    <string name="thank_payment_in_progress_v2">Pembayaran diproses dulu, ya</string>
     <string name="thank_payment_in_progress_time">Pembayaranmu sedang diverifikasi oleh pihak %s, harap tunggu maks. 2 x 24 jam.</string>
 
 
@@ -87,6 +95,7 @@
 
     <!--invoice bill detail-->
     <string name="thank_invoice_total_bill">Total Tagihan</string>
+    <string name="total_tagihan_successfully_copied">Total tagihan berhasil disalin</string>
     <string name="thank_invoice_used_tokopoint">Potongan %s TokoPoints</string>
 
     <string name="thank_invoice_service_fee">Biaya Layanan</string>
@@ -101,6 +110,7 @@
     <string name="thank_menu_detail">Detail</string>
 
     <string name="thankyou_virtual_account_copied">Nomor virtual account berhasil disalin</string>
+    <string name="copy_success">berhasil disalin</string>
 
     <string name="thank_pending">Penting!</string>
     <string name="thank_exact_transfer_upto_3_digits"><![CDATA[<ul>
@@ -111,6 +121,7 @@
 
     <string name="thankyou_bank_account_copied">Nomor Rekening berhasil disalin</string>
     <string name="thankyou_retail_account_copied">Kode Bayar sudah berhasil disalin</string>
+    <string name="thankyou_retail_account_label">Kode Bayar</string>
     <string name="thank_cod_payment_successful">Pesananmu akan segera diproses</string>
     <string name="thank_cod_payment_check_order">Siapkan uang tunai dan bayar lewat kurir saat menerima barang.</string>
     <string name="thankyou_klikbca_virtual_account_copied">User ID KlikBCA berhasil disalin</string>
@@ -119,7 +130,7 @@
     <string name="thank_potensi_cashback">Potensi Cashback</string>
     <string name="thank_bbi_cash_back">Potensi Cashback BBI</string>
     <string name="thank_payment_method_count">+%d metode lain</string>
-
+    <string name="cashtag">Cashtag</string>
 
     <string name="thank_special_feature_for_you">Fitur spesial buat kamu</string>
     <string name="thank_lets_try_feature">Cobain fitur ini yuk</string>

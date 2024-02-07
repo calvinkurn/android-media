@@ -186,6 +186,16 @@ class SectionUseCase @Inject constructor(
                             )
                         }
 
+                        ComponentNames.CalendarWidgetCarousel.componentName -> {
+                            DiscoveryDataMapper().mapListToComponentList(
+                                comp.data,
+                                ComponentNames.CalendarWidgetItem.componentName,
+                                comp.properties,
+                                creativeName,
+                                parentSectionId = comp.parentSectionId
+                            )
+                        }
+
                         else -> {
                             isProductComponent = false
                             null
