@@ -2,6 +2,7 @@ package com.tokopedia.shareexperience.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExImageTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
+import com.tokopedia.shareexperience.domain.util.ShareExConstants
 import com.tokopedia.shareexperience.domain.util.ShareExConstants.DefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
@@ -208,6 +210,7 @@ class ShareExBottomSheet :
              ** error image downloader or using default URL, count as success
              * If success
              ** success channel copy link, copy text & show toaster
+             ** success channel SMS, check if package is empty, then use manual intent
              ** success channel others, show native chooser
              ** success channels, open the app
              */
@@ -242,6 +245,10 @@ class ShareExBottomSheet :
                             dismiss()
                             listener?.onSuccessCopyLink()
                         }
+                    }
+                    ShareExChannelEnum.SMS -> {
+                        openIntentSms(it)
+                        dismiss()
                     }
                     ShareExChannelEnum.OTHERS -> {
                         openIntentChooser(it)
@@ -335,6 +342,21 @@ class ShareExBottomSheet :
                 deviceId = userSession.deviceId,
                 description = ::navigateWithIntent.name
             )
+        }
+    }
+
+    private fun openIntentSms(intentUiState: ShareExChannelIntentUiState) {
+        val intentPackage = intentUiState.intent?.`package` ?: ""
+        if (intentPackage.isBlank()) {
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse(ShareExConstants.SMS.URI)
+                putExtra(ShareExConstants.SMS.BODY, intentUiState.message)
+            }
+            navigateWithIntent(intent)
+        } else {
+            intentUiState.intent?.let {
+                navigateWithIntent(it)
+            }
         }
     }
 

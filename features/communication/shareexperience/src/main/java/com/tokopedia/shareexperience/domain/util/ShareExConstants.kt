@@ -54,6 +54,11 @@ object ShareExConstants {
         const val GMAIL = "com.google.android.gm"
     }
 
+    object SMS {
+        const val URI = "smsto:"
+        const val BODY = "sms_body"
+    }
+
     object IntentAction {
         const val FB_STORY = "com.facebook.stories.ADD_TO_STORY"
         const val IG_FEED = "com.instagram.share.ADD_TO_FEED"
