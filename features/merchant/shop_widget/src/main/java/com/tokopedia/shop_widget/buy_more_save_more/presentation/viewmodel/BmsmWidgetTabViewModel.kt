@@ -118,12 +118,6 @@ class BmsmWidgetTabViewModel @Inject constructor(
         }
     }
 
-    fun showLoading() {
-        _uiState.update {
-            it.copy(isShowLoading = true)
-        }
-    }
-
     fun getOfferingData() {
         launchCatchError(
             dispatchers.io + coroutineExceptionHandler,
@@ -181,9 +175,7 @@ class BmsmWidgetTabViewModel @Inject constructor(
                     )
                 }
             },
-            onError =  {
-
-            }
+            onError =  { }
         )
     }
 
