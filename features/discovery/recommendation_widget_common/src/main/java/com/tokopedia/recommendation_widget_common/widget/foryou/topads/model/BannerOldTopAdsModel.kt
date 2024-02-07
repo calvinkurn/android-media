@@ -3,8 +3,10 @@ package com.tokopedia.recommendation_widget_common.widget.foryou.topads.model
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
+import com.tokopedia.recommendation_widget_common.widget.foryou.TemporaryBackwardCompatible
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
+@TemporaryBackwardCompatible
 class BannerOldTopAdsModel(
     val topAdsImageViewModel: TopAdsImageViewModel? = null,
     val position: Int = -1,

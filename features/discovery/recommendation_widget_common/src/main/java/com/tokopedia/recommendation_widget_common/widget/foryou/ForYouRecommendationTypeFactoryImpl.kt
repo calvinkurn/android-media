@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityCardViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayVideoWidgetManager
@@ -29,9 +28,7 @@ import com.tokopedia.recommendation_widget_common.widget.foryou.state.viewholder
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.HeadlineTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.viewholder.BannerOldTopAdsViewHolder
 import com.tokopedia.recommendation_widget_common.widget.foryou.topads.viewholder.BannerTopAdsViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.viewholder.HeadlineTopAdsViewHolder
 
 class ForYouRecommendationTypeFactoryImpl constructor(
     private val listener: GlobalRecomListener,
@@ -42,11 +39,7 @@ class ForYouRecommendationTypeFactoryImpl constructor(
 
     override fun type(model: BannerTopAdsModel) = BannerTopAdsViewHolder.LAYOUT
 
-    override fun type(model: BannerOldTopAdsModel) = BannerOldTopAdsViewHolder.LAYOUT
-
     override fun type(model: PlayWidgetModel) = PlayWidgetViewHolder.LAYOUT
-
-    override fun type(model: BannerRecommendationModel) = BannerRecommendationViewHolder.LAYOUT
 
     override fun type(model: RecomEntityModel) = RecomEntityCardViewHolder.LAYOUT
 
@@ -60,7 +53,10 @@ class ForYouRecommendationTypeFactoryImpl constructor(
 
     override fun type(model: EmptyStateModel) = EmptyViewHolder.LAYOUT
 
-    override fun type(model: HeadlineTopAdsModel) = HeadlineTopAdsViewHolder.LAYOUT
+    // deprecation area
+    override fun type(model: BannerOldTopAdsModel) = Int.MIN_VALUE
+    override fun type(model: BannerRecommendationModel) = Int.MIN_VALUE
+    override fun type(model: HeadlineTopAdsModel) = Int.MIN_VALUE
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -68,13 +64,10 @@ class ForYouRecommendationTypeFactoryImpl constructor(
             HomeRecommendationGridViewHolder.LAYOUT -> HomeRecommendationGridViewHolder(parent, listener)
             HomeRecommendationListViewHolder.LAYOUT -> HomeRecommendationListViewHolder(parent, listener)
             PlayWidgetViewHolder.LAYOUT -> PlayWidgetViewHolder(parent, playVideoWidgetManager, listener, listener)
-            BannerRecommendationViewHolder.LAYOUT -> BannerRecommendationViewHolder(parent, listener)
             RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(parent, listener)
 
             // topads
             BannerTopAdsViewHolder.LAYOUT -> BannerTopAdsViewHolder(parent, listener)
-            BannerOldTopAdsViewHolder.LAYOUT -> BannerOldTopAdsViewHolder(parent, listener)
-            HeadlineTopAdsViewHolder.LAYOUT -> HeadlineTopAdsViewHolder(parent, listener)
 
             // states
             RetryButtonStateViewHolder.LAYOUT -> RetryButtonStateViewHolder(parent, listener)
