@@ -6,26 +6,26 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
-import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentImageViewHolder
-import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentVideoViewHolder
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
+import com.tokopedia.content.product.preview.view.viewholder.product.ProductMediaImageViewHolder
+import com.tokopedia.content.product.preview.view.viewholder.product.ProductMediaVideoViewHolder
 
-class ProductContentAdapter(
+class ProductMediaAdapter(
     private val productPreviewVideoListener: ProductPreviewVideoListener
-) : ListAdapter<ProductContentUiModel, ViewHolder>(ProductContentDiffUtil()) {
+) : ListAdapter<ProductMediaUiModel, ViewHolder>(ProductMediaDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
-            TYPE_IMAGE -> ProductContentImageViewHolder.create(parent)
-            TYPE_VIDEO -> ProductContentVideoViewHolder.create(parent, productPreviewVideoListener)
+            TYPE_IMAGE -> ProductMediaImageViewHolder.create(parent)
+            TYPE_VIDEO -> ProductMediaVideoViewHolder.create(parent, productPreviewVideoListener)
             else -> super.createViewHolder(parent, viewType)
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            TYPE_IMAGE -> (holder as ProductContentImageViewHolder).bind(getItem(position))
-            TYPE_VIDEO -> (holder as ProductContentVideoViewHolder).bind(getItem(position))
+            TYPE_IMAGE -> (holder as ProductMediaImageViewHolder).bind(getItem(position))
+            TYPE_VIDEO -> (holder as ProductMediaVideoViewHolder).bind(getItem(position))
         }
     }
 
@@ -37,17 +37,17 @@ class ProductContentAdapter(
         }
     }
 
-    internal class ProductContentDiffUtil : DiffUtil.ItemCallback<ProductContentUiModel>() {
+    internal class ProductMediaDiffUtil : DiffUtil.ItemCallback<ProductMediaUiModel>() {
         override fun areItemsTheSame(
-            oldItem: ProductContentUiModel,
-            newItem: ProductContentUiModel
+            oldItem: ProductMediaUiModel,
+            newItem: ProductMediaUiModel
         ): Boolean {
             return oldItem.contentId == newItem.contentId
         }
 
         override fun areContentsTheSame(
-            oldItem: ProductContentUiModel,
-            newItem: ProductContentUiModel
+            oldItem: ProductMediaUiModel,
+            newItem: ProductMediaUiModel
         ): Boolean {
             return oldItem == newItem
         }

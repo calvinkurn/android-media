@@ -13,13 +13,13 @@ class ReviewMediaImageViewHolder(
 ) : ViewHolder(binding.root) {
 
     init {
-        binding.cvProductPreviewContentImage.setViewCompositionStrategy(
+        binding.cvProductPreviewMediaImage.setViewCompositionStrategy(
             ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool
         )
     }
 
     fun bind(content: ReviewMediaUiModel) {
-        binding.cvProductPreviewContentImage.apply {
+        binding.cvProductPreviewMediaImage.apply {
             setContent {
                 ItemImageProductPreview(imageUrl = content.url)
             }

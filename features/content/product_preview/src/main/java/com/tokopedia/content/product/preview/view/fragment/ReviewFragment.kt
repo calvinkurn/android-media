@@ -27,7 +27,7 @@ import com.tokopedia.content.product.preview.utils.LoginReviewContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
-import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
+import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
@@ -64,12 +64,12 @@ class ReviewFragment @Inject constructor(
         get() = _binding!!
 
     private val reviewAdapter by lazyThreadSafetyNone {
-        ReviewParentAdapter(
+        ReviewContentAdapter(
             reviewInteractionListener = this
         )
     }
 
-    private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
+    private val snapHelper = PagerSnapHelper()
 
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvReview.layoutManager) {

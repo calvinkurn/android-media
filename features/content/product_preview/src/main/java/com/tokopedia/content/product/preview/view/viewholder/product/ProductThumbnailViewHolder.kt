@@ -5,30 +5,30 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.R
-import com.tokopedia.content.product.preview.databinding.ItemProductIndicatorBinding
+import com.tokopedia.content.product.preview.databinding.ItemProductThumbnailBinding
 import com.tokopedia.content.product.preview.utils.millisToFormattedVideoDuration
-import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
+import com.tokopedia.content.product.preview.view.listener.ProductThumbnailListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 
-internal class ProductIndicatorViewHolder(
-    private val binding: ItemProductIndicatorBinding,
-    private val listener: ProductIndicatorListener
+internal class ProductThumbnailViewHolder(
+    private val binding: ItemProductThumbnailBinding,
+    private val listener: ProductThumbnailListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(data: ProductContentUiModel) {
-        binding.ivReviewContentImage.loadImage(data.thumbnailUrl)
+    fun bind(data: ProductMediaUiModel) {
+        binding.ivReviewMediaImage.loadImage(data.thumbnailUrl)
         if (data.selected) {
             binding.viewSelected.background = ContextCompat.getDrawable(
                 binding.root.context,
-                R.drawable.product_indicator_selected_box
+                R.drawable.product_thumbnail_selected_box
             )
         } else {
             binding.viewSelected.background = ContextCompat.getDrawable(
                 binding.root.context,
-                R.drawable.product_indicator_unselected_box
+                R.drawable.product_thumbnail_unselected_box
             )
         }
 
@@ -39,14 +39,14 @@ internal class ProductIndicatorViewHolder(
             text = data.videoTotalDuration.millisToFormattedVideoDuration(binding.root.context)
         }
         binding.root.setOnClickListener {
-            listener.onClickProductIndicator(bindingAdapterPosition)
+            listener.onClickProductThumbnail(bindingAdapterPosition)
         }
     }
 
     companion object {
-        fun create(parent: ViewGroup, listener: ProductIndicatorListener) =
-            ProductIndicatorViewHolder(
-                binding = ItemProductIndicatorBinding.inflate(
+        fun create(parent: ViewGroup, listener: ProductThumbnailListener) =
+            ProductThumbnailViewHolder(
+                binding = ItemProductThumbnailBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

@@ -7,7 +7,7 @@
     android:background="@color/Unify_Static_Black">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_content_product"
+        android:id="@+id/rv_media_product"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:nestedScrollingEnabled="true"
@@ -41,7 +41,7 @@
         app:layout_constraintGuide_percent="0.85" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_indicator_label"
+        android:id="@+id/tv_thumbnail_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -49,13 +49,13 @@
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toTopOf="@id/rv_indicator_product"
+        app:layout_constraintBottom_toTopOf="@id/rv_thumbnail_product"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_2"
         tools:text="2/16 • Winnie the Pooh" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_indicator_product"
+        android:id="@+id/rv_thumbnail_product"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -64,6 +64,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:itemCount="1"
-        tools:listitem="@layout/item_product_indicator" />
+        tools:listitem="@layout/item_product_thumbnail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

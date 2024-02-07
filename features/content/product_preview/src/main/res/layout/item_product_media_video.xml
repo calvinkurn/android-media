@@ -7,7 +7,7 @@
     tools:background="@color/Unify_Static_Black">
 
     <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/player_review_content_video"
+        android:id="@+id/player_product_media_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

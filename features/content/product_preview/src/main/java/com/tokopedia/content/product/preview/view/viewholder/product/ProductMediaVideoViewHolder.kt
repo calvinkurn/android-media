@@ -6,19 +6,19 @@ import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerControlView
-import com.tokopedia.content.product.preview.databinding.ItemProductContentVideoBinding
+import com.tokopedia.content.product.preview.databinding.ItemProductMediaVideoBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewPlayerControl
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
-class ProductContentVideoViewHolder(
-    private val binding: ItemProductContentVideoBinding,
+class ProductMediaVideoViewHolder(
+    private val binding: ItemProductMediaVideoBinding,
     private val listener: ProductPreviewVideoListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -42,14 +42,14 @@ class ProductContentVideoViewHolder(
         }
     }
 
-    fun bind(content: ProductContentUiModel) {
+    fun bind(content: ProductMediaUiModel) {
         bindVideoPlayer(content)
     }
 
-    private fun bindVideoPlayer(content: ProductContentUiModel) {
+    private fun bindVideoPlayer(content: ProductMediaUiModel) {
         mVideoId = String.format(PRODUCT_CONTENT_VIDEO_KEY_REF, content.url)
         mVideoPlayer = listener.getVideoPlayer(mVideoId)
-        binding.playerProductContentVideo.player = mVideoPlayer?.exoPlayer
+        binding.playerProductMediaVideo.player = mVideoPlayer?.exoPlayer
         binding.playerControl.player = mVideoPlayer?.exoPlayer
 
         binding.playerControl.setListener(object : ProductPreviewPlayerControl.Listener {
@@ -100,7 +100,7 @@ class ProductContentVideoViewHolder(
         binding.apply {
             loaderVideo.show()
             if (mVideoPlayer?.exoPlayer?.currentPosition == 0L) {
-                playerProductContentVideo.hide()
+                playerProductMediaVideo.hide()
             }
         }
     }
@@ -108,14 +108,14 @@ class ProductContentVideoViewHolder(
     private fun hideLoading() {
         binding.apply {
             loaderVideo.hide()
-            playerProductContentVideo.show()
+            playerProductMediaVideo.show()
         }
     }
 
     companion object {
         fun create(parent: ViewGroup, listener: ProductPreviewVideoListener) =
-            ProductContentVideoViewHolder(
-                binding = ItemProductContentVideoBinding.inflate(
+            ProductMediaVideoViewHolder(
+                binding = ItemProductMediaVideoBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

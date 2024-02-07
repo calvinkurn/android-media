@@ -86,7 +86,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
 
     private val _tabContentState = MutableStateFlow(ProductPreviewTabUiModel.Empty)
-    private val _productContentState = MutableStateFlow(ProductUiModel.Empty)
+    private val _productMediaState = MutableStateFlow(ProductUiModel.Empty)
     private val _reviewContentState = MutableStateFlow(ReviewUiModel.Empty)
     private val _bottomNavContentState = MutableStateFlow(BottomNavUiModel.Empty)
     private val _reviewPosition = MutableStateFlow(0)
@@ -97,13 +97,13 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val uiState: Flow<ProductReviewUiState>
         get() = combine(
             _tabContentState,
-            _productContentState,
+            _productMediaState,
             _reviewContentState,
             _bottomNavContentState
-        ) { tabContentState, productContent, reviewContent, bottomNavContent ->
+        ) { tabContentState, productMedia, reviewContent, bottomNavContent ->
             ProductReviewUiState(
                 tabsUiModel = tabContentState,
-                productUiModel = productContent,
+                productUiModel = productMedia,
                 reviewUiModel = reviewContent,
                 bottomNavUiModel = bottomNavContent
             )
@@ -156,7 +156,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun updateProductMainDataSource(source: ProductSourceData) {
-        _productContentState.update { it.copy(productList = source.productSourceList) }
+        _productMediaState.update { it.copy(productMedia = source.productSourceList) }
     }
 
     private fun updateTabProductSource(source: ProductSourceData) {
@@ -192,10 +192,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun handleProductSelected(position: Int) {
-        _productContentState.update { productUiModel ->
+        _productMediaState.update { productUiModel ->
             productUiModel.copy(
-                productList = productUiModel.productList.mapIndexed { index, content ->
-                    content.copy(selected = index == position)
+                productMedia = productUiModel.productMedia.mapIndexed { index, media ->
+                    media.copy(selected = index == position)
                 }
             )
         }

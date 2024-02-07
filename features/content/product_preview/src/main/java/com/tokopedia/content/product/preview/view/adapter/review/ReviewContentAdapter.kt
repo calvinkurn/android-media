@@ -8,21 +8,21 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
-import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
+import com.tokopedia.content.product.preview.view.viewholder.review.ReviewContentViewHolder
 
-class ReviewParentAdapter(
+class ReviewContentAdapter(
     private val reviewInteractionListener: ReviewInteractionListener
 ) : ListAdapter<ReviewContentUiModel, ViewHolder>(ReviewAdapterCallback()) {
 
-    private val mediasViewPool: RecycledViewPool = RecycledViewPool()
+    private val mediaViewPool: RecycledViewPool = RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
             TYPE_CONTENT -> {
-                ReviewParentContentViewHolder.create(
+                ReviewContentViewHolder.create(
                     parent = parent,
                     reviewInteractionListener = reviewInteractionListener,
-                    mediasViewPool = mediasViewPool
+                    mediaViewPool = mediaViewPool
                 )
             }
             else -> super.createViewHolder(parent, viewType)
@@ -32,7 +32,7 @@ class ReviewParentAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         when (holder.itemViewType) {
-            TYPE_CONTENT -> (holder as ReviewParentContentViewHolder).bind(item)
+            TYPE_CONTENT -> (holder as ReviewContentViewHolder).bind(item)
         }
     }
 
@@ -43,10 +43,10 @@ class ReviewParentAdapter(
             payloads.forEach {
                 when (val payload = it) {
                     is Payload.Like -> {
-                        (holder as ReviewParentContentViewHolder).bindLike(payload.state)
+                        (holder as ReviewContentViewHolder).bindLike(payload.state)
                     }
                     is Payload.WatchMode -> {
-                        (holder as ReviewParentContentViewHolder).bindWatchMode(payload.isWatchMode)
+                        (holder as ReviewContentViewHolder).bindWatchMode(payload.isWatchMode)
                     }
                 }
             }
@@ -59,7 +59,7 @@ class ReviewParentAdapter(
 
     override fun onViewRecycled(holder: ViewHolder) {
         super.onViewRecycled(holder)
-        (holder as ReviewParentContentViewHolder).onRecycled()
+        (holder as ReviewContentViewHolder).onRecycled()
     }
 
     companion object {

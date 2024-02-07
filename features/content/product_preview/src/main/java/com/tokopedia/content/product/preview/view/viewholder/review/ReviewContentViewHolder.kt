@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.product.preview.R
-import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
+import com.tokopedia.content.product.preview.databinding.ItemReviewContentBinding
 import com.tokopedia.content.product.preview.utils.REVIEW_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewMediaAdapter
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
@@ -42,10 +42,10 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ReviewParentContentViewHolder(
-    private val binding: ItemReviewParentContentBinding,
+class ReviewContentViewHolder(
+    private val binding: ItemReviewContentBinding,
     private val reviewInteractionListener: ReviewInteractionListener,
-    private val mediasViewPool: RecyclerView.RecycledViewPool
+    private val mediaViewPool: RecyclerView.RecycledViewPool
 ) : ViewHolder(binding.root),
     ProductPreviewVideoListener {
 
@@ -145,7 +145,7 @@ class ReviewParentContentViewHolder(
         layoutManager = layoutManagerMedia
         setHasFixedSize(true)
         addOnScrollListener(mediaScrollListener)
-        setRecycledViewPool(mediasViewPool)
+        setRecycledViewPool(mediaViewPool)
         snapHelperMedia.attachToRecyclerView(this)
         itemAnimator = null
 
@@ -345,15 +345,15 @@ class ReviewParentContentViewHolder(
         fun create(
             parent: ViewGroup,
             reviewInteractionListener: ReviewInteractionListener,
-            mediasViewPool: RecyclerView.RecycledViewPool
-        ) = ReviewParentContentViewHolder(
-            binding = ItemReviewParentContentBinding.inflate(
+            mediaViewPool: RecyclerView.RecycledViewPool
+        ) = ReviewContentViewHolder(
+            binding = ItemReviewContentBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             ),
             reviewInteractionListener = reviewInteractionListener,
-            mediasViewPool = mediasViewPool
+            mediaViewPool = mediaViewPool
         )
     }
 }

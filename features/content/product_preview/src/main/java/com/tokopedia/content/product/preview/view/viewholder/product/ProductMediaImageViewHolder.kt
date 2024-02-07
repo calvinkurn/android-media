@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.databinding.ItemImageProductPreviewBinding
 import com.tokopedia.content.product.preview.view.components.ItemImageProductPreview
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 
-class ProductContentImageViewHolder(
+class ProductMediaImageViewHolder(
     private val binding: ItemImageProductPreviewBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(content: ProductContentUiModel) {
-        binding.cvProductPreviewContentImage.apply {
+    fun bind(content: ProductMediaUiModel) {
+        binding.cvProductPreviewMediaImage.apply {
             setContent {
                 ItemImageProductPreview(imageUrl = content.url)
             }
@@ -21,7 +21,7 @@ class ProductContentImageViewHolder(
 
     companion object {
         fun create(parent: ViewGroup) =
-            ProductContentImageViewHolder(
+            ProductMediaImageViewHolder(
                 binding = ItemImageProductPreviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
