@@ -496,13 +496,6 @@ object DeeplinkDFApp {
             "/chatbot/.*",
             DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT
         ),
-        DFP(
-            INTERNAL,
-            HOST_TICKET,
-            PathType.PATH,
-            "/csat",
-            DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT
-        ),
 
         // telephony_masking
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/telephony-masking")
