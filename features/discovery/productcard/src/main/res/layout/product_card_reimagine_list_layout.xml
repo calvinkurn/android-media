@@ -73,30 +73,46 @@
                 app:layout_constraintEnd_toEndOf="@+id/productCardMediaAnchor"
                 app:srcCompat="@drawable/product_card_ic_video_identifier" />
 
+            <Space
+                android:id="@+id/productCardOverlay2Space"
+                android:layout_width="35.75dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="@id/productCardOverlay2"
+                app:layout_constraintTop_toTopOf="@id/productCardOverlay2"
+                app:layout_constraintBottom_toBottomOf="@id/productCardOverlay2" />
+
+            <Space
+                android:id="@+id/productCardOverlay1Space"
+                android:layout_width="35.75dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="@id/productCardOverlay1"
+                app:layout_constraintTop_toTopOf="@id/productCardOverlay1"
+                app:layout_constraintBottom_toBottomOf="@id/productCardOverlay1" />
+
             <ImageView
                 android:id="@+id/productCardOverlay3"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_width="26dp"
+                android:layout_height="16.25dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
-                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
+                app:layout_constraintStart_toEndOf="@id/productCardOverlay2Space"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
 
             <ImageView
                 android:id="@+id/productCardOverlay2"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_width="39dp"
+                android:layout_height="16.25dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"
-                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
+                app:layout_constraintStart_toEndOf="@id/productCardOverlay1Space"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
 
             <ImageView
                 android:id="@+id/productCardOverlay1"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_width="39dp"
+                android:layout_height="16.25dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:contentDescription="@string/content_desc_imageLabelOverlay"

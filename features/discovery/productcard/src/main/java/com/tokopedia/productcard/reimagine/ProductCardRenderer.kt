@@ -45,7 +45,7 @@ internal class ProductCardRenderer(
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by view.lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by view.lazyView<ImageView?>(R.id.productCardImage)
-    private val labelOverlay = LabelOverlay(view, type)
+    private val labelOverlay = LabelOverlay(view)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val labelPreventiveOverlay by view.lazyView<Typography?>(R.id.productCardLabelPreventiveOverlay)
     private val labelPreventiveBlock by view.lazyView<Typography?>(R.id.productCardLabelPreventiveBlock)
