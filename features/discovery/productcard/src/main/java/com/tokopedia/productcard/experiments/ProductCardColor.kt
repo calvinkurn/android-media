@@ -1,13 +1,12 @@
 package com.tokopedia.productcard.experiments
 
-import com.tokopedia.unifyprinciples.ColorMode
-
 interface ProductCardColor {
     val cardBackgroundColor: Int
-    val productNameColor: Int
-    val productPriceColor: Int
-    val productSlashPriceColor: Int
-    val productSoldCountColor: Int
-    val productDiscountColor: Int
-    val productRatingColor: Int
+    val productNameTextColor: Int
+    val priceTextColor: Int
+    val slashPriceTextColor: Int
+    val soldCountTextColor: Int
+    val discountTextColor: Int
+    val ratingTextColor: Int
+    val labelBenefitOutlineColor: Int
 }

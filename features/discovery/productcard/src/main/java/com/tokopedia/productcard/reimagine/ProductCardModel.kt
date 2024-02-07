@@ -2,7 +2,6 @@ package com.tokopedia.productcard.reimagine
 
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.experiments.ColorMode
-import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine
 
@@ -42,8 +41,8 @@ data class ProductCardModel(
 
     fun labelPreventiveOverlay(): LabelGroupReimagine? =
         labelGroup(LABEL_PREVENTIVE_OVERLAY)?.takeIf {
-            it.hasTitle()
-                && labelPreventiveBlock() == null
+            it.hasTitle() &&
+                labelPreventiveBlock() == null
         }
 
     fun labelPreventiveBlock(): LabelGroupReimagine? =
@@ -60,7 +59,7 @@ data class ProductCardModel(
         .filter { it.position.startsWith(LABEL_OVERLAY_) && it.hasImage() }
         .sortedBy { it.position }
 
-    fun stockInfo() : StockInfo? = stockInfo.takeIf { it.hasTitle() }
+    fun stockInfo(): StockInfo? = stockInfo.takeIf { it.hasTitle() }
 
     fun showPrice() = price.isNotBlank() && labelNettPrice() == null
 
@@ -71,7 +70,7 @@ data class ProductCardModel(
         val title: String = "",
         val type: String = "",
         val imageUrl: String = "",
-        val styles: List<Style> = listOf(),
+        val styles: List<Style> = listOf()
     ) {
         private val style = styles.associate { it.key to it.value }
 
@@ -105,7 +104,7 @@ data class ProductCardModel(
 
     data class ShopBadge(
         val imageUrl: String = "",
-        val title: String = "",
+        val title: String = ""
     ) {
 
         fun hasImage() = imageUrl.isNotEmpty()
@@ -116,7 +115,7 @@ data class ProductCardModel(
             internal fun from(shopBadge: ProductCardModel.ShopBadge?): ShopBadge =
                 ShopBadge(
                     imageUrl = shopBadge?.imageUrl ?: "",
-                    title = shopBadge?.title ?: "",
+                    title = shopBadge?.title ?: ""
                 )
         }
     }
@@ -133,11 +132,11 @@ data class ProductCardModel(
                 StockInfo(
                     percentage = productCardModel.stockBarPercentage,
                     label = productCardModel.stockBarLabel,
-                    labelColor = productCardModel.stockBarLabelColor,
+                    labelColor = productCardModel.stockBarLabelColor
                 )
         }
     }
-    
+
     companion object {
         fun from(productCardModel: ProductCardModel): ProductCardModelReimagine =
             ProductCardModelReimagine(

@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopProductCardColorHelper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopProductCardListBinding
@@ -36,6 +37,7 @@ class ShopProductItemListViewHolder(
 
     private val viewBinding: ItemShopProductCardListBinding? by viewBinding()
     private val productCardView: ProductCardListView? = viewBinding?.productCardView
+    private val productCardColorHelper = ShopProductCardColorHelper()
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         val stockBarLabel = shopProductUiModel.stockLabel
@@ -99,6 +101,18 @@ class ShopProductItemListViewHolder(
                 shopProductUiModel,
                 shopProductUiModel.minimumOrder
             )
+        }
+
+        handleOverrideProductCardColor()
+    }
+
+    private fun handleOverrideProductCardColor() {
+        if (productCardColorHelper.shouldOverrideProductCardColor(
+                shouldOverrideTheme = productTabInterface?.isOverrideTheme().orFalse(),
+                patternType = productTabInterface?.getPatternColorType().orEmpty()
+            )
+        ) {
+            productCardColorHelper.overrideProductCardContentToLightColor(view = viewBinding?.productCardView)
         }
     }
 }

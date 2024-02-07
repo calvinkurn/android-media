@@ -11,7 +11,7 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.productcard.R
+import com.tokopedia.productcard.experiments.ColorMode
 import com.tokopedia.productcard.reimagine.ProductCardLabel
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.utils.getPixel
@@ -92,19 +92,27 @@ class LabelBenefitView : FrameLayout {
     private fun getCircleCutoutYPos(): Float =
         context.getPixel(productcardR.dimen.product_card_reimagine_label_benefit_height) / 2f
 
-    fun render(labelGroup: ProductCardModel.LabelGroup?) {
+    fun render(labelGroup: ProductCardModel.LabelGroup?, colorMode: ColorMode?) {
         if (labelGroup == null) {
             hide()
         } else {
-            showLabelBenefit(labelGroup)
+            showLabelBenefit(labelGroup, colorMode)
         }
     }
 
-    private fun showLabelBenefit(labelGroup: ProductCardModel.LabelGroup) {
+    private fun showLabelBenefit(labelGroup: ProductCardModel.LabelGroup, colorMode: ColorMode?) {
         ProductCardLabel(background, text).render(labelGroup)
 
-        val outlineColor = labelGroup.outlineColor() ?: ""
-        circleCutoutStrokePaint?.color = safeParseColor(outlineColor, Color.TRANSPARENT)
+        val shouldOverrideLabelBenefitColor = colorMode != null
+
+        val outlineColor = if (shouldOverrideLabelBenefitColor) {
+            colorMode?.labelBenefitOutlineColor ?: android.R.color.transparent
+        } else {
+            val color = labelGroup.outlineColor() ?: ""
+            safeParseColor(color, Color.TRANSPARENT)
+        }
+
+        circleCutoutStrokePaint?.color = ContextCompat.getColor(context, outlineColor)
         invalidate()
     }
 
@@ -120,23 +128,5 @@ class LabelBenefitView : FrameLayout {
 
         canvas.drawCircle(0f, circleCutoutYPos, circleCutoutRadius, circleCutoutStrokePaint)
         canvas.drawCircle(width.toFloat(), circleCutoutYPos, circleCutoutRadius, circleCutoutStrokePaint)
-    }
-
-    fun forceLightMode() {
-        circleCutoutFillPaint = Paint(ANTI_ALIAS_FLAG).apply {
-            color = Color.TRANSPARENT
-            style = Paint.Style.FILL
-            isDither = true
-        }
-
-        val outlineColor = circleCutoutStrokePaint?.color ?: return
-
-        circleCutoutStrokePaint = Paint(ANTI_ALIAS_FLAG).apply {
-            color = outlineColor
-            style = Paint.Style.STROKE
-            strokeWidth = 1.toPx().toFloat()
-        }
-
-        invalidate()
     }
 }

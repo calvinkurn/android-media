@@ -33,13 +33,12 @@ import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.T
 import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ProductCardRenderer(
     private val view: View,
-    private val type: ProductCardType,
+    private val type: ProductCardType
 ) {
 
     private val context = view.context
@@ -69,7 +68,7 @@ internal class ProductCardRenderer(
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
     private val credibilityText by view.lazyView<Typography?>(R.id.productCardLabelCredibility)
     private val ratingText by view.lazyView<Typography?>(R.id.productCardRating)
-    
+
     fun setProductModel(productCardModel: ProductCardModel) {
         renderOutline(productCardModel)
         renderCardContainer(productCardModel)
@@ -109,15 +108,16 @@ internal class ProductCardRenderer(
         val cornerType = if (productCardModel.stockInfo() != null) TOP else ALL
 
         imageView?.apply {
-            if (productCardModel.isSafeProduct)
+            if (productCardModel.isSafeProduct) {
                 loadImage(ContextCompat.getDrawable(context, overlayProductImageSafe(cornerType)))
-            else
+            } else {
                 loadImage(productCardModel, cornerType)
+            }
 
             setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    R.color.dms_product_card_reimagine_image_overlay,
+                    R.color.dms_product_card_reimagine_image_overlay
                 ),
                 PorterDuff.Mode.SRC_OVER
             )
@@ -125,14 +125,15 @@ internal class ProductCardRenderer(
     }
 
     private fun overlayProductImageSafe(cornerType: RoundedCornersTransformation.CornerType): Int =
-        if (cornerType == TOP)
+        if (cornerType == TOP) {
             R.drawable.product_card_safe_background_top_rounded
-        else
+        } else {
             R.drawable.product_card_safe_background_full_rounded
+        }
 
     private fun ImageView.loadImage(
         productCardModel: ProductCardModel,
-        cornerType: RoundedCornersTransformation.CornerType,
+        cornerType: RoundedCornersTransformation.CornerType
     ) {
         imageRounded(
             productCardModel.imageUrl,
@@ -209,9 +210,11 @@ internal class ProductCardRenderer(
     }
 
     private fun nameTextBackground(isSafeProduct: Boolean) =
-        if (isSafeProduct)
+        if (isSafeProduct) {
             ContextCompat.getDrawable(context, R.drawable.product_card_safe_background_title)
-        else null
+        } else {
+            null
+        }
 
     private fun renderPrice(productCardModel: ProductCardModel) {
         priceText?.shouldShowWithAction(productCardModel.showPrice()) {
@@ -263,8 +266,8 @@ internal class ProductCardRenderer(
     }
 
     private fun showDiscountAsInline(productCardModel: ProductCardModel): Boolean =
-        (type == ProductCardType.GridCarousel || type == ProductCardType.ListCarousel)
-            && productCardModel.ribbon() != null
+        (type == ProductCardType.GridCarousel || type == ProductCardType.ListCarousel) &&
+            productCardModel.ribbon() != null
 
     private fun renderDiscountPercentage(productCardModel: ProductCardModel) {
         val hasDiscountPercentage = productCardModel.discountPercentage != 0
@@ -285,14 +288,16 @@ internal class ProductCardRenderer(
 
         discountText?.shouldShowWithAction(
             shouldShow = showBelowPrice && hasDiscountPercentage,
-            action = setDiscount,
+            action = setDiscount
         )
     }
 
     private fun renderLabelBenefit(productCardModel: ProductCardModel) {
         val labelBenefit = productCardModel.labelBenefit()
+        val colorMode = productCardModel.colorMode
+
         benefitLabel?.shouldShowWithAction(labelBenefit != null) {
-            it.render(labelBenefit)
+            it.render(labelBenefit, colorMode)
         }
     }
 
@@ -321,7 +326,9 @@ internal class ProductCardRenderer(
             labelProductOffer.copy(
                 styles = labelProductOffer.styles + listOf(defaultTextColor)
             )
-        } else labelProductOffer
+        } else {
+            labelProductOffer
+        }
     }
 
     private fun renderCredibilitySection(productCardModel: ProductCardModel) {
@@ -370,7 +377,7 @@ internal class ProductCardRenderer(
             left = ribbonMargin.start,
             top = ribbonMargin.top,
             right = 0,
-            bottom = 0,
+            bottom = 0
         )
     }
 
@@ -386,10 +393,9 @@ internal class ProductCardRenderer(
         }
     }
 
-
     private fun handleColorMode(colorMode: ProductCardColor?) {
         if (colorMode == null) return
-        
+
         val shouldOverrideProductCardDefaultColor = colorMode == ColorMode.LIGHT || colorMode == ColorMode.DARK
         if (shouldOverrideProductCardDefaultColor) {
             overrideColor(colorMode)
@@ -397,25 +403,19 @@ internal class ProductCardRenderer(
     }
 
     private fun overrideColor(colorMode: ProductCardColor) {
-        val productNameColor = ContextCompat.getColor(context, colorMode.productNameColor)
-        val productPriceTextColor = ContextCompat.getColor(context, colorMode.productPriceColor)
-        val slashedPriceTextColor = ContextCompat.getColor(context, colorMode.productSlashPriceColor)
-        val credibilityTextColor = ContextCompat.getColor(context, colorMode.productSoldCountColor)
-        val discountTextColor = ContextCompat.getColor(context, colorMode.productDiscountColor)
-        val ratingTextColor = ContextCompat.getColor(context, colorMode.productRatingColor)
+        val productNameColor = ContextCompat.getColor(context, colorMode.productNameTextColor)
+        val productPriceTextColor = ContextCompat.getColor(context, colorMode.priceTextColor)
+        val slashedPriceTextColor = ContextCompat.getColor(context, colorMode.slashPriceTextColor)
+        val credibilityTextColor = ContextCompat.getColor(context, colorMode.soldCountTextColor)
+        val discountTextColor = ContextCompat.getColor(context, colorMode.discountTextColor)
+        val ratingTextColor = ContextCompat.getColor(context, colorMode.ratingTextColor)
 
         cardContainer?.setCardUnifyBackgroundColor(MethodChecker.getColor(context, colorMode.cardBackgroundColor))
         nameText?.setTextColor(productNameColor)
         priceText?.setTextColor(productPriceTextColor)
         slashedPriceText?.setTextColor(slashedPriceTextColor)
-        
-        /*credibilityText?.setTextColor(credibilityTextColor)
         discountText?.setTextColor(discountTextColor)
+        credibilityText?.setTextColor(credibilityTextColor)
         ratingText?.setTextColor(ratingTextColor)
-        
-        cardContainer?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, MethodChecker.getColor(context, android.R.color.transparent)))
-        buttonAddToCart?.applyColorMode(buttonColorMode)
-
-        benefitLabel?.forceLightMode()*/
     }
 }

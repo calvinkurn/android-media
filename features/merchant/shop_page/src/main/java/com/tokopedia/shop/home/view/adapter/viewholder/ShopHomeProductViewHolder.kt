@@ -7,16 +7,15 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.experiments.ColorMode
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.util.ShopProductCardColorHelper
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductCardSmallGridBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -33,6 +32,8 @@ open class ShopHomeProductViewHolder(
     private var productCard: ProductCardGridView? = null
     protected var shopHomeProductViewModel: ShopHomeProductUiModel? = null
 
+    private val productCardColorHelper = ShopProductCardColorHelper()
+
     init {
         findViews()
     }
@@ -48,7 +49,7 @@ open class ShopHomeProductViewHolder(
 
     override fun bind(shopHomeProductViewModel: ShopHomeProductUiModel) {
         this.shopHomeProductViewModel = shopHomeProductViewModel
-        
+
         val productCardModel = ShopPageHomeMapper.mapToProductCardModel(
             isHasAddToCartButton = false,
             hasThreeDots = isShowTripleDot,
@@ -58,11 +59,13 @@ open class ShopHomeProductViewHolder(
             forceLightModeColor = shopHomeListener.isOverrideTheme(),
             patternColorType = shopHomeListener.getPatternColorType()
         )
-        
+
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)
+
+        handleOverrideProductCardColor()
     }
-    
+
     protected open fun setListener(productCardModel: ProductCardModel) {
         productCard?.setOnClickListener {
             shopHomeEndlessProductListener?.onAllProductItemClicked(
@@ -119,6 +122,16 @@ open class ShopHomeProductViewHolder(
             shopHomeProductViewModel?.let {
                 shopHomeEndlessProductListener?.onThreeDotsAllProductClicked(it)
             }
+        }
+    }
+
+    private fun handleOverrideProductCardColor() {
+        if (productCardColorHelper.shouldOverrideProductCardColor(
+                shouldOverrideTheme = shopHomeListener.isOverrideTheme(),
+                patternType = shopHomeListener.getPatternColorType()
+            )
+        ) {
+            productCardColorHelper.overrideProductCardContentToLightColor(view = viewBinding?.productCard)
         }
     }
 }

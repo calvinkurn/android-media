@@ -9,6 +9,7 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.common.util.ShopProductCardColorHelper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopNewproductSmallGridBinding
@@ -37,6 +38,8 @@ class ShopProductViewHolder(
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
     private val viewBinding: ItemShopNewproductSmallGridBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
+
+    private val productCardColorHelper = ShopProductCardColorHelper()
 
     init {
         findViews()
@@ -123,6 +126,8 @@ class ShopProductViewHolder(
                 shopProductUiModel.minimumOrder
             )
         }
+
+        handleOverrideProductCardColor()
     }
 
     override fun bind(shopProductUiModel: ShopProductUiModel, payloads: MutableList<Any>) {
@@ -130,6 +135,16 @@ class ShopProductViewHolder(
 
         productCard?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, shopTrackType)
+        }
+    }
+
+    private fun handleOverrideProductCardColor() {
+        if (productCardColorHelper.shouldOverrideProductCardColor(
+                shouldOverrideTheme = productTabInterface?.isOverrideTheme().orFalse(),
+                patternType = productTabInterface?.getPatternColorType().orEmpty()
+            )
+        ) {
+            productCardColorHelper.overrideProductCardContentToLightColor(view = viewBinding?.productCard)
         }
     }
 }
