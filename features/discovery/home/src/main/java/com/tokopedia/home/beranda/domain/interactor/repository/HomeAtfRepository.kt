@@ -28,9 +28,8 @@ class HomeAtfRepository @Inject constructor(
 
     override suspend fun executeOnBackground(): HomeAtfData {
         graphqlUseCase.clearCache()
-        val listOfExpKey = listOf(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.HOME_LOAD_TIME_KEY).joinToString(EXP_SEPARATOR)
-        val expAtf = HomeRollenceController.getAtfRollence(deviceScreenHelper.isFoldableOrTablet())
-        val listOfExpValue = listOf(expAtf, HomeRollenceController.rollenceLoadTime).joinToString(EXP_SEPARATOR)
+        val listOfExpKey = listOf(RollenceKey.HOME_LOAD_TIME_KEY).joinToString(EXP_SEPARATOR)
+        val listOfExpValue = listOf(HomeRollenceController.rollenceLoadTime).joinToString(EXP_SEPARATOR)
         params.putString(EXPERIMENT, listOfExpKey)
         params.putString(VARIANT, listOfExpValue)
         graphqlUseCase.setRequestParams(params.parameters)
