@@ -81,6 +81,7 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+    implementation 'com.bytedance.applog:bdtracker-global:5.6.9-bugfix.6'
 
 }
 

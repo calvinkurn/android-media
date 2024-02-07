@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/device_id_tp"
@@ -12,7 +13,38 @@
         android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="@string/device_id"
-        app:unifyButtonType="main"
-        app:unifyButtonSize="medium" />
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/applog_id"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="APP LOG DEVICE ID:"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_copy"
+            android:layout_gravity="center"
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
+            app:layout_constraintStart_toEndOf="@id/tv_device_id"
+            app:layout_constraintTop_toTopOf="@id/tv_device_id"
+            app:layout_constraintBottom_toBottomOf="@id/tv_device_id"
+            app:icon_name="COPY"
+            android:layout_marginStart="@dimen/unify_space_8"/>
+    </LinearLayout>
 
 </LinearLayout>

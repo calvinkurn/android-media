@@ -327,7 +327,7 @@ object AppLogAnalytics {
         })
     }
 
-    private fun send(event: String, params: JSONObject) {
+    fun send(event: String, params: JSONObject) {
         Cassava.save(params, event, "ByteIO")
         AppLog.onEventV3(event, params)
     }
