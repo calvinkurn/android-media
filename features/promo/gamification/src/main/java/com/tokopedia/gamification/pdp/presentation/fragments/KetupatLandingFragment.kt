@@ -56,6 +56,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
     private var infiniteRecommendationManager: InfiniteRecommendationManager? = null
     private var recommendationCallbackImpl: RecommendationCallbackImpl? = null
     private var ketupatRV: RecyclerView? = null
+    private var campaignSlug = ""
 
     @Inject
     @JvmField
@@ -91,6 +92,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         }
 
         ketupatLandingViewModel?.getErrorMessage()?.observe(this) {
+            getError()
             view?.findViewById<Group>(R.id.shimmer_group)?.hide()
             view?.findViewById<GlobalError>(R.id.global_error_ketupat_lp)?.show()
         }
@@ -101,13 +103,24 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                 view?.let { view -> setSharingHeaderIconAndListener(view, it) }
             }
             scratchCardId = it.gamiGetScratchCardLandingPage.scratchCard?.id.toString()
-            GamificationAnalytics.sendDirectRewardLandingPageEvent("{'direct_reward_id':'${scratchCardId}'}")
+            GamificationAnalytics.sendDirectRewardLandingPageEvent("{'direct_reward_id':'$scratchCardId'}")
+        }
+    }
+
+    private fun getError() {
+        view?.findViewById<GlobalError>(R.id.global_error_ketupat_lp)?.run {
+            val homeDeeplink = "tokopedia://home"
+            val homeText = "Balik ke Home"
+            this.errorAction.text = homeText
+            setActionClickListener {
+                RouteManager.route(context, homeDeeplink)
+            }
         }
     }
 
     override fun onFragmentBackPressed(): Boolean {
         GamificationAnalytics.sendClickBackOnNavBarEvent(
-            "{'direct_reward_id':'${scratchCardId}'}",
+            "{'direct_reward_id':'$scratchCardId'}",
             "gamification",
             "tokopediamarketplace"
         )
@@ -142,7 +155,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
             ketupatLPSwipeToRefreshView =
                 view?.findViewById(R.id.ketupat_landing_page_swipe_refresh)
             ketupatLPSwipeToRefreshView?.setOnRefreshListener {
-                //refresh lp
+                // refresh lp
                 refreshData()
                 ketupatLPSwipeToRefreshView?.isRefreshing = true
                 ketupatRV?.scrollToPosition(0)
@@ -163,21 +176,29 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
             if (userSessionInterface?.isLoggedIn == false) {
                 activity?.finish()
             } else {
-                //refresh data with shimmer
+                // refresh data with shimmer
                 refreshData()
             }
         }
     }
 
+    private fun getCampaignSlug() {
+        if (campaignSlug.isEmpty()) {
+            campaignSlug = activity?.intent?.data?.getQueryParameter("slug").toString()
+        }
+    }
     private fun refreshData() {
+        getCampaignSlug()
         if (userSessionInterface?.isLoggedIn == true) {
-            ketupatLandingViewModel?.getGamificationLandingPageData(context,"ketupat-thr-2024",
+            ketupatLandingViewModel?.getGamificationLandingPageData(
+                context,
+                campaignSlug,
                 object : LandingPageRefreshCallback {
                     override fun refreshLandingPage() {
                         refreshData()
                     }
-
-                })
+                }
+            )
             if (!fragmentDataRendered) {
                 setUpAdapter()
             }
@@ -197,7 +218,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
         val concatAdapter = ConcatAdapter(adapter)
         ketupatRV?.adapter = concatAdapter
-        if(recommendationCallbackImpl == null){
+        if (recommendationCallbackImpl == null) {
             recommendationCallbackImpl = RecommendationCallbackImpl(this::getScratchCardId)
         }
         infiniteRecommendationManager =
@@ -233,7 +254,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                                 userSession.userId
                             )
                             GamificationAnalytics.sendClickShareOnNavBarEvent(
-                                "{'landing_page-DirectRewardGame':'${scratchCardId}'}",
+                                "{'landing_page-DirectRewardGame':'$scratchCardId'}",
                                 "gamification",
                                 "tokopediamarketplace"
                             )
