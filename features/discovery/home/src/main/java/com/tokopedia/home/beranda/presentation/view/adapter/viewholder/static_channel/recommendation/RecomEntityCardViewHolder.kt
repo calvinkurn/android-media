@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.ColorMode
@@ -30,7 +30,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class RecomEntityCardViewHolder(
     view: View,
     private val listener: GlobalRecomListener
-) : BaseForYouViewHolder<RecomEntityCardUiModel>(
+) : BaseRecommendationViewHolder<RecomEntityCardUiModel>(
     view,
     RecomEntityCardUiModel::class.java
 ) {

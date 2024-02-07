@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetBannerTopadsBinding
-import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.BannerTopAdsListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -20,7 +20,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class BannerTopAdsViewHolder constructor(
     view: View,
     private val listener: BannerTopAdsListener
-) : BaseForYouViewHolder<BannerTopAdsModel>(
+) : BaseRecommendationViewHolder<BannerTopAdsModel>(
     view,
     BannerTopAdsModel::class.java
 ) {

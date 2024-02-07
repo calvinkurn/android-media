@@ -4,13 +4,13 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouContentCardBinding
-import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ContentCardViewHolder constructor(
     view: View,
     private val listener: Listener
-) : BaseForYouViewHolder<ContentCardModel>(
+) : BaseRecommendationViewHolder<ContentCardModel>(
     view,
     ContentCardModel::class.java
 ) {

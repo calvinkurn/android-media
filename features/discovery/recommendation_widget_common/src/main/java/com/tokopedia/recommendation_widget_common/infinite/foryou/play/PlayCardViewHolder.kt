@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetPlayRecomBinding
-import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.utils.view.binding.viewBinding
 
 class PlayCardViewHolder constructor(
@@ -15,7 +15,7 @@ class PlayCardViewHolder constructor(
     manager: PlayVideoWidgetManager,
     private val listener: Listener,
     private val playListener: PlayVideoWidgetView.Listener
-) : BaseForYouViewHolder<PlayCardModel>(
+) : BaseRecommendationViewHolder<PlayCardModel>(
     view,
     PlayCardModel::class.java
 ) {

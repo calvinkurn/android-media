@@ -6,7 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
-abstract class BaseForYouViewHolder <T : Visitable<*>>(
+abstract class BaseRecommendationViewHolder <T : Visitable<*>>(
     view: View,
     private val typeClass: Class<T>
 ) : AbstractViewHolder<T>(view) {

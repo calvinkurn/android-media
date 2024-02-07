@@ -10,7 +10,7 @@ import com.tokopedia.home.databinding.ItemHomeRecommendationPlayWidgetBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
-import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 
@@ -18,7 +18,7 @@ class HomeRecommendationPlayWidgetViewHolder(
     view: View,
     homeRecommendationPlayWidgetManager: PlayVideoWidgetManager,
     private val listener: GlobalRecomListener
-) : BaseForYouViewHolder<HomeRecommendationPlayWidgetUiModel>(
+) : BaseRecommendationViewHolder<HomeRecommendationPlayWidgetUiModel>(
     view,
     HomeRecommendationPlayWidgetUiModel::class.java
 ) {

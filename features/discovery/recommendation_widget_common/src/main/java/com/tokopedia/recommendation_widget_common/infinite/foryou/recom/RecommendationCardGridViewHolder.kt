@@ -5,14 +5,14 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouRecomGridBinding
-import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ParentRecommendationListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecommendationCardGridViewHolder constructor(
     view: View,
     private val listener: ParentRecommendationListener
-) : BaseForYouViewHolder<RecommendationCardModel>(
+) : BaseRecommendationViewHolder<RecommendationCardModel>(
     view,
     RecommendationCardModel::class.java
 ) {

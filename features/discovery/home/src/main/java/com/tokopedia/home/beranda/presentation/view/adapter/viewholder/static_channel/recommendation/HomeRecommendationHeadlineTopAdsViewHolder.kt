@@ -6,7 +6,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.databinding.HomeRecommedationHeadlineAdsLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -16,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeRecommendationHeadlineTopAdsViewHolder(
     view: View,
     private val topAdsBannerClickListener: GlobalRecomListener
-) : BaseForYouViewHolder<HomeRecommendationHeadlineTopAdsDataModel>(
+) : BaseRecommendationViewHolder<HomeRecommendationHeadlineTopAdsDataModel>(
     view,
     HomeRecommendationHeadlineTopAdsDataModel::class.java
 ) {
