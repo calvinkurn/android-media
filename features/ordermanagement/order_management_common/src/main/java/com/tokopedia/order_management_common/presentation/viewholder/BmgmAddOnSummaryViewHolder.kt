@@ -1,5 +1,7 @@
 package com.tokopedia.order_management_common.presentation.viewholder
 
+import android.view.View
+import android.view.ViewStub
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
@@ -164,5 +166,42 @@ class BmgmAddOnSummaryViewHolder(
 
     fun bind(addOnSummary: AddOnSummaryUiModel?) {
         setupAddOnSummary(addOnSummary)
+    }
+
+    interface Delegate {
+        fun registerAddOnSummaryDelegate(mediator: Mediator)
+        fun bindAddonSummary(addOnSummary: AddOnSummaryUiModel?)
+        interface Mediator {
+            fun getAddOnSummaryLayout(): View?
+            fun getRecycleViewSharedPool(): RecyclerView.RecycledViewPool?
+            fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener
+        }
+
+        class Impl : Delegate {
+
+            private lateinit var viewHolder: BmgmAddOnSummaryViewHolder
+            private lateinit var _mediator: Mediator
+
+            override fun registerAddOnSummaryDelegate(mediator: Mediator) {
+                _mediator = mediator
+            }
+
+            override fun bindAddonSummary(addOnSummary: AddOnSummaryUiModel?) {
+                val layout = _mediator.getAddOnSummaryLayout() ?: return
+                if (addOnSummary?.addonItemList?.isNotEmpty() == true) {
+                    if (layout is ViewStub) layout.inflate() else layout.show()
+                    if (!::viewHolder.isInitialized) {
+                        viewHolder = BmgmAddOnSummaryViewHolder(
+                            bmgmAddOnListener = _mediator.getAddOnSummaryListener(),
+                            binding = PartialBmgmAddOnSummaryBinding.bind(layout),
+                            recyclerViewSharedPool = _mediator.getRecycleViewSharedPool()
+                        )
+                    }
+                    viewHolder.bind(addOnSummary)
+                } else {
+                    layout.hide()
+                }
+            }
+        }
     }
 }
