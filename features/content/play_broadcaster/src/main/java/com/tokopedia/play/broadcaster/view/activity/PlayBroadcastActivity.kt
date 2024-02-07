@@ -75,7 +75,6 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
-import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLogger
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -142,9 +141,6 @@ class PlayBroadcastActivity :
 
     @Inject
     lateinit var valueWrapper: PlayBroadcastValueWrapper
-
-    @Inject
-    lateinit var errorLogger: BroadcasterErrorLogger
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -963,10 +959,11 @@ class PlayBroadcastActivity :
     override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
         when (state) {
             is BroadcastInitState.Error -> {
-                errorLogger.sendLog(state.cause)
+                viewModel.submitAction(PlayBroadcastAction.SendErrorLog(state.cause))
                 showDialogWhenUnSupportedDevices()
             }
             is BroadcastInitState.ByteplusInitializationError -> {
+                viewModel.submitAction(PlayBroadcastAction.SendErrorLog(state.cause))
                 viewModel.submitAction(PlayBroadcastAction.RemoveBeautificationMenu)
             }
             else -> {}

@@ -55,6 +55,7 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiMode
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
@@ -64,6 +65,7 @@ import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupEdit
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.trim
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.updateQuizOptionFlow
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
+import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -134,6 +136,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val broadcastTimer: PlayBroadcastTimer,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
     private val remoteConfig: RemoteConfig,
+    private val errorLogger: BroadcasterErrorLogger,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -578,6 +581,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             is PlayBroadcastAction.SelectPresetOption -> handleSelectPresetOption(event.preset)
             is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
+
+            /** Log */
+            is PlayBroadcastAction.SendErrorLog -> handleSendErrorLog(event.throwable)
             else -> {
                 //no-op
             }
@@ -1935,6 +1941,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         saveBeautificationConfig()
     }
 
+    private fun handleSendErrorLog(throwable: Throwable) {
+        errorLogger.sendLog(throwable, buildErrorModel())
+    }
+
     private suspend fun setBeautificationConfig(beautificationConfig: BeautificationConfigUiModel) {
         _beautificationConfig.value = if (remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY, true)) {
             beautificationConfig
@@ -2359,6 +2369,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    /** Helper */
+
     private fun saveJob(jobId: String, job: Job) {
         cancelJob(jobId)
         jobMap[jobId] = job
@@ -2366,6 +2378,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun cancelJob(jobId: String) {
         jobMap[jobId]?.cancel()
+    }
+
+    private fun buildErrorModel(): BroadcasterErrorLog {
+        return BroadcasterErrorLog(
+            channelId = channelId,
+            authorId = authorId,
+            authorType = authorType,
+        )
     }
 
     companion object {
