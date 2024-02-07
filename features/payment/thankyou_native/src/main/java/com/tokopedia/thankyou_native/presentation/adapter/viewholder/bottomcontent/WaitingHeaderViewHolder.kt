@@ -9,9 +9,7 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.databinding.ThankWaitingHeaderBinding
 import com.tokopedia.thankyou_native.presentation.adapter.model.WaitingHeaderUiModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
 import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListener
@@ -20,7 +18,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
