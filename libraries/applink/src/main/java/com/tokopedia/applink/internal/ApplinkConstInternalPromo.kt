@@ -37,11 +37,6 @@ object ApplinkConstInternalPromo {
     const val PROMO_LIST = "$INTERNAL_PROMO/promo-list"
     const val PROMO_DETAIL = "$INTERNAL_PROMO/promo-detail?slug={slug}"
 
-    /**
-     * PromoBenefitActivity
-     * */
-    const val PROMO_BENEFIT = "$INTERNAL_PROMO/benefit"
-
     const val PROMO_CHECKOUT_MARKETPLACE = "$INTERNAL_PROMO/checkout-marketplace"
 
     const val HOST_TOKOPOINTS = "rewards"

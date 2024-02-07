@@ -9,23 +9,5 @@
             android:name=".multishopmvc.verticallist.MerchantCouponActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"></activity>
-        <activity
-            android:name=".views.benefit.PromoBenefitActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.DayNight.Translucent">
-
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_promo"
-                    android:pathPattern="@string/path_promo_benefit"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-
-        </activity>
     </application>
 </manifest>
