@@ -1,11 +1,9 @@
 package com.tokopedia.applink.user
 
-import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.startsWithPattern
@@ -101,28 +99,11 @@ object DeeplinkMapperUser {
         }
     }
 
-    fun Context.getIsEnableSharedPrefScpLogin(): Boolean {
-        val sharedPref = getSharedPreferences(
-            PREF_SCP_DEBUG,
-            Context.MODE_PRIVATE
-        )
-        return sharedPref.getBoolean(
-            KEY_SCP_DEBUG,
-            false
-        )
-    }
-
-    private fun isForceScpLoginForDebug(context: Context) : Boolean {
-        return GlobalConfig.isAllowDebuggingTools() &&
-            GlobalConfig.isSellerApp().not() &&
-            context.getIsEnableSharedPrefScpLogin()
-    }
-
     fun isGotoLoginEnabled(): Boolean {
         return RemoteConfigInstance.getInstance()
             .abTestPlatform
             .getString(ROLLENCE_GOTO_LOGIN)
-            .isNotEmpty() || isForceScpLoginForDebug(RemoteConfigInstance.getInstance().abTestPlatform.context)
+            .isNotEmpty()
     }
 
     fun isProfileManagementM2Activated(): Boolean {

@@ -321,11 +321,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         type
                         image_url
                         metadata {
+                          info_link
                           add_on_note {
                             from
                             to
                             notes
                             short_notes
+                            tips
                           }
                         }
                         create_time
@@ -393,11 +395,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                             type
                             image_url
                             metadata {
+                              info_link
                               add_on_note {
                                 from
                                 to
                                 notes
                                 short_notes
+                                tips
                               }
                             }
                             create_time
@@ -460,6 +464,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         }
                       }
                       addon_summary {
+                        total_price_str
                         addons {
                           id
                           name
@@ -469,18 +474,32 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                           type
                           image_url
                           metadata {
+                            info_link
                             add_on_note {
                               is_custom_note
                               from
                               to
                               notes
                               short_notes
+                              tips
                             }
                           }
                         }
                       }
                       flags {
                         is_ppp
+                      }
+                    }
+                    product_benefit {
+                      label
+                      icon_url
+                      order_detail {
+                        order_detail_id
+                        product_id
+                        product_name
+                        thumbnail
+                        quantity
+                        total_price_text
                       }
                     }
                   }
@@ -502,11 +521,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       type
                       image_url
                       metadata {
+                        info_link
                         add_on_note {
                           from
                           to
                           notes
                           short_notes
+                          tips
                         }
                       }
                     }

@@ -1068,7 +1068,9 @@ open class DiscoveryAnalytics(
             PRODUCT_SPRINT_SALE_ITEM -> PRODUCT_SPRINT_SALE
             PRODUCT_SPRINT_SALE_CAROUSEL_ITEM -> PRODUCT_SPRINT_SALE_CAROUSEL
             PRODUCT_CARD_COLUMN_LIST -> PRODUCT_CARD_COLUMN_LIST
-            ComponentNames.ProductCardSingleItem.componentName -> ComponentNames.ProductCardSingle.componentName
+            ComponentNames.ProductCardSingleItem.componentName,
+            ComponentNames.ProductCardSingleItemReimagine.componentName -> ComponentNames.ProductCardSingle.componentName
+
             else -> EMPTY_STRING
         }
     }

@@ -87,10 +87,12 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -172,7 +174,6 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
@@ -265,6 +266,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
@@ -624,6 +626,9 @@ open class DynamicProductDetailFragment :
 
     override val queueTracker: TrackingQueue
         get() = trackingQueue
+
+    override val recyclerViewPool: RecyclerView.RecycledViewPool?
+        get() = getRecyclerView()?.recycledViewPool
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -2697,8 +2702,11 @@ open class DynamicProductDetailFragment :
 
         pdpUiUpdater?.updateNotifyMeAndContent(
             selectedChild?.productId.toString(),
-            viewModel.p2Data.value?.upcomingCampaigns,
+            viewModel.getP2()?.upcomingCampaigns,
             boeData.imageURL
+        )
+        pdpUiUpdater?.updateTradeInRibbon(
+            isEligible = viewModel.getP2()?.validateTradeIn?.isEligible.orFalse()
         )
         val selectedTicker = viewModel.p2Data.value?.getTickerByProductId(productId ?: "")
         pdpUiUpdater?.updateTicker(selectedTicker)
@@ -2733,6 +2741,10 @@ open class DynamicProductDetailFragment :
         // update BMGM data
         viewModel.getP2()?.bmgm?.let {
             pdpUiUpdater?.updateBMGMSneakPeak(productId = productId.orEmpty(), bmgm = it)
+        }
+
+        viewModel.getP2()?.gwp?.let {
+            pdpUiUpdater?.updateGWPSneakPeak(productId = productId.orEmpty(), gwp = it)
         }
     }
 
@@ -3381,7 +3393,14 @@ open class DynamicProductDetailFragment :
 
     private fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
-        submitList(newData)
+
+        val finalData = if (isTabletMode()) {
+            manipulateDataTabletMode(newData)
+        } else {
+            newData
+        }
+
+        submitList(finalData)
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
@@ -3542,18 +3561,23 @@ open class DynamicProductDetailFragment :
     }
 
     private fun initNavigationTab(data: ProductInfoP2UiData) {
-        val items = data.navBar.items.map { item ->
-            NavigationTab.Item(item.title, item.componentName) {
-                adapter.getComponentPositionByName(item.componentName)
-            }
-        }
-
         val navigation = binding?.pdpNavigation
-        getRecyclerView()?.let { recyclerView ->
-            if (items.isEmpty()) {
-                navigation?.stop(recyclerView)
-            } else {
-                navigation?.start(recyclerView, items, this)
+
+        if (isTabletMode()) {
+            navigation?.hide()
+        } else {
+            val items = data.navBar.items.map { item ->
+                NavigationTab.Item(item.title, item.componentName) {
+                    adapter.getComponentPositionByName(item.componentName)
+                }
+            }
+
+            getRecyclerView()?.let { recyclerView ->
+                if (items.isEmpty()) {
+                    navigation?.stop(recyclerView)
+                } else {
+                    navigation?.start(recyclerView, items, this)
+                }
             }
         }
     }
@@ -4387,9 +4411,7 @@ open class DynamicProductDetailFragment :
             lcaWarehouseId = getLcaWarehouseId(),
             campaignId = campaignId,
             variantId = variantId,
-            offerId = viewModel.getP2()?.bmgm?.data?.firstOrNull {
-                it.productIDs.contains(productId)
-            }?.offerId.orEmpty(),
+            offerId = viewModel.getP2()?.getOfferIdPriority(pid = productId).orEmpty(),
             nearestWarehouseId = viewModel.getMultiOriginByProductId().id
         )
     }
@@ -5308,17 +5330,17 @@ open class DynamicProductDetailFragment :
             ctaText = getString(productdetailcommonR.string.pdp_common_oke)
         )
         if (dataModel != null) {
-            pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)
+            pdpUiUpdater?.updateNotifyMeButton(dataModel.data.notifyMe)
             updateUi()
         }
     }
 
     override fun onNotifyMeClicked(
-        data: ProductNotifyMeDataModel,
+        data: UpcomingCampaignUiModel,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
         doActionOrLogin({
-            pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe ->
+            pdpUiUpdater?.notifyMeMap?.data?.notifyMe?.let { notifyMe ->
                 trackToggleNotifyMe(componentTrackDataModel, notifyMe)
             }
             pdpUiUpdater?.updateNotifyMeButton(data.notifyMe)
