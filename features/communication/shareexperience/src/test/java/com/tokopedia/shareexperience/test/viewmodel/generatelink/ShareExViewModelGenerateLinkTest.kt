@@ -23,6 +23,7 @@ import com.tokopedia.shareexperience.ui.ShareExAction
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
+import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -447,7 +448,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error != null)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
-                assertEquals(null, updatedValue.errorEnum)
+                assertEquals(ShareExIntentErrorEnum.DEFAULT_URL_ERROR, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -458,7 +459,6 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
     fun `generate link from default page, get default url`() {
         runTest {
             // Given
-
             viewModel.bottomSheetArgs = ShareExBottomSheetArg(
                 identifier = "",
                 pageTypeEnum = ShareExPageTypeEnum.OTHERS,
@@ -497,7 +497,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals("defaultUrl", updatedValue.shortLink)
                 assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
-                assertEquals(null, updatedValue.errorEnum)
+                assertEquals(ShareExIntentErrorEnum.DEFAULT_URL_ERROR, updatedValue.errorEnum)
 
                 expectNoEvents()
             }
@@ -529,7 +529,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals("", updatedValue.shortLink)
                 assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
-                assertEquals(null, updatedValue.errorEnum)
+                assertEquals(ShareExIntentErrorEnum.DEFAULT_URL_ERROR, updatedValue.errorEnum)
 
                 expectNoEvents()
             }

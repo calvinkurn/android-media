@@ -105,6 +105,11 @@ class ShareExViewModelInitializePageTest : ShareExViewModelTestFixture() {
                 // Then
                 skipItems(1) // skip initial
 
+                val updatedValue = awaitItem()
+                assertEquals(updatedValue.title, "")
+                assertEquals(updatedValue.chipPosition, 0)
+                assertEquals(updatedValue.uiModelList?.size, 1) // Error ui
+
                 expectNoEvents()
             }
         }
