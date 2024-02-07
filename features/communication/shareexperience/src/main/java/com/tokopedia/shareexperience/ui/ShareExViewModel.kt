@@ -144,6 +144,10 @@ class ShareExViewModel @Inject constructor(
                     deviceId = userSession.deviceId,
                     description = ::getShareBottomSheetData.name
                 )
+                getDefaultBottomSheetModel(
+                    throwable = throwable,
+                    defaultUrl = ""
+                )
             }
         }
     }
@@ -285,7 +289,8 @@ class ShareExViewModel @Inject constructor(
                 updateIntentUiStateWithDefaultUrl(
                     channelItemModel,
                     bottomSheetArgs?.defaultUrl.toEmptyStringIfNull(),
-                    throwable
+                    throwable,
+                    ShareExIntentErrorEnum.DEFAULT_URL_ERROR
                 )
             }
         }
@@ -294,7 +299,8 @@ class ShareExViewModel @Inject constructor(
     private fun updateIntentUiStateWithDefaultUrl(
         channelItemModel: ShareExChannelItemModel,
         defaultUrl: String,
-        throwable: Throwable?
+        throwable: Throwable?,
+        errorEnum: ShareExIntentErrorEnum?
     ) {
         updateIntentUiState(
             intent = getAppIntent(channelItemModel, defaultUrl, null),
@@ -304,7 +310,7 @@ class ShareExViewModel @Inject constructor(
             isLoading = false,
             error = throwable,
             imageType = ShareExImageTypeEnum.NO_IMAGE,
-            errorEnum = null
+            errorEnum = errorEnum
         )
     }
 

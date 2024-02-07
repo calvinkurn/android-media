@@ -205,7 +205,7 @@ class ShareExBottomSheet :
              ** error affiliate, continue until success and dismiss bottom sheet, show toaster, and user manually copy
              ** error branch, skip and do nothing until success
              ** error default should not be possible
-             ** error image downloader, counted as success
+             ** error image downloader or using default URL, count as success
              * If success
              ** success channel copy link, copy text & show toaster
              ** success channel others, show native chooser
@@ -227,7 +227,10 @@ class ShareExBottomSheet :
                 listener?.onFailGenerateAffiliateLink(it.shortLink)
             }
 
-            if (it.error == null || it.errorEnum == ShareExIntentErrorEnum.IMAGE_DOWNLOADER) {
+            if (it.error == null ||
+                it.errorEnum == ShareExIntentErrorEnum.IMAGE_DOWNLOADER ||
+                it.errorEnum == ShareExIntentErrorEnum.DEFAULT_URL_ERROR
+            ) {
                 trackActionClickChannel(
                     it.channelEnum,
                     it.imageType
