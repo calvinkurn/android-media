@@ -6,11 +6,11 @@ import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeGlobalRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
-import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
+import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
+import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import java.util.*
 
 @RecomTemporary

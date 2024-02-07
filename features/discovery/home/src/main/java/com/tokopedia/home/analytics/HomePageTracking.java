@@ -12,7 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
 import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel;
+import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.builder.BaseTrackerBuilder;
 import com.tokopedia.track.interfaces.ContextAnalytics;

@@ -19,11 +19,11 @@ import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.T
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_48662
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
-import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.ContentCardModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayCardModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder

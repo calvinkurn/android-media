@@ -3,8 +3,8 @@ package com.tokopedia.home.beranda.domain.gql.recommendationcard
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 
 data class RecommendationCard(
     @SerializedName("applink")

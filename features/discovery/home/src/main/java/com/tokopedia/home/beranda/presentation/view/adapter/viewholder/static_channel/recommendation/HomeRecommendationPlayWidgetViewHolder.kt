@@ -10,9 +10,9 @@ import com.tokopedia.home.databinding.ItemHomeRecommendationPlayWidgetBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
-import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayVideoWidgetManager
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 
 class HomeRecommendationPlayWidgetViewHolder(
     view: View,

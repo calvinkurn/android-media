@@ -7,8 +7,8 @@ import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 
 /**
  * Created by Lukas on 2019-07-15

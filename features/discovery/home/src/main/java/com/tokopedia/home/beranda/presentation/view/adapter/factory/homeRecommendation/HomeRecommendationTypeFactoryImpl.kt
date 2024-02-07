@@ -30,8 +30,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationLoadingViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.RecomEntityCardViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayVideoWidgetManager
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 
 class HomeRecommendationTypeFactoryImpl(
     private val listener: GlobalRecomListener,

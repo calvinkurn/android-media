@@ -6,13 +6,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.ContentCardModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayCardModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
+import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 
 @RecomTemporary
 object ForYouDataMapper {

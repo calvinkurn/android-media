@@ -20,8 +20,8 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseForYouViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
