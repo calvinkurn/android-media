@@ -42,7 +42,7 @@ class ReviewMediaAdapter(
             oldItem: ReviewMediaUiModel,
             newItem: ReviewMediaUiModel
         ): Boolean {
-            return oldItem.selected == newItem.selected
+            return oldItem.mediaId == newItem.mediaId
         }
 
         override fun areContentsTheSame(
