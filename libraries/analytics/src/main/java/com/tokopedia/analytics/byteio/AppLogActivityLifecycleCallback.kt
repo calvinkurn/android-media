@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.tokopedia.analytics.byteio.AppLogAnalytics.hasStartTime
+import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.AppLogAnalytics.startActivityTime
 import java.lang.ref.WeakReference
 
@@ -21,11 +22,8 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
             return
         }
         AppLogAnalytics.currentActivityReference = WeakReference<Activity>(activity)
-        if (activity is IAppLogActivity) {
-            AppLogAnalytics.pageNames.add(activity.getPageName())
-        } else {
-            AppLogAnalytics.pageNames.add(null)
-        }
+        AppLogAnalytics.currentActivityName = activity.javaClass.simpleName
+        AppLogAnalytics.addPageName(activity)
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -53,7 +51,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
     override fun onActivityDestroyed(activity: Activity) {
         if (getCurrentActivity() === activity) {
             AppLogAnalytics.currentActivityReference?.clear()
-            AppLogAnalytics.pageNames.removeLast()
+            removePageName(activity)
         }
     }
 

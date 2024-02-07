@@ -73,7 +73,16 @@ object AppLogAnalytics {
     var currentActivityReference: WeakReference<Activity>? = null
 
     @JvmField
-    var pageNames = mutableListOf<String?>()
+    var currentActivityName: String = ""
+
+    /**
+     * key = activity name
+     * value = page name.
+     * We store activity name to prevent the newly created activity
+     * to override value for current page name
+     */
+    @JvmField
+    var pageNames = mutableListOf<Pair<String, String?>>()
 
     // TODO check how to make this null again
     @JvmField
@@ -88,6 +97,29 @@ object AppLogAnalytics {
 
     @JvmField
     var hasStartTime = false
+
+    private val lock = Any()
+
+    fun addPageName(activity: Activity) {
+        val actName = activity.javaClass.simpleName
+        if (activity is IAppLogActivity) {
+            synchronized(lock) {
+                pageNames.add(actName to activity.getPageName())
+            }
+        } else {
+            synchronized(lock) {
+                pageNames.add(actName to null)
+            }
+        }
+    }
+
+    fun removePageName(activity: Activity) {
+        synchronized(lock) {
+            val pageNameToRemove =
+                AppLogAnalytics.pageNames.findLast { it.first == activity.javaClass.simpleName }
+            AppLogAnalytics.pageNames.remove(pageNameToRemove)
+        }
+    }
 
     fun sendEnterPage(product: TrackProductDetail) {
         if (sourcePageType == null) {
@@ -119,13 +151,18 @@ object AppLogAnalytics {
     }
 
     private fun JSONObject.addPage() {
-        put("previous_page", pageNames.getOrNull(pageNames.size - 2) ?: "")
-        put("page_name", currentPage())
+        put("previous_page", previousPageName())
+        put("page_name", currentPageName())
         put("source_page_type", sourcePageType)
         put("entrance_form", EntranceForm.GRID_GOODS_CARD.str)
     }
 
-    private fun currentPage() = pageNames.last()
+    private fun currentPageName() =
+        pageNames.findLast { it.first == currentActivityName }?.second ?: ""
+
+    private fun previousPageName() =
+        (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - 1)?.second)
+            ?: ""
 
     fun sendClickProduct(inputPageType: SourcePageType?, product: TrackProduct) {
         if (sourcePageType == null && inputPageType != null) {
