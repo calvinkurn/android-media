@@ -101,6 +101,9 @@ open class ShopDiscountProductDetailItemViewHolder(
                         listener.onClickSubsidyInfo(uiModel)
                     }
                 }
+            } else {
+                textSubsidyStatus.hide()
+                iconSubsidyInfo.hide()
             }
         }
     }

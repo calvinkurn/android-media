@@ -79,13 +79,11 @@ class ShopDiscountSubsidyProductItemViewHolder(
     }
 
     private fun setProductData(uiModel: ShopDiscountProductSubsidyUiModel) {
-        val parentName = if (uiModel.productDetailData.isParent) {
-            uiModel.productDetailData.parentName
-        } else {
+        val parentName = uiModel.productDetailData.parentName.ifEmpty {
             uiModel.productDetailData.productName
         }
-        val variantName = if (uiModel.productDetailData.isParent) {
-            uiModel.productDetailData.parentName
+        val variantName = if (uiModel.productDetailData.parentName.isNotEmpty()) {
+            uiModel.productDetailData.productName
         } else {
             String.EMPTY
         }
