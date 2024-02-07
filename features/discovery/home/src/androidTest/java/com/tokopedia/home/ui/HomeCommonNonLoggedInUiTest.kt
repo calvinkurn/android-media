@@ -37,7 +37,7 @@ class HomeCommonNonLoggedInUiTest : HomeNonLoginAssertion {
             InstrumentationAuthHelper.clearUserSession()
             setupGraphqlMockResponse(HomeMockResponseConfig())
             enableCoachMark(context)
-            HomeMockValueHelper.setupAbTestRemoteConfig(atf2Rollence = false)
+            HomeMockValueHelper.setupAbTestRemoteConfig()
             super.beforeActivityLaunched()
         }
     }

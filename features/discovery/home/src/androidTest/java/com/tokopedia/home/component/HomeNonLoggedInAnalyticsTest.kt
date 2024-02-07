@@ -49,7 +49,7 @@ class HomeNonLoggedInAnalyticsTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             disableCoachMark(context)
-            HomeMockValueHelper.setupAbTestRemoteConfig(atf2Rollence = true)
+            HomeMockValueHelper.setupAbTestRemoteConfig()
             setupGraphqlMockResponse(HomeMockResponseConfig())
         }
     }
