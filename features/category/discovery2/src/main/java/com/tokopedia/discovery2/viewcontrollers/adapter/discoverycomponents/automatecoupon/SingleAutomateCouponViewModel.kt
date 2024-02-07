@@ -40,10 +40,12 @@ class SingleAutomateCouponViewModel(
 
     private fun fetch() {
         launchCatchError(block = {
-            useCase?.execute(component.id, component.pageEndPoint)
-            componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
+            val state = useCase?.execute(component.id, component.pageEndPoint)
+            if (state == GetAutomateCouponUseCase.State.LOADED) {
+                componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
+            }
         }, onError = {
-            Timber.e(it)
-        })
+                Timber.e(it)
+            })
     }
 }
