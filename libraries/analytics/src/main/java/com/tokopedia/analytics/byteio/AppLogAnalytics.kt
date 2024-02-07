@@ -169,8 +169,8 @@ object AppLogAnalytics {
     fun removePageName(activity: Activity) {
         synchronized(lock) {
             val pageNameToRemove =
-                AppLogAnalytics.pageNames.findLast { it.first == activity.javaClass.simpleName }
-            AppLogAnalytics.pageNames.remove(pageNameToRemove)
+                pageNames.findLast { it.first == activity.javaClass.simpleName }
+            pageNames.remove(pageNameToRemove)
         }
     }
 
@@ -269,12 +269,18 @@ object AppLogAnalytics {
         put("entrance_form", EntranceForm.GRID_GOODS_CARD.str)
     }
 
-    private fun currentPageName() =
-        pageNames.findLast { it.first == currentActivityName }?.second ?: ""
+    private fun currentPageName(): String {
+        return synchronized(lock) {
+            pageNames.findLast { it.first == currentActivityName }?.second ?: ""
+        }
+    }
 
-    private fun previousPageName() =
-        (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - 1)?.second)
-            ?: ""
+    private fun previousPageName(): String {
+        return synchronized(lock) {
+            (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - 1)?.second)
+                ?: ""
+        }
+    }
 
     fun sendClickProduct(inputPageType: SourcePageType?, product: TrackProduct) {
         if (sourcePageType == null && inputPageType != null) {
