@@ -1729,6 +1729,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleBroadcasterError(cause: Throwable) {
         viewModelScope.launch {
+            submitAction(PlayBroadcastAction.SendErrorLog(cause))
+
             _uiEvent.emit(PlayBroadcastEvent.ShowBroadcastError(cause))
         }
     }
