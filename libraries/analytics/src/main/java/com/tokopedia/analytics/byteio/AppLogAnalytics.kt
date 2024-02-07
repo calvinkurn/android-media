@@ -3,7 +3,9 @@ package com.tokopedia.analytics.byteio
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import android.util.Log
 import com.bytedance.applog.AppLog
+import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
 import java.lang.ref.WeakReference
@@ -333,6 +335,9 @@ object AppLogAnalytics {
     @JvmStatic
     fun init(application: Application) {
         initAppLog(application.applicationContext)
+        EventsSenderUtils.setEventsSenderEnable("573733", true, application)
+        EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
+        Log.d("BYTEIO", "applog dId: ${AppLog.getDid()}")
     }
 
 }
