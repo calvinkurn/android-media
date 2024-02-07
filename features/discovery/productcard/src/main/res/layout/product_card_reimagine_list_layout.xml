@@ -212,7 +212,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/product_card_reimagine_nett_price_height"
                     android:gravity="center"
-                    android:paddingStart="20dp"
+                    android:paddingStart="22dp"
                     android:paddingEnd="4dp"
                     android:paddingVertical="2dp"
                     android:layout_below="@id/productCardPrice"
