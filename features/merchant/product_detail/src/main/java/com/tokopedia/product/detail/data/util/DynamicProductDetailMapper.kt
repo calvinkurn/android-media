@@ -73,6 +73,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
@@ -179,7 +180,7 @@ object DynamicProductDetailMapper {
                             name = component.componentName,
                             position = index,
                             queryParam = componentData?.queryParam.orEmpty(),
-                            thematicId = componentData?.thematicId.orEmpty(),
+                            thematicId = componentData?.thematicId.orEmpty()
                         )
                     )
                 }
@@ -381,6 +382,16 @@ object DynamicProductDetailMapper {
                         GWPUiModel(type = component.type, name = component.componentName)
                     )
                 }
+                ProductDetailConstant.SDUI_VIEW -> {
+                    val sduiData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    listOfComponent.add(
+                        SDUIDataModel(
+                            type = component.type,
+                            name = component.componentName,
+                            jsonString = sduiData.sduiData
+                        )
+                    )
+                }
             }
         }
         return listOfComponent
@@ -412,7 +423,8 @@ object DynamicProductDetailMapper {
 
             else -> {
                 if (component.componentName.startsWith(RECOM_VERTICAL) ||
-                    component.componentName.contains(RECOM_STEAL_THE_LOOK)) {
+                    component.componentName.contains(RECOM_STEAL_THE_LOOK)
+                ) {
                     PdpRecommendationWidgetDataModel(
                         recommendationWidgetModel = mapPdpRecommendationWidgetModel(component, dynamicProductInfoP1, index)
                     )
@@ -1078,7 +1090,7 @@ object DynamicProductDetailMapper {
             pageType = component.type,
             queryParam = data?.queryParam.orEmpty(),
             criteriaThematicIDs = thematicIds,
-            productIds = listOf(dynamicProductInfoP1.basic.productID),
+            productIds = listOf(dynamicProductInfoP1.basic.productID)
         )
         val trackingModel = RecommendationWidgetTrackingModel(
             androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
@@ -1089,7 +1101,7 @@ object DynamicProductDetailMapper {
         return RecommendationWidgetModel(
             metadata = metadata,
             trackingModel = trackingModel,
-            source = source,
+            source = source
         )
     }
 

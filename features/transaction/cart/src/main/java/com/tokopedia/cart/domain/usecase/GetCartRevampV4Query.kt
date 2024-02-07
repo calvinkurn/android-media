@@ -14,6 +14,13 @@ const val CART_REVAMP_V4_QUERY =
                   content
                 }
               }
+              onboarding_bottomsheet {
+                type
+                title
+                description
+                button_text
+                image_url
+              }
               errors
               popup_error_message
               pop_up_message

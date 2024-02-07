@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
@@ -41,6 +42,8 @@ class HomeHeaderViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_header
+
+        private const val IMAGE_ASSET_FOLDER = "/images"
     }
 
     private var binding: ItemTokopedianowHomeHeaderBinding? by viewBinding()
@@ -143,10 +146,7 @@ class HomeHeaderViewHolder(
 
             viewBackground.setBackgroundColor(backgroundColor)
             imageHeaderSupergraphic.loadImageWithoutPlaceholder(imageUrl)
-            lottieAnimationHeader.apply {
-                setAnimationFromUrl(animUrl)
-                setFailureListener {  }
-            }
+            playAnimation(animUrl)
 
             viewBackground.show()
             imageHeaderSupergraphic.show()
@@ -270,6 +270,23 @@ class HomeHeaderViewHolder(
 
     private fun updateChooseAddressWidget() {
         binding?.chooseAddressWidget?.updateWidget()
+    }
+
+    private fun playAnimation(animUrl: String) {
+        val lottieCompositionFactory = LottieCompositionFactory
+            .fromUrl(itemView.context, animUrl)
+
+        lottieCompositionFactory.addListener {
+            binding?.apply {
+                lottieAnimationHeader.imageAssetsFolder = IMAGE_ASSET_FOLDER
+                lottieAnimationHeader.setComposition(it)
+                lottieAnimationHeader.playAnimation()
+            }
+        }
+
+        lottieCompositionFactory.addFailureListener {
+
+        }
     }
 
     interface HomeHeaderListener {
