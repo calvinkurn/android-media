@@ -14,24 +14,7 @@ object BalanceUtil {
         return totalContentWidth / totalItems
     }
 
-    fun getBalanceTextWidth(context: Context, isAtf3: Boolean): Int {
-        return if(isAtf3)
-            getAtf3BalanceTextWidth(context)
-        else
-            getAtf2BalanceTextWidth(context)
-    }
-
-    private fun getAtf2BalanceTextWidth(context: Context): Int {
-        val containerMaxWidth = context.resources.getDimensionPixelSize(homeR.dimen.balance_item_max_width)
-        val leftPadding = context.resources.getDimensionPixelSize(homeR.dimen.balance_inner_left_padding)
-        val rightPadding = context.resources.getDimensionPixelSize(homeR.dimen.balance_atf2_inner_right_padding)
-        val imageToTextPadding = context.resources.getDimensionPixelSize(homeR.dimen.balance_inner_content_padding)
-        val paddings = leftPadding + rightPadding + imageToTextPadding
-        val image = context.resources.getDimensionPixelSize(homeR.dimen.balance_atf2_image_size)
-        return containerMaxWidth - paddings - image
-    }
-
-    private fun getAtf3BalanceTextWidth(context: Context): Int {
+    fun getBalanceTextWidth(context: Context): Int {
         val containerMaxWidth = context.resources.getDimensionPixelSize(homeR.dimen.balance_item_max_width)
         val leftPadding = context.resources.getDimensionPixelSize(homeR.dimen.balance_inner_left_padding)
         val rightPadding = context.resources.getDimensionPixelSize(homeR.dimen.balance_atf3_inner_right_padding)

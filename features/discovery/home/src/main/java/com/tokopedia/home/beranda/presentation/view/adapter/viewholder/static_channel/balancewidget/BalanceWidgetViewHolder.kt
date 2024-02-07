@@ -4,11 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaLinearLayoutManager
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
-import com.tokopedia.home.databinding.LayoutBalanceWidgetAtf2Binding
+import com.tokopedia.home.databinding.LayoutBalanceWidgetBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -20,11 +20,11 @@ class BalanceWidgetViewHolder(
     private val homeThematicUtil: HomeThematicUtil,
 ) :
     AbstractViewHolder<HomeBalanceModel>(itemView) {
-    private var binding: LayoutBalanceWidgetAtf2Binding? by viewBinding()
+    private var binding: LayoutBalanceWidgetBinding? by viewBinding()
     private var balanceAdapter: BalanceAdapter? = null
 
     companion object {
-        val LAYOUT = R.layout.layout_balance_widget_atf2
+        val LAYOUT = R.layout.layout_balance_widget
     }
 
     override fun bind(element: HomeBalanceModel) {
@@ -75,7 +75,7 @@ class BalanceWidgetViewHolder(
         element.balanceDrawerItemModels.forEachIndexed { idx, model ->
             balanceModelList.add(model)
             if (idx < element.balanceDrawerItemModels.size - 1) {
-                balanceModelList.add(BalanceAtf2DividerModel())
+                balanceModelList.add(BalanceDividerModel())
             }
         }
         return balanceModelList

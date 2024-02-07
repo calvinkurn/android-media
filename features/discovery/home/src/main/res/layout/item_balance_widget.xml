@@ -17,7 +17,7 @@
 
         <include
             android:id="@+id/shimmer_item_balance_widget"
-            layout="@layout/layout_item_shimmer_balance_widget_atf2"
+            layout="@layout/layout_item_shimmer_balance_widget"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +25,7 @@
 
         <include
             android:id="@+id/home_container_balance"
-            layout="@layout/layout_balance_widget_success_atf2"
+            layout="@layout/layout_balance_widget_success"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

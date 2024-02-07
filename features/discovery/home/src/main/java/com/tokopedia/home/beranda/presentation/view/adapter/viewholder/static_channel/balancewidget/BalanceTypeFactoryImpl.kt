@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 
@@ -17,7 +17,7 @@ class BalanceTypeFactoryImpl(
         return BalanceViewHolder.LAYOUT
     }
 
-    override fun type(visitable: BalanceAtf2DividerModel): Int {
+    override fun type(visitable: BalanceDividerModel): Int {
         return BalanceDividerViewHolder.LAYOUT
     }
 
