@@ -107,14 +107,14 @@ fun FeedProductHighlight(
                     variant = ButtonVariant.FILLED,
                     size = ButtonSize.SMALL,
                     trailingIcon = unifycomponentsR.drawable.iconunify_cart,
-                    onClick = { },
+                    onClick = { onAtcClick(product) },
                     modifier = Modifier
                         .constrainAs(btnAtc) {
                             width = Dimension.fillToConstraints
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
-                        }
-                        .clickable { onAtcClick(product) })
+                        })
+                
                 //Close Button: close show label again
                 NestIcon(iconId = IconUnify.CLOSE,
                     colorLightEnable = NestTheme.colors.NN._0,
@@ -143,7 +143,7 @@ fun FeedProductHighlight(
                             start.linkTo(ogPrice.start)
                             end.linkTo(btnAtc.start, 4.dp)
                         })
-                    NestRibbon(text = product.discountFmt, top = 4.dp)
+                    NestRibbon(text = product.discountFmt, top = 2.dp)
                 }
             }
         }
