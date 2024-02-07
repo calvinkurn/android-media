@@ -13,7 +13,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
-import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
@@ -50,7 +49,6 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class HomeVisitableFactoryImpl(
     val userSessionInterface: UserSessionInterface?,
-    private val homePrefController: HomePrefController,
     val remoteConfig: RemoteConfig,
     private val homeDefaultDataSource: HomeDefaultDataSource
 ) : HomeVisitableFactory {
@@ -142,7 +140,6 @@ class HomeVisitableFactoryImpl(
     }
 
     private fun addDynamicIconData(defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false) {
-        if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
         var isDynamicIconWrapType = false
         var iconList = defaultIconList
         if (iconList.isEmpty()) {
@@ -169,7 +166,6 @@ class HomeVisitableFactoryImpl(
     }
 
     private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false, componentName: String) {
-        if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
         val iconType = if(componentName == TYPE_ICON_V2) DynamicIconComponentDataModel.Type.SMALL else DynamicIconComponentDataModel.Type.BIG
         val numOfRows = if(componentName == TYPE_ICON_V2) 2 else 1
         val viewModelDynamicIcon = DynamicIconComponentDataModel(

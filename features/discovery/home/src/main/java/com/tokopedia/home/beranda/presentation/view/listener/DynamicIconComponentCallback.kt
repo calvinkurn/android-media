@@ -5,7 +5,6 @@ import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.DynamicIconTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
@@ -13,7 +12,7 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 /**
  * Created by Lukas on 1/14/21.
  */
-class DynamicIconComponentCallback(private val context: Context?, private val homeCategoryListener: HomeCategoryListener, private val homePrefController: HomePrefController?) : DynamicIconComponentListener {
+class DynamicIconComponentCallback(private val context: Context?, private val homeCategoryListener: HomeCategoryListener) : DynamicIconComponentListener {
     companion object {
         private val TOKONOW_ICON_ID = arrayOf("792", "831")
     }
@@ -50,6 +49,5 @@ class DynamicIconComponentCallback(private val context: Context?, private val ho
     }
 
     override fun onSuccessLoadImage() {
-        homePrefController?.setHomeRevampAtfVariant()
     }
 }
