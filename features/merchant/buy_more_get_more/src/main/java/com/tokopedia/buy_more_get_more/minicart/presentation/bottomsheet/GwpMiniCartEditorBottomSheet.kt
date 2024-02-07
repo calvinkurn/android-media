@@ -266,7 +266,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
     }
 
     private fun sendAnalyticCloseClicked(data: BmgmMiniCartDataUiModel) {
-        super.setCloseClickListener {
+        bottomSheetClose.setOnClickListener {
             val warehouseId = param.warehouseIds.firstOrNull()?.toString().orEmpty()
             val shopId = param.shopIds.firstOrNull()?.toString().orEmpty()
             val userSession = viewModel.getUserId()
