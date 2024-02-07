@@ -34,9 +34,13 @@ class RechargeHomepageTodoWidgetBottomSheet : BottomSheetUnify(), BottomSheetTod
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onClickBottomSheetTodoWidget(applink: String) {
-        listener?.onClickBottomSheetTodoWidget(applink)
+    override fun onClickBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton) {
+        listener?.onClickBottomSheetTodoWidget(optionButton)
         dismiss()
+    }
+
+    override fun onImpressBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton) {
+        listener?.onImpressBottomSheetTodoWidget(optionButton)
     }
 
     private fun initView() {
@@ -60,6 +64,8 @@ class RechargeHomepageTodoWidgetBottomSheet : BottomSheetUnify(), BottomSheetTod
     }
 
     interface BottomSheetTodoWidgetListener {
-        fun onClickBottomSheetTodoWidget(applink: String)
+        fun onClickBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton)
+
+        fun onImpressBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton)
     }
 }

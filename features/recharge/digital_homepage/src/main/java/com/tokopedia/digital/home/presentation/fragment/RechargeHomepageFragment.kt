@@ -601,8 +601,17 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         bottomSheet.show(childFragmentManager, "")
     }
 
-    override fun onClickBottomSheetTodoWidget(applink: String) {
-        RouteManager.route(context, applink)
+    override fun onClickBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton) {
+        RouteManager.route(context, optionButton.applink)
+        optionButton.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_CLICK_BUTTON }?.run {
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+        }
+    }
+
+    override fun onImpressBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton) {
+        optionButton.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION_BUTTON }?.run {
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+        }
     }
 
     override fun onCloseItem(widget: RechargeHomepageSections.Widgets) {

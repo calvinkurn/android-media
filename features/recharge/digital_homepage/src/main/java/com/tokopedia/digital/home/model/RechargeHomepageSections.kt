@@ -274,7 +274,11 @@ data class RechargeHomepageSections(
         @SerializedName("app_link")
         @Expose
         val applink: String = "",
-    )
+
+        @SerializedName("tracking")
+        @Expose
+        val tracking: List<Tracking> = listOf(),
+    ): ImpressHolder()
 }
 
 interface RechargeHomepageSectionModel : Visitable<RechargeHomepageAdapterTypeFactory> {
