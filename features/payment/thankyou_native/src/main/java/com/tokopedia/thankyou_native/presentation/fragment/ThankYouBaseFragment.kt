@@ -441,7 +441,7 @@ open class ThankYouBaseFragment :
                     is Success -> {
                         setTopTickerData(it.data)
                         if (isV2Enabled) {
-                            bottomContentAdapter.setTicker(it.data)
+                            thanksPageDataViewModel.setTicker(it.data)
                         }
                     }
                     is Fail -> getTopTickerView()?.gone()

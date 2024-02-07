@@ -15,15 +15,4 @@ class BottomContentAdapter(private val visitableList: ArrayList<Visitable<*>>,
         visitableList.clear()
         visitableList.addAll(data)
     }
-
-    fun setTicker(listTicker: List<TickerData>) {
-        if (visitableList.first() is WaitingHeaderUiModel) {
-            val newVisitable = (visitableList.first() as WaitingHeaderUiModel).copy(
-                tickerData = listTicker
-            )
-            visitableList.remove(visitableList.first())
-            visitableList.add(Int.ZERO, newVisitable)
-            notifyItemChanged(Int.ZERO)
-        }
-    }
 }

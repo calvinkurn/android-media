@@ -73,13 +73,16 @@ class WaitingHeaderViewHolder(
         binding?.seeDetailBtn?.setOnClickListener {
             listener.onSeeDetailInvoice()
         }
-        if (binding?.headerTicker?.isVisible == true) return
         binding?.headerTicker?.apply {
             shouldShowWithAction(data.tickerData.isNotEmpty()) {
                 val tickerViewPagerAdapter = TickerPagerAdapter(context, data.tickerData)
                 addPagerView(tickerViewPagerAdapter, data.tickerData)
-                tickerViewPagerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                tickerViewPagerAdapter.setPagerDescriptionClickEvent(object :
+                    TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(
+                        linkUrl: CharSequence,
+                        itemData: Any?
+                    ) {
                         if (itemData is ThankPageTopTickerData) {
                             if (itemData.isAppLink()) {
                                 listener.openApplink(linkUrl.toString())
