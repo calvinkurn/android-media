@@ -26,8 +26,8 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Navigate
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ToggleReviewWatchMode
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
@@ -129,8 +129,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
             LikeFromResult -> handleLikeFromResult()
             FetchReviewByIds -> handleFetchReviewByIds()
             ToggleReviewWatchMode -> handleReviewWatchMode()
-            is ProductSelected -> handleProductSelected(action.position)
-            is ReviewSelected -> handleReviewSelected(action.position)
+            is ProductMediaSelected -> handleProductMediaSelected(action.position)
+            is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
             is ProductAction -> addToChart(action.model)
             is Navigate -> handleNavigate(action.appLink)
@@ -191,8 +191,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }) { _uiEvent.emit(UnknownSourceData) }
     }
 
-    private fun handleProductSelected(position: Int) {
+    private fun handleProductMediaSelected(position: Int) {
         _productMediaState.update { productUiModel ->
+            val currentPos = productUiModel.productMedia.indexOfFirst { it.selected }
+            if (currentPos < 0 || currentPos == position) return
             productUiModel.copy(
                 productMedia = productUiModel.productMedia.mapIndexed { index, media ->
                     media.copy(selected = index == position)
@@ -201,7 +203,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleReviewSelected(position: Int) {
+    private fun handleReviewContentSelected(position: Int) {
         if (_reviewPosition.value == position) return
         _reviewPosition.value = position
         updateReviewToUnWatchMode()

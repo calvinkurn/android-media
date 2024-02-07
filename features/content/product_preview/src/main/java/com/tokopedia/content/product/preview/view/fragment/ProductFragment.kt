@@ -26,7 +26,7 @@ import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoLi
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -70,7 +70,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
                 ProductThumbnailListener {
                 override fun onClickProductThumbnail(position: Int) {
                     scrollTo(position)
-                    viewModel.onAction(ProductSelected(position))
+                    viewModel.onAction(ProductMediaSelected(position))
                 }
             }
         )
@@ -81,7 +81,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
             val position = getMediaCurrentPosition()
             scrollTo(position)
-            viewModel.onAction(ProductSelected(position))
+            viewModel.onAction(ProductMediaSelected(position))
         }
     }
 
