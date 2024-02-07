@@ -271,7 +271,7 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
     }
     // ========================================== //
 
-    // TODO: Update showcase name & remove product
+    // Update showcase name & remove product
     @Test
     fun `update shop showcase name and remove 1 product return Success update showcase name and Success remove product`() {
         runBlocking {
