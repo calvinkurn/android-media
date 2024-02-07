@@ -8,5 +8,4 @@ interface ProductCardColor {
     val soldCountTextColor: Int
     val discountTextColor: Int
     val ratingTextColor: Int
-    val labelBenefitOutlineColor: Int
 }

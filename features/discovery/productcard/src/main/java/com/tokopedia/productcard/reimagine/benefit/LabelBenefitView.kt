@@ -11,7 +11,6 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.productcard.experiments.ColorMode
 import com.tokopedia.productcard.reimagine.ProductCardLabel
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.utils.getPixel
@@ -92,27 +91,25 @@ class LabelBenefitView : FrameLayout {
     private fun getCircleCutoutYPos(): Float =
         context.getPixel(productcardR.dimen.product_card_reimagine_label_benefit_height) / 2f
 
-    fun render(labelGroup: ProductCardModel.LabelGroup?, colorMode: ColorMode?) {
+    fun render(labelGroup: ProductCardModel.LabelGroup?) {
         if (labelGroup == null) {
             hide()
         } else {
-            showLabelBenefit(labelGroup, colorMode)
+            showLabelBenefit(labelGroup)
         }
     }
 
-    private fun showLabelBenefit(labelGroup: ProductCardModel.LabelGroup, colorMode: ColorMode?) {
+    private fun showLabelBenefit(labelGroup: ProductCardModel.LabelGroup) {
         ProductCardLabel(background, text).render(labelGroup)
 
-        val shouldOverrideLabelBenefitColor = colorMode != null
+        val outlineColor = labelGroup.outlineColor() ?: ""
+        circleCutoutStrokePaint?.color = safeParseColor(outlineColor, Color.TRANSPARENT)
 
-        val outlineColor = if (shouldOverrideLabelBenefitColor) {
-            colorMode?.labelBenefitOutlineColor ?: android.R.color.transparent
-        } else {
-            val color = labelGroup.outlineColor() ?: ""
-            safeParseColor(color, Color.TRANSPARENT)
-        }
+        invalidate()
+    }
 
-        circleCutoutStrokePaint?.color = ContextCompat.getColor(context, outlineColor)
+    fun setCutoutFillColor(fillColor: String) {
+        circleCutoutFillPaint?.color = safeParseColor(fillColor, Color.TRANSPARENT)
         invalidate()
     }
 

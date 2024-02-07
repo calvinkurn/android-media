@@ -18,8 +18,6 @@ enum class ColorMode : ProductCardColor {
             get() = R.color.dms_static_light_RN500
         override val ratingTextColor: Int
             get() = R.color.dms_static_light_NN950_68
-        override val labelBenefitOutlineColor: Int
-            get() = android.R.color.transparent
     },
 
     DARK {
@@ -37,7 +35,5 @@ enum class ColorMode : ProductCardColor {
             get() = R.color.dms_static_dark_RN500
         override val ratingTextColor: Int
             get() = R.color.dms_static_dark_NN950_68
-        override val labelBenefitOutlineColor: Int
-            get() = android.R.color.transparent
     }
 }
