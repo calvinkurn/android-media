@@ -99,7 +99,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
         ketupatLandingViewModel?.getLandingPageData()?.observe(this) {
             ketupatLPSwipeToRefreshView?.isRefreshing = false
-            if (it.gamiGetScratchCardLandingPage.appBar?.isShownShareIcon == false) {
+            if (it.gamiGetScratchCardLandingPage.appBar?.isShownShareIcon == true) {
                 view?.let { view -> setSharingHeaderIconAndListener(view, it) }
             }
             scratchCardId = it.gamiGetScratchCardLandingPage.scratchCard?.id.toString()
