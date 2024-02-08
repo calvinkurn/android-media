@@ -209,31 +209,11 @@ class RegisterInitialViewModel @Inject constructor(
         })
     }
 
-    fun registerRequest(
-        email: String,
-        password: String,
-        fullName: String,
-        validateToken: String,
-        isScpToken: Boolean = false //TODO: remove this param for unused SCP
-    ) {
-        launchCatchError(block = {
-            val registerRequestParam = RegisterRequestParam(
-                email, password, OS_TYPE_ANDROID, REG_TYPE_EMAIL, fullName, validateToken
-            )
-            userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
-            val result = registerRequestV2UseCase(registerRequestParam)
-            onSuccessRegisterRequest(result.data)
-        }, onError = {
-            onFailedRegisterRequest(it)
-        })
-    }
-
     fun registerRequestV2(
         email: String,
         password: String,
         fullName: String,
-        validateToken: String,
-        isScpToken: Boolean = false //TODO: remove this param for unused SCP
+        validateToken: String
     ) {
         launchCatchError(block = {
             val keyData = generatePublicKeyUseCase().keyData

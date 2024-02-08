@@ -16,10 +16,13 @@ import dagger.multibindings.StringKey
 
 @Module
 class RegisterInitialQueryModule {
+    companion object {
+        private const val MUTATION_ACTIVATE_USER = "activate_user"
+    }
 
     @Provides
     @IntoMap
-    @StringKey(RegisterInitialQueryConstant.MUTATION_ACTIVATE_USER)
+    @StringKey(MUTATION_ACTIVATE_USER)
     fun provideRawMutationActivateUser(@ApplicationContext context: Context): String =
         GraphqlHelper.loadRawString(context.resources, R.raw.mutation_activate_user)
 }
