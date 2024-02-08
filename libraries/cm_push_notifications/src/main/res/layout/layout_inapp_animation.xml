@@ -151,6 +151,7 @@
                 android:layout_marginBottom="@dimen/dp_12"
                 android:text="Error Code: 1234"
                 android:textAlignment="center"
+                android:visibility="gone"
                 android:textColor="@color/Unify_NN600"
                 app:typographyType="small" />
 
