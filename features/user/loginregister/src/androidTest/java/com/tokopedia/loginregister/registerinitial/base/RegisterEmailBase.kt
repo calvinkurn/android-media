@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.registerinitial.base
 import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,15 +14,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.di.RegisterInitialComponentStub
 import com.tokopedia.loginregister.login.behaviour.base.LoginRegisterBase
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -30,8 +28,6 @@ import javax.inject.Inject
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 open class RegisterEmailBase : LoginRegisterBase() {
-
-    var isDefaultRegisterCheck = true
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
@@ -43,10 +39,7 @@ open class RegisterEmailBase : LoginRegisterBase() {
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Inject
-    lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
-
-    @Inject
-    lateinit var fakeGraphqlRepository: FakeGraphqlRepository
+    lateinit var fakeRepo: FakeGraphqlRepository
 
     @Before
     open fun before() {
@@ -71,33 +64,9 @@ open class RegisterEmailBase : LoginRegisterBase() {
         activityTestRule.launchActivity(intent)
     }
 
-    protected fun setRegisterCheckDefaultResponse() {
-        val data = RegisterCheckData(
-            isExist = true,
-            userID = "123456",
-            registerType = "email",
-            view = "yoris.prayogooooo@tokopedia.com"
-        )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
-    }
-
     fun runTest(test: () -> Unit) {
-        if (isDefaultRegisterCheck) {
-            setRegisterCheckDefaultResponse()
-        }
         setupActivity()
         test.invoke()
-    }
-
-    fun inputEmailRegister(value: String) {
-        val viewInteraction = onView(
-            allOf(
-                withId(unifycomponentsR.id.text_field_input),
-                isDescendantOfA(withId(R.id.wrapper_email))
-            )
-        )
-            .check(matches(isDisplayed()))
-        viewInteraction.perform(typeText(value))
     }
 
     fun emailInputIsEnabled(id: Int) {
@@ -106,7 +75,12 @@ open class RegisterEmailBase : LoginRegisterBase() {
     }
 
     fun inputName(value: String) {
-        onView(allOf(withId(unifycomponentsR.id.text_field_input), isDescendantOfA(withId(R.id.wrapper_name))))
+        onView(
+            allOf(
+                withId(unifycomponentsR.id.text_field_input),
+                isDescendantOfA(withId(R.id.wrapper_name))
+            )
+        )
             .check(matches(isDisplayed()))
             .perform(clearText(), typeText(value))
     }
@@ -118,5 +92,11 @@ open class RegisterEmailBase : LoginRegisterBase() {
                 isDescendantOfA(withId(R.id.wrapper_password))
             )
         ).check(matches(isDisplayed())).perform(clearText(), typeText(value))
+    }
+
+    fun clickRegister() {
+        val viewInteraction = onView(withId(R.id.register_button))
+            .check(matches(isDisplayed()))
+        viewInteraction.perform(ViewActions.click())
     }
 }

@@ -9,16 +9,24 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.user.DeeplinkMapperUser
-import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.R as loginregisterR
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import org.hamcrest.Matchers.not
+import com.tokopedia.header.R as headerR
 
 open class LoginRegisterBase {
 
     fun clickSubmit() {
-        val viewInteraction = onView(withId(R.id.register_btn))
+        val viewInteraction = onView(withId(loginregisterR.id.register_btn))
             .check(matches(isDisplayed()))
         viewInteraction.perform(ViewActions.click())
+    }
+
+    fun clickOnDialog(value: String) {
+        onView(withText(value))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(isDisplayed()))
+            .perform(ViewActions.click())
     }
 
     fun clearEmailInput() {
@@ -41,6 +49,11 @@ open class LoginRegisterBase {
     fun shouldBeDisabled(id: Int) {
         onView(withId(id))
             .check(matches(not(isEnabled())))
+    }
+
+    fun shouldBeEnabled(id: Int) {
+        onView(withId(id))
+            .check(matches(isEnabled()))
     }
 
     fun shouldBeDisplayed(id: Int) {
@@ -108,13 +121,13 @@ open class LoginRegisterBase {
     }
 
     fun clickTopLogin() {
-        val viewInteraction = onView(withId(com.tokopedia.header.R.id.actionTextID))
+        val viewInteraction = onView(withId(headerR.id.actionTextID))
             .check(matches(isDisplayed()))
         viewInteraction.perform(ViewActions.click())
     }
 
     fun clickSocmedButton() {
-        onView(withId(R.id.socmed_btn))
+        onView(withId(loginregisterR.id.socmed_btn))
             .check(matches(isDisplayed()))
             .perform(ViewActions.click())
     }
