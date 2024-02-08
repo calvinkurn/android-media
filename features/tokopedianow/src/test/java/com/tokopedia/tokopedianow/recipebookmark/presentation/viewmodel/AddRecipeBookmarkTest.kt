@@ -4,83 +4,61 @@ import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkR
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
+import com.tokopedia.tokopedianow.recipebookmark.ui.model.RecipeBookmarkEvent
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.util.TestUtils.verifyEquals
-import com.tokopedia.tokopedianow.util.TestUtils.verifyFail
-import com.tokopedia.tokopedianow.util.TestUtils.verifyThrowable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class AddRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
+@OptIn(ExperimentalCoroutinesApi::class)
+class AddRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture() {
 
     @Test
     fun `when calling the addRecipeBookmark() function, the request should be successful and add back item which has been removed`(): Unit = runBlocking {
-        val recipeBookmarkResponse = mockRecipeBookmark()
-
         mockRemoveBookmark()
 
         val addResponse = "recipebookmark/addrecipebookmarksuccess.json"
             .jsonToObject<AddRecipeBookmarkResponse>()
 
-        addRecipeBookmarkUseCase
-            .mockAddRecipeBookmark(
-                response = addResponse
-            )
+        mockAddRecipeBookmark(addResponse)
 
         getRemoveAndAddRecipeBookmark()
 
-        verifyList(
-            isAdding = true,
-            recipeBookmarkResponse = recipeBookmarkResponse
-        )
+        verifyList(isAdding = true)
     }
 
     @Test
-    fun `when calling the addRecipeBookmark() function, the request should fail and show toaster`(): Unit = runBlocking {
-        val recipeBookmarkResponse = mockRecipeBookmark()
-
-        mockRemoveBookmark()
-
+    fun `when calling the addRecipeBookmark() function, the request should fail and show toaster`() = runTest {
         val addResponse = "recipebookmark/addrecipebookmarkerror.json"
             .jsonToObject<AddRecipeBookmarkResponse>()
 
-        addRecipeBookmarkUseCase
-            .mockAddRecipeBookmark(
-                response = addResponse
-            )
+        observeUiAction()
+        mockAddRecipeBookmark(addResponse)
 
         getRemoveAndAddRecipeBookmark()
 
-        viewModel
-            .toaster
-            .value
-            .verifyFail()
-            .verifyEquals(
-                data = ToasterUiModel(
-                    model = ToasterModel(
-                        message = "failed",
-                        recipeId = "7",
-                        isSuccess = false
-                    ),
-                    position = 0,
-                    isRemoving = false
-                )
-            )
-
-        verifyList(
-            isAdding = false,
-            recipeBookmarkResponse = recipeBookmarkResponse
+        val expectedToaster = ToasterUiModel(
+            model = ToasterModel(
+                message = "failed",
+                recipeId = "7",
+                isSuccess = false
+            ),
+            position = 0,
+            isRemoving = false
         )
-        removeAndVerifyToaster()
+
+        verifyToaster(expectedToaster = expectedToaster)
+
+        verifyList(expectedItemList = recipeList)
     }
 
     @Test
-    fun `when calling the addRecipeBookmark() function, the request should fail, throws an throwable and show toaster`(): Unit = runBlocking {
-        val recipeBookmarkResponse = mockRecipeBookmark()
-
-        mockRemoveBookmark()
-
+    fun `when calling the addRecipeBookmark() function, the request should fail, throws an throwable and show toaster`() = runTest {
         val throwable = Throwable()
+
+        observeUiAction()
+        mockRemoveBookmark()
 
         addRecipeBookmarkUseCase
             .mockAddRecipeBookmark(
@@ -89,30 +67,20 @@ class AddRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
 
         getRemoveAndAddRecipeBookmark()
 
-        viewModel
-            .toaster
-            .value
-            .verifyFail()
-            .verifyEquals(
-                data = ToasterUiModel(
-                    model = ToasterModel(
-                        message = "",
-                        recipeId = "7",
-                        isSuccess = false
-                    ),
-                    position = 0,
-                    isRemoving = false
-                )
-            )
-            .verifyThrowable(
+        val expectedToaster = ToasterUiModel(
+            model = ToasterModel(
+                message = "",
+                recipeId = "7",
+                isSuccess = false,
                 throwable = throwable
-            )
-
-        verifyList(
-            isAdding = false,
-            recipeBookmarkResponse = recipeBookmarkResponse
+            ),
+            position = 0,
+            isRemoving = false
         )
-        removeAndVerifyToaster()
+
+        verifyToaster(expectedToaster)
+
+        verifyList(isAdding = false)
     }
 
     @Test
@@ -120,43 +88,38 @@ class AddRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
         val addResponse = "recipebookmark/addrecipebookmarksuccess.json"
             .jsonToObject<AddRecipeBookmarkResponse>()
 
-        addRecipeBookmarkUseCase
-            .mockAddRecipeBookmark(
-                response = addResponse
-            )
+        mockAddRecipeBookmark(addResponse)
 
-        viewModel
-            .addRecipeBookmark(
+        viewModel.onEvent(
+            RecipeBookmarkEvent.AddRecipeBookmark(
                 position = 0,
                 recipeId = "7",
                 isRemoving = false
             )
+        )
 
-        viewModel.loadRecipeBookmarks
-            .value
-            .verifyEquals(
-                data = emptyList()
-            )
+        verifyList(expectedItemList = null)
     }
 
     private fun getRemoveAndAddRecipeBookmark() {
-        viewModel
-            .loadFirstPage()
+        viewModel.onEvent(RecipeBookmarkEvent.LoadRecipeBookmarkList)
 
-        viewModel
-            .removeRecipeBookmark(
+        viewModel.onEvent(
+            RecipeBookmarkEvent.RemoveRecipeBookmark(
                 title = "Test Create Recipe 7",
                 position = 0,
                 recipeId = "7",
                 isRemoving = true
             )
+        )
 
-        viewModel
-            .addRecipeBookmark(
+        viewModel.onEvent(
+            RecipeBookmarkEvent.AddRecipeBookmark(
                 position = 0,
                 recipeId = "7",
                 isRemoving = false
             )
+        )
     }
 
     private fun mockRemoveBookmark() {
@@ -168,5 +131,4 @@ class AddRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
                 response = removeBookmarkResponse
             )
     }
-
 }

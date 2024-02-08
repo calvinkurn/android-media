@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowTagBinding
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder.TagListener
+import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 
 class TagAdapter(
     private var itemList: List<TagUiModel>,

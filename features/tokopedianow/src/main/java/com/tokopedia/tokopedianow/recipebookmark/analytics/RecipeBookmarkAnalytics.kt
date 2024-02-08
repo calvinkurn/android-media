@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.recipebookmark.analytics
 
 import android.os.Bundle
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
@@ -42,6 +43,7 @@ import javax.inject.Inject
  */
 
 class RecipeBookmarkAnalytics @Inject constructor(
+    private val addressData: LocalCacheModel,
     private val userSession: UserSessionInterface
 ) {
     private object CATEGORY {
@@ -117,9 +119,10 @@ class RecipeBookmarkAnalytics @Inject constructor(
     fun clickRecipeCard(
         recipeId: String,
         recipeTitle: String,
-        warehouseId: String,
         position: Int
     ) {
+        val warehouseId = addressData.warehouse_id
+
         val promotion = getPromotion(
             recipeId = recipeId,
             recipeTitle = recipeTitle,
@@ -140,9 +143,10 @@ class RecipeBookmarkAnalytics @Inject constructor(
     fun impressRecipeCard(
         recipeId: String,
         recipeTitle: String,
-        position: Int,
-        warehouseId: String
+        position: Int
     ) {
+        val warehouseId = addressData.warehouse_id
+
         val promotion = getPromotion(
             recipeId = recipeId,
             recipeTitle = recipeTitle,

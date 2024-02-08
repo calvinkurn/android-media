@@ -3,138 +3,109 @@ package com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
+import com.tokopedia.tokopedianow.recipebookmark.ui.model.RecipeBookmarkEvent
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.util.TestUtils.verifyEquals
-import com.tokopedia.tokopedianow.util.TestUtils.verifyFail
-import com.tokopedia.tokopedianow.util.TestUtils.verifySuccess
-import com.tokopedia.tokopedianow.util.TestUtils.verifyThrowable
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class RemoveRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
+@OptIn(ExperimentalCoroutinesApi::class)
+class RemoveRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture() {
 
     @Test
-    fun `when calling the removeRecipeBookmark() function, the request should be successful, show toaster and remove one item of recipe bookmarks`(): Unit = runBlocking {
-        val recipeBookmarkResponse = mockRecipeBookmark()
-
+    fun `when calling the removeRecipeBookmark() function, the request should be successful, show toaster and remove one item of recipe bookmarks`() = runTest {
         val removeResponse = "recipebookmark/removerecipebookmarksuccess.json"
             .jsonToObject<RemoveRecipeBookmarkResponse>()
 
-        removeRecipeBookmarkUseCase
-            .mockRemoveRecipeBookmark(
-                response = removeResponse
-            )
+        observeUiAction()
+        mockRemoveRecipeBookmark(removeResponse)
 
         getAndRemoveRecipeBookmark()
 
-        viewModel
-            .toaster
-            .value
-            .verifySuccess()
-            .verifyEquals(
-                data = ToasterUiModel(
-                    model = ToasterModel(
-                        title = "Test Create Recipe 7",
-                        message = "",
-                        recipeId = "7",
-                        isSuccess = true
-                    ),
-                    position = 0,
-                    isRemoving = true
-                )
-            )
+        val expectedToaster = ToasterUiModel(
+            model = ToasterModel(
+                title = "Test Create Recipe 7",
+                message = "",
+                recipeId = "7",
+                isSuccess = true
+            ),
+            position = 0,
+            isRemoving = true
+        )
+
+        verifyToaster(expectedToaster)
 
         verifyList(
-            isAdding = false,
-            recipeBookmarkResponse = recipeBookmarkResponse
+            expectedItemList = recipeList,
+            isAdding = false
         )
-        removeAndVerifyToaster()
     }
 
     @Test
-    fun `when calling the removeRecipeBookmark() function, the request should fail and add back item which has been removed`(): Unit = runBlocking {
-        val recipeBookmarkResponse = mockRecipeBookmark()
-
+    fun `when calling the removeRecipeBookmark() function, the request should fail and add back item which has been removed`() = runTest {
         val removeResponse = "recipebookmark/removerecipebookmarkerror.json"
             .jsonToObject<RemoveRecipeBookmarkResponse>()
 
-        removeRecipeBookmarkUseCase
-            .mockRemoveRecipeBookmark(
-                response = removeResponse
-            )
+        observeUiAction()
+        mockRemoveRecipeBookmark(removeResponse)
 
         getAndRemoveRecipeBookmark()
 
-        viewModel
-            .toaster
-            .value
-            .verifyFail()
-            .verifyEquals(
-                data = ToasterUiModel(
-                    model = ToasterModel(
-                        message = "failed",
-                        recipeId = "7",
-                        isSuccess = false
-                    ),
-                    position = 0,
-                    isRemoving = true
-                )
-            )
+        val expectedToaster = ToasterUiModel(
+            model = ToasterModel(
+                message = "failed",
+                recipeId = "7",
+                isSuccess = false
+            ),
+            position = 0,
+            isRemoving = true
+        )
+
+        verifyToaster(expectedToaster)
 
         verifyList(
-            isAdding = true,
-            recipeBookmarkResponse = recipeBookmarkResponse
+            expectedItemList = recipeList,
+            isAdding = true
         )
     }
 
     @Test
-    fun `when calling the removeRecipeBookmark() function, the request should fail, throws an throwable and add back item which has been removed`(): Unit = runBlocking {
-        val recipeBookmarkResponse = mockRecipeBookmark()
-
+    fun `when calling the removeRecipeBookmark() function, the request should fail, throws an throwable and add back item which has been removed`() = runTest {
         val throwable = Throwable()
 
-        removeRecipeBookmarkUseCase
-            .mockRemoveRecipeBookmark(
-                throwable = throwable
-            )
+        observeUiAction()
+        mockRemoveRecipeBookmark(throwable)
 
         getAndRemoveRecipeBookmark()
 
-        viewModel
-            .toaster
-            .value
-            .verifyFail()
-            .verifyEquals(
-                data = ToasterUiModel(
-                    model = ToasterModel(
-                        recipeId = "7",
-                        isSuccess = false
-                    ),
-                    position = 0,
-                    isRemoving = true
-                )
-            )
-            .verifyThrowable(
+        val expectedToaster = ToasterUiModel(
+            model = ToasterModel(
+                recipeId = "7",
+                isSuccess = false,
                 throwable = throwable
-            )
+            ),
+            position = 0,
+            isRemoving = true
+        )
+
+        verifyToaster(expectedToaster)
 
         verifyList(
             isAdding = true,
-            recipeBookmarkResponse = recipeBookmarkResponse
+            expectedItemList = recipeList
         )
     }
 
     private fun getAndRemoveRecipeBookmark() {
-        viewModel
-            .loadFirstPage()
+        viewModel.onEvent(RecipeBookmarkEvent.LoadRecipeBookmarkList)
 
-        viewModel
-            .removeRecipeBookmark(
+        viewModel.onEvent(
+            RecipeBookmarkEvent.RemoveRecipeBookmark(
                 title = "Test Create Recipe 7",
                 position = 0,
                 recipeId = "7",
                 isRemoving = true
             )
+        )
     }
-
 }

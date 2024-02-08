@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.tokopedianow.recipebookmark.di.module.RecipeBookmarkModule
 import com.tokopedia.tokopedianow.recipebookmark.di.module.RecipeBookmarkViewModelModule
 import com.tokopedia.tokopedianow.recipebookmark.di.scope.RecipeBookmarkScope
-import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment
+import com.tokopedia.tokopedianow.recipebookmark.persentation.activity.TokoNowRecipeBookmarkActivity
 import dagger.Component
 
 @RecipeBookmarkScope
@@ -16,5 +16,6 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface RecipeBookmarkComponent {
-    fun inject(fragment: TokoNowRecipeBookmarkFragment)
+
+    fun inject(activity: TokoNowRecipeBookmarkActivity)
 }

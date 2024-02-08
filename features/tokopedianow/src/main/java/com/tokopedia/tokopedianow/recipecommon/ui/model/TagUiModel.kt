@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel
+package com.tokopedia.tokopedianow.recipecommon.ui.model
 
 data class TagUiModel(
     val tag: String,

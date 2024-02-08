@@ -10,5 +10,6 @@ data class ToasterModel(
     val title: String = "",
     val message: String = "",
     val recipeId: String = "",
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val throwable: Throwable? = null
 )

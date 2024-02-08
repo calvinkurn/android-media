@@ -6,13 +6,13 @@ import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowTagBinding
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
+import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 import com.tokopedia.unifycomponents.Label.Companion.HIGHLIGHT_LIGHT_GREY
 
 class TagViewHolder(
     private val binding: ItemTokopedianowTagBinding,
     private val listener: TagListener? = null
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     private fun ItemTokopedianowTagBinding.adjustLabelText(tag: String, shouldFormatTag: Boolean) {
         lblTag.apply {

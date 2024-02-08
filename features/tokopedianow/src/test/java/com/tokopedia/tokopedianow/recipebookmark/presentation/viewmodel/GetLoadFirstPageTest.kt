@@ -2,16 +2,12 @@ package com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel
 
 import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.RecipeBookmarksMapper.mapResponseToUiModelList
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
+import com.tokopedia.tokopedianow.recipebookmark.ui.model.RecipeBookmarkEvent
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.util.TestUtils.verifyEquals
-import com.tokopedia.tokopedianow.util.TestUtils.verifyErrorCode
-import com.tokopedia.tokopedianow.util.TestUtils.verifyFail
-import com.tokopedia.tokopedianow.util.TestUtils.verifySuccess
-import com.tokopedia.tokopedianow.util.TestUtils.verifyThrowable
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
+class GetLoadFirstPageTest : TokoNowRecipeBookmarkViewModelTestFixture() {
 
     @Test
     fun `when calling the loadFirstPage() function, the request should be successful and the response data are obtained (10 recipes and hasNext is true)`(): Unit = runBlocking {
@@ -23,20 +19,12 @@ class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
                 response = recipeBookmarkResponse
             )
 
-        viewModel
-            .loadFirstPage()
+        viewModel.onEvent(RecipeBookmarkEvent.LoadRecipeBookmarkList)
 
-        viewModel
-            .loadRecipeBookmarks
-            .value
-            .verifySuccess()
-            .verifyEquals(
-                data = recipeBookmarkResponse
-                    .tokonowGetRecipeBookmarks
-                    .data
-                    .recipes
-                    .mapResponseToUiModelList()
-            )
+        val expectedItemList = recipeBookmarkResponse.tokonowGetRecipeBookmarks
+            .data.recipes.mapResponseToUiModelList()
+
+        verifyList(expectedItemList = expectedItemList)
     }
 
     @Test
@@ -49,20 +37,12 @@ class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
                 response = recipeBookmarkResponse
             )
 
-        viewModel
-            .loadFirstPage()
+        viewModel.onEvent(RecipeBookmarkEvent.LoadRecipeBookmarkList)
 
-        viewModel
-            .loadRecipeBookmarks
-            .value
-            .verifySuccess()
-            .verifyEquals(
-                data = recipeBookmarkResponse
-                    .tokonowGetRecipeBookmarks
-                    .data
-                    .recipes
-                    .mapResponseToUiModelList()
-            )
+        val expectedItemList = recipeBookmarkResponse.tokonowGetRecipeBookmarks
+            .data.recipes.mapResponseToUiModelList()
+
+        verifyList(expectedItemList = expectedItemList)
     }
 
     @Test
@@ -75,19 +55,14 @@ class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
                 response = recipeBookmarkResponse
             )
 
-        viewModel
-            .loadFirstPage()
+        viewModel.onEvent(RecipeBookmarkEvent.LoadRecipeBookmarkList)
 
-        viewModel
-            .loadRecipeBookmarks
-            .value
-            .verifyFail()
-            .verifyErrorCode(
-                errorCode = recipeBookmarkResponse
-                    .tokonowGetRecipeBookmarks
-                    .header
-                    .statusCode
-            )
+        verifyError(
+            expectedStatusCode = recipeBookmarkResponse
+                .tokonowGetRecipeBookmarks
+                .header
+                .statusCode
+        )
     }
 
     @Test
@@ -99,16 +74,10 @@ class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
                 throwable = throwable
             )
 
-        viewModel
-            .loadFirstPage()
+        viewModel.onEvent(RecipeBookmarkEvent.LoadRecipeBookmarkList)
 
-        viewModel
-            .loadRecipeBookmarks
-            .value
-            .verifyFail()
-            .verifyThrowable(
-                throwable = throwable
-            )
+        verifyError(
+            expectedThrowable = throwable
+        )
     }
-
 }
