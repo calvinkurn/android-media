@@ -18,7 +18,7 @@ import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.common.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
+import com.tokopedia.loginregister.registerinitial.domain.RegisterRequestV2UseCase
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestErrorData
@@ -75,10 +75,6 @@ class RegisterInitialViewModelTest {
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
-    val rawQueries = mapOf(
-        RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK to "test2",
-        RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST to "test"
-    )
 
     private var registerCheckObserver = mockk<Observer<Result<RegisterCheckData>>>(relaxed = true)
     private var registerRequestObserver = mockk<Observer<Result<RegisterRequestData>>>(relaxed = true)
@@ -103,7 +99,7 @@ class RegisterInitialViewModelTest {
     val messageException = MessageErrorException("error bro")
 
     private var generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
-    private var registerV2UseCase = mockk<GraphqlUseCase<RegisterRequestV2>>(relaxed = true)
+    private var registerV2UseCase = mockk<RegisterRequestV2UseCase>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -113,7 +109,6 @@ class RegisterInitialViewModelTest {
 
         viewModel = RegisterInitialViewModel(
             registerCheckUseCase,
-            registerRequestUseCase,
             registerV2UseCase,
             activateUserUseCase,
             discoverUseCase,
@@ -123,7 +118,6 @@ class RegisterInitialViewModelTest {
             dynamicBannerUseCase,
             generatePublicKeyUseCase,
             userSession,
-            rawQueries,
             CoroutineTestDispatchersProvider
         )
         viewModel.idlingResourceProvider = null
@@ -315,7 +309,7 @@ class RegisterInitialViewModelTest {
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
 
         coEvery { generatePublicKeyUseCase() } returns keyPojo
-        coEvery { registerV2UseCase.executeOnBackground() } returns response
+        coEvery { registerV2UseCase(any()) } returns response
 
         viewModel.registerRequestV2("yoris.prayogo@tokopedia.com", "123456", "Yoris", "asd")
 
