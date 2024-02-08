@@ -400,3 +400,6 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -dontwarn com.yandex.div.core.util.KAssert
 
 -dontwarn sun.nio.ch.DirectBuffer
+-dontwarn android.os.SystemProperties
+-dontwarn com.ss.android.message.PushThreadHandlerManager
+-dontwarn com.ss.android.message.log.PushLog
