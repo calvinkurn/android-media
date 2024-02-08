@@ -91,6 +91,7 @@ import com.tokopedia.logger.repository.InternalLoggerInterface;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
+import com.tokopedia.network.ttnet.TTNetHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
 import com.tokopedia.notifications.utils.PushTokenRefreshUtil;
