@@ -124,6 +124,7 @@ class CrackCouponHandler(
         gamiScratchCardCrack.resultStatus?.let {
             with(binding) {
                 tvErrorCode.text = it.code
+                tvErrorCode.visible()
                 tvErrorMsg.text = it.message?.get(0)
                 tvErrorReason.text = it.reason
             }
