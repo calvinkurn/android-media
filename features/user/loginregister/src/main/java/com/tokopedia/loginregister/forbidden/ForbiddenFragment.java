@@ -42,9 +42,9 @@ public class ForbiddenFragment extends TkpdBaseV4Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView title = view.findViewById(R.id.tv_title);
-        TextView desc = view.findViewById(R.id.tv_message);
-        UnifyButton btnRetry = view.findViewById(R.id.btn_retry);
+        TextView title = view.findViewById(R.id.tv_title_forbidden);
+        TextView desc = view.findViewById(R.id.tv_message_forbidden);
+        UnifyButton btnRetry = view.findViewById(R.id.btn_retry_forbidden);
 
         title.setText(MethodChecker.fromHtml(getString(R.string.forbidden_title)));
         desc.setText(MethodChecker.fromHtml(getString(R.string.forbidden_msg)));

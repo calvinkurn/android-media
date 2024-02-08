@@ -4,7 +4,6 @@ import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
@@ -18,6 +17,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
+import com.tokopedia.loginregister.R as loginregisterR
 
 @UiTest
 class LoginNegativeCase : LoginBase() {
@@ -30,19 +30,19 @@ class LoginNegativeCase : LoginBase() {
             /* when input text is empty */
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             deleteEmailOrPhoneInput()
-            shouldBeDisabled(R.id.register_btn)
+            shouldBeDisabled(loginregisterR.id.register_btn)
 
             /* input text is not valid email */
             inputEmailOrPhone("yoris.prayogo")
-            shouldBeDisabled(R.id.register_btn)
+            shouldBeDisabled(loginregisterR.id.register_btn)
 
             /* text length is too short for phone number */
             inputEmailOrPhone("08224")
-            shouldBeDisabled(R.id.register_btn)
+            shouldBeDisabled(loginregisterR.id.register_btn)
 
             /* text length is not valid for phone number */
             inputEmailOrPhone("08224asdadsad")
-            shouldBeDisabled(R.id.register_btn)
+            shouldBeDisabled(loginregisterR.id.register_btn)
         }
     }
 
@@ -102,15 +102,13 @@ class LoginNegativeCase : LoginBase() {
         }
     }
 
-    /* Show snackbar if discover providers is empty */
+    /* Show forbidden page if discover providers is error */
     @Test
     fun forbiddenPage_discoverEmpty() {
         fakeRepo.discoverConfig = Config.Error
+
         runTest {
-            isDisplayingSubGivenText(
-                com.google.android.material.R.id.snackbar_text,
-                "Terjadi kesalahan. Ulangi beberapa saat lagi"
-            )
+            isDisplayingSubstringGivenText("Terjadi kesalahan")
         }
     }
 

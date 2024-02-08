@@ -11,6 +11,7 @@ import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoData
 import com.tokopedia.loginregister.common.domain.pojo.TickersInfoPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
@@ -52,7 +53,9 @@ class FakeGraphqlRepository : GraphqlRepository {
                         loginregistertestR.raw.discover_success
                     )
 
-                    is Config.Error -> throw Exception("mocked error")
+                    is Config.Error -> {
+                        throw Throwable("Error")
+                    }
                     else -> GqlMockUtil.createSuccessResponse(DiscoverPojo())
                 }
             }
