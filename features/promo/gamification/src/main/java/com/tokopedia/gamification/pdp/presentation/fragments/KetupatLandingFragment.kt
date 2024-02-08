@@ -99,7 +99,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 
         ketupatLandingViewModel?.getLandingPageData()?.observe(this) {
             ketupatLPSwipeToRefreshView?.isRefreshing = false
-            if (it.gamiGetScratchCardLandingPage.appBar?.isShownShareIcon == true) {
+            if (it.gamiGetScratchCardLandingPage.appBar?.isShownShareIcon == false) {
                 view?.let { view -> setSharingHeaderIconAndListener(view, it) }
             }
             scratchCardId = it.gamiGetScratchCardLandingPage.scratchCard?.id.toString()
@@ -247,14 +247,14 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                         IconList.ID_SHARE,
                         onClick = {
                             // Open share bottom sheet
-                            val sharingComponent = KetupatSharingComponent(view, "landing_page-DirectRewardGame-$scratchCardId")
+                            val sharingComponent = KetupatSharingComponent(view, "landing_page-DirectRewardGame-$campaignSlug", userSession.userId)
                             sharingComponent.show(
                                 childFragmentManager,
                                 ketupatLandingPageData.gamiGetScratchCardLandingPage.appBar?.shared,
                                 userSession.userId
                             )
                             GamificationAnalytics.sendClickShareOnNavBarEvent(
-                                "{'landing_page-DirectRewardGame':'$scratchCardId'}",
+                                "{'landing_page-DirectRewardGame':'$campaignSlug'}",
                                 "gamification",
                                 "tokopediamarketplace"
                             )
