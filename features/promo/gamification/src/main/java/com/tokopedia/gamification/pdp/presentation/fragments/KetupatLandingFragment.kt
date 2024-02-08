@@ -256,7 +256,9 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
                             GamificationAnalytics.sendClickShareOnNavBarEvent(
                                 "{'landing_page-DirectRewardGame':'$campaignSlug'}",
                                 "gamification",
-                                "tokopediamarketplace"
+                                "tokopediamarketplace",
+                                userSession.userId,
+                                "DirectRewardGame"
                             )
                         },
                         disableDefaultGtmTracker = true
