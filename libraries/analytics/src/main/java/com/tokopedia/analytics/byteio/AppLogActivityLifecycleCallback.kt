@@ -4,15 +4,20 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.analytics.byteio.AppLogAnalytics.createdInOnCreate
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.AppLogAnalytics.sendStayProductDetail
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
+import kotlin.coroutines.CoroutineContext
 
-class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
+class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, CoroutineScope {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        setCurrent(activity, true)
+        AppLogAnalytics.activityCount++
         if (isPdpPage(activity) && activity is BaseSimpleActivity) {
             // In case activity is first running, we put the startTime.
             // in onResume this will not be overridden
@@ -21,14 +26,10 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStarted(activity: Activity) {
-        setCurrent(activity, false)
+        setCurrent(activity)
     }
 
-    private fun setCurrent(activity: Activity, fromOnCreate: Boolean) {
-        if (activity == AppLogAnalytics.currentActivityReference?.get()) {
-            return
-        }
-        createdInOnCreate = fromOnCreate
+    private fun setCurrent(activity: Activity) {
         AppLogAnalytics.currentActivityReference = WeakReference<Activity>(activity)
         AppLogAnalytics.currentActivityName = activity.javaClass.simpleName
         AppLogAnalytics.addPageName(activity)
@@ -45,23 +46,39 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPaused(activity: Activity) {
         if (isPdpPage(activity) && activity is BaseSimpleActivity) {
-            sendStayProductDetail(
-                System.currentTimeMillis() - activity.startTime,
-                (activity as IAppLogPdpActivity).getProductTrack(),
-                getQuitType(activity)
-            )
+            launch {
+                suspendSendStayProductDetail(
+                    System.currentTimeMillis() - activity.startTime,
+                    (activity as IAppLogPdpActivity).getProductTrack(),
+                    activity.isFinishing, AppLogAnalytics.activityCount
+                )
+            }
         }
     }
 
-    private fun getQuitType(activity: Activity): String {
-        //TODO need to revisit this logic
-        return if (activity.isFinishing) {
-            "return"
-        } else if (createdInOnCreate) {
-            "next"
-        } else {
-            "close"
+    private suspend fun suspendSendStayProductDetail(
+        durationInMs: Long,
+        product: TrackStayProductDetail,
+        isFinishing: Boolean,
+        prevActCount: Int
+    ) {
+        if (isFinishing) {
+            sendStayProductDetail(
+                durationInMs,
+                product, QuitType.RETURN
+            )
+            return
         }
+        delay(500)
+        val quitType = if (AppLogAnalytics.activityCount > prevActCount) {
+            QuitType.NEXT
+        } else {
+            QuitType.CLOSE
+        }
+        sendStayProductDetail(
+            durationInMs,
+            product, quitType
+        )
     }
 
     override fun onActivityStopped(activity: Activity) {
@@ -73,10 +90,11 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityDestroyed(activity: Activity) {
+        AppLogAnalytics.activityCount--
         if (getCurrentActivity() === activity) {
             AppLogAnalytics.currentActivityReference?.clear()
-            removePageName(activity)
         }
+        removePageName(activity)
     }
 
     private fun getCurrentActivity(): Activity? {
@@ -87,4 +105,9 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks {
         return (activity is IAppLogPdpActivity &&
                 activity.getPageName() == PageName.PDP)
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+        }
 }

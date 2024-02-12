@@ -98,6 +98,12 @@ object PageName {
     const val PDP = "PDP"
 }
 
+object QuitType {
+    const val RETURN = "return"
+    const val NEXT = "next"
+    const val CLOSE = "close"
+}
+
 
 enum class EntranceForm(val str: String) {
     HORIZONTAL_GOODS_CARD("horizontal_goods_card"),
@@ -126,9 +132,6 @@ object AppLogAnalytics {
     @JvmField
     var currentActivityName: String = ""
 
-    @JvmField
-    var createdInOnCreate: Boolean = false
-
     /**
      * key = activity name
      * value = page name.
@@ -137,6 +140,9 @@ object AppLogAnalytics {
      */
     @JvmField
     var pageNames = mutableListOf<Pair<String, String?>>()
+
+    @JvmField
+    var activityCount: Int = 0
 
     // TODO check how to make this null again
     @JvmField
@@ -304,7 +310,7 @@ object AppLogAnalytics {
         })
     }
 
-    fun sendStayProductDetail(
+    internal fun sendStayProductDetail(
         durationInMs: Long,
         product: TrackStayProductDetail,
         quitType: String

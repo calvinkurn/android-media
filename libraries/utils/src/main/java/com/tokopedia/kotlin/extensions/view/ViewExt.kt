@@ -342,6 +342,23 @@ fun viewIsVisible(view: View?): Boolean {
     }
 }
 
+fun viewIsVisible1Pixel(view: View?): Boolean {
+    if (view == null) {
+        return false
+    }
+    if (!view.isShown) {
+        return false
+    }
+    val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
+    val offset = 1
+    val location = IntArray(2)
+    view.getLocationOnScreen(location)
+    val X = location[0] + offset
+    val Y = location[1] + offset
+    return screen.top <= Y && screen.bottom >= Y &&
+        screen.left <= X && screen.right >= X
+}
+
 fun getScreenWidth(): Int {
     return Resources.getSystem().displayMetrics.widthPixels
 }
