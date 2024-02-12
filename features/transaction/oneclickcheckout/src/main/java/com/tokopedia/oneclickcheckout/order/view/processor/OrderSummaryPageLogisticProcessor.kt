@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import androidx.compose.runtime.key
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -33,6 +34,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.SAVE_PINPOINT_SUCCESS_MESSAGE
+import com.tokopedia.oneclickcheckout.order.view.model.OrderActionMetadata
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
@@ -61,7 +63,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         orderProfile: OrderProfile,
         orderCost: OrderCost,
         listShopShipment: List<ShopShipment>,
-        orderShipment: OrderShipment
+        orderShipment: OrderShipment,
+        shouldUpdateActionMetadata: Boolean
     ): Pair<RatesParam?, Double> {
         val (shipping, overweight) = generateShippingParam(orderCart, orderProfile, orderCost)
         if (shipping == null) return null to overweight
@@ -70,10 +73,35 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             .cartData(orderCart.cartData)
             .groupMetadata(orderCart.groupMetadata)
             .promoCode(orderShipment.promoCode)
+            .actionMetadata(if (shouldUpdateActionMetadata) generateActionMetadata(orderCart).toString() else "")
             .build()
             .apply {
                 occ = "1"
             } to 0.0
+    }
+
+    private fun generateActionMetadata(orderCart: OrderCart): OrderActionMetadata {
+        val listActionProduct = arrayListOf<OrderActionMetadata.Action>()
+        orderCart.products.map {
+            listActionProduct.add(
+                OrderActionMetadata.Action(
+                    uniqueId = it.cartId,
+                    listOf(
+                        OrderActionMetadata.Action.OrderActionMetadata(
+                            key = "quantity",
+                            value = it.orderQuantity.toString()
+                        ),
+                        OrderActionMetadata.Action.OrderActionMetadata(
+                            key = "product_id",
+                            value = it.productId
+                        )
+                    )
+                )
+            )
+        }
+        return OrderActionMetadata(
+            listAction = listActionProduct
+        )
     }
 
     private fun generateShippingParam(
@@ -161,7 +189,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         orderProfile: OrderProfile,
         orderShipment: OrderShipment,
         orderCost: OrderCost,
-        listShopShipment: List<ShopShipment>
+        listShopShipment: List<ShopShipment>,
+        shouldUpdateActionMetadata: Boolean
     ): ResultRates {
         OccIdlingResource.increment()
         val result: ResultRates = withContext(executorDispatchers.io) {
@@ -171,7 +200,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     orderProfile,
                     orderCost,
                     listShopShipment,
-                    orderShipment
+                    orderShipment,
+                    shouldUpdateActionMetadata
                 )
                 if (param == null) {
                     // overweight

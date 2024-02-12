@@ -1482,8 +1482,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     }
 
     private fun getOrderProductCardListener(): OrderProductCard.OrderProductCardListener = object : OrderProductCard.OrderProductCardListener {
-        override fun onProductChange(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean) {
-            viewModel.updateProduct(product, productIndex, shouldReloadRates)
+        override fun onProductChange(
+            product: OrderProduct,
+            productIndex: Int,
+            shouldReloadRates: Boolean,
+            shouldUpdateActionMetadata: Boolean
+        ) {
+            viewModel.updateProduct(product, productIndex, shouldReloadRates, shouldUpdateActionMetadata)
         }
 
         override fun forceUpdateCart() {

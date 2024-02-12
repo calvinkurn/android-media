@@ -291,6 +291,9 @@ data class RatesParam(
         var groupingState: Int = shipping.groupingState
             private set
 
+        var actionMetadata: String = ""
+            private set
+
         fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }
 
         fun codHistory(history: Int) = apply { this.userHistory = history }
@@ -308,7 +311,7 @@ data class RatesParam(
         fun warehouseId(warehouseId: String) = apply { this.warehouseId = warehouseId }
 
         fun groupMetadata(groupMetadata: String) = apply { this.groupMetadata = groupMetadata }
-
+        fun actionMetadata(actionMetadata: String) = apply { this.actionMetadata = actionMetadata }
         fun build() = RatesParam(this)
     }
 }
