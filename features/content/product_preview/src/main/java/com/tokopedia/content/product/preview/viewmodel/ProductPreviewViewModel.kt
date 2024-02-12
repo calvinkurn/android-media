@@ -229,6 +229,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
                         reviewContent.copy(
                             medias = reviewContent.medias.mapIndexed { indexMedia, reviewMedia ->
                                 reviewMedia.copy(selected = indexMedia == position)
+                            },
+                            mediaSelectedPosition = if (indexContent == position) {
+                                indexContent
+                            } else {
+                                reviewContent.mediaSelectedPosition
                             }
                         )
                     } else {

@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class ReviewMediaVideoViewHolder(
     private val binding: ItemReviewMediaVideoBinding,
-    private val productPreviewVideoListener: ProductPreviewVideoListener,
+    private val productPreviewVideoListener: ProductPreviewVideoListener
 ) : ViewHolder(binding.root) {
 
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
@@ -43,6 +43,14 @@ class ReviewMediaVideoViewHolder(
 
     fun bind(content: ReviewMediaUiModel) {
         bindVideoPlayer(content)
+    }
+
+    fun bindSelected(selected: Boolean) {
+        if (selected) {
+            onSelected()
+        } else {
+            onNotSelected()
+        }
     }
 
     private fun bindVideoPlayer(content: ReviewMediaUiModel) {
@@ -116,9 +124,10 @@ class ReviewMediaVideoViewHolder(
             ReviewMediaVideoViewHolder(
                 binding = ItemReviewMediaVideoBinding.inflate(
                     LayoutInflater.from(parent.context),
-                    parent, false,
+                    parent,
+                    false
                 ),
-                productPreviewVideoListener = productPreviewVideoListener,
+                productPreviewVideoListener = productPreviewVideoListener
             )
     }
 }

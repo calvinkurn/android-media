@@ -138,6 +138,10 @@ class ReviewContentViewHolder(
         }
     }
 
+    fun bindMediaDataChanged(mediaData: List<ReviewMediaUiModel>) {
+        reviewMediaAdapter.submitList(mediaData)
+    }
+
     private fun bindMedia(
         media: List<ReviewMediaUiModel>,
         mediaSelectedPosition: Int

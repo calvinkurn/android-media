@@ -37,6 +37,24 @@ class ReviewMediaAdapter(
         }
     }
 
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        super.onBindViewHolder(holder, position, payloads)
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position)
+        } else {
+            payloads.forEach {
+                when (val payload = it) {
+                    is Payload.Selected -> {
+                        when (holder) {
+                            is ReviewMediaImageViewHolder -> holder.bindSelected(payload.selected)
+                            is ReviewMediaVideoViewHolder -> holder.bindSelected(payload.selected)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     internal class ReviewMediaAdapterCallback : DiffUtil.ItemCallback<ReviewMediaUiModel>() {
         override fun areItemsTheSame(
             oldItem: ReviewMediaUiModel,
@@ -51,6 +69,20 @@ class ReviewMediaAdapter(
         ): Boolean {
             return oldItem == newItem
         }
+
+        override fun getChangePayload(
+            oldItem: ReviewMediaUiModel,
+            newItem: ReviewMediaUiModel
+        ): Any? {
+            return when {
+                oldItem.selected != newItem.selected -> Payload.Selected(newItem.selected)
+                else -> super.getChangePayload(oldItem, newItem)
+            }
+        }
+    }
+
+    sealed interface Payload {
+        data class Selected(val selected: Boolean) : Payload
     }
 
     companion object {

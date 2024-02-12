@@ -9,6 +9,7 @@ import com.tokopedia.content.product.preview.view.listener.ReviewInteractionList
 import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewContentViewHolder
 
 class ReviewContentAdapter(
@@ -51,6 +52,9 @@ class ReviewContentAdapter(
                     is Payload.WatchMode -> {
                         (holder as ReviewContentViewHolder).bindWatchMode(payload.isWatchMode)
                     }
+                    is Payload.MediaDataChanged -> {
+                        (holder as ReviewContentViewHolder).bindMediaDataChanged(payload.mediaData)
+                    }
                 }
             }
         }
@@ -72,6 +76,7 @@ class ReviewContentAdapter(
     sealed interface Payload {
         data class Like(val state: ReviewLikeUiState) : Payload
         data class WatchMode(val isWatchMode: Boolean) : Payload
+        data class MediaDataChanged(val mediaData: List<ReviewMediaUiModel>) : Payload
     }
 
     internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewContentUiModel>() {
@@ -96,6 +101,7 @@ class ReviewContentAdapter(
             return when {
                 oldItem.likeState != newItem.likeState -> Payload.Like(newItem.likeState)
                 oldItem.isWatchMode != newItem.isWatchMode -> Payload.WatchMode(newItem.isWatchMode)
+                oldItem.medias != newItem.medias -> Payload.MediaDataChanged(newItem.medias)
                 else -> super.getChangePayload(oldItem, newItem)
             }
         }
