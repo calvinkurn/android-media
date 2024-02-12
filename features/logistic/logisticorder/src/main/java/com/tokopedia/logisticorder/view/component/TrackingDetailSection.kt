@@ -194,7 +194,7 @@ fun TrackingDetailsItem(
             text = title,
             textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950)
         )
-        value.filter { it.isNotEmpty() }.forEach {
+        value.forEach {
             NestTypography(
                 modifier = Modifier.fillMaxWidth(),
                 text = it,
