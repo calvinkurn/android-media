@@ -71,9 +71,9 @@ internal object RechargeHomepageSectionQuery{
                         button
                         web_link
                         app_link
-                        tracking{
-                            action
+                        tracking {
                             data
+                            action
                         }
                       }
                       button
