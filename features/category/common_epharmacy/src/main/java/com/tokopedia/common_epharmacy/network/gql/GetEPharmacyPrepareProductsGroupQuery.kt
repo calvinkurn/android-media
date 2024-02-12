@@ -16,6 +16,9 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                   error_code
                 }
                 data {
+                  checkout_flow {
+                      error_message
+                  }
                   attachment_page_ticker_text
                   attachment_page_ticker_logo_url
                   toaster {

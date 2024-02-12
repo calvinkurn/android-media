@@ -1056,7 +1056,8 @@ class ShipmentViewModel @Inject constructor(
                 checkoutId = cartShipmentAddressFormData.epharmacyData.checkoutId,
                 frontEndValidation = cartShipmentAddressFormData.epharmacyData.frontEndValidation,
                 consultationFlow = cartShipmentAddressFormData.epharmacyData.consultationFlow,
-                rejectedWording = cartShipmentAddressFormData.epharmacyData.rejectedWording
+                rejectedWording = cartShipmentAddressFormData.epharmacyData.rejectedWording,
+                isBlockCheckoutFlowMessage = cartShipmentAddressFormData.epharmacyData.isBlockCheckoutFlowMessage
             )
         )
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
@@ -4736,6 +4737,7 @@ class ShipmentViewModel @Inject constructor(
                 uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
                 uploadPrescriptionUiModel.shopIds = shopIds
                 uploadPrescriptionUiModel.cartIds = cartIds
+                uploadPrescriptionUiModel.isBlockCheckoutFlowMessage = ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.checkoutFlow?.checkoutIsBlockErrorMessage.orEmpty()
                 view?.updateUploadPrescription(uploadPrescriptionUiModel)
                 view?.showCoachMarkEpharmacy(uploadPrescriptionUiModel)
             }

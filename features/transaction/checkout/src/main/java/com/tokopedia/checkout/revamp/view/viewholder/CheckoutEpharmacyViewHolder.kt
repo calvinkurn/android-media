@@ -117,6 +117,8 @@ class CheckoutEpharmacyViewHolder(
             if (uploadPrescriptionUiModel.isIncompletePrescriptionError && uploadPrescriptionUiModel.productErrorCount > 0) {
                 binding.uploadDescriptionText.text =
                     itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_complete, uploadPrescriptionUiModel.productErrorCount)
+            } else if (uploadPrescriptionUiModel.isBlockCheckoutFlowMessage.isNotEmpty()) {
+                binding.uploadDescriptionText.text = uploadPrescriptionUiModel.isBlockCheckoutFlowMessage
             } else {
                 binding.uploadDescriptionText.text =
                     itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found_new)

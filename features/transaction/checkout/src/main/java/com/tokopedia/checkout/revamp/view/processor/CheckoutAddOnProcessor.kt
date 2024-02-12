@@ -258,6 +258,11 @@ class CheckoutAddOnProcessor @Inject constructor(
                 uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
                 uploadPrescriptionUiModel.shopIds = shopIds
                 uploadPrescriptionUiModel.cartIds = cartIds
+                ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.checkoutFlow?.checkoutIsBlockErrorMessage.orEmpty()
+                    .takeIf { it.isNotEmpty() }?.let {
+                        uploadPrescriptionUiModel.isBlockCheckoutFlowMessage = it
+                        uploadPrescriptionUiModel.isError = true
+                    }
                 checkoutItems[checkoutItems.size - 5] =
                     CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel)
                 return checkoutItems
