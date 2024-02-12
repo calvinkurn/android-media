@@ -29,6 +29,7 @@ import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
+import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
@@ -55,7 +56,8 @@ class ReviewFragment @Inject constructor(
 ) : TkpdBaseV4Fragment(),
     ReviewInteractionListener,
     MenuBottomSheet.Listener,
-    ReviewReportBottomSheet.Listener {
+    ReviewReportBottomSheet.Listener,
+    ReviewMediaListener {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
@@ -65,7 +67,8 @@ class ReviewFragment @Inject constructor(
 
     private val reviewAdapter by lazyThreadSafetyNone {
         ReviewContentAdapter(
-            reviewInteractionListener = this
+            reviewInteractionListener = this,
+            reviewMediaListener = this
         )
     }
 
@@ -241,6 +244,13 @@ class ReviewFragment @Inject constructor(
 
     override fun onMenuClicked() {
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
+    }
+
+    /**
+     * Review Media Listener
+     */
+    override fun onMediaSelected(position: Int) {
+        viewModel.onAction(ProductPreviewAction.ReviewMediaSelected(position))
     }
 
     /**

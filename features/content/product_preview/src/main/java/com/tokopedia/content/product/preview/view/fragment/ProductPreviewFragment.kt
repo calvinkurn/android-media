@@ -16,12 +16,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.doOnApplyWindowInsets
 import com.tokopedia.content.common.util.requestApplyInsetsWhenAttached
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.preview.analytics.ProductPreviewAnalytics
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
@@ -52,7 +54,8 @@ import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 class ProductPreviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
-    private val router: Router
+    private val router: Router,
+    private val analytic: ProductPreviewAnalytics
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
@@ -164,6 +167,14 @@ class ProductPreviewFragment @Inject constructor(
             super.onPageSelected(position)
             updateSelectedTabView(position)
         }
+
+        override fun onPageScrollStateChanged(state: Int) {
+            super.onPageScrollStateChanged(state)
+            if (state != SCROLL_STATE_IDLE) return
+
+            val position = binding.vpProductPreview.currentItem
+            viewModel.onAction(ProductPreviewAction.TabSelected(position))
+        }
     }
 
     private fun updateSelectedTabView(position: Int) = with(binding.layoutProductPreviewTab) {
@@ -238,6 +249,9 @@ class ProductPreviewFragment @Inject constructor(
                         binding.viewFooter.gone()
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
+                    is ProductPreviewEvent.TrackHorizontalScrolling -> {
+                        analytic.onSwipeContentAndTab(viewModel.productPreviewSource.productId)
+                    }
                     else -> return@collect
                 }
             }

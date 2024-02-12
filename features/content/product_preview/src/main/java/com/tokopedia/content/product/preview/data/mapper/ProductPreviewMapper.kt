@@ -79,13 +79,15 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     ReviewMediaUiModel(
                         mediaId = videos.attachmentId,
                         type = MediaType.Video,
-                        url = videos.url
+                        url = videos.url,
+                        selected = index == 0
                     )
                 } + it.images.mapIndexed { index, images ->
                     ReviewMediaUiModel(
                         mediaId = images.attachmentId,
                         type = MediaType.Image,
-                        url = images.fullSizeUrl
+                        url = images.fullSizeUrl,
+                        selected = if (it.videos.isEmpty()) index == 0 else false
                     )
                 },
                 menus = ReviewMenuStatus(isReportable = it.isReportable && !isOwner(it.user.userId)),

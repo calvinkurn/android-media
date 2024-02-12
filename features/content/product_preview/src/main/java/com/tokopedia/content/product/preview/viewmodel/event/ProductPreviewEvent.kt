@@ -14,7 +14,10 @@ sealed interface ProductPreviewEvent {
         val type: Type
     ) : ProductPreviewEvent {
         enum class Type(val textRes: Int) {
-            ATC(R.string.bottom_atc_success_toaster), Remind(R.string.bottom_wishlist_toaster), Report(R.string.review_report_success_toaster), Unknown(0);
+            ATC(R.string.bottom_atc_success_toaster), Remind(R.string.bottom_wishlist_toaster), Report(
+                R.string.review_report_success_toaster
+            ),
+            Unknown(0);
         }
     }
 
@@ -24,7 +27,9 @@ sealed interface ProductPreviewEvent {
         val onClick: () -> Unit
     ) : ProductPreviewEvent {
         enum class Type(val textRes: Int) {
-            ATC(R.string.bottom_atc_failed_toaster), Report(R.string.review_report_failed_toaster), Unknown(0);
+            ATC(R.string.bottom_atc_failed_toaster), Report(R.string.review_report_failed_toaster), Unknown(
+                0
+            );
         }
     }
 
@@ -45,4 +50,6 @@ sealed interface ProductPreviewEvent {
     ) : ProductPreviewEvent
 
     object UnknownSourceData : ProductPreviewEvent
+
+    object TrackHorizontalScrolling : ProductPreviewEvent
 }

@@ -28,7 +28,9 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewMediaSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.TabSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ToggleReviewWatchMode
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent.UnknownSourceData
@@ -131,6 +133,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ToggleReviewWatchMode -> handleReviewWatchMode()
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
+            is ReviewMediaSelected -> handleReviewMediaSelected(action.position)
+            is TabSelected -> handleTabSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
             is ProductAction -> addToChart(action.model)
             is Navigate -> handleNavigate(action.appLink)
@@ -192,21 +196,53 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun handleProductMediaSelected(position: Int) {
+        val currentPos = _productMediaState.value.productMedia.indexOfFirst { it.selected }
+        if (currentPos < 0 || currentPos == position) return
+
         _productMediaState.update { productUiModel ->
-            val currentPos = productUiModel.productMedia.indexOfFirst { it.selected }
-            if (currentPos < 0 || currentPos == position) return
             productUiModel.copy(
                 productMedia = productUiModel.productMedia.mapIndexed { index, media ->
                     media.copy(selected = index == position)
                 }
             )
         }
+
+        emitTrackHorizontalContentEvent()
     }
 
     private fun handleReviewContentSelected(position: Int) {
         if (_reviewPosition.value == position) return
         _reviewPosition.value = position
         updateReviewToUnWatchMode()
+    }
+
+    private fun handleReviewMediaSelected(position: Int) {
+        val currentPos = _reviewContentState.value
+            .reviewContent[_reviewPosition.value]
+            .medias.indexOfFirst { it.selected }
+        if (currentPos < 0 || currentPos == position) return
+
+        _reviewContentState.update { reviewUiModel ->
+            reviewUiModel.copy(
+                reviewContent = reviewUiModel.reviewContent.mapIndexed { indexContent, reviewContent ->
+                    if (indexContent == _reviewPosition.value) {
+                        reviewContent.copy(
+                            medias = reviewContent.medias.mapIndexed { indexMedia, reviewMedia ->
+                                reviewMedia.copy(selected = indexMedia == position)
+                            }
+                        )
+                    } else {
+                        reviewContent
+                    }
+                }
+            )
+        }
+
+        emitTrackHorizontalContentEvent()
+    }
+
+    private fun handleTabSelected(position: Int) {
+        emitTrackHorizontalContentEvent()
     }
 
     private fun handleFetchReviewByIds() {
@@ -270,6 +306,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     }
                 )
             }
+        }
+    }
+
+    private fun emitTrackHorizontalContentEvent() {
+        viewModelScope.launch {
+            _uiEvent.emit(ProductPreviewEvent.TrackHorizontalScrolling)
         }
     }
 

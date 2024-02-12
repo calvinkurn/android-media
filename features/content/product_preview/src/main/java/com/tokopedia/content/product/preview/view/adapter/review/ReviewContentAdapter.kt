@@ -6,12 +6,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
+import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewContentViewHolder
 
 class ReviewContentAdapter(
-    private val reviewInteractionListener: ReviewInteractionListener
+    private val reviewInteractionListener: ReviewInteractionListener,
+    private val reviewMediaListener: ReviewMediaListener
 ) : ListAdapter<ReviewContentUiModel, ViewHolder>(ReviewAdapterCallback()) {
 
     private val mediaViewPool: RecycledViewPool = RecycledViewPool()
@@ -22,6 +24,7 @@ class ReviewContentAdapter(
                 ReviewContentViewHolder.create(
                     parent = parent,
                     reviewInteractionListener = reviewInteractionListener,
+                    reviewMediaListener = reviewMediaListener,
                     mediaViewPool = mediaViewPool
                 )
             }

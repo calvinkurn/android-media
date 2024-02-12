@@ -26,6 +26,7 @@ import com.tokopedia.content.product.preview.view.components.player.ProductPrevi
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
+import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
@@ -45,6 +46,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class ReviewContentViewHolder(
     private val binding: ItemReviewContentBinding,
     private val reviewInteractionListener: ReviewInteractionListener,
+    private val reviewMediaListener: ReviewMediaListener,
     private val mediaViewPool: RecyclerView.RecycledViewPool
 ) : ViewHolder(binding.root),
     ProductPreviewVideoListener {
@@ -68,6 +70,7 @@ class ReviewContentViewHolder(
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
             val position = getContentCurrentPosition()
             binding.pcReviewContent.setCurrentIndicator(position)
+            reviewMediaListener.onMediaSelected(position)
         }
     }
 
@@ -345,6 +348,7 @@ class ReviewContentViewHolder(
         fun create(
             parent: ViewGroup,
             reviewInteractionListener: ReviewInteractionListener,
+            reviewMediaListener: ReviewMediaListener,
             mediaViewPool: RecyclerView.RecycledViewPool
         ) = ReviewContentViewHolder(
             binding = ItemReviewContentBinding.inflate(
@@ -353,6 +357,7 @@ class ReviewContentViewHolder(
                 false
             ),
             reviewInteractionListener = reviewInteractionListener,
+            reviewMediaListener = reviewMediaListener,
             mediaViewPool = mediaViewPool
         )
     }
