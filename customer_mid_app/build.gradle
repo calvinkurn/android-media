@@ -345,6 +345,7 @@ dependencies {
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
+    implementation 'com.bytedance.ies.common:cpp_shared:21.1.4'
 
     //[START] test and androidTest dependencies
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
