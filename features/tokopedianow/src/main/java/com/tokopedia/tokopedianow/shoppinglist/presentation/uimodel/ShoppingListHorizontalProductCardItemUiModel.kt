@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListTypeFactory
+import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListHorizontalProductCardItemTypeFactory
 
 data class ShoppingListHorizontalProductCardItemUiModel(
     val id: String,
@@ -14,8 +14,8 @@ data class ShoppingListHorizontalProductCardItemUiModel(
     val percentage: String,
     val slashPrice: String,
     val type: LayoutType
-): Visitable<ShoppingListTypeFactory>, ImpressHolder() {
-    override fun type(typeFactory: ShoppingListTypeFactory): Int = typeFactory.type(this)
+): Visitable<ShoppingListHorizontalProductCardItemTypeFactory>, ImpressHolder() {
+    override fun type(typeFactory: ShoppingListHorizontalProductCardItemTypeFactory): Int = typeFactory.type(this)
 
     enum class LayoutType {
         ATC_WISHLIST,

@@ -24,7 +24,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShoppingListHorizontalProductCardItemViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: ShoppingListHorizontalProductCardItemListener? = null
 ): AbstractViewHolder<ShoppingListHorizontalProductCardItemUiModel>(itemView) {
     companion object {
         private const val NORMAL_BRIGHTNESS = 1f
@@ -122,7 +123,9 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpOtherOption.showIfWithBlock(isOos(data.type)) {
-            setOnClickListener { }
+            setOnClickListener {
+                listener?.onClickOtherOptions()
+            }
         }
     }
 
@@ -185,4 +188,8 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun isOos(layoutType: LayoutType): Boolean = layoutType == EMPTY_STOCK
 
     private fun getImageBrightness(layoutType: LayoutType): Float = if (layoutType == EMPTY_STOCK) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
+
+    interface ShoppingListHorizontalProductCardItemListener {
+        fun onClickOtherOptions()
+    }
 }

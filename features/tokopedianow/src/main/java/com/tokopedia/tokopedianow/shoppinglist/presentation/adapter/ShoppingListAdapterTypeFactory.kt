@@ -29,9 +29,11 @@ class ShoppingListAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
     private val headerListener: TokoNowHeaderViewHolder.TokoNowHeaderListener? = null,
     private val chooseAddressListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
+    private val shoppingListHorizontalProductCardItemListener: ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener? = null
 ):
     BaseAdapterTypeFactory(),
     ShoppingListTypeFactory,
+    ShoppingListHorizontalProductCardItemTypeFactory,
     TokoNowHeaderTypeFactory,
     TokoNowHeaderSpaceTypeFactory,
     TokoNowDividerTypeFactory,
@@ -65,7 +67,8 @@ class ShoppingListAdapterTypeFactory(
             )
 
             ShoppingListHorizontalProductCardItemViewHolder.LAYOUT -> ShoppingListHorizontalProductCardItemViewHolder(
-                itemView = parent
+                itemView = parent,
+                listener = shoppingListHorizontalProductCardItemListener
             )
             ShoppingListProductInCartViewHolder.LAYOUT -> ShoppingListProductInCartViewHolder(
                 itemView = parent

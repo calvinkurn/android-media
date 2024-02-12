@@ -13,15 +13,13 @@ class ShoppingListProductInCartAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ShoppingListProductInCartItemViewHolder {
-        return ShoppingListProductInCartItemViewHolder(
-            ItemTokopedianowShoppingListProductInCartItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+    ): ShoppingListProductInCartItemViewHolder = ShoppingListProductInCartItemViewHolder(
+        ItemTokopedianowShoppingListProductInCartItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
-    }
+    )
 
     override fun onBindViewHolder(
         holder: ShoppingListProductInCartItemViewHolder,

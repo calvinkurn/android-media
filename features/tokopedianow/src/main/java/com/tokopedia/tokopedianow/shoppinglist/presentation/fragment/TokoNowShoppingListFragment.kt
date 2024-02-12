@@ -31,12 +31,14 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowShoppingListBinding
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
-import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListContextModule
+import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapterTypeFactory
+import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.ShoppingListOtherProductsBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -69,8 +71,9 @@ class TokoNowShoppingListFragment :
         ShoppingListAdapter(
             ShoppingListAdapterTypeFactory(
                 tokoNowView = this@TokoNowShoppingListFragment,
-                headerListener = headerCallback(),
-                chooseAddressListener = this@TokoNowShoppingListFragment
+                headerListener = createHeaderCallback(),
+                chooseAddressListener = this@TokoNowShoppingListFragment,
+                shoppingListHorizontalProductCardItemListener = createHorizontalProductCardItemCallback()
             )
         )
     }
@@ -125,7 +128,7 @@ class TokoNowShoppingListFragment :
     private fun initInjector() {
         DaggerShoppingListComponent.builder()
             .baseAppComponent((context?.applicationContext as? BaseMainApplication)?.baseAppComponent)
-            .shoppingListContextModule(ShoppingListContextModule(requireContext()))
+            .shoppingListModule(ShoppingListModule(requireContext()))
             .build()
             .inject(this)
     }
@@ -223,7 +226,7 @@ class TokoNowShoppingListFragment :
     /**
      * -- callback function section --
      */
-    private fun headerCallback() = object : TokoNowHeaderViewHolder.TokoNowHeaderListener {
+    private fun createHeaderCallback() = object : TokoNowHeaderViewHolder.TokoNowHeaderListener {
         override fun onClickCtaHeader() {
             RouteManager.route(
                 context,
@@ -268,6 +271,12 @@ class TokoNowShoppingListFragment :
                 }
             }
         )
+    }
+
+    private fun createHorizontalProductCardItemCallback() = object : ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener{
+        override fun onClickOtherOptions() {
+            ShoppingListOtherProductsBottomSheet().show(childFragmentManager, "shopping list")
+        }
     }
 
     override fun getFragmentPage(): Fragment = this@TokoNowShoppingListFragment
