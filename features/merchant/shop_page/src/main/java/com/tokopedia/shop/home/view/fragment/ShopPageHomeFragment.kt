@@ -5317,6 +5317,10 @@ open class ShopPageHomeFragment :
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
     }
 
+    override fun getBackgroundColor(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyBackgroundHexColor().orEmpty()
+    }
+
     private fun addToCartDirectPurchaseProductWidget(
         uiModel: ShopDirectPurchaseByEtalaseUiModel,
         productModel: ProductCardDirectPurchaseDataModel,

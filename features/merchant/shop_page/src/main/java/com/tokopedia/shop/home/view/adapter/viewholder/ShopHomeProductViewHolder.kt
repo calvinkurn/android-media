@@ -131,7 +131,11 @@ open class ShopHomeProductViewHolder(
                 patternType = shopHomeListener.getPatternColorType()
             )
         ) {
-            productCardColorHelper.overrideProductCardContentToLightColor(view = viewBinding?.productCard)
+            productCardColorHelper.overrideProductCardContentToLightColor(
+                view = viewBinding?.productCard,
+                colorSchema = shopHomeListener.getShopPageColorSchema(),
+                backgroundColor = shopHomeListener.getBackgroundColor()
+            )
         }
     }
 }

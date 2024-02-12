@@ -112,7 +112,11 @@ class ShopProductItemListViewHolder(
                 patternType = productTabInterface?.getPatternColorType().orEmpty()
             )
         ) {
-            productCardColorHelper.overrideProductCardContentToLightColor(view = viewBinding?.productCardView)
+            productCardColorHelper.overrideProductCardContentToLightColor(
+                view = viewBinding?.productCardView,
+                colorSchema = productTabInterface?.getShopPageColorSchema(),
+                backgroundColor = productTabInterface?.getBackgroundColor().orEmpty()
+            )
         }
     }
 }
