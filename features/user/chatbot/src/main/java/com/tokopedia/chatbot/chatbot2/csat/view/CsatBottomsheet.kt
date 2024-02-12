@@ -321,7 +321,7 @@ class CsatBottomsheet :
         const val DYNAMIC_REASON = "dynamic_reason"
 
         const val OTHER_REASON_MIN_LINE = 4
-        const val SCROLL_DELAY = 150L
+        const val SCROLL_DELAY = 200L
 
         fun newInstance(selectedScore: Int, csatModel: CsatModel): CsatBottomsheet {
             val bottomSheet = CsatBottomsheet()
