@@ -1,34 +1,18 @@
 package com.tokopedia.discovery.common.reimagine
 
-import com.tokopedia.remoteconfig.RollenceKey.SEARCH_2_COMPONENT_CAROUSEL_VAR
-import com.tokopedia.remoteconfig.RollenceKey.SEARCH_2_COMPONENT_CONTROL
-import com.tokopedia.remoteconfig.RollenceKey.SEARCH_2_COMPONENT_QF_VAR
+import com.tokopedia.remoteconfig.RollenceKey
 
 enum class Search2Component(val variant: String) {
-    CONTROL(SEARCH_2_COMPONENT_CONTROL) {
-        override fun hasMultilineProductName(): Boolean = false
-        override fun isReimagineShopAds(): Boolean = false
-        override fun isReimagineQuickFilter(): Boolean = false
+    CONTROL("") {
         override fun isReimagineCarousel(): Boolean = false
     },
 
-    CAROUSEL_VAR(SEARCH_2_COMPONENT_CAROUSEL_VAR) {
-        override fun hasMultilineProductName(): Boolean = true
-        override fun isReimagineShopAds(): Boolean = true
-        override fun isReimagineQuickFilter(): Boolean = false
-        override fun isReimagineCarousel(): Boolean = true
-    },
-
-    QF_VAR(SEARCH_2_COMPONENT_QF_VAR) {
-        override fun hasMultilineProductName(): Boolean = false
-        override fun isReimagineShopAds(): Boolean = true
-        override fun isReimagineQuickFilter(): Boolean = true
+    PRODUCT_CARD_SRE_2024(RollenceKey.PRODUCT_CARD_SRE_2024) {
         override fun isReimagineCarousel(): Boolean = true
     };
 
-    abstract fun hasMultilineProductName(): Boolean
-    abstract fun isReimagineShopAds(): Boolean
-    abstract fun isReimagineQuickFilter(): Boolean
+    fun isReimagineShopAds(): Boolean = false
+    fun isReimagineQuickFilter(): Boolean = true
     abstract fun isReimagineCarousel(): Boolean
 
     companion object {

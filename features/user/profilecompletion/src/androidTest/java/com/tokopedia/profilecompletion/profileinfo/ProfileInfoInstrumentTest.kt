@@ -8,10 +8,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addbod.view.activity.AddBodActivity
-import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity
-import com.tokopedia.profilecompletion.changegender.view.activity.ChangeGenderActivity
-import com.tokopedia.profilecompletion.changename.view.ChangeNameActivity
+import com.tokopedia.profilecompletion.settingprofile.addbod.view.activity.AddBodActivity
+import com.tokopedia.profilecompletion.settingprofile.changebiousername.view.ChangeBioUsernameActivity
+import com.tokopedia.profilecompletion.settingprofile.changegender.view.activity.ChangeGenderActivity
+import com.tokopedia.profilecompletion.settingprofile.changename.view.ChangeNameActivity
 import com.tokopedia.profilecompletion.common.helper.checkToasterShowing
 import com.tokopedia.profilecompletion.common.helper.clickChildWithViewId
 import com.tokopedia.profilecompletion.common.helper.clickOnView
@@ -22,7 +22,7 @@ import com.tokopedia.profilecompletion.common.helper.isViewsNotExists
 import com.tokopedia.profilecompletion.common.helper.swipeUp
 import com.tokopedia.profilecompletion.common.stub.di.createProfileCompletionComponent
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
-import com.tokopedia.profilecompletion.profileinfo.view.activity.ProfileInfoActivity
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.view.activity.ProfileInfoActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before

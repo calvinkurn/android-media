@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileRoleData
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.data.ProfileRoleData
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.usecase.ProfileRoleUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

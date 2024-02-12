@@ -4,9 +4,9 @@ import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
-import com.tokopedia.cartrevamp.view.uimodel.EntryPointInfoEvent
+import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.mapper.CartUiModelMapper
+import com.tokopedia.cart.view.uimodel.EntryPointInfoEvent
 import com.tokopedia.promousage.data.response.EntryPointInfo
 import com.tokopedia.promousage.data.response.GetPromoListRecommendationEntryPointResponse
 import com.tokopedia.promousage.data.response.GetPromoListRecommendationResponseData
