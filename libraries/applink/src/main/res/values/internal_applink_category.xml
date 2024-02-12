@@ -10,6 +10,7 @@
     <string name="catalog_product_list_host" translatable="false">catalog-product-list</string>
     <string name="applink_epharmacy_chooser" translatable="false">/chooser.*</string>
     <string name="applink_epharmacy_common_bs" translatable="false">/bs/.*\</string>
+    <string name="applink_epharmacy_view_prescription" translatable="false">/view-prescription/.*\</string>
     <string name="applink_epharmacy_order_detail" translatable="false">/consultation-detail/.*\</string>
     <string name="applink_epharmacy_edu" translatable="false">/edu/.*\</string>
     <string name="applink_epharmacy_attach_prescription" translatable="false">/component/attach-prescription.*</string>
