@@ -6,6 +6,7 @@ import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -72,6 +73,7 @@ class CheckoutPromoProcessor @Inject constructor(
             if (shipmentCartItemModel is CheckoutOrderModel) {
                 val cartItemModelsGroupByOrder =
                     helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
+                        .filterIsInstance(CheckoutProductModel::class.java)
                         .filter { !it.isError }
                         .groupBy { it.cartStringOrder }
                 for ((cartStringOrder, cartItemList) in cartItemModelsGroupByOrder) {
@@ -191,6 +193,7 @@ class CheckoutPromoProcessor @Inject constructor(
                         shipmentCartItemModelList,
                         shipmentCartItemModel.cartStringGroup
                     )
+                        .filterIsInstance(CheckoutProductModel::class.java)
                         .filter { !it.isError }
                         .groupBy { it.cartStringOrder }
                 for ((cartStringOrder, cartItemList) in cartItemModelsGroupByOrder) {
@@ -552,7 +555,8 @@ class CheckoutPromoProcessor @Inject constructor(
                                     insurance = generateCheckoutOrderInsuranceFromCourier(courierItemData, value)
                                 ),
                                 boUniqueId = voucherOrder.uniqueId,
-                                isShippingBorderRed = false
+                                isShippingBorderRed = false,
+                                isHasShownCourierError = false
                             )
                         }
                     }

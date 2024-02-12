@@ -14,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
@@ -112,6 +113,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val getInspirationCarouselChipsProductsUseCase =
         mockk<UseCase<InspirationCarouselChipsProductModel>>(relaxed = true)
     protected val saveLastFilterUseCase = mockk<UseCase<Int>>(relaxed = true)
+    protected val getPostATCCarouselUseCase = mockk<UseCase<SearchInspirationCarousel>>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
@@ -161,10 +163,12 @@ internal open class ProductListPresenterTestFixtures {
     private val pagination = PaginationImpl()
     private val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
     private val lastClickedProductIdProvider = LastClickedProductIdProviderImpl()
+    val deduplication = Deduplication(deduplicationView)
     private val requestParamsGenerator = RequestParamsGenerator(
         userSession,
         pagination,
         lastClickedProductIdProvider,
+        deduplication,
     )
     protected val bottomSheetFilterPresenter = BottomSheetFilterPresenterDelegate(
         bottomSheetFilterView,
@@ -181,7 +185,6 @@ internal open class ProductListPresenterTestFixtures {
     @Before
     open fun setUp() {
         val responseCodeImpl = ResponseCodeImpl()
-        val deduplication = Deduplication(deduplicationView)
         val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,
             requestParamsGenerator,
@@ -199,8 +202,11 @@ internal open class ProductListPresenterTestFixtures {
 
         val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
             addToCartUseCase,
+            getPostATCCarouselUseCase,
+            requestParamsGenerator,
             userSession,
             inspirationListAtcView,
+            viewUpdater,
             searchParameterProvider,
         )
         val suggestionPresenter = SuggestionPresenter()
@@ -276,6 +282,7 @@ internal open class ProductListPresenterTestFixtures {
             { getInspirationCarouselChipsProductsUseCase },
             { saveLastFilterUseCase },
             addToCartUseCase,
+            { getPostATCCarouselUseCase },
             topAdsUrlHitter,
             testSchedulersProvider,
             topAdsHeadlineHelper,
@@ -309,7 +316,7 @@ internal open class ProductListPresenterTestFixtures {
             inspirationProductPresenterDelegate,
             reimagineRollence,
             lastClickedProductIdProvider,
-            deduplication,
+            deduplication
         )
         productListPresenter.attachView(productListView)
     }
@@ -428,6 +435,20 @@ internal open class ProductListPresenterTestFixtures {
         productItem.priceRange shouldBe topAdsProduct.product.priceRange
         productItem.productListType shouldBe productListType
         productItem.showButtonAtc shouldBe isShowButtonAtc
+        productItem.labelGroupList?.forEachIndexed { index, labelGroupDataView ->
+            val expectedLabelGroup = topAdsProduct.product.labelGroupList[index]
+
+            labelGroupDataView.position shouldBe expectedLabelGroup.position
+            labelGroupDataView.title shouldBe expectedLabelGroup.title
+            labelGroupDataView.type shouldBe expectedLabelGroup.type
+            labelGroupDataView.imageUrl shouldBe expectedLabelGroup.imageUrl
+
+            labelGroupDataView.styleList.forEachIndexed { styleIndex, styleDataView ->
+                val expectedStyle = expectedLabelGroup.styleList[styleIndex]
+                styleDataView.key shouldBe expectedStyle.key
+                styleDataView.value shouldBe expectedStyle.value
+            }
+        }
     }
 
     protected fun Visitable<*>.assertOrganicProduct(
@@ -494,7 +515,7 @@ internal open class ProductListPresenterTestFixtures {
                     topAdsProductList[topAdsProductListIndex],
                     expectedTopAdsProductPosition,
                     expectedProductListType,
-                    expectedShowButtonATC,
+                    expectedShowButtonATC
                 )
                 expectedTopAdsProductPosition++
                 topAdsProductListIndex++
@@ -504,7 +525,7 @@ internal open class ProductListPresenterTestFixtures {
                     expectedOrganicProductPosition,
                     "",
                     expectedProductListType,
-                    expectedBlurred,
+                    expectedBlurred
                 )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
@@ -569,11 +590,19 @@ internal open class ProductListPresenterTestFixtures {
         productItem.categoryBreadcrumb shouldBe organicProduct.category.breadcrumb
 
         productItem.labelGroupList?.size shouldBe organicProduct.labelGroupList.size
-        productItem.labelGroupList!!.forEachIndexed { index, labelGroupDataView ->
-            labelGroupDataView.position shouldBe organicProduct.labelGroupList[index].position
-            labelGroupDataView.title shouldBe organicProduct.labelGroupList[index].title
-            labelGroupDataView.type shouldBe organicProduct.labelGroupList[index].type
-            labelGroupDataView.imageUrl shouldBe organicProduct.labelGroupList[index].url
+        productItem.labelGroupList!!.forEachIndexed { labelGroupIndex, labelGroupDataView ->
+            val expectedLabelGroup = organicProduct.labelGroupList[labelGroupIndex]
+
+            labelGroupDataView.position shouldBe expectedLabelGroup.position
+            labelGroupDataView.title shouldBe expectedLabelGroup.title
+            labelGroupDataView.type shouldBe expectedLabelGroup.type
+            labelGroupDataView.imageUrl shouldBe expectedLabelGroup.url
+
+            labelGroupDataView.styleList.forEachIndexed { styleIndex, styleDataView ->
+                val expectedStyle = expectedLabelGroup.styleList[styleIndex]
+                styleDataView.key shouldBe expectedStyle.key
+                styleDataView.value shouldBe expectedStyle.value
+            }
         }
 
         productItem.labelGroupVariantList.size shouldBe organicProduct.labelGroupVariantList.size
@@ -629,7 +658,11 @@ internal open class ProductListPresenterTestFixtures {
     }
 
     protected fun `Given search reimagine rollence product card will return non control variant`() {
-        every { reimagineRollence.search3ProductCard() } returns Search3ProductCard.VAR_1A
+        every { reimagineRollence.search3ProductCard() } returns Search3ProductCard.PRODUCT_CARD_SRE_2024
+    }
+
+    protected fun getListDeduplication() : String {
+        return deduplication.getProductIdList()
     }
 
     @After

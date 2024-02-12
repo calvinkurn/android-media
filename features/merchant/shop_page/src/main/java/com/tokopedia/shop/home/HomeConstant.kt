@@ -17,7 +17,8 @@ enum class WidgetTypeEnum(val value: String) {
     BUNDLE("bundle"),
     VOUCHER_SLIDER("voucher_slider"),
     REIMAGINE_DIRECT_PURCHASE("direct_purchase"),
-    REIMAGINE_COMPONENT("component")
+    REIMAGINE_COMPONENT("component"),
+    GROUP_OFFERING_PRODUCT("group_offering_product")
 }
 
 enum class WidgetNameEnum(val value: String) {
@@ -48,8 +49,7 @@ enum class WidgetNameEnum(val value: String) {
     REIMAGINE_BANNER_PRODUCT_HOTSPOT("banner_product_hotspot"),
     SLIDER_BANNER_HIGHLIGHT("slider_banner_highlight"),
     PRODUCT_HIGHLIGHT("product_highlight"),
-    VOUCHER("voucher"),
-    BMGM_BANNER("bmgm_banner_group"), // Buy More Get More Widget Banner
+    VOUCHER("voucher"), // Buy More Get More Widget Banner
     SHOWCASE_NAVIGATION_BANNER("showcase_navigation_banner"),
     ADVANCED_SLIDER_BANNER("advanced_slider_banner"),
     BANNER_PRODUCT_GROUP("banner_product_group"),
@@ -59,5 +59,7 @@ enum class WidgetNameEnum(val value: String) {
     SHOWCASE_SLIDER_TWO_ROWS("etalase_slider_kecil_2_baris"),
     SHOWCASE_GRID_SMALL("etalase_banner_3_x_2"),
     SHOWCASE_GRID_MEDIUM("etalase_banner_besar_2x2"),
-    SHOWCASE_GRID_BIG("etalase_banner_besar_2x1")
+    SHOWCASE_GRID_BIG("etalase_banner_besar_2x1"),
+    BMSM_GWP_OFFERING_GROUP("gwp_offering_group"),
+    BMSM_PD_OFFERING_GROUP("bmgm_banner_group")
 }

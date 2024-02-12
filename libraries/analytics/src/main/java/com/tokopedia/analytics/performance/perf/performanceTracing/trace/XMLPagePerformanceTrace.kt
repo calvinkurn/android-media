@@ -25,8 +25,8 @@ class XMLPagePerformanceTrace(
     val performanceRepository: PerformanceRepository,
     val loadableComponentFlow: MutableSharedFlow<LoadableComponent>,
     val parsingStrategy: ParsingStrategy<View>,
-    val onPerformanceTraceFinished: (Success<PerformanceTraceData>) -> Unit,
-    val onPerformanceTraceError: (Error) -> Unit
+    var onPerformanceTraceFinished: ((Success<PerformanceTraceData>) -> Unit)?,
+    var onPerformanceTraceError: ((Error) -> Unit)?
 ) : PerformanceTrace {
 
     companion object {
@@ -69,12 +69,14 @@ class XMLPagePerformanceTrace(
 
     override fun stopMonitoring(result: Result<PerformanceTraceData>) {
         when (result) {
-            is Success -> onPerformanceTraceFinished.invoke(result)
-            is Error -> onPerformanceTraceError.invoke(result)
+            is Success -> onPerformanceTraceFinished?.invoke(result)
+            is Error -> onPerformanceTraceError?.invoke(result)
             else -> {}
         }
         scope.cancel()
         isPerformanceTraceFinished = true
+        onPerformanceTraceFinished = null
+        onPerformanceTraceError = null
         parsingStrategy.getViewCallbackStrategy().stopObserving(rootView.context)
     }
 
@@ -101,7 +103,7 @@ class XMLPagePerformanceTrace(
         performanceTraceData.set(
             performanceTraceData.get().copy(timeToFirstLayout = elapsedTime)
         )
-        onPerformanceTraceFinished(Success(performanceTraceData.get(), "TTFL finished"))
+        onPerformanceTraceFinished?.invoke(Success(performanceTraceData.get(), "TTFL finished"))
     }
 
     private fun observeLoadableComponent() {

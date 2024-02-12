@@ -1065,10 +1065,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingLogin()
         activityShouldEnd = true
 
-        if (viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text?.isNotBlank() == true) {
-            userSession.autofillUserData = viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString()
-        }
-
         registerPushNotif()
         submitIntegrityApi()
 

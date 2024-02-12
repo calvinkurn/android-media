@@ -1381,6 +1381,9 @@ class RegisterInitialFragment :
         submitIntegrityApi()
 
         ScpUtils.saveTokens(userSession.accessToken, EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
+        if (viewBinding?.registerInputView?.textValue?.isNotBlank() == true) {
+            userSession.autofillUserData = viewBinding?.registerInputView?.textValue
+        }
 
         activity?.let {
             val bundle = Bundle()

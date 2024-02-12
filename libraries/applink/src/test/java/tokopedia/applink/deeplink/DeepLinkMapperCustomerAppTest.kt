@@ -34,7 +34,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 161
-        const val SIZE_PATH = 270
+        const val SIZE_PATH = 271
     }
 
     override fun setup() {
@@ -1925,6 +1925,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check play shorts appLink then should return tokopedia internal play shorts in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play-shorts"
+        assertEqualsDeepLinkMapper(ApplinkConst.PLAY_SHORTS, expectedDeepLink)
+    }
+
+    @Test
     fun `check add name profile appLink then should return tokopedia internal add name profile in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/manage-name"
         assertEqualsDeepLinkMapper(ApplinkConst.ADD_NAME_PROFILE, expectedDeepLink)
@@ -3229,7 +3235,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check appLink for feed relevant post in customerapp`() {
+    fun `check appLink for feed relevant post in customerapp with content as host`() {
         val postId = "12345"
         val source = "detail-play"
 
@@ -3245,7 +3251,28 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         }
 
         assertEqualsDeepLinkMapper("tokopedia://content/$postId?source=$source", expectedDeepLink)
-        assertEqualsDeepLinkMapper("tokopedia://feed/$postId?source=$source", expectedDeepLink)
+    }
+
+    @Test
+    fun `check appLink for feed relevant post in customerapp with feed as host`() {
+        val postId = "12345"
+        val source = "detail-play"
+
+        val expectedDeepLink = buildString {
+            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append("?")
+            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("&")
+            append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME}=$source")
+            append("&")
+            append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID}=$postId")
+            append("&")
+            append("${ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST}=true")
+            append("&source=$source") // automatically added
+        }
+
+        val feedRelevantPostApplink = UriUtil.buildUri(ApplinkConst.FEED_RELEVANT_POST, postId)
+        assertEqualsDeepLinkMapper("$feedRelevantPostApplink&source=$source", expectedDeepLink)
     }
 
     @Test

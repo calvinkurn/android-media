@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.LOGIN
 import com.tokopedia.applink.ApplinkConst.PRODUCT_MANAGE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -34,7 +35,17 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -58,9 +69,23 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHO
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
-import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
+import com.tokopedia.product.addedit.common.util.AddEditProductUnsellableException
+import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
+import com.tokopedia.product.addedit.common.util.DialogUtil
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
+import com.tokopedia.product.addedit.common.util.NavigationController
+import com.tokopedia.product.addedit.common.util.RemoteConfig
+import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
+import com.tokopedia.product.addedit.common.util.animateCollapse
+import com.tokopedia.product.addedit.common.util.animateExpand
+import com.tokopedia.product.addedit.common.util.getNavigationResult
+import com.tokopedia.product.addedit.common.util.hideCoachmarkWhenTouchOutside
+import com.tokopedia.product.addedit.common.util.removeNavigationResult
+import com.tokopedia.product.addedit.common.util.setColorToDisabled
+import com.tokopedia.product.addedit.common.util.setDefaultMaxWidth
+import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductPreviewBinding
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
@@ -94,6 +119,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LATITUDE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LOGIN_REQUEST_CODE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
@@ -121,7 +147,6 @@ import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
-import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantStockStatus
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
@@ -146,8 +171,10 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.URLEncoder
 import javax.inject.Inject
-import kotlin.collections.ArrayList
+import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.product.manage.common.R as productManageR
+import com.tokopedia.shop.common.R as shopcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class AddEditProductPreviewFragment :
     AddEditProductFragment(),
@@ -361,6 +388,8 @@ class AddEditProductPreviewFragment :
                 REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT -> updateVariantFromIntentData(data)
                 REQUEST_CODE_SHOP_LOCATION -> updateShopLocationFromIntentData(data)
             }
+        } else if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST_CODE) {
+            viewModel.getProductData(viewModel.getProductId())
         }
     }
 
@@ -596,7 +625,8 @@ class AddEditProductPreviewFragment :
             val productInputModel = viewModel.productInputModel.value ?: return@setOnClickListener
 
             if (productInputModel.isCampaignActive ||
-                productInputModel.variantInputModel.isVariantCampaignActive()) {
+                productInputModel.variantInputModel.isVariantCampaignActive()
+            ) {
                 showToasterErrorSetStatusCampaignActive(isChecked)
                 return@setOnClickListener
             }
@@ -639,7 +669,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun processSave(view: View){
+    private fun processSave(view: View) {
         updateProductImage()
         if (isEditing()) {
             ProductEditStepperTracking.trackFinishButton(shopId)
@@ -844,7 +874,6 @@ class AddEditProductPreviewFragment :
         )
         outOfStockCoachMark = CoachMark2(context ?: return)
         outOfStockCoachMark?.showCoachMark(ArrayList(items))
-
     }
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
@@ -874,7 +903,7 @@ class AddEditProductPreviewFragment :
 
     private fun enableDetailEdit() {
         context?.let {
-            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN950))
             addEditProductDetailButton?.text = getString(R.string.action_change)
             addEditProductDetailButton?.animateExpand()
             dividerDetail?.hide()
@@ -883,7 +912,7 @@ class AddEditProductPreviewFragment :
 
     private fun enableDescriptionEdit() {
         context?.let {
-            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN950))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
             addEditProductDescriptionButton?.animateExpand()
         }
@@ -900,14 +929,14 @@ class AddEditProductPreviewFragment :
         addEditProductShipmentTitle?.setTextColor(
             ContextCompat.getColor(
                 context ?: return,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
+                unifyprinciplesR.color.Unify_NN950_44
             )
         )
     }
 
     private fun enableShipmentEdit() {
         context?.let {
-            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN950))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
             addEditProductShipmentButton?.animateExpand()
         }
@@ -936,20 +965,20 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeIsEditingStatus() {
-        viewModel.isEditing.observe(viewLifecycleOwner, {
+        viewModel.isEditing.observe(viewLifecycleOwner) {
             setPageState(if (it || viewModel.isDuplicate) PageState.EDIT_MODE else PageState.ADD_MODE)
             if (it) {
                 displayEditMode()
             } else {
                 stopPerformanceMonitoring()
             }
-        })
+        }
     }
 
     private fun observeProductData() {
         // start PLT monitoring network
         startNetworkRequestPerformanceMonitoring()
-        viewModel.getProductResult.observe(viewLifecycleOwner, { result ->
+        viewModel.getProductResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showProductStatus(result.data)
@@ -967,7 +996,8 @@ class AddEditProductPreviewFragment :
                     context?.let {
                         val isEditing = viewModel.isEditing.value ?: false
                         val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                        val errorName = AddEditProductUploadErrorHandler.getErrorName(result.throwable)
+                        val errorName =
+                            AddEditProductUploadErrorHandler.getErrorName(result.throwable)
                         if (isEditing) {
                             ProductEditStepperTracking.oopsConnectionPageScreen(
                                 userSession.userId,
@@ -975,16 +1005,19 @@ class AddEditProductPreviewFragment :
                                 errorName
                             )
                         }
+                        if (result.throwable is AddEditProductUnsellableException) {
+                            showGlobalError(description = errorMessage) { activity?.finish() }
+                        }
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                         AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
                     }
                 }
             }
-        })
+        }
     }
 
     private fun observeProductInputModel() {
-        viewModel.productInputModel.observe(viewLifecycleOwner, {
+        viewModel.productInputModel.observe(viewLifecycleOwner) {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
             updateProductStatusSwitch(it)
@@ -1005,7 +1038,7 @@ class AddEditProductPreviewFragment :
 
             stopRenderPerformanceMonitoring()
             stopPerformanceMonitoring()
-        })
+        }
     }
 
     private fun updateProductStatusSwitch(productInputModel: ProductInputModel) {
@@ -1023,7 +1056,8 @@ class AddEditProductPreviewFragment :
     private fun observeHasDTStock() {
         viewModel.hasDTStock.observe(viewLifecycleOwner) { hasDTStock ->
             addEditProductVariantButton?.setColorToDisabled(
-                hasDTStock && viewModel.isVariantEmpty.value == true)
+                hasDTStock && viewModel.isVariantEmpty.value == true
+            )
             addEditProductVariantButton?.setOnClickListener {
                 if (isEditing()) {
                     ProductEditStepperTracking.trackAddProductVariant(shopId)
@@ -1038,33 +1072,33 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observePriceRangeFormatted() {
-        viewModel.priceRangeFormatted.observe(viewLifecycleOwner, {
+        viewModel.priceRangeFormatted.observe(viewLifecycleOwner) {
             productPriceView?.text = it
-        })
+        }
     }
 
     private fun observeStockFormatted() {
-        viewModel.stockFormatted.observe(viewLifecycleOwner, {
+        viewModel.stockFormatted.observe(viewLifecycleOwner) {
             productStockView?.text = it.toString()
             displayEmptyStockInfo(it)
-        })
+        }
     }
 
     private fun observeImageUrlOrPathList() {
-        viewModel.imageUrlOrPathList.observe(viewLifecycleOwner, {
+        viewModel.imageUrlOrPathList.observe(viewLifecycleOwner) {
             productPhotoAdapter?.setProductPhotoPaths(it)
             viewModel.saveImageListToDetailInput(it)
-        })
+        }
     }
 
     private fun observeIsLoading() {
-        viewModel.isLoading.observe(viewLifecycleOwner, { isLoading ->
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) {
                 showLoading()
             } else {
                 hideLoading()
             }
-        })
+        }
     }
 
     private fun observeValidationMessage() {
@@ -1177,7 +1211,14 @@ class AddEditProductPreviewFragment :
                     }
                 }
                 is Fail -> {
-                    showGetProductErrorToast(viewModel.getProductId())
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showGlobalError(description = errorMessage) {
+                        activity?.finish()
+                    }
+                    if (!userSession.isLoggedIn) {
+                        val intent = RouteManager.getIntent(requireContext(), LOGIN)
+                        startActivityForResult(intent, LOGIN_REQUEST_CODE)
+                    }
                 }
             }
         }
@@ -1409,7 +1450,7 @@ class AddEditProductPreviewFragment :
                 errorMessage,
                 duration = Snackbar.LENGTH_INDEFINITE,
                 type = Toaster.TYPE_ERROR,
-                actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
+                actionText = getString(abstractionR.string.title_try_again),
                 clickListener = {
                     viewModel.getProductData(viewModel.getProductId())
                 }
@@ -1789,7 +1830,8 @@ class AddEditProductPreviewFragment :
         productStatusSwitch?.isChecked = true
         val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         val descriptionText = getString(
-            productManageR.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml()
+            productManageR.string.product_manage_confirm_inactive_dt_product_desc
+        ).parseAsHtml()
         val successMessage = getString(R.string.product_add_edit_success_to_deactivate_format, productName)
         dialog.apply {
             setTitle(getString(productManageR.string.product_manage_confirm_inactive_dt_product_title))
@@ -1800,7 +1842,7 @@ class AddEditProductPreviewFragment :
                 productStatusSwitch?.isChecked = false
                 viewModel.updateProductStatus(false)
                 Toaster.build(
-                    view?:return@setPrimaryCTAClickListener,
+                    view ?: return@setPrimaryCTAClickListener,
                     successMessage,
                     Toaster.LENGTH_LONG,
                     actionText = getString(R.string.action_oke)
@@ -1925,20 +1967,31 @@ class AddEditProductPreviewFragment :
     }
 
     private fun showAdminNotEligibleView() {
-        adminRevampGlobalError?.run {
-            val permissionGroup = SellerHomePermissionGroup.PRODUCT
-            errorIllustration.loadImage(AdminPermissionUrl.ERROR_ILLUSTRATION)
-            errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
-            errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
-            errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
-            setButtonFull(true)
-
-            setActionClickListener {
-                activity?.finish()
-                if (GlobalConfig.isSellerApp()) {
-                    RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
-                }
+        val permissionGroup = SellerHomePermissionGroup.PRODUCT
+        showGlobalError(
+            context?.getString(shopcommonR.string.admin_no_permission_title, permissionGroup).orEmpty(),
+            context?.getString(shopcommonR.string.admin_no_permission_desc, permissionGroup).orEmpty(),
+            AdminPermissionUrl.ERROR_ILLUSTRATION
+        ) {
+            activity?.finish()
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
             }
+        }
+    }
+
+    private fun showGlobalError(
+        title: String = "",
+        description: String = "",
+        illustrationUrl: String = "",
+        listener: () -> Unit
+    ) {
+        adminRevampGlobalError?.apply {
+            if (illustrationUrl.isNotEmpty()) errorIllustration.loadImage(illustrationUrl)
+            if (title.isNotEmpty()) errorTitle.text = title
+            if (description.isNotEmpty()) errorDescription.text = description
+            errorAction.text = context?.getString(shopcommonR.string.admin_no_permission_action)
+            setActionClickListener { listener() }
         }
         adminRevampErrorLayout?.show()
     }
