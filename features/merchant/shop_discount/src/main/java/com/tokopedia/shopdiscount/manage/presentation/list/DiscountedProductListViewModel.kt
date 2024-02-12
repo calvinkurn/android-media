@@ -237,22 +237,27 @@ class DiscountedProductListViewModel @Inject constructor(
     ) {
         launchCatchError(dispatchers.io, block = {
             val productDetailData = getProductDetailData(listProductId, status, true)
-            val listProductDetailUiModel =
-                ShopDiscountProductDetailMapper.mapToShopDiscountProductDetailUiModel(
-                    productDetailData
-                ).listProductDetailData
-            val entrySource = getEntrySource(mode)
-            val mappedUiModel = ShopDiscountManageProductSubsidyUiModelMapper.map(
-                listProductDetailData = listProductDetailUiModel,
-                mode = mode,
-                entrySource = entrySource
-            )
-            if (mode == ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY) {
-                listProductDetailUiModel.filter { it.productRule.isAbleToOptOut }.map {
-                    mappedUiModel.addSelectedProductToOptOut(it)
+            val responseHeader = productDetailData.responseHeader
+            if (!responseHeader.success) {
+                _manageProductSubsidyUiModelLiveData.postValue(Fail(Exception(responseHeader.reason)))
+            } else {
+                val listProductDetailUiModel =
+                    ShopDiscountProductDetailMapper.mapToShopDiscountProductDetailUiModel(
+                        productDetailData
+                    ).listProductDetailData
+                val entrySource = getEntrySource(mode)
+                val mappedUiModel = ShopDiscountManageProductSubsidyUiModelMapper.map(
+                    listProductDetailData = listProductDetailUiModel,
+                    mode = mode,
+                    entrySource = entrySource
+                )
+                if (mode == ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY) {
+                    listProductDetailUiModel.filter { it.productRule.isAbleToOptOut }.map {
+                        mappedUiModel.addSelectedProductToOptOut(it)
+                    }
                 }
+                _manageProductSubsidyUiModelLiveData.postValue(Success(mappedUiModel))
             }
-            _manageProductSubsidyUiModelLiveData.postValue(Success(mappedUiModel))
         }) {
             _manageProductSubsidyUiModelLiveData.postValue(Fail(it))
         }
