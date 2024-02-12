@@ -232,7 +232,7 @@ class CheckoutOrderViewHolder(
 
     override fun onViewCartErrorState(error: ShippingWidgetState.CartError) {
         order?.run {
-            if (error.logisticPromoCode?.isNotEmpty() == true) {
+            if (bindingAdapterPosition > RecyclerView.NO_POSITION && error.logisticPromoCode?.isNotEmpty() == true) {
                 listener?.onCancelVoucherLogisticClicked(
                     error.logisticPromoCode!!,
                     bindingAdapterPosition,
