@@ -1914,7 +1914,7 @@ class CheckoutViewModel @Inject constructor(
                                         checkoutItem.tokoConsultationId == "0" ||
                                         checkoutItem.partnerConsultationId == "0" ||
                                         checkoutItem.consultationDataString.isEmpty()
-                                if (prescriptionIdsEmpty && consultationEmpty) {
+                                if ((prescriptionIdsEmpty && consultationEmpty) || checkoutItem.isBlockCheckoutFlowEPharmacy) {
                                     isPrescriptionFrontEndValidationError = true
                                     productErrorPrescriptionCount += 1
                                 } else {
