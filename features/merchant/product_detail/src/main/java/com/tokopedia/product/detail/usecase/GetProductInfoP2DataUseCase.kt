@@ -61,6 +61,14 @@ class GetProductInfoP2DataUseCase @Inject constructor(
               Message
               DevMessage
             }
+            promoPriceStyle {
+              iconURL
+              productID
+              color
+              background
+              superGraphicURL
+              separatorColor
+            }
             ppGetItemDetailPage{
               program{
                 protectionAvailable

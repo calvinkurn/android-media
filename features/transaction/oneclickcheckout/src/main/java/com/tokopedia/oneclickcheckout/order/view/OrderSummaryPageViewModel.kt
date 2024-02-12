@@ -66,6 +66,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -135,6 +136,7 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     var isCartCheckoutRevamp: Boolean = false
     var usePromoEntryPointNewInterface: Boolean = false
+    var listPromoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply> = arrayListOf()
 
     fun getShopId(): String {
         return orderCart.shop.shopId
@@ -165,7 +167,13 @@ class OrderSummaryPageViewModel @Inject constructor(
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
-            val result = cartProcessor.getOccCart(source, gatewayCode, tenor, isCartCheckoutRevamp)
+            val result = cartProcessor.getOccCart(
+                source,
+                gatewayCode,
+                tenor,
+                isCartCheckoutRevamp,
+                listPromoExternalAutoApplyCode
+            )
             val isPromoRevamp =
                 PromoUsageRollenceManager().isRevamp(result.orderPromo.lastApply.userGroupMetadata)
             addressState.value = result.addressState
@@ -1152,6 +1160,13 @@ class OrderSummaryPageViewModel @Inject constructor(
                     clearAllPromoFromLastRequest()
                     calculateTotal()
                     globalEvent.value = newGlobalEvent
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = false
+                        )
+                    }
                 }
 
                 resultValidateUse != null -> {
@@ -1160,12 +1175,27 @@ class OrderSummaryPageViewModel @Inject constructor(
                     if (newGlobalEvent != null) {
                         globalEvent.value = newGlobalEvent
                     }
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = true
+                        )
+                        listPromoExternalAutoApplyCode = arrayListOf()
+                    }
                 }
 
                 newGlobalEvent != null && !isAkamaiError -> {
                     orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                     globalEvent.value = newGlobalEvent
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = false
+                        )
+                    }
                 }
 
                 else -> {

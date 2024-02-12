@@ -443,6 +443,9 @@ object ConstantTransactionAnalytics {
         // OFOC
         const val VIEW_SPLIT_OFOC_POP_UP_BOX = "view split ofoc pop up box"
         const val CLICK_OK_TO_SPLIT_ORDER_OFOC = "click ok to split order ofoc"
+
+        // BELI PAKAI PROMO
+        const val VIEW_OCC_BELI_PAKAI_PROMO = "view occ beli pakai promo"
     }
 
     object EventLabel {
@@ -510,6 +513,7 @@ object ConstantTransactionAnalytics {
         const val EVENT_ACTION = "eventAction"
         const val EVENT_CATEGORY = "eventCategory"
         const val EVENT_LABEL = "eventLabel"
+        const val SHOP_ID = "shopId"
         const val USER_ID = "userId"
         const val CART_ID = "cartId"
         const val PROMO_CODE = "promoCode"
@@ -627,5 +631,8 @@ object ConstantTransactionAnalytics {
         // OFOC
         const val VIEW_SPLIT_OFOC_POP_UP_BOX = "48544"
         const val CLICK_OK_TO_SPLIT_ORDER_OFOC = "48547"
+
+        // beli pakai promo
+        const val VIEW_BELI_OCC_PAKAI_PROMO = "49899"
     }
 }

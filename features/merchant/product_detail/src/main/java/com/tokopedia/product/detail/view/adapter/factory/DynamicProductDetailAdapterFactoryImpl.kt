@@ -104,6 +104,8 @@ import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
+import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceViewHolder
 import com.tokopedia.product.detail.view.viewholder.review.ui.ProductReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
@@ -304,6 +306,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ShipmentViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductPriceUiModel): Int {
+        return ProductPriceViewHolder.LAYOUT
+    }
+
     override fun type(data: ProductTabletLeftSectionDataModel): Int {
         return TabletLeftSectionViewHolder.LAYOUT
     }
@@ -459,6 +465,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(view, listener)
             APlusImageViewHolder.LAYOUT -> APlusImageViewHolder(view, listener)
             BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
+            ProductPriceViewHolder.LAYOUT -> ProductPriceViewHolder(view, pdpCallback.productPrice)
             TabletLeftSectionViewHolder.LAYOUT -> TabletLeftSectionViewHolder(view, listener, this)
             TabletRightSectionViewHolder.LAYOUT -> TabletRightSectionViewHolder(view, listener, this)
             GWPViewHolder.LAYOUT -> GWPViewHolder(view, pdpCallback.gwp)

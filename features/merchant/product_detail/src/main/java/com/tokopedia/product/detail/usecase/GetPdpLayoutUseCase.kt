@@ -189,6 +189,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         type
                       }
                       isCOD
+                      isShowPrice
                       price {
                         value
                         priceFmt
@@ -314,6 +315,26 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         text
                       }
                     }
+                    ... on pdpDataComponentPromoPrice {
+                      promo {
+                        iconURL
+                        promoPriceFmt
+                        subtitle
+                        applink
+                        color
+                        background
+                        superGraphicURL
+                        priceAdditionalFmt
+                        separatorColor
+                        bottomsheetParam
+                        promoCodes{
+                          promoID
+                          promoCode
+                          promoCodeType
+                        }
+                      }
+                      componentPriceType
+                    }
                     ... on pdpDataCategoryCarousel {
                         titleCarousel
                         linkText
@@ -383,6 +404,24 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         productURL
                         isCOD
                         isWishlist
+                        promo {
+                          iconURL
+                          promoPriceFmt
+                          subtitle
+                          applink
+                          color
+                          background
+                          superGraphicURL
+                          priceAdditionalFmt
+                          separatorColor
+                          bottomsheetParam
+                          promoCodes {
+                              promoID
+                              promoCode
+                              promoCodeType
+                          }
+                        }
+                        componentPriceType
                         picture {
                           url
                           url200

@@ -106,8 +106,9 @@ data class ProductContentMainData(
     var stockWording: String = "",
     var isVariant: Boolean = false,
     var productName: String = "",
+    var isProductActive: Boolean = false,
+    var isShowPrice: Boolean = true,
     var labelIcons: List<LabelIcons> = emptyList(),
-    var isProductActive: Boolean = false
 ) {
 
     val hasCampaign

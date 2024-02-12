@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--Bottom Sheet Header (Title, Close Icon)-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        tools:background="@drawable/background_bottomsheet_promo">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/benefit_background"
+            android:layout_width="176dp"
+            android:layout_height="68dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/temp_superbg" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:icon_color_light_enable="@color/Unify_Static_Black"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="CLOSE"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgBottomSheetHeaderTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="@string/detail_harga"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ic_close"
+            app:layout_constraintTop_toTopOf="@+id/ic_close"
+            app:typographyType="heading_3" />
+
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ic_close"
+            tools:visibility="gone" />
+
+        <include
+            android:id="@+id/layout_benefit"
+            layout="@layout/layout_benefit_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ic_close"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_tnc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/cek_info_tentang_promonya_dulu_yuk"
+            app:layout_constraintBottom_toBottomOf="@+id/toggle_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toggle_info"
+            app:typographyType="display_3"
+            app:typographyWeight="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/typography2"
+            app:layout_constraintTop_toBottomOf="@+id/typography2">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/toggle_info"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            app:icon_name="CHEVRON_UP"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
