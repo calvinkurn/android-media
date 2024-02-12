@@ -29,6 +29,11 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_VERTICAL_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_WAITING_INVOICE
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EventKeys
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.CLICK_LIHAT_INVOICE
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.CLICK_PUSAT_BANTUAN
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.ORDER_DETAIL_MAIN_CTA
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.VIEW_CHAT_DOKTER_ORDER_DETAIL_PAGE
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.VIEW_PRESC_IMAGE_WEBVIEW
 import com.tokopedia.epharmacy.viewmodel.EPharmacyOrderDetailViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -305,7 +310,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .setEventAction("click main CTA")
             .setEventCategory(EPHARMACY_ORDER_DETAIL_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45880")
+            .setCustomProperty(EventKeys.TRACKER_ID, ORDER_DETAIL_MAIN_CTA)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
@@ -318,7 +323,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .setEventAction("view prescription image webview")
             .setEventCategory("epharmacy prescription image webview")
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45882")
+            .setCustomProperty(EventKeys.TRACKER_ID, VIEW_PRESC_IMAGE_WEBVIEW)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
@@ -331,7 +336,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .setEventAction("view chat dokter order detail page")
             .setEventCategory(EPHARMACY_ORDER_DETAIL_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45879")
+            .setCustomProperty(EventKeys.TRACKER_ID, VIEW_CHAT_DOKTER_ORDER_DETAIL_PAGE)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
@@ -344,7 +349,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .setEventAction("click lihat invoice")
             .setEventCategory(EPHARMACY_ORDER_DETAIL_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45881")
+            .setCustomProperty(EventKeys.TRACKER_ID, CLICK_LIHAT_INVOICE)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
@@ -357,7 +362,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .setEventAction("click pusat bantuan")
             .setEventCategory(EPHARMACY_ORDER_DETAIL_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45885")
+            .setCustomProperty(EventKeys.TRACKER_ID, CLICK_PUSAT_BANTUAN)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()

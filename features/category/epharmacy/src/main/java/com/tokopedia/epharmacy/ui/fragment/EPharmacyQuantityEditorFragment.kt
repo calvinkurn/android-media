@@ -39,7 +39,14 @@ import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY
 import com.tokopedia.epharmacy.utils.EXTRA_SOURCE_STRING
 import com.tokopedia.epharmacy.utils.EventKeys
+import com.tokopedia.epharmacy.utils.EventKeys.Companion.VIEW_GROCERIES_IRIS
 import com.tokopedia.epharmacy.utils.PrescriptionActionType
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.ADD_QTY_CHANGE
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.CLICK_PERBAHARUI
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.REMOVE_QTY_CHANGE
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.SUCCESS_QUANTITY_CHANGE
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.VIEW_ERROR_ON_QTY_BS
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.VIEW_QUANTITY_CHANGE_BS
 import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
 import com.tokopedia.epharmacy.utils.openDocument
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
@@ -256,6 +263,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun onSuccessUpdateEPharmacyCart() {
+        sendSuccessQtyChangesApiEvent("$tConsultationIds")
         RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT).apply {
             putExtra(EXTRA_CHECKOUT_PAGE_SOURCE, EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY)
         }.also {
@@ -415,7 +423,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             .setEventAction("click perbaharui pesanan on quantity change bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45877")
+            .setCustomProperty(EventKeys.TRACKER_ID, CLICK_PERBAHARUI)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
@@ -428,7 +436,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             .setEventAction("view error toaster on quantity change bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45878")
+            .setCustomProperty(EventKeys.TRACKER_ID, VIEW_ERROR_ON_QTY_BS)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
@@ -441,7 +449,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             .setEventAction("click add quantity on change quantity bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45875")
+            .setCustomProperty(EventKeys.TRACKER_ID, ADD_QTY_CHANGE)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
@@ -454,7 +462,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             .setEventAction("click remove quantity on change quantity bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45876")
+            .setCustomProperty(EventKeys.TRACKER_ID, REMOVE_QTY_CHANGE)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
@@ -467,7 +475,20 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
             .setEventAction("view quantity change bottomsheet")
             .setEventCategory("epharmacy attach prescription page")
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45874")
+            .setCustomProperty(EventKeys.TRACKER_ID, VIEW_QUANTITY_CHANGE_BS)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+    fun sendSuccessQtyChangesApiEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(VIEW_GROCERIES_IRIS)
+            .setEventAction("success qty changes API")
+            .setEventCategory("epharmacy attach prescription page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty(EventKeys.TRACKER_ID, SUCCESS_QUANTITY_CHANGE)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
