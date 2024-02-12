@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
 import androidx.compose.runtime.key
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -80,7 +81,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             } to 0.0
     }
 
-    private fun generateActionMetadata(orderCart: OrderCart): OrderActionMetadata {
+    private fun generateActionMetadata(orderCart: OrderCart): String {
         val listActionProduct = arrayListOf<OrderActionMetadata.Action>()
         orderCart.products.map {
             listActionProduct.add(
@@ -99,9 +100,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 )
             )
         }
-        return OrderActionMetadata(
+        val actionMetadata = OrderActionMetadata(
             listAction = listActionProduct
         )
+        val gson = Gson()
+        return gson.toJson(actionMetadata, OrderActionMetadata::class.java)
     }
 
     private fun generateShippingParam(

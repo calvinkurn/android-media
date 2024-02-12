@@ -55,7 +55,9 @@ data class RatesParam(
     var shopShipments: List<ShopShipment> = listOf(),
 
     // O2O
-    var groupMetadata: String = ""
+    var groupMetadata: String = "",
+
+    var actionMetadata: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -92,7 +94,8 @@ data class RatesParam(
         group_type = builder.groupType,
         shopShipments = builder.shopShipments,
         groupMetadata = builder.groupMetadata,
-        grouping_state = builder.groupingState
+        grouping_state = builder.groupingState,
+        actionMetadata = builder.actionMetadata
     )
 
     @Deprecated("please use RatesV3Param or RatesV3ApiParam")
@@ -130,7 +133,8 @@ data class RatesParam(
         "bo_metadata" to bo_metadata,
         "warehouse_id" to warehouse_id,
         "group_type" to group_type,
-        "group_metadata" to groupMetadata
+        "group_metadata" to groupMetadata,
+        "action_metadata" to actionMetadata
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
@@ -220,7 +224,8 @@ data class RatesParam(
             warehouse_id = warehouse_id,
             group_type = group_type,
             group_metadata = groupMetadata,
-            grouping_state = grouping_state
+            grouping_state = grouping_state,
+            action_metadata = actionMetadata
         )
     }
 
