@@ -25,7 +25,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_delete"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
@@ -33,8 +33,8 @@
         android:layout_height="20dp"
         android:layout_gravity="top|end"
         android:background="@drawable/circle_light_grey"
-        android:backgroundTint="@color/Unify_NN500"
-        app:srcCompat="@drawable/ic_close_white"
+        app:icon_name="CLOSE"
+        app:icon_enable_default_color="@color/Unify_Static_White_96"
         android:padding="2dp"/>
 
 </FrameLayout>
