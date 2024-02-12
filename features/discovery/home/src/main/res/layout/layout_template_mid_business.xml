@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="@dimen/unify_space_8"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="30dp"
                     android:layout_marginEnd="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
@@ -113,6 +113,7 @@
         layout="@layout/layout_template_icon_business_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginLeft="@dimen/unify_space_8" />
 
