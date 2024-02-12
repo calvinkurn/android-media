@@ -15,7 +15,7 @@
     <string name="applink_epharmacy_edu" translatable="false">/edu/.*\</string>
     <string name="applink_epharmacy_attach_prescription" translatable="false">/component/attach-prescription.*</string>
     <string name="applink_epharmacy_checkout" translatable="false">/checkout.*</string>
-    <string name="applink_epharmacy_reminder" translatable="false">/error-closing</string>
+    <string name="applink_epharmacy_reminder" translatable="false">/component/error-closing</string>
     <string name="applink_epharmacy_chat_loading" translatable="false">/chat-loading/.*\</string>
     <string name="path_final_price" translatable="false">/host_final_price</string>
     <string name="path_age_restriction" translatable="false">/age_restriction</string>
