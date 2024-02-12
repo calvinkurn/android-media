@@ -32,4 +32,11 @@
         <attr name="shop_lv_show_arrow" format="boolean"/>
         <attr name="shop_lv_bold" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="BmsmWidget">
+        <attr name="offer_type">
+            <enum name="progressive_discount" value="1" />
+            <enum name="gift_with_purchase" value="2" />
+        </attr>
+    </declare-styleable>
 </resources>

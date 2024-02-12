@@ -97,6 +97,7 @@ object ProductDetailConstant {
     const val PRODUCT_LIST_VERTICAL = "product_list_vertical"
     const val PDP_VERTICAL_LOADING = "pdp_vertical_loading"
     const val VIEW_TO_VIEW = "view-to-view"
+    const val SDUI_VIEW = "sdui_palugada"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
@@ -121,10 +122,14 @@ object ProductDetailConstant {
     // custom info title as component type
     const val CUSTOM_INFO_TITLE = "custom_info_title"
 
-    // custom info title as component name
+    // bmgm as component name
     const val OTHER_OFFERS = "other_offers"
     const val BMGM_TYPE = "bmgm"
     const val BMGM_SNEAK_PEEK_NAME = "bmgm_sneak_peek"
+
+    // GWP component
+    const val GWP_TYPE = "gwp"
+    const val GWP_SNEAK_PEEK_NAME = "gwp_sneak_peek"
 
     // Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

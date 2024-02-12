@@ -207,9 +207,8 @@ android {
             }
 
             zipAlignEnabled true
-            if (project.hasProperty("enable-shrinkresource")) {
-                shrinkResources true
-            }
+            shrinkResources true
+
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
             buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()

@@ -15,7 +15,9 @@ interface DynamicPdpDataModel : Visitable<DynamicProductDetailAdapterFactory> {
         get() = TabletPosition.RIGHT
 
     val impressHolder: ImpressHolder
+    fun impressionKey() = type() + name()
 }
+
 enum class TabletPosition(
     val type: String
 ) {
