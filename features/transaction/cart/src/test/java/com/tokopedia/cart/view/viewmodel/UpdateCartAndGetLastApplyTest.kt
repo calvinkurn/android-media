@@ -3,10 +3,10 @@ package com.tokopedia.cart.view.viewmodel
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
-import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
+import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel

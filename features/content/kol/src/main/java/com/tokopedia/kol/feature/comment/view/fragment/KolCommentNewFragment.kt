@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -624,9 +624,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     private fun setAvatar() {
         /*check if the user commenting is a shop to show shop avatar*/
         val authorId = arguments?.getString(ARGS_AUTHOR_TYPE)
-        ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
+        avatarShop?.loadImageCircle(userSession?.profilePicture)
         if (authorId?.isNotEmpty() == true && authorId == userSession?.shopId) {
-            ImageHandler.loadImageCircle2(context, avatarShop, userSession?.shopAvatar)
+            avatarShop?.loadImageCircle(userSession?.shopAvatar)
         }
     }
 

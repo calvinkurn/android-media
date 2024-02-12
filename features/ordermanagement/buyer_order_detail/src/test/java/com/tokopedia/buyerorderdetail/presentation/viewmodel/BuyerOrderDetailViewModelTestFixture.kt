@@ -30,13 +30,20 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMa
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel.ProductUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
 import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.track.TrackApp
@@ -60,6 +67,7 @@ import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import com.tokopedia.order_management_common.R as order_management_commonR
 
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class BuyerOrderDetailViewModelTestFixture {
@@ -130,7 +138,16 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         totalPrice = "500000",
         totalPriceText = "Rp500.000",
         isProcessing = false,
-        productUrl = ""
+        productUrl = "",
+        addonsListUiModel = AddonsListUiModel(
+            addOnIdentifier = "1",
+            totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
+            addonsLogoUrl = "",
+            addonsTitle = "",
+            addonsItemList = listOf(),
+            canExpandCollapse = true,
+            showTotalPrice = true
+        )
     )
 
     val atcExpectedParams = arrayListOf(
@@ -145,6 +162,55 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             warehouseId = "0"
         )
     )
+
+    val bmgmDetailsResponse =
+        ProductBmgmSectionUiModel(
+            bmgmId = "1:3:0",
+            bmgmName = "offers - Beli2DiskonDiskon30%",
+            totalPrice = 400000.00,
+            totalPriceText = "Rp400.000",
+            totalPriceReductionInfoText = "Rp100.000",
+            bmgmIconUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
+            bmgmItemList = listOf(
+                ProductUiModel(
+                    orderId = "556574",
+                    orderDetailId = "2150865420",
+                    productName = "Power Bank Original - Pink",
+                    thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                    price = 75000.00,
+                    productPriceText = "Rp 75.000",
+                    quantity = 2,
+                    productNote = "ukurannya 43 ya",
+                    addOnSummaryUiModel = AddOnSummaryUiModel(
+                        addOnIdentifier = "2",
+                        totalPriceText = StringRes(Int.ZERO),
+                        addonsLogoUrl = "",
+                        addonsTitle = "",
+                        addonItemList = listOf(),
+                        canExpandCollapse = true
+                    )
+                ),
+                ProductUiModel(
+                    orderId = "556575",
+                    orderDetailId = "2150865421",
+                    productName = "Power Bank Original - Blue",
+                    thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                    price = 85000.00,
+                    productPriceText = "Rp 85.000",
+                    quantity = 2,
+                    productNote = "ukurannya 44 ya",
+                    addOnSummaryUiModel = AddOnSummaryUiModel(
+                        addOnIdentifier = "3",
+                        totalPriceText = StringRes(Int.ZERO),
+                        addonsLogoUrl = "",
+                        addonsTitle = "",
+                        addonItemList = listOf(),
+                        canExpandCollapse = true
+                    )
+                )
+            ),
+            productBenefits = null
+        )
 
     val additionalEpharmacyData =
         GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData(
@@ -210,8 +276,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every { additionalData } returns additionalEpharmacyData
         },
         getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
-        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
-        actionBeforeComplete: () -> Unit = {}
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true)
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
@@ -226,8 +291,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         )
                     )
                 )
-                delay(1)
-                actionBeforeComplete()
+                delay(150)
                 emit(
                     GetBuyerOrderDetailDataRequestState.Complete(
                         GetP0DataRequestState.Complete(
@@ -239,6 +303,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         )
                     )
                 )
+                delay(150)
             }
         }
     }
@@ -258,6 +323,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     )
                 )
             )
+            delay(150)
             emit(
                 GetBuyerOrderDetailDataRequestState.Complete(
                     GetP0DataRequestState.Complete(
@@ -269,6 +335,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     )
                 )
             )
+            delay(150)
         }
     }
 
@@ -329,7 +396,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         reloadingState: ProductListUiState.HasData.Reloading = mockk(relaxed = true),
         showingState: ProductListUiState.HasData.Showing = mockk(relaxed = true),
         errorState: ProductListUiState.Error = mockk(relaxed = true),
-        block: () -> Unit
+        block: ProductListUiStateMapper.() -> Unit
     ) {
         mockkObject(ProductListUiStateMapper, recordPrivateCalls = true) {
             every {
@@ -346,13 +413,15 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     any<GetInsuranceDetailRequestState>(),
                     any<Map<String, AddToCartSingleRequestState>>(),
                     any<Boolean>(),
-                    any<Boolean>()
+                    any<Boolean>(),
+                    any<List<String>>(),
+                    any<List<String>>()
                 )
             } returns showingState
             every {
                 ProductListUiStateMapper["mapOnError"](any<Throwable>())
             } returns errorState
-            block()
+            block(ProductListUiStateMapper)
         }
     }
 
@@ -417,6 +486,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
     }
 
+    fun getExpandCollapseState(): List<String> {
+        return BuyerOrderDetailViewModel::class.java.getDeclaredField("addOnsExpandableState").run {
+            isAccessible = true
+            (get(viewModel) as List<String>)
+        }
+    }
+
     fun TestScope.getBuyerOrderDetailData(
         orderId: String = this@BuyerOrderDetailViewModelTestFixture.orderId,
         paymentId: String = this@BuyerOrderDetailViewModelTestFixture.paymentId,
@@ -424,7 +500,31 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         shouldCheckCache: Boolean = false
     ) {
         viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
-        // skip debounce on viewModel#productListUiState
-        advanceTimeBy(1050L)
+        advanceUntilIdle()
+    }
+
+    fun TestScope.updateScpRewardsMedalTouchPointWidgetState(
+        data: ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder,
+        marginLeft: Int,
+        marginTop: Int,
+        marginRight: Int
+    ) {
+        viewModel.updateScpRewardsMedalTouchPointWidgetState(
+            data = data,
+            marginLeft = marginLeft,
+            marginTop = marginTop,
+            marginRight = marginRight
+        )
+        advanceUntilIdle()
+    }
+
+    fun TestScope.hideScpRewardsMedalTouchPointWidget() {
+        viewModel.hideScpRewardsMedalTouchPointWidget()
+        advanceUntilIdle()
+    }
+
+    fun TestScope.finishOrder() {
+        viewModel.finishOrder()
+        advanceUntilIdle()
     }
 }

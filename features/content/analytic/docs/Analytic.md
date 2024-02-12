@@ -42,7 +42,7 @@ Content has a lot of module and each module has its own analytic implementation.
 
 ### Project Description
 
-`Analytic` is a regular java module and as of now consist of 6 main classes for storing constant:
+`Analytic` consists of 6 main classes for storing constant:
 
 
 
@@ -54,6 +54,31 @@ Content has a lot of module and each module has its own analytic implementation.
 | EventCategory | contains EventCategory possible value | - groupchat room<br/>- unified feed<br/> |
 | Key | contains possible analytic key | - event<br/>- eventLabel<br/>- businessUnit<br/>- trackerId<br/>- …<br/> |
 | Value | contains possible reusable analytic value | - user<br/>- shop<br/>- follow<br/>- unfollow<br/>- …<br/> |
+
+Besides constant, Android CMP developers are required to use analytic manager class called `ContentAnalyticManager` to send trackers within content modules. The reason is to centralize all content tracker behavior & make developers easier to use tracker. There are number of functions that you can use to help you sending trackers:
+
+| **Sender Function** | **Description** |
+| --- | --- |
+| sendEvent() | send a basic event tracker |
+| sendViewContent() | send a view content tracker with event : `viewContentIris` |
+| sendClickContent() | send a click content tracker with event : `clickContent` |
+| sendOpenScreen() | send an open screen tracker |
+| sendEEPromotions() | send an Enhance Ecommerce tracker with promotions type |
+| sendEEProduct() | send an Enhance Ecommerce tracker with products type |
+
+Note : All the functions has `customFields` arguments where you can use this to add additional fields based on your use case.
+
+There are also number of helper function that can be used alongside with functions that we have mentioned above:
+
+| **Helper Function** | **Description** |
+| --- | --- |
+| concatLabels() | concat a list of label you provides and add `-` as separate symbol between labels (e.g. `123 - seller - 456`) |
+| concatLabelsWithAuthor() | concat a list of label you provide with author information (`{id} - {author_type}`) as the prefix |
+| impressOnlyOnce() | helps you to make sure your impression is only hit once by providing the key to differentiate your impressions with another |
+| clearAllImpression() | resets all the impression key, so you can start your impression from beginning again |
+| clearImpression() | reset a specific impression key |
+
+Please refer to `How-to` section for detail implementation on how to use these functions.
 
 ## How-to
 
@@ -68,28 +93,93 @@ dependencies {
     ...
 }
 ```
-2. Use the constant anywhere you want
-
-
-
+2. Please make sure you have `UserSessionInterface` injector within your Dagger Component.
 ```
-fun onClickCancelSwitchAccount() {
-    Tracker.Builder()
-        .setEvent(Event.clickContent)
-        .setEventAction("click - batal switch account")
-        .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-        .setCustomProperty(Key.trackerId, "35508")
-        .setEventLabel("$authorId - $authorTypeName")
-        .setBusinessUnit(BusinessUnit.content)
-        .setCurrentSite(currentSite)
-        .setCustomProperty(Key.sessionIris, sessionIris)
-        .setUserId(userId)
-        .build()
-        .send()
+@Module
+class YourModule {
+
+    @Provides
+    @YourScope
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 }
 ```
 
+3. Inject `ContentAnalyticManager.Factory` to your analytic class & initiate `ContentAnalyticManager`
+```
+class YourTrackerImpl @Inject constructor(
+    analyticManagerFactory: ContentAnalyticManager.Factory
+) {
+    
+    private val analyticManager = analyticManagerFactory.create(
+        // Please provide this value from particular constant object.
+        businessUnit = "your_business_unit",
+        eventCategory = "your_event_category",
+    )
+}
+```
 
+4. Use your sender & helper function to send tracker
+
+```
+class YourTrackerImpl @Inject constructor(
+    analyticManagerFactory: ContentAnalyticManager.Factory
+) {
+    
+    private val analyticManager = analyticManagerFactory.create(
+        /** Please provide this value from particular constant object. */
+        businessUnit = "your_business_unit",
+        eventCategory = "your_event_category",
+    )
+    
+    /** Send normal event */
+    fun clickUploadButton(author: ContentAccountUiModel, creationId: String) {
+        analyticManager.sendClickContent(
+            eventAction = "click - upload",
+            eventLabel = analyticManager.concatLabelsWithAuthor(account.toAnalyticModel(), storyId),
+            mainAppTrackerId = "47815",
+            sellerAppTrackerId = "47933"
+        )
+    }
+    
+    /** Send open screen event */
+    fun openScreenReviewTab() {
+        analyticManager.sendOpenScreen(
+            screenName = "/user profile - review tab",
+            mainAppTrackerId = "44104",
+        )
+    }
+    
+    /** Send Enhance Ecommerce event */
+    fun clickReviewProductInfo(
+        userId: String,
+        feedbackId: String,
+        isSelf: Boolean,
+        productReview: UserReviewUiModel.Product,
+    ) {
+        analyticManager.sendEEProduct(
+            event = Event.selectContent,
+            eventAction = "click - product on review",
+            eventLabel = analyticManager.concatLabels(feedbackId, userId, UserProfileAnalytics.Function.isSelfOrVisitor(isSelf), productReview.productID),
+            itemList = "/user profile - review tab",
+            products = listOf(
+                ContentEnhanceEcommerce.Product(
+                    itemId = productReview.productID,
+                    itemName = productReview.productName,
+                    itemBrand = "",
+                    itemCategory = "",
+                    itemVariant = productReview.productVariant.variantName,
+                    price = "",
+                    index = "",
+                    customFields = emptyMap(),
+                )
+            ),
+            mainAppTrackerId = "44110"
+        )
+    }
+}
+```
 
 ---
 

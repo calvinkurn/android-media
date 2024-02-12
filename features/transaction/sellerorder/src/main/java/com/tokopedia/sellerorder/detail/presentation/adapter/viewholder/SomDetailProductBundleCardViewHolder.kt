@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
 import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingBinding
@@ -42,6 +43,7 @@ class SomDetailProductBundleCardViewHolder(
             tvSomTotalPrice.text = element.bundleSubTotal
 
             setupProductList(element.orderDetail)
+            containerSomProductBundling.setupCardDarkMode()
         }
     }
 

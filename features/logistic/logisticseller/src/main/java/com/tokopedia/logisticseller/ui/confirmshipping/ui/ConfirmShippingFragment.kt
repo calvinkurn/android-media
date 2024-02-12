@@ -33,7 +33,9 @@ import com.tokopedia.logisticseller.ui.confirmshipping.data.ConfirmShippingAnaly
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerConfirmShippingComponent
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -99,7 +101,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
         arguments?.getBoolean(PARAM_CURR_IS_CHANGE_SHIPPING)?.let {
             currIsChangeShipping = it
         }
-        getCourierList()
+        getCourierList(currOrderId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -242,8 +244,8 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
         confirmShippingViewModel.changeCourier(orderId, shippingRef, agencyId, spId)
     }
 
-    private fun getCourierList() {
-        confirmShippingViewModel.getCourierList()
+    private fun getCourierList(orderId: String) {
+        confirmShippingViewModel.getCourierList(orderId)
     }
 
     private fun observingConfirmShipping() {
@@ -292,7 +294,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
             Observer {
                 when (it) {
                     is Success -> {
-                        courierListResponse = it.data
+                        courierListResponse = it.data.listShipment
 
                         if (courierListResponse.isNotEmpty()) {
                             currShipmentId = courierListResponse.first().shipmentId.toLongOrZero()
@@ -316,6 +318,8 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
 
                         binding?.labelChoosenCourierService?.setOnClickListener { showBottomSheetCourier(true) }
                         binding?.ivChooseCourierService?.setOnClickListener { showBottomSheetCourier(true) }
+
+                        initTicker(it.data.tickerUnificationParams)
                     }
 
                     is Fail -> {
@@ -332,6 +336,29 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
                 }
             }
         )
+    }
+
+    private fun initTicker(params: SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.TickerUnificationParams) {
+        binding?.ticker?.apply { ->
+            setTickerShape(Ticker.SHAPE_FULL)
+
+            val template = TargetedTickerParamModel.Template().copy(
+                contents =
+                params.template.contents.map {
+                    TargetedTickerParamModel.Template.Content(it.key, it.value)
+                }
+            )
+            val target = params.target.map {
+                TargetedTickerParamModel.Target(it.type, it.values)
+            }
+
+            val param = TargetedTickerParamModel(
+                page = params.page,
+                template = template,
+                target = target
+            )
+            loadAndShow(param)
+        }
     }
 
     private fun observingChangeCourier() {

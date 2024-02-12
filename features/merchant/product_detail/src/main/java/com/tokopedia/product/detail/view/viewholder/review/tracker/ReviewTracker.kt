@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder.review.tracker
 
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.referral.domain.GetReferralDataUseCase.Companion.userId
@@ -40,12 +41,12 @@ object ReviewTracker {
      */
     fun onKeywordClicked(
         queueTracker: TrackingQueue,
-        trackerData: CommonTracker,
+        commonTracker: CommonTracker,
+        componentTracker: ComponentTrackDataModel,
         count: Int
     ) {
         val action = "click - review chips filter"
         val event = "promoClick"
-        val component = trackerData.componentTracker
         val mapEvent = hashMapOf<String, Any>(
             "event" to event,
             "eventCategory" to "product detail page",
@@ -54,22 +55,22 @@ object ReviewTracker {
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
             "trackerId" to "48619",
-            "productId" to trackerData.productId,
-            "layout" to TrackingUtil.generateLayoutValue(productInfo = trackerData.productInfo),
-            "component" to component.getComponentData(action),
+            "productId" to commonTracker.productId,
+            "layout" to TrackingUtil.generateLayoutValue(productInfo = commonTracker.productInfo),
+            "component" to componentTracker.getComponentData(action),
             "ecommerce" to hashMapOf(
                 event to hashMapOf(
                     "promotions" to arrayListOf(
                         hashMapOf(
                             "creative_name" to "is_active:true",
-                            "creative_slot" to "position:${component.adapterPosition}",
-                            "item_id" to "keyword_text:${component.componentName}",
+                            "creative_slot" to "position:${componentTracker.adapterPosition}",
+                            "item_id" to "keyword_text:${componentTracker.componentName}",
                             "item_name" to "keyword_count:$count"
                         )
                     )
                 )
             ),
-            "userId" to trackerData.userId
+            "userId" to commonTracker.userId
         )
 
         queueTracker.putEETracking(mapEvent)
@@ -106,12 +107,12 @@ object ReviewTracker {
      */
     fun onKeywordImpressed(
         queueTracker: TrackingQueue,
-        trackerData: CommonTracker,
+        commonTracker: CommonTracker,
+        componentTracker: ComponentTrackDataModel,
         count: Int
     ) {
         val action = "impression - review chips filter"
         val event = "promoView"
-        val component = trackerData.componentTracker
         val mapEvent = hashMapOf<String, Any>(
             "event" to event,
             "eventCategory" to "product detail page",
@@ -120,22 +121,22 @@ object ReviewTracker {
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
             "trackerId" to "48601",
-            "productId" to trackerData.productId,
-            "layout" to TrackingUtil.generateLayoutValue(productInfo = trackerData.productInfo),
-            "component" to component.getComponentData(action),
+            "productId" to commonTracker.productId,
+            "layout" to TrackingUtil.generateLayoutValue(productInfo = commonTracker.productInfo),
+            "component" to componentTracker.getComponentData(action),
             "ecommerce" to hashMapOf(
                 event to hashMapOf(
                     "promotions" to arrayListOf(
                         hashMapOf(
                             "creative_name" to "null",
-                            "creative_slot" to "position:${component.adapterPosition}",
-                            "item_id" to "keyword_text:${component.componentName}",
+                            "creative_slot" to "position:${componentTracker.adapterPosition}",
+                            "item_id" to "keyword_text:${componentTracker.componentName}",
                             "item_name" to "keyword_count:$count"
                         )
                     )
                 )
             ),
-            "userId" to trackerData.userId
+            "userId" to commonTracker.userId
         )
 
         queueTracker.putEETracking(mapEvent)

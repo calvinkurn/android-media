@@ -75,4 +75,8 @@ class VideoPlayerController(
         helper.stop()
         helper.removeExoPlayer()
     }
+
+    companion object {
+        fun empty() = VideoPlayerController(null, 0, 0)
+    }
 }

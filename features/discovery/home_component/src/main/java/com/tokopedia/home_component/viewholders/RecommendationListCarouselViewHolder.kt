@@ -17,9 +17,11 @@ import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentRecommendationListCarouselBinding
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
+import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.hasGradientBackground
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -35,6 +37,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener?,
@@ -79,7 +83,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
         banner.let {
             val textColor = if (banner.textColor.isEmpty())
-                ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50) else Color.parseColor(banner.textColor)
+                ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_NN50) else Color.parseColor(banner.textColor)
             if(channelConfig.hasCloseButton){
                 listCarouselCloseButton.show()
                 listCarouselCloseButton.setOnClickListener {
@@ -128,23 +132,24 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     GridLayoutManager(itemView.context, 1)
                 }
                 val tempDataList: MutableList<ProductCardModel> = mutableListOf()
+                val isInBackground = channel.channelBanner.gradientColor.hasGradientBackground(itemView.context) || channel.channelBanner.backColor.isNotEmpty()
                 val newList : MutableList<HomeRecommendationListCarousel> = channel.channelGrids.map {
-                    val productData = mapGridToProductData(it)
+                    val productData = mapGridToProductData(it, isInBackground)
                     tempDataList.add(productData)
                     HomeRecommendationListData(
-                            it.imageUrl,
-                            it.name,
-                            it.discount,
-                            it.slashedPrice,
-                            it.price,
-                            it.applink,
-                            it.isTopads,
-                            channel.channelGrids.size > 1,
-                            channel,
-                            it,
-                            adapterPosition,
-                            listCarouselListener,
-                            productData
+                        recommendationImageUrl = it.imageUrl,
+                        recommendationTitle = it.name,
+                        recommendationDiscountLabel = it.discount,
+                        recommendationSlashedPrice = it.slashedPrice,
+                        recommendationPrice = it.price,
+                        recommendationApplink = it.applink,
+                        isTopAds = it.isTopads,
+                        isCarousel = channel.channelGrids.size > 1,
+                        channelModel = channel,
+                        grid = it,
+                        parentPosition = adapterPosition,
+                        listener = listCarouselListener,
+                        productData = productData
                     )
                 }.toMutableList()
                 if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listCarouselListener, adapterPosition))
@@ -166,21 +171,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
         )
     }
 
-    private fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
-        return ProductCardModel(
-                productImageUrl = grid.imageUrl,
-                productName = grid.name,
-                discountPercentage = grid.discount,
-                slashedPrice = grid.slashedPrice,
-                formattedPrice = grid.price,
-                hasAddToCartButton = grid.hasBuyButton,
-                isTopAds = grid.isTopads,
-                addToCardText = itemView.context.getString(R.string.home_global_component_buy_again),
-                shopLocation = grid.shop.shopLocation,
-                shopBadgeList = grid.badges.map {
-                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                },
-                cardInteraction = cardInteraction,
+    private fun mapGridToProductData(grid: ChannelGrid, isInBackground: Boolean): ProductCardModel {
+        return ChannelModelMapper.mapToProductCardModel(
+            channelGrid= grid,
+            isInBackground = isInBackground
         )
     }
 
@@ -229,29 +223,14 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 false
                         )
                     }
-            }
-                recommendationCard.setProductModel(
-                    ProductCardModel(
-                        productImageUrl = recommendation.recommendationImageUrl,
-                        productName = recommendation.recommendationTitle,
-                        discountPercentage = recommendation.recommendationDiscountLabel,
-                        slashedPrice = recommendation.recommendationSlashedPrice,
-                        formattedPrice = recommendation.recommendationPrice,
-                        hasAddToCartButton = recommendation.grid.hasBuyButton,
-                        isTopAds = recommendation.isTopAds,
-                        isOutOfStock = recommendation.grid.isOutOfStock,
-                        ratingCount = recommendation.grid.rating,
-                        reviewCount = recommendation.grid.countReview,
-                        countSoldRating = recommendation.grid.ratingFloat,
-                        shopLocation = recommendation.grid.shop.shopLocation,
-                        shopBadgeList = recommendation.grid.badges.map {
-                            ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                        },
-                        cardInteraction = cardInteraction
-                    )
-                )
-                val addToCartButton = recommendationCard.findViewById<UnifyButton>(com.tokopedia.productcard.R.id.buttonAddToCart)
-                addToCartButton.text = itemView.context.getString(R.string.home_global_component_buy_again)
+                }
+
+                recommendationCard.setProductModel(recommendation.productData)
+
+                val addToCartButton: UnifyButton? = recommendationCard.findViewById(productcardR.id.buttonAddToCart)
+                addToCartButton?.run {
+                    text = itemView.context.getString(R.string.home_global_component_buy_again)
+                }
                 recommendationCard.setAddToCartOnClickListener {
                     recommendation.listener?.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)
                 }
