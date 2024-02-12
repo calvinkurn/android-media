@@ -3,8 +3,8 @@ package com.tokopedia.play_common.view
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.play_common.R
 
 /**
@@ -43,21 +43,16 @@ class RemoteImageView : AppCompatImageView {
         val url = mUrl
         if (url.isNullOrBlank()) return
 
-        loadImage(url, mCacheStrategy)
+        this.loadImage(url) {
+            setCacheStrategy(mCacheStrategy.cacheStrategy)
+        }
     }
 
-    private fun loadImage(url: String, cacheStrategy: CacheStrategy) {
-        Glide.with(context)
-            .load(url)
-            .diskCacheStrategy(cacheStrategy.diskCacheStrategy)
-            .into(this)
-    }
+    enum class CacheStrategy(val value: Int, val cacheStrategy: MediaCacheStrategy) {
 
-    enum class CacheStrategy(val value: Int, val diskCacheStrategy: DiskCacheStrategy) {
-
-        None(0, DiskCacheStrategy.NONE),
-        Data(1, DiskCacheStrategy.DATA),
-        Resource(2, DiskCacheStrategy.RESOURCE);
+        None(0, MediaCacheStrategy.NONE),
+        Data(1, MediaCacheStrategy.DATA),
+        Resource(2, MediaCacheStrategy.RESOURCE);
 
         companion object {
             private val values = values()

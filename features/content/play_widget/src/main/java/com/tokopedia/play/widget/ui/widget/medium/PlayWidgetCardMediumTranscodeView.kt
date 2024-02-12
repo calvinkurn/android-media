@@ -2,16 +2,14 @@ package com.tokopedia.play.widget.ui.widget.medium
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -23,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
-import com.tokopedia.play_common.R as playCommonR
+import com.tokopedia.play_common.R as play_commonR
 
 /**
  * Created by kenny.hadisaputra on 25/01/22
@@ -63,7 +61,7 @@ class PlayWidgetCardMediumTranscodeView : FrameLayout {
 
     private val imageBlurUtil = ImageBlurUtil(context)
 
-    private val transcodingCoverTarget: CustomTarget<Bitmap>
+    private val transcodingCoverTarget: MediaBitmapEmptyTarget<Bitmap>
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_medium_transcode, this)
@@ -71,24 +69,20 @@ class PlayWidgetCardMediumTranscodeView : FrameLayout {
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
-        tvTotalView = view.findViewById(playCommonR.id.viewer)
+        tvTotalView = view.findViewById(play_commonR.id.viewer)
         llWidgetContainer = view.findViewById(R.id.play_widget_info_container)
         llLoadingContainer = view.findViewById(R.id.ll_loading_container)
         loaderLoading = view.findViewById(R.id.loader_loading)
         llError = view.findViewById(R.id.ll_error)
         btnErrorDelete = view.findViewById(R.id.btn_error_delete)
 
-        transcodingCoverTarget = object : CustomTarget<Bitmap>() {
-            override fun onLoadCleared(placeholder: Drawable?) {
-
-            }
-
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+        transcodingCoverTarget = MediaBitmapEmptyTarget(
+            onReady = {
                 scope.launch {
-                    thumbnail.setImageBitmap(imageBlurUtil.blurImage(resource, BLUR_RADIUS))
+                    thumbnail.setImageBitmap(imageBlurUtil.blurImage(it, BLUR_RADIUS))
                 }
             }
-        }
+        )
     }
 
     fun setListener(listener: Listener?) {
@@ -96,10 +90,7 @@ class PlayWidgetCardMediumTranscodeView : FrameLayout {
     }
 
     fun setData(data: PlayWidgetChannelUiModel) {
-        Glide.with(thumbnail.context)
-            .asBitmap()
-            .load(data.video.coverUrl)
-            .into(transcodingCoverTarget)
+        data.video.coverUrl.getBitmapImageUrl(thumbnail.context, target = transcodingCoverTarget)
 
         when (data.channelType) {
             PlayWidgetChannelType.Transcoding -> setTranscodingModel(data)
