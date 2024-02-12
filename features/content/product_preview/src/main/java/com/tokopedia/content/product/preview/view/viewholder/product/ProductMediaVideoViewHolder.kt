@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class ProductMediaVideoViewHolder(
     private val binding: ItemProductMediaVideoBinding,
-    private val listener: ProductPreviewVideoListener
+    private val productPreviewVideoListener: ProductPreviewVideoListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
@@ -29,7 +29,9 @@ class ProductMediaVideoViewHolder(
     init {
         binding.root.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View) {
-                if (mVideoId.isNotEmpty()) onSelected()
+                if (mVideoId.isEmpty()) return
+                onSelected()
+                productPreviewVideoListener.onImpressedVideo()
             }
 
             override fun onViewDetachedFromWindow(p0: View) {
@@ -48,7 +50,7 @@ class ProductMediaVideoViewHolder(
 
     private fun bindVideoPlayer(content: ProductMediaUiModel) {
         mVideoId = String.format(PRODUCT_CONTENT_VIDEO_KEY_REF, content.url)
-        mVideoPlayer = listener.getVideoPlayer(mVideoId)
+        mVideoPlayer = productPreviewVideoListener.getVideoPlayer(mVideoId)
         binding.playerProductMediaVideo.player = mVideoPlayer?.exoPlayer
         binding.playerControl.player = mVideoPlayer?.exoPlayer
 
@@ -58,7 +60,7 @@ class ProductMediaVideoViewHolder(
                 currPosition: Long,
                 totalDuration: Long
             ) {
-                listener.onScrubbing()
+                productPreviewVideoListener.onScrubbing()
                 binding.videoTimeView.setCurrentPosition(currPosition)
                 binding.videoTimeView.setTotalDuration(totalDuration)
                 binding.videoTimeView.show()
@@ -69,7 +71,7 @@ class ProductMediaVideoViewHolder(
                 currPosition: Long,
                 totalDuration: Long
             ) {
-                listener.onStopScrubbing()
+                productPreviewVideoListener.onStopScrubbing()
                 binding.videoTimeView.hide()
             }
         })
@@ -88,12 +90,12 @@ class ProductMediaVideoViewHolder(
 
     private fun onSelected() {
         mIsSelected = true
-        listener.resumeVideo(mVideoId)
+        productPreviewVideoListener.resumeVideo(mVideoId)
     }
 
     private fun onNotSelected() {
         mIsSelected = false
-        listener.pauseVideo(mVideoId)
+        productPreviewVideoListener.pauseVideo(mVideoId)
     }
 
     private fun showLoading() {
@@ -120,7 +122,7 @@ class ProductMediaVideoViewHolder(
                     parent,
                     false
                 ),
-                listener = listener
+                productPreviewVideoListener = listener
             )
     }
 }

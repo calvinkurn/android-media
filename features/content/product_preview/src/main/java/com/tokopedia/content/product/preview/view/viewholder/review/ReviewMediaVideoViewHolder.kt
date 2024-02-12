@@ -28,7 +28,9 @@ class ReviewMediaVideoViewHolder(
     init {
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View) {
-                if (mVideoId.isNotEmpty()) onSelected()
+                if (mVideoId.isEmpty()) return
+                onSelected()
+                productPreviewVideoListener.onImpressedVideo()
             }
 
             override fun onViewDetachedFromWindow(p0: View) {

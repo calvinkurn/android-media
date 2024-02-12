@@ -16,13 +16,17 @@
     },
     {
       "event": "openScreen",
+      "eventAction": "null",
+      "eventCategory": "null",
+      "eventLabel": "null",
       "trackerId": "49588",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
       "isLoggedInStatus": "(true|false)",
       "productId": ".*",
       "screenName": "/unified view pdp - .* - .*",
-      "userId": ".*"
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "viewContentIris",

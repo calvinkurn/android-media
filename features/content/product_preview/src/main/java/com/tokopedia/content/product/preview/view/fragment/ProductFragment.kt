@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.preview.analytics.ProductPreviewAnalytics
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.utils.PRODUCT_FRAGMENT_TAG
@@ -21,8 +22,8 @@ import com.tokopedia.content.product.preview.view.adapter.product.ProductThumbna
 import com.tokopedia.content.product.preview.view.components.items.ProductThumbnailItemDecoration
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
-import com.tokopedia.content.product.preview.view.listener.ProductThumbnailListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
+import com.tokopedia.content.product.preview.view.listener.ProductThumbnailListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
@@ -35,7 +36,9 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
-class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPreviewVideoListener {
+class ProductFragment @Inject constructor(
+    private val analytics: ProductPreviewAnalytics
+) : TkpdBaseV4Fragment(), ProductPreviewVideoListener {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
@@ -236,6 +239,10 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
     private fun scrollTo(position: Int) {
         binding.rvMediaProduct.smoothScrollToPosition(position)
         binding.rvThumbnailProduct.smoothScrollToPosition(position)
+    }
+
+    override fun onImpressedVideo() {
+        analytics.onImpressVideo(viewModel.productPreviewSource.productId)
     }
 
     override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {

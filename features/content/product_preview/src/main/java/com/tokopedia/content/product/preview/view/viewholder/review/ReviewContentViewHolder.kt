@@ -310,6 +310,10 @@ class ReviewContentViewHolder(
         setCurrentIndicator(mediaSelectedPosition)
     }
 
+    override fun onImpressedVideo() {
+        reviewMediaListener.onImpressedVideo()
+    }
+
     private fun getContentCurrentPosition(): Int {
         val snappedView = snapHelperMedia.findSnapView(layoutManagerMedia)
             ?: return RecyclerView.NO_POSITION

@@ -22,6 +22,7 @@ import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.preview.analytics.ProductPreviewAnalytics
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
 import com.tokopedia.content.product.preview.utils.LoginReviewContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
@@ -52,6 +53,7 @@ import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewFragment @Inject constructor(
+    private val analytics: ProductPreviewAnalytics,
     private val router: Router
 ) : TkpdBaseV4Fragment(),
     ReviewInteractionListener,
@@ -249,6 +251,10 @@ class ReviewFragment @Inject constructor(
     /**
      * Review Media Listener
      */
+    override fun onImpressedVideo() {
+        analytics.onImpressVideo(viewModel.productPreviewSource.productId)
+    }
+
     override fun onMediaSelected(position: Int) {
         viewModel.onAction(ProductPreviewAction.ReviewMediaSelected(position))
     }

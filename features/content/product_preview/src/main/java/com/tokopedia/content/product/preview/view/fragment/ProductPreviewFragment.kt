@@ -55,7 +55,7 @@ import com.tokopedia.content.product.preview.R as contentproductpreviewR
 class ProductPreviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
     private val router: Router,
-    private val analytic: ProductPreviewAnalytics
+    private val analytics: ProductPreviewAnalytics
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
@@ -250,7 +250,7 @@ class ProductPreviewFragment @Inject constructor(
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
                     is ProductPreviewEvent.TrackHorizontalScrolling -> {
-                        analytic.onSwipeContentAndTab(viewModel.productPreviewSource.productId)
+                        analytics.onSwipeContentAndTab(viewModel.productPreviewSource.productId)
                     }
                     else -> return@collect
                 }
