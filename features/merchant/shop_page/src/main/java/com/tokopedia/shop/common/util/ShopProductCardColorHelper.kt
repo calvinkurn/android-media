@@ -37,6 +37,6 @@ class ShopProductCardColorHelper {
         buttonAddToCart?.applyColorMode(com.tokopedia.unifyprinciples.ColorMode.LIGHT_MODE)
 
         val labelBenefitView = view.findViewById<LabelBenefitView?>(productcardR.id.productCardLabelBenefit)
-        labelBenefitView.setCutoutFillColor(backgroundColor)
+        labelBenefitView?.setCutoutFillColor(backgroundColor)
     }
 }
