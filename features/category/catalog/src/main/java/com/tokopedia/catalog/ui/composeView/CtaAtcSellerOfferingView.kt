@@ -21,6 +21,7 @@ constructor(
     private var slashPriceState = mutableStateOf(String.EMPTY)
     private var ratingState = mutableStateOf(String.EMPTY)
     private var soldState = mutableStateOf(String.EMPTY)
+    private var variantTextState = mutableStateOf(String.EMPTY)
     private var themeState = mutableStateOf(false)
     private var onClick: (() -> Unit)? = null
 
@@ -35,6 +36,7 @@ constructor(
                     slashPriceState.value,
                     ratingState.value,
                     soldState.value,
+                    variantTextState.value,
                     themeState.value,
                     onClick
                 )
@@ -42,7 +44,6 @@ constructor(
         }
         addView(composeview)
     }
-
 
     fun setShopName(shopName: String) {
         shopNameState.value = shopName
@@ -68,6 +69,10 @@ constructor(
         soldState.value = sold
     }
 
+    fun setVariantText(text: String) {
+        variantTextState.value = text
+    }
+
     fun setTheme(isDarkTheme: Boolean) {
         themeState.value = isDarkTheme
     }
@@ -76,6 +81,3 @@ constructor(
         this.onClick = onClick
     }
 }
-
-
-

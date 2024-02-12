@@ -1,6 +1,5 @@
 package com.tokopedia.catalogcommon.uimodel
 
-import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 
 data class SellerOfferingUiModel(
@@ -32,8 +31,8 @@ data class SellerOfferingUiModel(
     val paymentOption: PaymentOption = PaymentOption(),
     val cardColor: String = "#212121",
     val additionalService: String = "",
-    val variantsName: String = "",
-    val courier:String = ""
+    var variantsName: String = "",
+    val courier: String = ""
 ) : BaseCatalogUiModel(
     idWidget,
     widgetType,

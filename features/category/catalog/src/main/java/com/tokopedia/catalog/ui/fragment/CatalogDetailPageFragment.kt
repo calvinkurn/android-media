@@ -372,8 +372,10 @@ class CatalogDetailPageFragment :
             if (!newComparedCatalogId.isNullOrEmpty()) changeComparison(newComparedCatalogId)
         }
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
-            viewModel.refreshNotification()
-            RouteManager.route(context, ApplinkConst.CART)
+            if (cartId.isNotEmpty()) {
+                viewModel.refreshNotification()
+                RouteManager.route(context, ApplinkConst.CART)
+            }
         }
     }
 
@@ -551,6 +553,10 @@ class CatalogDetailPageFragment :
                 widgetAdapter.changeComparison(it)
             }
         }
+        viewModel.variantName.observe(viewLifecycleOwner) {
+            widgetAdapter.displayVariantTextToSellerOffering(it)
+            binding?.icCtaSellerOffering?.ctaAtc?.setVariantText(it)
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.scrollEvents.debounce(300).collect {
@@ -692,7 +698,7 @@ class CatalogDetailPageFragment :
                 warehouseId = properties.warehouseId,
                 isVariant = properties.isVariant
             )
-            if (properties.isVariant) viewModel.getVariantInfo(viewModel.atcModel)
+            if (properties.isVariant) viewModel.getVariantInfo()
             root.showWithCondition(properties.isVisible)
             containerPriceCta.setBackgroundColor(properties.bgColor)
             ctaAtc.setPrice(properties.price)
@@ -1196,7 +1202,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun onSellerOfferingVariantArrowClicked(productId: String) {
-        openVariantBottomSheet(viewModel.atcModel)
+        addToCart(viewModel.atcModel)
     }
 
     override fun onSellerOfferingProductInfo(productId: String) {

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -55,6 +54,7 @@ fun CtaSellerOffering(
     slashPrice: String,
     rating: String,
     sold: String,
+    variantText: String,
     theme: Boolean,
     onClick: (() -> Unit)?
 ) {
@@ -64,10 +64,11 @@ fun CtaSellerOffering(
 
     if (rating.isNotEmpty()) {
         LaunchedEffect(Unit) {
+            val maxSwitchState = if (variantText.isNotEmpty()) 4 else 3
             while (true) {
                 delay(2000)
                 switchState += 1
-                if (switchState == 3) {
+                if (switchState == maxSwitchState) {
                     switchState = 1
                 }
             }
@@ -121,13 +122,13 @@ fun CtaSellerOffering(
                     ShopCredibility(context, theme, rating, sold)
                 }
                 // If need variant
-//                this@Column.AnimatedVisibility(
-//                    visible = switchState == 3,
-//                    enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
-//                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
-//                ) {
-//                    ProductVariant(rating)
-//                }
+                this@Column.AnimatedVisibility(
+                    visible = switchState == 3,
+                    enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
+                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+                ) {
+                    ProductVariant(theme, variantText)
+                }
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -169,12 +170,18 @@ fun CtaSellerOffering(
 }
 
 @Composable
-private fun ProductVariant(productVariant: String) {
+private fun ProductVariant(theme: Boolean, productVariant: String) {
     NestTypography(
         text = productVariant,
         textStyle = NestTheme.typography.display3.copy(
             fontWeight = FontWeight.Normal,
-            color = NestTheme.colors.NN._0.copy(alpha = 0.5f)
+            color = colorResource(
+                id = getColor(
+                    theme,
+                    R.color.catalog_dms_light_color_banner,
+                    R.color.catalog_dms_light_color
+                )
+            )
         )
     )
 }
