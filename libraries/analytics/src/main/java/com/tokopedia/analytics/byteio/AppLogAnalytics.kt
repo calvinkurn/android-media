@@ -94,8 +94,11 @@ enum class ProductType(val type: Int) {
 }
 
 object PageName {
-    const val MAINPAGE = "MainPage"
-    const val PDP = "PDP"
+    const val MAINPAGE = "mall"
+    const val PDP = "product_detail"
+    const val SEARCH_RESULT = "search_result"
+    const val CART = "cart"
+    const val SHOP = "shop"
 }
 
 object QuitType {
