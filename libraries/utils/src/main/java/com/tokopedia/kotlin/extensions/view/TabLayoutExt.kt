@@ -8,14 +8,17 @@ import com.google.android.material.tabs.TabLayout
 
 fun TabLayout.onTabSelected(action: (TabLayout.Tab) -> Unit) {
     this.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-        override fun onTabReselected(tab: TabLayout.Tab) {
-        }
+        override fun onTabReselected(tab: TabLayout.Tab) = Unit
+        override fun onTabUnselected(tab: TabLayout.Tab) = Unit
+        override fun onTabSelected(tab: TabLayout.Tab) = action(tab)
+    })
+}
 
-        override fun onTabUnselected(tab: TabLayout.Tab) {
-        }
+fun TabLayout.onTabReselected(action: (TabLayout.Tab) -> Unit) {
+    this.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        override fun onTabReselected(tab: TabLayout.Tab) = action(tab)
+        override fun onTabUnselected(tab: TabLayout.Tab) = Unit
+        override fun onTabSelected(tab: TabLayout.Tab) = Unit
 
-        override fun onTabSelected(tab: TabLayout.Tab) {
-            action(tab)
-        }
     })
 }

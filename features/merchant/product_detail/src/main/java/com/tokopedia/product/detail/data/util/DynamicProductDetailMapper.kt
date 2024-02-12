@@ -122,7 +122,6 @@ import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 
 object DynamicProductDetailMapper {
@@ -231,7 +230,7 @@ object DynamicProductDetailMapper {
                             name = component.componentName,
                             position = index,
                             queryParam = componentData?.queryParam.orEmpty(),
-                            thematicId = componentData?.thematicId.orEmpty(),
+                            thematicId = componentData?.thematicId.orEmpty()
                         )
                     )
                 }
@@ -517,9 +516,10 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SDUI_VIEW -> {
                     val sduiData = component.componentData.firstOrNull() ?: return@forEachIndexed
                     listOfComponent.add(
-                        SDUIDataModel(type = component.type,
+                        SDUIDataModel(
+                            type = component.type,
                             name = component.componentName,
-                            data = JSONObject(sduiData.sduiData)
+                            jsonString = sduiData.sduiData
                         )
                     )
                 }
@@ -1261,7 +1261,7 @@ object DynamicProductDetailMapper {
             pageType = component.type,
             queryParam = data?.queryParam.orEmpty(),
             criteriaThematicIDs = thematicIds,
-            productIds = listOf(dynamicProductInfoP1.basic.productID),
+            productIds = listOf(dynamicProductInfoP1.basic.productID)
         )
         val trackingModel = RecommendationWidgetTrackingModel(
             androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
@@ -1272,7 +1272,7 @@ object DynamicProductDetailMapper {
         return RecommendationWidgetModel(
             metadata = metadata,
             trackingModel = trackingModel,
-            source = source,
+            source = source
         )
     }
 

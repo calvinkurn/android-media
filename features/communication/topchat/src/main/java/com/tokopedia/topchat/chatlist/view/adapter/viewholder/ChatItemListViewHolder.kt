@@ -137,9 +137,9 @@ class ChatItemListViewHolder constructor(
     }
 
     private fun onChatItemClicked(chat: ItemChatListPojo) {
-        val attributes = chat.attributes
+        listener.chatItemClicked(chat, adapterPosition, Pair(chat, adapterPosition))
 
-        if (chat.isUnread() && attributes != null) {
+        if (chat.isUnread() && chat.attributes != null) {
             chat.markAsRead()
             listener.decreaseNotificationCounter()
             bindSmartReplyIndicator(chat)
@@ -148,7 +148,6 @@ class ChatItemListViewHolder constructor(
             }
         }
         chat.markAsActive()
-        listener.chatItemClicked(chat, adapterPosition, Pair(chat, adapterPosition))
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {

@@ -15,6 +15,7 @@ import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.util.clearEditorCache
 import com.tokopedia.editor.util.provider.ResourceProvider
 import com.tokopedia.editor.util.setValue
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -126,6 +127,11 @@ class MainEditorViewModel @Inject constructor(
                     setAction(MainEditorEffect.CloseMainEditorPage)
                 }
             }
+            is MainEditorEvent.CacheClearChecker -> {
+                viewModelScope.launch(dispatchers.io) {
+                    clearEditorCache()
+                }
+            }
         }
     }
 
@@ -155,7 +161,7 @@ class MainEditorViewModel @Inject constructor(
 
         viewModelScope.launch {
             videoFlattenRepository
-                .flatten(param)
+                .flatten(param, fileNameAppendix = paramFetcher.get().custom.videoFileResultAppendix)
                 .flowOn(dispatchers.computation)
                 .collect {
                     setAction(MainEditorEffect.HideLoading)

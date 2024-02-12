@@ -733,15 +733,7 @@ class ChatListFragment :
         lastActiveChat: Pair<ItemChatListPojo?, Int?>
     ) {
         activity?.let {
-            with(chatListAnalytics) {
-                eventClickChatList(
-                    if (isTabSeller()) {
-                        ChatListActivity.SELLER_ANALYTICS_LABEL
-                    } else {
-                        ChatListActivity.BUYER_ANALYTICS_LABEL
-                    }
-                )
-            }
+            trackChatItemClicked(element, itemPosition)
             val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, itemPosition)
@@ -749,6 +741,38 @@ class ChatListFragment :
             intent.putExtra(Constant.CHAT_USER_ROLE_KEY, getRole())
             this@ChatListFragment.startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
             it.overridePendingTransition(0, 0)
+        }
+    }
+
+    private fun trackChatItemClicked(
+        element: ItemChatListPojo,
+        position: Int
+    ) {
+        val role = if (isTabSeller()) {
+            ChatListActivity.SELLER_ANALYTICS_LABEL
+        } else {
+            ChatListActivity.BUYER_ANALYTICS_LABEL
+        }
+
+        with(chatListAnalytics) {
+            eventClickChatList(
+                role = role,
+                messageId = element.msgId,
+                sourceName = getTrackerSourceName(element),
+                readStatus = element.getLiteralReadStatus(),
+                label = element.label,
+                iconLabel = element.labelIcon,
+                counter = element.totalUnread,
+                position = (position + 1).toString()
+            )
+        }
+    }
+
+    private fun getTrackerSourceName(element: ItemChatListPojo): String {
+        return when {
+            element.isReplyTopBot() -> ChatListAnalytic.Other.SMART_REPLY
+            element.label.isNotBlank() -> ChatListAnalytic.Other.BROADCAST
+            else -> ChatListAnalytic.Other.MANUAL
         }
     }
 
