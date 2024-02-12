@@ -10,7 +10,8 @@ object AddToCartParamsMapper {
     fun mapMultiAddToCartParams(
         buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         shopId: String,
-        userId: String
+        userId: String,
+        shopName: String
     ): ArrayList<AddToCartMultiParam> {
         return if (buyerOrderDetailDataRequestState is GetBuyerOrderDetailDataRequestState.Complete) {
             buyerOrderDetailDataRequestState
@@ -20,10 +21,10 @@ object AddToCartParamsMapper {
                     if (getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Complete.Success) {
                         ArrayList(
                             getBuyerOrderDetailRequestState.result.details?.nonBundles?.map { nonBundle ->
-                                nonBundle.mapToAddToCartParam(shopId, userId)
+                                nonBundle.mapToAddToCartParam(shopId, userId, shopName)
                             }.orEmpty().plus(
                                 getBuyerOrderDetailRequestState.result.details?.bundles?.map { bundle ->
-                                    bundle.orderDetail.map { it.mapToAddToCartParam(shopId, userId) }
+                                    bundle.orderDetail.map { it.mapToAddToCartParam(shopId, userId, shopName) }
                                 }.orEmpty().flatten()
                             )
                         )
@@ -39,7 +40,8 @@ object AddToCartParamsMapper {
     fun mapSingleAddToCartParams(
         product: ProductListUiModel.ProductUiModel,
         shopId: String,
-        userId: String
+        userId: String,
+        shopName: String
     ): ArrayList<AddToCartMultiParam> {
         return arrayListOf(
             createAddToCartMultiParam(
@@ -49,14 +51,16 @@ object AddToCartParamsMapper {
                 quantity = product.quantity,
                 notes = product.productNote,
                 shopId = shopId,
-                userId = userId
+                userId = userId,
+                shopName = shopName
             )
         )
     }
 
     private fun GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle.mapToAddToCartParam(
         shopId: String,
-        userId: String
+        userId: String,
+        shopName: String
     ): AddToCartMultiParam {
         return createAddToCartMultiParam(
             productId = productId,
@@ -65,13 +69,15 @@ object AddToCartParamsMapper {
             quantity = quantity,
             notes = notes,
             shopId = shopId,
-            userId = userId
+            userId = userId,
+            shopName = shopName
         )
     }
 
     private fun GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bundle.OrderDetail.mapToAddToCartParam(
         shopId: String,
-        userId: String
+        userId: String,
+        shopName: String
     ): AddToCartMultiParam {
         return createAddToCartMultiParam(
             productId = productId,
@@ -80,7 +86,8 @@ object AddToCartParamsMapper {
             quantity = quantity,
             notes = notes,
             shopId = shopId,
-            userId = userId
+            userId = userId,
+            shopName = shopName
         )
     }
 
@@ -91,7 +98,8 @@ object AddToCartParamsMapper {
         quantity: Int,
         notes: String,
         shopId: String,
-        userId: String
+        userId: String,
+        shopName: String
     ): AddToCartMultiParam {
         return AddToCartMultiParam(
             productId = productId,
@@ -101,7 +109,8 @@ object AddToCartParamsMapper {
             notes = notes,
             shopId = shopId,
             custId = userId,
-            warehouseId = "0"
+            warehouseId = "0",
+            shopName = shopName
         )
     }
 }

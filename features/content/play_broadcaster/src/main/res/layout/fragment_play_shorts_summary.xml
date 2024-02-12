@@ -96,12 +96,24 @@
         app:typographyType="body_3"
         tools:text="Jonathan Darwin" />
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/layout_summary_config"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_cover"
+        app:layout_constraintBottom_toTopOf="@id/fl_button_sticky"
+        />
+
     <include
         android:id="@+id/layout_tag_recommendation"
         layout="@layout/layout_tag_recommendation"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/spacing_lvl4"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_cover"

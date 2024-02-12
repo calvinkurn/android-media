@@ -2,11 +2,14 @@ package com.tokopedia.home_component.util
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.PaintDrawable
 import android.util.TypedValue
 import android.view.View
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
@@ -16,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.productcard.R as productcardR
 
 /**
  * Created by Lukas on 2019-08-20
@@ -104,7 +109,7 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
         } else {
             this.setBackgroundColor(Color.parseColor(colorArray[0]))
         }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
     }
 }
 
@@ -126,9 +131,13 @@ fun View.setGradientBackgroundRounded(colorArray: ArrayList<String>, cornerRadiu
     } catch (_: Exception) { }
 }
 
+fun ArrayList<String>.hasGradientBackground(context: Context): Boolean {
+    return !getGradientBackgroundViewAllWhite(this, context)
+}
+
 // function check is gradient all white, if empty default color is white
 fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>, context: Context): Boolean {
-    val colorWhite = getHexColorFromIdColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+    val colorWhite = getHexColorFromIdColor(context, unifyprinciplesR.color.Unify_Static_White)
     if (colorArray.isNotEmpty()) {
         if (colorArray.size > 1) {
             val colorArrayNotWhite = colorArray.filter { it.uppercase().take(7) != colorWhite }
@@ -159,4 +168,14 @@ fun RecyclerView.removeAllItemDecoration() {
             this.removeItemDecorationAt(i)
         }
     }
+}
+
+fun ImageView.overlay() {
+    setColorFilter(
+        ContextCompat.getColor(
+            context,
+            productcardR.color.dms_product_card_reimagine_image_overlay,
+        ),
+        PorterDuff.Mode.SRC_OVER
+    )
 }

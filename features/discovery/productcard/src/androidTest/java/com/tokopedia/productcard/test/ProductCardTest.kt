@@ -19,11 +19,15 @@ import com.tokopedia.productcard.test.list.productCardListViewStubTestData
 import com.tokopedia.productcard.test.reimagine.ProductCardGridCarouselActivityTest
 import com.tokopedia.productcard.test.reimagine.productCardReimagineCarouselGridTestData
 import com.tokopedia.productcard.test.reimagine.productCardReimagineGridTestData
+import com.tokopedia.productcard.test.reimagine.productCardReimagineListCarouselTestData
+import com.tokopedia.productcard.test.reimagine.productCardReimagineListTestData
 import com.tokopedia.productcard.test.utils.productCardInPosition
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.Matcher
 import org.junit.Test
 import com.tokopedia.productcard.test.reimagine.ProductCardGridActivityTest as ProductCardReimagineGridActivityTest
+import com.tokopedia.productcard.test.reimagine.ProductCardListActivityTest as ProductCardReimagineListActivityTest
+import com.tokopedia.productcard.test.reimagine.ProductCardListCarouselActivityTest as ProductCardReimagineListCarouselActivityTest
 
 @UiTest
 internal class ProductCardTest {
@@ -87,6 +91,26 @@ internal class ProductCardTest {
 
         recyclerViewViewInteraction = onView(withId(R.id.productCardReimagineGridCarouselTestRecyclerView))
         productCardModelMatcherData = productCardReimagineCarouselGridTestData.map { it.second }
+
+        startTest()
+    }
+
+    @Test
+    fun testProductCardReimagineList() {
+        startTestActivity(ProductCardReimagineListActivityTest::class.java.name)
+
+        recyclerViewViewInteraction = onView(withId(R.id.productCardReimagineListTestRecyclerView))
+        productCardModelMatcherData = productCardReimagineListTestData.map { it.second }
+
+        startTest()
+    }
+
+    @Test
+    fun testProductCardReimagineListCarousel() {
+        startTestActivity(ProductCardReimagineListCarouselActivityTest::class.java.name)
+
+        recyclerViewViewInteraction = onView(withId(R.id.productCardReimagineListCarouselTestRecyclerView))
+        productCardModelMatcherData = productCardReimagineListCarouselTestData.map { it.second }
 
         startTest()
     }

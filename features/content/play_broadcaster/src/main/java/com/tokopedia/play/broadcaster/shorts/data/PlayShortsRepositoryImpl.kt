@@ -10,13 +10,17 @@ import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.BroadcasterCheckIsAffiliateUseCase
+import com.tokopedia.play.broadcaster.shorts.domain.usecase.CheckProductCustomVideoUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.OnBoardAffiliateUseCase
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -34,6 +38,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val broadcasterCheckAffiliateUseCase: BroadcasterCheckIsAffiliateUseCase,
     private val onboardAffiliateUseCase: OnBoardAffiliateUseCase,
+    private val checkProductCustomVideoUseCase: CheckProductCustomVideoUseCase,
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
@@ -115,4 +120,27 @@ class PlayShortsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateStatus(
+        creationId: String,
+        authorId: String,
+        status: PlayChannelStatusType
+    ) {
+        return withContext(dispatchers.io) {
+            updateChannelUseCase.apply {
+                setQueryParams(
+                    UpdateChannelUseCase.createUpdateStatusRequest(
+                        channelId = creationId,
+                        authorId = authorId,
+                        status = status
+                    )
+                )
+            }.executeOnBackground()
+        }
+    }
+
+    override suspend fun checkProductCustomVideo(channelId: String): ProductVideoUiModel {
+        return withContext(dispatchers.io) {
+            mapper.mapProductVideo(checkProductCustomVideoUseCase(channelId))
+        }
+    }
 }

@@ -3,7 +3,6 @@ package com.tokopedia.creation.common.upload.uploader.notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -14,6 +13,7 @@ import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
 import javax.inject.Inject
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.CreationUploadSuccessData
 
 /**
  * Created By : Jonathan Darwin on September 18, 2023
@@ -34,7 +34,7 @@ class ShortsUploadNotificationManager @Inject constructor(
         failRetryAction = context.getString(R.string.content_creation_upload_notification_shorts_fail_retry),
     )
 
-    override fun generateSuccessPendingIntent(): PendingIntent? {
+    override fun generateSuccessPendingIntent(successData: CreationUploadSuccessData): PendingIntent? {
         val shortsUploadData = uploadData
         if (shortsUploadData !is CreationUploadData.Shorts) return null
 
