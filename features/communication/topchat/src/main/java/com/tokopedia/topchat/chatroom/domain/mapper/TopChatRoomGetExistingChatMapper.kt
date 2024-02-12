@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_MSG
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_CAROUSEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_ORDER_CANCELLATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_BUNDLING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
@@ -27,6 +28,7 @@ import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.ordercancellation.TopChatRoomOrderCancellationPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
@@ -246,6 +248,9 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 chatItemPojoByDateByTime,
                 attachmentIds
             )
+            TYPE_ORDER_CANCELLATION -> convertToOrderCancellation(
+                chatItemPojoByDateByTime
+            )
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
     }
@@ -414,5 +419,18 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 .withProductBundlingResponse(pojo.listProductBundling)
                 .build()
         }
+    }
+
+    private fun convertToOrderCancellation(item: Reply): Visitable<*> {
+        val pojo = gson.fromJson(
+            item.attachment.attributes,
+            TopChatRoomOrderCancellationPojo::class.java
+        )
+        return TopChatRoomOrderCancellationUiModel.Builder()
+            .withResponseFromGQL(item)
+            .withOrderId(pojo.orderId)
+            .withTitle(pojo.button.title)
+            .withAppLink(pojo.button.appLink)
+            .build()
     }
 }

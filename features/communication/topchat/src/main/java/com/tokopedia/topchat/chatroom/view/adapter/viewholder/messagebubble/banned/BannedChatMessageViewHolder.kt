@@ -10,8 +10,8 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateLeftBg
-import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateRightBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomBubbleBackgroundGenerator.generateLeftBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomBubbleBackgroundGenerator.generateRightBg
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.databinding.TopchatChatroomChatBubbleBannedItemBinding

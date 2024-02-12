@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topchat_chatroom_ll_container_order_cancellation"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.topchat.chatroom.view.custom.TopChatRoomOrderCancellationLayout
+        android:id="@+id/topchat_chatroom_layout_order_cancellation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
