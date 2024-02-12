@@ -20,7 +20,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class LabelBenefitView : FrameLayout {
+class LabelBenefitView: FrameLayout {
 
     var text: Typography? = null
         private set
@@ -92,11 +92,8 @@ class LabelBenefitView : FrameLayout {
         context.getPixel(productcardR.dimen.product_card_reimagine_label_benefit_height) / 2f
 
     fun render(labelGroup: ProductCardModel.LabelGroup?) {
-        if (labelGroup == null) {
-            hide()
-        } else {
-            showLabelBenefit(labelGroup)
-        }
+        if (labelGroup == null) hide()
+        else showLabelBenefit(labelGroup)
     }
 
     private fun showLabelBenefit(labelGroup: ProductCardModel.LabelGroup) {
@@ -104,7 +101,6 @@ class LabelBenefitView : FrameLayout {
 
         val outlineColor = labelGroup.outlineColor() ?: ""
         circleCutoutStrokePaint?.color = safeParseColor(outlineColor, Color.TRANSPARENT)
-
         invalidate()
     }
 
@@ -112,7 +108,7 @@ class LabelBenefitView : FrameLayout {
         circleCutoutFillPaint?.color = safeParseColor(fillColor, Color.TRANSPARENT)
         invalidate()
     }
-
+    
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
