@@ -5,31 +5,40 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home.beranda.domain.model.RedeemCouponModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class HomeClaimCouponUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<String, Pair<Boolean, String>>(dispatchers.io) {
+) : CoroutineUseCase<String, Pair<Boolean, MessageErrorException?>>(dispatchers.io) {
 
-    override suspend fun execute(params: String): Pair<Boolean, String> {
+    override suspend fun execute(params: String): Pair<Boolean, MessageErrorException?> {
         return try {
-            val response: RedeemCouponModel = repository.request(graphqlQuery(), params)
+            val catalogIdParam = createCatalogIdParam(params)
+            val response: RedeemCouponModel = repository.request(graphqlQuery(), catalogIdParam)
+
             val isSucceed = response.hachikoRedeem != null
-            Pair(isSucceed, "")
+            Pair(isSucceed, null)
         } catch (t: MessageErrorException) {
-            Pair(false, t.message ?: "")
+            Pair(false, t)
         }
     }
 
     override fun graphqlQuery(): String {
         return """
-            mutation hachikoRedeem(${'$'}catalogId: Int!) {
-              hachikoRedeem(catalog_id: ${'$'}catalogId){
+            mutation hachikoRedeem(${'$'}$PARAM: Int!) {
+              hachikoRedeem(catalog_id: ${'$'}$PARAM){
                 redeemMessage
               }
             }
         """.trimIndent()
+    }
+
+    private fun createCatalogIdParam(id: String) = mapOf(PARAM to id.toIntOrZero())
+
+    companion object {
+        private const val PARAM = "catalogId"
     }
 }

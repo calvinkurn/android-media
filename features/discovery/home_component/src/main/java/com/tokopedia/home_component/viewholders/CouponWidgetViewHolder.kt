@@ -28,7 +28,7 @@ class CouponWidgetViewHolder constructor(
     }
 
     override fun bind(element: CouponWidgetDataModel?) {
-        if (element == null) return
+        if (element == null || element.coupons.isEmpty()) return
 
         binding?.headerView?.bind(element.header())
         binding?.root?.setGradientBackground(element.backgroundGradientColor)

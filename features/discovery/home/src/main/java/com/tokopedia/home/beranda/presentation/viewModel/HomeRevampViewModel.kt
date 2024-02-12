@@ -907,11 +907,11 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun onCouponClaim(catalogId: String, couponPosition: Int) {
         launch {
-            val (isClaimSucceed, message) = claimCouponUseCase.get().invoke(catalogId)
+            val (isClaimSucceed, failure) = claimCouponUseCase.get().invoke(catalogId)
 
             withContext(homeDispatcher.get().main) {
-                if (message.isNotEmpty()) {
-                    _errorEventLiveData.value = Event(Throwable(message))
+                if (failure != null) {
+                    _errorEventLiveData.value = Event(failure)
                     return@withContext
                 }
 

@@ -79,7 +79,7 @@ object CouponWidgetMapper {
 
     private fun List<LabelGroup>.getCtaState(): CouponCtaState {
         val data = CouponCtaState.Data(
-            catalogId = findByPosition("catalog-id")?.url ?: "",
+            catalogId = findByPosition("catalog-id")?.title ?: "",
             url = findByPosition("cta-redirect-url")?.url ?: "",
             appLink = findByPosition("cta-redirect-applink")?.url ?: ""
         )
