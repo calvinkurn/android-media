@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
 import com.tokopedia.applink.RouteManager
@@ -114,10 +115,12 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.SHOP_PAGE_SHARED_PREF
 import com.tokopedia.shop.common.constant.ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_P1_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopAffiliateData
@@ -420,6 +423,7 @@ class ShopPageReimagineHeaderFragment :
     private var queryParamTab: String = ""
     private var shopPageHeaderP1Data: ShopPageHeaderP1HeaderData? = null
     private var isAlreadyGetShopPageP2Data: Boolean = false
+    private var performanceMonitoringShopPrefetch: PerformanceMonitoring? = null
 
     private val storiesManager by storiesManager(StoriesEntryPoint.ShopPageReimagined) {
         setAnimationStrategy(OneTimeAnimationStrategy())
@@ -1176,6 +1180,7 @@ class ShopPageReimagineHeaderFragment :
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_V4_TRACE_ACTIVITY_PREPARE)
+        startMonitoringPltCustomMetric(ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1)
         sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_SHARED_PREFERENCE, Context.MODE_PRIVATE)
         shopHeaderViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageHeaderViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
@@ -1307,6 +1312,8 @@ class ShopPageReimagineHeaderFragment :
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         tabLayout?.removeAllTabs()
         viewPagerAdapterHeader?.notifyDataSetChanged()
+
+        stopMonitoringPltCustomMetric(SHOP_HOME_PREFETCH_V1)
     }
 
     private fun getPrefetchData(): ShopPrefetchData? {
