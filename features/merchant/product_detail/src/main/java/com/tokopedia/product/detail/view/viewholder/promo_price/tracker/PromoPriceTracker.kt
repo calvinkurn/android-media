@@ -44,11 +44,11 @@ object PromoPriceTracker {
         layoutData ?: return
         commonTracker ?: return
         val action = "click - review chips filter"
-        val event = "select_content"
+        val event = "promoClick"
         val itemName =
             "default_price:$defaultPriceFmt;slash_price:$slashPriceFmt;coupon_price:$promoPriceFmt"
         val mapEvent = hashMapOf<String, Any>(
-            "event" to "select_content",
+            "event" to event,
             "eventCategory" to "product detail page",
             "eventAction" to "click - promo price component",
             "eventLabel" to "promo_name:$subtitle",
