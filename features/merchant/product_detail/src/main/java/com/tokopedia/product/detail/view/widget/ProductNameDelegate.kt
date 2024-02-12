@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
-import com.tokopedia.product.detail.databinding.ItemProductContentBinding
+import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -179,7 +179,7 @@ internal class ProductNameDelegate(
  */
 private typealias IconLoaded = Pair<Drawable?, Boolean>
 
-internal fun ItemProductContentBinding.productNameDelegate() =
+internal fun ItemDynamicProductContentBinding.productNameDelegate() =
     lazyThreadSafetyNone {
         ProductNameDelegate(typography = productName)
     }

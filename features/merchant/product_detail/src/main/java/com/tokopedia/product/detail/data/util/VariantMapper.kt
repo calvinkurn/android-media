@@ -8,8 +8,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.PromoPriceResponse
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
+import com.tokopedia.product.detail.common.data.model.pdplayout.PromoPriceResponse
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
@@ -62,7 +62,6 @@ object VariantMapper {
             isCod = newData?.isCod ?: false,
             componentPriceType = newData?.componentPriceType ?: 0,
             promoPrice = newData?.promoPrice ?: PromoPriceResponse(),
-            isCod = newData?.isCod ?: false,
             labelIcons = newData?.labelIcons.orEmpty()
         )
 
