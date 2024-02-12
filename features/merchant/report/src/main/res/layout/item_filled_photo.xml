@@ -34,7 +34,7 @@
         android:layout_gravity="top|end"
         android:background="@drawable/circle_light_grey"
         app:icon_name="CLOSE"
-        app:icon_enable_default_color="@color/Unify_Static_White_96"
+        app:icon_color_light_enable="@color/Unify_Static_White_96"
         android:padding="2dp"/>
 
 </FrameLayout>
