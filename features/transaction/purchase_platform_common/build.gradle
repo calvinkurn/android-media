@@ -7,7 +7,11 @@ android {
     namespace 'com.tokopedia.purchase_platform.common'
     testNamespace 'com.tokopedia.purchase_platform.common.test'
     buildFeatures {
+        compose true
         viewBinding true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 }
 
@@ -36,6 +40,10 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
+
+    implementation rootProject.ext.composeDependencies.composeUi
+    implementation rootProject.ext.composeDependencies.composePreview
+    implementation rootProject.ext.composeDependencies.composeRuntime
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design

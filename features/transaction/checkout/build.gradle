@@ -27,7 +27,12 @@ android {
     }
 
     buildFeatures {
+        compose true
         viewBinding true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 }
 
@@ -102,6 +107,8 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.retrofit
+
+    implementation rootProject.ext.composeDependencies.composeUi
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)

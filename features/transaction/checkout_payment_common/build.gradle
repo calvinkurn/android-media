@@ -39,6 +39,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
+    implementation rootProject.ext.composeDependencies.composeUi
+    implementation rootProject.ext.composeDependencies.composePreview
+    implementation rootProject.ext.composeDependencies.composeRuntime
     implementation rootProject.ext.composeDependencies.composeCoil
     implementation rootProject.ext.composeDependencies.composeConstraint
 

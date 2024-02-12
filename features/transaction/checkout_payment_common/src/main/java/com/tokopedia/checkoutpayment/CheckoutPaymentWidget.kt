@@ -83,11 +83,15 @@ fun CheckoutPaymentWidget(data: CheckoutPaymentWidgetData, modifier: Modifier = 
                         color = NestTheme.colors.NN._950
                     ),
                     maxLines = 1,
-                    modifier = Modifier.weight(1f).align(Alignment.CenterVertically)
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
                 )
                 NestIcon(
                     iconId = IconUnify.RELOAD,
-                    modifier = Modifier.size(32.dp).padding(4.dp)
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(4.dp)
                 )
             }
         } else {

@@ -40,6 +40,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
@@ -49,6 +50,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.ShippingComponents
 import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
+import com.tokopedia.checkoutpayment.CheckoutPaymentWidgetData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -361,6 +363,7 @@ class CheckoutViewModel @Inject constructor(
                             ) + itemsWithLoadingState + listOf(
                                 epharmacy,
                                 promo,
+                                CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
                                 cost,
                                 crossSellGroup,
                                 buttonPayment
@@ -2872,13 +2875,18 @@ internal fun List<CheckoutItem>.upsell(): CheckoutUpsellModel? {
 }
 
 internal fun List<CheckoutItem>.epharmacy(): CheckoutEpharmacyModel? {
-    val item = getOrNull(size - 5)
+    val item = getOrNull(size - 6)
     return item as? CheckoutEpharmacyModel
 }
 
 internal fun List<CheckoutItem>.promo(): CheckoutPromoModel? {
-    val item = getOrNull(size - 4)
+    val item = getOrNull(size - 5)
     return item as? CheckoutPromoModel
+}
+
+internal fun List<CheckoutItem>.payment(): CheckoutPaymentModel? {
+    val item = getOrNull(size - 4)
+    return item as? CheckoutPaymentModel
 }
 
 internal fun List<CheckoutItem>.cost(): CheckoutCostModel? {
