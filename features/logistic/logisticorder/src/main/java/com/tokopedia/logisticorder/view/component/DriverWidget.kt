@@ -70,7 +70,7 @@ private val TrackingDataModel?.hasDriverInfo: Boolean
 private fun DriverWidgetPreview() {
     val lastDriverModel = LastDriverModel(
         name = "Budi",
-        phone = "+6256648394543",
+        phone = "6256648394543",
         licenseNumber = "B 1238 JED",
         isChanged = true
     )
@@ -99,7 +99,7 @@ private fun DriverWidgetPreview() {
 private fun DriverWidgetTokopediaNowOrderPreview() {
     val lastDriverModel = LastDriverModel(
         name = "Budi",
-        phone = "+6256648394543",
+        phone = "6256648394543",
         licenseNumber = "B 1238 JED",
         isChanged = true
     )

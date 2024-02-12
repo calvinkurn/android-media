@@ -135,7 +135,7 @@ fun TrackingDetailSection(
 }
 
 @Composable
-fun TrackingDetailsItemWithIcon(
+private fun TrackingDetailsItemWithIcon(
     modifier: Modifier,
     title: String,
     value: String,
