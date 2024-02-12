@@ -25,6 +25,7 @@ import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
 import com.tokopedia.chatbot.chatbot2.csat.view.CsatActivity.Companion.EXTRA_CSAT_DATA
 import com.tokopedia.chatbot.chatbot2.csat.view.CsatActivity.Companion.EXTRA_CSAT_SELECTED_SCORE
 import com.tokopedia.chatbot.databinding.BottomsheetCsatBinding
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -32,9 +33,11 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 import com.tokopedia.csat_rating.R as csat_ratingR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
 
 class CsatBottomsheet :
     BottomSheetUnify(),
@@ -252,17 +255,40 @@ class CsatBottomsheet :
         viewBinding?.csatOtherReason?.apply {
             minLine = OTHER_REASON_MIN_LINE
             setLabel(context?.getString(R.string.chatbot_dynamic_csat_other_reason_label).orEmpty())
-            viewBinding?.csatOtherReason?.setMessage(
+            setMessage(
                 context?.getString(
                     R.string.chatbot_dynamic_csat_min_other_reason_char_label,
                     csatModel.minimumOtherReasonChar
                 ).orEmpty()
             )
-            viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
+            editText.addTextChangedListener {
                 viewModel.processAction(CsatUserAction.SetOtherReason(it.toString()))
                 viewModel.updateButton()
             }
+            editText.setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    delayScrollToBottom()
+                }
+            }
+            editText.setOnClickListener {
+                delayScrollToBottom()
+            }
         }
+    }
+
+    private fun delayScrollToBottom() {
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                scrollToBottom()
+            }
+        }, SCROLL_DELAY)
+    }
+
+    private fun scrollToBottom() {
+        viewBinding?.container?.smoothScrollTo(
+            0,
+            viewBinding?.container?.getChildAt(0)?.height.orZero()
+        )
     }
 
     private fun renderButtonState(state: CsatEvent.UpdateButton) {
@@ -293,6 +319,7 @@ class CsatBottomsheet :
         const val DYNAMIC_REASON = "dynamic_reason"
 
         const val OTHER_REASON_MIN_LINE = 4
+        const val SCROLL_DELAY = 100L
 
         fun newInstance(selectedScore: Int, csatModel: CsatModel): CsatBottomsheet {
             val bottomSheet = CsatBottomsheet()
