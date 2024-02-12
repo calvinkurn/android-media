@@ -334,4 +334,6 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_ENABLE_SDUI_CAMPAIGN_WIDGET_HOME = "android_home_enable_sdui";
 
+    public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
+
 }
