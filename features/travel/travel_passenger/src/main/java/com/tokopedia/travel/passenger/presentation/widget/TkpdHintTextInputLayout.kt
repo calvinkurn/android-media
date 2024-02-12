@@ -1,7 +1,6 @@
 package com.tokopedia.travel.passenger.presentation.widget
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
@@ -490,7 +489,7 @@ class TkpdHintTextInputLayout : LinearLayout {
         if (shouldShowPasswordIcon()) {
             if (mPasswordToggleView == null) {
                 mPasswordToggleView = LayoutInflater.from(context)
-                        .inflate(R.layout.design_text_input_password_icon,
+                        .inflate(R.layout.layout_text_input_password_icon,
                                 mFrameLayout, false) as CheckableImageButton
                 mPasswordToggleView?.setImageDrawable(mPasswordToggleDrawable)
                 mPasswordToggleView?.contentDescription = mPasswordToggleContentDesc
