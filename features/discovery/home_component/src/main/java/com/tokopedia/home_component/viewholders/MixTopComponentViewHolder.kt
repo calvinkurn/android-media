@@ -35,7 +35,7 @@ import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselV
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
-import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
+import com.tokopedia.home_component.util.hasGradientBackground
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixTopDataModel
@@ -172,14 +172,7 @@ class MixTopComponentViewHolder(
         bannerTitle.visibility = if(bannerItem.title.isEmpty()) View.GONE else View.VISIBLE
         bannerDescription.text = bannerItem.description
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
-        if(bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(bannerItem.gradientColor, itemView.context)) {
-            background.gone()
-            val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, 0, 0, 0)
-            recyclerView.layoutParams = layoutParams
-            recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_card_compat_padding_translation_y).toFloat()
-            containerInside.setPadding(0, 0, 0, itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_bottom_with_compat_padding_translated))
-        } else {
+        if(bannerItem.gradientColor.hasGradientBackground(itemView.context)) {
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
@@ -194,6 +187,13 @@ class MixTopComponentViewHolder(
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = 0f
             containerInside.setPadding(0, 0, 0, itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_bottom_with_compat_padding))
+        } else {
+            background.gone()
+            val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.setMargins(0, 0, 0, 0)
+            recyclerView.layoutParams = layoutParams
+            recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_card_compat_padding_translation_y).toFloat()
+            containerInside.setPadding(0, 0, 0, itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_bottom_with_compat_padding_translated))
         }
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
@@ -306,10 +306,15 @@ class MixTopComponentViewHolder(
     }
 
     private fun convertDataToProductData(channel: ChannelModel): List<CarouselProductCardDataModel> {
+        val isInBackground = channel.channelBanner.gradientColor.hasGradientBackground(itemView.context)
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ChannelModelMapper.mapToProductCardModel(element, cardInteraction),
+                    ChannelModelMapper.mapToProductCardModel(
+                        element,
+                        cardInteraction,
+                        isInBackground = isInBackground
+                    ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
@@ -331,7 +336,13 @@ class MixTopComponentViewHolder(
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.product_card_flashsale_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+        return productCardModelList.getMaxHeightForGridView(
+            itemView.context,
+            Dispatchers.Default,
+            productCardWidth,
+            isReimagine = true,
+            useCompatPadding = true,
+        )
     }
 
     private fun setHeaderComponent(element: MixTopDataModel) {

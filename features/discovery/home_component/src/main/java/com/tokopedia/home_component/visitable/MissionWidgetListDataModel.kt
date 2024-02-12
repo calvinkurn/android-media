@@ -6,6 +6,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Lo
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseWithSubtitle
+import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.home_component.util.MissionWidgetCardUtil
 import com.tokopedia.home_component.util.MissionWidgetClearUtil
 import com.tokopedia.home_component.util.MissionWidgetUtil
@@ -55,7 +56,9 @@ data class MissionWidgetListDataModel(
         }
     }
 
-    fun isWithSubtitle(): Boolean = config.styleParam.parseWithSubtitle()
+    fun isWithSubtitle(): Boolean {
+        return HomeComponentFeatureFlag.isMissionExpVariant() || config.styleParam.parseWithSubtitle()
+    }
 
     override fun visitableId(): String {
         return id

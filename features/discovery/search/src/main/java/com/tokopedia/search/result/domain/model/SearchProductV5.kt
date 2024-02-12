@@ -447,6 +447,20 @@ data class SearchProductV5(
             @SerializedName("url")
             @Expose
             val url: String = "",
+
+            @SerializedName("styles")
+            @Expose
+            val styleList: List<Style> = listOf(),
+        )
+
+        data class Style(
+            @SerializedName("key")
+            @Expose
+            val key: String = "",
+
+            @SerializedName("value")
+            @Expose
+            val value: String = "",
         )
 
         data class Ads(

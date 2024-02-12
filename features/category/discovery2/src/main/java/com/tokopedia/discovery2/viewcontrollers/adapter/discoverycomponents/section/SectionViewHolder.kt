@@ -16,11 +16,12 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.model.NotifyPayload
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.home_component.util.ImageHandler
+import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -127,16 +128,13 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         festiveForeground.loadImageWithoutPlaceholder(
             imageUrl,
-            listener = object : ImageHandler.ImageLoaderStateListener {
-                override fun successLoad(view: ImageView?) {
-                    val minHeight = view?.context?.getMinHeight()
-                    minHeight?.moreThanContainerHeight {
-                        festiveForeground.setLayoutHeight(festiveContainer.measuredHeight)
-                    }
+            listener = object : ImageLoaderStateListener {
+                override fun successLoad(view: ImageView) {
+                    festiveForeground.minimumHeight = 0
                 }
 
-                override fun failedLoad(view: ImageView?) {
-                    view?.hide()
+                override fun failedLoad(view: ImageView) {
+                    view.hide()
                 }
             }
         )
@@ -147,27 +145,16 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         festiveBackground.loadImageWithoutPlaceholder(
             imageUrl,
-            listener = object : ImageHandler.ImageLoaderStateListener {
-                override fun successLoad(view: ImageView?) {
-                    val minHeight = view?.context?.getMinHeight()
-                    minHeight?.moreThanContainerHeight {
-                        festiveBackground.setLayoutHeight(festiveContainer.measuredHeight)
-                    }
+            listener = object : ImageLoaderStateListener {
+                override fun successLoad(view: ImageView) {
+                    festiveBackground.minimumHeight = 0
                 }
 
-                override fun failedLoad(view: ImageView?) {
-                    view?.hide()
+                override fun failedLoad(view: ImageView) {
+                    view.hide()
                 }
             }
         )
-    }
-
-    private fun Int?.moreThanContainerHeight(action: () -> Unit) {
-        this?.run {
-            if (festiveContainer.measuredHeight < this) {
-                action.invoke()
-            }
-        }
     }
 
     private fun Context?.getMinHeight(): Int? {
@@ -192,12 +179,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             layout(0, 0, 0, 0)
             minimumHeight = minHeight
         }
-    }
-
-    private fun AppCompatImageView.setLayoutHeight(height: Int) {
-        if (layoutParams.height == height) return
-
-        layoutParams.height = height
     }
 
     private fun addComponentView(item: ComponentsItem) {
@@ -251,8 +232,11 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         val uniqueId = childViewModel.component.properties?.header?.offerId
         if (uniqueId == payload.identifier) {
-            val offerMessages = payload.data as? List<String> ?: emptyList()
-            childViewModel.changeTier(false, offerMessages)
+            val bmGmTierData = payload.data as? BmGmTierData
+            childViewModel.changeTier(
+                false,
+                bmGmTierData
+            )
 
             return true
         }

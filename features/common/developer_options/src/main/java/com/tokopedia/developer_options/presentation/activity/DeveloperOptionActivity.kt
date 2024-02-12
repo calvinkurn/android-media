@@ -20,7 +20,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
-import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -36,8 +35,6 @@ import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffe
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.di.DaggerDevOptComponent
 import com.tokopedia.developer_options.presentation.di.DevOptModule
-import com.tokopedia.developer_options.presentation.model.ForceScpLoginUiModel
-import com.tokopedia.developer_options.presentation.model.RandomizeAccessTokenUiModel
 import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.BranchLinkViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizationViewHolder
@@ -48,8 +45,8 @@ import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
-import com.tokopedia.encryption.security.sha256
 import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.encryption.security.sha256
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -294,16 +291,6 @@ class DeveloperOptionActivity :
         adapter.setValueIsAuthorized(loggedIn)
         adapter.initializeList()
         adapter.setDefaultItem()
-        shouldShowScpLogin()
-    }
-
-    private fun shouldShowScpLogin() {
-        if (ScpUtils.isGotoLoginEnabled()) {
-            adapter.removeWidget(ForceScpLoginUiModel::class.java)
-        }
-        if (!UserSession(this).isLoggedIn) {
-            adapter.removeWidget(RandomizeAccessTokenUiModel::class.java)
-        }
     }
 
     private fun handleUri(uri: Uri) {
@@ -513,7 +500,6 @@ class DeveloperOptionActivity :
             adapter.setValueIsAuthorized(true)
             adapter.initializeList()
             adapter.setDefaultItem()
-            shouldShowScpLogin()
             showToaster("You are authorized !!")
         } else {
             if (!isAuto) {

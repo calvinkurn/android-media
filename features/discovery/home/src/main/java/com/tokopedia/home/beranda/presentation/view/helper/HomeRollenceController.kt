@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
+import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -13,25 +14,26 @@ object HomeRollenceController {
     var rollenceLoadTime: String = ""
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
     var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
+    var iconJumperSREValue: String = ""
+    var isMegaTabEnabled = false
     var shouldGlobalComponentRecomEnabled: Boolean = false
 
     fun fetchHomeRollenceValue() {
         fetchAtfRollenceValue()
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
+        fetchHomeMegaTabRollenceValue()
+        HomeComponentFeatureFlag.fetchMissionRollenceValue()
         fetchGlobalComponentMigrationFallback()
     }
 
     @JvmStatic
     fun fetchIconJumperValue() {
-        iconJumperValue = try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.ICON_JUMPER,
-                RollenceKey.ICON_JUMPER_DEFAULT
-            )
-        } catch (_: Exception) {
+        iconJumperValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.ICON_JUMPER,
             RollenceKey.ICON_JUMPER_DEFAULT
-        }
+        )
+        iconJumperSREValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.ICON_JUMPER_SRE_KEY)
     }
 
     private fun fetchAtfRollenceValue() {
@@ -71,6 +73,21 @@ object HomeRollenceController {
         }
     }
 
+    private fun fetchHomeMegaTabRollenceValue() {
+        // set the default value to exp variant so that users that are not included
+        // in the experiment still get the new caching mechanism
+        val megaTab = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.HOME_MEGATAB,
+                ""
+            )
+        } catch (_: Exception) {
+            ""
+        }
+
+        isMegaTabEnabled = megaTab.isNotEmpty()
+    }
+
     private fun fetchGlobalComponentMigrationFallback() {
         // set the default value to exp variant so that users that are not included
         // in the experiment still get the new caching mechanism
@@ -102,6 +119,12 @@ object HomeRollenceController {
 
     @JvmStatic
     fun isIconJumper(): Boolean {
-        return iconJumperValue == RollenceKey.ICON_JUMPER_EXP
+        return iconJumperValue == RollenceKey.ICON_JUMPER_EXP ||
+            iconJumperSREValue == RollenceKey.ICON_JUMPER_SRE_VALUE
+    }
+
+    @JvmStatic
+    fun isIconJumperSRE(): Boolean {
+        return iconJumperSREValue == RollenceKey.ICON_JUMPER_SRE_VALUE
     }
 }

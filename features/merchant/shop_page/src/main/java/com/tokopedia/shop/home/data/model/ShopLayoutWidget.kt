@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.data.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop_widget.buy_more_save_more.entity.Product
 
 data class ShopLayoutWidget(
     @SerializedName("layoutID")
@@ -195,7 +196,21 @@ data class ShopLayoutWidget(
             @SerializedName("bannerID")
             val bannerId: String = "",
             @SerializedName("warehouseID")
-            val warehouseID: String = ""
+            val warehouseID: String = "",
+            @SerializedName("OfferID")
+            val offerId: Long = 0,
+            @SerializedName("OfferName")
+            val offerName: String = "",
+            @SerializedName("OfferType")
+            val offerType: Int = 0,
+            @SerializedName("WarehouseIDs")
+            val warehouseIds: List<Long> = emptyList(),
+            @SerializedName("Thumbnails")
+            val thumbnails: List<String> = emptyList(),
+            @SerializedName("Products")
+            val bmsmListProduct: List<Product> = listOf(),
+            @SerializedName("OfferDetail")
+            val offeringDetail: OfferingDetail = OfferingDetail()
         ) {
             data class Component(
                 @SerializedName("componentID")
@@ -350,7 +365,9 @@ data class ShopLayoutWidget(
                 @SerializedName("showStockbar")
                 val showStockBar: Boolean = false,
                 @SerializedName("rating")
-                val rating: String = "",
+                val rating: Int = 0,
+                @SerializedName("isVbs")
+                val isVbs: Boolean = false,
                 @SerializedName("warehouseID")
                 val warehouseId: String = ""
 
@@ -413,6 +430,48 @@ data class ShopLayoutWidget(
                     @SerializedName("y")
                     val y: String = ""
                 )
+            }
+
+            data class OfferingDetail(
+                @SerializedName("TermAndCondition")
+                val termAndConditions: List<String> = emptyList(),
+                @SerializedName("StartDate")
+                val startDate: String = "",
+                @SerializedName("EndDate")
+                val endDate: String = "",
+                @SerializedName("TierList")
+                val tierList: List<Tier> = emptyList()
+            ) {
+                data class Tier(
+                    @SerializedName("TierID")
+                    val tierId: Long = 0,
+                    @SerializedName("Level")
+                    val level: Int = 0,
+                    @SerializedName("TierWording")
+                    val tierWording: String = "",
+                    @SerializedName("Rule")
+                    val rules: List<Rule> = emptyList(),
+                    @SerializedName("Benefit")
+                    val benefits: List<Benefit> = emptyList()
+                ) {
+                    data class Rule(
+                        @SerializedName("TypeID")
+                        val typeId: Long = 0,
+                        @SerializedName("Operation")
+                        val operation: String = "",
+                        @SerializedName("Value")
+                        val value: Int = 0
+                    )
+
+                    data class Benefit(
+                        @SerializedName("TypeID")
+                        val typeId: Long = 0,
+                        @SerializedName("Operation")
+                        val operation: String = "",
+                        @SerializedName("Value")
+                        val value: Int = 0
+                    )
+                }
             }
         }
     }

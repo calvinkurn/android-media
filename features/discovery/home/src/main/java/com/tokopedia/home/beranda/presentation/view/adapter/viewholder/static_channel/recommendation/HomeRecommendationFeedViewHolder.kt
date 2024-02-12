@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.databinding.HomeRecommendationFeedViewholderBinding
 import com.tokopedia.home.util.HomeServerLogger
@@ -92,25 +93,28 @@ class HomeRecommendationFeedViewHolder(
     }
 
     private fun initMegaTabLayout() {
-        binding.tabRecommendation.show()
+        with(binding) {
+            recommendationTabDataModelList
+                ?.map { it.toMegaTabItem() }
+                ?.let { tabRecommendation.set(it, viewPagerHomeFeeds) }
 
-        recommendationTabDataModelList?.map { it.toMegaTabItem() }
-            ?.let {
-                binding.tabRecommendation.set(it, binding.viewPagerHomeFeeds)
-            }
-
-        binding.tabRecommendation.onTabSelected(::onTabLayoutSelected)
-        binding.tabRecommendation.onTabReselected(::onTabLayoutReselected)
+            tabRecommendation.onTabSelected(::onTabLayoutSelected)
+            tabRecommendation.onTabReselected(::onTabLayoutReselected)
+            tabRecommendation.show()
+            megatabStroke.show()
+        }
     }
 
     private fun initCarouselTabLayout() {
-        binding.tabLayoutHomeFeeds.show()
+        with(binding) {
+            recommendationTabDataModelList
+                ?.map { it.toCarouselTabItem() }
+                ?.let { tabLayoutHomeFeeds.setup(viewPagerHomeFeeds, it, cardInteraction) }
 
-        val data = recommendationTabDataModelList?.map { it.toCarouselTabItem() }
-        binding.tabLayoutHomeFeeds.setup(binding.viewPagerHomeFeeds, data!!, cardInteraction)
-
-        binding.tabLayoutHomeFeeds.onTabSelected(::onTabLayoutSelected)
-        binding.tabLayoutHomeFeeds.onTabReselected(::onTabLayoutReselected)
+            tabLayoutHomeFeeds.onTabSelected(::onTabLayoutSelected)
+            tabLayoutHomeFeeds.onTabReselected(::onTabLayoutReselected)
+            tabLayoutHomeFeeds.show()
+        }
     }
 
     private fun onTabLayoutSelected(tab: TabLayout.Tab) {
@@ -136,7 +140,12 @@ class HomeRecommendationFeedViewHolder(
         val tabIndex = recommendationTabDataModelList?.indexOfFirst { it.isJumperTab }
             ?: RecyclerView.NO_POSITION
         if (tabIndex != RecyclerView.NO_POSITION) {
-            val tabToSelect = binding.tabLayoutHomeFeeds.getTabAt(tabIndex)
+            val tabToSelect = if (isMegaTabEnabled().not()) {
+                binding.tabLayoutHomeFeeds.getTabAt(tabIndex)
+            } else {
+                binding.tabRecommendation.getTabAt(tabIndex)
+            }
+
             tabToSelect?.select()
         }
     }
@@ -161,17 +170,15 @@ class HomeRecommendationFeedViewHolder(
         }
     }
 
-    // rollout handler
-    private fun isMegaTabEnabled() = true
+    private fun isMegaTabEnabled() = HomeRollenceController.isMegaTabEnabled
 
     private inline fun <T : CollapsingTabLayout> T.ifVisible(invoke: T.() -> Unit) {
         if (visibility == View.VISIBLE && isMegaTabEnabled()) invoke()
     }
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.home_recommendation_feed_viewholder
-        private val TAG = HomeRecommendationFeedViewHolder::class.java.simpleName
+        @LayoutRes val LAYOUT = R.layout.home_recommendation_feed_viewholder
+
         private const val DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10
         private const val HEIGHT_8 = 8f
     }

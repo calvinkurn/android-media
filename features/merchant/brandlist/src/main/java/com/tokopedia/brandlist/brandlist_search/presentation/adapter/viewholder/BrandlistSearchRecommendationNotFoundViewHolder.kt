@@ -3,11 +3,11 @@ package com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationNotFoundUiModel
 import com.tokopedia.brandlist.common.ImageAssets
 import com.tokopedia.brandlist.databinding.BrandlistSearchRecomNotFoundViewHolderBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
 
@@ -19,8 +19,7 @@ class BrandlistSearchRecommendationNotFoundViewHolder(
 
     override fun bind(element: BrandlistSearchRecommendationNotFoundUiModel?) {
         binding?.brandNotFoundLayout?.visibility = View.VISIBLE
-        ImageHandler.loadImage(itemView.context, binding?.imgBrandNotFound,
-                ImageAssets.BRAND_NOT_FOUND, null)
+        binding?.imgBrandNotFound?.loadImage(ImageAssets.BRAND_NOT_FOUND)
         binding?.btnSearchBrands?.setOnClickListener {
             listener.onClickSearchButton()
         }

@@ -97,6 +97,7 @@ object ProductDetailConstant {
     const val PRODUCT_LIST_VERTICAL = "product_list_vertical"
     const val PDP_VERTICAL_LOADING = "pdp_vertical_loading"
     const val VIEW_TO_VIEW = "view-to-view"
+    const val SDUI_VIEW = "sdui_palugada"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
@@ -114,14 +115,21 @@ object ProductDetailConstant {
     const val RECOM_VERTICAL = "pdp_vertical"
     const val RECOM_STEAL_THE_LOOK = "steal_the_look"
     const val A_PLUS_IMAGE = "product_detail_media"
+    const val TABLET_TYPE = "tablet_mode"
+    const val TABLET_RIGHT = "tablet_right"
+    const val TABLET_LEFT = "tablet_right"
 
     // custom info title as component type
     const val CUSTOM_INFO_TITLE = "custom_info_title"
 
-    // custom info title as component name
+    // bmgm as component name
     const val OTHER_OFFERS = "other_offers"
     const val BMGM_TYPE = "bmgm"
     const val BMGM_SNEAK_PEEK_NAME = "bmgm_sneak_peek"
+
+    // GWP component
+    const val GWP_TYPE = "gwp"
+    const val GWP_SNEAK_PEEK_NAME = "gwp_sneak_peek"
 
     // Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -208,4 +216,5 @@ object ProductDetailConstant {
     const val WEBVIEW_URL_PARAM = "url"
 
     const val A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE = false
+    const val TABLET_PAYLOAD = "TABLET_PAYLOAD"
 }

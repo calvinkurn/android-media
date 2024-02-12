@@ -2,10 +2,10 @@ package com.tokopedia.profilecompletion.addemail
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
-import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
-import com.tokopedia.profilecompletion.addemail.data.CheckEmailPojo
-import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
+import com.tokopedia.profilecompletion.settingprofile.addemail.data.AddEmailPojo
+import com.tokopedia.profilecompletion.settingprofile.addemail.data.AddEmailResult
+import com.tokopedia.profilecompletion.settingprofile.addemail.data.CheckEmailPojo
+import com.tokopedia.profilecompletion.settingprofile.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.domain.AddEmailUseCase
 import com.tokopedia.profilecompletion.domain.CheckEmailUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
