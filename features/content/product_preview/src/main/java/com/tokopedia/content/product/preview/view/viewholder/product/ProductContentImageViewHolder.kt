@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.databinding.ItemImageProductPreviewBinding
-import com.tokopedia.content.product.preview.view.components.ItemImageProductPreview
+import com.tokopedia.content.product.preview.view.components.items.ItemImageProductPreview
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 
 class ProductContentImageViewHolder(
