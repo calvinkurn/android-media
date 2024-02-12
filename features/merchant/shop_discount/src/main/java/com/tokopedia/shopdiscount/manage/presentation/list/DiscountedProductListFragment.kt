@@ -797,6 +797,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             maxOrder = product.maxOrder,
             productId = product.id,
             isBottomSheet = false,
+            isMultiWarehouse = product.isMultiWarehouse,
             subsidyInfo = product.subsidyInfo
         )
     }

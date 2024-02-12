@@ -1,5 +1,6 @@
 package com.tokopedia.shopdiscount.product_detail
 
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
@@ -133,6 +134,7 @@ object ShopDiscountProductDetailMapper {
                     maxFinalDiscountPercentageSubsidy = it.warehouses.getMaxFinalDiscountPercentageSubsidy(),
                 ),
                 eventId = it.warehouses.firstOrNull()?.eventId.orEmpty(),
+                isMultiWarehouse = it.warehouses.size > Int.ONE
             )
         }
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.shopdiscount.manage.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.common.entity.ProductType
@@ -86,6 +87,7 @@ class ProductMapper @Inject constructor() {
                     maxFinalDiscountPercentageSubsidy = product.warehouses.getMaxFinalDiscountPercentageSubsidy(),
                 ),
                 listEventId = product.warehouses.map { warehouse -> warehouse.eventId },
+                isMultiWarehouse = product.warehouses.size > Int.ONE
             )
         }
 

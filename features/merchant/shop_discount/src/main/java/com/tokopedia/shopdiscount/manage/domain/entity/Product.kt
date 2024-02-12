@@ -33,5 +33,6 @@ data class Product(
     val subsidyStatusText: String = "",
     val productRule: ShopDiscountProductRuleUiModel = ShopDiscountProductRuleUiModel(),
     val subsidyInfo: ShopDiscountSubsidyInfoUiModel = ShopDiscountSubsidyInfoUiModel(),
-    val listEventId: List<String> = listOf()
+    val listEventId: List<String> = listOf(),
+    val isMultiWarehouse: Boolean = false
 )

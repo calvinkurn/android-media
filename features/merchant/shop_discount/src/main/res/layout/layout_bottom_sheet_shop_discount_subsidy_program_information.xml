@@ -32,19 +32,48 @@
             tools:visibility="visible">
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_price_info_section_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sd_subsidy_price_info_label_section"
+                android:text="@string/sd_subsidy_price_info_label_section_single_warehouse"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="paragraph_3"
                 app:typographyWeight="bold" />
 
             <LinearLayout
+                android:id="@+id/multi_wh_tokopedia_discount_range_percentage_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sd_subsidy_multi_wh_discount_range_percentage_label"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="paragraph_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_tokopedia_discount_range_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    tools:text="20% - 25%" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/original_price_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="0dp"
@@ -67,7 +96,9 @@
             <LinearLayout
                 android:id="@+id/seller_discount_row"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -108,7 +139,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <View
                     android:layout_width="1dp"
@@ -129,7 +162,9 @@
             <LinearLayout
                 android:id="@+id/tokopedia_subsidy_row"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -168,7 +203,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <View
                     android:layout_width="1dp"
@@ -190,7 +227,9 @@
                 android:id="@+id/final_price_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="0dp"
@@ -215,7 +254,9 @@
                 android:id="@+id/final_price_percentage_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_final_price_percentage_value"
@@ -253,7 +294,9 @@
                 android:id="@+id/main_stock_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="0dp"
@@ -277,7 +320,9 @@
                 android:id="@+id/subsidy_stock_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="0dp"
@@ -301,7 +346,9 @@
                 android:id="@+id/remaining_subsidy_stock_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="0dp"
@@ -404,6 +451,18 @@
                 app:typographyType="paragraph_3"
                 tools:text="26 Sep 2022 08:00 - 31 Des 2022 08:00 WIB" />
         </LinearLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_multi_warehouse_product_information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="paragraph_3"
+            android:text="@string/sd_subsidy_multi_wh_program_information_description"
+            tools:visibility="visible"/>
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

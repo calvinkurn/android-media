@@ -15,6 +15,7 @@ object ShopDiscountProgramInformationDetailMapper {
         maxOrder: Int,
         productId: String,
         isBottomSheet: Boolean,
+        isMultiWarehouse: Boolean,
         subsidyInfo: ShopDiscountSubsidyInfoUiModel
     ): ShopDiscountProgramInformationDetailUiModel {
         return ShopDiscountProgramInformationDetailUiModel(
@@ -26,6 +27,7 @@ object ShopDiscountProgramInformationDetailMapper {
             maxOrder = maxOrder,
             productId = productId,
             isBottomSheet = isBottomSheet,
+            isMultiWarehouse = isMultiWarehouse,
             subsidyInfo = subsidyInfo
         )
     }

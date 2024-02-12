@@ -623,7 +623,8 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             maxOrder = product.maxOrder,
             productId = product.id,
             isBottomSheet = false,
-            subsidyInfo = product.subsidyInfo
+            subsidyInfo = product.subsidyInfo,
+            isMultiWarehouse = product.isMultiWarehouse
         )
     }
 

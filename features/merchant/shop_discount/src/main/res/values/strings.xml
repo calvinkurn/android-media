@@ -185,8 +185,9 @@
     <!--  subsidy  -->
     <string name="sd_opt_out_subsidy">Keluar dari subsidi</string>
     <string name="sd_subsidy_program_information_bottomsheet_title">Informasi Subsidi</string>
-    <string name="sd_subsidy_program_information_description_variant"><![CDATA[Varian dalam produk ini sedang mendapat subsidi dari Tokopedia. Pelajari <a href="%1s">di sini</a>.]]></string>
-    <string name="sd_subsidy_program_information_description_non_variant"><![CDATA[Kamu bisa pelajari tentang subsidi lebih lanjut <a href="%1s">di sini</a>.]]></string>
+    <string name="sd_subsidy_program_information_description_chip_in"><![CDATA[Produkmu mendapatkan diskon subsidi sebagian. Kamu bisa pelajari tentang subsidi lebih lanjut <a href="%1s">di sini</a>.]]></string>
+    <string name="sd_subsidy_program_information_description_full_subsidy"><![CDATA[Produkmu mendapatkan diskon subsidi penuh. Kamu bisa pelajari tentang subsidi lebih lanjut <a href="%1s">di sini</a>.]]></string>
+    <string name="sd_subsidy_program_information_description_multi_warehouse"><![CDATA[Produkmu di beberapa lokasi mendapatkan diskon subsidi. Kamu bisa pelajari tentang subsidi lebih lanjut <a href="%1s">di sini</a>.]]></string>
     <string name="sd_subsidy_disable_edit_product_title">Ubah diskon</string>
     <string name="sd_subsidy_disable_delete_product_title">Hapus diskon</string>
     <string name="sd_subsidy_disable_edit_product_desc">Produk yang sedang disubsidi tidak bisa diubah, kecuali kamu keluar dari subsidi dulu. Jika yang keluar adalah produk disubsidi penuh, maka diskonnya akan dihapus.</string>
@@ -200,7 +201,10 @@
     <string name="sd_subsidy_opt_out_bottom_sheet_desc_no_product">Produk yang kamu pilih tidak mengikuti program subsidi dari Tokopedia. </string>
     <string name="sd_subsidy_opt_out_bottom_sheet_desc_with_product"><![CDATA[Subsidi ini memakai budget Tokopedia & tidak mempengaruhi budget penjual. Jika keluar dari subsidi, produk akan kembali ke harga sebelum disubsidi. Pelajari lebih lanjut <a href="%1s">di sini</a>.]]></string>
     <string name="sd_subsidy_opt_out_bottom_sheet_option_title">Apa alasanmu keluar dari subsidi?</string>
-    <string name="sd_subsidy_price_info_label_section">Info Harga</string>
+    <string name="sd_subsidy_price_info_label_section_single_warehouse">Info Harga</string>
+    <string name="sd_subsidy_price_info_label_section_multi_warehouse">Info Subsidi</string>
+    <string name="sd_subsidy_multi_wh_discount_range_percentage_label">Subsidi dari Tokopedia</string>
+    <string name="sd_subsidy_multi_wh_program_information_description">Lihat detail subsidi tiap lokasi di halaman Diskon Toko pada Tokopedia Seller versi desktop.</string>
     <string name="sd_subsidy_original_price_label">Harga Normal</string>
     <string name="sd_subsidy_seller_discount_label">Diskon penjual</string>
     <string name="sd_subsidy_discount_percentage_format">*%1s dari harga sebelum diskon</string>
@@ -217,7 +221,8 @@
     <string name="sd_subsidy_period_subsidy_info_label_section">Info Periode Subsidi</string>
     <string name="sd_subsidy_period_format">%1s - %2s WIB</string>
     <string name="sd_subsidy_minus_price_format">-%1s</string>
-    <string name="sd_subsidy_minus_price_format_range">-%1s - -%2s</string>
+    <string name="sd_subsidy_multi_wh_discount_range">%1s - %2s</string>
+    <string name="sd_subsidy_multi_wh_discount_single">%1s</string>
     <string name="sd_subsidy_multiple_product_opt_out_edit_mode_title">Ada diskon yang tidak bisa langsung diubah</string>
     <string name="sd_subsidy_multiple_product_opt_out_delete_mode_title">Yakin hapus produk dari Diskon Toko?</string>
     <string name="sd_subsidy_multiple_product_opt_out_description">Produk yang sedang disubsidi tidak bisa diubah, kecuali kamu keluar dari subsidi dulu. Jika yang keluar adalah produk disubsidi penuh, maka diskonnya akan dihapus.</string>

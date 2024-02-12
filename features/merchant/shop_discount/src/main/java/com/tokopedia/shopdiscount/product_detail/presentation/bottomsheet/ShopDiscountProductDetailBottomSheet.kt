@@ -617,7 +617,8 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             maxOrder = uiModel.maxOrder,
             productId = uiModel.productId,
             isBottomSheet = true,
-            subsidyInfo = uiModel.subsidyInfo
+            subsidyInfo = uiModel.subsidyInfo,
+            isMultiWarehouse = uiModel.isMultiWarehouse
         )
     }
     private fun showDialogDeleteProduct(

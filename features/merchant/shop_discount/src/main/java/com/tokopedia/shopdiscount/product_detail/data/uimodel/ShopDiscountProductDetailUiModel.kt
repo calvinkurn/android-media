@@ -37,7 +37,8 @@ data class ShopDiscountProductDetailUiModel(
         val subsidyStatusText: String = "",
         val productRule: ShopDiscountProductRuleUiModel = ShopDiscountProductRuleUiModel(),
         val subsidyInfo: ShopDiscountSubsidyInfoUiModel = ShopDiscountSubsidyInfoUiModel(),
-        val eventId: String = ""
+        val eventId: String = "",
+        val isMultiWarehouse: Boolean = false
     ) : Visitable<ShopDiscountProductDetailTypeFactoryImpl>, Parcelable {
 
         override fun type(typeFactory: ShopDiscountProductDetailTypeFactoryImpl): Int {

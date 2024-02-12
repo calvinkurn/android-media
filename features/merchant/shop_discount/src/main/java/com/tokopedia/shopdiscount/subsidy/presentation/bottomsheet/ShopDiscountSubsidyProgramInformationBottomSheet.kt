@@ -43,6 +43,12 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
         get() = viewBinding?.textSubsidyStatus
     private val priceInfoSection: View?
         get() = viewBinding?.priceInfoSection
+    private val textPriceInfoSectionTitle: Typography?
+        get() = viewBinding?.textPriceInfoSectionTitle
+    private val multiWarehouseDiscountRangePercentageRow: View?
+        get() = viewBinding?.multiWhTokopediaDiscountRangePercentageRow
+    private val textMultiWarehouseDiscountRangePercentageValue: Typography?
+        get() = viewBinding?.textTokopediaDiscountRangeValue
     private val originalPriceRow: View?
         get() = viewBinding?.originalPriceRow
     private val textOriginalPriceValue: Typography?
@@ -95,6 +101,8 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
         get() = viewBinding?.subsidyPeriodSection
     private val textSubsidyPeriodValue: Typography?
         get() = viewBinding?.textSubsidyPeriodValue
+    private val textMultiWarehouseProductInformation: Typography?
+        get() = viewBinding?.textMultiWarehouseProductInformation
     private var programInformationDetailUiModel: ShopDiscountProgramInformationDetailUiModel? = null
 
     companion object {
@@ -163,6 +171,16 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
             setStockInfoSection()
             setMaxOrderInfoSection()
             setSubsidyPeriodSection()
+            setExtraDescriptionForMultiWarehouseProduct()
+        }
+    }
+
+    private fun setExtraDescriptionForMultiWarehouseProduct() {
+        val isMultiWarehouse = programInformationDetailUiModel?.isMultiWarehouse.orFalse()
+        if (isMultiWarehouse) {
+            textMultiWarehouseProductInformation?.show()
+        } else {
+            textMultiWarehouseProductInformation?.hide()
         }
     }
 
@@ -199,9 +217,15 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
 
     private fun setStockInfoSection() {
         stockInfoSection?.show()
-        setMainStockData()
-        setSubsidyStockData()
-        setRemainingSubsidyStockData()
+        val isMultiWarehouse = programInformationDetailUiModel?.isMultiWarehouse.orFalse()
+        if (isMultiWarehouse) {
+            setSubsidyStockData()
+        } else {
+            setMainStockData()
+            setSubsidyStockData()
+            setRemainingSubsidyStockData()
+        }
+
     }
 
     private fun setRemainingSubsidyStockData() {
@@ -237,6 +261,49 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
 
     private fun setPriceInfoSection() {
         priceInfoSection?.show()
+        val isMultiWarehouse = programInformationDetailUiModel?.isMultiWarehouse.orFalse()
+        if (isMultiWarehouse) {
+            setupPriceInfoSectionForMultiWarehouseProduct()
+        } else {
+            setupPriceInfoSectionForSingleWarehouseProduct()
+        }
+    }
+
+    private fun setupPriceInfoSectionForMultiWarehouseProduct() {
+        textPriceInfoSectionTitle?.text =
+            getString(R.string.sd_subsidy_price_info_label_section_multi_warehouse)
+        setTokopediaSubsidyRangePercentageData()
+    }
+
+    private fun setTokopediaSubsidyRangePercentageData() {
+        val tokopediaSubsidyRangePercentage = RangeFormatterUtil.getFormattedRangeString(
+            programInformationDetailUiModel?.subsidyInfo?.minProgramDiscountPercentageSubsidy.orZero(),
+            programInformationDetailUiModel?.subsidyInfo?.maxProgramDiscountPercentageSubsidy.orZero(),
+            {
+                String.format(
+                    getString(R.string.sd_subsidy_multi_wh_discount_single),
+                    it.getPercentFormatted()
+                )
+            },
+            { min, max ->
+                String.format(
+                    getString(R.string.sd_subsidy_multi_wh_discount_range),
+                    min.getPercentFormatted(),
+                    max.getPercentFormatted()
+                )
+            }
+        )
+        if (tokopediaSubsidyRangePercentage.isNotEmpty()) {
+            multiWarehouseDiscountRangePercentageRow?.show()
+            textMultiWarehouseDiscountRangePercentageValue?.text = tokopediaSubsidyRangePercentage
+        } else {
+            multiWarehouseDiscountRangePercentageRow?.hide()
+        }
+    }
+
+    private fun setupPriceInfoSectionForSingleWarehouseProduct() {
+        textPriceInfoSectionTitle?.text =
+            getString(R.string.sd_subsidy_price_info_label_section_single_warehouse)
         setOriginalPriceData()
         setSellerDiscountData()
         setSellerDiscountPercentageData()
@@ -247,20 +314,10 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setFinalPricePercentageData() {
-        val finalPricePercentage = RangeFormatterUtil.getFormattedRangeString(
-            programInformationDetailUiModel?.subsidyInfo?.minFinalDiscountPercentageSubsidy.orZero(),
-            programInformationDetailUiModel?.subsidyInfo?.maxFinalDiscountPercentageSubsidy.orZero(), {
-                String.format(
-                    getString(R.string.sd_subsidy_discount_percentage_format),
-                    it.getPercentFormatted()
-                )
-            }, { min, max ->
-                String.format(
-                    getString(R.string.sd_subsidy_discount_percentage_format_range),
-                    min.getPercentFormatted(),
-                    max.getPercentFormatted()
-                )
-            }
+        val finalPricePercentage = getString(
+            R.string.sd_subsidy_discount_percentage_format,
+            programInformationDetailUiModel?.subsidyInfo?.maxFinalDiscountPercentageSubsidy.orZero()
+                .getPercentFormatted()
         )
         if (finalPricePercentage.isNotEmpty()) {
             finalPricePercentageRow?.show()
@@ -271,18 +328,9 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setFinalPriceData() {
-        val finalPrice = RangeFormatterUtil.getFormattedRangeString(
-            programInformationDetailUiModel?.subsidyInfo?.minFinalDiscountPriceSubsidy.orZero(),
-            programInformationDetailUiModel?.subsidyInfo?.maxFinalDiscountPriceSubsidy.orZero(), {
-                it.getCurrencyFormatted()
-            }, { min, max ->
-                String.format(
-                    getString(R.string.product_detail_original_price_format),
-                    min.getCurrencyFormatted(),
-                    max.getCurrencyFormatted()
-                )
-            }
-        )
+        val finalPrice =
+            programInformationDetailUiModel?.subsidyInfo?.maxFinalDiscountPriceSubsidy.orZero()
+                .getCurrencyFormatted()
         if (finalPrice.isNotEmpty()) {
             finalPriceRow?.show()
             textFinalPriceValue?.text = finalPrice
@@ -292,20 +340,10 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setTokopediaSubsidyPercentageData() {
-        val tokopediaSubsidyPercentage = RangeFormatterUtil.getFormattedRangeString(
-            programInformationDetailUiModel?.subsidyInfo?.minProgramDiscountPercentageSubsidy.orZero(),
-            programInformationDetailUiModel?.subsidyInfo?.maxProgramDiscountPercentageSubsidy.orZero(), {
-                String.format(
-                    getString(R.string.sd_subsidy_discount_percentage_format),
-                    it.getPercentFormatted()
-                )
-            }, { min, max ->
-                String.format(
-                    getString(R.string.sd_subsidy_discount_percentage_format_range),
-                    min.getPercentFormatted(),
-                    max.getPercentFormatted()
-                )
-            }
+        val tokopediaSubsidyPercentage = getString(
+            R.string.sd_subsidy_discount_percentage_format,
+            programInformationDetailUiModel?.subsidyInfo?.maxProgramDiscountPercentageSubsidy.orZero()
+                .getPercentFormatted()
         )
         if (tokopediaSubsidyPercentage.isNotEmpty()) {
             tokopediaSubsidyPercentageRow?.show()
@@ -316,20 +354,11 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setTokopediaSubsidyData() {
-        val tokopediaSubsidy = RangeFormatterUtil.getFormattedRangeString(
-            programInformationDetailUiModel?.subsidyInfo?.minProgramDiscountPriceSubsidy.orZero(),
-            programInformationDetailUiModel?.subsidyInfo?.maxProgramDiscountPriceSubsidy.orZero(), {
-                String.format(
-                    getString(R.string.sd_subsidy_minus_price_format),
-                    it.getCurrencyFormatted()
-                )
-            }, { min, max ->
-                String.format(
-                    getString(R.string.sd_subsidy_minus_price_format_range),
-                    min.getCurrencyFormatted(),
-                    max.getCurrencyFormatted()
-                )
-            }
+        val discountPercentage =
+            programInformationDetailUiModel?.subsidyInfo?.maxProgramDiscountPriceSubsidy.orZero()
+        val tokopediaSubsidy = getString(
+            R.string.sd_subsidy_minus_price_format,
+            discountPercentage.getCurrencyFormatted()
         )
         if (tokopediaSubsidy.isNotEmpty()) {
             tokopediaSubsidyRow?.show()
@@ -340,20 +369,10 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setSellerDiscountPercentageData() {
-        val sellerDiscountPercentage = RangeFormatterUtil.getFormattedRangeString(
-            programInformationDetailUiModel?.subsidyInfo?.minSellerDiscountPercentageSubsidy.orZero(),
-            programInformationDetailUiModel?.subsidyInfo?.maxSellerDiscountPercentageSubsidy.orZero(), {
-                String.format(
-                    getString(R.string.sd_subsidy_discount_percentage_format),
-                    it.getPercentFormatted()
-                )
-            }, { min, max ->
-                String.format(
-                    getString(R.string.sd_subsidy_discount_percentage_format_range),
-                    min.getPercentFormatted(),
-                    max.getPercentFormatted()
-                )
-            }
+        val sellerDiscountPercentage = getString(
+            R.string.sd_subsidy_discount_percentage_format,
+            programInformationDetailUiModel?.subsidyInfo?.maxSellerDiscountPercentageSubsidy.orZero()
+                .getPercentFormatted()
         )
         val subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(
             programInformationDetailUiModel?.subsidyInfo?.subsidyType?.value.orZero()
@@ -367,21 +386,9 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setSellerDiscountData() {
-        val sellerDiscount = RangeFormatterUtil.getFormattedRangeString(
-            programInformationDetailUiModel?.subsidyInfo?.minSellerDiscountPriceSubsidy.orZero(),
-            programInformationDetailUiModel?.subsidyInfo?.maxSellerDiscountPriceSubsidy.orZero(), {
-                String.format(
-                    getString(R.string.sd_subsidy_minus_price_format),
-                    it.getCurrencyFormatted()
-                )
-            }, { min, max ->
-                String.format(
-                    getString(R.string.sd_subsidy_minus_price_format_range),
-                    min.getCurrencyFormatted(),
-                    max.getCurrencyFormatted()
-                )
-            }
-        )
+        val sellerDiscount =
+            programInformationDetailUiModel?.subsidyInfo?.maxSellerDiscountPriceSubsidy.orZero()
+                .getCurrencyFormatted()
         val subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(
             programInformationDetailUiModel?.subsidyInfo?.subsidyType?.value.orZero()
         )
@@ -397,18 +404,9 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setOriginalPriceData() {
-        val originalPrice = RangeFormatterUtil.getFormattedRangeString(
-            programInformationDetailUiModel?.subsidyInfo?.minOriginalPriceSubsidy.orZero(),
-            programInformationDetailUiModel?.subsidyInfo?.maxOriginalPriceSubsidy.orZero(), {
-                it.getCurrencyFormatted()
-            }, { min, max ->
-                String.format(
-                    getString(R.string.product_detail_original_price_format),
-                    min.getCurrencyFormatted(),
-                    max.getCurrencyFormatted()
-                )
-            }
-        )
+        val originalPrice =
+            programInformationDetailUiModel?.subsidyInfo?.maxOriginalPriceSubsidy.orZero()
+                .getCurrencyFormatted()
         if (originalPrice.isNotEmpty()) {
             originalPriceRow?.show()
             textOriginalPriceValue?.text = originalPrice
@@ -418,25 +416,37 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setDescriptionSection() {
-        val isVariant = programInformationDetailUiModel?.isVariant.orFalse()
         val sellerEduUrl = programInformationDetailUiModel?.subsidyInfo?.ctaProgramLink.orEmpty()
-        val textSubsidyProgramInfoDescription = if (isVariant) {
-            getProgramInformationDescription(
-                getString(R.string.sd_subsidy_program_information_description_variant),
-                sellerEduUrl
-            )
-        } else {
-            getProgramInformationDescription(
-                getString(R.string.sd_subsidy_program_information_description_non_variant),
-                sellerEduUrl
-            )
-        }
+        val textDescription = getStringDescription()
+        val textSubsidyProgramInfoDescription = getProgramInformationDescription(
+            textDescription,
+            sellerEduUrl
+        )
         textSubsidyInfo?.apply {
             movementMethod = LinkMovementMethod.getInstance()
             text = textSubsidyProgramInfoDescription?.spannedString
             textSubsidyProgramInfoDescription?.urlList?.firstOrNull()?.setOnClickListener {
                 sendClickEduArticleTracker()
                 redirectToWebView(textSubsidyProgramInfoDescription.urlList.firstOrNull()?.linkUrl.orEmpty())
+            }
+        }
+    }
+
+    private fun getStringDescription(): String {
+        val isMultiWarehouse = programInformationDetailUiModel?.isMultiWarehouse.orFalse()
+        return if (isMultiWarehouse) {
+            getString(R.string.sd_subsidy_program_information_description_multi_warehouse)
+        } else {
+            val subsidyType = programInformationDetailUiModel?.subsidyInfo?.subsidyType
+                ?: ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN
+            when (subsidyType) {
+                ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN -> {
+                    getString(R.string.sd_subsidy_program_information_description_chip_in)
+                }
+
+                ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL -> {
+                    getString(R.string.sd_subsidy_program_information_description_full_subsidy)
+                }
             }
         }
     }
