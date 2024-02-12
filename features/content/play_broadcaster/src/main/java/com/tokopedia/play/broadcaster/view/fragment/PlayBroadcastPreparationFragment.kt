@@ -150,7 +150,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private var coachMarkItems = mutableListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
     private var productSetupPendingToaster: String? = null
-    private var showToasterSetUpCover: String? = null
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -432,7 +431,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         }
                     }
                 )
-                childFragment.needToShowErrorToaster(showToasterSetUpCover)
 
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
@@ -615,8 +613,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 toaster.showToaster(errorMessage)
             }
             !viewModel.isCoverAvailable() -> {
-                showToasterSetUpCover = getString(R.string.play_bro_cover_empty_error)
-                openSetupCoverBottomSheet()
+                openSetupCoverBottomSheet(
+                    errorMessage = getString(R.string.play_bro_cover_empty_error)
+                )
             }
             parentViewModel.productSectionList.isEmpty() -> {
                 val errorMessage = getString(R.string.play_bro_cover_setup_product_empty)
@@ -1067,15 +1066,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun getSetupTitleBottomSheet() = PlayBroadcastSetupTitleBottomSheet
         .getFragment(childFragmentManager, requireActivity().classLoader)
 
-    private fun openSetupCoverBottomSheet() {
+    private fun openSetupCoverBottomSheet(errorMessage: String = "") {
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(PlayBroadcastSetupCoverBottomSheet.TAG)
         if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
-        getSetupCoverBottomSheet()?.show(childFragmentManager)
+        getSetupCoverBottomSheet(errorMessage)?.show(childFragmentManager)
     }
 
-    private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
-        .getFragment(childFragmentManager, requireActivity().classLoader)
+    private fun getSetupCoverBottomSheet(errorMessage: String = "") =
+        PlayBroadcastSetupCoverBottomSheet
+            .getFragment(
+                childFragmentManager,
+                requireActivity().classLoader,
+                errorMessage,
+            )
 
     private fun openScheduleBottomSheet() {
         val schedule = parentViewModel.uiState.value.schedule

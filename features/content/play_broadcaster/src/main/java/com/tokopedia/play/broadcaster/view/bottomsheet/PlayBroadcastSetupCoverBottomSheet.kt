@@ -51,7 +51,12 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
     private var mListener: Listener? = null
     private var mDataSource: DataSource? = null
     private var coachMark: CoachMark2? = null
-    private var toasterMessage: String? = null
+    private val toasterMessage: String
+        get() {
+            return arguments?.getString(ERROR_MESSAGE_ARG).orEmpty().also {
+                arguments?.remove(ERROR_MESSAGE_ARG)
+            }
+        }
 
     private var isShowCoachMark = false
 
@@ -122,14 +127,14 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
 
         if (isShowCoachMark) showCoachMark()
 
-        if (!toasterMessage.isNullOrEmpty()) {
+        val errorMessage = toasterMessage
+        if (!errorMessage.isNullOrEmpty()) {
             viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
                 delay(TOASTER_DELAY)
                 toaster.showError(
-                    err = MessageErrorException(toasterMessage),
-                    customErrMessage = toasterMessage,
+                    err = MessageErrorException(errorMessage),
+                    customErrMessage = errorMessage,
                 )
-                toasterMessage = null
             }
         }
     }
@@ -185,10 +190,6 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
         isShowCoachMark = showCoachMark
     }
 
-    fun needToShowErrorToaster(message: String?) {
-        toasterMessage = message
-    }
-
     private fun showCoachMark() {
         if (coachMark != null && coachMark?.isShowing == true) return
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
@@ -238,16 +239,25 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
         const val TAB_UPLOAD_IMAGE = 1
         const val TAB_AUTO_GENERATED = 2
 
+        private const val ERROR_MESSAGE_ARG = "ERROR_MESSAGE_ARG"
+
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
+            errorMessage: String = "",
         ): PlayBroadcastSetupCoverBottomSheet? {
             val oldInstance =
                 fragmentManager.findFragmentByTag(TAG) as? PlayBroadcastSetupCoverBottomSheet
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                PlayBroadcastSetupCoverBottomSheet::class.java.name
-            ) as? PlayBroadcastSetupCoverBottomSheet
+            return (
+                oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                    classLoader,
+                    PlayBroadcastSetupCoverBottomSheet::class.java.name
+                ) as? PlayBroadcastSetupCoverBottomSheet
+            )?.apply {
+                arguments = Bundle().apply {
+                    putString(ERROR_MESSAGE_ARG, errorMessage)
+                }
+            }
         }
     }
 
