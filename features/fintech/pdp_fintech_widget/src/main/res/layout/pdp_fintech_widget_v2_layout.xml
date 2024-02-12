@@ -29,8 +29,8 @@
         android:translationY="-1dp"
         app:layout_constraintStart_toEndOf="@id/slider_icon"
         app:layout_constraintEnd_toStartOf="@id/slider_chevron"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/slider_icon"
+        app:layout_constraintBottom_toBottomOf="@id/slider_icon"
         />
     
     <com.tokopedia.iconunify.IconUnify
@@ -40,8 +40,8 @@
         app:icon_name="CHEVRON_RIGHT"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/slider_icon"
+        app:layout_constraintBottom_toBottomOf="@id/slider_icon"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
