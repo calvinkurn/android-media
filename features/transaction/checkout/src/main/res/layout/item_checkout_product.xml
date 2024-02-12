@@ -95,7 +95,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_order_number"
         app:unify_image_corner_radius="0"
         app:unify_image_type="rect"
-        tools:src="@color/colorGray"
+        tools:src="@color/Unify_GN500"
         tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -145,7 +145,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_order_name"
         app:unify_image_corner_radius="0"
         app:unify_image_type="rect"
-        tools:src="@color/colorGray"
+        tools:src="@color/Unify_GN500"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
