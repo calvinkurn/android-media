@@ -158,7 +158,7 @@ object AppLogAnalytics {
 
     private val lock = Any()
 
-    fun addPageName(activity: Activity) {
+    internal fun addPageName(activity: Activity) {
         val actName = activity.javaClass.simpleName
         if (activity is IAppLogActivity) {
             synchronized(lock) {
@@ -171,7 +171,7 @@ object AppLogAnalytics {
         }
     }
 
-    fun removePageName(activity: Activity) {
+    internal fun removePageName(activity: Activity) {
         synchronized(lock) {
             val pageNameToRemove =
                 pageNames.findLast { it.first == activity.javaClass.simpleName }
