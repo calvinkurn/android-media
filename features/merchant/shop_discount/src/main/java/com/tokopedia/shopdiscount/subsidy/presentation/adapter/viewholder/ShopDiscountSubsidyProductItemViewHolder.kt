@@ -105,7 +105,7 @@ class ShopDiscountSubsidyProductItemViewHolder(
                 it.getCurrencyFormatted()
             }, { min, max ->
                 String.format(
-                    itemView.context.getString(R.string.product_detail_original_price_format),
+                    itemView.context.getString(R.string.sd_subsidy_opt_out_multiple_product_range_format),
                     min.getCurrencyFormatted(),
                     max.getCurrencyFormatted()
                 )
@@ -118,7 +118,7 @@ class ShopDiscountSubsidyProductItemViewHolder(
                     it.getPercentFormatted()
                 }, { min, max ->
                     String.format(
-                        itemView.context.getString(R.string.sd_subsidy_opt_out_multiple_product_item_discount_percentage_range_format),
+                        itemView.context.getString(R.string.sd_subsidy_opt_out_multiple_product_range_format),
                         min.getPercentFormatted(),
                         max.getPercentFormatted()
                     )
@@ -132,7 +132,7 @@ class ShopDiscountSubsidyProductItemViewHolder(
                     it.getCurrencyFormatted()
                 }, { min, max ->
                     String.format(
-                        itemView.context.getString(R.string.product_detail_original_price_format),
+                        itemView.context.getString(R.string.sd_subsidy_opt_out_multiple_product_range_format),
                         min.getCurrencyFormatted(),
                         max.getCurrencyFormatted()
                     )

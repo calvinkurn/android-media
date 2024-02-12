@@ -236,7 +236,7 @@
     <string name="sd_subsidy_opt_out_reason_bottom_sheet_other_reason">Lainnya</string>
     <string name="sd_subsidy_opt_out_reason_bottom_sheet_other_reason_minimum_character_format">Alasan harus lebih dari %1d karakter</string>
     <string name="sd_subsidy_opt_out_reason_fail_message">Gagal keluar subsidi</string>
-    <string name="sd_subsidy_opt_out_multiple_product_item_discount_percentage_range_format">%1s-%2s</string>
+    <string name="sd_subsidy_opt_out_multiple_product_range_format">%1s - %2s</string>
 
 
 
