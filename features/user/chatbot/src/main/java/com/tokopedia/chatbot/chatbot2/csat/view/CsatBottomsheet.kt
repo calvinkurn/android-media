@@ -38,7 +38,6 @@ import javax.inject.Inject
 import com.tokopedia.csat_rating.R as csat_ratingR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-
 class CsatBottomsheet :
     BottomSheetUnify(),
     HasComponent<CsatComponent> {
@@ -277,11 +276,14 @@ class CsatBottomsheet :
     }
 
     private fun delayScrollToBottom() {
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                scrollToBottom()
-            }
-        }, SCROLL_DELAY)
+        Timer().schedule(
+            object : TimerTask() {
+                override fun run() {
+                    scrollToBottom()
+                }
+            },
+            SCROLL_DELAY
+        )
     }
 
     private fun scrollToBottom() {
@@ -319,7 +321,7 @@ class CsatBottomsheet :
         const val DYNAMIC_REASON = "dynamic_reason"
 
         const val OTHER_REASON_MIN_LINE = 4
-        const val SCROLL_DELAY = 100L
+        const val SCROLL_DELAY = 150L
 
         fun newInstance(selectedScore: Int, csatModel: CsatModel): CsatBottomsheet {
             val bottomSheet = CsatBottomsheet()
