@@ -907,22 +907,29 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun onCouponClaim(catalogId: String, couponPosition: Int) {
         launch {
-            val isClaimSucceed = claimCouponUseCase.get().invoke(catalogId)
+            val (isClaimSucceed, message) = claimCouponUseCase.get().invoke(catalogId)
 
             withContext(homeDispatcher.get().main) {
+                if (message.isNotEmpty()) {
+                    _errorEventLiveData.value = Event(Throwable(message))
+                    return@withContext
+                }
+
                 findWidget<CouponWidgetDataModel> { model, position ->
-                    val selectedCoupon = model.coupons[couponPosition]
-                    val currentCtaState = selectedCoupon.button
-
-                    selectedCoupon.button = if (isClaimSucceed) {
-                        val data = currentCtaState.model ?: return@findWidget
-                        CouponCtaState.Redirect(data)
-                    } else {
-                        currentCtaState
-                    }
-
                     updateWidget(
-                        visitable = model,
+                        visitable = model.copy(
+                            coupons = model.coupons.toMutableList().also {
+                                val data = it[couponPosition]
+                                val currentCtaState = data.button
+
+                                data.button = if (isClaimSucceed) {
+                                    val ctaModel = currentCtaState.model ?: return@findWidget
+                                    CouponCtaState.Redirect(ctaModel)
+                                } else {
+                                    currentCtaState
+                                }
+                            }
+                        ),
                         position = position
                     )
                 }
