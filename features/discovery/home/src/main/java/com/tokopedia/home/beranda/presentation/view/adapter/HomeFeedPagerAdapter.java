@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.fragment.BaseRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController;
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController;
 
 import java.util.ArrayList;
@@ -52,7 +53,8 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (HomeRollenceController.INSTANCE.getShouldGlobalComponentRecomEnabled()) {
+        if (HomeRollenceController.INSTANCE.getShouldGlobalComponentRecomEnabled()
+                && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
             HomeGlobalRecommendationFragment homeFeedFragment = HomeGlobalRecommendationFragment.Companion.newInstance(
                     position,
                     Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
@@ -78,7 +80,8 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        if (HomeRollenceController.INSTANCE.getShouldGlobalComponentRecomEnabled()) {
+        if (HomeRollenceController.INSTANCE.getShouldGlobalComponentRecomEnabled()
+                && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
             HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
             homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
             homeFeedFragment.setParentPool(parentPool);
