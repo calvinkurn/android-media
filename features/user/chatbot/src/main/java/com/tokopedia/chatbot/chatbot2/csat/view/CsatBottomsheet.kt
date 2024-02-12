@@ -109,12 +109,12 @@ class CsatBottomsheet :
     }
 
     private fun initializeBottomSheet() {
-        isDragable = true
-        isHideable = true
+        isDragable = false
+        isHideable = false
         showCloseIcon = false
         showHeader = false
         clearContentPadding = true
-        showKnob = true
+        showKnob = false
         isFullpage = true
         setChild(viewBinding?.root)
     }
@@ -256,7 +256,8 @@ class CsatBottomsheet :
                 context?.getString(
                     R.string.chatbot_dynamic_csat_min_other_reason_char_label,
                     csatModel.minimumOtherReasonChar
-                ).orEmpty())
+                ).orEmpty()
+            )
             viewBinding?.csatOtherReason?.editText?.addTextChangedListener {
                 viewModel.processAction(CsatUserAction.SetOtherReason(it.toString()))
                 viewModel.updateButton()
