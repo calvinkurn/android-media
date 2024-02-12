@@ -139,6 +139,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopChatRoomOrderCancellationListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
@@ -248,7 +249,9 @@ open class TopChatRoomFragment :
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
     BannedChatMessageViewHolder.TopChatMessageCensorListener,
-    StoriesWidgetListener {
+    StoriesWidgetListener,
+    TopChatRoomOrderCancellationListener
+{
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -1279,7 +1282,8 @@ open class TopChatRoomFragment :
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, this, session
+            this, this, this, this,
+            session
         )
     }
 
@@ -3668,6 +3672,13 @@ open class TopChatRoomFragment :
         }
     }
 
+    override fun onClickOrderCancellationWidget(appLink: String) {
+        context?.let {
+            val intent = RouteManager.getIntent(it, appLink)
+            startActivityForResult(intent, REQUEST_CODE_ORDER_CANCELLATION)
+        }
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val BS_CHAT_BUBBLE_MENU = "CHAT_BUBBLE_MENU"
@@ -3683,6 +3694,7 @@ open class TopChatRoomFragment :
         private const val REQUEST_REVIEW = 119
         private const val REQUEST_UPDATE_STOCK = 120
         private const val REQUEST_CODE_IMAGE_MEDIA_PICKER = 121
+        private const val REQUEST_CODE_ORDER_CANCELLATION = 122
 
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"

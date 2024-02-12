@@ -6,9 +6,11 @@ import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncement
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.ordercancellation.TopChatRoomOrderCancellationPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.preattach.PreAttachPayloadResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
@@ -44,20 +46,23 @@ class ChatAttachmentMapper @Inject constructor() {
 
     private fun parseAttribute(attachment: Attachment) {
         attachment.parsedAttributes = when (attachment.type) {
-            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toInt() -> {
+            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toIntOrZero() -> {
                 convertToProductAttachment(attachment)
             }
-            AttachmentType.Companion.TYPE_INVOICE_SEND.toInt() -> {
+            AttachmentType.Companion.TYPE_INVOICE_SEND.toIntOrZero() -> {
                 convertToInvoiceAttachment(attachment)
             }
-            AttachmentType.Companion.TYPE_REVIEW_REMINDER.toInt() -> {
+            AttachmentType.Companion.TYPE_REVIEW_REMINDER.toIntOrZero() -> {
                 convertToReviewReminderAttachment(attachment)
             }
-            AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT.toInt() -> {
+            AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT.toIntOrZero() -> {
                 convertToImageAnnouncementAttachment(attachment)
             }
-            AttachmentType.Companion.TYPE_PRODUCT_BUNDLING.toInt() -> {
+            AttachmentType.Companion.TYPE_PRODUCT_BUNDLING.toIntOrZero() -> {
                 convertToProductBundlingPojo(attachment)
+            }
+            AttachmentType.Companion.TYPE_ORDER_CANCELLATION.toIntOrZero() -> {
+                convertToOrderCancellation(attachment)
             }
             else -> null
         }
@@ -88,4 +93,10 @@ class ChatAttachmentMapper @Inject constructor() {
         return CommonUtil.fromJson(attachment.attributes, ProductBundlingPojo::class.java)
     }
 
+    private fun convertToOrderCancellation(attachment: Attachment): TopChatRoomOrderCancellationPojo {
+        return CommonUtil.fromJson(
+            attachment.attributes,
+            TopChatRoomOrderCancellationPojo::class.java
+        )
+    }
 }

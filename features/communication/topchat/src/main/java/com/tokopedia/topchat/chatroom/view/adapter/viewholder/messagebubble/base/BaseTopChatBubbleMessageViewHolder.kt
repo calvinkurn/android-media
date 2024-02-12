@@ -21,8 +21,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.LongClickMenuItemGenerator
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
-import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateLeftBg
-import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateRightBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomBubbleBackgroundGenerator.generateLeftBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomBubbleBackgroundGenerator.generateRightBg
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload

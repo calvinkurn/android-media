@@ -53,4 +53,6 @@ interface TopChatTypeFactory {
 
     fun type(multipleProductBundlingUiModel: MultipleProductBundlingUiModel): Int
     fun type(productBundlingUiModel: ProductBundlingUiModel): Int
+
+    fun type(orderCancellationUiModel: TopChatRoomOrderCancellationUiModel): Int
 }
