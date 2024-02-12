@@ -478,7 +478,7 @@
                     android:layout_marginTop="6dp"
                     android:gravity="center_vertical"
                     >
-                    <com.tokopedia.iconunify.IconUnify
+                    <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/ivInstallment"
                         android:layout_width="16dp"
                         android:layout_height="16dp"

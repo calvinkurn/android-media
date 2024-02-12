@@ -102,7 +102,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_CTA_PRICE.type -> it.mapToCtaPrice(isDarkMode)
                 WidgetTypes.CATALOG_CARD_TOP_SELLER.type -> it.mapToCardTopSeller(
                     remoteModel.basicInfo.name.orEmpty(),
-                    "#${remoteModel.globalStyle?.bgColor}"
+                    "${remoteModel.globalStyle?.bgColor}"
                 )
 
                 else -> {
@@ -846,9 +846,16 @@ class CatalogDetailUiMapper @Inject constructor(
                 freeOngkir = bebasOngkirUrl,
                 estimationShipping = delivery.eta,
                 isShopGuarantee = paymentOption.desc.isNotEmpty(),
-                installment = paymentOption.desc,
+                paymentOption = SellerOfferingUiModel.PaymentOption(
+                    paymentOption.desc,
+                    paymentOption.iconUrl
+                ),
                 additionalService = additionalService.name,
-                cardColor = bgColor
+                cardColor = if (bgColor.isNotEmpty()) {
+                    "#$bgColor"
+                } else {
+                    "#FFFFFF"
+                }
             )
         } ?: SellerOfferingUiModel()
         // DummyData

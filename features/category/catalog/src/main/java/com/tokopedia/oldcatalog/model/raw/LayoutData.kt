@@ -354,7 +354,8 @@ data class LayoutData(
             @SerializedName("eta") val eta: String = ""
         )
         data class AdditionalService(
-            @SerializedName("name") val name: String = ""
+            @SerializedName("name") val name: String = "",
+            @SerializedName("iconUrl") val icon: String = ""
         )
     }
 }

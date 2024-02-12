@@ -2,6 +2,7 @@ package com.tokopedia.catalogcommon.viewholder
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -83,11 +84,13 @@ class SellerOfferingViewHolder(
             ivFreeOngkir.loadImage(element.freeOngkir)
             ivFreeOngkir.showWithCondition(element.freeOngkir.isNotEmpty())
             tvAdditionalService.setTextAndCheckShow(element.additionalService)
+            ivInstallment.showWithCondition(element.paymentOption.icon.isNotEmpty())
+            ivInstallment.loadImage(element.paymentOption.icon)
             vGuarantee.showWithCondition(element.additionalService.isNotEmpty())
             vCourier.showWithCondition(element.courier.isNotEmpty())
             tvCourier.text = element.courier
-            tvInstallment.text = element.installment
-            lnInstallment.showWithCondition(element.installment.isNotEmpty())
+            tvInstallment.text = element.paymentOption.desc
+            lnInstallment.showWithCondition(element.paymentOption.desc.isNotEmpty())
             tvEstimation.setTextAndCheckShow(element.estimationShipping)
             progressProduct.setProgressIcon(
                 icon = ContextCompat.getDrawable(
@@ -163,8 +166,11 @@ class SellerOfferingViewHolder(
 
         val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)
         if (drawable is GradientDrawable) {
-            drawable.setColor(Color.parseColor(element.cardColor))
-            clProductCard.background = drawable
+            if (element.cardColor.isNotEmpty()){
+                Log.d("TESS",element.cardColor)
+                drawable.setColor(Color.parseColor(element.cardColor))
+                clProductCard.background = drawable
+            }
         }
     }
 

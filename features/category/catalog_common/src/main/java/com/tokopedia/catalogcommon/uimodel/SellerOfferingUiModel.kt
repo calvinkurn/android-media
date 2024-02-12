@@ -29,7 +29,7 @@ data class SellerOfferingUiModel(
     var freeOngkir: String = "",
     var estimationShipping: String = "",
     var isShopGuarantee: Boolean = false,
-    val installment: String = "",
+    val paymentOption: PaymentOption = PaymentOption(),
     val cardColor: String = "#212121",
     val additionalService: String = "",
     val variantsName: String = "",
@@ -42,6 +42,11 @@ data class SellerOfferingUiModel(
     widgetTextColor,
     darkMode
 ) {
+
+    data class PaymentOption(
+        val desc: String = "",
+        val icon: String = ""
+    )
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
         return typeFactory.type(this)
