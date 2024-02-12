@@ -1,7 +1,6 @@
 package com.tokopedia.homenav.mainnav.interactor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -207,11 +206,6 @@ fun getDefaultClientGeneratorMockValue(clientMenuGenerator: ClientMenuGenerator)
         .answers { HomeNavTickerDataModel() }
     every { clientMenuGenerator.getSectionTitle(identifier = any()) }
         .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
-}
-
-internal fun setIsMePageRollence(isMePage: Boolean) {
-    mockkObject(MePageRollenceController)
-    every { MePageRollenceController.isUsingMePageRollenceVariant() } returns isMePage
 }
 
 internal fun getUserSession(login: Boolean): UserSessionInterface = mockk<UserSessionInterface>().apply {

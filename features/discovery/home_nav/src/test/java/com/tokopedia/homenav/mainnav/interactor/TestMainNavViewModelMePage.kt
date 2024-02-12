@@ -42,7 +42,6 @@ class TestMainNavViewModelMePage {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        setIsMePageRollence(true)
     }
 
     @Test
