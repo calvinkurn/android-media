@@ -8,6 +8,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ENQUIRY_PARAM_DEVICE_ID
@@ -15,10 +16,14 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ENQUIRY_PARAM_PRODUCT_ID
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ENQUIRY_PARAM_SOURCE_TYPE
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_DELETE
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_UNDO_DELETE
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_UPDATE
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_DEVICE_ID
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_INSTANT_CHECKOUT
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_VOUCHER_CODE
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.FAVORITE_NUMBER_PARAM_FIELDS
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.PARAM_CART
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.PARAM_FIELDS
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.PARAM_FILTERS
@@ -39,6 +44,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -309,6 +315,87 @@ class CommonTopupBillsViewModelTest {
     }
 
     @Test
+    fun getSeamlessFavoriteNumber_prevActionTypeUpdate_returnErrorAfterUpdate() {
+        // Given
+        val errorGql = GraphqlError()
+        errorGql.message = "Error gql"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[TopupBillsSeamlessFavNumberData::class.java] = listOf(errorGql)
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.getSeamlessFavoriteNumbers(
+            "",
+            hashMapOf(),
+            prevActionType = FavoriteNumberActionType.UPDATE
+        )
+
+        // Then
+        val actualData = topupBillsViewModel.seamlessFavNumberData.value
+        assertNotNull(actualData)
+        assert(actualData is Fail)
+
+        val error = (actualData as Fail).throwable
+        Assert.assertEquals(ERROR_FETCH_AFTER_UPDATE, error.message)
+    }
+
+    @Test
+    fun getSeamlessFavoriteNumber_prevActionTypeDelete_returnErrorAfterDelete() {
+        // Given
+        val errorGql = GraphqlError()
+        errorGql.message = "Error gql"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[TopupBillsSeamlessFavNumberData::class.java] = listOf(errorGql)
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.getSeamlessFavoriteNumbers(
+            "",
+            hashMapOf(),
+            prevActionType = FavoriteNumberActionType.DELETE
+        )
+
+        // Then
+        val actualData = topupBillsViewModel.seamlessFavNumberData.value
+        assertNotNull(actualData)
+        assert(actualData is Fail)
+
+        val error = (actualData as Fail).throwable
+        Assert.assertEquals(ERROR_FETCH_AFTER_DELETE, error.message)
+    }
+
+    @Test
+    fun getSeamlessFavoriteNumber_prevActionTypeUndoDelete_returnErrorAfterUndoDelete() {
+        // Given
+        val errorGql = GraphqlError()
+        errorGql.message = "Error gql"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[TopupBillsSeamlessFavNumberData::class.java] = listOf(errorGql)
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.getSeamlessFavoriteNumbers(
+            "",
+            hashMapOf(),
+            prevActionType = FavoriteNumberActionType.UNDO_DELETE
+        )
+
+        // Then
+        val actualData = topupBillsViewModel.seamlessFavNumberData.value
+        assertNotNull(actualData)
+        assert(actualData is Fail)
+
+        val error = (actualData as Fail).throwable
+        Assert.assertEquals(ERROR_FETCH_AFTER_UNDO_DELETE, error.message)
+    }
+
+    @Test
     fun createEnquiryParams_returnsCorrectListContent() {
         val params = topupBillsViewModel.createEnquiryParams(
             operatorId = "578",
@@ -447,6 +534,26 @@ class CommonTopupBillsViewModelTest {
     }
 
     @Test
+    fun processExpressCheckout_nullResponse_returnsFailData() {
+        // Given
+        val expressCheckout = RechargeExpressCheckout.Response(
+            response = null
+        )
+        val result = HashMap<Type, Any>()
+        result[RechargeExpressCheckout.Response::class.java] = expressCheckout
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.processExpressCheckout("", hashMapOf())
+
+        // Then
+        val actualData = topupBillsViewModel.expressCheckoutData.value
+        assertNotNull(actualData)
+        assert(actualData is Fail)
+    }
+
+    @Test
     fun processExpressCheckout_returnsFailData() {
         // Given
         val errorGql = GraphqlError()
@@ -498,5 +605,43 @@ class CommonTopupBillsViewModelTest {
         testCoroutineRule.coroutineDispatcher.advanceTimeBy(1_000L)
 
         verify { digitalCheckVoucherUseCase.execute(any(), any()) }
+    }
+    
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun createSeamlessFavoriteNumberParams_returnsCorrectParamKeys() {
+        val categoryIds = listOf("16", "17")
+
+        val result = topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds)
+
+        // 1st layer
+        assertTrue(result.containsKey(FAVORITE_NUMBER_PARAM_FIELDS))
+        // 2nd layer
+        val favoriteNumberFields = result[FAVORITE_NUMBER_PARAM_FIELDS] as Map<String, Any>
+        assertTrue(favoriteNumberFields.containsKey(TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SOURCE))
+        assertTrue(favoriteNumberFields.containsKey(TopupBillsViewModel.FAVORITE_NUMBER_PARAM_CATEGORY_IDS))
+        assertTrue(favoriteNumberFields.containsKey(TopupBillsViewModel.FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION))
+        assertTrue(favoriteNumberFields.containsKey(TopupBillsViewModel.FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION))
+        assertTrue(favoriteNumberFields.containsKey(TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE))
+        assertTrue(favoriteNumberFields.containsKey(TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SUBSCRIPTION))
+        assertTrue(favoriteNumberFields.containsKey(TopupBillsViewModel.FAVORITE_NUMBER_PARAM_LIMIT))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun createSeamlessFavoriteNumberParams_returnsCorrectParamSourceFormat() {
+        val categoryIds = listOf("16", "17")
+        val expectedParamSource = "${TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SOURCE_PERSO}16,17"
+
+        val result = topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds)
+
+        // 1st layer
+        assertTrue(result.containsKey(FAVORITE_NUMBER_PARAM_FIELDS))
+        // 2nd layer
+        val favoriteNumberFields = result[FAVORITE_NUMBER_PARAM_FIELDS] as Map<String, Any>
+        assertTrue(favoriteNumberFields.containsKey(TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SOURCE))
+
+        val actualParamSource = favoriteNumberFields[TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SOURCE]
+        assertEquals(expectedParamSource, actualParamSource)
     }
 }

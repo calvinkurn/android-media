@@ -38,6 +38,7 @@ class GotoKycErrorHandler  @Inject constructor(): KycSdkErrorHandler {
         title: String,
         description: String,
         buttonText: String,
+        retryable: Boolean,
         onClickCta: () -> Unit,
         userDismissListener: () -> Unit
     ) {

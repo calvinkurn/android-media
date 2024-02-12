@@ -68,7 +68,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
                 WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison(isDarkMode)
                 WidgetTypes.CATALOG_VIDEO.type -> it.mapToVideo(isDarkMode)
-                WidgetTypes.CATALOG_REVIEW_BUYER.type -> it.mapToBuyerReview()
+                WidgetTypes.CATALOG_REVIEW_BUYER.type -> it.mapToBuyerReview(remoteModel.basicInfo)
                 WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
                 else -> {
                     BlankUiModel()
@@ -91,7 +91,9 @@ class CatalogDetailUiMapper @Inject constructor(
         )
     }
 
-    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToBuyerReview(): BaseCatalogUiModel {
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToBuyerReview(
+        basicInfo: CatalogResponseData.CatalogGetDetailModular.BasicInfo
+    ): BaseCatalogUiModel {
         val maxDisplay = data?.style?.maxDisplay.orZero()
         val items = data?.buyerReviewList.orEmpty().take(maxDisplay).map { buyerReview ->
             val totalCompleteReview = buyerReview.userStats.firstOrNull { it.key == USER_STATS_KEY_TOTAL_COMPLETE_REVIEW }?.count.orZero()
@@ -128,7 +130,9 @@ class CatalogDetailUiMapper @Inject constructor(
                         imgUrl = attachment.thumbnailUrl,
                         fullsizeImgUrl = attachment.fullsizeUrl
                     )
-                }
+                },
+                catalogName = basicInfo.name.orEmpty(),
+                reviewId = buyerReview.reviewId.toString()
             )
         }
 
@@ -206,7 +210,7 @@ class CatalogDetailUiMapper @Inject constructor(
         val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
         val bgColor = remoteModel.globalStyle?.bgColor
         return apply {
-            idWidget = layout.type + layout.name
+            idWidget = layout.type + "_" + layout.name + "_" + UUID.randomUUID()
             widgetType = layout.type
             widgetName = layout.name
             widgetBackgroundColor = "#$bgColor".stringHexColorParseToInt()

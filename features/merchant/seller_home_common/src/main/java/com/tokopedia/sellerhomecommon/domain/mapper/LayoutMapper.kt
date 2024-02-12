@@ -81,14 +81,15 @@ class LayoutMapper @Inject constructor(
     override fun mapRemoteDataToUiData(
         response: GetLayoutResponse,
         isFromCache: Boolean,
-        extra: Pair<String, Any?>
+        extra: Map<String, Any?>
     ): WidgetLayoutUiModel {
-        val (extraKey, extraObject) = extra
-        return if (extraKey == GetLayoutUseCase.KEY_PAGE) {
+        val isContainKeyPage = extra[GetLayoutUseCase.KEY_PAGE] != null
+        return if (isContainKeyPage) {
+            val selectedPageExtra = extra[GetLayoutUseCase.KEY_PAGE]
             val widgets = response.layout.widget.orEmpty()
             if (widgets.isNotEmpty()) {
-                val mappedList = getMappedWidgetList(widgets, isFromCache)
-                (extraObject as? String)?.let { selectedPage ->
+                var mappedList = getMappedWidgetList(widgets, isFromCache)
+                (selectedPageExtra as? String)?.let { selectedPage ->
                     response.layout.tabs?.takeIf { it.isNotEmpty() }?.let {
                         val selectedTab = it.firstOrNull { tab ->
                             tab.page == selectedPage
@@ -96,6 +97,11 @@ class LayoutMapper @Inject constructor(
                         val filterTabUiModel = mapToFilterTabWidget(it, selectedTab, isFromCache)
                         mappedList.add(Int.ZERO, filterTabUiModel)
                     }
+                }
+
+                val tableSort = extra[GetLayoutUseCase.KEY_TABLE_SORT] as? String
+                if (!tableSort.isNullOrBlank()) {
+                    mappedList = mappedList.updateTableWidget(tableSort)
                 }
                 WidgetLayoutUiModel(
                     widgetList = mappedList,
@@ -711,6 +717,34 @@ class LayoutMapper @Inject constructor(
         return removeEmptySection(mappedList)
     }
 
+    private fun ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>.updateTableWidget(selectedSort: String): ArrayList<BaseWidgetUiModel<out BaseDataUiModel>> {
+        val mappedList = map { widget ->
+            if (widget is TableWidgetUiModel) {
+                widget.copy(
+                    tableFilters = widget.tableFilters.updateSelectedSort(selectedSort)
+                )
+            } else {
+                widget
+            }
+        }
+        return ArrayList(mappedList)
+    }
+
+    private fun List<WidgetFilterUiModel>.updateSelectedSort(selectedSort: String): List<WidgetFilterUiModel> {
+        val selectedIndex = indexOfFirst { it.value == selectedSort }
+        val shouldUpdateFilter = selectedIndex > Int.ZERO // This means either the filter is not found or already at the first index
+        return if (shouldUpdateFilter) {
+            val mappedFilters = this.map {
+                it.copy(
+                    isSelected = it.value == selectedSort
+                )
+            }
+            return mappedFilters
+        } else {
+            this
+        }
+    }
+
     /**
      * Remove the empty section widget :
      * in case, we have a section widget without child or
@@ -747,5 +781,4 @@ class LayoutMapper @Inject constructor(
         val replacementString = "<b>$tabName</b>"
         return tabTitle.replace(TAB_TAG, replacementString)
     }
-
 }

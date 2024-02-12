@@ -27,6 +27,7 @@ import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_BANNER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_DOUBLE_BANNER
@@ -42,10 +43,14 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_SEE_O
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_ON_IMAGE_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_ON_IMAGE_REVIEW_BS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_ON_SELENGKAPNYA_REVIEW
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COLUMN_INFO_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_REVIEW_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_VIDEO_BANNER_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_VIDEO_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_REVIEW_BANNER_IMPRESSION
@@ -59,6 +64,10 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CHANGE_
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ON_IMAGE_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ON_IMAGE_REVIEW_BS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ON_SELENGKAPNYA_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_VIDEO_EXPERT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
@@ -72,6 +81,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_HERO_BANNER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_NAVIGATION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_PRICE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_REVIEW_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TEXT_DESCRIPTION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TOP_FEATURE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TRUSTMAKER
@@ -124,6 +134,7 @@ import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -178,7 +189,7 @@ class CatalogDetailPageFragment :
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
         private const val NAVIGATION_SCROLL_DURATION = 800L
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
-
+        const val TOTAL_MINIMUM_SIZE_COMPARE_ID = 2
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
@@ -241,6 +252,25 @@ class CatalogDetailPageFragment :
             seenTracker.add(uniqueId)
             trackerFunction.invoke()
         }
+    }
+
+    private fun showPreviewImages(
+        carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel,
+        position: Int,
+        isFromBottomsheet: Boolean
+    ) {
+        val imageUrl = carouselItem.images.map { it.fullsizeImgUrl }
+        val intent = context?.let {
+            CatalogImagePreviewActivity.createIntent(it, imageUrl, position)
+        }
+        CatalogImagePreviewActivity.setTrackerDataIntent(intent, catalogId, carouselItem)
+        startActivity(intent)
+        CatalogReimagineDetailAnalytics.sendEventPG(
+            action = if (isFromBottomsheet) EVENT_CLICK_ON_IMAGE_REVIEW_BS else EVENT_CLICK_ON_IMAGE_REVIEW,
+            category = EVENT_CATEGORY_CATALOG_PAGE,
+            labels = "${carouselItem.catalogName} - $catalogId - feedback_id:${carouselItem.reviewId}",
+            trackerId = if (isFromBottomsheet) TRACKER_ID_CLICK_ON_IMAGE_REVIEW_BS else TRACKER_ID_CLICK_ON_IMAGE_REVIEW
+        )
     }
 
     override fun getScreenName() = CatalogDetailPageFragment::class.java.canonicalName.orEmpty()
@@ -309,23 +339,34 @@ class CatalogDetailPageFragment :
             manager = childFragmentManager,
             reviewData = carouselItem
         ) { position ->
-            onClickImage(carouselItem, position)
+            showPreviewImages(carouselItem, position, true)
         }
+        CatalogReimagineDetailAnalytics.sendEventPG(
+            action = EVENT_CLICK_ON_SELENGKAPNYA_REVIEW,
+            category = EVENT_CATEGORY_CATALOG_PAGE,
+            labels = "${carouselItem.catalogName} - $catalogId - feedback_id:${carouselItem.reviewId}",
+            trackerId = TRACKER_ID_CLICK_ON_SELENGKAPNYA_REVIEW
+        )
     }
 
     override fun onClickImage(
         carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel,
         position: Int
     ) {
-        val imageUrl = carouselItem.images.map { it.fullsizeImgUrl }
-        val intent = context?.let {
-            CatalogImagePreviewActivity.createIntent(it, imageUrl, position)
-        }
-        startActivity(intent)
+        showPreviewImages(carouselItem, position, false)
     }
 
     override fun onBuyerReviewImpression(buyerReviewUiModel: BuyerReviewUiModel) {
         viewModel.emitScrollEvent(buyerReviewUiModel.widgetName)
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_REVIEW_WIDGET) {
+            CatalogReimagineDetailAnalytics.sendEventPG(
+                event = EVENT_VIEW_PG_IRIS,
+                action = EVENT_IMPRESSION_REVIEW_WIDGET,
+                category = EVENT_CATEGORY_CATALOG_PAGE,
+                labels = "${buyerReviewUiModel.items.firstOrNull()?.catalogName.orEmpty()} - $catalogId",
+                trackerId = TRACKER_ID_IMPRESSION_REVIEW_WIDGET
+            )
+        }
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
@@ -875,7 +916,13 @@ class CatalogDetailPageFragment :
     }
 
     override fun onComparisonSwitchButtonClicked(items: List<ComparisonUiModel.ComparisonContent>) {
-        val label = "$catalogId | compared catalog id: $compareCatalogId"
+        val comparedId = if (items.size >= TOTAL_MINIMUM_SIZE_COMPARE_ID) {
+            items.slice(Int.ONE until items.size).joinToString(",") { it.id }
+        } else {
+            String.EMPTY
+        }
+
+        val label = "$catalogId | compared catalog id: $comparedId"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
             action = EVENT_CLICK_CHANGE_COMPARISON,
@@ -899,7 +946,12 @@ class CatalogDetailPageFragment :
     override fun onComparisonSeeMoreButtonClicked(
         items: List<ComparisonUiModel.ComparisonContent>
     ) {
-        val label = "$catalogId | compared catalog id: ${items.joinToString { it.id }}"
+        val comparedId = if (items.size >= TOTAL_MINIMUM_SIZE_COMPARE_ID) {
+            items.slice(Int.ONE until items.size).joinToString(",") { it.id }
+        } else {
+            String.EMPTY
+        }
+        val label = "$catalogId | compared catalog id: $comparedId"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
             action = EVENT_CLICK_SEE_MORE_COMPARISON,
@@ -954,6 +1006,13 @@ class CatalogDetailPageFragment :
         sectionTitle: String,
         columnData: List<ColumnedInfoUiModel.ColumnData>
     ) {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = "$catalogId",
+            trackerId = TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO
+        )
         ColumnedInfoBottomSheet.show(childFragmentManager, sectionTitle, columnData)
     }
 
@@ -962,20 +1021,33 @@ class CatalogDetailPageFragment :
         val catalogDetail = viewModel.catalogDetailDataModel.value as? Success<CatalogDetailUiModel>
         val catalogTitle = catalogDetail?.data?.navigationProperties?.title.orEmpty()
         val list = arrayListOf<HashMap<String, String>>()
-        columnedInfoUiModel.widgetContent.rowData.forEachIndexed { index, _ ->
-            val promotions = hashMapOf<String, String>()
-            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
-            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.inc().toString()
-            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
-            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
-            list.add(promotions)
+        if (columnedInfoUiModel.widgetContent.rowData.isNotEmpty()) {
+            columnedInfoUiModel.widgetContent.rowData.forEachIndexed { index, _ ->
+                val promotions = hashMapOf<String, String>()
+                promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
+                promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.inc().toString()
+                promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+                promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
+                list.add(promotions)
+            }
+        } else {
+            columnedInfoUiModel.widgetContentThreeColumn.forEachIndexed { index, _ ->
+                columnedInfoUiModel.widgetContentThreeColumn[index].rowData.forEachIndexed { subindex, pair ->
+                    val promotions = hashMapOf<String, String>()
+                    promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
+                    promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = "${index.inc()}.${subindex.inc()}"
+                    promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+                    promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = pair.second
+                    list.add(promotions)
+                }
+            }
         }
 
-        sendOnTimeImpression(TRACKER_ID_IMPRESSION_COLUMN_INFO) {
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_COLUMN_INFO + columnedInfoUiModel.idWidget) {
             CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
                 event = EVENT_VIEW_ITEM,
                 action = EVENT_IMPRESSION_COLUMN_INFO_WIDGET,
-                category = EVENT_CATEGORY_CATALOG_PAGE,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
                 labels = "$catalogTitle - $catalogId",
                 trackerId = TRACKER_ID_IMPRESSION_COLUMN_INFO,
                 userId = userSession.userId,

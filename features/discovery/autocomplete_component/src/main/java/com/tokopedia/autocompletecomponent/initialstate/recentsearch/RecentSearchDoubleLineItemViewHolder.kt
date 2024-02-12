@@ -2,7 +2,7 @@ package com.tokopedia.autocompletecomponent.initialstate.recentsearch
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
@@ -11,6 +11,8 @@ import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrate
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategy
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecentSearchDoubleLineItemViewHolder(
@@ -40,7 +42,7 @@ class RecentSearchDoubleLineItemViewHolder(
 
     private fun bindIconImage(item: BaseItemInitialStateSearch) {
         binding?.iconImage?.showWithAction(item.imageUrl.isNotEmpty()) {
-            ImageHandler.loadImageCircle2(itemView.context, it, item.imageUrl)
+            it.loadImageCircle(item.imageUrl)
         }
     }
 
@@ -52,7 +54,7 @@ class RecentSearchDoubleLineItemViewHolder(
 
     private fun bindIconSubtitle(item: BaseItemInitialStateSearch) {
         binding?.iconSubtitle?.shouldShowOrHideWithAction(item.iconSubtitle.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconSubtitle)
+            it.loadImage(item.iconSubtitle)
         }
     }
 
@@ -81,11 +83,7 @@ class RecentSearchDoubleLineItemViewHolder(
 
     private fun bindRemoveButton(item: BaseItemInitialStateSearch) {
         binding?.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
-            ImageHandler.loadImage2(
-                binding?.actionShortcutButton,
-                item.shortcutImage,
-                R.drawable.autocomplete_ic_remove
-            )
+            binding?.actionShortcutButton?.loadImageWithError(item.shortcutImage, R.drawable.autocomplete_ic_remove)
         }
     }
 

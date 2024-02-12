@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play_common.view.RoundedConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_gray_corner"
+    app:rcl_cornerRadius="8dp"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="0dp"
+        android:layout_height="213dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_feed_browse_author_widget_top_overlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:background="@drawable/bg_feed_browse_author_widget_bottom_overlay"
+        app:layout_constraintBottom_toBottomOf="@id/iv_cover"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <View
+        android:id="@+id/click_area_author"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_cover"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+    
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:icon_name="VISIBILITY"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_total_views"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="display_3"
+            />
+        
+    </LinearLayout>
+
+    <com.tokopedia.play_common.view.RoundedFrameLayout
+        android:id="@+id/container_avatar"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/Unify_NN0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_cover"
+        app:layout_constraintBottom_toBottomOf="@id/iv_cover"
+        app:rfl_cornerRadius="29dp"
+        >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_author_profile_pic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            tools:src="@tools:sample/avatars"
+            />
+
+    </com.tokopedia.play_common.view.RoundedFrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_author_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_avatar"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Tasya Farasya Official Indonesia"
+        />
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

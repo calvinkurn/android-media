@@ -14,6 +14,9 @@ data class ProductTickerInfoDataModel(
         var tickerDataResponse: List<TickerDataResponse> = listOf()
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
+
     override fun type(): String = type
     override fun name(): String = name
 

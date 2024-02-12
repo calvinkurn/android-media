@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.scp.auth.common.utils.ScpUtils.setIsEnableSharedPrefScpLogin
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -34,9 +33,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
         model.value = model.value.copy(isDarkModeChecked = getDarkModeStatus())
-
-        // force to use SCP login
-        setIsEnableSharedPrefScpLogin(true)
 
         setContent {
             NestTheme {

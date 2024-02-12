@@ -6,6 +6,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.fragments.*
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsKeywordInsightsActivity
+import com.tokopedia.topads.dashboard.view.activity.TopAdsTypeSelectionActivity
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.fragment.insight.*
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRecomGroupBottomSheet
@@ -69,4 +70,5 @@ interface TopAdsDashboardComponent {
     fun inject(groupSettingsFragment: GroupSettingsFragment)
     fun inject(createNewGroupFragment: CreateNewGroupFragment)
     fun inject(chooseGroupFragment: ChooseGroupFragment)
+    fun inject(topAdsTypeSelectionActivity: TopAdsTypeSelectionActivity)
 }
