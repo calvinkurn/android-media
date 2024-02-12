@@ -1000,7 +1000,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         socialMediaList.add(
             ShareModel.Twitter().apply {
                 packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_TWITTER
-                socialMediaName = context?.resources?.getString(R.string.label_twitter)
+                socialMediaName = context?.resources?.getString(R.string.label_x)
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelTwitter
