@@ -47,11 +47,6 @@ android {
             dimension "client"
         }
     }
-    packagingOptions {
-        jniLibs {
-            pickFirst '**/libc++_shared.so'
-        }
-    }
 }
 
 dependencies {
