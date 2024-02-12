@@ -3,7 +3,6 @@
     <item android:drawable="@color/background_splash_screen"/>
     <item
         android:scaleType="fitCenter"
-        android:layout_gravity="fill"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <bitmap
