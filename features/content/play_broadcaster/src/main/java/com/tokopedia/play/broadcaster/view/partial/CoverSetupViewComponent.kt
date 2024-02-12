@@ -1,23 +1,19 @@
 package com.tokopedia.play.broadcaster.view.partial
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.play_common.util.extension.isLocal
 import com.tokopedia.content.common.view.addKeyboardInsetsListener
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.play_common.viewcomponent.ViewComponentListener
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -87,20 +83,16 @@ class CoverSetupViewComponent(
             if (uri.isLocal()) ivCoverImage.setImageURI(uri)
             else {
                 loaderImage.show()
-                Glide.with(ivCoverImage.context)
-                        .load(uri)
-                        .addListener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                loaderImage.hide()
-                                return false
-                            }
-
-                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, isFirstResource: Boolean): Boolean {
-                                loaderImage.hide()
-                                return false
-                            }
-                        })
-                        .into(ivCoverImage)
+                ivCoverImage.loadImage(uri) {
+                    listener(
+                        onSuccess = { _, _ ->
+                            loaderImage.hide()
+                        },
+                        onError = { _ ->
+                            loaderImage.hide()
+                        }
+                    )
+                }
             }
         }
         else {

@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.view.fragment.setup.cover
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.RectF
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
@@ -14,9 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.*
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
@@ -29,6 +25,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.page.orUnknown
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -522,16 +519,9 @@ class PlayCoverSetupFragment @Inject constructor(
         scope.launch {
             try {
                 val originalImageUrl = viewModel.getOriginalImageUrl(productCropping.productId, productCropping.imageUrl)
-                Glide.with(requireContext())
-                    .asBitmap()
-                    .load(originalImageUrl)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            viewModel.setCroppingCoverByBitmap(resource, CoverSource.Product(productCropping.productId))
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
+                originalImageUrl.getBitmapImageUrl(requireContext()) {
+                    viewModel.setCroppingCoverByBitmap(it, CoverSource.Product(productCropping.productId))
+                }
             } catch (e: Throwable) {
                 showErrorToaster(
                     err = e,

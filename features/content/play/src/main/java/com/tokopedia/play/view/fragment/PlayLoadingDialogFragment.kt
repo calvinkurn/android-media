@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.bumptech.glide.Glide
+import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.play.R
 import javax.inject.Inject
 import com.tokopedia.resources.common.R as commonResourceR
@@ -70,10 +70,7 @@ class PlayLoadingDialogFragment @Inject constructor() : DialogFragment() {
 
     private fun setupLoading() {
         if (ivLoading.drawable == null) {
-            Glide.with(ivLoading.context)
-                    .asGif()
-                    .load(commonResourceR.drawable.ic_loading_indeterminate)
-                    .into(ivLoading)
+            ivLoading.loadAsGif(commonResourceR.drawable.ic_loading_indeterminate)
         }
     }
 }

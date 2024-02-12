@@ -1,14 +1,15 @@
 package com.tokopedia.play.broadcaster.util.extension
 
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
-import com.bumptech.glide.request.RequestListener
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.media.loader.data.MediaException
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.ImageUnify
@@ -98,21 +99,38 @@ internal fun View.showToaster(
 internal fun ImageUnify.loadImageFromUrl(
     token: String?,
     url: String,
-    requestListener: RequestListener<Drawable>
+    onSuccess: (bitmap: Bitmap?, mediaDataSource: MediaDataSource?) -> Unit = { _,_ -> },
+    onError: (exception: MediaException?) -> Unit = { _ -> }
 ) {
-    val glideUrl: Any = if (token != null) {
-        GlideUrl(
+    if (token != null) {
+        val glideUrl = GlideUrl(
             url,
             LazyHeaders.Builder()
                 .addHeader("Authorization", "Bearer $token")
                 .build()
         )
-    } else url
-
-    Glide.with(context)
-        .load(glideUrl)
-        .addListener(requestListener)
-        .into(this)
+        this.loadImage(glideUrl) {
+            listener(
+                onSuccess = { bitmap, mediaDataSource ->
+                    onSuccess(bitmap, mediaDataSource)
+                },
+                onError = { exception ->
+                    onError(exception)
+                }
+            )
+        }
+    } else {
+        this.loadImage(url) {
+            listener(
+                onSuccess = { bitmap, mediaDataSource ->
+                    onSuccess(bitmap, mediaDataSource)
+                },
+                onError = { exception ->
+                    onError(exception)
+                }
+            )
+        }
+    }
 }
 
 internal fun Long.millisToHours() = TimeUnit.MILLISECONDS.toHours(this)

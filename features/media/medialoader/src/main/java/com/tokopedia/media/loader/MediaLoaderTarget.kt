@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
+import com.bumptech.glide.request.target.CustomTarget
 import com.tokopedia.media.loader.MediaLoaderApi.setThumbnailUrl
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.listener.MediaListenerBuilder
@@ -31,6 +32,10 @@ object MediaLoaderTarget {
 
     fun loadImage(context: Context, properties: Properties, target: MediaBitmapEmptyTarget<Bitmap>) {
         loadImageTarget(context, properties)?.into(target)
+    }
+
+    fun clear(context: Context, target: CustomTarget<Bitmap>) {
+        GlideApp.with(context).clear(target)
     }
 
     private fun loadImageTarget(context: Context, properties: Properties): GlideRequest<Bitmap>? {
