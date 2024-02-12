@@ -14,7 +14,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
@@ -28,7 +27,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellersearch.SellerSearchDeeplinkMapper
@@ -37,6 +35,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -51,7 +50,9 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -1401,29 +1402,17 @@ class SellerHomeFragment :
     }
 
     private fun setupShopSharing() {
-        ImageHandler.loadImageWithTarget(
-            context,
-            shopShareData?.shopSnippetURL.orEmpty(),
-            object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(
-                    resource: Bitmap,
-                    transition: Transition<in Bitmap>?
-                ) {
-                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                        resource,
-                        Bitmap.CompressFormat.PNG
-                    )
-                    if (savedFile != null) {
-                        shopImageFilePath = savedFile.absolutePath
-                        initShopShareBottomSheet()
-                    }
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // no op
+        context?.let {
+            shopShareData?.shopSnippetURL.orEmpty().getBitmapImageUrl(it) { bitmapResult ->
+                val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                    bitmapResult, Bitmap.CompressFormat.PNG
+                )
+                if (savedFile != null) {
+                    shopImageFilePath = savedFile.absolutePath
+                    initShopShareBottomSheet()
                 }
             }
-        )
+        }
         if (shopShareData == null) {
             val milestoneWidget = adapter.data.firstOrNull { it is MilestoneWidgetUiModel }
             milestoneWidget?.let {
@@ -2023,7 +2012,6 @@ class SellerHomeFragment :
             if (it is Success) {
                 val info = it.data
                 this.isNewSellerState = info.isNewSellerState
-                setViewBackgroundNewSeller()
                 if (info.subtitle.isBlank()) return@observe
 
                 if (info.subType == ShopStateInfoUiModel.SubType.TOAST) {
@@ -2037,87 +2025,12 @@ class SellerHomeFragment :
         }
     }
 
-    private fun setViewBackgroundNewSeller() {
-        binding?.run {
-            if (isNewSellerState) {
-                viewBgShopStatus.visible()
-                viewBgShopStatus.layoutParams.height = LayoutParams.MATCH_PARENT
-                viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_new_seller)
-                viewBgShopStatus.requestLayout()
-                imgSahNewSellerLeft.loadImage(SellerHomeConst.Images.IMG_NEW_SELLER_LEFT) {
-                    useCache(true)
-                    listener(onSuccess = { _, _ ->
-                        imgSahNewSellerLeft.visible()
-                    })
-                }
-
-                imgSahNewSellerRight.loadImage(SellerHomeConst.Images.IMG_NEW_SELLER_RIGHT) {
-                    useCache(true)
-                    listener(onSuccess = { _, _ ->
-                        imgSahNewSellerRight.visible()
-                    })
-                }
-            } else {
-                imgSahNewSellerLeft.gone()
-                imgSahNewSellerRight.gone()
-                setViewBackground()
-            }
-            setSectionWidgetTextColor()
-        }
-    }
-
-    private fun setSectionWidgetTextColor() {
-        recyclerView?.post {
-            val widgets = adapter.data.map {
-                if (it is SectionWidgetUiModel) {
-                    val titleTextColor: Int
-                    val subTitleTextColor: Int
-                    if (isNewSellerState) {
-                        titleTextColor = unifyprinciplesR.color.Unify_NN0
-                        subTitleTextColor = unifyprinciplesR.color.Unify_NN0
-                    } else {
-                        titleTextColor = unifyprinciplesR.color.Unify_NN950_96
-                        subTitleTextColor = unifyprinciplesR.color.Unify_NN950_68
-                    }
-                    return@map it.copy(
-                        titleTextColorId = titleTextColor,
-                        subTitleTextColorId = subTitleTextColor
-                    )
-                }
-                return@map it
-            }
-
-            notifyWidgetWithSdkChecking {
-                updateWidgets(widgets)
-            }
-        }
-    }
-
     private fun setViewBackground() = binding?.run {
-        val isOfficialStore = userSession.isShopOfficialStore
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        when {
-            isOfficialStore -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
-            }
-
-            isPowerMerchant -> {
-                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
-            }
-
-            else -> {
-                viewBgShopStatus.gone()
-            }
-        }
-    }
-
-    private fun showRegularHomeBackground(backgroundResource: Int) {
         binding?.run {
-            val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-            viewBgShopStatus.layoutParams.height = height
             viewBgShopStatus.visible()
-            viewBgShopStatus.setImageResource(backgroundResource)
-            viewBgShopStatus.requestLayout()
+            viewBgShopStatus.loadImage(R.drawable.sah_shop_state_bg_power_merchant)
+            thematicIllustration.visible()
+            thematicIllustration.loadImageWithoutPlaceholderAndError(TokopediaImageUrl.SRE_SELLER_HOME_BACKDROP)
         }
     }
 
@@ -2920,7 +2833,6 @@ class SellerHomeFragment :
         if (shopState == ShopStateUiModel.NewRegisteredShop) {
             showNewSellerDialog()
             isNewSellerState = true
-            setViewBackgroundNewSeller()
         } else if (shouldGetShopStateInfo) {
             getShopStateInfoIfEligible()
         }
@@ -2931,7 +2843,6 @@ class SellerHomeFragment :
             sellerHomeViewModel.getShopStateInfo()
         } else {
             isNewSellerState = false
-            setViewBackgroundNewSeller()
         }
     }
 

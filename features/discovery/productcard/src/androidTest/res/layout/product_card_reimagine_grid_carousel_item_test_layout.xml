@@ -8,12 +8,20 @@
     android:layout_height="wrap_content"
     android:padding="4dp">
 
-    <com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
-        android:id="@+id/productCardReimagineGridCarouselView"
+    <FrameLayout
+        android:id="@+id/productCardContainerHeightCalculator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" >
+
+        <com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
+            android:id="@+id/productCardReimagineGridCarouselView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:useCompatPadding="true" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/productCardReimagineTestDescription"
@@ -21,9 +29,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:maxLines="5"
-        app:layout_constraintTop_toTopOf="@+id/productCardReimagineGridCarouselView"
-        app:layout_constraintStart_toEndOf="@+id/productCardReimagineGridCarouselView"
-        app:layout_constraintBottom_toBottomOf="@+id/productCardReimagineGridCarouselView"
+        app:layout_constraintTop_toTopOf="@+id/productCardContainerHeightCalculator"
+        app:layout_constraintStart_toEndOf="@+id/productCardContainerHeightCalculator"
+        app:layout_constraintBottom_toBottomOf="@+id/productCardContainerHeightCalculator"
         tools:text="test descriptions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

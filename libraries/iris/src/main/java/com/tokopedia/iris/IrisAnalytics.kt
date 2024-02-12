@@ -150,7 +150,7 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 try {
-                    saveEventSuspend(map)
+                    saveEventSuspend(context, map)
                 } catch (e: Exception) {
                     ServerLogger.log(
                         Priority.P1,
@@ -198,7 +198,7 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 try {
-                    saveEventSuspend(Utils.bundleToMap(bundle))
+                    saveEventSuspend(context, Utils.bundleToMap(bundle))
                 } catch (e: Exception) {
                     ServerLogger.log(
                         Priority.P1,
@@ -210,14 +210,14 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
         }
     }
 
-    suspend fun saveEventSuspend(map: Map<String, Any>) {
+    suspend fun saveEventSuspend(context: Context, map: Map<String, Any>) {
         val trackingRepository = TrackingRepository.getInstance(context)
 
         val eventName = map["event"] as? String
 
         // convert map to json then save as string
         val event = gson.toJson(map)
-        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId(), cache)
+        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId(), cache, context)
         if (WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig()
             .getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)
         ) {

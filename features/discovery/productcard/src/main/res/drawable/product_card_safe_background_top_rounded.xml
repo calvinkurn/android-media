@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners
-        android:topLeftRadius="12dp"
-        android:topRightRadius="12dp"
+        android:topLeftRadius="@dimen/product_card_reimagine_image_radius"
+        android:topRightRadius="@dimen/product_card_reimagine_image_radius"
         />
     <solid android:color="@color/dms_product_card_reimagine_safe_product_image"/>
 </shape>

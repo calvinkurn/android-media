@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -77,7 +77,7 @@ class PinOnboardingFragment : BaseDaggerFragment() {
 
         initVar()
 
-        ImageHandler.LoadImage(binding?.onboardImage, ONBOARD_PICT_URL)
+        binding?.onboardImage?.loadImageFitCenter(ONBOARD_PICT_URL)
 
         binding?.btnNext?.setOnClickListener {
             trackingPinUtil.trackClickCreateButton()

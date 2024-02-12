@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/daily_budget_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    app:cardCornerRadius="8dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/topads_auto_ps_set_daily_budget_title"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/range_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Rp25.000"
+            app:typographyType="display_3"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/title"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/range_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Rp10.000.000"
+            app:typographyType="display_3"
+            android:textColor="@color/Unify_NN600"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintEnd_toEndOf="@id/title"/>
+
+        <com.tokopedia.topads.auto.view.widget.RangeSeekBar
+            android:id="@+id/seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:progress="0"
+            android:progressTint="@color/Unify_GN200"
+            android:thumb="@drawable/seekbar_thumb"
+            app:layout_constraintTop_toBottomOf="@id/range_start"
+            app:layout_constraintStart_toStartOf="@id/range_start"
+            app:layout_constraintEnd_toEndOf="@id/range_end"/>
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:id="@+id/daily_budget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:unify_text_field_append_text="@string/topads_common_hari_"
+            app:unify_text_field_prepend_text="Rp"
+            app:unify_text_field_input_type="number"
+            app:layout_constraintTop_toBottomOf="@id/seekbar"/>
+
+        <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+            android:id="@+id/tip_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            app:fbType="group"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/daily_budget"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

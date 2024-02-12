@@ -60,7 +60,6 @@ class VideoPictureView @JvmOverloads constructor(
         if (videoPictureAdapter == null || previouslyPrefetch) {
             setupViewPagerCallback()
             setupViewPager(containerType = containerType)
-            // If first position is video and selected: process the video
         }
 
         updateImages(listOfImage = media, previouslyPrefetch = previouslyPrefetch)
@@ -68,7 +67,6 @@ class VideoPictureView @JvmOverloads constructor(
         setupRecommendationLabel(recommendation = recommendation)
         setupRecommendationLabelListener(position = pagerSelectedLastPosition)
         shouldShowRecommendationLabel(position = pagerSelectedLastPosition)
-        scrollToPosition(position = initialScrollPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
 
         previouslyPrefetch = isPrefetch

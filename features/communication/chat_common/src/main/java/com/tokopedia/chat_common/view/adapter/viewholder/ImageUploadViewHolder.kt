@@ -10,12 +10,14 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import java.util.Locale
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 
 
 /**
@@ -73,20 +75,16 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
     protected open fun bindImageAttachment(element: ImageUploadUiModel) {
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)
-            ImageHandler.loadImageBlurredWithListener(
-                    attachment,
-                    element.imageUrl,
-                    BLUR_WIDTH,
-                    BLUR_HEIGHT,
-                    DynamicSizeImageRequestListener()
-            )
+            attachment?.loadImage(element.imageUrl) {
+                adaptiveImageSizeRequest(true)
+                overrideSize(Resize(BLUR_WIDTH, BLUR_HEIGHT))
+                fitCenter()
+            }
         } else {
             setVisibility(progressBarSendImage, View.GONE)
-            ImageHandler.loadImageWithListener(
-                    attachment,
-                    element.imageUrl,
-                    DynamicSizeImageRequestListener()
-            )
+            attachment?.loadImage(element.imageUrl) {
+                adaptiveImageSizeRequest(true)
+            }
         }
     }
 
@@ -172,7 +170,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
     override fun onViewRecycled() {
         super.onViewRecycled()
         if (attachment != null) {
-            ImageHandler.clearImage(attachment)
+            attachment.clearImage()
         }
     }
 

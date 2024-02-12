@@ -10,9 +10,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.loadImageWithPlaceholder
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
@@ -143,12 +143,7 @@ open class MerchantVoucherView : CustomVoucherView {
                     voucherImageUrl = DELIVERY_VOUCHER_IMAGE_URL
                 }
             }
-            ImageHandler.loadImage(
-                    context,
-                    ivVoucherType,
-                    voucherImageUrl,
-                R.drawable.ic_loading_image
-            )
+            ivVoucherType?.loadImageWithPlaceholder(voucherImageUrl, R.drawable.ic_loading_image)
             val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())

@@ -402,3 +402,25 @@ val DUMMY_CANCEL_VOUCHER_SUCCESS = FlightCancelVoucher.Response(
 val DUMMY_CANCEL_VOUCHER_FAILED = FlightCancelVoucher.Response(
     FlightCancelVoucher(attributes = FlightCancelVoucher.Attributes(success = false))
 )
+
+val DUMMY_GET_CART = FlightCart.Response(
+    flightCart = FlightCart(
+        meta = FlightCart.Meta(
+            needRefresh = true
+        ),
+        cartData = FlightCart.CartData(
+            id = "1234"
+        )
+    )
+)
+
+val DUMMY_GET_CART_NOT_REFRESH = FlightCart.Response(
+    flightCart = FlightCart(
+        meta = FlightCart.Meta(
+            needRefresh = false
+        ),
+        cartData = FlightCart.CartData(
+            id = "1234"
+        )
+    )
+)
