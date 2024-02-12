@@ -9,8 +9,10 @@ import com.tokopedia.home_component.model.LabelGroup
 import com.tokopedia.home_component.visitable.CouponCtaState
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
+import com.tokopedia.kotlin.extensions.view.toDate
 import com.tokopedia.productcard.reimagine.LabelGroupStyle
 import com.tokopedia.utils.htmltags.HtmlUtil
+import java.util.concurrent.TimeUnit
 
 object CouponWidgetMapper {
 
@@ -55,12 +57,7 @@ object CouponWidgetMapper {
             benefit = labelGroup.toText("benefit-value"),
             tnc = labelGroup.toText("tnc-text"),
             backgroundUrl = labelGroup.toUrl("background-image"),
-            timeLimit = TimeLimit.Text(
-                prefix = labelGroup.toText("expired-text"),
-                endText = HtmlUtil
-                    .fromHtml(labelGroup.toText("expired-value").value)
-                    .toString()
-            ),
+            timeLimit = labelGroup.getDynamicTimer(),
             iconUrl = labelGroup.toUrl("icon-image"),
             shopName = null,
             badgeText = null,
@@ -76,6 +73,26 @@ object CouponWidgetMapper {
             shopName = null,
             badgeText = null,
         )
+
+    private fun List<LabelGroup>.getDynamicTimer(): TimeLimit {
+        val expiredText = toText("expired-text")
+        val expiredTimeValue = toText("expired-value").value
+
+        val couponLastRedeemUnix = toText("expired-value-unix").value.toLong()
+        val isUnderOneMinute = isUnderOneMinute(couponLastRedeemUnix)
+
+        return if (isUnderOneMinute) {
+            TimeLimit.Timer(
+                prefix = expiredText,
+                endDate = couponLastRedeemUnix.toDate()
+            )
+        } else {
+            TimeLimit.Text(
+                prefix = expiredText,
+                endText = HtmlUtil.fromHtml(expiredTimeValue).toString()
+            )
+        }
+    }
 
     private fun List<LabelGroup>.getCtaState(): CouponCtaState {
         val data = CouponCtaState.Data(
@@ -93,8 +110,8 @@ object CouponWidgetMapper {
 
     private fun List<LabelGroup>.toText(positionType: String): DynamicColorText {
         val label = findByPosition(positionType) ?: return DynamicColorText("", "")
-        val textColor = label.styles.first { it.key == LabelGroupStyle.TEXT_COLOR }
-        return DynamicColorText(label.title, textColor.value)
+        val textColor = label.styles.firstOrNull { it.key == LabelGroupStyle.TEXT_COLOR }
+        return DynamicColorText(label.title, textColor?.value ?: "")
     }
 
     private fun List<LabelGroup>.toUrl(position: String): String {
@@ -102,4 +119,14 @@ object CouponWidgetMapper {
     }
 
     private fun List<LabelGroup>.findByPosition(position: String) = firstOrNull { it.position == position }
+
+    private fun isUnderOneMinute(longMillis: Long): Boolean {
+        val currentUnixTimeMillis = System.currentTimeMillis() / 1000 // Convert to seconds
+        val longUnixTimeSeconds = longMillis / 1000 // Convert milliseconds to seconds
+
+        val differenceSeconds = currentUnixTimeMillis - longUnixTimeSeconds
+        val oneMinuteInSeconds = TimeUnit.MINUTES.toSeconds(1)
+
+        return differenceSeconds < oneMinuteInSeconds
+    }
 }

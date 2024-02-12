@@ -21,10 +21,8 @@ class GridCouponWidgetViewHolder constructor(
     fun onBind(model: CouponWidgetDataItemModel) {
         val state = ButtonStateHandler(model.button, bindingAdapterPosition, listener)
 
-        try {
-            binding?.couponView?.setModel(model.coupon as AutomateCouponModel.Grid)
-            binding?.couponView?.setState(state)
-        } catch (_: Throwable) {}
+        binding?.couponView?.setState(state)
+        binding?.couponView?.setModel(model.coupon as AutomateCouponModel.Grid)
     }
 
     companion object {
