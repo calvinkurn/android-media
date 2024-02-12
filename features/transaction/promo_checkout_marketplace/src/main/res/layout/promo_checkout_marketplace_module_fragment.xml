@@ -104,7 +104,7 @@
                 android:id="@+id/v_shadow_top"
                 android:layout_width="0dp"
                 android:layout_height="3dp"
-                android:background="@drawable/bottom_sheet_shadow"
+                android:background="@drawable/bottom_sheet_shadow_promo_checkout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_shop_name"
         app:unify_image_type="rect"
-        tools:src="@color/colorGray"
+        tools:src="@color/Unify_GN500"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
