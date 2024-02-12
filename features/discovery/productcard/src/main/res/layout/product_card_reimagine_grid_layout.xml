@@ -299,6 +299,13 @@
                 app:typographyWeight="bold"
                 tools:text="10%" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/productCardDiscountSlashedPriceBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="productCardPriceContainer,productCardSlashedPrice,productCardDiscount" />
+
             <com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
                 android:id="@+id/productCardLabelBenefit"
                 android:layout_width="wrap_content"
@@ -307,7 +314,7 @@
                 android:paddingVertical="2dp"
                 android:background="@drawable/product_card_reimagine_label_background"
                 android:layout_marginTop="@dimen/product_card_reimagine_label_benefit_margin_top"
-                app:layout_constraintTop_toBottomOf="@id/productCardPriceContainer"
+                app:layout_constraintTop_toBottomOf="@id/productCardDiscountSlashedPriceBarrier"
                 app:layout_constraintStart_toStartOf="@id/productCardGuidelineStartContent" />
 
             <com.tokopedia.unifyprinciples.Typography

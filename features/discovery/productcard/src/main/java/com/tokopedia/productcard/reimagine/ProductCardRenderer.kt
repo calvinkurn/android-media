@@ -58,8 +58,6 @@ internal class ProductCardRenderer(
     private val nettPriceText by view.lazyView<Typography?>(R.id.productCardNettPrice)
     private val slashedPriceText by view.lazyView<Typography?>(R.id.productCardSlashedPrice)
     private val discountText by view.lazyView<Typography?>(R.id.productCardDiscount)
-    private val slashedPriceInlineText by view.lazyView<Typography?>(R.id.productCardSlashedPriceInline)
-    private val discountInlineText by view.lazyView<Typography?>(R.id.productCardDiscountInline)
     private val benefitLabel by view.lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val offerLabel by view.lazyView<Typography?>(R.id.productCardLabelOffer)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
@@ -238,54 +236,26 @@ internal class ProductCardRenderer(
 
     private fun renderSlashedPrice(productCardModel: ProductCardModel) {
         val hasSlashedPrice = productCardModel.slashedPrice.isNotEmpty()
-        val showAsInline = showDiscountAsInline(productCardModel)
-        val showBelowPrice = !showAsInline
 
-        val setSlashedPrice = { slashedPriceText: Typography ->
-            slashedPriceText.setTextAndContentDescription(
+        slashedPriceText?.shouldShowWithAction(hasSlashedPrice) {
+            it.setTextAndContentDescription(
                 productCardModel.slashedPrice,
                 R.string.content_desc_textViewSlashedPrice
             )
-            slashedPriceText.strikethrough()
-            slashedPriceText.requestLayout()
+            it.strikethrough()
+            it.requestLayout()
         }
-
-        slashedPriceInlineText?.shouldShowWithAction(
-            shouldShow = hasSlashedPrice && showAsInline,
-            action = setSlashedPrice
-        )
-
-        slashedPriceText?.shouldShowWithAction(
-            shouldShow = hasSlashedPrice && showBelowPrice,
-            action = setSlashedPrice
-        )
     }
-
-    private fun showDiscountAsInline(productCardModel: ProductCardModel): Boolean =
-        (type == ProductCardType.GridCarousel || type == ProductCardType.ListCarousel)
-            && productCardModel.ribbon() != null
 
     private fun renderDiscountPercentage(productCardModel: ProductCardModel) {
         val hasDiscountPercentage = productCardModel.discountPercentage != 0
-        val showAsInline = showDiscountAsInline(productCardModel)
-        val showBelowPrice = !showAsInline
 
-        val setDiscount = { discountText: Typography ->
-            discountText.setTextAndContentDescription(
+        discountText?.shouldShowWithAction(hasDiscountPercentage) {
+            it.setTextAndContentDescription(
                 "${productCardModel.discountPercentage}%",
                 R.string.content_desc_labelDiscount
             )
         }
-
-        discountInlineText?.shouldShowWithAction(
-            shouldShow = showAsInline && hasDiscountPercentage,
-            action = setDiscount
-        )
-
-        discountText?.shouldShowWithAction(
-            shouldShow = showBelowPrice && hasDiscountPercentage,
-            action = setDiscount,
-        )
     }
 
     private fun renderLabelBenefit(productCardModel: ProductCardModel) {
