@@ -49,7 +49,11 @@ class ProductContentViewHolder(
         }
 
         when (payloads[0] as Int) {
-            ProductContentDataModel.PAYLOAD_WISHLIST -> header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
+            ProductContentDataModel.PAYLOAD_WISHLIST -> header.updateWishlist(
+                element.isWishlisted,
+                listener.shouldShowWishlist()
+            )
+
             ProductContentDataModel.PAYLOAD_BOE_SHARE -> {
                 header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
                 // only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
@@ -75,5 +79,10 @@ class ProductContentViewHolder(
                 listener.onFabWishlistClicked(activeState, getComponentTrackData(content))
             }
         }
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        header.onViewRecycled()
     }
 }

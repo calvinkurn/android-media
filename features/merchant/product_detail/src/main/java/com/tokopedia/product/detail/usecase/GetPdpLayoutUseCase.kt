@@ -183,6 +183,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
             		... on pdpDataProductContent {
                       name
                       parentName
+                      labelIcons {
+                        label
+                        iconURL
+                        type
+                      }
                       isCOD
                       isShowPrice
                       price {
@@ -391,6 +396,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         optionID
                         optionName
                         productName
+                        labelIcons {
+                          label
+                          iconURL
+                          type
+                        }
                         productURL
                         isCOD
                         isWishlist
