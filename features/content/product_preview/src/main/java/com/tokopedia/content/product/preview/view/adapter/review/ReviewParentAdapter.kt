@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.view.adapter.review
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
@@ -13,12 +14,15 @@ class ReviewParentAdapter(
     private val reviewInteractionListener: ReviewInteractionListener
 ) : ListAdapter<ReviewContentUiModel, ViewHolder>(ReviewAdapterCallback()) {
 
+    private val mediasViewPool: RecycledViewPool = RecycledViewPool()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
             TYPE_CONTENT -> {
                 ReviewParentContentViewHolder.create(
                     parent = parent,
-                    reviewInteractionListener = reviewInteractionListener
+                    reviewInteractionListener = reviewInteractionListener,
+                    mediasViewPool = mediasViewPool
                 )
             }
             else -> super.createViewHolder(parent, viewType)
@@ -51,6 +55,11 @@ class ReviewParentAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return TYPE_CONTENT
+    }
+
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+        (holder as ReviewParentContentViewHolder).onRecycled()
     }
 
     companion object {

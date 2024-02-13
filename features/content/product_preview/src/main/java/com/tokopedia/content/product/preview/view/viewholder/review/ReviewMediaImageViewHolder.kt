@@ -2,63 +2,33 @@ package com.tokopedia.content.product.preview.view.viewholder.review
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.content.product.preview.databinding.ItemReviewContentImageBinding
+import com.tokopedia.content.product.preview.databinding.ItemImageProductPreviewBinding
+import com.tokopedia.content.product.preview.view.components.items.ItemImageProductPreview
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class ReviewMediaImageViewHolder(
-    private val binding: ItemReviewContentImageBinding
+    private val binding: ItemImageProductPreviewBinding
 ) : ViewHolder(binding.root) {
 
+    init {
+        binding.cvProductPreviewContentImage.setViewCompositionStrategy(
+            ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool
+        )
+    }
+
     fun bind(content: ReviewMediaUiModel) {
-        showLoading()
-        renderImage(content.url)
-    }
-
-    internal fun onRecycled() {
-        binding.ivReviewContentImage.clearImage()
-    }
-
-    private fun renderImage(imageUrl: String) = with(binding.ivReviewContentImage) {
-        loadImageWithoutPlaceholder(imageUrl) {
-            listener(
-                onSuccess = { _, _ -> hideLoading() },
-                onError = { showErrorImage() }
-            )
-        }
-    }
-
-    private fun showLoading() {
-        binding.apply {
-            ivReviewContentImage.invisible()
-            loaderImage.show()
-        }
-    }
-
-    private fun hideLoading() {
-        binding.apply {
-            ivReviewContentImage.show()
-            loaderImage.invisible()
-        }
-    }
-
-    private fun showErrorImage() {
-        binding.apply {
-            ivReviewContentImage.apply {
-                clearImage()
-                show()
+        binding.cvProductPreviewContentImage.apply {
+            setContent {
+                ItemImageProductPreview(imageUrl = content.url)
             }
-            loaderImage.invisible()
         }
     }
 
     companion object {
         fun create(parent: ViewGroup) = ReviewMediaImageViewHolder(
-            ItemReviewContentImageBinding.inflate(
+            ItemImageProductPreviewBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
