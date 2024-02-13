@@ -1,6 +1,6 @@
 {
   "readme": "Unified Content Viewing Experience in PDP (Fullscreen View)",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "clickContent",
@@ -16,9 +16,6 @@
     },
     {
       "event": "openScreen",
-      "eventAction": "null",
-      "eventCategory": "null",
-      "eventLabel": "null",
       "trackerId": "49588",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",

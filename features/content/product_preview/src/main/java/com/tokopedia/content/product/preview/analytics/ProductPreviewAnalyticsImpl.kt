@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.analytics
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.content.analytic.manager.ContentAnalyticManager
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -15,8 +16,14 @@ import dagger.assisted.AssistedInject
  */
 class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     @Assisted private val productId: String,
+    analyticManagerFactory: ContentAnalyticManager.Factory,
     private val userSession: UserSessionInterface
 ) : ProductPreviewAnalytics {
+
+    private val analyticManager = analyticManagerFactory.create(
+        businessUnit = BusinessUnit.content,
+        eventCategory = "unified view pdp"
+    )
 
     @AssistedFactory
     interface Factory : ProductPreviewAnalytics.Factory {
@@ -31,18 +38,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49587
      */
     override fun onSwipeContentAndTab() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("scroll - swipe left right content")
-            .setEventCategory("unified view pdp")
-            .setEventLabel(productId)
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49587")
-            .setCustomProperty(Key.productId, productId)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "scroll - swipe left right content",
+            eventLabel = productId,
+            mainAppTrackerId = "49587",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -50,17 +51,11 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49588
      */
     override fun onImpressVideo() {
-        Tracker.Builder()
-            .setEvent(Event.openScreen)
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49588")
-            .setCustomProperty(Key.isLoggedInStatus, userSession.isLoggedIn.toString())
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.screenName, "/unified view pdp - $productId - 0")
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendOpenScreen(
+            screenName = "/unified view pdp - $productId - 0",
+            mainAppTrackerId = "49588",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -68,19 +63,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49589
      */
     override fun onImpressATC() {
-        Tracker.Builder()
-            .setEvent(Event.viewContentIris)
-            .setEventAction("view - add to cart media fullscreen")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("$productId - 0")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49589")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendViewContent(
+            eventAction = "view - add to cart media fullscreen",
+            eventLabel = "$productId - 0",
+            mainAppTrackerId = "49589",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
