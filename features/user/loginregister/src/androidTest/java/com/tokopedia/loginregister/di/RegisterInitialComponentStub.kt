@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.loginregister.registerinitial.base.RegisterEmailBase
 import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
-import com.tokopedia.loginregister.di.modules.MockRegisterInitialuseCaseModule
+import com.tokopedia.loginregister.di.modules.FakeRegisterInitialuseCaseModule
 import com.tokopedia.loginregister.registerinitial.di.*
 import dagger.Component
 
@@ -12,7 +12,7 @@ import dagger.Component
 @Component(modules = [
     RegisterInitialModule::class,
     RegisterInitialQueryModule::class,
-    MockRegisterInitialuseCaseModule::class,
+    FakeRegisterInitialuseCaseModule::class,
     RegisterInitialViewModelModule::class
 ], dependencies = [BaseAppComponent::class])
 interface RegisterInitialComponentStub: RegisterInitialComponent {
