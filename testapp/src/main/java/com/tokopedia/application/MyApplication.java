@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
+import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
 import android.view.MotionEvent;
@@ -122,6 +123,7 @@ public class MyApplication extends BaseMainApplication
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this, true));
+        registerActivityLifecycleCallbacks(new AppLogActivityLifecycleCallback());
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
