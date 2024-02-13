@@ -210,7 +210,6 @@ open class BuyerOrderDetailFragment :
             scpRewardsMedalTouchPointWidgetListener = this,
             owocInfoListener = this,
             bmgmListener = this,
-            addOnListener = AddOnListener(),
             productBenefitListener = ProductBenefitListener(),
             orderResolutionListener = this,
             recyclerViewSharedPool = recyclerViewSharedPool,
@@ -218,7 +217,8 @@ open class BuyerOrderDetailFragment :
             bottomSheetListener = this,
             navigator = navigator,
             buyerOrderDetailBindRecomWidgetListener = this,
-            courierButtonListener = this
+            courierButtonListener = this,
+            addOnListener = AddOnListener()
         )
     }
     protected open val adapter: BuyerOrderDetailAdapter by lazy {

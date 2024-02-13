@@ -58,7 +58,6 @@ class BuyerOrderDetailTypeFactoryStub(
     scpRewardsMedalTouchPointWidgetListener,
     owocInfoListener,
     bmgmListener,
-    addOnListener,
     productBenefitListener,
     orderResolutionListener,
     recyclerViewSharedPool,
@@ -66,12 +65,13 @@ class BuyerOrderDetailTypeFactoryStub(
     bottomSheetListener,
     navigator,
     buyerOrderDetailBindRecomWidgetListener,
-    courierButtonListener
+    courierButtonListener,
+    addOnListener
 ) {
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolderStub(parent, navigator, courierButtonListener)
-            ProductViewHolder.LAYOUT -> ProductViewHolderStub(parent, productViewListener, bottomSheetListener, navigator)
+            ProductViewHolder.LAYOUT -> ProductViewHolderStub(parent, productViewListener, bottomSheetListener, addOnListener, navigator)
             PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolderStub(parent, buyerOrderDetailBindRecomWidgetListener)
             else -> super.createViewHolder(parent, type)
         }

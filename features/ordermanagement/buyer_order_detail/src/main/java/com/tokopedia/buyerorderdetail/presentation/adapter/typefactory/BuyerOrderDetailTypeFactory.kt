@@ -76,7 +76,6 @@ open class BuyerOrderDetailTypeFactory(
     private val scpRewardsMedalTouchPointWidgetListener: ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     private val owocInfoListener: OwocInfoViewHolder.Listener,
     private val bmgmListener: BmgmSectionViewHolder.Listener,
-    private val addOnListener: BmgmAddOnViewHolder.Listener,
     private val productBenefitListener: BmgmAddOnViewHolder.Listener,
     private val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
@@ -84,7 +83,8 @@ open class BuyerOrderDetailTypeFactory(
     protected val bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
-    protected val courierButtonListener: CourierButtonListener
+    protected val courierButtonListener: CourierButtonListener,
+    protected val addOnListener: BmgmAddOnViewHolder.Listener
 ) : BaseAdapterTypeFactory(),
     ScpRewardsMedalTouchPointWidgetTypeFactory,
     BuyMoreGetMoreTypeFactory {
@@ -101,7 +101,7 @@ open class BuyerOrderDetailTypeFactory(
             PaymentInfoItemViewHolder.LAYOUT -> PaymentInfoItemViewHolder(parent)
             PlainHeaderViewHolder.LAYOUT -> PlainHeaderViewHolder(parent)
             ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent, navigator)
-            ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, bottomSheetListener, navigator)
+            ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, bottomSheetListener, addOnListener, navigator)
             ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(parent, addOnListener, productBundlingViewListener, navigator)
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)
