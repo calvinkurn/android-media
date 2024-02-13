@@ -647,7 +647,7 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4485
     // Tracker ID: 49899
-    fun sendViewOccBeliPakaiPromoEvent(shopId: String, userId: String, isSuccess: Boolean) {
+    fun sendViewOccBeliPakaiPromoEvent(shopId: String = "", userId: String = "", isSuccess: Boolean) {
         val gtmData = getGtmData(
             EventName.VIEW_PG_IRIS,
             EventCategory.ORDER_SUMMARY,

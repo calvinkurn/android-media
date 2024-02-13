@@ -24,6 +24,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -1308,5 +1309,66 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         val useNewPromoPage = orderSummaryPageViewModel.useNewPromoPage()
         // Then
         assertTrue(useNewPromoPage)
+    }
+
+    @Test
+    fun `Validate Use External Promo Success`() {
+        // Given
+        val promoCode = "abc"
+        orderSummaryPageViewModel.listPromoExternalAutoApplyCode =
+            arrayListOf(
+                PromoExternalAutoApply(
+                    code = promoCode,
+                    type = "mv"
+                )
+            )
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        val response = ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200", promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green")))
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns response
+
+        // When
+        orderSummaryPageViewModel.validateUsePromo()
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(isSuccess = true)
+        }
+        assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+    }
+
+    @Test
+    fun `Validate Use External Promo Error Akamai`() {
+        // Given
+        val promoCode = "abc"
+        orderSummaryPageViewModel.listPromoExternalAutoApplyCode =
+            arrayListOf(
+                PromoExternalAutoApply(
+                    code = promoCode,
+                    type = "mv"
+                )
+            )
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        val exception = AkamaiErrorException("")
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } throws exception
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
+
+        // When
+        orderSummaryPageViewModel.validateUsePromo()
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(isSuccess = false)
+        }
+        assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        assertEquals(OccGlobalEvent.Error(exception), orderSummaryPageViewModel.globalEvent.value)
     }
 }
