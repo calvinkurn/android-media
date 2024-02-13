@@ -33,6 +33,7 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.model.FingerPrintGqlParam
+import com.tokopedia.sessioncommon.data.model.LoginTokenV2GqlParam
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
@@ -261,7 +262,14 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 if (useHash) {
                     finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
                 }
-                val tokenResult = loginTokenV2UseCase(loginTokenV2UseCase.createParams(email, finalPassword, keyData.hash))
+                val tokenResult = loginTokenV2UseCase(
+                    LoginTokenV2GqlParam(
+                        username = email,
+                        password = finalPassword,
+                        grantType = TYPE_PASSWORD,
+                        hash = keyData.hash
+                    )
+                )
                 LoginV2Mapper(userSession).map(
                     tokenResult.loginToken,
                     onSuccessLoginToken = {
@@ -452,5 +460,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     companion object {
         private const val PARAM_DISCOVER_LOGIN = "login"
+        private val TYPE_PASSWORD: String = "password"
     }
 }

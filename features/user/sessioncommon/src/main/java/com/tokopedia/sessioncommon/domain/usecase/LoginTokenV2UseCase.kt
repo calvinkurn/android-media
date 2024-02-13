@@ -22,19 +22,6 @@ open class LoginTokenV2UseCase @Inject constructor(
 ) :
     CoroutineUseCase<LoginTokenV2GqlParam, LoginTokenPojoV2>(dispatcher.io) {
 
-    fun createParams(email: String, password: String, hash: String): LoginTokenV2GqlParam {
-        return LoginTokenV2GqlParam(
-            username = email,
-            password = password,
-            grantType = TYPE_PASSWORD,
-            hash = hash
-        )
-    }
-
-    companion object {
-        private val TYPE_PASSWORD: String = "password"
-    }
-
     override fun graphqlQuery(): String {
         return """
         mutation login_email_v2(${'$'}grant_type: String!, ${'$'}username: String!, ${'$'}password: String!, ${'$'}h: String!){

@@ -17,8 +17,3 @@ data class LoginTokenV2GqlParam(
     private val hash: String
 
 ) : GqlParam
-
-private val PARAM_GRANT_TYPE: String = "grant_type"
-private val PARAM_USERNAME: String = "username"
-private val PARAM_PASSWORD: String = "password"
-private val PARAM_HASH: String = "h"

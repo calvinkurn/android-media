@@ -58,10 +58,6 @@ class LoginFingerprintUseCase @Inject constructor(
     }
 
     companion object {
-        const val PARAM_BIOMETRIC_ID = "device_biometrics"
-        const val PARAM_GRANT_TYPE = "grant_type"
-        const val PARAM_SOCIAL_TYPE = "social_type"
-        const val PARAM_USERNAME = "username"
         const val PARAM_VALIDATE_TOKEN = "validate_token"
         const val SOCIAL_TYPE_BIOMETRIC = "14"
         const val TYPE_EXTENSION = "extension"
