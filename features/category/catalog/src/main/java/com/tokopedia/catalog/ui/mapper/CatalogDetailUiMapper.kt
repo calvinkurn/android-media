@@ -831,7 +831,11 @@ class CatalogDetailUiMapper @Inject constructor(
                 productImage = mediaUrl.thumbnailUrl,
                 shopBadge = shop.badge,
                 shopName = shop.name,
-                stockBar = stock.soldPercentage,
+                stockBar = SellerOfferingUiModel.Stock(
+                    stockRemaining = stock.soldPercentage,
+                    stockAlertText = stock.wording,
+                    isHidden = stock.isHidden
+                ),
                 productName = catalogName,
                 productPrice = price.text,
                 productSlashPrice = price.original,

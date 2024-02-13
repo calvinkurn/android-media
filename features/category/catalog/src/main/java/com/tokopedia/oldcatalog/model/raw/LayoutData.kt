@@ -344,7 +344,8 @@ data class LayoutData(
         )
         data class Stock(
             @SerializedName("soldPercentage") val soldPercentage: Int = 0,
-            @SerializedName("isHidden") val isHidden: Boolean = false
+            @SerializedName("isHidden") val isHidden: Boolean = false,
+            @SerializedName("wording") val wording: String = ""
         )
         data class PaymentOption(
             @SerializedName("desc") val desc: String = "",
