@@ -4,6 +4,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiM
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 
 interface ReviewInteractionListener {
+    fun onPauseResumeVideo()
     fun onReviewCredibilityClicked(author: ReviewAuthorUiModel)
     fun onMenuClicked()
     fun onLike(status: ReviewLikeUiState)

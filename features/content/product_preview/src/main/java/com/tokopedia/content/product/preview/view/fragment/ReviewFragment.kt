@@ -183,6 +183,10 @@ class ReviewFragment @Inject constructor(
                             }
                         }
 
+                        is ProductPreviewEvent.TrackReviewNextVerticalScroll -> {
+                            analytics.onSwipeReviewNextContent()
+                        }
+
                         else -> {}
                     }
                 }
@@ -238,6 +242,8 @@ class ReviewFragment @Inject constructor(
      * Review Content Listener
      */
     override fun onReviewCredibilityClicked(author: ReviewAuthorUiModel) {
+        analytics.onClickReviewAccountName()
+
         val appLink = UriUtil.buildUri(REVIEW_CREDIBILITY_APPLINK, author.id, PAGE_SOURCE)
         router.route(requireContext(), appLink)
     }
@@ -249,12 +255,21 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onMenuClicked() {
+        analytics.onClickReviewThreeDots()
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
 
     /**
      * Review Media Listener
      */
+    override fun onPauseResumeVideo() {
+        analytics.onClickPauseOrPlayVideo()
+    }
+
+    override fun onImpressedImage() {
+        analytics.onImpressImage()
+    }
+
     override fun onImpressedVideo() {
         analytics.onImpressVideo()
     }
@@ -269,19 +284,23 @@ class ReviewFragment @Inject constructor(
     override fun onOptionClicked(menu: ContentMenuItem) {
         when (menu.type) {
             ContentMenuIdentifier.WatchMode -> {
+                analytics.onClickReviewWatchMode()
                 MenuBottomSheet.get(childFragmentManager)?.dismiss()
                 viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
             }
-            ContentMenuIdentifier.Report ->
+            ContentMenuIdentifier.Report -> {
+                analytics.onClickReviewReport()
                 ReviewReportBottomSheet.getOrCreate(
                     childFragmentManager,
                     requireActivity().classLoader
                 ).show(childFragmentManager)
+            }
             else -> return
         }
     }
 
     override fun onLike(status: ReviewLikeUiState) {
+        analytics.onClickLikeOrUnlike()
         viewModel.onAction(ProductPreviewAction.Like(status))
     }
 
@@ -292,7 +311,8 @@ class ReviewFragment @Inject constructor(
     /**
      * Review Report Bottom Sheet Listener
      */
-    override fun onReasonClicked(report: ReviewReportUiModel) {
+    override fun onSubmitOption(report: ReviewReportUiModel) {
+        analytics.onClickSubmitReport()
         viewModel.onAction(ProductPreviewAction.SubmitReport(report))
     }
 

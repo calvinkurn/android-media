@@ -24,6 +24,7 @@ import com.tokopedia.content.product.preview.utils.REVIEW_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewMediaAdapter
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
+import com.tokopedia.content.product.preview.view.listener.MediaImageListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
@@ -49,7 +50,8 @@ class ReviewContentViewHolder(
     private val reviewMediaListener: ReviewMediaListener,
     private val mediaViewPool: RecyclerView.RecycledViewPool
 ) : ViewHolder(binding.root),
-    ProductPreviewVideoListener {
+    ProductPreviewVideoListener,
+    MediaImageListener {
 
     init {
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -81,7 +83,8 @@ class ReviewContentViewHolder(
 
     private val reviewMediaAdapter: ReviewMediaAdapter by lazyThreadSafetyNone {
         ReviewMediaAdapter(
-            productPreviewVideoListener = this
+            productPreviewVideoListener = this,
+            mediaImageLister = this
         )
     }
 
@@ -172,11 +175,7 @@ class ReviewContentViewHolder(
         ivAuthor.loadImageCircle(url = author.avatarUrl)
         lblAuthorStats.setLabel(author.type)
         lblAuthorStats.showWithCondition(author.type.isNotBlank())
-
-        lblAuthorStats.setOnClickListener {
-            reviewInteractionListener.onReviewCredibilityClicked(author)
-        }
-        tvAuthorName.setOnClickListener {
+        root.setOnClickListener {
             reviewInteractionListener.onReviewCredibilityClicked(author)
         }
     }
@@ -310,6 +309,10 @@ class ReviewContentViewHolder(
         setCurrentIndicator(mediaSelectedPosition)
     }
 
+    override fun onImpressedImage() {
+        reviewMediaListener.onImpressedImage()
+    }
+
     override fun onImpressedVideo() {
         reviewMediaListener.onImpressedVideo()
     }
@@ -325,10 +328,12 @@ class ReviewContentViewHolder(
     }
 
     override fun pauseVideo(id: String) {
+        reviewInteractionListener.onPauseResumeVideo()
         videoPlayerManager.pause(id)
     }
 
     override fun resumeVideo(id: String) {
+        reviewInteractionListener.onPauseResumeVideo()
         videoPlayerManager.resume(id)
     }
 

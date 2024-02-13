@@ -5,8 +5,6 @@ import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.analytic.manager.ContentAnalyticManager
 import com.tokopedia.content.analytic.model.ContentEnhanceEcommerce
-import com.tokopedia.track.builder.Tracker
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -17,8 +15,7 @@ import dagger.assisted.AssistedInject
  */
 class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     @Assisted private val productId: String,
-    analyticManagerFactory: ContentAnalyticManager.Factory,
-    private val userSession: UserSessionInterface
+    analyticManagerFactory: ContentAnalyticManager.Factory
 ) : ProductPreviewAnalytics {
 
     private val analyticManager = analyticManagerFactory.create(
@@ -30,9 +27,6 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     interface Factory : ProductPreviewAnalytics.Factory {
         override fun create(productId: String): ProductPreviewAnalyticsImpl
     }
-
-    private val userId: String
-        get() = userSession.userId.orEmpty()
 
     /**
      * 1. swipe left or right to next content / tab
@@ -75,6 +69,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     /**
      * 4. click ATC button
      * 49590
+     * TODO
      */
     override fun onClickATC() {
         analyticManager.sendEEProduct(
@@ -112,39 +107,25 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49594
      */
     override fun onClickThumbnailProduct() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - content thumbnail")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCustomProperty(Key.trackerId, "49594")
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - content thumbnail",
+            eventLabel = productId,
+            mainAppTrackerId = "49594",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
      * 6. impress image content
      * 49598
      */
-    override fun onImpressImageContent() {
-        Tracker.Builder()
-            .setEvent(Event.viewContentIris)
-            .setEventAction("view - image content")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setCustomProperty(Key.trackerId, "49598")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+    override fun onImpressImage() {
+        analyticManager.sendViewContent(
+            eventAction = "view - image content",
+            eventLabel = productId,
+            mainAppTrackerId = "49598",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -152,19 +133,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49600
      */
     override fun onImpressRemindMe() {
-        Tracker.Builder()
-            .setEvent(Event.viewContentIris)
-            .setEventAction("view - ingatkan saya")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49600")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendViewContent(
+            eventAction = "view - ingatkan saya",
+            eventLabel = productId,
+            mainAppTrackerId = "49600",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -172,19 +146,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49601
      */
     override fun onClickRemindMe() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - ingatkan saya")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49601")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - ingatkan saya",
+            eventLabel = productId,
+            mainAppTrackerId = "49601",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -192,19 +159,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49602
      */
     override fun onSwipeReviewNextContent() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("scroll - swipe up down ulasan tab")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49602")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "scroll - swipe up down ulasan tab",
+            eventLabel = productId,
+            mainAppTrackerId = "49602",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -212,19 +172,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49603
      */
     override fun onClickReviewAccountName() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - account name")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49603")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - account name",
+            eventLabel = "$productId - 0",
+            mainAppTrackerId = "49603",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -232,19 +185,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49605
      */
     override fun onClickReviewThreeDots() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - three dots")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49605")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - three dots",
+            eventLabel = productId,
+            mainAppTrackerId = "49605",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -252,39 +198,26 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49606
      */
     override fun onClickBackButton() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - back button to pdp")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49606")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - back button to pdp",
+            eventLabel = productId,
+            mainAppTrackerId = "49606",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
      * 13. click ATC to global variant bottomsheet
      * 49607
+     * TODO can't implement from our side (check gvbs tracker from corresponding team)
      */
     override fun onOpenGBVS() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - variant bottomsheet atc entry point")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49607")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - variant bottomsheet atc entry point",
+            eventLabel = productId,
+            mainAppTrackerId = "49607",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -292,19 +225,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49650
      */
     override fun onClickReviewReport() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - laporkan ulasan")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49650")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - laporkan ulasan",
+            eventLabel = "$productId - 0",
+            mainAppTrackerId = "49650",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -312,19 +238,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49651
      */
     override fun onClickReviewWatchMode() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - mode nonton")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49651")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - mode nonton",
+            eventLabel = productId,
+            mainAppTrackerId = "49651",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -332,19 +251,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49845
      */
     override fun onClickPauseOrPlayVideo() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - pause play button")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49845")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - pause play button",
+            eventLabel = "$productId - 0",
+            mainAppTrackerId = "49845",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -352,17 +264,12 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49850
      */
     override fun onClickSubmitReport() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - submit report ulasan")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49850")
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - submit report ulasan",
+            eventLabel = "$productId - 0",
+            mainAppTrackerId = "49850",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
@@ -370,18 +277,11 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49851
      */
     override fun onClickLikeOrUnlike() {
-        Tracker.Builder()
-            .setEvent(Event.clickContent)
-            .setEventAction("click - like button")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49851")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendClickContent(
+            eventAction = "click - like button",
+            eventLabel = "$productId - 0",
+            mainAppTrackerId = "49851",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 }

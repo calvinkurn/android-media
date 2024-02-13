@@ -22,6 +22,7 @@ import com.tokopedia.content.product.preview.view.adapter.product.ProductThumbna
 import com.tokopedia.content.product.preview.view.components.items.ProductThumbnailItemDecoration
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
+import com.tokopedia.content.product.preview.view.listener.MediaImageListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.listener.ProductThumbnailListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
@@ -38,7 +39,9 @@ import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 class ProductFragment @Inject constructor(
     private val analyticsFactory: ProductPreviewAnalytics.Factory
-) : TkpdBaseV4Fragment(), ProductPreviewVideoListener {
+) : TkpdBaseV4Fragment(),
+    ProductPreviewVideoListener,
+    MediaImageListener {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
@@ -67,7 +70,8 @@ class ProductFragment @Inject constructor(
 
     private val productMediaAdapter by lazyThreadSafetyNone {
         ProductMediaAdapter(
-            productPreviewVideoListener = this
+            productPreviewVideoListener = this,
+            mediaImageLister = this
         )
     }
 
@@ -76,6 +80,7 @@ class ProductFragment @Inject constructor(
             productThumbnailListener = object :
                 ProductThumbnailListener {
                 override fun onClickProductThumbnail(position: Int) {
+                    analytics.onClickThumbnailProduct()
                     scrollTo(position)
                     viewModel.onAction(ProductMediaSelected(position))
                 }
@@ -243,6 +248,10 @@ class ProductFragment @Inject constructor(
     private fun scrollTo(position: Int) {
         binding.rvMediaProduct.smoothScrollToPosition(position)
         binding.rvThumbnailProduct.smoothScrollToPosition(position)
+    }
+
+    override fun onImpressedImage() {
+        analytics.onImpressImage()
     }
 
     override fun onImpressedVideo() {

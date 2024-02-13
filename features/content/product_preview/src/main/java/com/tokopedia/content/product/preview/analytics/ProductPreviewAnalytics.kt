@@ -45,7 +45,7 @@ interface ProductPreviewAnalytics {
      * 6. impress image content
      * 49598
      */
-    fun onImpressImageContent()
+    fun onImpressImage()
 
     /**
      * 7. impress Ingatkan Saya button

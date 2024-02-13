@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.tokopedia.content.product.preview.view.listener.MediaImageListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
@@ -11,12 +12,13 @@ import com.tokopedia.content.product.preview.view.viewholder.product.ProductMedi
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductMediaVideoViewHolder
 
 class ProductMediaAdapter(
-    private val productPreviewVideoListener: ProductPreviewVideoListener
+    private val productPreviewVideoListener: ProductPreviewVideoListener,
+    private val mediaImageLister: MediaImageListener
 ) : ListAdapter<ProductMediaUiModel, ViewHolder>(ProductMediaDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
-            TYPE_IMAGE -> ProductMediaImageViewHolder.create(parent)
+            TYPE_IMAGE -> ProductMediaImageViewHolder.create(parent, mediaImageLister)
             TYPE_VIDEO -> ProductMediaVideoViewHolder.create(parent, productPreviewVideoListener)
             else -> super.createViewHolder(parent, viewType)
         }

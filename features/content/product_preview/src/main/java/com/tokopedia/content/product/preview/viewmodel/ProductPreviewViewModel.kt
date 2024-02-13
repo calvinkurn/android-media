@@ -207,11 +207,13 @@ class ProductPreviewViewModel @AssistedInject constructor(
             )
         }
 
-        emitTrackHorizontalContentEvent()
+        emitTrackAllHorizontalScrollEvent()
     }
 
     private fun handleReviewContentSelected(position: Int) {
         if (_reviewPosition.value == position) return
+        if (_reviewPosition.value < position) emitTrackReviewNextVerticalScrollEvent()
+
         _reviewPosition.value = position
         updateReviewToUnWatchMode()
     }
@@ -243,11 +245,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
             )
         }
 
-        emitTrackHorizontalContentEvent()
+        emitTrackAllHorizontalScrollEvent()
     }
 
     private fun handleTabSelected(position: Int) {
-        emitTrackHorizontalContentEvent()
+        emitTrackAllHorizontalScrollEvent()
     }
 
     private fun handleFetchReviewByIds() {
@@ -314,9 +316,15 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun emitTrackHorizontalContentEvent() {
+    private fun emitTrackAllHorizontalScrollEvent() {
         viewModelScope.launch {
-            _uiEvent.emit(ProductPreviewEvent.TrackHorizontalScrolling)
+            _uiEvent.emit(ProductPreviewEvent.TrackAllHorizontalScroll)
+        }
+    }
+
+    private fun emitTrackReviewNextVerticalScrollEvent() {
+        viewModelScope.launch {
+            _uiEvent.emit(ProductPreviewEvent.TrackReviewNextVerticalScroll)
         }
     }
 

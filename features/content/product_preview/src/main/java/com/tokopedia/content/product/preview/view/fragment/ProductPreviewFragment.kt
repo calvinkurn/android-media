@@ -30,6 +30,7 @@ import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel.ButtonState.OOS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
@@ -156,6 +157,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun onClickHandler() = with(binding) {
         layoutProductPreviewTab.icBack.setOnClickListener {
+            analytics.onClickBackButton()
             activity?.finish()
         }
         layoutProductPreviewTab.tvProductTabTitle.setOnClickListener {
@@ -253,7 +255,7 @@ class ProductPreviewFragment @Inject constructor(
                         binding.viewFooter.gone()
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
-                    is ProductPreviewEvent.TrackHorizontalScrolling -> {
+                    is ProductPreviewEvent.TrackAllHorizontalScroll -> {
                         analytics.onSwipeContentAndTab()
                     }
                     else -> return@collect
@@ -276,6 +278,8 @@ class ProductPreviewFragment @Inject constructor(
         if (prev == model) return
 
         analytics.onImpressATC()
+        if (model.buttonState == OOS) analytics.onImpressRemindMe()
+
         binding.viewFooter.apply {
             show()
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -288,6 +292,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleAtc(model: BottomNavUiModel) {
+        if (model.buttonState == OOS) analytics.onClickRemindMe()
         if (model.hasVariant) {
             AtcVariantHelper.goToAtcVariant(
                 context = requireContext(),

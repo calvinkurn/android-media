@@ -51,5 +51,6 @@ sealed interface ProductPreviewEvent {
 
     object UnknownSourceData : ProductPreviewEvent
 
-    object TrackHorizontalScrolling : ProductPreviewEvent
+    object TrackAllHorizontalScroll : ProductPreviewEvent
+    object TrackReviewNextVerticalScroll : ProductPreviewEvent
 }
