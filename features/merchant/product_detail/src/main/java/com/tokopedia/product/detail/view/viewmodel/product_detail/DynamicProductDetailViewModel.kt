@@ -496,18 +496,18 @@ class DynamicProductDetailViewModel @Inject constructor(
         val p2 = p2Data.value ?: throw Exception()
 
         return TrackProductDetail(
-            productId = p1.basic.productID,
+            productId = p1.parentProductId,
             productCategory = p1.basic.category.name,
-            productType = ProductType.AVAILABLE,
+            productType = ProductType.AVAILABLE, // todo
             originalPrice = p1.data.price.priceFmt,
-            salePrice = p1.finalPrice.toString()
+            salePrice = p1.data.campaign.priceFmt
         )
     }
 
     fun getStayAnalyticsData(): TrackStayProductDetail {
         val p1 = getDynamicProductInfoP1 ?: throw Exception()
         return TrackStayProductDetail(
-            productId = p1.basic.productID,
+            productId = p1.parentProductId,
             productCategory = p1.basic.category.name,
             productType = ProductType.AVAILABLE,
             originalPrice = p1.data.price.priceFmt,
