@@ -215,6 +215,10 @@ data class SearchProductV5(
                         @SerializedName("componentID")
                         @Expose
                         val componentID: String = "",
+
+                        @SerializedName("isImageBlurred")
+                        @Expose
+                        val isImageBlurred: Boolean = false,
                     )
                 }
             }
@@ -301,6 +305,10 @@ data class SearchProductV5(
                 @SerializedName("isPortrait")
                 @Expose
                 val isPortrait: Boolean = false,
+
+                @SerializedName("isImageBlurred")
+                @Expose
+                val isImageBlurred: Boolean = false,
             )
 
             data class LabelGroupVariant(
@@ -439,6 +447,20 @@ data class SearchProductV5(
             @SerializedName("url")
             @Expose
             val url: String = "",
+
+            @SerializedName("styles")
+            @Expose
+            val styleList: List<Style> = listOf(),
+        )
+
+        data class Style(
+            @SerializedName("key")
+            @Expose
+            val key: String = "",
+
+            @SerializedName("value")
+            @Expose
+            val value: String = "",
         )
 
         data class Ads(

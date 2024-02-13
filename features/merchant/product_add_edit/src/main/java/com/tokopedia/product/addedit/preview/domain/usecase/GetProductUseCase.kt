@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.util.AddEditProductUnsellableException
 import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3Param
 import com.tokopedia.product.addedit.preview.data.source.api.param.OptionV3
 import com.tokopedia.product.addedit.preview.data.source.api.response.GetProductV3Response
@@ -15,18 +16,20 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetProductUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+    private val graphqlRepository: GraphqlRepository
 ) : UseCase<Product>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): Product {
-
         val graphqlRequest = GraphqlRequest(query, GetProductV3Response::class.java, params.parameters)
         val graphqlResponse: GraphqlResponse = graphqlRepository.response(listOf(graphqlRequest))
         val errors: List<GraphqlError>? = graphqlResponse.getError(GetProductV3Response::class.java)
         if (errors.isNullOrEmpty()) {
             val data = graphqlResponse.getData<GetProductV3Response>(GetProductV3Response::class.java)
+            if (data.product.productID == INVALID_PRODUCT_ID) {
+                throw AddEditProductUnsellableException()
+            }
             return data.product
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
@@ -34,10 +37,10 @@ class GetProductUseCase @Inject constructor(
     }
 
     companion object {
-
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_OPTIONS = "options"
         private const val OPERATION_NAME = "getProductV3"
+        private const val INVALID_PRODUCT_ID = "0"
         private val OPERATION_PARAM = """
             ${'$'}productID: String!,${'$'}options: OptionV3!
         """.trimIndent()
@@ -183,11 +186,11 @@ class GetProductUseCase @Inject constructor(
                     }
         """.trimIndent()
         private val query = String.format(
-                GetProductV3QueryConstant.BASE_QUERY,
-                OPERATION_NAME,
-                OPERATION_PARAM,
-                QUERY_PARAM,
-                QUERY_REQUEST
+            GetProductV3QueryConstant.BASE_QUERY,
+            OPERATION_NAME,
+            OPERATION_PARAM,
+            QUERY_PARAM,
+            QUERY_REQUEST
         )
 
         fun createRequestParams(productId: String): RequestParams {

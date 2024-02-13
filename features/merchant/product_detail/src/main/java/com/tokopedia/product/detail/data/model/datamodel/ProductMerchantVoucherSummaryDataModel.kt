@@ -1,8 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
-import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
-import com.tokopedia.analytics.performance.perf.LoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -16,6 +16,9 @@ data class ProductMerchantVoucherSummaryDataModel(
         isFinishedLoading = { false },
         customBlocksName = "ProductMerchantVoucherSummaryDataModel"
     ) {
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     data class UiModel(
         val animatedInfo: List<AnimatedInfos> = listOf(),

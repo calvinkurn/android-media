@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.bannerenvironment.BannerEnvironment
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.BannerEnvironmentUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class BannerEnvironmentViewHolder(
@@ -24,6 +26,7 @@ class BannerEnvironmentViewHolder(
         val cb = itemView.findViewById<CheckboxUnify>(R.id.banner_environment)
         cb.isChecked = BannerEnvironment.isBannerEnvironmentEnabled(context)
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
+            DevOpsTracker.trackEntryEvent(DevopsFeature.ENABLE_BANNER)
             BannerEnvironment.setBannerEnvironmentEnabled(context, state)
             (context as Activity).recreate()
         }

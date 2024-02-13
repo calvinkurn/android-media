@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.fragment
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -51,6 +52,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder.Companion.LAYOUT
@@ -62,7 +64,6 @@ import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.recommendation_widget_common.widget.entitycard.uimodel.RecomEntityCardUiModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -115,6 +116,11 @@ class HomeRecommendationFragment :
             StaggeredGridLayoutManager.VERTICAL
         )
     }
+
+    private val mScrollTouchListener by lazy {
+        createScrollTouchListener()
+    }
+
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
     private var totalScrollY = 0
@@ -180,7 +186,6 @@ class HomeRecommendationFragment :
         super.onViewCreated(view, savedInstanceState)
         setupArgs()
         fetchHomeRecommendationRollence()
-        handlingNestedRecyclerView()
         setupRecyclerView()
         loadFirstPageData()
         initListeners()
@@ -196,6 +201,12 @@ class HomeRecommendationFragment :
         )
         trackingQueue.sendAll()
         super.onPause()
+        removeOnItemTouchListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        handlingNestedRecyclerView()
     }
 
     private fun fetchHomeRecommendationRollence() {
@@ -316,51 +327,54 @@ class HomeRecommendationFragment :
         endlessRecyclerViewScrollListener?.let { recyclerView?.addOnScrollListener(it) }
     }
 
-    private fun handlingNestedRecyclerView() {
-        val mScrollTouchListener: RecyclerView.OnItemTouchListener = object :
-            RecyclerView.OnItemTouchListener {
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                when (e.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        startY = e.y
-                        startX = e.x
-                    }
-
-                    MotionEvent.ACTION_MOVE -> {
-                        val currentY = e.y
-                        val currentX = e.x
-                        val deltaY = currentY - startY
-                        val deltaX = currentX - startX
-
-                        // case 1: position > 0, then scroll to down disable recyclerview parent
-                        // case 2: position == 0, then scroll up / down, enable recyclerview parent
-                        // Check if deltaY is more than deltaX will be scrolling to vertical
-                        if (Math.abs(deltaY) > Math.abs(deltaX)) {
-                            if (isScrolledToTop()) {
-                                // Check if deltaY is negative, indicating scroll to down
-                                if (deltaY < 0) {
-                                    rv.parent.requestDisallowInterceptTouchEvent(true)
-                                } else {
-                                    rv.parent.requestDisallowInterceptTouchEvent(false)
-                                }
-                            } else {
-                                rv.parent.requestDisallowInterceptTouchEvent(true)
-                            }
-                        }
-
-                        // Update startY for the next event
-                        startY = currentY
-                        startX = currentX
-                    }
+    private fun createScrollTouchListener() = object : RecyclerView.OnItemTouchListener {
+        override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+            when (e.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startY = e.y
+                    startX = e.x
                 }
-                return false
-            }
 
-            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+                MotionEvent.ACTION_MOVE -> {
+                    val currentY = e.y
+                    val currentX = e.x
+                    val deltaY = currentY - startY
+                    val deltaX = currentX - startX
+
+                    // case 1: position > 0, then scroll to down disable recyclerview parent
+                    // case 2: position == 0, then scroll up / down, enable recyclerview parent
+                    // Check if deltaY is more than deltaX will be scrolling to vertical
+                    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+                        if (isScrolledToTop()) {
+                            // Check if deltaY is negative, indicating scroll to down
+                            if (deltaY < 0) {
+                                rv.parent.requestDisallowInterceptTouchEvent(true)
+                            } else {
+                                rv.parent.requestDisallowInterceptTouchEvent(false)
+                            }
+                        } else {
+                            rv.parent.requestDisallowInterceptTouchEvent(true)
+                        }
+                    }
+
+                    // Update startY for the next event
+                    startY = currentY
+                    startX = currentX
+                }
+            }
+            return false
         }
 
+        override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+        override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+    }
+
+    private fun handlingNestedRecyclerView() {
         recyclerView?.addOnItemTouchListener(mScrollTouchListener)
+    }
+
+    private fun removeOnItemTouchListener() {
+        recyclerView?.removeOnItemTouchListener(mScrollTouchListener)
     }
 
     fun setListener(
@@ -525,10 +539,15 @@ class HomeRecommendationFragment :
                 position
             )
         )
-        RouteManager.route(
-            context,
-            homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink
-        )
+
+        val rvContext = recyclerView?.context
+
+        rvContext?.let {
+            RouteManager.route(
+                it,
+                homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink
+            )
+        }
     }
 
     override fun onBannerTopAdsOldImpress(
@@ -561,10 +580,14 @@ class HomeRecommendationFragment :
             position,
             userSessionInterface.userId
         )
-        RouteManager.route(
-            context,
-            homeTopAdsRecommendationBannerDataUiModel.topAdsImageViewModel?.applink
-        )
+
+        val rvContext = recyclerView?.context
+        rvContext?.let {
+            RouteManager.route(
+                it,
+                homeTopAdsRecommendationBannerDataUiModel.topAdsImageViewModel?.applink
+            )
+        }
     }
 
     override fun onBannerTopAdsImpress(
@@ -607,7 +630,8 @@ class HomeRecommendationFragment :
             position,
             userSessionInterface.userId
         )
-        context?.let {
+        val rvContext = recyclerView?.context
+        rvContext?.let {
             RouteManager.route(it, item.appLink)
         }
     }
@@ -621,7 +645,8 @@ class HomeRecommendationFragment :
             position,
             userSessionInterface.userId
         )
-        context?.let {
+        val rvContext = recyclerView?.context
+        rvContext?.let {
             RouteManager.route(it, element.appLink)
         }
     }
@@ -680,17 +705,21 @@ class HomeRecommendationFragment :
     }
 
     private fun goToProductDetail(productId: String, position: Int) {
-        activity?.let {
-            val intent = RouteManager.getIntent(
-                it,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId
-            )
-            intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position)
-            try {
-                startActivityForResult(intent, REQUEST_FROM_PDP)
-            } catch (exception: ActivityNotFoundException) {
-                exception.printStackTrace()
+        val rvContext = recyclerView?.context
+        rvContext?.let {
+            if (it is Activity) {
+                val mActivity = it as? Activity
+                val intent = RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    productId
+                )
+                intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position)
+                try {
+                    mActivity?.startActivityForResult(intent, REQUEST_FROM_PDP)
+                } catch (exception: ActivityNotFoundException) {
+                    exception.printStackTrace()
+                }
             }
         }
     }
@@ -726,7 +755,8 @@ class HomeRecommendationFragment :
         if (view == null) {
             return
         }
-        val staggeredGridLayoutManager = recyclerView?.layoutManager as StaggeredGridLayoutManager?
+        val staggeredGridLayoutManager =
+            recyclerView?.layoutManager as? StaggeredGridLayoutManager
         if (staggeredGridLayoutManager != null && staggeredGridLayoutManager.findFirstVisibleItemPositions(
                 null
             )[0] > BASE_POSITION
@@ -800,7 +830,10 @@ class HomeRecommendationFragment :
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 getRecommendationAddWishlistNonLogin(productCardOptionsModel.productId, tabName)
             )
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            val rvContext = recyclerView?.context
+            rvContext?.let {
+                RouteManager.route(it, ApplinkConst.LOGIN)
+            }
         }
     }
 
@@ -918,6 +951,11 @@ class HomeRecommendationFragment :
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-        applink?.let { RouteManager.route(context, applink) }
+        val rvContext = recyclerView?.context
+        rvContext?.let { mContext ->
+            applink?.let {
+                RouteManager.route(mContext, applink)
+            }
+        }
     }
 }

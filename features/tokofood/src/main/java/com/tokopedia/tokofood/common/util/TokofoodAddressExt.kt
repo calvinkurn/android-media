@@ -1,27 +1,35 @@
 package com.tokopedia.tokofood.common.util
 
 import android.content.Context
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 
 object TokofoodAddressExt {
 
-    fun Context.updateLocalChosenAddressPinpoint(latitude: String, longitude: String) {
-        val currentAddressData = ChooseAddressUtils.getLocalizingAddressData(this)
-        currentAddressData.let { chooseAddressData ->
+    fun KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse.updateLocalChosenAddressPinpoint(
+        context: Context
+    ) {
+        if (this.success) {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                context = this,
-                addressId = chooseAddressData.address_id,
-                cityId = chooseAddressData.city_id,
-                districtId = chooseAddressData.district_id,
-                lat = latitude,
-                long = longitude,
-                label = chooseAddressData.label,
-                postalCode = chooseAddressData.postal_code,
-                warehouseId = chooseAddressData.warehouse_id,
-                shopId = chooseAddressData.shop_id,
-                warehouses = chooseAddressData.warehouses,
-                serviceType = chooseAddressData.service_type,
-                lastUpdate = chooseAddressData.tokonow_last_update
+                context = context,
+                addressId = this.chosenAddressData.addressId.toString(),
+                cityId = this.chosenAddressData.cityId.toString(),
+                districtId = this.chosenAddressData.districtId.toString(),
+                lat = this.chosenAddressData.latitude,
+                long = this.chosenAddressData.longitude,
+                label = "${this.chosenAddressData.addressName} ${this.chosenAddressData.receiverName}",
+                postalCode = this.chosenAddressData.postalCode,
+                warehouseId = this.tokonow.warehouseId.toString(),
+                shopId = this.tokonow.shopId.toString(),
+                warehouses = this.tokonow.warehouses.map { warehouse ->
+                    LocalWarehouseModel(
+                        warehouse.warehouseId,
+                        warehouse.serviceType
+                    )
+                },
+                serviceType = this.tokonow.serviceType,
+                lastUpdate = this.tokonow.tokonowLastUpdate
             )
         }
     }

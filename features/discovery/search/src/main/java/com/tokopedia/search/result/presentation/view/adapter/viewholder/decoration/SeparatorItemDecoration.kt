@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.product.separator.VerticalSeparable
+import com.tokopedia.search.result.product.separator.VerticalSeparatorDataView
 
 class SeparatorItemDecoration(
     context: Context,
@@ -62,7 +63,9 @@ class SeparatorItemDecoration(
         verticalSeparable: VerticalSeparable,
         previousViewHolder: Visitable<*>?
     ): Boolean {
-        return verticalSeparable.verticalSeparator.hasTopSeparator && !previousViewHolder.isBottomSeparator()
+        return verticalSeparable.verticalSeparator.hasTopSeparator
+            && !previousViewHolder.isBottomSeparator()
+            && previousViewHolder !is VerticalSeparatorDataView
     }
 
     private fun Drawable.drawTopSeparator(view: View, parent: RecyclerView, canvas: Canvas) =

@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pms.R
+import com.tokopedia.pms.databinding.ItemTransactionActionListItemBinding
 import com.tokopedia.pms.paymentlist.domain.data.TransactionActionType
-import kotlinx.android.synthetic.main.item_transaction_action_list_item.view.*
 
 class PaymentTransactionActionAdapter(
     var actionList: ArrayList<TransactionActionType>,
@@ -14,7 +14,8 @@ class PaymentTransactionActionAdapter(
 ) : RecyclerView.Adapter<PaymentTransactionActionAdapter.PaymentActionViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PaymentActionViewHolder {
         return PaymentActionViewHolder(
-            LayoutInflater.from(parent.context).inflate(LAYOUT_ID, parent, false), invokeAction
+            LayoutInflater.from(parent.context).inflate(LAYOUT_ID, parent, false),
+            invokeAction
         )
     }
 
@@ -28,10 +29,14 @@ class PaymentTransactionActionAdapter(
         val view: View,
         val invokeAction: (TransactionActionType) -> Unit
     ) : RecyclerView.ViewHolder(view) {
+
+        private val binding = ItemTransactionActionListItemBinding.bind(view)
         fun bind(model: TransactionActionType) {
-            view.tvActionTitle.text = model.actionName
-            view.ivAction.setImage(model.actionIcon)
-            view.setOnClickListener { invokeAction(model) }
+            binding.run {
+                tvActionTitle.text = model.actionName
+                ivAction.setImage(model.actionIcon)
+                root.setOnClickListener { invokeAction(model) }
+            }
         }
     }
 
@@ -39,5 +44,3 @@ class PaymentTransactionActionAdapter(
         private val LAYOUT_ID = R.layout.item_transaction_action_list_item
     }
 }
-
-

@@ -815,8 +815,8 @@ open class DiscoveryAnalytics(
             productMap[DIMENSION96] = getValueForDimension96(it, componentsItems.parentComponentId)
             productMap[DIMENSION38] = ""
             productMap[DIMENSION84] = ""
-            productMap[DIMENSION56] = isFulFillment.toString()
-            productMap[DIMENSION58] = warehouseId
+            productMap[DIMENSION56] = warehouseId
+            productMap[DIMENSION58] = isFulFillment.toString()
         }
         list.add(productMap)
 
@@ -1068,7 +1068,9 @@ open class DiscoveryAnalytics(
             PRODUCT_SPRINT_SALE_ITEM -> PRODUCT_SPRINT_SALE
             PRODUCT_SPRINT_SALE_CAROUSEL_ITEM -> PRODUCT_SPRINT_SALE_CAROUSEL
             PRODUCT_CARD_COLUMN_LIST -> PRODUCT_CARD_COLUMN_LIST
-            ComponentNames.ProductCardSingleItem.componentName -> ComponentNames.ProductCardSingle.componentName
+            ComponentNames.ProductCardSingleItem.componentName,
+            ComponentNames.ProductCardSingleItemReimagine.componentName -> ComponentNames.ProductCardSingle.componentName
+
             else -> EMPTY_STRING
         }
     }
@@ -1110,8 +1112,8 @@ open class DiscoveryAnalytics(
                     "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
                 listMap[DIMENSION38] = ""
                 listMap[DIMENSION84] = ""
-                listMap[DIMENSION56] = isFulFillment.toString()
-                listMap[DIMENSION58] = warehouseId
+                listMap[DIMENSION56] = warehouseId
+                listMap[DIMENSION58] = isFulFillment.toString()
             }
             list.add(listMap)
 

@@ -127,7 +127,7 @@ class CategoryAnalytic @Inject constructor(
     // Tracker ID: 44678
     fun sendClickSearchBarEvent (
         categoryIdL1: String,
-        warehouseId: String
+        warehouseIds: String
     ) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
@@ -135,7 +135,7 @@ class CategoryAnalytic @Inject constructor(
             .setEventCategory(EVENT_CATEGORY_TOP_NAV_CATEGORY_PAGE_L1)
             .setEventLabel(categoryIdL1)
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_SEARCH_BAR)
-            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()
@@ -145,7 +145,7 @@ class CategoryAnalytic @Inject constructor(
     // Tracker ID: 44680
     fun sendClickCartButtonEvent(
         categoryIdL1: String,
-        warehouseId: String
+        warehouseIds: String
     ) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
@@ -153,7 +153,7 @@ class CategoryAnalytic @Inject constructor(
             .setEventCategory(EVENT_CATEGORY_TOP_NAV_CATEGORY_PAGE_L1)
             .setEventLabel(categoryIdL1)
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_CART_BUTTON)
-            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()
@@ -163,7 +163,7 @@ class CategoryAnalytic @Inject constructor(
     // Tracker ID: 44681
     fun sendClickWidgetChooseAddressEvent(
         categoryIdL1: String,
-        warehouseId: String
+        warehouseIds: String
     ) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
@@ -171,7 +171,7 @@ class CategoryAnalytic @Inject constructor(
             .setEventCategory(EVENT_CATEGORY_TOP_NAV_CATEGORY_PAGE_L1)
             .setEventLabel(categoryIdL1)
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_CHOOSE_ADDRESS_WIDGET)
-            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()

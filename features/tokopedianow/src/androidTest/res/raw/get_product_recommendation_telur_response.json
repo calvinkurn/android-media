@@ -1,0 +1,760 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "p8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d",
+        "source": "custom",
+        "title": "Terlaris hari ini",
+        "subtitle": "",
+        "foreignTitle": "Recommendation for you",
+        "widgetUrl": "",
+        "pageName": "best_seller_tokonow",
+        "seeMoreAppLink": "tokopedia://rekomendasi/tokonow/0/?ref\u003dbest_seller_tokonow\u0026category_id\u003d4812",
+        "layoutType": "infinite-atc",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": false
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          },
+          "endDate": ""
+        },
+        "recommendation": [
+          {
+            "id": 1928749043,
+            "name": "Telur Ayam Negeri 10 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "url": "https://www.tokopedia.com/now/telur-ayam-negeri-10-pcs",
+            "appUrl": "tokopedia://product/1928749043",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4820\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928749043\u0026pos\u003d1\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/telur-ayam-negeri-10-pcs?catid4820\u003d%26ref\u003dbest_seller_tokonow_pa1_po1%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/23/b1ebadd1-d9aa-409b-8a87-40169832eb31.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/23/b1ebadd1-d9aa-409b-8a87-40169832eb31.png",
+            "price": "Rp21.900",
+            "priceInt": 21900,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 135,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4820,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "100rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 1%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 1%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 48938,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 135,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2117143718,
+            "name": "Telur Puyuh 25 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Puyuh",
+            "url": "https://www.tokopedia.com/now/telur-puyuh-25-pcs",
+            "appUrl": "tokopedia://product/2117143718",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4824\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d2117143718\u0026pos\u003d2\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/telur-puyuh-25-pcs?catid4824\u003d%26ref\u003dbest_seller_tokonow_pa1_po2%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/11/9/5611e1a7-b4b7-426a-a2d7-13eec9c21e87.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/11/9/5611e1a7-b4b7-426a-a2d7-13eec9c21e87.jpg",
+            "price": "Rp16.500",
+            "priceInt": 16500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 17,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4824,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 8907,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 17,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2117143720,
+            "name": "Telur Asin Mentah 4 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Bebek",
+            "url": "https://www.tokopedia.com/now/telur-asin-mentah-4-pcs",
+            "appUrl": "tokopedia://product/2117143720",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d5121\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d2117143720\u0026pos\u003d3\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/telur-asin-mentah-4-pcs?catid5121\u003d%26ref\u003dbest_seller_tokonow_pa1_po3%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/81848e08-400c-4e87-a646-4d4d11379f8e.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/81848e08-400c-4e87-a646-4d4d11379f8e.jpg",
+            "price": "Rp17.500",
+            "priceInt": 17500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 12,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 5121,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "7rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 2315,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 12,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2117143721,
+            "name": "Telur Ayam Negeri Omega 3 15 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "url": "https://www.tokopedia.com/now/telur-ayam-negeri-omega-3-15-pcs",
+            "appUrl": "tokopedia://product/2117143721",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4820\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d2117143721\u0026pos\u003d4\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/telur-ayam-negeri-omega-3-15-pcs?catid4820\u003d%26ref\u003dbest_seller_tokonow_pa1_po4%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/14/7b0f7a2e-7608-47fb-9c37-ab97ba4415ec.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/14/7b0f7a2e-7608-47fb-9c37-ab97ba4415ec.png",
+            "price": "Rp33.500",
+            "priceInt": 33500,
+            "discountPercentage": 7,
+            "slashedPrice": "Rp36.000",
+            "slashedPriceInt": 36000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 51,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4820,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "100rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 7%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 8%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 8%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 1%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 64064,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 51,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2117154819,
+            "name": "Telur Ayam Negeri 15 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "url": "https://www.tokopedia.com/now/telur-ayam-negeri-15-pcs",
+            "appUrl": "tokopedia://product/2117154819",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4820\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d2117154819\u0026pos\u003d5\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/telur-ayam-negeri-15-pcs?catid4820\u003d%26ref\u003dbest_seller_tokonow_pa1_po5%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/17/f41ab516-b3b4-4267-9230-35a4f7433eb6.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/17/f41ab516-b3b4-4267-9230-35a4f7433eb6.jpg",
+            "price": "Rp29.500",
+            "priceInt": 29500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 191,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4820,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "100rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 1%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 46900,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 191,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2117154865,
+            "name": "Telur Ayam Kampung 15 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "url": "https://www.tokopedia.com/now/telur-ayam-kampung-15-pcs",
+            "appUrl": "tokopedia://product/2117154865",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4820\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d2117154865\u0026pos\u003d6\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/telur-ayam-kampung-15-pcs?catid4820\u003d%26ref\u003dbest_seller_tokonow_pa1_po6%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/8/29/0399dcab-c240-421a-b446-20e6a9f549c4.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/8/29/0399dcab-c240-421a-b446-20e6a9f549c4.jpg",
+            "price": "Rp41.280",
+            "priceInt": 41280,
+            "discountPercentage": 4,
+            "slashedPrice": "Rp43.000",
+            "slashedPriceInt": 43000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 19,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4820,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 7646,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 19,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2117154874,
+            "name": "Telur Ayam Kampung Omega 3 15 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "url": "https://www.tokopedia.com/now/telur-ayam-kampung-omega-3-15-pcs",
+            "appUrl": "tokopedia://product/2117154874",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4820\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d2117154874\u0026pos\u003d7\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/telur-ayam-kampung-omega-3-15-pcs?catid4820\u003d%26ref\u003dbest_seller_tokonow_pa1_po7%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/22/5060cc17-30cf-4d97-90b8-e629cd4ec891.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/22/5060cc17-30cf-4d97-90b8-e629cd4ec891.png",
+            "price": "Rp45.000",
+            "priceInt": 45000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 39,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4820,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "50rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 15259,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 39,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6294602594,
+            "name": "Ayyomi Telur Ayam Kampung Omega 3 6 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "url": "https://www.tokopedia.com/now/ayyomi-telur-ayam-kampung-omega-3-6-pcs",
+            "appUrl": "tokopedia://product/6294602594",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4820\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d6294602594\u0026pos\u003d8\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/ayyomi-telur-ayam-kampung-omega-3-6-pcs?catid4820\u003d%26ref\u003dbest_seller_tokonow_pa1_po8%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/9/20/12377928-b000-409b-96fd-c1ad9915d850.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/9/20/12377928-b000-409b-96fd-c1ad9915d850.jpg",
+            "price": "Rp29.000",
+            "priceInt": 29000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 6,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4820,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "4rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 925,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 6,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6782053580,
+            "name": "Ayyomi Telur Ayam Kampung Eggcellent 9 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "url": "https://www.tokopedia.com/now/ayyomi-telur-ayam-kampung-eggcellent-9-pcs",
+            "appUrl": "tokopedia://product/6782053580",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4820\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d6782053580\u0026pos\u003d9\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/ayyomi-telur-ayam-kampung-eggcellent-9-pcs?catid4820\u003d%26ref\u003dbest_seller_tokonow_pa1_po9%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/10/19/5b24cf3c-e111-4533-874b-c93092dec71a.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/10/19/5b24cf3c-e111-4533-874b-c93092dec71a.jpg",
+            "price": "Rp44.900",
+            "priceInt": 44900,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 6,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4820,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "4rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 831,
+            "ratingAverage": "5.0",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 6,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 7734545678,
+            "name": "Telur Ayam Negeri Low Cholesterol 10 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "url": "https://www.tokopedia.com/now/telur-ayam-negeri-low-cholesterol-10-pcs",
+            "appUrl": "tokopedia://product/7734545678",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4820\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d7734545678\u0026pos\u003d10\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/telur-ayam-negeri-low-cholesterol-10-pcs?catid4820\u003d%26ref\u003dbest_seller_tokonow_pa1_po10%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/9/d9931de4-ec20-489f-86a1-7ca3fc61ad82.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/9/d9931de4-ec20-489f-86a1-7ca3fc61ad82.png",
+            "price": "Rp28.800",
+            "priceInt": 28800,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 6,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4820,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "4rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 1058,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 6,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 7956618759,
+            "name": "Ayyomi Telur Ayam Negeri Omega Premium Eggarnic 10 pcs",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "url": "https://www.tokopedia.com/now/ayyomi-telur-ayam-negeri-omega-premium-eggarnic-10-pcs",
+            "appUrl": "tokopedia://product/7956618759",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4820\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d7956618759\u0026pos\u003d11\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/ayyomi-telur-ayam-negeri-omega-premium-eggarnic-10-pcs?catid4820\u003d%26ref\u003dbest_seller_tokonow_pa1_po11%26src\u003dr3top_selling_unique_user\u0026tid\u003dp8W6VQE7FGHPCXSHPKE_ijLfuQU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1701152083\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/2/13/9c1b0372-38f0-410e-8263-79c807f0d72f.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/2/13/9c1b0372-38f0-410e-8263-79c807f0d72f.jpg",
+            "price": "Rp38.800",
+            "priceInt": 38800,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 6,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4820,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "3rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 707,
+            "ratingAverage": "5.0",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 6,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -24,6 +24,8 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.digital.home.R as digitalhomeR
 
@@ -79,9 +81,17 @@ class RechargeHomepageTodoWidgetAdapter(
         )
 
         fun removeItem(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
-            baseAdapter.removeElement(element)
-            if (baseAdapter.itemCount < Int.ONE) {
-                hideTitle()
+            try {
+                val position = baseAdapter.list.indexOf(element)
+                baseAdapter.list.remove(element)
+                baseAdapter.notifyItemRemoved(position)
+                baseAdapter.notifyItemRangeChanged(position, baseAdapter.list.size)
+                if (baseAdapter.itemCount < Int.ONE) {
+                    hideTitle()
+                }
+            } catch (e: UnsupportedOperationException) {
+                Timber.d(e)
+                showToasterRemoveItemError()
             }
         }
 
@@ -92,6 +102,17 @@ class RechargeHomepageTodoWidgetAdapter(
         private fun hideTitle() {
             with(binding) {
                 titleTodoWidget.hide()
+            }
+        }
+
+        private fun showToasterRemoveItemError() {
+            binding.root.let {
+                Toaster.build(
+                    it,
+                    it.context.getString(digitalhomeR.string.recharge_home_remove_item_failed),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
             }
         }
 

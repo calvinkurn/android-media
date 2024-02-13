@@ -3,7 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.fla
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.discovery2.databinding.DiscoveryFlashSaleTokoTabsBinding
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.flashsaletoko.FlashSaleTokoTabMapper.mapToShopTabDataModel
@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.home_component.widget.shop_tab.ShopTabDataModel
 import com.tokopedia.home_component.widget.shop_tab.ShopTabListener
+import com.tokopedia.home_component.widget.shop_tab.ShopTabView
 
 class FlashSaleTokoTabViewHolder(
     itemView: View,
@@ -20,7 +21,7 @@ class FlashSaleTokoTabViewHolder(
 
     private var viewModel: FlashSaleTokoTabViewModel? = null
 
-    private val binding = DiscoveryFlashSaleTokoTabsBinding.bind(itemView)
+    private val tab = itemView.findViewById<ShopTabView>(R.id.tab)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as FlashSaleTokoTabViewModel
@@ -34,7 +35,8 @@ class FlashSaleTokoTabViewHolder(
         super.onViewAttachedToWindow()
 
         viewModel?.getTabLiveData()?.observe(fragment.viewLifecycleOwner) { components ->
-            binding.tab.setShopTabs(components.mapToShopTabDataModel(), this)
+            val isFestiveApplied = viewModel?.component?.isBackgroundPresent ?: false
+            tab.setShopTabs(components.mapToShopTabDataModel(isFestiveApplied), this)
         }
     }
 
@@ -55,6 +57,9 @@ class FlashSaleTokoTabViewHolder(
 
         val position = updateCurrentTabPosition(element)
         trackTabClick(position)
+    }
+
+    override fun onShopTabImpressed(element: ShopTabDataModel) {
     }
 
     private fun updateCurrentTabPosition(element: ShopTabDataModel): Int {

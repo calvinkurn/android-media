@@ -184,6 +184,7 @@ class MerchantPageFragment :
     private var currentPromoName: String? = null
     private var hasAppliedProductRendered = false
     private var isAbleToUpdateQuantity = false
+    private var shouldLoadFromOnResume = true
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
@@ -273,6 +274,9 @@ class MerchantPageFragment :
     }
 
     override fun onDestroyView() {
+        removeBottomSheets()
+        binding?.rvProductList?.adapter = null
+        binding?.rvMerchantInfoCarousel?.adapter = null
         super.onDestroyView()
         binding = null
         currentPromoName = null
@@ -302,7 +306,9 @@ class MerchantPageFragment :
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
         )
         hasAppliedProductRendered = false
-        applySelectedProducts()
+        if (shouldLoadFromOnResume) {
+            applySelectedProducts()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -758,6 +764,7 @@ class MerchantPageFragment :
                 }
                 UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
                     if (it.source == SOURCE) {
+                        shouldLoadFromOnResume = false
                         onSuccessAddCart(it.data?.getSuccessAddToCartResultPair())
                     }
                 }
@@ -1066,9 +1073,7 @@ class MerchantPageFragment :
     }
 
     private fun renderProductList(productListItems: List<ProductListItem>) {
-        binding?.rvProductList?.post {
-            productListAdapter?.setProductListItems(productListItems)
-        }
+        productListAdapter?.setProductListItems(productListItems)
     }
 
     private fun scrollToCategorySection(positionItem: Int) {
@@ -1142,6 +1147,7 @@ class MerchantPageFragment :
     private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
         hideKeyboard()
         customOrderDetailBottomSheet?.dismiss()
+        customOrderDetailBottomSheet = null
         viewModel.productMap[productUiModel.id] = cardPositions
         val bundle = Bundle().apply {
             putInt(
@@ -1663,6 +1669,8 @@ class MerchantPageFragment :
         onScrollChangedListenerList.forEach {
             view?.viewTreeObserver?.removeOnScrollChangedListener(it)
         }
+        productListAdapter?.removeListeners()
+        carouselAdapter?.removeListener()
     }
 
     private fun goToPromoPage() {
@@ -1699,6 +1707,7 @@ class MerchantPageFragment :
                 if (isSameCustomProductExist || isMultipleCustomProductMade) {
                     showCustomOrderDetailBottomSheet(productUiModel, this)
                 }
+                shouldLoadFromOnResume = true
             }
         }
     }
@@ -1777,6 +1786,28 @@ class MerchantPageFragment :
                 }
             }
         }
+    }
+
+    private fun removeBottomSheets() {
+        if (universalShareBottomSheet?.isVisible == true) {
+            universalShareBottomSheet?.dismiss()
+        }
+        universalShareBottomSheet = null
+
+        if (merchantInfoBottomSheet?.isVisible == true) {
+            merchantInfoBottomSheet?.dismiss()
+        }
+        merchantInfoBottomSheet = null
+
+        if (orderNoteBottomSheet?.isVisible == true) {
+            orderNoteBottomSheet?.dismiss()
+        }
+        orderNoteBottomSheet = null
+
+        if (customOrderDetailBottomSheet?.isVisible == true) {
+            customOrderDetailBottomSheet?.dismiss()
+        }
+        customOrderDetailBottomSheet = null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -137,6 +137,10 @@ class ProductCardCompactView @JvmOverloads constructor(
             progressBarLabel = model.progressBarLabel,
             progressBarPercentage = model.progressBarPercentage
         )
+        initNowUSPTypography(
+            labelGroup = model.getNowUSPLabelGroup(),
+            isFlashSale = model.isFlashSale()
+        )
     }
 
     private fun LayoutProductCardCompactViewBinding.initImageFilterView(
@@ -324,6 +328,21 @@ class ProductCardCompactView @JvmOverloads constructor(
         }
     }
 
+    private fun LayoutProductCardCompactViewBinding.initNowUSPTypography(
+        labelGroup: LabelGroup?,
+        isFlashSale: Boolean
+    ) {
+        nowUspTypography.showIfWithBlock(labelGroup != null) {
+            labelGroup?.let { labelGroup ->
+                text = labelGroup.title
+                setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
+                if(isFlashSale) {
+                    adjustNowUSPConstraint()
+                }
+            }
+        }
+    }
+
     private fun LayoutProductCardCompactViewBinding.initWishlistButton(
         isOos: Boolean,
         isShown: Boolean,
@@ -413,6 +432,20 @@ class ProductCardCompactView @JvmOverloads constructor(
                 ConstraintSet.BOTTOM
             )
         }
+
+        constraintSet.applyTo(root)
+    }
+
+    private fun LayoutProductCardCompactViewBinding.adjustNowUSPConstraint() {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(root)
+
+        constraintSet.connect(
+            nowUspTypography.id,
+            ConstraintSet.BOTTOM,
+            progressBarViewStub.id,
+            ConstraintSet.TOP
+        )
 
         constraintSet.applyTo(root)
     }

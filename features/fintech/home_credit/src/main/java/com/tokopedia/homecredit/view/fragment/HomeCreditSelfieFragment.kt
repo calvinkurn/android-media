@@ -13,7 +13,7 @@ import android.widget.ImageView
 import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.controls.Facing
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithCacheData
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.homecredit.R
 import com.tokopedia.homecredit.applink.Constants
@@ -87,7 +87,7 @@ class HomeCreditSelfieFragment : HomeCreditBaseCameraFragment() {
                 cameraOverlayImage?.visibility = View.GONE
             } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
                 cameraOverlayImage?.let {
-                    ImageHandler.loadImageAndCache(cameraOverlayImage, cutOutImgUrl)
+                    cameraOverlayImage.loadImageWithCacheData(cutOutImgUrl)
                 }
             }
         }

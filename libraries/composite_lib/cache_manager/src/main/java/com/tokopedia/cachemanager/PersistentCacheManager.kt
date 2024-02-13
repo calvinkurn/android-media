@@ -24,27 +24,42 @@ import com.tokopedia.cachemanager.repository.PersistentCacheRepository
  * ==============================
  * Use SaveInstanceCacheManager instead, because the value will automatically deleted when we get th value.
  *
+ * HOW TO LISTEN TO CHANGED VALUES
+ * PersistentCacheManager.get(context).getFlow("KEY_DB",
+ *   MyObject::class.java,
+ *   MyObject())
+ * or
+ * PersistentCacheManager.get(context).getFlow("KEY_DB") if the object is string
  */
 class PersistentCacheManager(context: Context) : CacheManager(context) {
-
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        lateinit var instance: PersistentCacheManager
-
-        @JvmStatic
-        fun init(context: Context) {
-            PersistentCacheManager(context)
-        }
-    }
-
-    init {
-        instance = this
-    }
-
-    override fun createRepository(context: Context) =
-        PersistentCacheRepository(context.applicationContext)
 
     constructor(context: Context, id: String? = null) : this(context) {
         this.id = id
     }
+
+    companion object {
+        /**
+         * instance for persistentCacheManager with id null
+         */
+        @SuppressLint("StaticFieldLeak")
+        lateinit var instance: PersistentCacheManager
+
+        @JvmStatic
+        fun init(context: Context):PersistentCacheManager {
+            return PersistentCacheManager(context).also {
+                instance = it
+            }
+        }
+    }
+
+    init {
+        if (id == null) {
+            instance = this
+        }
+    }
+
+    override fun createRepository(context: Context): PersistentCacheRepository {
+        return PersistentCacheRepository.create(context.applicationContext)
+    }
+
 }

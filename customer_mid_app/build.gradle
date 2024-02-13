@@ -136,7 +136,6 @@ dependencies {
     implementation rootProject.ext.firebase.analytics
     implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.networkDependencies.converterGson
-    implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
@@ -196,7 +195,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
     implementation projectOrAar(rootProject.ext.features.commonEPharmacy)
     implementation projectOrAar(rootProject.ext.libraries.oms)
-    implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.travelCalendar)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
@@ -241,6 +239,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.agerestriction)
     implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
     implementation projectOrAar(rootProject.ext.features.scpRewardsWidgets)
+    implementation projectOrAar(rootProject.ext.features.targetedticker)
+
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.features.developerOptions)
     } else {
@@ -335,8 +335,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.rxAndroid
-    implementation rootProject.ext.miscDependencies.rxJava
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
@@ -351,8 +349,6 @@ dependencies {
     })
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
-    testImplementation rootProject.ext.miscDependencies.rxJava
-    androidTestImplementation rootProject.ext.miscDependencies.rxJava
     androidTestImplementation rootProject.ext.testDependencies.spoon
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {

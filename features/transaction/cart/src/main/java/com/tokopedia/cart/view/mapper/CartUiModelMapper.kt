@@ -10,7 +10,6 @@ import com.tokopedia.cart.data.model.response.promo.PromoEmptyCartInfo
 import com.tokopedia.cart.data.model.response.promo.PromoErrorDetail
 import com.tokopedia.cart.data.model.response.promo.PromoMessageInfo
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.AddOn
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.AvailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
@@ -18,21 +17,21 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDetail
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.GiftingAddOn
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.GroupShopCart
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Product
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.PromoSummary
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Shop
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShoppingSummary
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
-import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.view.uimodel.CartAddOnData
 import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartAddOnWidgetData
-import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cart.view.uimodel.CartBmGmTickerData
+import com.tokopedia.cart.view.uimodel.CartDetailInfo
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cart.view.uimodel.CartGroupBmGmHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
+import com.tokopedia.cart.view.uimodel.CartProductBenefitData
+import com.tokopedia.cart.view.uimodel.CartPurchaseBenefitData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartShopCoachmarkPlusData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
@@ -40,18 +39,17 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
-import com.tokopedia.cart.view.uimodel.PromoSummaryData
-import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_ACTIVE
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.constant.CartConstant
-import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.BebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
@@ -80,16 +78,12 @@ object CartUiModelMapper {
         )
     }
 
-    fun mapChooseAddressUiModel(): CartChooseAddressHolderData {
-        return CartChooseAddressHolderData()
-    }
-
     fun mapCartEmptyUiModel(context: Context?): CartEmptyHolderData {
         return CartEmptyHolderData(
             title = context?.getString(R.string.checkout_module_keranjang_belanja_kosong_new)
                 ?: "",
             desc = context?.getString(R.string.checkout_empty_cart_sub_message_new) ?: "",
-            imgUrl = CartConstant.CART_EMPTY_DEFAULT_IMG_URL,
+            imgUrl = CartConstant.CART_EMPTY_NEW_DEFAULT_IMG_URL,
             btnText = context?.getString(R.string.checkout_module_mulai_belanja) ?: ""
         )
     }
@@ -124,21 +118,6 @@ object CartUiModelMapper {
         )
     }
 
-    fun mapTickerErrorUiModel(cartData: CartData): CartItemTickerErrorHolderData {
-        var errorItemCount = 0
-        cartData.unavailableSections.forEach { unavailableSection ->
-            unavailableSection.unavailableGroups.forEach { unavailableGroup ->
-                unavailableGroup.cartDetails.forEach { cartDetail ->
-                    errorItemCount += cartDetail.products.size
-                }
-            }
-        }
-
-        return CartItemTickerErrorHolderData(
-            errorProductCount = errorItemCount
-        )
-    }
-
     fun mapAvailableGroupUiModel(cartData: CartData): List<Any> {
         val cartGroupHolderDataList = mutableListOf<Any>()
         val firstPlusAvailableGroupIndex =
@@ -148,10 +127,15 @@ object CartUiModelMapper {
         cartData.availableSection.availableGroupGroups.forEachIndexed { index, availableGroup ->
             val productUiModelList = mutableListOf<CartItemHolderData>()
             val groupShopCount = availableGroup.groupShopCartData.count()
+            var cartGroupBmGmHolderData = CartGroupBmGmHolderData()
             availableGroup.groupShopCartData.forEachIndexed { shopIndex, availableShop ->
                 val shopUiModel = mapGroupShop(availableShop.shop, availableShop.cartDetails)
-                availableShop.cartDetails.forEach { cartDetail ->
-                    cartDetail.products.forEachIndexed { cartDetailIndex, product ->
+                availableShop.cartDetails.forEachIndexed { cartDetailIndex, cartDetail ->
+                    cartDetail.products.forEachIndexed { productIndex, product ->
+                        val shouldShowBmGmBottomDivider =
+                            productIndex == cartDetail.products.lastIndex &&
+                                cartDetailIndex < availableShop.cartDetails.lastIndex &&
+                                cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM
                         val productUiModel = mapProductUiModel(
                             cartData = cartData,
                             cartDetail = cartDetail,
@@ -159,11 +143,21 @@ object CartUiModelMapper {
                             group = availableGroup,
                             unavailableSection = null,
                             availableShop = availableShop,
-                            shopData = shopUiModel
+                            shopData = shopUiModel,
+                            shouldShowBmGmBottomDivider = shouldShowBmGmBottomDivider
                         ).apply {
-                            isShopShown = availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0
+                            isShopShown =
+                                availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0 && productIndex == 0
                         }
                         productUiModelList.add(productUiModel)
+                    }
+
+                    if (cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+                        cartGroupBmGmHolderData = mapGroupBmGmHolder(
+                            availableGroup.cartString,
+                            cartDetail,
+                            availableShop.cartStringOrder
+                        )
                     }
                 }
                 productUiModelList.lastOrNull()?.isFinalItem = shopIndex == groupShopCount - 1
@@ -193,7 +187,9 @@ object CartUiModelMapper {
                     availableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                 maximumWeightWording =
                     availableGroup.groupShopCartData.getOrNull(0)?.shop?.maximumWeightWording ?: ""
-                maximumShippingWeight = availableGroup.groupShopCartData.getOrNull(0)?.shop?.maximumShippingWeight ?: 0.0
+                maximumShippingWeight =
+                    availableGroup.groupShopCartData.getOrNull(0)?.shop?.maximumShippingWeight
+                        ?: 0.0
                 if (availableGroup.checkboxState) {
                     isAllSelected = availableGroup.checkboxState
                     isPartialSelected = false
@@ -242,6 +238,7 @@ object CartUiModelMapper {
                     } else {
                         ""
                     }
+                this.cartGroupBmGmHolderData = cartGroupBmGmHolderData
             }
             cartGroupHolderDataList.add(groupUiModel)
             if (!groupUiModel.isCollapsed) {
@@ -317,35 +314,18 @@ object CartUiModelMapper {
         unavailableSectionList.add(disabledItemHeaderUiModel)
 
         var showAccordion = false
-        if (cartData.unavailableSections.size > 1) {
+
+        val totalUnavailableProduct =
+            cartData.unavailableSections.sumOf { unavailableSection -> unavailableSection.productsCount }
+
+        if (totalUnavailableProduct > 3) {
             showAccordion = true
         }
 
-        cartData.unavailableSections.forEach { unavailableSection ->
+        cartData.unavailableSections.forEachIndexed { sectionIndex, unavailableSection ->
             val disabledReasonHolderData = mapDisabledReasonUiModel(unavailableSection)
             unavailableSectionList.add(disabledReasonHolderData)
-            if (!showAccordion && unavailableSection.unavailableGroups.isNotEmpty()) {
-                if (unavailableSection.unavailableGroups.size > 1) {
-                    showAccordion = true
-                } else {
-                    loop@ for (unavailableGroup in unavailableSection.unavailableGroups) {
-                        if (unavailableGroup.cartDetails.size > 1) {
-                            showAccordion = true
-                            break@loop
-                        } else {
-                            innerLoop@ for (cartDetail in unavailableGroup.cartDetails) {
-                                if ((cartDetail.bundleDetail.bundleId.isBlank() || cartDetail.bundleDetail.bundleId == "0") &&
-                                    cartDetail.products.size > 1
-                                ) {
-                                    showAccordion = true
-                                    break@loop
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            unavailableSection.unavailableGroups.forEach { unavailableGroup ->
+            unavailableSection.unavailableGroups.forEachIndexed { groupIndex, unavailableGroup ->
                 val productUiModelList = mutableListOf<CartItemHolderData>()
                 val shopUiModel = mapGroupShop(unavailableGroup.shop, unavailableGroup.cartDetails)
                 unavailableGroup.cartDetails.forEach { cartDetail ->
@@ -357,11 +337,19 @@ object CartUiModelMapper {
                             group = unavailableGroup,
                             unavailableSection = unavailableSection,
                             availableShop = null,
-                            shopData = shopUiModel
+                            shopData = shopUiModel,
+                            shouldShowBmGmBottomDivider = false
                         )
                         productUiModelList.add(productUiModel)
                     }
-                    productUiModelList.lastOrNull()?.isFinalItem = true
+                }
+                productUiModelList.lastOrNull()?.apply {
+                    isFinalItem = true
+                    showErrorBottomDivider =
+                        sectionIndex != cartData.unavailableSections.lastIndex ||
+                        (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
+                    shouldDivideHalfErrorBottomDivider =
+                        showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
                 }
                 val groupUiModel = CartGroupHolderData().apply {
                     this.productUiModelList = productUiModelList
@@ -393,9 +381,8 @@ object CartUiModelMapper {
 //                    shopTypeInfo = unavailableGroup.shop.shopTypeInfo
                     isAllSelected = false
                     isPartialSelected = false
-                    isCollapsible =
-                        isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 &&
-                        productUiModelList.size > 1
+                    isCollapsible = cartData.availableSection.availableGroupGroups.size > 1 &&
+                        productUiModelList.size > 3
                     isCollapsed = isCollapsible
                     isError = true
                     warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()
@@ -407,7 +394,7 @@ object CartUiModelMapper {
         }
 
         if (showAccordion) {
-            val accordionUiModel = mapDisabledAccordionUiModel(context, cartData)
+            val accordionUiModel = mapDisabledAccordionUiModel(context)
             unavailableSectionList.add(accordionUiModel)
 
             return Pair(unavailableSectionList, accordionUiModel)
@@ -427,7 +414,8 @@ object CartUiModelMapper {
         }
 
         return DisabledItemHeaderHolderData(
-            disabledItemCount = errorItemCount
+            disabledItemCount = errorItemCount,
+            isDividerShown = false
         )
     }
 
@@ -435,21 +423,19 @@ object CartUiModelMapper {
         return DisabledReasonHolderData().apply {
             title = unavailabeSection.title
             subTitle = unavailabeSection.unavailableDescription
+            productsCount = unavailabeSection.productsCount
+            showOutOfCoverageTitle = unavailabeSection.unavailableSectionCta.message
+            isShowOutOfCoverageAction = unavailabeSection.unavailableSectionCta.id != 0L
         }
     }
 
     private fun mapDisabledAccordionUiModel(
-        context: Context?,
-        cartData: CartData
+        context: Context?
     ): DisabledAccordionHolderData {
         return DisabledAccordionHolderData(
             isCollapsed = true,
-            showLessWording = cartData.unavailableSectionAction.find {
-                return@find it.id == Action.ACTION_SHOWLESS
-            }?.message ?: context?.getString(R.string.cart_default_wording_show_less) ?: "",
-            showMoreWording = cartData.unavailableSectionAction.find {
-                return@find it.id == Action.ACTION_SHOWMORE
-            }?.message ?: context?.getString(R.string.cart_default_wording_show_more) ?: ""
+            showLessWording = context?.getString(R.string.cart_new_default_wording_show_less) ?: "",
+            showMoreWording = context?.getString(R.string.cart_new_default_wording_show_more) ?: ""
         )
     }
 
@@ -460,7 +446,8 @@ object CartUiModelMapper {
         group: Any,
         unavailableSection: UnavailableSection?,
         availableShop: GroupShopCart?,
-        shopData: CartShopHolderData
+        shopData: CartShopHolderData,
+        shouldShowBmGmBottomDivider: Boolean
     ): CartItemHolderData {
         return CartItemHolderData().apply {
             when (group) {
@@ -501,6 +488,7 @@ object CartUiModelMapper {
             productId = product.productId
             productInformation = product.productInformation
             productInformationWithIcon = product.productInformationWithIcon
+            productTagInfo = product.productTagInfo
             productAlertMessage = product.productAlertMessage
             productPrice = product.productPrice
             productOriginalPrice = product.productOriginalPrice
@@ -603,12 +591,14 @@ object CartUiModelMapper {
             warehouseId = product.warehouseId
             bundleIds = product.bundleIds
             addOnsProduct = mapCartAddOnData(product.addOn)
+            showBundlePrice = cartData.showBundlePrice
+            cartBmGmTickerData = mapCartBmGmTickerData(cartDetail, shopData, productId)
+            showBmGmBottomDivider = shouldShowBmGmBottomDivider
         }
     }
 
     private fun mapCartAddOnData(addOn: AddOn): CartAddOnData {
         val arrayListAddOnProduct = ArrayList<CartAddOnProductData>()
-        val deselectedArrayListAddOnProduct = ArrayList<CartAddOnProductData>()
         addOn.addOnData.forEach {
             val cartAddOnProductData = CartAddOnProductData(
                 id = it.addonId,
@@ -618,21 +608,21 @@ object CartUiModelMapper {
                 price = it.price,
                 fixedQuantity = it.fixedQuantity
             )
-
-            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || it.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
-                arrayListAddOnProduct.add(cartAddOnProductData)
-            } else if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
-                deselectedArrayListAddOnProduct.add(cartAddOnProductData)
-            }
+            arrayListAddOnProduct.add(cartAddOnProductData)
         }
         return CartAddOnData().apply {
             listData = arrayListAddOnProduct
             widget = CartAddOnWidgetData(
-                wording = addOn.addOnWidget.wording,
+                title = addOn.addOnWidget.title,
+                price = "(${
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    addOn.addOnWidget.price,
+                    false
+                ).removeDecimalSuffix()
+                })",
                 leftIconUrl = addOn.addOnWidget.leftIconUrl,
                 rightIconUrl = addOn.addOnWidget.rightIconUrl
             )
-            deselectListData = deselectedArrayListAddOnProduct
         }
     }
 
@@ -673,7 +663,8 @@ object CartUiModelMapper {
             voucherOrders = mapListVoucherOrders(lastApplyPromoData.listVoucherOrders),
             additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
             message = mapMessageGlobalPromo(lastApplyPromoData.message),
-            benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo)
+            benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo),
+            userGroupMetadata = lastApplyPromoData.userGroupMetadata
         )
     }
 
@@ -742,7 +733,8 @@ object CartUiModelMapper {
             messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
             errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail),
             emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo),
-            usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries)
+            usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries),
+            bebasOngkirInfo = mapBebasOngkirInfo(promoAdditionalInfo.bebasOngkirInfo)
         )
     }
 
@@ -779,83 +771,10 @@ object CartUiModelMapper {
         }
     }
 
-    fun mapSummaryTransactionUiModel(cartData: CartData): SummaryTransactionUiModel {
-        return SummaryTransactionUiModel().apply {
-            totalWording = cartData.shoppingSummary.totalWording
-            discountTotalWording = cartData.shoppingSummary.discountTotalWording
-            paymentTotalWording = cartData.shoppingSummary.paymentTotalWording
-            promoWording = cartData.shoppingSummary.promoWording
-            sellerCashbackWording = cartData.shoppingSummary.sellerCashbackWording
-            listSummaryAddOns = mapSummariesAddOns(cartData.shoppingSummary.summaryAddOnList, cartData.availableSection.availableGroupGroups)
-        }
-    }
-
-    fun getShoppingSummaryAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>): HashMap<Int, String> {
-        val mapSummary = hashMapOf<Int, String>()
-        for (summaryItem in summariesItemList) {
-            mapSummary[summaryItem.type] = summaryItem.wording
-        }
-        return mapSummary
-    }
-
-    private fun mapSummariesAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
-        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
-        val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
-        var totalPriceAddOn: Double
-        shopLoop@ for (groupShop in availableGroupGroups) {
-            groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
-                cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {
-                    productLoop@ for (product in cartDetail.products) {
-                        addOnLoop@ for (addon in product.addOn.addOnData) {
-                            if (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
-                                val qtyAddOn = if (addon.fixedQuantity) 1 else product.productQuantity
-                                val finalQtyAddOn = if (countMapSummaries.containsKey(addon.type)) {
-                                    countMapSummaries[addon.type]?.second?.plus(qtyAddOn) ?: qtyAddOn
-                                } else {
-                                    qtyAddOn
-                                }
-                                val addOnPrice = qtyAddOn * addon.price
-                                totalPriceAddOn = if (countMapSummaries.containsKey(addon.type)) {
-                                    countMapSummaries[addon.type]?.first?.plus(addOnPrice) ?: addOnPrice
-                                } else {
-                                    addOnPrice
-                                }
-                                countMapSummaries[addon.type] = totalPriceAddOn to finalQtyAddOn
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        val mapSummary = getShoppingSummaryAddOns(summariesItemList)
-        for (entry in countMapSummaries) {
-            val addOnWording = mapSummary[entry.key]?.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
-            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
-            val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
-                wording = addOnWording ?: "",
-                type = entry.key,
-                qty = entry.value.second,
-                priceLabel = addOnPrice,
-                priceValue = entry.value.first
-            )
-            summaryAddOnList.add(summaryAddOn)
-        }
-        return summaryAddOnList
-    }
-
-    fun mapPromoSummaryUiModel(promoSummary: PromoSummary): PromoSummaryData {
-        return PromoSummaryData(
-            title = promoSummary.title,
-            details = promoSummary.details.map {
-                PromoSummaryDetailData(
-                    description = it.description,
-                    type = it.type,
-                    amountStr = it.amountStr,
-                    amount = it.amount,
-                    currencyDetailStr = it.currencyDetailStr
-                )
-            }.toMutableList()
+    private fun mapBebasOngkirInfo(bebasOngkirInfo: BebasOngkirInfo): LastApplyBebasOngkirInfoUiModel {
+        return LastApplyBebasOngkirInfoUiModel(
+            isBoUnstackEnabled = bebasOngkirInfo.isBoUnstackEnabled,
+            isUseBebasOngkirOnly = bebasOngkirInfo.isUseBebasOngkirOnly
         )
     }
 
@@ -879,49 +798,133 @@ object CartUiModelMapper {
         }
     }
 
-    fun mapSummariesAddOnsFromSelectedItems(summariesItemList: List<ShoppingSummary.SummaryAddOn>, selectedCartItemData: List<CartItemHolderData>): List<SummaryTransactionUiModel.SummaryAddOns> {
-        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
-        val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
-        var qtyAddOn: Int
-        var totalPriceAddOn: Double
-        for (cartItemData in selectedCartItemData) {
-            for (addOn in cartItemData.addOnsProduct.listData) {
-                if (addOn.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
-                    qtyAddOn = if (addOn.fixedQuantity) {
-                        1
-                    } else {
-                        if (countMapSummaries.containsKey(addOn.type)) {
-                            countMapSummaries[addOn.type]?.second?.plus(cartItemData.quantity) ?: cartItemData.quantity
-                        } else {
-                            cartItemData.quantity
+    private fun mapGroupBmGmHolder(
+        cartString: String,
+        cartDetail: CartDetail,
+        cartStringOrder: String
+    ): CartGroupBmGmHolderData {
+        return CartGroupBmGmHolderData(
+            hasBmGmOffer = true,
+            discountBmGmAmount = cartDetail.cartDetailInfo.bmgmData.totalDiscount,
+            offerId = cartDetail.cartDetailInfo.bmgmData.offerId,
+            offerJsonData = cartDetail.cartDetailInfo.bmgmData.offerJsonData,
+            cartBmGmGroupTickerCartString = "$cartString-${cartDetail.cartDetailInfo.bmgmData.offerId}",
+            bundleId = cartDetail.bundleDetail.bundleId.toLongOrZero(),
+            bundleGroupId = cartDetail.bundleDetail.bundleGroupId,
+            cartStringOrder = cartStringOrder
+        )
+    }
+
+    private fun checkNeedToShowTickerBmGm(cartDetail: CartDetail, productId: String): Boolean {
+        val isFirstIndexProduct = if (cartDetail.products.isNotEmpty()) {
+            cartDetail.products[0].productId == productId
+        } else {
+            false
+        }
+        return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM && isFirstIndexProduct
+    }
+
+    private fun checkNeedToShowBmGmDivider(cartDetail: CartDetail, productId: String): Boolean {
+        val isLastIndexProduct = if (cartDetail.products.isNotEmpty()) {
+            if (cartDetail.cartDetailInfo.bmgmData.isValidGiftPurchase()) {
+                false
+            } else {
+                cartDetail.products.last().productId == productId
+            }
+        } else {
+            true
+        }
+        return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM && !isLastIndexProduct
+    }
+
+    private fun mapCartBmGmTickerData(
+        cartDetail: CartDetail,
+        shopData: CartShopHolderData,
+        productId: String
+    ): CartBmGmTickerData {
+        val isLastProduct = cartDetail.products.last().productId == productId
+        return CartBmGmTickerData(
+            bmGmCartInfoData = mapBmGmProductData(cartDetail, shopData, isLastProduct),
+            isShowTickerBmGm = checkNeedToShowTickerBmGm(cartDetail, productId),
+            stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE,
+            isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId)
+        )
+    }
+
+    private fun mapBmGmProductData(
+        cartDetail: CartDetail,
+        shopData: CartShopHolderData,
+        isLastProduct: Boolean
+    ): CartDetailInfo {
+        if (cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+            val listTiersApplied = arrayListOf<CartDetailInfo.BmGmTierProductData>()
+            val listProductTiersApplied =
+                arrayListOf<CartDetailInfo.BmGmTierProductData.BmGmProductData>()
+            cartDetail.cartDetailInfo.bmgmData.tierProductList.forEach { tierProduct ->
+                tierProduct.listProduct.forEach { bmGmProduct ->
+                    loop@ for (product in cartDetail.products) {
+                        if (product.productId == bmGmProduct.productId) {
+                            listProductTiersApplied.add(
+                                CartDetailInfo.BmGmTierProductData.BmGmProductData(
+                                    cartId = bmGmProduct.cartId,
+                                    shopId = shopData.shopId,
+                                    productId = bmGmProduct.productId,
+                                    warehouseId = bmGmProduct.warehouseId,
+                                    qty = bmGmProduct.quantity,
+                                    finalPrice = bmGmProduct.priceBeforeBenefit,
+                                    checkboxState = product.isCheckboxState
+                                )
+                            )
+                            break@loop
                         }
                     }
-
-                    val qtyFixedAddons = if (addOn.fixedQuantity) 1 else cartItemData.quantity
-                    val addOnPrice = qtyFixedAddons * addOn.price
-                    totalPriceAddOn = if (countMapSummaries.containsKey(addOn.type)) {
-                        countMapSummaries[addOn.type]?.first?.plus(addOnPrice) ?: addOnPrice
-                    } else {
-                        addOnPrice
-                    }
-                    countMapSummaries[addOn.type] = totalPriceAddOn to qtyAddOn
                 }
-            }
-        }
 
-        val mapSummary = getShoppingSummaryAddOns(summariesItemList)
-        for (entry in countMapSummaries) {
-            val addOnWording = mapSummary[entry.key]?.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
-            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
-            val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
-                wording = addOnWording ?: "",
-                type = entry.key,
-                qty = entry.value.second,
-                priceLabel = addOnPrice,
-                priceValue = entry.value.first
+                val purchaseBenefitProducts = tierProduct.productsBenefit.map { product ->
+                    CartProductBenefitData(
+                        id = product.productId,
+                        name = product.productName,
+                        imageUrl = product.productImage,
+                        qty = product.quantity,
+                        originalPrice = product.originalPrice,
+                        finalPrice = product.finalPrice
+                    )
+                }.toMutableList()
+
+                val isShown =
+                    cartDetail.cartDetailInfo.bmgmData.isGiftWithPurchase() && tierProduct.productsBenefit.isNotEmpty() && isLastProduct
+
+                val purchaseBenefitData = CartPurchaseBenefitData(
+                    isShown = isShown,
+                    benefitWording = tierProduct.benefitWording,
+                    actionWording = tierProduct.actionWording,
+                    purchaseBenefitProducts = purchaseBenefitProducts
+                )
+
+                listTiersApplied.add(
+                    CartDetailInfo.BmGmTierProductData(
+                        tierId = tierProduct.tierId,
+                        listProduct = listProductTiersApplied,
+                        purchaseBenefitData = purchaseBenefitData
+                    )
+                )
+            }
+            return CartDetailInfo(
+                cartDetailType = cartDetail.cartDetailInfo.cartDetailType,
+                bmGmData = CartDetailInfo.BmGmData(
+                    offerId = cartDetail.cartDetailInfo.bmgmData.offerId,
+                    offerTypeId = cartDetail.cartDetailInfo.bmgmData.offerTypeId,
+                    offerName = cartDetail.cartDetailInfo.bmgmData.offerName,
+                    offerIcon = cartDetail.cartDetailInfo.bmgmData.offerIcon,
+                    offerMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage,
+                    offerLandingPageLink = cartDetail.cartDetailInfo.bmgmData.offerLandingPageLink,
+                    totalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount,
+                    offerJsonData = cartDetail.cartDetailInfo.bmgmData.offerJsonData
+                ),
+                bmGmTierProductList = listTiersApplied
             )
-            summaryAddOnList.add(summaryAddOn)
+        } else {
+            return CartDetailInfo()
         }
-        return summaryAddOnList
     }
 }

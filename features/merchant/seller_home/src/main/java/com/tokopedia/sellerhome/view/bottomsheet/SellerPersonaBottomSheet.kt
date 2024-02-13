@@ -17,11 +17,10 @@ import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.BaseBottomSh
 class SellerPersonaBottomSheet : BaseBottomSheet<BottomSheetSellerPersonaBinding>() {
 
     companion object {
-        fun getInstance(fm: FragmentManager): SellerPersonaBottomSheet {
-            return (fm.findFragmentByTag(TAG) as? SellerPersonaBottomSheet)
-                ?: SellerPersonaBottomSheet().apply {
-                    customPeekHeight = 0
-                }
+        fun getInstance(): SellerPersonaBottomSheet {
+            return SellerPersonaBottomSheet().apply {
+                customPeekHeight = 0
+            }
         }
 
         private const val TAG = "SellerPersonaBottomSheet"

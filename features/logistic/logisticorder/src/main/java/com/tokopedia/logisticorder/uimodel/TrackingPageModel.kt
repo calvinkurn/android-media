@@ -1,5 +1,6 @@
 package com.tokopedia.logisticorder.uimodel
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
@@ -63,14 +64,37 @@ data class TrackHistoryModel(
 data class PageModel(
     var additionalInfo: List<AdditionalInfoModel> = listOf(),
     var contactUsUrl: String = "",
-    var tickerUnificationTargets: List<TickerUnificationTargets> = listOf()
+    var targetedTickerParam: TargetedTickerParamModel = TargetedTickerParamModel()
 ) : Parcelable
 
 @Parcelize
-data class TickerUnificationTargets(
-    val type: String = "",
-    val values: List<String> = listOf()
-) : Parcelable
+data class TargetedTickerParamModel(
+    @SuppressLint("ParamFieldAnnotation")
+    val page: String = "",
+    @SuppressLint("ParamFieldAnnotation")
+    val target: List<Target> = listOf(),
+    @SuppressLint("ParamFieldAnnotation")
+    val template: Template = Template()
+) : Parcelable {
+
+    @Parcelize
+    data class Template(
+        @SuppressLint("ParamFieldAnnotation")
+        val contents: List<Content> = listOf()
+    ) : Parcelable {
+        @Parcelize
+        data class Content(
+            val key: String = "",
+            val value: String = ""
+        ) : Parcelable
+    }
+
+    @Parcelize
+    data class Target(
+        val type: String = "",
+        val values: List<String> = listOf()
+    ) : Parcelable
+}
 
 @Parcelize
 data class AdditionalInfoModel(

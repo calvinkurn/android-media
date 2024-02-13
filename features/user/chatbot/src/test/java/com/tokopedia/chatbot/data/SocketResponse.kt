@@ -1827,6 +1827,61 @@ object SocketResponse {
 }
     """
 
+    const val DYNAMIC_ATTACHMENT_111_SLOW_MODE = """
+        {
+    "code": 103,
+    "data": {
+        "msg_id": 3181924,
+        "from": "Tanya",
+        "from_uid": 5515973,
+        "from_user_name": "Tanya",
+        "from_role": "User",
+        "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/8/13/5515973/5515973_bf39448d-d1bd-410b-9e7b-b5acdf54555a.png",
+        "is_bot": true,
+        "reminder_ticker": null,
+        "is_opposite": true,
+        "to_uid": 5480593,
+        "message": {
+            "censored_reply": "",
+            "original_reply": "",
+            "timestamp": "2022-10-14T13:17:58.525513371+07:00",
+            "timestamp_fmt": "14 October 2022, 13:17 WIB",
+            "timestamp_unix": 1665728278525,
+            "timestamp_unix_nano": 1665728278525513000
+        },
+        "start_time": "2020-07-23T15:59:44.997841231+07:00",
+        "attachment_id": 1,
+        "attachment": {
+            "attributes": {
+                "dynamic_attachment": {
+                    "attribute": {
+                        "content_code": 111,
+                        "dynamic_content": "{\"is_using_slow_mode\": true,\"slow_mode_duration_in_seconds\": 3}",
+                        "render_target": "all",
+                        "user_id": 5480593
+                    },
+                    "fallback": {
+                        "html": "<div>Fallback</div>",
+                        "message": "Fallback"
+                    },
+                    "is_log_history": false
+                }
+            },
+            "fallback_attachment": {
+                "html": "<div></div>"
+            },
+            "id": 1,
+            "type": 34
+        },
+        "show_rating": false,
+        "rating_status": 0,
+        "to_buyer": true,
+        "client_connect_time": "0001-01-01T00:00:00Z",
+        "source": ""
+    }
+}
+    """
+
     const val DYNAMIC_ATTACHMENT_UNAVAILABLE = """
         {
     "code": 103,
@@ -1887,14 +1942,6 @@ object SocketResponse {
             .fromJson(
                 response,
                 ChatWebSocketResponse::class.java
-            )
-    }
-
-    fun getOldResponse(response: String): com.tokopedia.chatbot.websocket.ChatWebSocketResponse {
-        return GsonBuilder().create()
-            .fromJson(
-                response,
-                com.tokopedia.chatbot.websocket.ChatWebSocketResponse::class.java
             )
     }
 }

@@ -17,7 +17,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
-import com.tokopedia.fingerprint.util.FingerPrintUtil
+import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
@@ -468,7 +468,7 @@ class ShipmentViewModelCheckoutTest : BaseShipmentViewModelTest() {
             viewModel.generateCheckoutRequest()
 
         val mockContext = mockk<FragmentActivity>()
-        mockkObject(FingerPrintUtil)
+        mockkObject(FingerprintUtil)
         mockkObject(CheckoutFingerprintUtil)
         val fingerprintString = "abc"
         val publicKey = object : PublicKey {
@@ -487,7 +487,7 @@ class ShipmentViewModelCheckoutTest : BaseShipmentViewModelTest() {
         every { view.activity } returns mockContext
         every { CheckoutFingerprintUtil.getEnableFingerprintPayment(mockContext) } returns true
         every { CheckoutFingerprintUtil.getFingerprintPublicKey(mockContext) } returns publicKey
-        every { FingerPrintUtil.getPublicKey(publicKey) } returns fingerprintString
+        every { FingerprintUtil.getPublicKey(publicKey) } returns fingerprintString
 
         // When
         val checkoutParams =
@@ -517,7 +517,7 @@ class ShipmentViewModelCheckoutTest : BaseShipmentViewModelTest() {
             viewModel.generateCheckoutRequest()
 
         val mockContext = mockk<FragmentActivity>()
-        mockkObject(FingerPrintUtil)
+        mockkObject(FingerprintUtil)
         mockkObject(CheckoutFingerprintUtil)
         val fingerprintString = "abc"
         val publicKey = null

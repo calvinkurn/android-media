@@ -71,8 +71,7 @@ class MiniCartViewModel @Inject constructor(
     private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
     private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper,
     private val userSession: UserSessionInterface
-) :
-    BaseViewModel(executorDispatchers.main) {
+) : BaseViewModel(executorDispatchers.main) {
 
     companion object {
         const val TEMPORARY_PARENT_ID_PREFIX = "tmp_"
@@ -262,8 +261,8 @@ class MiniCartViewModel @Inject constructor(
                 response
             )
         }, onError = {
-            hideProductBundleRecomShimmering(miniCartListUiModel)
-        })
+                hideProductBundleRecomShimmering(miniCartListUiModel)
+            })
     }
 
     private fun showProductBundleRecomShimmering(miniCartListUiModel: MiniCartListUiModel) {
@@ -814,7 +813,8 @@ class MiniCartViewModel @Inject constructor(
                             quantity = miniCartItem.quantity.toString(),
                             notes = miniCartItem.notes,
                             warehouseId = miniCartItem.warehouseId,
-                            attribution = miniCartItem.attribution
+                            attribution = miniCartItem.attribution,
+                            shopName = miniCartItem.shopName
                         )
                     )
                 }
@@ -837,7 +837,8 @@ class MiniCartViewModel @Inject constructor(
                             quantity = visitable.productQty.toString(),
                             notes = visitable.productNotes,
                             warehouseId = visitable.warehouseId,
-                            attribution = visitable.attribution
+                            attribution = visitable.attribution,
+                            shopName = visitable.shopName
                         )
                     )
                 }

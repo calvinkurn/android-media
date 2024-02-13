@@ -20,6 +20,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.broadmatch.RelatedDataView
@@ -49,6 +50,7 @@ class ProductViewModelMapper(
         isLocalSearchRecommendation: Boolean,
         externalReference: String,
         newCardType: String = "",
+        isEnableAdultContent: Boolean = true,
     ): ProductDataView {
         val productDataView = ProductDataView()
         val productListType =
@@ -78,6 +80,7 @@ class ProductViewModelMapper(
             externalReference,
             searchProductModel.keywordIntention(isUseAceSearchProductV5),
             searchProductModel.isShowButtonAtc(isUseAceSearchProductV5),
+            if(isUseAceSearchProductV5) isEnableAdultContent else true
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductModel,
@@ -176,6 +179,7 @@ class ProductViewModelMapper(
         externalReference: String,
         keywordIntention: Int,
         showButtonAtc: Boolean,
+        isEnableAdultContent: Boolean = true,
     ): List<ProductItemDataView> {
         return if (isUseAceSearchProductV5) {
             searchProductModel.searchProductV5.data.productList.mapIndexed { index, productModel ->
@@ -189,6 +193,7 @@ class ProductViewModelMapper(
                     productListType,
                     externalReference,
                     keywordIntention,
+                    isEnableAdultContent
                 )
             }
         } else {
@@ -218,6 +223,7 @@ class ProductViewModelMapper(
         productListType: String,
         externalReference: String,
         keywordIntention: Int,
+        isEnableAdultContent: Boolean = true,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
 
@@ -268,6 +274,7 @@ class ProductViewModelMapper(
         productItem.customVideoURL = productModel.mediaURL.videoCustom
         productItem.parentId = productModel.meta.parentID
         productItem.isPortrait = productModel.meta.isPortrait
+        productItem.isImageBlurred = productModel.meta.isImageBlurred && !isEnableAdultContent
         return productItem
     }
 
@@ -366,7 +373,8 @@ class ProductViewModelMapper(
                 labelGroupModel.position,
                 labelGroupModel.type,
                 labelGroupModel.title,
-                labelGroupModel.url
+                labelGroupModel.url,
+                labelGroupModel.styleList.map(StyleDataView::create)
             )
         }
 

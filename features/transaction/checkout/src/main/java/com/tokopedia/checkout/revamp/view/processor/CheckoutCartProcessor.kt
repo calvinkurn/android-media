@@ -56,7 +56,8 @@ class CheckoutCartProcessor @Inject constructor(
         checkoutLeasingId: String?,
         isPlusSelected: Boolean,
         isReloadData: Boolean,
-        isReloadAfterPriceChangeHigher: Boolean
+        isReloadAfterPriceChangeHigher: Boolean,
+        shipmentAction: String
     ): CheckoutPageState {
         return withContext(dispatchers.io) {
             try {
@@ -69,7 +70,8 @@ class CheckoutCartProcessor @Inject constructor(
                         deviceId,
                         checkoutLeasingId,
                         isPlusSelected,
-                        true
+                        true,
+                        shipmentAction
                     )
                 )
                 validateShipmentAddressFormData(
@@ -182,7 +184,7 @@ class CheckoutCartProcessor @Inject constructor(
             val dataChangeAddressRequests: MutableList<DataChangeAddressRequest> = ArrayList()
             for (item in items) {
                 if (item is CheckoutOrderModel) {
-                    for (product in helper.getOrderProducts(items, item.cartStringGroup)) {
+                    for (product in helper.getOrderProducts(items, item.cartStringGroup).filterIsInstance(CheckoutProductModel::class.java)) {
                         val dataChangeAddressRequest = DataChangeAddressRequest()
                         dataChangeAddressRequest.quantity = product.quantity
                         dataChangeAddressRequest.productId = product.productId
@@ -327,7 +329,7 @@ class CheckoutCartProcessor @Inject constructor(
         if (courierData != null) {
             val shipmentStateProductDataList: MutableList<ShipmentStateProductData> =
                 ArrayList()
-            val products = helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
+            val products = helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup).filterIsInstance(CheckoutProductModel::class.java)
             for (cartItemModel in products) {
                 val shipmentStateProductData = ShipmentStateProductData()
                 shipmentStateProductData.shopId = cartItemModel.shopId.toLongOrZero()

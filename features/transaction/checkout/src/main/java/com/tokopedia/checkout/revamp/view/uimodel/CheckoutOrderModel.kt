@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import android.os.Parcelable
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -140,7 +141,13 @@ data class CheckoutOrderModel(
     var timeslotId: Long = 0L,
     var validationMetadata: String = "",
     val ratesValidationFlow: Boolean = false,
+    val shippingComponents: ShippingComponents = ShippingComponents.RATES,
     var hasSentScheduleDeliveryAnalytics: Boolean = false,
+    val startDate: String = "",
+    val isRecommendScheduleDelivery: Boolean = false,
+
+    // OFOC
+    val groupingState: Int = 0,
 
     // Multiple Order Plus Coachmark
     var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),
@@ -166,7 +173,10 @@ data class CheckoutOrderModel(
     var subtotalAddOnMap: HashMap<Int, String> = hashMapOf(),
 
     // O2O
-    val groupMetadata: String = ""
+    val groupMetadata: String = "",
+
+    // ofoc
+    val shipmentAction: HashMap<Long, ShipmentAction> = HashMap()
 ) : CheckoutItem {
 
     val isCustomPinpointError: Boolean
@@ -202,9 +212,19 @@ data class CheckoutOrderShipment(
     val isHideChangeCourierCard: Boolean = false,
 
     // Analytics
-    var hasTriggerViewMessageTracking: Boolean = false
+    var isHasShownCourierError: Boolean = false
 )
 
 data class CheckoutOrderInsurance(
     var isCheckInsurance: Boolean = false
 )
+
+enum class ShippingComponents(val value: Int) {
+    SCHELLY_WITH_RATES(1),
+    SCHELLY(2),
+    RATES(3);
+
+    companion object {
+        fun fromInt(value: Int) = ShippingComponents.values().firstOrNull { it.value == value } ?: RATES
+    }
+}

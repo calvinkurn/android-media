@@ -54,12 +54,14 @@ object CategoryL2TabMapper {
         categoryIdL2: String,
         tickerData: GetTickerData?,
         categoryDetail: CategoryDetail,
+        filterMap: Map<String, String>,
         components: List<Component>
     ) {
         val quickFilter = findItem<CategoryQuickFilterUiModel>()
+        val categoryIdL3 = filterMap[SearchApiConst.SC]
 
         clear()
-        addTicker(categoryIdL2, tickerData)
+        addTicker(categoryIdL2, categoryIdL3, tickerData)
 
         components.filter { SUPPORTED_LAYOUT_TYPES.contains(it.type) }.forEach {
             when (it.type) {
@@ -182,7 +184,7 @@ object CategoryL2TabMapper {
     ) {
         val isLastItem = components.lastOrNull()?.type == CATEGORY_JUMPER
 
-        if(isLastItem && isAllProductShown) {
+        if (isLastItem && isAllProductShown) {
             val categoryMenuUiModel = categoryDetail.mapToCategoryRecommendation(
                 source = TOKONOW_CATEGORY_L2
             )
@@ -229,20 +231,24 @@ object CategoryL2TabMapper {
 
     private fun MutableList<Visitable<*>>.addTicker(
         categoryIdL2: String,
+        categoryIdL3: String?,
         tickerData: GetTickerData?
     ) {
-        if(tickerData != null && !tickerData.isTickerEmpty()) {
+        if (tickerData != null && !tickerData.isTickerEmpty()) {
             val tickerList = tickerData.tickerList
             val oosTickerList = tickerData.oosTickerList
             val oosCategoryIds = tickerData.oosCategoryIds
-            val isCategoryOutOfStock = oosCategoryIds.contains(categoryIdL2)
+            val isCategoryOutOfStock = oosCategoryIds.contains(categoryIdL2) ||
+                oosCategoryIds.contains(categoryIdL3)
 
-            if(tickerList.isEmpty() && isCategoryOutOfStock) {
-                add(TokoNowTickerUiModel(
-                    id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
-                    tickers = oosTickerList,
-                    hasOutOfStockTicker = true
-                ))
+            if (tickerList.isEmpty() && isCategoryOutOfStock) {
+                add(
+                    TokoNowTickerUiModel(
+                        id = CategoryStaticLayoutId.TICKER_WIDGET_ID,
+                        tickers = oosTickerList,
+                        hasOutOfStockTicker = true
+                    )
+                )
             }
         } else {
             removeFirst { it is TokoNowTickerUiModel }
@@ -253,7 +259,7 @@ object CategoryL2TabMapper {
         response: Component,
         quickFilter: CategoryQuickFilterUiModel?
     ) {
-        if(quickFilter == null) {
+        if (quickFilter == null) {
             add(CategoryQuickFilterUiModel(id = response.id))
         } else {
             add(quickFilter.copy(state = TokoNowLayoutState.LOADING))
@@ -270,7 +276,7 @@ object CategoryL2TabMapper {
     ) {
         val isLastItem = components.lastOrNull()?.type == CATEGORY_JUMPER
 
-        if(!isLastItem) {
+        if (!isLastItem) {
             val categoryMenuUiModel = categoryDetail.mapToCategoryRecommendation(
                 source = TOKONOW_CATEGORY_L2
             )

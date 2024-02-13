@@ -19,9 +19,9 @@ class FlightSearchJouneyByIdUseCase @Inject constructor(
         private val flightSearchRepository: FlightSearchRepository) {
 
     suspend fun execute(journeyId: String): FlightJourneyModel =
-            mapToFlightJourneyViewModel(flightSearchRepository.getJourneyById(journeyId))
+            mapToFlightJourney(flightSearchRepository.getJourneyById(journeyId))
 
-    private fun mapToFlightJourneyViewModel(journeyAndRoutes: JourneyAndRoutes): FlightJourneyModel {
+    private fun mapToFlightJourney(journeyAndRoutes: JourneyAndRoutes): FlightJourneyModel {
         val gson = Gson()
         val routes = journeyAndRoutes.routes.map {
             val stopDetailJsonString = it.stopDetail

@@ -25,6 +25,7 @@ object RecommendationTrackingConstants {
         const val DIMENSION_40 = "dimension40"
         const val DIMENSION_45 = "dimension45"
         const val DIMENSION_56 = "dimension56"
+        const val DIMENSION_58 = "dimension58"
         const val DIMENSION_84 = "dimension84"
         const val DIMENSION_90 = "dimension90"
 

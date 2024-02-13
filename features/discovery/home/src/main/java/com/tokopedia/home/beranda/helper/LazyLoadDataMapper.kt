@@ -30,6 +30,7 @@ object LazyLoadDataMapper {
                 isTopads = it.isTopads,
                 isCarousel = it.isCarousel,
                 shopId = it.shopId,
+                campaignCode = it.campaignCode,
                 animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE,
                 isCache = isCache,
             )

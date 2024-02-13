@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.gojek.conversations.babble.network.data.ChannelMetaData
+import com.gojek.conversations.babble.network.data.OrderInfo
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.channelMember.ChannelMember
 import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMenuMapper
@@ -147,6 +149,20 @@ abstract class UniversalInboxViewModelTestFixture {
         expiredAt,
         null,
         null,
-        0
+        0,
+        ChannelMetaData(
+            OrderInfo(
+                5,
+                "",
+                "",
+                "",
+                "",
+                null,
+                null,
+                null,
+                null
+            ),
+            null
+        )
     )
 }

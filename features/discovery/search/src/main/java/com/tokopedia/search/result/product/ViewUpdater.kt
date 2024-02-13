@@ -9,6 +9,7 @@ interface ViewUpdater {
     fun setItems(list: List<Visitable<*>>)
     fun appendItems(list: List<Visitable<*>>)
     fun refreshItemAtIndex(index: Int)
+    fun refreshItemAtIndex(index: Int, refreshItem: Visitable<*>)
     fun addLoading()
     fun removeLoading()
     fun removeFirstItemWithCondition(condition: (Visitable<*>) -> Boolean)
@@ -16,4 +17,5 @@ interface ViewUpdater {
     fun requestRelayout()
     fun backToTop()
     fun scrollToPosition(position: Int)
+    fun unBlurItem()
 }

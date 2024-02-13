@@ -9,6 +9,12 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
     private var mapOfViewModels = mutableMapOf<Int, DiscoveryBaseViewModel>()
     private var mapOfViewModelsReferences = mutableMapOf<Int, DiscoveryBaseViewModel>()
 
+    fun <T: DiscoveryBaseViewModel> getFirstViewModel(
+        viewModelClass: Class<T>
+    ): DiscoveryBaseViewModel? {
+        return mapOfViewModelsReferences.values.firstOrNull { it.javaClass == viewModelClass }
+    }
+
     fun getViewHolderModel(viewModel: (application: Application, components: ComponentsItem, position: Int) -> DiscoveryBaseViewModel, componentItem: ComponentsItem, position: Int): DiscoveryBaseViewModel {
 
         if (mapOfViewModels[position] == null) {
@@ -27,7 +33,6 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
     fun clearList() {
         mapOfViewModels.clear()
     }
-
 
     override fun onCleared() {
         super.onCleared()

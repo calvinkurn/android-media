@@ -78,13 +78,15 @@ class ProductRecommSubViewModel @Inject constructor(
                         productIds = arrayListOf(productId),
                         isTokonow = isTokoNow,
                         queryParam = queryParam,
-                        criteriaThematicIDs = listOf(thematicId)
+                        criteriaThematicIDs = listOf(thematicId),
+                        hasNewProductCardEnabled = true
                     )
                 )
 
-                _loadViewToView.value = if (response.isNotEmpty()) {
+                _loadViewToView.value = if (!response.firstOrNull()?.recommendationItemList.isNullOrEmpty()) {
                     Success(response.first())
                 } else {
+                    alreadyHitRecom.remove(pageName)
                     Fail(MessageErrorException())
                 }
             }.onFailure {
@@ -111,7 +113,8 @@ class ProductRecommSubViewModel @Inject constructor(
                     pageName = pageName,
                     productIds = arrayListOf(nonNullProductId),
                     queryParam = queryParam,
-                    criteriaThematicIDs = listOf(thematicId)
+                    criteriaThematicIDs = listOf(thematicId),
+                    hasNewProductCardEnabled = true
                 )
                 val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
                 val dataResponse = recommendationResponse.firstOrNull()

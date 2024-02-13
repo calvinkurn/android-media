@@ -13,10 +13,15 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
+android {
+    namespace 'com.tokopedia.config'
+}
+
 project.ext {
     artifactId = 'global_config'
     groupId = 'com.tokopedia.config'
-    versionName = "1.0.20"
+    versionName = "1.0.26"
     artifactName = "global_config-debug"
 }
 
