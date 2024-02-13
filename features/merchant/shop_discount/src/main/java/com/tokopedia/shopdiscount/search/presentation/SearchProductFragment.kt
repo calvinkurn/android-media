@@ -52,6 +52,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
@@ -66,6 +70,8 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         private const val ONE_PRODUCT = 1
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
+        //need to add delay to fix delay data from BE
+        private const val DELAY_SLASH_PRICE_OPT_OUT = 1000L
 
         @JvmStatic
         fun newInstance(
@@ -389,6 +395,10 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                 viewModel.setInMultiSelectMode(false)
                 viewModel.setDisableProductSelection(false)
                 disableMultiSelect()
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(DELAY_SLASH_PRICE_OPT_OUT)
+                    loadInitialData()
+                }
             }
         }
     }
@@ -783,11 +793,17 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             position
         )
         bottomSheet.setListener(object : ShopDiscountProductDetailBottomSheet.Listener {
-            override fun deleteParentProduct(productId: String) {
+            override fun deleteParentProduct(productId: String, message: String) {
+                showToaster(message)
                 deleteSingleProduct(productId)
             }
         })
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showToaster(message: String) {
+        if(message.isNotEmpty())
+            binding?.root showToaster message
     }
 
     private fun deleteSingleProduct(productId: String) {

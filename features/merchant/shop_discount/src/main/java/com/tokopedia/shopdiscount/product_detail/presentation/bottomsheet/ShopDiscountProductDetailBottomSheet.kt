@@ -96,6 +96,8 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         private const val PARAM_STATUS = "param_status"
         private const val PARAM_PARENT_PRODUCT_POSITION = "param_parent_product_position"
         private const val MARGIN_TOP_BOTTOM_VALUE_DIVIDER = 16
+        //need to add delay to fix delay data from BE
+        private const val DELAY_SLASH_PRICE_OPT_OUT = 1000L
 
         fun newInstance(
             productId: String,
@@ -115,7 +117,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     interface Listener {
-        fun deleteParentProduct(productId: String)
+        fun deleteParentProduct(productId: String, message: String = "" )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -198,7 +200,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         adapter.deleteProductFromList(variantProductId)
         if (adapter.getTotalProduct().isZero()) {
             dismiss()
-            listener?.deleteParentProduct(productParentId)
+            listener?.deleteParentProduct(productParentId, getString(R.string.sd_discount_deleted))
         } else {
             showToaster(getString(R.string.sd_discount_deleted))
         }
@@ -268,8 +270,13 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                         showErrorState(Throwable(errorMessage))
                     } else {
                         val totalProductData = it.data.listProductDetailData.size
-                        showHeaderSection(totalProductData)
-                        addListProductDetailData(it.data.listProductDetailData)
+                        if (totalProductData == Int.ZERO) {
+                            dismiss()
+                            listener?.deleteParentProduct(productParentId, "")
+                        } else {
+                            showHeaderSection(totalProductData)
+                            addListProductDetailData(it.data.listProductDetailData)
+                        }
                     }
                 }
                 is Fail -> {
@@ -402,7 +409,11 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
 
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
                 showLoading()
-                getProductListData()
+                showToaster(optOutSuccessMessage)
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(DELAY_SLASH_PRICE_OPT_OUT)
+                    getProductListData()
+                }
             }
         }
     }

@@ -59,6 +59,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -76,6 +77,8 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
+        //need to add delay to fix delay data from BE
+        private const val DELAY_SLASH_PRICE_OPT_OUT = 1000L
 
         @JvmStatic
         fun newInstance(
@@ -600,8 +603,8 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             position
         )
         bottomSheet.setListener(object : ShopDiscountProductDetailBottomSheet.Listener {
-            override fun deleteParentProduct(productId: String) {
-                showToaster(getString(R.string.sd_discount_deleted))
+            override fun deleteParentProduct(productId: String, message: String) {
+                showToaster(message)
                 deleteSingleProduct(productId)
             }
         })
@@ -609,7 +612,8 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     }
 
     private fun showToaster(message: String) {
-        binding?.root showToaster message
+        if(message.isNotEmpty())
+            binding?.root showToaster message
     }
 
     private fun deleteSingleProduct(productId: String) {
@@ -859,7 +863,10 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 viewModel.setInMultiSelectMode(false)
                 viewModel.setDisableProductSelection(false)
                 disableMultiSelect()
-                loadInitialData()
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(DELAY_SLASH_PRICE_OPT_OUT)
+                    loadInitialData()
+                }
             }
         }
     }
