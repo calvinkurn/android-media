@@ -402,7 +402,6 @@ class OrderSummaryPageViewModel @Inject constructor(
         shouldReloadRates: Boolean = true,
         shouldUpdateActionMetadata: Boolean = false
     ) {
-        println("++ masuk update product")
         orderCart.products[productIndex] = product
         if (shouldReloadRates) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
