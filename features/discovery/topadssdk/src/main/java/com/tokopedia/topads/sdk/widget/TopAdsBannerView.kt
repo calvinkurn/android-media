@@ -19,11 +19,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardListener
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
@@ -193,7 +192,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     shop_badge?.let {
                         if (cpmData.cpm?.badges?.size ?: 0 > 0) {
                             shop_badge.show()
-                            Glide.with(shop_badge).load(cpmData.cpm.badges?.firstOrNull()?.imageUrl).into(shop_badge)
+                            shop_badge.loadImage(cpmData.cpm.badges.firstOrNull()?.imageUrl)
                         } else {
                             shop_badge.hide()
                         }
@@ -223,7 +222,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                     val shop_image = findViewById<ImageView>(R.id.shop_image)
                     shop_image?.let {
-                        Glide.with(context).load(cpmData.cpm.cpmImage.fullEcs).into(shop_image)
+                        shop_image.loadImage(cpmData.cpm.cpmImage.fullEcs)
                         cpmData.cpm.cpmShop.imageShop?.let { it1 ->
                             shop_image.addOnImpressionListener(it1) {
                                 impressionListener?.let {
@@ -851,22 +850,13 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun setHeadlineDigitalData(context: Context, cpm: Cpm) {
         try {
-            Glide.with(context)
-                    .asBitmap()
-                    .load(cpm.cpmImage.fullEcs)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            val image = findViewById<ImageView>(R.id.banner_digital_image)
-                            if (image != null) {
-                                image.setImageBitmap(resource)
-                                topAdsUrlHitter.hitImpressionUrl(className, cpm.cpmImage.fullUrl, "", "", "")
-                            }
-                    }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-
-                        }
-                    })
+            cpm.cpmImage.fullEcs.getBitmapImageUrl(context) {
+                val image = findViewById<ImageView>(R.id.banner_digital_image)
+                if (image != null) {
+                    image.setImageBitmap(it)
+                    topAdsUrlHitter.hitImpressionUrl(className, cpm.cpmImage.fullUrl, "", "", "")
+                }
+            }
             findViewById<Typography>(R.id.banner_digital_name).text = escapeHTML(cpm.name)
             findViewById<Typography>(R.id.banner_digital_description).text = escapeHTML(cpm.decription)
             findViewById<Typography>(R.id.banner_digital_cta_button).text = cpm.cta

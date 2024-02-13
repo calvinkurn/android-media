@@ -1,23 +1,19 @@
 package com.tokopedia.home_component.customview
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.MultiTransformation
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.util.RoundedCornersTransformation
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.unifycomponents.LoaderUnify
 
 class ShimmeringImageView @JvmOverloads constructor(context: Context, private val attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -47,22 +43,18 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
         loaderImageView?.visibility = View.VISIBLE
         imageView?.let {
             val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-            Glide.with(context)
-                    .load(url)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .listener(object : RequestListener<Drawable>{
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            loaderImageView?.visibility = View.GONE
-                            stopTraceOnResourceReady(dataSource, performanceMonitoring, fpmItemLabel)
-                            return false
+            it.loadImage(url) {
+                centerCrop()
+                listener(
+                    onSuccess = { _, dataSource ->
+                        loaderImageView?.visibility = View.GONE
+                        dataSource?.let { mediaDataSource ->
+                            stopTraceOnResourceReady(MediaDataSource.mapTo(mediaDataSource), performanceMonitoring, fpmItemLabel)
                         }
-                    })
-                    .into(it)
+                    }
+                )
+            }
         }
     }
 
@@ -75,22 +67,18 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
                 )
             } ?: RoundedCorners(radius)
             val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-            Glide.with(context)
-                    .load(url)
-                    .transform(CenterCrop(), transformation)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .listener(object : RequestListener<Drawable>{
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            loaderImageView?.visibility = View.GONE
-                            stopTraceOnResourceReady(dataSource, performanceMonitoring, fpmItemLabel)
-                            return false
+            it.loadImage(url) {
+                transforms(listOf(CenterCrop(), transformation))
+                listener(
+                    onSuccess = { _, dataSource ->
+                        loaderImageView?.visibility = View.GONE
+                        dataSource?.let { mediaDataSource ->
+                            stopTraceOnResourceReady(MediaDataSource.mapTo(mediaDataSource), performanceMonitoring, fpmItemLabel)
                         }
-                    })
-                    .into(it)
+                    }
+                )
+            }
         }
     }
 

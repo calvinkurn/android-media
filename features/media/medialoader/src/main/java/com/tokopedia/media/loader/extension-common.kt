@@ -68,7 +68,9 @@ fun ImageView.loadAsGif(
         .isGif(true)
 )
 
-fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
+fun ImageView.loadImage(
+    bitmap: Bitmap?,
+    properties: Properties.() -> Unit = {}) = call(bitmap, Properties().apply(properties))
 
 fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
 

@@ -5,10 +5,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_widget.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -54,10 +54,7 @@ class MvcLockedToProductVoucherTextContainer @JvmOverloads constructor(
 
         if (!(context as Activity).isFinishing) {
             imageCoupon?.let {
-                Glide.with(context)
-                    .load(imageUrl)
-                    .dontAnimate()
-                    .into(it)
+                it.loadImage(imageUrl)
             }
         }
     }

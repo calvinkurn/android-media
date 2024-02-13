@@ -9,10 +9,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
@@ -116,7 +116,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     shop_badge?.let {
                         if ((cpmData.cpm.badges.size.orZero()) > 0) {
                             shop_badge.show()
-                            Glide.with(shop_badge).load(cpmData.cpm.badges.firstOrNull()?.imageUrl).into(shop_badge)
+                            shop_badge.loadImage(cpmData.cpm.badges.firstOrNull()?.imageUrl)
                         } else {
                             shop_badge.hide()
                         }
@@ -133,7 +133,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
 
                     val shopImage = findViewById<ImageView>(R.id.topAdsShopImage)
                     shopImage?.let {
-                        Glide.with(context).load(cpmData.cpm.cpmImage.fullEcs).into(shopImage)
+                        shopImage.loadImage(cpmData.cpm.cpmImage.fullEcs)
                         cpmData.cpm.cpmShop.imageShop?.let { it1 ->
                             shopImage.addOnImpressionListener(it1) {
                                 impressionListener?.let {

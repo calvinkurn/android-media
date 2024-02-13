@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListButton
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListItem
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
+import com.tokopedia.media.loader.loadImage
 
 class BmPrizeDetailView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -37,9 +37,7 @@ class BmPrizeDetailView @JvmOverloads constructor(
         if (!prizDetailList.isNullOrEmpty()) {
             val bigItem = prizDetailList.find { it?.isSpecial == true }
             if (bigItem != null && !bigItem.imageURL.isNullOrEmpty()) {
-                Glide.with(image)
-                        .load(bigItem.imageURL)
-                        .into(image)
+                image.loadImage(bigItem.imageURL)
             } else {
                 image.visibility = View.GONE
             }

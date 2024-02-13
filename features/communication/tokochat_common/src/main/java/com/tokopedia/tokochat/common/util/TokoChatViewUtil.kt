@@ -19,13 +19,12 @@ import android.view.View
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.CENSOR_TEXT
 import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.MAX_PERCENTAGE
 import com.tokopedia.unifycomponents.ImageUnify
@@ -274,11 +273,7 @@ object TokoChatViewUtil {
     }
 
     fun loadGif(imageUnify: ImageUnify, gifUrl: String) {
-        Glide.with(imageUnify.context)
-            .asGif()
-            .load(gifUrl)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .into(imageUnify)
+        imageUnify.loadAsGif(gifUrl)
     }
 
     fun censorPlatNumber(platNumber: String, percentageCensor: Int): String {

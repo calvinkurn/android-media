@@ -18,14 +18,11 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.CameraUtils
-import com.otaliastudios.cameraview.FileCallback
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Flash
-import com.otaliastudios.cameraview.engine.CameraEngine
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
@@ -40,10 +37,10 @@ import com.tokopedia.homecredit.utils.BitmapProcessingListener
 import com.tokopedia.homecredit.viewModel.HomeCreditViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -349,9 +346,9 @@ class HomeCreditCameraV2Fragment(
 
     private fun loadImagePreview() {
         binding?.cameraPreview?.show()
-        context?.let { context ->
-            binding?.cameraPreview?.let { imageView ->
-                Glide.with(context).load(originalBitmap).centerCrop().into(imageView)
+        binding?.cameraPreview?.let { imageView ->
+            imageView.loadImage(originalBitmap) {
+                centerCrop()
             }
         }
     }

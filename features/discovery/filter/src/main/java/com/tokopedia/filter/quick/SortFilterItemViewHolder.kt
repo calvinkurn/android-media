@@ -5,10 +5,10 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.bumptech.glide.Glide
 import com.tokopedia.filter.R
 import com.tokopedia.filter.databinding.SortFilterQuickItemBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -71,9 +71,7 @@ internal class SortFilterItemViewHolder(
     private fun ChipsUnify.setupShowImageFilter(imageUrl: String) {
         val imageView = ImageView(context)
         imageView.adjustViewBounds = true
-        Glide.with(context)
-            .load(imageUrl)
-            .into(imageView)
+        imageView.loadImage(imageUrl)
         addCustomView(imageView)
         chip_sub_container.setPadding(0)
     }
