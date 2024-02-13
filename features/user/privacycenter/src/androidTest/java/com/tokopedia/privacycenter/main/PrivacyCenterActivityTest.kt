@@ -50,27 +50,27 @@ class PrivacyCenterActivityTest {
     }
 
     @Test
-    fun basic_test() {
+    fun basic_main_page_test() {
         activityTestRule.launchActivity(Intent())
 
         privacyCenterRobot { } assert {
             shouldShowCorrectHeader(name = "Hai, Erick Samuel (test)")
+            shouldShowActivitySection()
         }
 
         privacyCenterRobot {
-            scrollToBottom()
+            scrollToFooterImage()
+        } assert {
+            shouldShowPrivacyPolicy()
+            shouldShowFaq()
+            shouldShowTokopediaCare()
+            shouldShowFooterImage()
+        }
+
+        privacyCenterRobot {
             clickRiwayatKebijakan()
         } assert {
             shouldDisplayPrivacyTestData()
-        }
-    }
-
-    @Test
-    fun check_activity_section() {
-        activityTestRule.launchActivity(Intent())
-
-        privacyCenterRobot { } assert {
-            shouldShowActivitySection()
         }
     }
 
@@ -127,50 +127,6 @@ class PrivacyCenterActivityTest {
 
         } assert {
             shouldShowConsentWithdrawalFailed()
-        }
-    }
-
-    @Test
-    fun check_privacy_policy_section() {
-        activityTestRule.launchActivity(Intent())
-
-        privacyCenterRobot {
-            scrollToBottom()
-        } assert {
-            shouldShowPrivacyPolicy()
-        }
-    }
-
-    @Test
-    fun check_faq_section() {
-        activityTestRule.launchActivity(Intent())
-
-        privacyCenterRobot {
-            scrollToBottom()
-        } assert {
-            shouldShowFaq()
-        }
-    }
-
-    @Test
-    fun check_tokopedia_care_section() {
-        activityTestRule.launchActivity(Intent())
-
-        privacyCenterRobot {
-            scrollToFooterImage()
-        } assert {
-            shouldShowTokopediaCare()
-        }
-    }
-
-    @Test
-    fun check_image_footer_section() {
-        activityTestRule.launchActivity(Intent())
-
-        privacyCenterRobot {
-            scrollToFooterImage()
-        } assert {
-            shouldShowFooterImage()
         }
     }
 }
