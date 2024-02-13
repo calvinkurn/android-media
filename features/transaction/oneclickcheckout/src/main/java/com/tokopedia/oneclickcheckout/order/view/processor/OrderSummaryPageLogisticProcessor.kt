@@ -55,7 +55,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
     private val editAddressUseCase: UpdatePinpointUseCase,
     private val orderSummaryAnalytics: OrderSummaryAnalytics,
     private val setStateChosenAddressUseCase: SetStateChosenAddressFromAddressUseCase,
-    private val executorDispatchers: CoroutineDispatchers
+    private val executorDispatchers: CoroutineDispatchers,
+    private val gson: Gson
 ) {
 
     fun generateRatesParam(
@@ -102,7 +103,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         val actionMetadata = OrderActionMetadata(
             listAction = listActionProduct
         )
-        val gson = Gson()
         return gson.toJson(actionMetadata, OrderActionMetadata::class.java)
     }
 
