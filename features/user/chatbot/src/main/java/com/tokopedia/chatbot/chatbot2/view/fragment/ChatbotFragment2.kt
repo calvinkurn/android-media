@@ -2287,7 +2287,11 @@ class ChatbotFragment2 :
     ) {
         csatOptionsUiModel = model
         val dynamicCsatModel = model?.dynamicCsat
-        if (dynamicCsatModel != null) {
+
+        val enableDynamicCsat = FirebaseRemoteConfigImpl(context)
+            .getBoolean(RemoteConfigKey.ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT, false)
+
+        if (enableDynamicCsat && dynamicCsatModel != null) {
             startActivityForResult(
                 context?.let {
                     CsatActivity.getInstance(it, selected.value.toInt(), dynamicCsatModel) // converting to int is safe in this case
