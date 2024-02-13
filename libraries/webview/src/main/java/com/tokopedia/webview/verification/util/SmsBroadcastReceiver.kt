@@ -8,19 +8,13 @@ import android.widget.Toast
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
+import com.tokopedia.kotlin.extensions.view.orZero
 
 class SmsBroadcastReceiver: BroadcastReceiver() {
 
     private lateinit var listener: ReceiveSMSListener
 
     fun register(context: Context, listener: ReceiveSMSListener) {
-//        Toast.makeText(context, "registered", Toast.LENGTH_SHORT).show()
-        val a = AppSignatureHelper(context)
-        val sigs = a.appSignatures
-        sigs.forEach {
-            Toast.makeText(context, "sig: $it", Toast.LENGTH_SHORT).show()
-            println("hahaha $it")
-        }
         this.listener = listener
         val filter = IntentFilter()
         filter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION)
@@ -33,9 +27,6 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val action = intent.action
-
-        Toast.makeText(context, "On Received triggered", Toast.LENGTH_SHORT).show()
         if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
             val extras = intent.extras
             val status = extras?.get(SmsRetriever.EXTRA_STATUS) as? Status
@@ -44,12 +35,11 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
                 CommonStatusCodes.SUCCESS -> {
                     val message = (extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as? String).orEmpty()
 //                    val subMessage = message.substringAfter("masuk:")
-//                    val otpDigit = Regex(REGEX_NUMERIC_PATTERN).find(subMessage)?.value?.length.orZero()
-//                    val otp = subMessage.substring(0, otpDigit)
-                    Toast.makeText(context, "SMS received: $message", Toast.LENGTH_SHORT).show()
-                    val otp = message.takeLast(6)
+//                    val otpDigit = Regex(REGEX_NUMERIC_PATTERN).find(message)?.value?.length.orZero()
+//                    val otp = subMessage.substring(0, OTP_COUNT)
+                    val otp = findSixDigitNumber(message)
 
-                    if(::listener.isInitialized && otp.toIntOrNull() != null) {
+                    if(::listener.isInitialized && otp?.toIntOrNull() != null) {
                         Toast.makeText(context, "OTP : $otp", Toast.LENGTH_SHORT).show()
                         listener.onReceiveOTP(otp)
                     }
@@ -61,8 +51,15 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
         }
     }
 
+    fun findSixDigitNumber(input: String): String? {
+        val regex = Regex("\\b\\d{6}\\b")
+        val matchResult = regex.find(input)
+        return matchResult?.value
+    }
+
     companion object {
         /** */
         private const val REGEX_NUMERIC_PATTERN = "^[\\d]*"
+        private const val OTP_COUNT = 6
     }
 }

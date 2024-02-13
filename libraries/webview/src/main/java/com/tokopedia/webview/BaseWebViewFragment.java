@@ -31,6 +31,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,6 +129,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
     private static final String GOFOOD_LINK = "https://gofood.link/";
+    private static final String OTP_VERIFICATION_PREFIX = "/otp-verification";
+    private static final String OTP_CODE = "otpCode";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -746,6 +749,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (activityInstance instanceof BaseSimpleWebViewActivity) {
                 ((BaseSimpleWebViewActivity) activityInstance).updateToolbarVisibility(url);
             }
+            if (url.contains(OTP_VERIFICATION_PREFIX) && !url.contains(OTP_CODE)) {
+                startSmsListener();
+            } else {
+                if (getActivity() != null && isSmsRegistered) {
+                    getActivity().unregisterReceiver(smsBroadcastReceiver);
+                }
+            }
         }
 
         @Override
@@ -784,33 +794,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                             actionBar.setTitle(activityInstance.getString(R.string.tokopedia));
                         }
                     }
-                }
-            }
-
-            if (getContext() != null && url.contains("/paylater/acquisition/otp-verification") && !url.contains("otpCode")) {
-
-                if (getContext() != null && !isSmsRegistered) {
-
-                    Task<Void> task = smsRetriever.startSmsRetriever();
-                    task.addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getContext(), "Start listening SMS Success", Toast.LENGTH_SHORT).show();
-                    });
-                    task.addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Start listening SMS Failed", Toast.LENGTH_SHORT).show();
-                    });
-
-                    isSmsRegistered = true;
-                    smsBroadcastReceiver.register(getActivity(), otpCode -> {
-                        String currentUrl = webView.getUrl();
-
-                        if (currentUrl != null && currentUrl.contains("/paylater/acquisition/otp-verification")) {
-                            String newUrl = Uri.parse(url).buildUpon()
-                                    .appendQueryParameter("otpCode", otpCode).build().toString();
-
-                            Toast.makeText(getContext(), "Url Reload:" + newUrl, Toast.LENGTH_SHORT).show();
-                            webView.loadUrl(newUrl);
-                        }
-                    });
                 }
             }
         }
@@ -897,6 +880,26 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             messageMap.put("reason", errorResponse.getReasonPhrase());
             messageMap.put("web_url", webUrl);
             ServerLogger.log(Priority.P1, "WEBVIEW_ERROR_RESPONSE", messageMap);
+        }
+
+        private void startSmsListener() {
+            if (getContext() != null && !isSmsRegistered) {
+                Task<Void> task = smsRetriever.startSmsRetriever();
+                task.addOnSuccessListener(aVoid -> {
+                    isSmsRegistered = true;
+                    if (getActivity() == null) return;
+                    smsBroadcastReceiver.register(getActivity(), otpCode -> {
+                        String currentUrl = webView.getUrl();
+                        if (currentUrl != null && currentUrl.contains(OTP_VERIFICATION_PREFIX)) {
+                            String newUrl = Uri.parse(url).buildUpon()
+                                    .appendQueryParameter("otpCode", otpCode).build().toString();
+
+                            webView.loadUrl(newUrl);
+                        }
+                    });
+                });
+                task.addOnFailureListener(e -> {});
+            }
         }
     }
 
