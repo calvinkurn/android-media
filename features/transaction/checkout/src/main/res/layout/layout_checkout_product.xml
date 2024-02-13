@@ -53,48 +53,67 @@
         app:typographyWeight="reguler"
         tools:text="Biru, XXL" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_checkout_product_info_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tv_product_name,tv_product_variant" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:ellipsize="end"
         android:gravity="center_vertical"
+        android:lines="1"
         android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@id/ic_product_notes_edit"
+        app:layout_constraintEnd_toStartOf="@id/divider_product_price_notes"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_product_variant"
+        app:layout_constraintTop_toTopOf="@id/ic_product_notes_edit"
+        app:layout_constraintWidth_default="wrap"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        tools:text="1 x Rp200.000" />
+        tools:text="1 x Rp200.0001 x Rp200.0001 x Rp200.0001 x Rp200.000" />
 
     <View
         android:id="@+id/divider_product_price_notes"
         android:layout_width="1dp"
         android:layout_height="16dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
         android:background="@color/Unify_NN500"
+        app:layout_constraintBottom_toBottomOf="@id/ic_product_notes_edit"
+        app:layout_constraintEnd_toStartOf="@id/ic_product_notes_edit"
         app:layout_constraintStart_toEndOf="@id/tv_product_price"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_variant" />
+        app:layout_constraintTop_toTopOf="@id/ic_product_notes_edit" />
 
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ic_product_notes_edit"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        app:icon_color_light_enable="@color/Unify_NN500"
-        app:icon_color_night_enable="@color/Unify_NN500"
-        app:icon_name="ADD_NOTE"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_product_notes_edit"
         app:layout_constraintStart_toEndOf="@id/divider_product_price_notes"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_variant" />
+        app:layout_constraintTop_toBottomOf="@id/barrier_checkout_product_info_top"
+        app:srcCompat="@drawable/ic_pp_add_note_completed" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_notes_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="4dp"
+        android:paddingEnd="0dp"
         android:text="Catatan"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@id/ic_product_notes_edit"
+        app:layout_constraintEnd_toEndOf="@id/tv_product_variant"
         app:layout_constraintStart_toEndOf="@id/ic_product_notes_edit"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_variant"
+        app:layout_constraintTop_toTopOf="@id/ic_product_notes_edit"
         app:typographyType="display_3"
         app:typographyWeight="bold" />
 
