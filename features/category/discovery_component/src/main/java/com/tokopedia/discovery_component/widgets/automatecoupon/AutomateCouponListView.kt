@@ -6,8 +6,9 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.discovery_component.databinding.AutomateCouponListLayoutBinding
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery_component.databinding.AutomateCouponListLayoutBinding
+import com.tokopedia.discovery_component.widgets.utils.HexColorParser
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -135,7 +136,9 @@ class AutomateCouponListView @JvmOverloads constructor(
 
     private fun Typography.render(dynamicColorText: DynamicColorText) {
         text = MethodChecker.fromHtml(dynamicColorText.value)
-        setTextColor(Color.parseColor(dynamicColorText.colorHex))
+        HexColorParser.parse(dynamicColorText.colorHex) {
+            setTextColor(it)
+        }
     }
     //endregion
 }
