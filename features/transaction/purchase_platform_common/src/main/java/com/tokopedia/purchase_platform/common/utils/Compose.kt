@@ -33,8 +33,12 @@ fun Modifier.setOnClickDebounceListener(
 }
 
 @Preview(
+    name = "light",
     uiMode = Configuration.UI_MODE_NIGHT_NO or Configuration.UI_MODE_TYPE_NORMAL,
     showBackground = true
 )
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview(
+    name = "dark",
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
 annotation class LightAndDarkModePreview

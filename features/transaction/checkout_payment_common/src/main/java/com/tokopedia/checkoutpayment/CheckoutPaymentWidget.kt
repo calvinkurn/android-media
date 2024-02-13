@@ -35,113 +35,115 @@ data class CheckoutPaymentWidgetData(
 
 @Composable
 fun CheckoutPaymentWidget(data: CheckoutPaymentWidgetData, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        NestDivider(size = NestDividerSize.Large, modifier = Modifier.fillMaxWidth())
-        if (data.isLoading) {
-            NestLoader(
-                variant = NestLoaderType.Shimmer(NestShimmerType.Line),
-                modifier = Modifier
-                    .padding(top = 16.dp, start = 16.dp, bottom = 12.dp)
-                    .height(12.dp)
-                    .width(143.dp)
-            )
-            Row(
-                modifier = Modifier.padding(start = 16.dp, bottom = 12.dp)
-            ) {
+    NestTheme {
+        Column(
+            modifier = modifier.fillMaxWidth()
+        ) {
+            NestDivider(size = NestDividerSize.Large, modifier = Modifier.fillMaxWidth())
+            if (data.isLoading) {
                 NestLoader(
-                    variant = NestLoaderType.Shimmer(NestShimmerType.Circle),
-                    modifier = Modifier.size(28.dp)
+                    variant = NestLoaderType.Shimmer(NestShimmerType.Line),
+                    modifier = Modifier
+                        .padding(top = 16.dp, start = 16.dp, bottom = 12.dp)
+                        .height(12.dp)
+                        .width(143.dp)
                 )
-                Column(modifier = Modifier.padding(start = 8.dp)) {
+                Row(
+                    modifier = Modifier.padding(start = 16.dp, bottom = 12.dp)
+                ) {
                     NestLoader(
-                        variant = NestLoaderType.Shimmer(NestShimmerType.Line),
-                        modifier = Modifier
-                            .height(12.dp)
-                            .width(48.dp)
+                        variant = NestLoaderType.Shimmer(NestShimmerType.Circle),
+                        modifier = Modifier.size(28.dp)
                     )
-                    NestLoader(
-                        variant = NestLoaderType.Shimmer(NestShimmerType.Line),
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .height(12.dp)
-                            .width(143.dp)
-                    )
+                    Column(modifier = Modifier.padding(start = 8.dp)) {
+                        NestLoader(
+                            variant = NestLoaderType.Shimmer(NestShimmerType.Line),
+                            modifier = Modifier
+                                .height(12.dp)
+                                .width(48.dp)
+                        )
+                        NestLoader(
+                            variant = NestLoaderType.Shimmer(NestShimmerType.Line),
+                            modifier = Modifier
+                                .padding(top = 4.dp)
+                                .height(12.dp)
+                                .width(143.dp)
+                        )
+                    }
                 }
-            }
-        } else if (data.isError) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(NestTheme.colors.YN._50)
-                    .padding(start = 16.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
-            ) {
-                NestTypography(
-                    text = "Pembayaran gagal ditampilkan. Coba lagi, yuk! Pembayaran gagal ditampilkan. Coba lagi, yuk!",
-                    textStyle = NestTheme.typography.display3.copy(
-                        color = NestTheme.colors.NN._950
-                    ),
-                    maxLines = 1,
+            } else if (data.isError) {
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                )
-                NestIcon(
-                    iconId = IconUnify.RELOAD,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .padding(4.dp)
-                )
-            }
-        } else {
-            Row(
-                modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 12.dp)
-            ) {
-                NestTypography(
-                    text = stringResource(id = R.string.checkout_payment_method_label),
-                    textStyle = NestTheme.typography.display3.copy(
-                        color = NestTheme.colors.NN._950,
-                        fontWeight = FontWeight.W800
-                    )
-                )
-                NestTypography(
-                    text = "Ganti",
-                    modifier = Modifier
-                        .padding(start = 12.dp)
-                        .fillMaxWidth(),
-                    textStyle = NestTheme.typography.display3.copy(
-                        color = NestTheme.colors.GN._500,
-                        fontWeight = FontWeight.W800,
-                        textAlign = TextAlign.End
-                    )
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .padding(start = 16.dp, end = 28.dp, bottom = 12.dp)
-            ) {
-                NestImage(
-                    ImageSource.Remote(""),
-                    modifier = Modifier
-                        .size(28.dp)
-                        .align(Alignment.CenterVertically)
-                )
-                Column(modifier = Modifier.padding(start = 8.dp)) {
+                        .fillMaxWidth()
+                        .background(NestTheme.colors.YN._50)
+                        .padding(start = 16.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
+                ) {
                     NestTypography(
-                        text = "BCA",
+                        text = "Pembayaran gagal ditampilkan. Coba lagi, yuk! Pembayaran gagal ditampilkan. Coba lagi, yuk!",
                         textStyle = NestTheme.typography.display3.copy(
                             color = NestTheme.colors.NN._950
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                    )
+                    NestIcon(
+                        iconId = IconUnify.RELOAD,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .padding(4.dp)
+                    )
+                }
+            } else {
+                Row(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 12.dp)
+                ) {
+                    NestTypography(
+                        text = stringResource(id = R.string.checkout_payment_method_label),
+                        textStyle = NestTheme.typography.display3.copy(
+                            color = NestTheme.colors.NN._950,
+                            fontWeight = FontWeight.W800
                         )
                     )
                     NestTypography(
-                        text = "Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566",
-                        modifier = Modifier.padding(top = 2.dp),
+                        text = "Ganti",
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .fillMaxWidth(),
                         textStyle = NestTheme.typography.display3.copy(
-                            color = NestTheme.colors.NN._600
+                            color = NestTheme.colors.GN._500,
+                            fontWeight = FontWeight.W800,
+                            textAlign = TextAlign.End
                         )
                     )
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 28.dp, bottom = 12.dp)
+                ) {
+                    NestImage(
+                        ImageSource.Remote(""),
+                        modifier = Modifier
+                            .size(28.dp)
+                            .align(Alignment.CenterVertically)
+                    )
+                    Column(modifier = Modifier.padding(start = 8.dp)) {
+                        NestTypography(
+                            text = "BCA",
+                            textStyle = NestTheme.typography.display3.copy(
+                                color = NestTheme.colors.NN._950
+                            )
+                        )
+                        NestTypography(
+                            text = "Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566",
+                            modifier = Modifier.padding(top = 2.dp),
+                            textStyle = NestTheme.typography.display3.copy(
+                                color = NestTheme.colors.NN._600
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -151,17 +153,15 @@ fun CheckoutPaymentWidget(data: CheckoutPaymentWidgetData, modifier: Modifier = 
 @LightAndDarkModePreview
 @Composable
 fun CheckoutPaymentWidgetPreview() {
-    NestTheme {
-        Column {
-            CheckoutPaymentWidget(
-                CheckoutPaymentWidgetData(isLoading = true)
-            )
-            CheckoutPaymentWidget(
-                CheckoutPaymentWidgetData(isError = true)
-            )
-            CheckoutPaymentWidget(
-                CheckoutPaymentWidgetData()
-            )
-        }
+    Column {
+        CheckoutPaymentWidget(
+            CheckoutPaymentWidgetData(isLoading = true)
+        )
+        CheckoutPaymentWidget(
+            CheckoutPaymentWidgetData(isError = true)
+        )
+        CheckoutPaymentWidget(
+            CheckoutPaymentWidgetData()
+        )
     }
 }
