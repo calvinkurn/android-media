@@ -271,6 +271,7 @@ class ProductPreviewFragment @Inject constructor(
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
         if (prev == model) return
 
+        analytics.onImpressATC(viewModel.productPreviewSource.productId)
         binding.viewFooter.apply {
             show()
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

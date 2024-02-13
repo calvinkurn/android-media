@@ -37,7 +37,8 @@
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
       "productId": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "add_to_cart",
