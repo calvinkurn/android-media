@@ -21,7 +21,7 @@ class FundsAndInvestmentActivity : BaseSimpleActivity(),
     HasComponent<HomeAccountUserComponents> {
 
     @Inject
-    lateinit var viewModel: FundsAndInvestmentComposeViewModel
+    lateinit var viewModel: FundsAndInvestmentViewModel
 
     @Inject
     lateinit var homeAccountAnalytic: HomeAccountAnalytics

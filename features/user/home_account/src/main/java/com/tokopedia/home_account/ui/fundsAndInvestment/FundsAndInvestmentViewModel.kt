@@ -16,7 +16,7 @@ import com.tokopedia.home_account.view.mapper.UiModelMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 
-class FundsAndInvestmentComposeViewModel @Inject constructor(
+class FundsAndInvestmentViewModel @Inject constructor(
     private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
     private val getTokoPointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
     private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,

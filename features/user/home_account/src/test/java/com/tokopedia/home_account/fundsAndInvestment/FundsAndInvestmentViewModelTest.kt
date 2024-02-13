@@ -15,11 +15,11 @@ import com.tokopedia.home_account.domain.usecase.GetCentralizedUserAssetConfigUs
 import com.tokopedia.home_account.domain.usecase.GetCoBrandCCBalanceAndPointUseCase
 import com.tokopedia.home_account.domain.usecase.GetSaldoBalanceUseCase
 import com.tokopedia.home_account.domain.usecase.GetTokopointsBalanceAndPointUseCase
-import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeViewModel
-import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeViewModel.Companion.GOPAYLATERCICIL_PARTNER_CODE
-import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeViewModel.Companion.GOPAYLATER_PARTNER_CODE
-import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeViewModel.Companion.GOPAY_PARTNER_CODE
-import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeViewModel.Companion.OVO_PARTNER_CODE
+import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentViewModel
+import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentViewModel.Companion.GOPAYLATERCICIL_PARTNER_CODE
+import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentViewModel.Companion.GOPAYLATER_PARTNER_CODE
+import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentViewModel.Companion.GOPAY_PARTNER_CODE
+import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentViewModel.Companion.OVO_PARTNER_CODE
 import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentResult
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -32,13 +32,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class FundsAndInvestmentComposeViewModelTest {
+class FundsAndInvestmentViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val dispatcher = CoroutineTestDispatchersProvider
-    private lateinit var viewModel: FundsAndInvestmentComposeViewModel
+    private lateinit var viewModel: FundsAndInvestmentViewModel
 
     private val getCentralizedUserAssetConfigUseCase = mockk<GetCentralizedUserAssetConfigUseCase>(relaxed = true)
     private val getTokopointsBalanceAndPointUseCase = mockk<GetTokopointsBalanceAndPointUseCase>(relaxed = true)
@@ -48,7 +48,7 @@ class FundsAndInvestmentComposeViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = FundsAndInvestmentComposeViewModel(
+        viewModel = FundsAndInvestmentViewModel(
             getCentralizedUserAssetConfigUseCase,
             getTokopointsBalanceAndPointUseCase,
             getSaldoBalanceUseCase,
