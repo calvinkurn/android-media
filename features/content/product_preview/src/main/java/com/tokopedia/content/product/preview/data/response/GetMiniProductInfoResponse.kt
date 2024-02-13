@@ -1,5 +1,6 @@
 package com.tokopedia.content.product.preview.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -35,6 +36,9 @@ data class GetMiniProductInfoResponse(
         val priceFmt: String = "",
         @SerializedName("stock")
         val stock: Int = 0,
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("price")
+        val price: Int = 0,
     )
 
     data class Campaign(
