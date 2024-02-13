@@ -41,6 +41,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_MESSAGE
+import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_SUCCESS
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatToolbarActivity
@@ -74,6 +76,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -250,8 +253,7 @@ open class TopChatRoomFragment :
     ProductBundlingListener,
     BannedChatMessageViewHolder.TopChatMessageCensorListener,
     StoriesWidgetListener,
-    TopChatRoomOrderCancellationListener
-{
+    TopChatRoomOrderCancellationListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -1580,6 +1582,7 @@ open class TopChatRoomFragment :
             REQUEST_REPORT_USER -> onReturnFromReportUser(data, resultCode)
             REQUEST_REVIEW -> onReturnFromReview(data, resultCode)
             REQUEST_UPDATE_STOCK -> onReturnFromUpdateStock(data, resultCode)
+            REQUEST_CODE_ORDER_CANCELLATION -> onReturnFromOrderCancellation(data)
         }
     }
 
@@ -3676,6 +3679,17 @@ open class TopChatRoomFragment :
         context?.let {
             val intent = RouteManager.getIntent(it, appLink)
             startActivityForResult(intent, REQUEST_CODE_ORDER_CANCELLATION)
+        }
+    }
+
+    private fun onReturnFromOrderCancellation(data: Intent?) {
+        val isSuccess = data?.getBooleanExtra(INTENT_RESULT_SUCCESS, false).orFalse()
+        val message = data?.getStringExtra(INTENT_RESULT_MESSAGE).toBlankOrString()
+        if (message.isNotBlank()) {
+            when (isSuccess) {
+                true -> showToasterMsg(message)
+                false -> showToasterError(message)
+            }
         }
     }
 
