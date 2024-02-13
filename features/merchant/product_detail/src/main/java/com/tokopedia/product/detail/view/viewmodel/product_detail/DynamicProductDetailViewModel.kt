@@ -6,6 +6,9 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.analytics.byteio.ProductType
+import com.tokopedia.analytics.byteio.TrackProductDetail
+import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
@@ -166,7 +169,12 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val productRecommSubViewModel: ProductRecommSubViewModel,
     playWidgetSubViewModel: PlayWidgetSubViewModel,
     thumbnailVariantSubViewModel: ThumbnailVariantSubViewModel
-) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel, thumbnailVariantSubViewModel),
+) : ParentSubViewModel(
+    dispatcher.main,
+    productRecommSubViewModel,
+    playWidgetSubViewModel,
+    thumbnailVariantSubViewModel
+),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     IThumbnailVariantSubViewModel by thumbnailVariantSubViewModel,
@@ -293,7 +301,8 @@ class DynamicProductDetailViewModel @Inject constructor(
         get() = userSessionInterface.isLoggedIn
 
     private var _productMediaRecomBottomSheetData: ProductMediaRecomBottomSheetData? = null
-    private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
+    private val _productMediaRecomBottomSheetState =
+        MutableLiveData<ProductMediaRecomBottomSheetState>()
     val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
         get() = _productMediaRecomBottomSheetState
 
@@ -307,7 +316,8 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
-    private var aPlusContentExpanded: Boolean = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
+    private var aPlusContentExpanded: Boolean =
+        ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
 
     override fun getP1(): DynamicProductInfoP1? = getDynamicProductInfoP1
 
@@ -481,6 +491,31 @@ class DynamicProductDetailViewModel @Inject constructor(
         return p2.bebasOngkir.boImages.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
     }
 
+    fun getProductDetailTrack(): TrackProductDetail {
+        val p1 = getDynamicProductInfoP1 ?: throw Exception()
+        val p2 = p2Data.value ?: throw Exception()
+
+        return TrackProductDetail(
+            productId = p1.basic.productID,
+            productCategory = p1.basic.category.name,
+            productType = ProductType.AVAILABLE,
+            originalPrice = p1.data.price.priceFmt,
+            salePrice = p1.finalPrice.toString()
+        )
+    }
+
+    fun getStayAnalyticsData(): TrackStayProductDetail {
+        val p1 = getDynamicProductInfoP1 ?: throw Exception()
+        return TrackStayProductDetail(
+            productId = p1.basic.productID,
+            productCategory = p1.basic.category.name,
+            productType = ProductType.AVAILABLE,
+            originalPrice = p1.data.price.priceFmt,
+            salePrice = p1.finalPrice.toString(),
+            false, false, false // todo: TBD
+        )
+    }
+
     /**
      * If variant change, make sure this function is called after update product Id
      */
@@ -621,9 +656,11 @@ class DynamicProductDetailViewModel @Inject constructor(
                 is AddToCartRequestParams -> {
                     getAddToCartUseCase(requestParams)
                 }
+
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
+
                 is AddToCartOccMultiRequestParams -> {
                     getAddToCartOccUseCase(atcParams)
                 }
@@ -1128,8 +1165,8 @@ class DynamicProductDetailViewModel @Inject constructor(
                 uuid = uuid
             )
         }, onError = {
-                // no op, expect to be handled by Affiliate SDK
-            })
+            // no op, expect to be handled by Affiliate SDK
+        })
     }
 
     private fun updateRecomAtcStatusAndMiniCart(
@@ -1246,12 +1283,14 @@ class DynamicProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
+
             is OneTimeMethodEvent.ImpressGeneralEduBs -> {
                 if (_oneTimeMethod.value.impressGeneralEduBS) return
                 _oneTimeMethod.update {
                     it.copy(event = event, impressGeneralEduBS = true)
                 }
             }
+
             else -> {
                 // noop
             }
@@ -1266,17 +1305,18 @@ class DynamicProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.main) {
             runCatching {
-                val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
-                    if (
-                        productMediaRecomBottomSheetData?.pageName == pageName &&
-                        productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
-                    ) {
-                        productMediaRecomBottomSheetData
-                    } else {
-                        setProductMediaRecomBottomSheetLoading(title)
-                        loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                val data =
+                    _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                        if (
+                            productMediaRecomBottomSheetData?.pageName == pageName &&
+                            productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                        ) {
+                            productMediaRecomBottomSheetData
+                        } else {
+                            setProductMediaRecomBottomSheetLoading(title)
+                            loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                        }
                     }
-                }
                 setProductMediaRecomBottomSheetData(title, data)
             }.onFailure {
                 setProductMediaRecomBottomSheetError(title = title, error = it)

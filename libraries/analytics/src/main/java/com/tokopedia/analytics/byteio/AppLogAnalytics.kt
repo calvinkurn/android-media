@@ -114,7 +114,8 @@ enum class EntranceForm(val str: String) {
 }
 
 enum class SourcePageType(val str: String) {
-    HOME_FOR_YOU("mainPage_foryou")
+    HOME_FOR_YOU("mainPage_foryou"),
+    TESTAPP_SOURCE("testapp_source")
 }
 
 object EventName {
@@ -275,7 +276,7 @@ object AppLogAnalytics {
     private fun JSONObject.addPage() {
         put("previous_page", previousPageName())
         put("page_name", currentPageName())
-        put("source_page_type", sourcePageType)
+        put("source_page_type", sourcePageType?.str)
         put("entrance_form", EntranceForm.GRID_GOODS_CARD.str)
     }
 
@@ -342,6 +343,7 @@ object AppLogAnalytics {
     fun send(event: String, params: JSONObject) {
         Cassava.save(params, event, "ByteIO")
         AppLog.onEventV3(event, params)
+        Log.d("BYTEIO", "sending event : $event")
     }
 
     @JvmStatic
