@@ -95,7 +95,7 @@ class SearchProductViewModel @Inject constructor(
             }
             val responseHeaderData = result.doSlashPriceStop.responseHeader
             if (!responseHeaderData.success && responseHeaderData.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
-                _deleteDiscount.value = Fail(MessageErrorException(responseHeaderData.reason))
+                _deleteDiscount.value = Fail(MessageErrorException(responseHeaderData.errorMessages.firstOrNull().orEmpty()))
             } else {
                 _deleteDiscount.value = Success(responseHeaderData.success)
             }
@@ -113,7 +113,7 @@ class SearchProductViewModel @Inject constructor(
             }
             val responseHeaderData = result.doSlashPriceProductReservation.responseHeader
             if (!responseHeaderData.success && responseHeaderData.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
-                _reserveProduct.value = Fail(MessageErrorException(responseHeaderData.reason))
+                _reserveProduct.value = Fail(MessageErrorException(responseHeaderData.errorMessages.firstOrNull().orEmpty()))
             } else {
                 _reserveProduct.value = Success(responseHeaderData.success)
             }

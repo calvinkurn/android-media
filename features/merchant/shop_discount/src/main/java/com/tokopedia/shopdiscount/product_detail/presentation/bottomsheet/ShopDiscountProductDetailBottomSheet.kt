@@ -119,7 +119,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                 is Success -> {
                     if (!it.data.responseHeader.success) {
                         if (it.data.responseHeader.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
-                            showToasterError(it.data.responseHeader.reason)
+                            showToasterError(it.data.responseHeader.errorMessages.firstOrNull().orEmpty())
                         } else {
                             val errorMessage = ErrorHandler.getErrorMessage(context, null)
                             showToasterError(errorMessage)
@@ -156,7 +156,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                 is Success -> {
                     if (!it.data.responseHeader.success) {
                         if (it.data.responseHeader.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
-                            showToasterError(it.data.responseHeader.reason)
+                            showToasterError(it.data.responseHeader.errorMessages.firstOrNull().orEmpty())
                         } else {
                             val errorMessage = ErrorHandler.getErrorMessage(context, null)
                             showToasterError(errorMessage)
