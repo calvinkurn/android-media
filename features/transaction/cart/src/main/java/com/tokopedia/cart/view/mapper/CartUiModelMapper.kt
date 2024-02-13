@@ -23,6 +23,7 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
 import com.tokopedia.cart.view.customview.HexColor
+import com.tokopedia.cart.view.helper.DateHelper
 import com.tokopedia.cart.view.uimodel.CartAddOnData
 import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartAddOnWidgetData
@@ -67,10 +68,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import com.tokopedia.utils.date.DateUtil
-import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.Date
 import kotlin.math.min
 
 object CartUiModelMapper {
@@ -938,8 +935,8 @@ object CartUiModelMapper {
     }
 
     private fun mapProductLabel(productLabel: ProductLabel): CartProductLabelData {
-        val expiredTime = productLabel.labelDetail.timer.expiredTime.toDate()?.time ?: 0L
-        val serverTime = productLabel.labelDetail.timer.serverTime.toDate()?.time ?: 0L
+        val expiredTime = DateHelper.toDate(productLabel.labelDetail.timer.expiredTime)?.time ?: 0L
+        val serverTime = DateHelper.toDate(productLabel.labelDetail.timer.serverTime)?.time ?: 0L
         val remainingTimeMillis = expiredTime - serverTime
         return CartProductLabelData(
             type = productLabel.labelType,
@@ -952,14 +949,5 @@ object CartUiModelMapper {
             backgroundEndColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.backgroundEndColor),
             lineColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.lineColor)
         )
-    }
-}
-
-private fun String.toDate(): Date? {
-    return try {
-        SimpleDateFormat(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.DEFAULT_LOCALE).parse(this)
-    } catch (exception: Exception) {
-        Timber.e(exception)
-        null
     }
 }
