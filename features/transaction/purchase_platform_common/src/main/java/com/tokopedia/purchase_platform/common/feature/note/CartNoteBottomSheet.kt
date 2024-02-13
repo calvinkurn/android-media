@@ -1,17 +1,26 @@
-package com.tokopedia.cart.view.bottomsheet
+package com.tokopedia.purchase_platform.common.feature.note
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.widget.addTextChangedListener
-import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.LayoutBottomsheetCartNoteBinding
-import com.tokopedia.cart.view.uimodel.CartNoteBottomSheetData
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.purchase_platform.common.R
+import com.tokopedia.purchase_platform.common.databinding.LayoutBottomsheetCartNoteBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class CartNoteBottomSheetData(
+    val productName: String = "",
+    val productImage: String = "",
+    val variant: String = "",
+    val note: String = ""
+) : Parcelable
 
 class CartNoteBottomSheet : BottomSheetUnify() {
 
@@ -90,7 +99,7 @@ class CartNoteBottomSheet : BottomSheetUnify() {
 
     private fun renderContent(data: CartNoteBottomSheetData) {
         setTitle(getString(R.string.cart_label_new_note_bottom_sheet_title))
-        binding?.apply {
+        binding?.apply{
             iuCartItem.loadImage(data.productImage)
             labelProductName.text = data.productName
             labelProductVariant.text = data.variant
