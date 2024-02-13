@@ -18,6 +18,7 @@ class PromoBenefitAnalytics @Inject constructor(private val userSession: UserSes
         shopId: String,
         promotions: List<PromotionModel>,
     ) {
+        val promo: Any = if (promotions.isEmpty()) "null" else promotions.toMap()
         Timber.d("[PROMO BOTTOMSHEET] Sending analytics ${promotions.toMap()}")
         Tracker.Builder()
             .setEvent("view_item")
@@ -30,7 +31,7 @@ class PromoBenefitAnalytics @Inject constructor(private val userSession: UserSes
             .setCurrentSite("tokopediamarketplace")
             .setCustomProperty("layout", "null")
             .setCustomProperty("productId", productId)
-            .setCustomProperty("promotions", promotions.toMap())
+            .setCustomProperty("promotions", promo)
             .setShopId(shopId)
             .setUserId(userSession.userId)
             .build()
