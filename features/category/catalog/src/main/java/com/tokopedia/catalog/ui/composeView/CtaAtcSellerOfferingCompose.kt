@@ -61,16 +61,17 @@ fun CtaSellerOffering(
     var switchState by remember { mutableStateOf(1) }
 
     val context = LocalContext.current
+    val maxSwitchState = if (variantText.isNotEmpty()) 4 else 3
 
-    if (rating.isNotEmpty()) {
-        LaunchedEffect(Unit) {
-            val maxSwitchState = if (variantText.isNotEmpty()) 4 else 3
-            while (true) {
-                delay(2000)
-                switchState += 1
-                if (switchState == maxSwitchState) {
-                    switchState = 1
-                }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(2000)
+            switchState += 1
+            if (switchState == 2 && rating.isEmpty()) {
+                switchState = 3
+            }
+            if (switchState > maxSwitchState) {
+                switchState = 1
             }
         }
     }
