@@ -20,7 +20,7 @@ data class ColorPallete(
     var primaryTextColor: String? = null, // 212121 or FFFFFF
     var primaryBackground: String? = null, // 00FFFFFF transparent, background under primary text
     var secondaryTextColor: String? = null, // 6D7588
-    var slashedTextColor: String? = null, // #F94D63 for slash price
+    var slashedTextColor: String? = null,
     var slashedBackgroundColor: String? = null, // for slash price, background under slashed text
     var buttonAccent: String? = null, // #00AA5B green for button
     var white: String? = null, // #FFFFFF white for background under button, text in button, etc
