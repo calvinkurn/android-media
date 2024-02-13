@@ -2,9 +2,9 @@ package com.tokopedia.shareexperience.data.usecase
 
 import android.content.Context
 import android.net.Uri
-import androidx.core.content.FileProvider
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetDownloadedImageUseCase
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.domain.util.asFlowResult
@@ -32,7 +32,7 @@ class ShareExGetDownloadedImageUseCaseImpl @Inject constructor(
                     input.copyTo(output)
                 }
             }
-            val contentUri = getContentUri(outputFile)
+            val contentUri = MethodChecker.getUri(context, outputFile)
             emit(contentUri)
         }
             .asFlowResult()
@@ -41,13 +41,5 @@ class ShareExGetDownloadedImageUseCaseImpl @Inject constructor(
 
     private fun getFileName(): String {
         return "downloaded_image_${System.currentTimeMillis()}.jpeg"
-    }
-
-    private fun getContentUri(outputFile: File): Uri {
-        return FileProvider.getUriForFile(
-            context,
-            context.packageName + ".provider",
-            outputFile
-        )
     }
 }
