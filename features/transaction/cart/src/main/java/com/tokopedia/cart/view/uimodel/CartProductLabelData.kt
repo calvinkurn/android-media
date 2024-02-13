@@ -8,10 +8,10 @@ data class CartProductLabelData(
     val imageLogoUrl: String = "",
     val iconUrl: String = "",
     val text: String = "",
-    val textColor: HexColor = HexColor(),
-    val backgroundStartColor: HexColor = HexColor(),
-    val backgroundEndColor: HexColor = HexColor(),
-    val lineColor: HexColor = HexColor()
+    val textColor: HexColor = HexColor(""),
+    val backgroundStartColor: HexColor = HexColor(""),
+    val backgroundEndColor: HexColor = HexColor(""),
+    val lineColor: HexColor = HexColor("")
 ) {
 
     companion object {

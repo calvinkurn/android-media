@@ -61,15 +61,17 @@ class CartCampaignProductLabel @JvmOverloads constructor(
             )
             iuCampaignLogo.visible()
             tpgCampaignLabel.gone()
-            val tickerBackgroundDrawable = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                orientation = GradientDrawable.Orientation.LEFT_RIGHT
-                val startColor = Color.parseColor(backgroundStartColor.hexCode)
-                val endColor = Color.parseColor(backgroundEndColor.hexCode)
-                colors = intArrayOf(startColor, endColor)
-                setCornerRadius(context.dpToPx(LABEL_CORNER_RADIUS_DP))
+            if (backgroundStartColor.hexCode.isNotBlank() && backgroundEndColor.hexCode.isNotBlank()) {
+                val tickerBackgroundDrawable = GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    orientation = GradientDrawable.Orientation.LEFT_RIGHT
+                    val startColor = Color.parseColor(backgroundStartColor.hexCode)
+                    val endColor = Color.parseColor(backgroundEndColor.hexCode)
+                    colors = intArrayOf(startColor, endColor)
+                    setCornerRadius(context.dpToPx(LABEL_CORNER_RADIUS_DP))
+                }
+                clProductLabel.background = tickerBackgroundDrawable
             }
-            clProductLabel.background = tickerBackgroundDrawable
             clProductLabel.visible()
             tpgProductLabelCountdown.gone()
             container.visible()
@@ -88,15 +90,17 @@ class CartCampaignProductLabel @JvmOverloads constructor(
             tpgCampaignLabel.text = text
             tpgCampaignLabel.setTextColor(Color.parseColor(textColor.hexCode))
             tpgCampaignLabel.visible()
-            val tickerBackgroundDrawable = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                orientation = GradientDrawable.Orientation.LEFT_RIGHT
-                val startColor = Color.parseColor(backgroundStartColor.hexCode)
-                val endColor = Color.parseColor(backgroundEndColor.hexCode)
-                colors = intArrayOf(startColor, endColor)
-                setCornerRadius(context.dpToPx(LABEL_CORNER_RADIUS_DP))
+            if (backgroundStartColor.hexCode.isNotBlank() && backgroundEndColor.hexCode.isNotBlank()) {
+                val tickerBackgroundDrawable = GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    orientation = GradientDrawable.Orientation.LEFT_RIGHT
+                    val startColor = Color.parseColor(backgroundStartColor.hexCode)
+                    val endColor = Color.parseColor(backgroundEndColor.hexCode)
+                    colors = intArrayOf(startColor, endColor)
+                    setCornerRadius(context.dpToPx(LABEL_CORNER_RADIUS_DP))
+                }
+                clProductLabel.background = tickerBackgroundDrawable
             }
-            clProductLabel.background = tickerBackgroundDrawable
             clProductLabel.visible()
             tpgProductLabelCountdown.gone()
             container.visible()
@@ -117,44 +121,48 @@ class CartCampaignProductLabel @JvmOverloads constructor(
             }
             iuCampaignLogo.gone()
             tpgCampaignLabel.gone()
-            val tickerBackgroundDrawable = GradientDrawable().apply {
-                orientation = GradientDrawable.Orientation.LEFT_RIGHT
-                val backgroundColor = Color.parseColor(backgroundColor.hexCode)
-                colors = intArrayOf(backgroundColor, backgroundColor)
-                val cornerRadius = context.dpToPx(LABEL_CORNER_RADIUS_DP)
-                shape = GradientDrawable.RECTANGLE
-                cornerRadii = floatArrayOf(
-                    cornerRadius,
-                    cornerRadius,
-                    0f,
-                    0f,
-                    0f,
-                    0f,
-                    cornerRadius,
-                    cornerRadius
-                )
+            if (backgroundColor.hexCode.isNotBlank()) {
+                val tickerBackgroundDrawable = GradientDrawable().apply {
+                    orientation = GradientDrawable.Orientation.LEFT_RIGHT
+                    val backgroundColor = Color.parseColor(backgroundColor.hexCode)
+                    colors = intArrayOf(backgroundColor, backgroundColor)
+                    val cornerRadius = context.dpToPx(LABEL_CORNER_RADIUS_DP)
+                    shape = GradientDrawable.RECTANGLE
+                    cornerRadii = floatArrayOf(
+                        cornerRadius,
+                        cornerRadius,
+                        0f,
+                        0f,
+                        0f,
+                        0f,
+                        cornerRadius,
+                        cornerRadius
+                    )
+                }
+                clProductLabel.background = tickerBackgroundDrawable
             }
-            clProductLabel.background = tickerBackgroundDrawable
             clProductLabel.visible()
-            val countdownBackgroundDrawable = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                val cornerRadius = context.dpToPx(LABEL_CORNER_RADIUS_DP)
-                cornerRadii = floatArrayOf(
-                    0f,
-                    0f,
-                    cornerRadius,
-                    cornerRadius,
-                    cornerRadius,
-                    cornerRadius,
-                    0f,
-                    0f
-                )
-                setStroke(
-                    context.dpToPx(LABEL_STROKE_WIDTH_DP).toInt(),
-                    Color.parseColor(backgroundColor.hexCode)
-                )
+            if (backgroundColor.hexCode.isNotBlank()) {
+                val countdownBackgroundDrawable = GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    val cornerRadius = context.dpToPx(LABEL_CORNER_RADIUS_DP)
+                    cornerRadii = floatArrayOf(
+                        0f,
+                        0f,
+                        cornerRadius,
+                        cornerRadius,
+                        cornerRadius,
+                        cornerRadius,
+                        0f,
+                        0f
+                    )
+                    setStroke(
+                        context.dpToPx(LABEL_STROKE_WIDTH_DP).toInt(),
+                        Color.parseColor(backgroundColor.hexCode)
+                    )
+                }
+                tpgProductLabelCountdown.background = countdownBackgroundDrawable
             }
-            tpgProductLabelCountdown.background = countdownBackgroundDrawable
             timer?.cancel()
             timer = object : CountDownTimer(remainingTimeMillis, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
@@ -195,4 +203,4 @@ class CartCampaignProductLabel @JvmOverloads constructor(
 }
 
 @JvmInline
-value class HexColor(val hexCode: String = "")
+value class HexColor(val hexCode: String)
