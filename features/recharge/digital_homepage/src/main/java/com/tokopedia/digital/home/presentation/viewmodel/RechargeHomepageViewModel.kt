@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
@@ -101,6 +100,7 @@ class RechargeHomepageViewModel @Inject constructor(
                 graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSections.Response>().response
             data.requestIDs = requestIDs
+
             /*
                 Update local (viewmodel) section then update LiveData in order to
                 prevent missing section updates caused by postValue override
