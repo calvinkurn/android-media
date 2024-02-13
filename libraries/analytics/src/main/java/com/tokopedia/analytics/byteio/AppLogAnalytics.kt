@@ -6,6 +6,7 @@ import android.app.Application
 import android.util.Log
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
+import com.bytedance.frameworks.baselib.network.http.cronet.impl.TTNetDetectInfo
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
 import java.lang.ref.WeakReference
@@ -344,6 +345,7 @@ object AppLogAnalytics {
         Cassava.save(params, event, "ByteIO")
         AppLog.onEventV3(event, params)
         Log.d("BYTEIO", "sending event : $event")
+        Log.d("BYTEIO", "Ip address: ${TTNetDetectInfo.TTNetDetectHttpGetInfo().ip}")
     }
 
     @JvmStatic
