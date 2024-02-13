@@ -56,6 +56,7 @@ import com.tokopedia.developer_options.presentation.model.ViewHanselPatchUiModel
 import com.tokopedia.developer_options.presentation.model.ViewIrisLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewJourneyLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
+import com.tokopedia.developer_options.presentation.model.ViewServerLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
 
 /**
@@ -114,6 +115,8 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ConvertResourceIdUiModel): Int
     fun type(uiModel: ViewHanselPatchUiModel): Int
     fun type(uiModel: TopchatWebSocketLoggingUiModel): Int
+
+    fun type(uiModel: ViewServerLogUiModel): Int
     fun type(uiModel: LoginHelperUiModel): Int
     fun type(uiModel: DevOptsAuthorizationUiModel): Int
     fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int

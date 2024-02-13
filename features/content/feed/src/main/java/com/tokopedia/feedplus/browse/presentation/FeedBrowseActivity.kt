@@ -7,6 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.feedplus.R
@@ -30,12 +31,15 @@ class FeedBrowseActivity : BaseActivity() {
         setupStatusBar()
         setContentView(R.layout.activity_feed_browse)
 
-        supportFragmentManager.beginTransaction()
-            .add(
-                R.id.feed_browse_container,
-                FeedBrowseFragment.create(supportFragmentManager, classLoader, intent.extras)
-            )
-            .commit()
+        if (supportFragmentManager.findFragmentByTag(TAG_BROWSE_FRAGMENT) == null) {
+            supportFragmentManager.commit {
+                replace(
+                    R.id.feed_browse_container,
+                    FeedBrowseFragment.create(supportFragmentManager, classLoader, intent.extras),
+                    TAG_BROWSE_FRAGMENT
+                )
+            }
+        }
     }
 
     private fun inject() {
@@ -56,5 +60,9 @@ class FeedBrowseActivity : BaseActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor =
             ContextCompat.getColor(this, unifyprinciplesR.color.Unify_Background)
+    }
+
+    companion object {
+        private const val TAG_BROWSE_FRAGMENT = "feed_browse"
     }
 }

@@ -157,7 +157,7 @@ class SaldoDetailViewModelTest {
         } returns mockResponse
 
         // when
-        viewModel.getAutoWDStatus()
+        viewModel.getAutoWDStatus(true)
 
         // then
         when(viewModel.gqlAutoWDInitLiveData.value) {
@@ -180,7 +180,7 @@ class SaldoDetailViewModelTest {
         } throws mockThrowable
 
         // when
-        viewModel.getAutoWDStatus()
+        viewModel.getAutoWDStatus(true)
 
         // then
         assertTrue(viewModel.gqlAutoWDInitLiveData.value is ErrorMessage<*, *>)

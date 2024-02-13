@@ -231,7 +231,7 @@
             android:layout_marginBottom="12dp"
             app:layout_goneMarginBottom="8dp"
             android:gravity="center"
-            android:text="@string/promote_topads"
+            android:text="@string/pdp_promote_topads"
             android:visibility="visible"
             app:layout_constraintStart_toEndOf="@+id/btn_edit_product"
             app:layout_constraintTop_toTopOf="parent"

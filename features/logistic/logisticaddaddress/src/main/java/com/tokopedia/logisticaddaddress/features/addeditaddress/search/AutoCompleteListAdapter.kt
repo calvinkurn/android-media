@@ -11,7 +11,7 @@ class AutoCompleteListAdapter(private var listener: AutoCompleteItemListener) : 
     private val autoCompleteData = mutableListOf<SuggestedPlace>()
 
     interface AutoCompleteItemListener {
-        fun onItemClicked(placeId: String)
+        fun onItemClicked(data: SuggestedPlace)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AutoCompleteListAdapterViewHolder {
@@ -20,7 +20,7 @@ class AutoCompleteListAdapter(private var listener: AutoCompleteItemListener) : 
         return viewHolder.apply {
             itemView.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
-                    listener.onItemClicked(autoCompleteData[adapterPosition].placeId)
+                    listener.onItemClicked(autoCompleteData[adapterPosition])
                 }
             }
         }

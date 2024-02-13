@@ -1,9 +1,13 @@
 package com.tokopedia.loginregister.registerinitial
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import com.scp.auth.GotoSdk
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.loginregister.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.di.RegisterInitialComponentStub
@@ -46,12 +50,17 @@ open class RegisterInitialBase : LoginRegisterBase() {
     @Inject
     lateinit var fakeGraphqlRepository: FakeGraphqlRepository
 
+    private val applicationContext: Context
+        get() = InstrumentationRegistry
+            .getInstrumentation().context.applicationContext
+
     @Before
     open fun before() {
         var registerComponent: RegisterInitialComponentStub
         ActivityComponentFactory.instance = FakeActivityComponentFactory().also {
             registerComponent = it.registerComponent
         }
+        GotoSdk.init(applicationContext as BaseMainApplication)
         registerComponent.inject(this)
     }
 

@@ -47,5 +47,7 @@ data class CartData(
     @SerializedName("show_bundle_price")
     val showBundlePrice: Boolean = true,
     @SerializedName("onboarding_data")
-    val onboardingData: List<CartOnBoardingData> = emptyList()
+    val onboardingData: List<CartOnBoardingData> = emptyList(),
+    @SerializedName("onboarding_bottomsheet")
+    val onboardingBottomSheet: OnboardingBottomSheet = OnboardingBottomSheet()
 )

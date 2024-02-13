@@ -11,7 +11,6 @@ import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
-import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSAShopUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
@@ -46,7 +45,6 @@ class AffiliatePromoViewModelTest {
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase = mockk()
     private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase = mockk()
     private val affiliateSSAShopUseCase: AffiliateSSAShopUseCase = mockk()
-    private val affiliateGetUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase = mockk()
     private val graphqlRepository: GraphqlRepository = mockk()
     private val affiliatePromoViewModel = spyk(
         AffiliatePromoViewModel(
@@ -56,7 +54,6 @@ class AffiliatePromoViewModelTest {
             affiliateAffiliateAnnouncementUseCase,
             affiliateDiscoveryCampaignUseCase,
             affiliateSSAShopUseCase,
-            affiliateGetUnreadNotificationUseCase,
             graphqlRepository
         )
     )
@@ -324,28 +321,5 @@ class AffiliatePromoViewModelTest {
         assertEquals(affiliatePromoViewModel.getUserName(), name)
         assertEquals(affiliatePromoViewModel.getUserProfilePicture(), profile)
         assertEquals(affiliatePromoViewModel.isUserLoggedIn(), isLoggedIn)
-    }
-
-    @Test
-    fun `successfully getting unread notification count`() {
-        coEvery {
-            affiliateGetUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliatePromoViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliatePromoViewModel.getUnreadNotificationCount().value)
-    }
-
-    @Test
-    fun `should reset notification count to zero`() {
-        coEvery {
-            affiliateGetUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliatePromoViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliatePromoViewModel.getUnreadNotificationCount().value)
-
-        affiliatePromoViewModel.resetNotificationCount()
-        assertEquals(0, affiliatePromoViewModel.getUnreadNotificationCount().value)
     }
 }

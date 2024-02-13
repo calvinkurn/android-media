@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedViewModel
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.general.MiniCartGeneralViewModel
+import com.tokopedia.minicart.v2.MiniCartV2ViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -36,4 +37,10 @@ abstract class MiniCartWidgetViewModelModule {
     @IntoMap
     @ViewModelKey(MiniCartGeneralViewModel::class)
     internal abstract fun miniCartGeneralWidgetViewModel(viewModel: MiniCartGeneralViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(MiniCartV2ViewModel::class)
+    internal abstract fun miniCartV2ViewModel(viewModel: MiniCartV2ViewModel): ViewModel
 }

@@ -18,5 +18,17 @@ data class LabelGroup(
         val type: String = "",
         @SerializedName("url")
         @Expose
-        val imageUrl: String = ""
-) 
+        val imageUrl: String = "",
+        @SerializedName("styles")
+        @Expose
+        val styles: List<Style> = listOf(),
+) {
+    data class Style(
+        @SerializedName("key")
+        @Expose
+        val key: String = "",
+        @SerializedName("value")
+        @Expose
+        val value: String = "",
+    )
+}

@@ -19,10 +19,10 @@ object ScpUtils {
     private const val ROLLENCE_KEY_PROGRESSIVE_SIGNUP = "and_prog_sign_up_sso"
 
     fun isGotoLoginEnabled(): Boolean {
-        return RemoteConfigInstance.getInstance()
+        return (RemoteConfigInstance.getInstance()
             .abTestPlatform
             .getString(ROLLENCE_KEY_SCP_LOGIN)
-            .isNotEmpty() && GlobalConfig.isSellerApp().not()
+            .isNotEmpty() && GlobalConfig.isSellerApp().not())
     }
 
     fun isProgressiveSignupEnabled(): Boolean {

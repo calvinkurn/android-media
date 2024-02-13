@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
@@ -36,6 +35,8 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import com.tokopedia.product.detail.R as productdetailR
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 class PartialButtonActionView private constructor(
     val view: View,
@@ -65,15 +66,15 @@ class PartialButtonActionView private constructor(
     private var tokonowButtonData: TokoNowButtonData? = null
 
     private val containerTokonowVar =
-        view.findViewById<ConstraintLayout>(R.id.tokonow_button_container)
-    private val btnTokonowVar = view.findViewById<UnifyButton>(R.id.btn_atc_tokonow_variant)
-    private val txtTotalStockTokonowVar = view.findViewById<Typography>(R.id.txt_total_quantity)
-    private val dividerTokonow = view.findViewById<View>(R.id.divider_button_quantity)
-    private val txtProductNameTokonowVar = view.findViewById<Typography>(R.id.txt_product_name)
+        view.findViewById<ConstraintLayout>(productdetailR.id.tokonow_button_container)
+    private val btnTokonowVar = view.findViewById<UnifyButton>(productdetailR.id.btn_atc_tokonow_variant)
+    private val txtTotalStockTokonowVar = view.findViewById<Typography>(productdetailR.id.txt_total_quantity)
+    private val dividerTokonow = view.findViewById<View>(productdetailR.id.divider_button_quantity)
+    private val txtProductNameTokonowVar = view.findViewById<Typography>(productdetailR.id.txt_product_name)
 
-    private val icDeleteNonVar = view.findViewById<IconUnify>(R.id.btn_delete_tokonow_non_var)
-    private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(R.id.qty_tokonow_non_var)
-    private val btnChat = view.findViewById<UnifyButton>(R.id.btn_topchat)
+    private val icDeleteNonVar = view.findViewById<IconUnify>(productdetailR.id.btn_delete_tokonow_non_var)
+    private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(productdetailR.id.qty_tokonow_non_var)
+    private val btnChat = view.findViewById<UnifyButton>(productdetailR.id.btn_topchat)
 
     companion object {
         fun build(view: View, buttonListener: PartialButtonActionListener) =
@@ -198,7 +199,7 @@ class PartialButtonActionView private constructor(
     private fun renderTokoNowVar() = with(view) {
         val availableButton = cartTypeData?.availableButtonsPriority.orEmpty()
         btnTokonowVar.text = availableButton.getOrNull(0)?.text
-            ?: context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
+            ?: context.getString(productdetailcommonR.string.plus_product_to_cart)
         btnTokonowVar.generateTheme(
             availableButton.getOrNull(0)?.color
                 ?: ProductDetailCommonConstant.KEY_BUTTON_PRIMARY
@@ -213,7 +214,7 @@ class PartialButtonActionView private constructor(
         }
 
         txtTotalStockTokonowVar.text = context.getString(
-            R.string.pdp_pcs_builder,
+            productdetailR.string.pdp_pcs_builder,
             tokonowButtonData?.totalStockAtcVariant
                 ?: DEFAULT_TOTAL_STOCK
         )
@@ -394,12 +395,12 @@ class PartialButtonActionView private constructor(
             btnBuyNow.apply {
                 text = context.getString(
                     if (preOrder?.isPreOrderActive() == true) {
-                        R.string.action_preorder
+                        productdetailR.string.action_preorder
                     } else {
                         if (isExpressCheckout) {
-                            com.tokopedia.product.detail.common.R.string.buy_now
+                            productdetailcommonR.string.buy_now
                         } else {
-                            R.string.buy
+                            productdetailR.string.buy
                         }
                     }
                 )
@@ -415,7 +416,7 @@ class PartialButtonActionView private constructor(
 
             btnAddToCart.apply {
                 text =
-                    context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
+                    context.getString(productdetailcommonR.string.plus_product_to_cart)
                 setOnClickListener {
                     if (hasComponentLoading) return@setOnClickListener
                     buttonListener.addToCartClick(btnAddToCart.text.toString())
@@ -452,10 +453,10 @@ class PartialButtonActionView private constructor(
             sellerButtonContainer.show()
             if (hasTopAdsActive) {
                 btnTopAds.setOnClickListener { buttonListener.rincianTopAdsClicked() }
-                btnTopAds.text = context.getString(R.string.rincian_topads)
+                btnTopAds.text = context.getString(productdetailR.string.pdp_rincian_topads)
             } else {
                 btnTopAds.setOnClickListener { buttonListener.advertiseProductClicked() }
-                btnTopAds.text = context.getString(R.string.promote_topads)
+                btnTopAds.text = context.getString(productdetailR.string.pdp_promote_topads)
             }
 
             shopModeratedManageButton()

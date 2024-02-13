@@ -36,6 +36,7 @@ data class FeedDataModel(
     val position: Int,
     val isActive: Boolean,
     val isSelected: Boolean,
+    val hasNewContent: Boolean,
 ) : Parcelable {
 
     val isFollowingTab = this.type == TAB_TYPE_FOLLOWING

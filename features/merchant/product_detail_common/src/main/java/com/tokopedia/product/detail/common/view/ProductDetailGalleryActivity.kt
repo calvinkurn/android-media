@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGal
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 class ProductDetailGalleryActivity : AppCompatActivity() {
 
@@ -84,14 +85,13 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         if (selectedPosition == -1) {
             showToaster(imageGallery)
         }
-
     }
 
     private fun showToaster(view: View) {
         view.showToasterSuccess(
             message = getString(R.string.pdp_common_gallery_default_selected),
             heightOffset = R.dimen.pdp_common_80_dp,
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
         )
     }
 

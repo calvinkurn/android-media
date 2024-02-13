@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
-import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponent
+import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
 import dagger.BindsInstance
 import dagger.Component
 
@@ -16,6 +16,7 @@ import dagger.Component
 interface ContentCreationComponent {
     fun contentCreationFactory(): ViewModelProvider.Factory
     fun contentCreationAnalytics(): ContentCreationAnalytics
+    fun contentCreationEntryPointSharedPref(): ContentCreationEntryPointSharedPref
 
     @Component.Factory
     interface Factory {

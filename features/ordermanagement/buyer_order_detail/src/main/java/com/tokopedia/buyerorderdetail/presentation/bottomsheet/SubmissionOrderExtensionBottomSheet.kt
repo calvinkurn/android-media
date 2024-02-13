@@ -26,8 +26,8 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -85,6 +85,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
             val appComponent = (it.application as BaseMainApplication).baseAppComponent
             DaggerBuyerOrderDetailComponent.builder()
                 .baseAppComponent(appComponent)
+                .tokoChatConfigComponent(TokoChatConnection.getComponent(it))
                 .build()
                 .inject(this)
         }
@@ -159,9 +160,10 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
     ) {
         val isOrderExtended =
             orderExtensionRespondUiModel.messageCode ==
-                    BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS
+                BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS
         val isFromUOH = arguments?.getBoolean(
-            ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH, false
+            ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH,
+            false
         ).orFalse()
         val isUoH = if (isFromUOH) {
             BuyerOrderDetailTrackerConstant.UOH_SOURCE
@@ -225,7 +227,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
                             R.string.order_extension_desc_confirmed_order_cancelled,
                             respondInfo?.rejectText.orEmpty(),
                             nn950Color,
-                            respondInfo?.newDeadline.orEmpty(),
+                            respondInfo?.newDeadline.orEmpty()
                         )
                     )
                     setDialogSecondaryCta()

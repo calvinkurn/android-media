@@ -14,7 +14,7 @@ import javax.inject.Inject
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     enum class Page {
-        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE, SHOP_PAGE
+        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE, SHOP_PAGE, BMSM_OLP_PAGE
     }
 
     companion object {
@@ -68,6 +68,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_IMPRESSED = "34074"
         const val VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_CLICKED = "34075"
         const val VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_ATC = "34076"
+        const val VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_SEARCH = "16303"
+        const val VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_HOME = "16304"
+        const val VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_CATEGORY = "16305"
 
         // EVENT NAME
         const val EVENT_NAME_CLICK_MINICART = "clickMinicart"
@@ -138,6 +141,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val DIMENSION_53 = "dimension53" // Discounted price
         const val DIMENSION_56 = "dimension56" // Warehouse id
         const val DIMENSION_59 = "dimension59" // Promo details
+        const val DIMENSION_73 = "dimension73" // Shop id
         const val DIMENSION_79 = "dimension79" // Shop id
         const val DIMENSION_80 = "dimension80" // Shop name
         const val DIMENSION_81 = "dimension81" // Shop type
@@ -221,6 +225,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(DIMENSION_53, product.productSlashPriceLabel.isNotEmpty().toString().toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_56, product.warehouseId.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_59, "".toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_73, product.productTagInfo.firstOrNull()?.message ?: "".toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_79, product.shopId.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_80, product.shopName.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_81, product.shopType.toEnhancedEcommerceDefaultValueIfEmpty())
@@ -336,18 +341,22 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     fun eventClickBuy(page: Page, products: List<MiniCartProductUiModel>, isOCCFlow: Boolean) {
         var eventAction = ""
         var eventCategory = ""
+        var trackerId = ""
         when (page) {
             Page.HOME_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "landing")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- homepage")
+                trackerId = VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_HOME
             }
             Page.SEARCH_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "search")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- search result")
+                trackerId = VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_SEARCH
             }
             Page.CATEGORY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "category")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "category page")
+                trackerId = VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_CATEGORY
             }
             Page.DISCOVERY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "discovery")
@@ -372,6 +381,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(KEY_USER_ID, userSession.userId)
             putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART)
             putString(KEY_CHECKOUT_STEP, VALUE_CHECKOUT_STEP_ONE)
+            putString(KEY_TRACKER_ID, trackerId)
             val items = ArrayList<Bundle>()
             products.forEach { product ->
                 val bundle = getBundleProduct(product)
@@ -391,18 +401,22 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     fun eventClickBuy(page: Page, products: List<MiniCartItem>, isOCCFlow: Boolean) {
         var eventAction = ""
         var eventCategory = ""
+        var trackerId = ""
         when (page) {
             Page.HOME_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "landing")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- homepage")
+                trackerId = VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_HOME
             }
             Page.SEARCH_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "search")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- search result")
+                trackerId = VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_SEARCH
             }
             Page.CATEGORY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "category")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "category page")
+                trackerId = VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_CATEGORY
             }
             Page.DISCOVERY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "discovery")
@@ -427,6 +441,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(KEY_USER_ID, userSession.userId)
             putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART)
             putString(KEY_CHECKOUT_STEP, VALUE_CHECKOUT_STEP_ONE)
+            putString(KEY_TRACKER_ID, trackerId)
             val items = ArrayList<Bundle>()
             products.forEach { product ->
                 if (product is MiniCartItem.MiniCartItemProduct && !product.isError) {

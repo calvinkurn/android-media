@@ -13,12 +13,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.diffutil.HomeRecommendationDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
-import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.RecomEntityCardViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.RecomEntityCardViewHolder
 
 class HomeRecommendationAdapter(
     private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
-) : ListAdapter<Visitable<HomeRecommendationTypeFactoryImpl>, AbstractViewHolder<Visitable<*>>>(
-    AsyncDifferConfig.Builder(HomeRecommendationDiffUtil(adapterTypeFactory)).build()
+) : ListAdapter<BaseHomeRecommendationVisitable, AbstractViewHolder<Visitable<*>>>(
+    AsyncDifferConfig.Builder(HomeRecommendationDiffUtil())
+        .build()
 ) {
 
     override fun onCreateViewHolder(
@@ -57,10 +58,10 @@ class HomeRecommendationAdapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        if (payloads.isEmpty()) {
-            onBindViewHolder(holder, position)
+        if (payloads.isNotEmpty()) {
+            holder.bind(getItem(holder.bindingAdapterPosition), payloads)
         } else {
-            holder.bind(getItem(position), payloads)
+            super.onBindViewHolder(holder, holder.bindingAdapterPosition, payloads)
         }
     }
 

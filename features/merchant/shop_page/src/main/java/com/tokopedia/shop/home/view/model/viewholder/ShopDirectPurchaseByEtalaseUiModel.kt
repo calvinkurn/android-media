@@ -16,7 +16,7 @@ data class ShopDirectPurchaseByEtalaseUiModel(
     override val type: String = "",
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
-    val widgetData: WidgetData,
+    val widgetData: WidgetData = WidgetData(),
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()
 

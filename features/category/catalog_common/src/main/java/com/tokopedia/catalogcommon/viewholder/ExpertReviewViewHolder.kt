@@ -11,13 +11,11 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.ItemExpertReviewBinding
 import com.tokopedia.catalogcommon.databinding.WidgetExpertsReviewBinding
 import com.tokopedia.catalogcommon.listener.VideoExpertListener
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.utils.view.binding.viewBinding
@@ -42,7 +40,10 @@ class ExpertReviewViewHolder(
         binding?.carousel?.apply {
             autoplay = false
             infinite = true
-            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
+            listener?.onVideoExpertImpression(element)
+
+            // TODO: Re-Implement when iOS Ready
+            /*onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
                     val videoExpertHasSaw = if (prev == element.content.size - 1) {
                         element.content.subList(Int.ZERO, element.content.size)
@@ -51,7 +52,7 @@ class ExpertReviewViewHolder(
                     }
                     listener?.onVideoExpertImpression(videoExpertHasSaw)
                 }
-            }
+            }*/
             if (!onceCreateCarousel) {
                 element.content.forEach { itemExpert ->
                     val view = ItemExpertReviewBinding.inflate(
@@ -76,10 +77,9 @@ class ExpertReviewViewHolder(
                 }
             }
             activeIndex = Int.ZERO
-
-            listener?.onVideoExpertImpression(element.content.subList(Int.ZERO, Int.ONE))
             onceCreateCarousel = true
         }
+
     }
 
     private fun playVideoYoutube(videoLink: String) {

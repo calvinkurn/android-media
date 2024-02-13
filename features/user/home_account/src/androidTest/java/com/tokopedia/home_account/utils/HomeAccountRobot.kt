@@ -83,15 +83,6 @@ class HomeAccountRobot {
         waitForIt(2.0f)
     }
 
-    fun switchShakeShake() {
-        onView(
-            allOf(
-                hasSibling(withText("Shake Shake")),
-                withId(R.id.account_user_item_common_switch)
-            )
-        ).perform(click())
-    }
-
     fun assertClickTrackerAtFirstPage(rule: CassavaTestRule) {
         assertThat(
             rule.validate(CassavaQueries.clickTrackerFirstPage, MODE_SUBSET),

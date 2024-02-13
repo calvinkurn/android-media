@@ -13,8 +13,10 @@ interface FeedbackPageContract {
     interface View: CustomerView{
         fun showLoadingDialog()
         fun hideLoadingDialog()
+        fun showLoadingFrame()
+        fun hideLoadingFrame()
         fun setSubmitFlag()
-        fun checkUriImage(feedbackId: Int, imageCount: Int)
+        fun checkUriImage(feedbackId: Long, imageCount: Int)
         fun goToTicketCreatedActivity(issueUrl: String?)
         fun showError(throwable: Throwable)
         fun setFeedbackData(model: FeedbackModel)
@@ -24,14 +26,14 @@ interface FeedbackPageContract {
     interface Presenter{
         fun getFeedbackData()
         fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest)
-        fun sendAttachment(feedbackId: Int, fileData: MultipartBody.Part, totalImage: Int, imageCount: Int)
-        fun commitData(feedbackId: Int)
+        fun sendAttachment(feedbackId: Long, fileData: MultipartBody.Part, totalImage: Int, imageCount: Int)
+        fun commitData(feedbackId: Long)
         fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageFeedbackUiModel>
         fun initImageData(): MutableList<BaseImageFeedbackUiModel>
         fun screenshotImageResult(data: ScreenshotData) : MutableList<BaseImageFeedbackUiModel>
         fun removeImage(image: BaseImageFeedbackUiModel) : MutableList<BaseImageFeedbackUiModel>
         fun getSelectedImageUrl(): ArrayList<String>
         fun drawOnPictureResult(uri: Uri?, oldPath: String): MutableList<BaseImageFeedbackUiModel>
-        fun setSelectedPage(pageInt: Int)
+        fun setSelectedPage(pageId: Int)
     }
 }

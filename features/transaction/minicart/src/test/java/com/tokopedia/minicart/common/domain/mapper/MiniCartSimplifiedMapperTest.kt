@@ -24,7 +24,7 @@ import org.junit.Test
 
 class MiniCartSimplifiedMapperTest {
 
-    private var mapper: MiniCartSimplifiedMapper = MiniCartSimplifiedMapper()
+    private var mapper: MiniCartSimplifiedMapper = MiniCartSimplifiedMapper
 
     @Test
     fun `WHEN map mini cart data without parent THEN should return exact same count`() {

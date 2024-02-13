@@ -85,6 +85,7 @@ object GetProductAdsQuery : GqlQueryInterface {
                 customvideo_url
                 parent_id
                 max_order
+                warehouse_id
                 stock
               }
               shop {

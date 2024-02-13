@@ -8,12 +8,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemProductContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 import com.tokopedia.common_tradein.R as common_tradeinR
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -24,7 +25,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class PartialContentView(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : CampaignRibbon.CampaignCountDownCallback {
+) {
 
     private val context = view.context
     private val binding = ItemProductContentBinding.bind(view)
@@ -32,21 +33,24 @@ class PartialContentView(
     fun renderData(
         data: ProductContentMainData,
         isUpcomingNplType: Boolean,
-        freeOngkirImgUrl: String,
-        shouldShowCampaign: Boolean
+        freeOngkirImgUrl: String
     ) = with(binding) {
-        txtMainPrice.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
-        productName.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
+        txtMainPrice.contentDescription =
+            context.getString(R.string.content_desc_txt_main_price, data.price.value)
+        productName.contentDescription = context.getString(
+            R.string.content_desc_product_name,
+            MethodChecker.fromHtml(data.productName)
+        )
         productName.text = MethodChecker.fromHtml(data.productName)
 
         renderFreeOngkir(freeOngkirImgUrl)
 
         textCashbackGreen.shouldShowWithAction(data.cashbackPercentage > 0) {
-            textCashbackGreen.text = context.getString(productdetailcommonR.string.template_cashback, data.cashbackPercentage.toString())
+            textCashbackGreen.text = context.getString(
+                productdetailcommonR.string.template_cashback,
+                data.cashbackPercentage.toString()
+            )
         }
-
-        campaignRibbon.setCampaignCountDownCallback(this@PartialContentView)
-        campaignRibbon.setDynamicProductDetailListener(listener)
 
         when {
             isUpcomingNplType -> {
@@ -55,29 +59,21 @@ class PartialContentView(
                 } else {
                     setTextCampaignActive(data.campaign)
                 }
-                campaignRibbon.hide()
             }
             // no campaign
             data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN -> {
                 renderCampaignInactive(data.price.priceFmt)
-                campaignRibbon.hide()
             }
             // thematic only
             data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN -> {
-                campaignRibbon.renderOnGoingCampaign(data)
                 renderCampaignInactive(data.price.priceFmt)
             }
             else -> {
-                campaignRibbon.renderOnGoingCampaign(data)
                 setTextCampaignActive(data.campaign)
             }
         }
 
         renderStockAvailable(data.campaign, data.isVariant, data.stockWording, data.isProductActive)
-
-        if (!shouldShowCampaign) {
-            campaignRibbon.hide()
-        }
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
@@ -89,7 +85,7 @@ class PartialContentView(
 
     fun renderFreeOngkir(freeOngkirUrl: String) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
-            imgFreeOngkir.setImageUrl(freeOngkirUrl)
+            imgFreeOngkir.loadImageWithoutPlaceholder(freeOngkirUrl)
         }
     }
 
@@ -113,7 +109,6 @@ class PartialContentView(
         txtMainPrice.text = price
         textSlashPrice.gone()
         textDiscountRed.gone()
-        campaignRibbon.show()
     }
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(binding) {
@@ -148,23 +143,5 @@ class PartialContentView(
             textSlashPrice.visibility = View.VISIBLE
             textDiscountRed.visibility = View.VISIBLE
         }
-    }
-
-    private fun hideProductCampaign(campaign: CampaignModular) = with(binding) {
-        txtMainPrice.text = campaign.slashPriceFmt
-        campaignRibbon.hide()
-        textDiscountRed.gone()
-        textSlashPrice.gone()
-        textStockAvailable.show()
-    }
-
-    fun renderTradein(showTradein: Boolean) = with(binding) {
-        tradeinHeaderContainer.shouldShowWithAction(showTradein) {
-            tradeinHeaderContainer.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, common_tradeinR.drawable.tradein_white), null, null, null)
-        }
-    }
-
-    override fun onOnGoingCampaignEnded(campaign: CampaignModular) {
-        hideProductCampaign(campaign = campaign)
     }
 }

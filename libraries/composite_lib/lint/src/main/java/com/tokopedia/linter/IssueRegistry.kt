@@ -13,6 +13,7 @@ import com.tokopedia.linter.detectors.ImageUrlDeclarationDetector
 import com.tokopedia.linter.detectors.ResourceFragmentDetector
 import com.tokopedia.linter.detectors.ResourcePackageDetector
 import com.tokopedia.linter.detectors.SerializedNameAnnotationDetector
+import com.tokopedia.linter.detectors.TkpdDesignAttributeDetector
 import com.tokopedia.linter.detectors.TkpdDesignComponentDetector
 import com.tokopedia.linter.detectors.UnifyBackgroundDetector
 import com.tokopedia.linter.detectors.UnsafeFragmentConstructorDetector
@@ -64,7 +65,8 @@ class IssueRegistry : IssueRegistry() {
             MissingResourceImportAliasDetector.ISSUE,
             WrongResourceImportAliasDetector.ISSUE,
             TkpdDesignResourceImportAliasDetector.ISSUE,
-            TkpdDesignComponentDetector.ISSUE
+            TkpdDesignComponentDetector.ISSUE,
+            TkpdDesignAttributeDetector.ISSUE
         )
 
     override val minApi: Int

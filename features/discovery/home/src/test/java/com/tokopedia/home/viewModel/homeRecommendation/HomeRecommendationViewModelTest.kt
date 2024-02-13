@@ -2,12 +2,10 @@ package com.tokopedia.home.viewModel.homeRecommendation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationCardMapper
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
@@ -1903,7 +1901,7 @@ class HomeRecommendationViewModelTest {
 
             val productPage = 2
             val homeRecommendationNextDataModel = HomeRecommendationDataModel(
-                listOf<Visitable<HomeRecommendationTypeFactoryImpl>>(
+                listOf<BaseHomeRecommendationVisitable>(
                     HomeRecommendationItemDataModel(
                         productCardModel = ProductCardModel(),
                         recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem()

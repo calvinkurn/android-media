@@ -1,0 +1,127 @@
+{
+  "notifcenter_detail_v3": {
+    "paging": {
+      "has_next": false,
+      "has_prev": false
+    },
+    "new_paging": {
+      "has_next": false,
+      "has_prev": false
+    },
+    "new_list": [
+      {
+        "notif_id": "123",
+        "user_id": 9075738,
+        "shop_id": 0,
+        "section_id": "feed",
+        "section_key": "Feed",
+        "section_icon": "https://images.tokopedia.net/img/notif-center/icons/feed.png",
+        "subsection_key": "",
+        "template_key": "content_creator_post_comment",
+        "title": "Kelvin mengomentari postinganmu:",
+        "title_html": "Kelvin mengomentari postinganmu:",
+        "button_text": "Klik di sini",
+        "short_description": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\"",
+        "short_description_html": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\"",
+        "is_longer_content": false,
+        "show_bottomsheet": false,
+        "type_bottomsheet": 0,
+        "content": "",
+        "type_of_user": 1,
+        "type_link": 9,
+        "create_time": "Kemarin",
+        "create_time_unix": 1624528646,
+        "update_time": "2021-06-24 16:57:26.474464291 +0700 WIB",
+        "update_time_unix": 1624528646,
+        "expire_time": "2021-07-09 16:57:26.474881078 +0700 WIB",
+        "expire_time_unix": 1625824646,
+        "status": 0,
+        "read_status": 2,
+        "notif_order_type": 3,
+        "is_last_journey": true,
+        "is_show_expire":false,
+        "is_pinned": false,
+        "pinned_text": "",
+        "unique_id": 1000,
+        "widget": {
+          "title": "",
+          "description": "",
+          "message": "",
+          "image": "",
+          "button_text": "",
+          "desktop_button_link": "",
+          "mobile_button_link": "",
+          "android_button_link": "",
+          "ios_button_link": ""
+        },
+        "track_history": [
+          {
+            "title": "Kelvin mengomentari postinganmu:",
+            "description_html": "“ada paket bundling gak?”",
+            "create_time_unix": 1701086343
+          },
+          {
+            "title": "Kelvin mengomentari postinganmu:",
+            "description_html": "\"<b>“ada paket bundling gak?”</b>\"",
+            "create_time_unix": 1701086343
+          },
+          {
+            "title": "Kelvin mengomentari postinganmu:",
+            "description_html": "\"<i>“ada paket bundling gak?”</i>\"",
+            "create_time_unix": 1701086343
+          },
+          {
+            "title": "<a href=\"#\">Lihat Semua Komentar</a>",
+            "description_html": "",
+            "create_time_unix": 0
+          }
+        ],
+        "thumbnail_urls": [
+          "https://images.tokopedia.net/img/cache/300/tPxBYm/2022/9/21/ac3cb4d9-00e5-43fe-a745-eb007a887c03.jpg",
+          "https://images-staging.tokopedia.net/img/cache/300/tPxBYm/2023/1/20/655acd81-29e9-47ca-983d-074b36e654c7.jpg"
+        ],
+        "image": [],
+        "data_notification": {
+          "app_link": "tokopedia://topchat",
+          "desktop_link": "",
+          "info_thumbnail_url": "",
+          "mobile_link": "",
+          "product_name": "",
+          "product_url": "",
+          "checkout_url": ""
+        },
+        "total_product": 0,
+        "product_data": [],
+        "bottomsheet": {
+          "title": "",
+          "button_cta": {
+            "type": 0,
+            "text": "",
+            "link": "",
+            "data": ""
+          },
+          "components": []
+        }
+      }
+    ],
+    "list": [],
+    "user_info": {
+      "user_id": 9075738,
+      "shop_id": 6551359,
+      "email": "",
+      "fullname": "bcdua"
+    },
+    "options": {
+      "longer_content": 150
+    },
+    "empty_state_content": {
+      "content": "",
+      "link": {
+        "desktop_link": "",
+        "mobile_link": "",
+        "android_link": "",
+        "ios_link": ""
+      }
+    }
+  }
+}

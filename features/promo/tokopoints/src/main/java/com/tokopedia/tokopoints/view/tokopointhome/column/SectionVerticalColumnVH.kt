@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageBackground
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
@@ -22,7 +22,7 @@ class SectionVerticalColumnVH(val view: View) : RecyclerView.ViewHolder(view) {
             view.visibility = View.GONE
             return
         }
-        ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+        view?.loadImageBackground(content.backgroundImgURLMobile)
         if (!content.cta.isEmpty) {
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all)
             btnSeeAll.visibility = View.VISIBLE
