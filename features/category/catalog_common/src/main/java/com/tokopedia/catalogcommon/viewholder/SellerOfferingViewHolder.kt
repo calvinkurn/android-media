@@ -96,7 +96,9 @@ class SellerOfferingViewHolder(
                 width = 16.toPx(),
                 height = 15.toPx()
             )
-            progressProduct.setValue(element.stockBar)
+            progressProduct.setValue(element.stockBar.stockRemaining)
+            tvStockAlert.text = element.stockBar.stockAlertText
+            lnStockBar.showWithCondition(!element.stockBar.isHidden)
             if (element.totalShopRating.isNotEmpty()) {
                 tvSalesRatingCount.visible()
                 tvSalesRatingCount.text = "(${element.totalShopRating})"
@@ -139,7 +141,6 @@ class SellerOfferingViewHolder(
         tvAdditionalService.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
         tvInstallment.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_color_secondary, darkColor = R.color.dms_static_nn_600))
         tvCourier.setTextColor(getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark))
-        lnBackgroundProductImage.setBackgroundColor(getColor(element.darkMode, lightColor = R.color.dms_static_catalog_color_secondary, darkColor = R.color.dms_static_catalog_color_tertiary))
         ivButtonRightVariant.setImage(
             IconUnify.CHEVRON_RIGHT,
             newLightEnable = getColor(element.darkMode, lightColor = R.color.dms_static_text_color_light, darkColor = R.color.dms_static_text_color_dark),
@@ -170,7 +171,6 @@ class SellerOfferingViewHolder(
         val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)
         if (drawable is GradientDrawable) {
             if (element.cardColor.isNotEmpty()){
-                Log.d("TESS",element.cardColor)
                 drawable.setColor(Color.parseColor(element.cardColor))
                 clProductCard.background = drawable
             }

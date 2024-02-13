@@ -194,67 +194,80 @@
                     android:background="@color/dms_static_divider" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/lnStockBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical"
+                android:layout_marginHorizontal="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lnVariant"
+                android:background="@drawable/bg_rounded_no_border_grey">
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvStockAlert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dms_static_color_secondary"
+                    app:typographyType="small"
+                    tools:text="Sedikit Lagi"
+                    />
+
+                <com.tokopedia.unifycomponents.ProgressBarUnify
+                    android:id="@+id/progressProduct"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="4dp"
+                    app:unify_progress_bar_color_type="color_red"
+                    app:unify_progress_bar_height="6"
+                    app:unify_progress_bar_value="80"
+                    android:layout_weight="1"/>
+            </LinearLayout>
 
             <com.tokopedia.unifycomponents.CardUnify2
-                android:id="@+id/cvProduct"
+                android:id="@+id/cvProductImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginBottom="12dp"
-                app:card_border_color="@color/transparent"
-                app:card_type="clear"
+                android:layout_marginTop="12dp"
+                app:card_type= "clear"
                 app:layout_constraintBottom_toTopOf="@id/barrier"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lnVariant">
-
-                <LinearLayout
-                    android:id="@+id/lnBackgroundProductImage"
-                    android:layout_width="98dp"
-                    android:layout_height="116dp"
-                    android:background="@color/Unify_NN800"
-                    android:orientation="vertical">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
+                app:layout_constraintTop_toBottomOf="@id/lnStockBar">
+                <RelativeLayout
+                    android:id="@+id/flProductImage"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp">
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/ivProduct"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        app:unify_image_type="rect"
+                        app:unify_image_corner_radius="8"
+                        />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@id/tvEstimation"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <com.tokopedia.unifycomponents.ImageUnify
-                            android:id="@+id/ivProduct"
-                            android:layout_width="match_parent"
-                            android:layout_height="88dp"
-                            app:unify_image_corner_radius="0"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            />
-
+                        android:background="@drawable/catalog_bg_rounded_border"
+                        android:layout_alignParentBottom="true">
                         <com.tokopedia.unifycomponents.ImageUnify
                             android:id="@+id/ivFreeOngkir"
                             android:layout_width="48dp"
                             android:layout_height="20dp"
-                            android:contentDescription="@string/product_card_content_desc_imageRating"
                             android:gravity="center"
                             android:visibility="gone"
-                            app:unify_image_corner_radius="0"
-                            app:unify_image_type="rect"
                             tools:visibility="visible"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                            app:unify_image_type="rect"
+                            app:unify_image_corner_radius="0"
+                            />
+                    </LinearLayout>
+                </RelativeLayout>
 
-                    <com.tokopedia.unifycomponents.ProgressBarUnify
-                        android:id="@+id/progressProduct"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
-                        app:unify_progress_bar_color_type="color_red"
-                        app:unify_progress_bar_height="6"
-                        app:unify_progress_bar_value="80" />
-
-                </LinearLayout>
             </com.tokopedia.unifycomponents.CardUnify2>
 
             <LinearLayout
@@ -266,8 +279,8 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/cvProduct"
-                app:layout_constraintTop_toTopOf="@id/cvProduct">
+                app:layout_constraintStart_toEndOf="@id/cvProductImage"
+                app:layout_constraintTop_toTopOf="@id/cvProductImage">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -476,6 +489,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="6dp"
+                    android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
                     >
                     <com.tokopedia.unifycomponents.ImageUnify
@@ -515,7 +529,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="cvProduct,clProductInfo" />
+                app:constraint_referenced_ids="cvProductImage,clProductInfo" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider"
@@ -529,8 +543,8 @@
                 android:id="@+id/btnAtc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_marginTop="12dp"
+                android:layout_marginStart="10dp"
                 android:text="@string/catalog_add_to_cart"
                 app:layout_constraintEnd_toStartOf="@id/btnChat"
                 app:layout_constraintStart_toStartOf="parent"

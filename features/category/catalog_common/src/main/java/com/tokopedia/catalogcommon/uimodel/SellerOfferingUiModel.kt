@@ -13,7 +13,7 @@ data class SellerOfferingUiModel(
     var productImage: String = "",
     var shopBadge: String = "",
     var shopName: String = "",
-    var stockBar: Int = 0,
+    var stockBar: Stock = Stock(),
     var productName: String = "",
     var productPrice: String = "",
     var productSlashPrice: String = "",
@@ -45,6 +45,12 @@ data class SellerOfferingUiModel(
     data class PaymentOption(
         val desc: String = "",
         val icon: String = ""
+    )
+
+    data class Stock(
+        val stockRemaining: Int = 0,
+        val stockAlertText: String = "",
+        val isHidden: Boolean = false
     )
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
