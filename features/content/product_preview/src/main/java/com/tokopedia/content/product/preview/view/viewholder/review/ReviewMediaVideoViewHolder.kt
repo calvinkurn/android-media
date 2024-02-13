@@ -47,14 +47,6 @@ class ReviewMediaVideoViewHolder(
         bindVideoPlayer(content)
     }
 
-    fun bindSelected(selected: Boolean) {
-        if (selected) {
-            onSelected()
-        } else {
-            onNotSelected()
-        }
-    }
-
     private fun bindVideoPlayer(content: ReviewMediaUiModel) {
         mVideoId = String.format(REVIEW_CONTENT_VIDEO_KEY_REF, content.url)
         mVideoPlayer = productPreviewVideoListener.getVideoPlayer(mVideoId)

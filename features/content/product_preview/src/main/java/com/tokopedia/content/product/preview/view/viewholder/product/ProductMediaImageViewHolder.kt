@@ -13,7 +13,7 @@ class ProductMediaImageViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     init {
-        binding.cvProductPreviewContentImage.setViewCompositionStrategy(
+        binding.cvProductPreviewMediaImage.setViewCompositionStrategy(
             ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool
         )
     }

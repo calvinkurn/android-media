@@ -26,10 +26,6 @@ class ReviewMediaImageViewHolder(
         }
     }
 
-    fun bindSelected(isSelected: Boolean) {
-        // do nothing yet
-    }
-
     companion object {
         fun create(parent: ViewGroup) = ReviewMediaImageViewHolder(
             ItemImageProductPreviewBinding.inflate(
