@@ -633,7 +633,14 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             addToCartButtonType = UnifyButton.Type.MAIN,
             stockBarPercentage = product.stock_info.soldStockPercentage,
             stockBarLabel = product.stock_info.stockWording,
-            stockBarLabelColor = product.stock_info.stockColour
+            stockBarLabelColor = product.stock_info.stockColour,
+            shopBadgeList = product.badges.map {
+                ProductCardModel.ShopBadge(
+                    imageUrl = it.imageUrl,
+                    title = it.title,
+                    isShown = it.isShow,
+                )
+            },
         )
         return getProductModelOnCondition(product, isAvailAble, productCardModel)
 
@@ -651,7 +658,17 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                         product.labelGroupList.map {
                             if (it.position != "integrity"){
-                                add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                                add(
+                                    ProductCardModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type,
+                                        imageUrl = it.imageUrl,
+                                        styleList = it.styleList.map { style ->
+                                            ProductCardModel.LabelGroup.Style(style.key, style.value)
+                                        },
+                                    )
+                                )
                             }
                         }
                     })
@@ -662,10 +679,13 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                             if (it.position != "integrity"){
                                 add(
                                     ProductCardModel.LabelGroup(
-                                        it.position,
-                                        it.title,
-                                        it.type,
-                                        it.imageUrl
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type,
+                                        imageUrl = it.imageUrl,
+                                        styleList = it.styleList.map { style ->
+                                            ProductCardModel.LabelGroup.Style(style.key, style.value)
+                                        }
                                     )
                                 )
                             }
@@ -680,7 +700,17 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             countSoldRating = product.headlineProductRatingAverage,
             labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                 product.labelGroupList.map {
-                    add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                    add(
+                        ProductCardModel.LabelGroup(
+                            position = it.position,
+                            title = it.title,
+                            type = it.type,
+                            imageUrl = it.imageUrl,
+                            styleList = it.styleList.map { style ->
+                                ProductCardModel.LabelGroup.Style(style.key, style.value)
+                            }
+                        )
+                    )
                 }
             })
     }
