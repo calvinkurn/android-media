@@ -4,6 +4,7 @@ import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.analytic.manager.ContentAnalyticManager
+import com.tokopedia.content.analytic.model.ContentEnhanceEcommerce
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -76,20 +77,34 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 49590
      */
     override fun onClickATC() {
-        Tracker.Builder()
-            .setEvent(Event.add_to_cart)
-            .setEventAction("click - add to cart media fullscreen")
-            .setEventCategory("unified view pdp")
-            .setEventLabel("eventLabel")
-            .setBusinessUnit(BusinessUnit.content)
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty(Key.trackerId, "49590")
-            .setCustomProperty(Key.items, "items")
-            .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.sessionIris, sessionIris)
-            .setUserId(userId)
-            .build()
-            .send()
+        analyticManager.sendEEProduct(
+            event = Event.add_to_cart,
+            eventAction = "click - add to cart media fullscreen",
+            eventLabel = productId,
+            itemList = "",
+            products = listOf(
+                ContentEnhanceEcommerce.Product(
+                    itemId = "",
+                    itemName = "",
+                    itemBrand = "",
+                    itemCategory = "",
+                    itemVariant = "",
+                    price = "",
+                    index = "",
+                    customFields = mapOf(
+                        "category_id" to "category_child_id",
+                        "dimension40" to "/unified view pdp",
+                        "dimension45" to "cart_id",
+                        "quantity" to "quantity",
+                        "shop_id" to "shopId",
+                        "shop_name" to "shopName",
+                        "shop_type" to "shop_type"
+                    )
+                )
+            ),
+            mainAppTrackerId = "49590",
+            customFields = mapOf(Key.productId to productId)
+        )
     }
 
     /**
