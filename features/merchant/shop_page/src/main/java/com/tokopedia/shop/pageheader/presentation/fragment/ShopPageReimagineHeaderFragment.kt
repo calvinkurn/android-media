@@ -1180,7 +1180,7 @@ class ShopPageReimagineHeaderFragment :
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_V4_TRACE_ACTIVITY_PREPARE)
-        startMonitoringPltCustomMetric(ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1)
+        performanceMonitoringShopPrefetch = PerformanceMonitoring.start(ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1)
         sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_SHARED_PREFERENCE, Context.MODE_PRIVATE)
         shopHeaderViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageHeaderViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
@@ -1313,7 +1313,8 @@ class ShopPageReimagineHeaderFragment :
         tabLayout?.removeAllTabs()
         viewPagerAdapterHeader?.notifyDataSetChanged()
 
-        stopMonitoringPltCustomMetric(SHOP_HOME_PREFETCH_V1)
+        performanceMonitoringShopPrefetch?.stopTrace()
+        performanceMonitoringShopPrefetch = null
     }
 
     private fun getPrefetchData(): ShopPrefetchData? {
