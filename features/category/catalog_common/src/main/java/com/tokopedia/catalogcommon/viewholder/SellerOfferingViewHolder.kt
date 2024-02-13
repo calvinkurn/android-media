@@ -66,6 +66,8 @@ class SellerOfferingViewHolder(
             tvShopLocation.text = element.shopLocation
             tvShopResponsiveChat.setTextAndCheckShow(element.chatResponseTime)
             tvShopResponsiveOrder.setTextAndCheckShow(element.orderProcessTime)
+            tvShopCredibility.showWithCondition(element.chatResponseTime.isNotEmpty()
+                || element.orderProcessTime.isNotEmpty())
             vPointCredibility.showWithCondition(element.orderProcessTime.isNotEmpty())
             ivProduct.loadImage(element.productImage)
             tvProductName.text = itemView.resources.getString(R.string.catalog_prefix_title_section, element.productName)

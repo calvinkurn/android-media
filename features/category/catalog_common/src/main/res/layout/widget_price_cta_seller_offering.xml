@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:paddingVertical="8dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_rounded_border_light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
