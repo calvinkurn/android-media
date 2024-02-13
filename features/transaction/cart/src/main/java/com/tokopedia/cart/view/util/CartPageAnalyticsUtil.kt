@@ -76,6 +76,7 @@ object CartPageAnalyticsUtil {
             setDimension118(cartItemHolderData.bundleId)
             setDimension136(cartItemHolderData.cartStringOrder)
             setDimension137(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId.toString())
+            setDimension98(cartItemHolderData.cartProductLabelData.type)
             setCampaignId(cartItemHolderData.campaignId)
             setImpressionAlgorithm(if (!cartItemHolderData.isError) cartItemHolderData.productInformation.firstOrNull() else "")
             if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {
