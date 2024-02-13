@@ -1371,4 +1371,31 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
         assertEquals(OccGlobalEvent.Error(exception), orderSummaryPageViewModel.globalEvent.value)
     }
+
+    @Test
+    fun `Validate Use External Promo Failed`() {
+        // Given
+        val promoCode = "abc"
+        orderSummaryPageViewModel.listPromoExternalAutoApplyCode =
+            arrayListOf(
+                PromoExternalAutoApply(
+                    code = promoCode,
+                    type = "mv"
+                )
+            )
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        val response = ValidateUsePromoRevampUiModel(status = "FAILED", errorCode = "400", promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "red")))
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns response
+
+        // When
+        orderSummaryPageViewModel.validateUsePromo()
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(isSuccess = false)
+        }
+    }
 }
