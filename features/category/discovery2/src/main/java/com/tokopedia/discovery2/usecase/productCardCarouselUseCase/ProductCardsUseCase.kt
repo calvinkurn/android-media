@@ -145,6 +145,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
     suspend fun getCarouselPaginatedData(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
+
+        if (isAlreadyLoaded(component)) return false
+
         component?.let {
             it.properties?.let { properties ->
                 if (properties.limitProduct && properties.limitNumber.toIntOrZero() == it.getComponentsItem()?.size) return false
