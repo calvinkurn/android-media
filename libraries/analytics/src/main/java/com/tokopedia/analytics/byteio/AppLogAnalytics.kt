@@ -151,7 +151,7 @@ object AppLogAnalytics {
 
     // TODO check how to make this null again
     @JvmField
-    var sourcePageType: SourcePageType? = null
+    var sourcePageType: SourcePageType? = SourcePageType.TESTAPP_SOURCE // TODO: this is TEMPORARY
 
     // TODO check how to make this null again
     @JvmField
