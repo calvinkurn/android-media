@@ -28,7 +28,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_PO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.profilecompletion.R
@@ -54,7 +53,6 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment() {
     private val binding get() = _binding
     var phoneNumber: String? = ""
     var uuid: String = ""
-    private var isFromScp = false
 
     private var isError = false
 
@@ -118,7 +116,6 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment() {
         )
         uuid =
             getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
-        isFromScp = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, arguments, savedInstanceState, false)
     }
 
     override fun onCreateView(
@@ -178,7 +175,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment() {
 
     private fun registerPhoneAndName(name: String, phoneNumber: String) {
         if (isValidate(name)) {
-            addNameViewModel.registerPhoneNumberAndName(name, phoneNumber, uuid, isFromScp)
+            addNameViewModel.registerPhoneNumberAndName(name, phoneNumber, uuid)
             showLoading()
         }
     }

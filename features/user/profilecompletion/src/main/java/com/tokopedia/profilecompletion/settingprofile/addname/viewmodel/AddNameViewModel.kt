@@ -25,10 +25,10 @@ class AddNameViewModel @Inject constructor(private val registerUseCase: Register
     val registerLiveData: LiveData<Result<RegisterInfo>>
         get() = _registerValue
 
-    fun registerPhoneNumberAndName(name: String, phoneNumber: String, token: String, isScpToken: Boolean) {
+    fun registerPhoneNumberAndName(name: String, phoneNumber: String, token: String) {
         viewModelScope.launch(dispatchers.main) {
             try {
-                val param = RegisterUseCase.generateParamRegisterPhone(name, phoneNumber, token, isScpToken)
+                val param = RegisterUseCase.generateParamRegisterPhone(name, phoneNumber, token)
                 val data = registerUseCase(param)
                 val registerInfo = data.register
 
