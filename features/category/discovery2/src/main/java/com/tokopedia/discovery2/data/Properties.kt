@@ -157,7 +157,9 @@ data class Properties(
         @SerializedName("shop_name")
         val shopName: String? = null,
         @SerializedName("url")
-        val url: String? = null
+        val url: String? = null,
+        @SerializedName("text_color_mode")
+        val colorMode: String? = ""
     ) {
         data class OfferTier(
             @SerializedName("tier_level")
