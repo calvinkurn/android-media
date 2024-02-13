@@ -133,12 +133,12 @@ data class RatesParam(
         "bo_metadata" to bo_metadata,
         "warehouse_id" to warehouse_id,
         "group_type" to group_type,
-        "group_metadata" to groupMetadata,
-        "action_metadata" to actionMetadata
+        "group_metadata" to groupMetadata
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
-        "cart_data" to cart_data
+        "cart_data" to cart_data,
+        "action_metadata" to actionMetadata
     )
 
     fun toBoAffordabilityMap(appVersion: String): Map<String, Any?> = mapOf(
