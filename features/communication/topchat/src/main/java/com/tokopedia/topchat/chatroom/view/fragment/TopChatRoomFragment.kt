@@ -105,6 +105,7 @@ import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
+import com.tokopedia.topchat.chatroom.data.TopChatRoomOrderWidgetTypeEnum
 import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.di.ChatComponent
@@ -180,6 +181,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
@@ -3675,9 +3677,17 @@ open class TopChatRoomFragment :
         }
     }
 
-    override fun onClickOrderCancellationWidget(appLink: String) {
+    override fun onClickOrderCancellationWidget(uiModel: TopChatRoomOrderCancellationUiModel?) {
+        if (uiModel == null) return
+        TopChatAnalyticsKt.eventClickOrderManagementWidget(
+            isSeller = isSeller(),
+            widgetType = TopChatRoomOrderWidgetTypeEnum.CANCEL,
+            orderId = uiModel.orderId,
+            orderStatus = "", // TODO: ask BE
+            invoiceId = ""
+        )
         context?.let {
-            val intent = RouteManager.getIntent(it, appLink)
+            val intent = RouteManager.getIntent(it, uiModel.appLink)
             startActivityForResult(intent, REQUEST_CODE_ORDER_CANCELLATION)
         }
     }

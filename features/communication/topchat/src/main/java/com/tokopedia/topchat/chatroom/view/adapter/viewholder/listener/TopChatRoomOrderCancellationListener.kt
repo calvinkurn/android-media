@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener
 
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
+
 interface TopChatRoomOrderCancellationListener {
-    fun onClickOrderCancellationWidget(appLink: String)
+    fun onClickOrderCancellationWidget(uiModel: TopChatRoomOrderCancellationUiModel?)
 }

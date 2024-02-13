@@ -21,7 +21,7 @@ class TopChatRoomOrderCancellationViewHolder(
     itemView: View,
     private val adapterListener: AdapterListener,
     orderCancellationListener: TopChatRoomOrderCancellationListener
-): BaseChatViewHolder<TopChatRoomOrderCancellationUiModel>(itemView) {
+) : BaseChatViewHolder<TopChatRoomOrderCancellationUiModel>(itemView) {
 
     private val binding: TopchatChatroomOrderCancellationItemBinding? by viewBinding()
     private var uiModel: TopChatRoomOrderCancellationUiModel? = null
@@ -38,7 +38,7 @@ class TopChatRoomOrderCancellationViewHolder(
 
     init {
         binding?.topchatChatroomLayoutOrderCancellation?.setOnClickListener {
-            orderCancellationListener.onClickOrderCancellationWidget(uiModel?.appLink?: "")
+            orderCancellationListener.onClickOrderCancellationWidget(uiModel)
         }
     }
 
