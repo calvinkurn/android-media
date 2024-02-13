@@ -26,6 +26,10 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         private const val LABEL_IMAGE_MAX_HEIGHT_DP = 12
         private const val LABEL_CORNER_RADIUS_DP = 4
         private const val LABEL_STROKE_WIDTH_DP = 1
+
+        private const val COUNTDOWN_TIMER_INTERVAL_MS = 1000L
+
+        private const val COUNTDOWN_TIMER_FORMAT = "%s : %s : %s"
     }
 
     private val binding: LayoutCartCampaignProductLabelBinding =
@@ -165,7 +169,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
                 tpgProductLabelCountdown.background = countdownBackgroundDrawable
             }
             timer?.cancel()
-            timer = object : CountDownTimer(remainingTimeMillis, 1000) {
+            timer = object : CountDownTimer(remainingTimeMillis, COUNTDOWN_TIMER_INTERVAL_MS) {
                 override fun onTick(millisUntilFinished: Long) {
                     val seconds = (millisUntilFinished / 1000) % 60
                     val minutes = (millisUntilFinished / (1000 * 60) % 60)
@@ -175,7 +179,8 @@ class CartCampaignProductLabel @JvmOverloads constructor(
                     val minuteText = "${if (minutes < 10) 0.toString() else ""}$minutes"
                     val secondText = "${if (seconds < 10) 0.toString() else ""}$seconds"
 
-                    tpgProductLabelCountdown.text = "$hourText : $minuteText : $secondText"
+                    tpgProductLabelCountdown.text =
+                        COUNTDOWN_TIMER_FORMAT.format(hourText, minuteText, secondText)
 
                     onCountdownTick?.invoke(millisUntilFinished)
                 }
