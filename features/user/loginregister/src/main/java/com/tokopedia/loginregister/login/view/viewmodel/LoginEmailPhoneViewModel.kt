@@ -31,9 +31,11 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
+import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
@@ -66,7 +68,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val gotoSeamlessHelper: GotoSeamlessHelper,
     private val gotoSeamlessPreference: GotoSeamlessPreference,
     private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val getProfileHelper: GetProfileHelper
 ) : BaseViewModel(dispatchers.main) {
 
     private val mutableNavigateToGojekSeamless = SingleLiveEvent<Boolean>()
@@ -187,23 +190,80 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
-        getProfileUseCase.execute(
-            GetProfileSubscriber(
-                userSession,
-                { mutableProfileResponse.value = Success(it) },
-                { mutableProfileResponse.value = Fail(it) },
-                getAdminTypeUseCase = getAdminTypeUseCase,
-                showLocationAdminPopUp = {
-                    mutableShowLocationAdminPopUp.value = Success(true)
-                },
-                onLocationAdminRedirection = {
-                    mutableAdminRedirection.value = Success(true)
-                },
-                showErrorGetAdminType = {
-                    mutableShowLocationAdminPopUp.value = Fail(it)
+        launch(dispatchers.main) {
+            try {
+                val profile = getProfileUseCase(Unit)
+                val isProfileValid = profile.profileInfo.userId.isNotBlank() &&
+                    profile.profileInfo.userId != "0"
+                if (isProfileValid) {
+                    try {
+                        val adminResponse = getAdminTypeUseCase(GET_ADMIN_TYPE_SOURCE)
+                        onSuccessGetAdminType(adminResponse, profile)
+                    } catch (e: Exception) {
+                        mutableShowLocationAdminPopUp.value = Fail(e)
+                    }
                 }
-            )
-        )
+            } catch (e: Exception) {
+                mutableProfileResponse.value = Fail(e)
+            }
+        }
+    }
+
+    private fun onSuccessGetAdminType(adminResponse: AdminTypeResponse, profile: ProfilePojo) {
+        val adminDataResponse = adminResponse.response
+        val adminData = adminDataResponse.data
+        val roleType = adminData.detail.roleType
+        val isShopOwner = roleType.isShopOwner
+        val isLocationAdmin = roleType.isLocationAdmin
+        val isShopAdmin = roleType.isShopAdmin
+        val isMultiLocationShop = adminDataResponse.isMultiLocationShop
+
+        userSession.apply {
+            setIsShopOwner(isShopOwner)
+            setIsLocationAdmin(isLocationAdmin)
+            setIsShopAdmin(isShopAdmin)
+            setIsMultiLocationShop(isMultiLocationShop)
+        }
+
+        val shopId = profile.shopInfo.shopData.shopId
+        val isAdminActive = adminDataResponse.data.isShopActive()
+
+        // If shopId in profile is empty, set shopId from admin data response
+        // for user other than location admin.
+        // Also, if shop is inactive, set shopId to zero
+        val shouldSetShopIdFromAdminData =
+            (!isLocationAdmin && shopId.isEmpty()) || !adminDataResponse.data.isShopActive()
+        val userProfile = if (shouldSetShopIdFromAdminData) {
+            setShopIdFromAdminData(profile, adminDataResponse)
+        } else {
+            profile
+        }
+
+        val isAdminRedirection = adminDataResponse.data.isAdminInvitation()
+
+        if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminActive) {
+            mutableShowLocationAdminPopUp.value = Success(true)
+        } else if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminRedirection) {
+            getProfileHelper.saveProfileData(userProfile)
+            mutableAdminRedirection.value = Success(true)
+        } else {
+            getProfileHelper.saveProfileData(userProfile)
+            mutableProfileResponse.value = Success(userProfile)
+        }
+    }
+
+    private fun setShopIdFromAdminData(profile: ProfilePojo, adminData: AdminDataResponse): ProfilePojo {
+        val isShopActive = adminData.data.isShopActive()
+        val shopId =
+            if (isShopActive) {
+                adminData.shopId
+            } else {
+                ""
+            }
+        val shopInfo = profile.shopInfo
+        val shopData = shopInfo.shopData.copy(shopId = shopId)
+        val shopBasicData = shopInfo.copy(shopData = shopData)
+        return profile.copy(shopInfo = shopBasicData)
     }
 
     fun loginGoogle(accessToken: String, email: String) {
@@ -381,7 +441,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun clearBackgroundTask() {
         loginTokenUseCase.unsubscribe()
-        getProfileUseCase.unsubscribe()
     }
 
     suspend fun isGojekProfileExist(): Boolean {
@@ -430,5 +489,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     companion object {
         private const val PARAM_DISCOVER_LOGIN = "login"
+        private const val GET_ADMIN_TYPE_SOURCE = "kevin_user-loginregister"
     }
 }

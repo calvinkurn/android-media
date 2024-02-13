@@ -3,7 +3,6 @@ package com.tokopedia.sessioncommon.domain.subscriber
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
@@ -13,14 +12,14 @@ import rx.Subscriber
 /**
  * @author by nisie on 11/06/19.
  */
-class GetProfileSubscriber(val userSession: UserSessionInterface,
-                           val onSuccessGetProfile: (pojo: ProfilePojo) -> Unit,
-                           val onErrorGetProfile: (e: Throwable) -> Unit,
-                           val getAdminTypeUseCase: GetAdminTypeUseCase? = null,
-                           val showLocationAdminPopUp: (() -> Unit)? = null,
-                           val onLocationAdminRedirection: (() -> Unit)? = null,
-                           val showErrorGetAdminType: ((e: Throwable) -> Unit)? = null,
-                           val onFinished: () -> Unit? = {}) :
+class GetProfileHelper(val userSession: UserSessionInterface,
+                       val onSuccessGetProfile: (pojo: ProfilePojo) -> Unit,
+                       val onErrorGetProfile: (e: Throwable) -> Unit,
+                       val getAdminTypeUseCase: GetAdminTypeUseCase? = null,
+                       val showLocationAdminPopUp: (() -> Unit)? = null,
+                       val onLocationAdminRedirection: (() -> Unit)? = null,
+                       val showErrorGetAdminType: ((e: Throwable) -> Unit)? = null,
+                       val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     companion object {
@@ -114,7 +113,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         showErrorGetAdminType?.invoke(it)
     }
 
-    private fun saveProfileData(pojo: ProfilePojo?) {
+    fun saveProfileData(pojo: ProfilePojo?) {
         pojo?.profileInfo?.run {
             userSession.setHasPassword(pojo.profileInfo.isCreatedPassword)
             userSession.profilePicture = pojo.profileInfo.profilePicture

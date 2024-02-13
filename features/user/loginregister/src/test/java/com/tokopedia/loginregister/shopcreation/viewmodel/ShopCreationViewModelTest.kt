@@ -25,7 +25,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -115,15 +115,15 @@ class ShopCreationViewModelTest {
     fun before() {
         MockKAnnotations.init(this)
         viewmodel = ShopCreationViewModel(
-                registerUseCase,
-                registerCheckUseCase,
-                getUserProfileCompletionUseCase,
-                validateUserProfileUseCase,
-                updateUserProfileUseCase,
-                getProfileUseCase,
-                shopInfoUseCase,
-                userSession,
-                CoroutineTestDispatchersProvider
+            registerUseCase,
+            registerCheckUseCase,
+            getUserProfileCompletionUseCase,
+            validateUserProfileUseCase,
+            updateUserProfileUseCase,
+            getProfileUseCase,
+            shopInfoUseCase,
+            userSession,
+            CoroutineTestDispatchersProvider
         )
     }
 
@@ -230,7 +230,6 @@ class ShopCreationViewModelTest {
         assert(viewmodel.addPhoneResponse.value is Fail)
         MatcherAssert.assertThat((viewmodel.addPhoneResponse.value as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
     }
-
 
     @Test
     fun `Failed add phone`() {
@@ -470,7 +469,7 @@ class ShopCreationViewModelTest {
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
 
         coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onSuccessGetProfile.invoke(successGetUserInfoResponse)
+            firstArg<GetProfileHelper>().onSuccessGetProfile.invoke(successGetUserInfoResponse)
         }
 
         viewmodel.getUserInfo()
@@ -487,7 +486,7 @@ class ShopCreationViewModelTest {
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
 
         coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onErrorGetProfile.invoke(throwable)
+            firstArg<GetProfileHelper>().onErrorGetProfile.invoke(throwable)
         }
 
         viewmodel.getUserInfo()
@@ -510,36 +509,36 @@ class ShopCreationViewModelTest {
 
     companion object {
         private val successAddNameResponse: UserProfileUpdatePojo = FileUtil.parse(
-                "/success_add_name_response.json",
-                UserProfileUpdatePojo::class.java
+            "/success_add_name_response.json",
+            UserProfileUpdatePojo::class.java
         )
         private val successAddPhoneResponse: UserProfileUpdatePojo = FileUtil.parse(
-                "/success_add_phone_response.json",
-                UserProfileUpdatePojo::class.java
+            "/success_add_phone_response.json",
+            UserProfileUpdatePojo::class.java
         )
         private val successRegisterCheckResponse: RegisterCheckPojo = FileUtil.parse(
-                "/success_register_check_response.json",
-                RegisterCheckPojo::class.java
+            "/success_register_check_response.json",
+            RegisterCheckPojo::class.java
         )
         private val successGetShopInfoResponse: ShopInfoPojo = FileUtil.parse(
-                "/success_get_shop_info_response.json",
-                ShopInfoPojo::class.java
+            "/success_get_shop_info_response.json",
+            ShopInfoPojo::class.java
         )
         private val successGetUserProfileResponse: GetUserProfileCompletionPojo = FileUtil.parse(
-                "/success_get_user_profile_response.json",
-                GetUserProfileCompletionPojo::class.java
+            "/success_get_user_profile_response.json",
+            GetUserProfileCompletionPojo::class.java
         )
         private val successValidateUserProfileResponse: UserProfileValidatePojo = FileUtil.parse(
-                "/success_validate_user_profile_response.json",
-                UserProfileValidatePojo::class.java
+            "/success_validate_user_profile_response.json",
+            UserProfileValidatePojo::class.java
         )
         private val successGetUserInfoResponse: ProfilePojo = FileUtil.parse(
-                "/success_get_user_info_response.json",
-                ProfilePojo::class.java
+            "/success_get_user_info_response.json",
+            ProfilePojo::class.java
         )
         private val successRegisterPhoneAndNameResponse: RegisterPojo = FileUtil.parse(
-                "/success_register_phone_and_name_response.json",
-                RegisterPojo::class.java
+            "/success_register_phone_and_name_response.json",
+            RegisterPojo::class.java
         )
         private val throwable = Throwable()
         private val errors = listOf("errors")

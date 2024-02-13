@@ -31,7 +31,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
@@ -173,7 +173,7 @@ class RegisterInitialViewModel @Inject constructor(
     fun getUserInfo() {
         idlingResourceProvider?.increment()
         getProfileUseCase.execute(
-            GetProfileSubscriber(
+            GetProfileHelper(
                 userSession,
                 onSuccessGetUserInfo(),
                 onFailedGetUserInfo()
@@ -183,7 +183,7 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun getUserInfoAfterAddPin() {
         getProfileUseCase.execute(
-            GetProfileSubscriber(
+            GetProfileHelper(
                 userSession,
                 onSuccessGetUserInfoAfterAddPin(),
                 onFailedGetUserInfoAfterAddPin()

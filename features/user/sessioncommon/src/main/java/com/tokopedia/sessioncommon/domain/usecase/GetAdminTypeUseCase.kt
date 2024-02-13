@@ -1,21 +1,33 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.usecase.RequestParams
-import rx.Subscriber
 import javax.inject.Inject
 
-open class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase){
+open class GetAdminTypeUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<String, AdminTypeResponse>(dispatcher.io) {
 
     companion object {
         private const val DEFAULT_SOURCE = "android"
         private const val PARAM_SOURCE = "source"
         private const val SOURCE = "\$source"
 
-        val QUERY = """
+        @JvmStatic
+        fun createRequestParams(source: String = DEFAULT_SOURCE): RequestParams =
+            RequestParams.create().apply {
+                putString(PARAM_SOURCE, source)
+            }
+    }
+
+    override fun graphqlQuery(): String {
+        return """
             query getAdminType($SOURCE: String!) {
               getAdminType(source: $SOURCE) {
                 shopID
@@ -33,20 +45,9 @@ open class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: G
               }
             }
         """.trimIndent()
-
-        @JvmStatic
-        fun createRequestParams(source: String = DEFAULT_SOURCE): RequestParams =
-                RequestParams.create().apply {
-                    putString(PARAM_SOURCE, source)
-                }
     }
 
-    open fun execute(subscriber: Subscriber<GraphqlResponse>, source: String = DEFAULT_SOURCE) {
-        val requestParams = RequestParams().apply { putString(PARAM_SOURCE, source) }.parameters
-        GraphqlRequest(QUERY, AdminTypeResponse::class.java, requestParams).let { request ->
-            graphqlUseCase.clearRequest()
-            graphqlUseCase.addRequest(request)
-            graphqlUseCase.execute(subscriber)
-        }
+    override suspend fun execute(params: String): AdminTypeResponse {
+        return repository.request(graphqlQuery(), mapOf(PARAM_SOURCE to params))
     }
 }

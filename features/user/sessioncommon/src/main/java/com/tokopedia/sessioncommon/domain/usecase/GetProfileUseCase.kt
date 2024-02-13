@@ -1,41 +1,58 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.sessioncommon.R
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.usecase.RequestParams
-import rx.Subscriber
 import javax.inject.Inject
 
 /**
  * @author by nisie on 12/06/19.
  */
 
-open class GetProfileUseCase @Inject constructor(val resources: Resources, val graphqlUseCase: GraphqlUseCase
-) {
-
-    open fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.query_profile)
-        val graphqlRequest = GraphqlRequest(query,
-                ProfilePojo::class.java, RequestParams.create().parameters)
-
-        // we are always set skipCache = true, to always get the latest data
-        graphqlRequest.variables = mapOf(PARAM_SKIP_CACHE to true)
-
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
-    }
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
+open class GetProfileUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<Unit, ProfilePojo>(dispatcher.io) {
 
     companion object {
         const val PARAM_SKIP_CACHE = "skipCache"
+    }
+
+    override fun graphqlQuery(): String {
+        return """
+            query profile(${'$'}skipCache: Boolean!) {
+              profile(skipCache: ${'$'}skipCache) {
+                user_id
+                full_name
+                first_name
+              	email
+              	bday
+              	gender
+                phone
+                phone_masked
+              	phone_verified
+              	profile_picture
+                created_password
+                isLoggedIn
+              }
+              shopBasicData(){
+                result{
+                  shopID
+                  name
+                  domain
+                  level
+                  logo
+                  avatarOriginal
+                }
+              }
+            }
+        """.trimIndent()
+    }
+
+    override suspend fun execute(params: Unit): ProfilePojo {
+        return repository.request(graphqlQuery(), mapOf(PARAM_SKIP_CACHE to true))
     }
 }

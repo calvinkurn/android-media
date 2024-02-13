@@ -26,7 +26,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
@@ -157,7 +157,7 @@ class LoginHelperViewModel @Inject constructor(
 
     private fun getUserInfo() {
         getProfileUseCase.execute(
-            GetProfileSubscriber(
+            GetProfileHelper(
                 userSession,
                 {
                     updateProfileResponse(Success(it))
