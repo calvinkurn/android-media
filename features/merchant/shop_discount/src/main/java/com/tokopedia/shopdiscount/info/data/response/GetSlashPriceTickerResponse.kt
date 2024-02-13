@@ -21,7 +21,7 @@ data class GetSlashPriceTickerResponse(
         var tickerUnificationConfig: TickerUnificationConfig = TickerUnificationConfig()
     ){
         data class TickerUnificationConfig(
-            @SerializedName("Target")
+            @SerializedName("TickerUnificationTarget")
             @Expose
             var target: Target = Target()
         ){
