@@ -1,7 +1,5 @@
 package com.tokopedia.cart.view.uimodel
 
-import com.tokopedia.cart.view.customview.HexColor
-
 data class CartProductLabelData(
     val type: String = "",
     val remainingTimeMillis: Long = 0,

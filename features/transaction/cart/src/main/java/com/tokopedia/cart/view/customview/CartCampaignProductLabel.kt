@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.cart.databinding.LayoutCartCampaignProductLabelBinding
+import com.tokopedia.cart.view.uimodel.HexColor
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -201,6 +202,3 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         onCountdownFinish = null
     }
 }
-
-@JvmInline
-value class HexColor(val hexCode: String)
