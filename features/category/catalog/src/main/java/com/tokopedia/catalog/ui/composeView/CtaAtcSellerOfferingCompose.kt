@@ -64,16 +64,19 @@ fun CtaSellerOffering(
     val maxSwitchState = if (variantText.isNotEmpty()) 4 else 3
 
     LaunchedEffect(Unit) {
-        while (true) {
-            delay(2000)
-            switchState += 1
-            if (switchState == 2 && rating.isEmpty()) {
-                switchState = 3
-            }
-            if (switchState > maxSwitchState) {
-                switchState = 1
+        if (rating.isNotEmpty() || variantText.isNotEmpty()){
+            while (true) {
+                delay(2000)
+                switchState += 1
+                if (switchState == 2 && rating.isEmpty() && variantText.isNotEmpty()) {
+                    switchState = 3
+                }
+                if (switchState > maxSwitchState) {
+                    switchState = 1
+                }
             }
         }
+
     }
 
     Row(
