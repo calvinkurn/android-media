@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
+import com.tokopedia.analytics.byteio.SourcePageType;
 import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
 import android.view.MotionEvent;
 
@@ -204,6 +205,7 @@ public class MyApplication extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
         AppLogAnalytics.init(this);
+        AppLogAnalytics.sourcePageType = SourcePageType.TESTAPP_SOURCE;
         TTNetHelper.initTTNet(this);
         LibraAbTest.init(this);
 
