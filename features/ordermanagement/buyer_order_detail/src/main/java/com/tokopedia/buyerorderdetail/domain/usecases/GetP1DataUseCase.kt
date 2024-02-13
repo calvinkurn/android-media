@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionParams
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class GetP1DataUseCase @Inject constructor(
@@ -21,13 +23,10 @@ class GetP1DataUseCase @Inject constructor(
 ) {
 
     operator fun invoke(params: GetP1DataParams) = execute(params).flowOn(Dispatchers.IO)
+
     private fun getOrderResolutionUseCaseRequestStates(params: GetP1DataParams) = flow {
         if (params.hasResoStatus) {
-            emitAll(
-                executeOrderResolutionUseCase(
-                    GetOrderResolutionParams(params.orderId, params.shouldCheckCache)
-                )
-            )
+            emitAll(executeOrderResolutionUseCase(GetOrderResolutionParams(params.orderId, params.shouldCheckCache)))
         } else {
             emit(GetOrderResolutionRequestState.Complete.Success(null))
         }
@@ -39,11 +38,7 @@ class GetP1DataUseCase @Inject constructor(
 
     private fun getInsuranceDetailUseCaseRequestStates(params: GetP1DataParams) = flow {
         if (params.hasInsurance) {
-            emitAll(
-                executeInsuranceDetailUseCase(
-                    GetInsuranceDetailParams(params.invoice, params.shouldCheckCache)
-                )
-            )
+            emitAll(executeInsuranceDetailUseCase(GetInsuranceDetailParams(params.invoice, params.shouldCheckCache)))
         } else {
             emit(GetInsuranceDetailRequestState.Complete.Success(null))
         }
@@ -81,6 +76,18 @@ class GetP1DataUseCase @Inject constructor(
                     GetInsuranceDetailRequestState.Complete.Error(it)
                 )
             )
+        }.onCompletion {
+            logCompletionBreadcrumb(params, it)
+        }
+    }
+
+    private fun logCompletionBreadcrumb(params: GetP1DataParams, throwable: Throwable?) {
+        runCatching {
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Success: $params")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Error: ${throwable.stackTraceToString()}")
+            }
         }
     }
 }

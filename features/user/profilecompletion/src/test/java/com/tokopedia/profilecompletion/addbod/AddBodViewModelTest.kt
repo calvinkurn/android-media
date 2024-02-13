@@ -1,9 +1,9 @@
 package com.tokopedia.profilecompletion.addbod
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.profilecompletion.addbod.data.AddBodData
-import com.tokopedia.profilecompletion.addbod.data.UserProfileCompletionUpdateBodData
-import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
+import com.tokopedia.profilecompletion.settingprofile.addbod.data.AddBodData
+import com.tokopedia.profilecompletion.settingprofile.addbod.data.UserProfileCompletionUpdateBodData
+import com.tokopedia.profilecompletion.settingprofile.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.domain.AddBodUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue

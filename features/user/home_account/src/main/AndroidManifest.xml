@@ -105,24 +105,5 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".privacy_account.view.PrivacyAccountActivity"
-            android:label="@string/title_privacy_account"
-            android:theme="@style/Theme.WhiteUnify"
-            android:exported="false"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_user"
-                    android:pathPattern="@string/path_privacy_account"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-
     </application>
 </manifest>

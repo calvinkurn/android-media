@@ -5,6 +5,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.search.R
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
@@ -88,7 +89,8 @@ class InspirationListAtcViewDelegate @Inject constructor(
 
     override fun openVariantBottomSheet(
         product: InspirationCarouselDataView.Option.Product,
-        type: String
+        type: String,
+        onCheckout: () -> Unit,
     ) {
         atcVariantLauncher.launch(
             productId = product.id,
@@ -97,17 +99,18 @@ class InspirationListAtcViewDelegate @Inject constructor(
                 type,
                 product.componentId,
             )
-        ) {
+        ) { productResult ->
             val trackingData =
                 InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                     product,
                     getSearchParameter(),
-                    it.cartId,
+                    productResult.cartId,
                     product.minOrder.toIntOrZero(),
                 )
 
             trackItemClick(trackingData)
             trackAddToCart(trackingData)
+            onCheckout.invoke()
         }
 
         SearchIdlingResource.decrement()

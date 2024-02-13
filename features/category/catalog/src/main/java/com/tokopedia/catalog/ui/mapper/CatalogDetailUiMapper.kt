@@ -1,39 +1,27 @@
 package com.tokopedia.catalog.ui.mapper
 
 import android.content.Context
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
-import com.tokopedia.catalog.ui.model.NavigationProperties
-import com.tokopedia.catalog.ui.model.PriceCtaProperties
-import com.tokopedia.catalog.ui.model.ShareProperties
-import com.tokopedia.catalog.ui.model.WidgetTypes
-import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
-import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
-import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
-import com.tokopedia.catalogcommon.uimodel.BlankUiModel
-import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
-import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
-import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
-import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
-import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
-import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
-import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
-import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
-import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
-import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
-import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
-import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
-import com.tokopedia.catalogcommon.uimodel.VideoUiModel
+import com.tokopedia.catalog.ui.model.*
+import com.tokopedia.catalogcommon.uimodel.*
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel.Companion.CELL_TITLE_ON_3_COLUMN_TYPE
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel.Companion.COLUMN_TITLE_ON_3_COLUMN_TYPE
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel.Companion.VALUE_ON_2_COLUMN_TYPE
 import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.getColorDarkMode
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.relativeDate
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
+import com.tokopedia.oldcatalog.model.raw.LayoutData
+import com.tokopedia.utils.date.DateUtil
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import com.tokopedia.catalog.R as catalogR
 import com.tokopedia.catalogcommon.R as catalogcommonR
@@ -45,11 +33,17 @@ class CatalogDetailUiMapper @Inject constructor(
 ) {
     companion object {
         private const val LAYOUT_VERSION_4_VALUE = 4
-        private const val COMPARISON_COUNT = 2
         private const val TOP_COMPARISON_SPEC_COUNT = 5
         private const val COLUMN_INFO_SPEC_COUNT = 5
+        private const val COLUMN_INFO_2_COLUMN_DATA_LIMIT = 12
+        private const val COLUMN_INFO_3_COLUMN_DATA_LIMIT = 9
+        private const val COLUMN_INFO_3_COLUMN_ROW_LIMIT = 3
         private const val INVALID_CATALOG_ID = "0"
-        private const val FALLBACK_COLUMN_TYPE = "title_value_on_2"
+        private const val BACKGROUND_ALPHA = 20
+        private const val USER_STATS_KEY_TOTAL_COMPLETE_REVIEW = "total-complete-review"
+        private const val USER_STATS_KEY_TOTAL_LIKES = "total-likes"
+        private const val SERVICE_LANG = "en"
+        private const val SERVICE_COUNTRY = "US"
     }
 
     fun mapToWidgetVisitables(
@@ -74,6 +68,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
                 WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison(isDarkMode)
                 WidgetTypes.CATALOG_VIDEO.type -> it.mapToVideo(isDarkMode)
+                WidgetTypes.CATALOG_REVIEW_BUYER.type -> it.mapToBuyerReview(remoteModel.basicInfo)
                 WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
                 else -> {
                     BlankUiModel()
@@ -94,6 +89,61 @@ class CatalogDetailUiMapper @Inject constructor(
             catalogUrl = remoteModel.basicInfo.url.orEmpty(),
             shareProperties = mapToShareProperties(remoteModel, widgets)
         )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToBuyerReview(
+        basicInfo: CatalogResponseData.CatalogGetDetailModular.BasicInfo
+    ): BaseCatalogUiModel {
+        val maxDisplay = data?.style?.maxDisplay.orZero()
+        val items = data?.buyerReviewList.orEmpty().take(maxDisplay).map { buyerReview ->
+            val totalCompleteReview = buyerReview.userStats.firstOrNull { it.key == USER_STATS_KEY_TOTAL_COMPLETE_REVIEW }?.count.orZero()
+            val totalHelpedPeople = buyerReview.userStats.firstOrNull { it.key == USER_STATS_KEY_TOTAL_LIKES }?.count.orZero()
+            val reviewDate = try {
+                val simpleDateFormat = SimpleDateFormat(
+                    DateUtil.DEFAULT_VIEW_FORMAT,
+                    Locale(
+                        SERVICE_LANG,
+                        SERVICE_COUNTRY
+                    )
+                )
+                val reviewDate = simpleDateFormat.parse(buyerReview.reviewDate)
+                reviewDate?.relativeDate.orEmpty()
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+                buyerReview.reviewDate
+            }
+            BuyerReviewUiModel.ItemBuyerReviewUiModel(
+                shopIcon = buyerReview.shopBadge,
+                shopName = buyerReview.shopName,
+                reviewerName = buyerReview.reviewerName,
+                avatar = buyerReview.reviewerProfilePicture,
+                reviewerStatus = buyerReview.reviewerStamp,
+                totalCompleteReview = totalCompleteReview,
+                totalHelpedPeople = totalHelpedPeople,
+                description = buyerReview.reviewText,
+                datetime = reviewDate,
+                rating = buyerReview.rating.toFloat(),
+                variantName = buyerReview.productVariantName,
+                images = buyerReview.imageAttachments.map { attachment ->
+                    BuyerReviewUiModel.ImgReview(
+                        id = attachment.attachmentId,
+                        imgUrl = attachment.thumbnailUrl,
+                        fullsizeImgUrl = attachment.fullsizeUrl
+                    )
+                },
+                catalogName = basicInfo.name.orEmpty(),
+                reviewId = buyerReview.reviewId.toString()
+            )
+        }
+
+        return if (items.isEmpty()) {
+            BlankUiModel()
+        } else {
+            BuyerReviewUiModel(
+                title = data?.section?.title.orEmpty(),
+                items = items
+            )
+        }
     }
 
     private fun mapToPriceCtaProperties(remoteModel: CatalogResponseData.CatalogGetDetailModular): PriceCtaProperties {
@@ -118,6 +168,7 @@ class CatalogDetailUiMapper @Inject constructor(
             PriceCtaProperties(
                 catalogId = remoteModel.basicInfo.id,
                 departmentId = remoteModel.basicInfo.departmentID.orEmpty(),
+                brand = remoteModel.basicInfo.brand.orEmpty(),
                 price = displayedPrice,
                 productName = priceCta.name,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
@@ -159,7 +210,7 @@ class CatalogDetailUiMapper @Inject constructor(
         val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
         val bgColor = remoteModel.globalStyle?.bgColor
         return apply {
-            idWidget = layout.type + layout.name
+            idWidget = layout.type + "_" + layout.name + "_" + UUID.randomUUID()
             widgetType = layout.type
             widgetName = layout.name
             widgetBackgroundColor = "#$bgColor".stringHexColorParseToInt()
@@ -181,7 +232,9 @@ class CatalogDetailUiMapper @Inject constructor(
                 heroSlide.subtitle
             }.orEmpty(),
             brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
-            widgetTextColor = getColorDarkMode(context, darkMode,
+            widgetTextColor = getColorDarkMode(
+                context,
+                darkMode,
                 catalogR.color.catalog_dms_dark_color_banner,
                 catalogR.color.catalog_dms_light_color_banner
             )
@@ -197,10 +250,13 @@ class CatalogDetailUiMapper @Inject constructor(
                     id = it.desc,
                     icon = it.iconUrl,
                     name = it.desc,
-                    backgroundColor = getColorDarkMode(context, isDarkMode,
+                    backgroundColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
                         catalogR.color.catalog_dms_dark_color,
                         catalogR.color.catalog_dms_light_color,
-                        20),
+                        BACKGROUND_ALPHA
+                    ),
                     textColor = getTextColor(isDarkMode)
                 )
             }.orEmpty()
@@ -214,12 +270,12 @@ class CatalogDetailUiMapper @Inject constructor(
         val textColor = getTextColorNav(isDarkMode)
         return StickyNavigationUiModel(
             content = data?.navigation?.map { nav ->
-                val eligibleName = nav.eligibleNames.filter { eligble ->
+                val eligibleName = nav.eligibleNames.firstOrNull { eligble ->
                     val found = remoteModel.layouts?.indexOfFirst {
                         it.name == eligble && !it.data?.style?.isHidden.orFalse()
                     }
-                    found != -1
-                }.firstOrNull().orEmpty()
+                    !found.isLessThanZero()
+                }.orEmpty()
                 StickyNavigationUiModel.StickyNavigationItemData(
                     nav.title,
                     eligibleName,
@@ -252,9 +308,12 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToCharacteristic(
         isDarkMode: Boolean
     ): CharacteristicUiModel {
-        val textColor = getColorDarkMode(context, isDarkMode,
+        val textColor = getColorDarkMode(
+            context,
+            isDarkMode,
             catalogR.color.catalog_dms_dark_color_text_description,
-            catalogR.color.catalog_dms_light_color_text_description)
+            catalogR.color.catalog_dms_light_color_text_description
+        )
         return CharacteristicUiModel(
             items = data?.characteristic.orEmpty().map {
                 CharacteristicUiModel.ItemCharacteristicUiModel(
@@ -277,18 +336,24 @@ class CatalogDetailUiMapper @Inject constructor(
                     textHighlight = it.subtitle,
                     textTitle = it.title,
                     textDescription = it.desc,
-                    textHighlightColor = getColorDarkMode(context, isDarkMode,
+                    textHighlightColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
                         catalogR.color.catalog_dms_dark_color_banner,
-                        catalogR.color.catalog_dms_light_color_banner),
+                        catalogR.color.catalog_dms_light_color_banner
+                    ),
                     textTitleColor = getColorDarkMode(
                         context,
                         isDarkMode,
                         catalogR.color.catalog_dms_dark_color_image_text,
                         catalogR.color.catalog_dms_light_color_image_text
                     ),
-                    textDescriptionColor = getColorDarkMode(context, isDarkMode,
+                    textDescriptionColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
                         catalogR.color.catalog_dms_dark_color_banner,
-                        catalogR.color.catalog_dms_light_color_banner)
+                        catalogR.color.catalog_dms_light_color_banner
+                    )
                 )
             }
         )
@@ -425,12 +490,14 @@ class CatalogDetailUiMapper @Inject constructor(
                         isDarkMode,
                         catalogR.color.catalog_dms_dark_color,
                         catalogR.color.catalog_dms_light_color,
-                        20),
+                        BACKGROUND_ALPHA
+                    ),
                     descColor = getColorDarkMode(
                         context,
                         isDarkMode,
                         catalogR.color.catalog_dms_dark_color_text_description,
-                        catalogR.color.catalog_dms_light_color_text_description),
+                        catalogR.color.catalog_dms_light_color_text_description
+                    ),
                     titleColor = getColorDarkMode(
                         context,
                         isDarkMode,
@@ -448,7 +515,6 @@ class CatalogDetailUiMapper @Inject constructor(
         var isFirstData = true
         val displayedComparisons = data?.comparison.orEmpty()
             .filter { it.id != INVALID_CATALOG_ID }
-            .take(COMPARISON_COUNT)
         return if (displayedComparisons.size <= Int.ONE) {
             BlankUiModel()
         } else {
@@ -468,9 +534,11 @@ class CatalogDetailUiMapper @Inject constructor(
                                 isSpecCategoryTitle = false,
                                 specTitle = if (isFirstData) rowItem.key else "",
                                 specValue = rowItem.value.ifEmpty { "-" },
-                                specTextTitleColor = getTextColor(isDarkMode,
+                                specTextTitleColor = getTextColor(
+                                    isDarkMode,
                                     lightModeColor = catalogR.color.catalog_dms_light_color_text_description,
-                                    darkModeColor = catalogR.color.catalog_dms_dark_color_text_description),
+                                    darkModeColor = catalogR.color.catalog_dms_dark_color_text_description
+                                ),
                                 isDarkMode = isDarkMode
                             )
                             comparisonSpecs.add(insertedItem)
@@ -488,6 +556,14 @@ class CatalogDetailUiMapper @Inject constructor(
                         topComparisonSpecs = comparisonSpecs
                             .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
                             .take(TOP_COMPARISON_SPEC_COUNT)
+                            .map {
+                                it.copy(
+                                    isSpecTextTitleBold = true,
+                                    specTextTitleColor = getTextColor(isDarkMode),
+                                    specTextColor = getTextColor(isDarkMode)
+                                )
+                            }
+
                     )
                 }.toMutableList()
             )
@@ -519,33 +595,134 @@ class CatalogDetailUiMapper @Inject constructor(
         val flattenDataRows = data?.infoColumn
             .orEmpty()
             .flatMap { it.row }
-        return if (columnType != FALLBACK_COLUMN_TYPE || infoColumn.isEmpty()) {
+
+        // Map column info based on their type
+        return if (infoColumn.isEmpty()) {
             BlankUiModel()
+        } else if (columnType == COLUMN_TITLE_ON_3_COLUMN_TYPE || columnType == CELL_TITLE_ON_3_COLUMN_TYPE) {
+            mapTo3ColumnInfo(data, columnType, flattenDataRows, darkMode)
+        } else if (columnType == VALUE_ON_2_COLUMN_TYPE) {
+            mapTo2ColumnInfo(data, columnType, flattenDataRows, darkMode)
         } else {
-            ColumnedInfoUiModel(
-                sectionTitle = data?.section?.title.orEmpty(),
-                hasMoreData = flattenDataRows.size > COLUMN_INFO_SPEC_COUNT,
-                widgetContent = ColumnedInfoUiModel.ColumnData(
-                    rowData = flattenDataRows
-                        .take(COLUMN_INFO_SPEC_COUNT)
-                        .map {
-                            Pair(it.key, it.value)
+            mapTo1ColumnInfo(data, columnType, flattenDataRows, darkMode)
+        }
+    }
+
+    private fun mapTo1ColumnInfo(
+        data: LayoutData?,
+        columnType: String,
+        flattenDataRows: List<LayoutData.InfoColumn.Row>,
+        darkMode: Boolean
+    ): ColumnedInfoUiModel {
+        return ColumnedInfoUiModel(
+            sectionTitle = data?.section?.title.orEmpty(),
+            hasMoreData = flattenDataRows.size > COLUMN_INFO_SPEC_COUNT,
+            columnType = columnType,
+            widgetContent = ColumnedInfoUiModel.ColumnData(
+                rowData = flattenDataRows
+                    .take(COLUMN_INFO_SPEC_COUNT)
+                    .map {
+                        Pair(it.key, it.value)
+                    },
+                rowColor = getColumnInfoTextColor(darkMode)
+            ),
+            fullContent = data?.infoColumn
+                .orEmpty()
+                .map {
+                    ColumnedInfoUiModel.ColumnData(
+                        title = it.name,
+                        rowData = it.row.map { row ->
+                            Pair(row.key, row.value)
                         },
+                        rowColor = getColumnInfoBottomSheetTextColor()
+                    )
+                }
+        )
+    }
+
+    private fun mapTo2ColumnInfo(
+        data: LayoutData?,
+        columnType: String,
+        flattenDataRows: List<LayoutData.InfoColumn.Row>,
+        darkMode: Boolean
+    ): ColumnedInfoUiModel {
+        return ColumnedInfoUiModel(
+            sectionTitle = data?.section?.title.orEmpty(),
+            hasMoreData = flattenDataRows.size > COLUMN_INFO_2_COLUMN_DATA_LIMIT,
+            columnType = columnType,
+            widgetContentThreeColumn = listOf(
+                ColumnedInfoUiModel.ColumnData(
+                    rowData = flattenDataRows.take(COLUMN_INFO_2_COLUMN_DATA_LIMIT).filterIndexed { index, _ ->
+                        index.isEven()
+                    }.map { row ->
+                        Pair(row.key, row.value)
+                    },
                     rowColor = getColumnInfoTextColor(darkMode)
                 ),
-                fullContent = data?.infoColumn
-                    .orEmpty()
-                    .map {
-                        ColumnedInfoUiModel.ColumnData(
-                            title = it.name,
-                            rowData = it.row.map { row ->
+                ColumnedInfoUiModel.ColumnData(
+                    rowData = flattenDataRows.take(COLUMN_INFO_2_COLUMN_DATA_LIMIT).filterIndexed { index, _ ->
+                        index.isOdd()
+                    }.map { row ->
+                        Pair(row.key, row.value)
+                    },
+                    rowColor = getColumnInfoTextColor(darkMode)
+                )
+            ),
+            fullContent = data?.infoColumn
+                .orEmpty()
+                .map {
+                    ColumnedInfoUiModel.ColumnData(
+                        title = it.name,
+                        rowData = it.row.map { row ->
+                            Pair(row.value, "")
+                        },
+                        rowColor = getColumnInfoBottomSheetValueOnlyTextColor()
+                    )
+                }
+        )
+    }
+
+    private fun mapTo3ColumnInfo(
+        data: LayoutData?,
+        columnType: String,
+        flattenDataRows: List<LayoutData.InfoColumn.Row>,
+        darkMode: Boolean
+    ): ColumnedInfoUiModel {
+        return ColumnedInfoUiModel(
+            sectionTitle = data?.section?.title.orEmpty(),
+            hasMoreData = flattenDataRows.size > COLUMN_INFO_3_COLUMN_DATA_LIMIT,
+            columnType = columnType,
+            widgetContentThreeColumn = data?.infoColumn
+                .orEmpty()
+                .map {
+                    ColumnedInfoUiModel.ColumnData(
+                        title = it.name,
+                        rowData = it.row.take(COLUMN_INFO_3_COLUMN_ROW_LIMIT).map { row ->
+                            Pair(it.name, row.value)
+                        },
+                        rowColor = getColumnInfoTextColor(darkMode)
+                    )
+                },
+            fullContent = data?.infoColumn
+                .orEmpty()
+                .map {
+                    ColumnedInfoUiModel.ColumnData(
+                        title = it.name,
+                        rowData = it.row.map { row ->
+                            if (columnType == COLUMN_TITLE_ON_3_COLUMN_TYPE) {
+                                Pair(row.value, "")
+                            } else {
                                 Pair(row.key, row.value)
-                            },
-                            rowColor = getColumnInfoTextColor(darkMode)
-                        )
-                    }
-            )
-        }
+                            }
+                        },
+                        rowColor = if (columnType == COLUMN_TITLE_ON_3_COLUMN_TYPE) {
+                            getColumnInfoBottomSheetValueOnlyTextColor()
+                        } else {
+                            getColumnInfoBottomSheetTextColor()
+                        }
+                    )
+                }
+        )
     }
 
     private fun getTextColor(darkMode: Boolean): Int {
@@ -602,6 +779,13 @@ class CatalogDetailUiMapper @Inject constructor(
             }
         )
     )
+
+    private fun getColumnInfoBottomSheetTextColor() = Pair(
+        MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600),
+        Int.ZERO
+    )
+
+    private fun getColumnInfoBottomSheetValueOnlyTextColor() = Pair(Int.ZERO, Int.ZERO)
 
     fun isUsingAboveV4Layout(version: Int): Boolean {
         return version >= LAYOUT_VERSION_4_VALUE

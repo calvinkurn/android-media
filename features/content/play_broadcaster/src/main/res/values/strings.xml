@@ -6,6 +6,7 @@
     <string name="play_permit_allow_mic">Aktifkan Akses Mikrofon</string>
     <string name="play_permit_active">Aktifkan</string>
 
+    <string name="play_back">Kembali</string>
     <string name="play_next">Lanjutkan</string>
     <string name="play_ok">Oke</string>
     <string name="play_change">Ganti</string>
@@ -197,7 +198,6 @@
 
     <!-- Post Video -->
     <string name="play_bro_add_tag_title">Tambah Tag</string>
-    <string name="play_bro_cant_post_video_message">Karena durasi kurang dari 60 detik, Live-mu tidak bisa di-posting jadi video.</string>
     <string name="play_bro_select_tag_title">Video ini ceritanya tentang apa?</string>
 
     <!-- Tag Recommendation -->
@@ -312,4 +312,13 @@
     <string name="play_broadcaster_fail_save_filter">Oops, gagal menyimpan filter</string>
 
     <string name="play_shorts_content_tagging_description_template">Pilih maks. %d tag yang sesuai videomu supaya mudah ditemuin sama penonton yang tepat.</string>
+
+    <!-- Play Shorts Interspersing Video -->
+    <string name="play_shorts_interspersing_video_title">Tampilkan video di Halaman Produk</string>
+    <string name="play_shorts_interspersing_video_desc">Supaya bisa meyakinkan calon pembeli untuk belanja produkmu.</string>
+    <string name="play_shorts_interspersing_video_confirmation_title">Yakin ingin tampilkan video ini di Halaman Produk?</string>
+    <string name="play_shorts_interspersing_video_new_video_desc">Video Konten Ini</string>
+    <string name="play_shorts_interspersing_video_old_video_desc">Video di Halaman Produk saat ini</string>
+    <string name="play_shorts_interspersing_video_replace">akan menggantikan</string>
+    <string name="play_shorts_interspersing_video_failed_check_pdp_video">Ada gangguan yang lagi dibereskan. Coba lagi, ya.</string>
 </resources>

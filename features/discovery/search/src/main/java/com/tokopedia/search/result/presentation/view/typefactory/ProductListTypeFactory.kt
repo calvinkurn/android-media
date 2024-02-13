@@ -21,6 +21,7 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterDataView
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
@@ -59,6 +60,7 @@ interface ProductListTypeFactory {
     fun type(inspirationProductBundleDataView: InspirationProductBundleDataView) : Int
     fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView) : Int
     fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int
+    fun type(postAtcCarouselDataView : InspirationListPostAtcDataView) : Int
     fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int
     fun type(inspirationKeywordCardView: InspirationKeywordCardView): Int
     fun type(inspirationProductCardView: InspirationProductItemDataView): Int

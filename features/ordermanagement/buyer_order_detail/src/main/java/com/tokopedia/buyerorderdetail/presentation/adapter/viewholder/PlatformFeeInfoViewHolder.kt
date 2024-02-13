@@ -7,7 +7,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailPlatformFeeInfoBinding
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.StringRes
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -36,7 +36,7 @@ class PlatformFeeInfoViewHolder(
         tvBuyerOrderDetailPlatformFeeInfo.movementMethod = LinkMovementMethod.getInstance()
         tvBuyerOrderDetailPlatformFeeInfo.text = HtmlLinkHelper(
             context = root.context,
-            htmlString = text.getStringValue(root.context)
+            htmlString = text.getString(root.context)
         ).attachLinkClickListener().spannedString
     }
 

@@ -24,7 +24,12 @@ class ProductDetailInterceptor : BasePdpInterceptor() {
             return mockResponse(copy, getJsonFromResource(customP2DataResponsePath!!))
         } else if (requestString.contains(GET_RECOM_AFTER_ATC) && customRecomWidgetRecomAtcResponsePath != null) {
             return mockResponse(copy, getJsonFromResource(customRecomWidgetRecomAtcResponsePath!!))
-        } else {
+        } else if (!(
+            requestString.contains("\"cart\"") ||
+                requestString.contains("\"cart_recent_view\"") ||
+                requestString.contains("update_cart_counter")
+            )
+        ) {
             return mockResponse(copy, "")
         }
 
