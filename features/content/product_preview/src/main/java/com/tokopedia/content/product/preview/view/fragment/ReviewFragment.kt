@@ -53,7 +53,7 @@ import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewFragment @Inject constructor(
-    private val analytics: ProductPreviewAnalytics,
+    private val analyticsFactory: ProductPreviewAnalytics.Factory,
     private val router: Router
 ) : TkpdBaseV4Fragment(),
     ReviewInteractionListener,
@@ -66,6 +66,10 @@ class ReviewFragment @Inject constructor(
     private var _binding: FragmentReviewBinding? = null
     private val binding: FragmentReviewBinding
         get() = _binding!!
+
+    private val analytics: ProductPreviewAnalytics by lazyThreadSafetyNone {
+        analyticsFactory.create(viewModel.productPreviewSource.productId)
+    }
 
     private val reviewAdapter by lazyThreadSafetyNone {
         ReviewContentAdapter(
@@ -252,7 +256,7 @@ class ReviewFragment @Inject constructor(
      * Review Media Listener
      */
     override fun onImpressedVideo() {
-        analytics.onImpressVideo(viewModel.productPreviewSource.productId)
+        analytics.onImpressVideo()
     }
 
     override fun onMediaSelected(position: Int) {

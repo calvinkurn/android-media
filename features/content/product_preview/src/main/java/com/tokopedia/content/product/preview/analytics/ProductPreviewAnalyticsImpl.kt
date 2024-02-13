@@ -5,15 +5,23 @@ import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
 /**
  * https://mynakama.tokopedia.com/datatracker/requestdetail/view/4459
  * 1 - 18
  */
-class ProductPreviewAnalyticsImpl @Inject constructor(
+class ProductPreviewAnalyticsImpl @AssistedInject constructor(
+    @Assisted private val productId: String,
     private val userSession: UserSessionInterface
 ) : ProductPreviewAnalytics {
+
+    @AssistedFactory
+    interface Factory : ProductPreviewAnalytics.Factory {
+        override fun create(productId: String): ProductPreviewAnalyticsImpl
+    }
 
     private val userId: String
         get() = userSession.userId.orEmpty()
@@ -22,7 +30,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 1. swipe left or right to next content / tab
      * 49587
      */
-    override fun onSwipeContentAndTab(productId: String) {
+    override fun onSwipeContentAndTab() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("scroll - swipe left right content")
@@ -41,7 +49,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 2. impress video
      * 49588
      */
-    override fun onImpressVideo(productId: String) {
+    override fun onImpressVideo() {
         Tracker.Builder()
             .setEvent(Event.openScreen)
             .setBusinessUnit(BusinessUnit.content)
@@ -49,7 +57,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
             .setCustomProperty(Key.trackerId, "49588")
             .setCustomProperty(Key.isLoggedInStatus, userSession.isLoggedIn.toString())
             .setCustomProperty(Key.productId, productId)
-            .setCustomProperty(Key.screenName, "/unified view pdp - $productId - 12345")
+            .setCustomProperty(Key.screenName, "/unified view pdp - $productId - 0")
             .setUserId(userId)
             .build()
             .send()
@@ -59,12 +67,12 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 3. impress ATC button
      * 49589
      */
-    override fun onImpressATC(productId: String) {
+    override fun onImpressATC() {
         Tracker.Builder()
             .setEvent(Event.viewContentIris)
             .setEventAction("view - add to cart media fullscreen")
             .setEventCategory("unified view pdp")
-            .setEventLabel("$productId - $productId")
+            .setEventLabel("$productId - 0")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite("tokopediamarketplace")
             .setCustomProperty(Key.trackerId, "49589")
@@ -79,7 +87,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 4. click ATC button
      * 49590
      */
-    override fun onClickATC(productId: String) {
+    override fun onClickATC() {
         Tracker.Builder()
             .setEvent(Event.add_to_cart)
             .setEventAction("click - add to cart media fullscreen")
@@ -100,7 +108,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 5. click content thumbnail in Produk tab
      * 49594
      */
-    override fun onClickThumbnailProduct(productId: String) {
+    override fun onClickThumbnailProduct() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - content thumbnail")
@@ -120,7 +128,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 6. impress image content
      * 49598
      */
-    override fun onImpressImageContent(productId: String) {
+    override fun onImpressImageContent() {
         Tracker.Builder()
             .setEvent(Event.viewContentIris)
             .setEventAction("view - image content")
@@ -140,7 +148,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 7. impress Ingatkan Saya button
      * 49600
      */
-    override fun onImpressRemindMe(productId: String) {
+    override fun onImpressRemindMe() {
         Tracker.Builder()
             .setEvent(Event.viewContentIris)
             .setEventAction("view - ingatkan saya")
@@ -160,7 +168,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 8. click Ingatkan Saya button
      * 49601
      */
-    override fun onClickRemindMe(productId: String) {
+    override fun onClickRemindMe() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - ingatkan saya")
@@ -180,7 +188,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 9. swipe up down to next content in Ulasan tab
      * 49602
      */
-    override fun onSwipeReviewNextContent(productId: String) {
+    override fun onSwipeReviewNextContent() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("scroll - swipe up down ulasan tab")
@@ -200,7 +208,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 10. click account name
      * 49603
      */
-    override fun onClickReviewAccountName(productId: String) {
+    override fun onClickReviewAccountName() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - account name")
@@ -220,7 +228,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 11. Click 3 dots menu
      * 49605
      */
-    override fun onClickReviewThreeDots(productId: String) {
+    override fun onClickReviewThreeDots() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - three dots")
@@ -240,7 +248,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 12. click Back button to PDP
      * 49606
      */
-    override fun onClickBackButton(productId: String) {
+    override fun onClickBackButton() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - back button to pdp")
@@ -260,7 +268,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 13. click ATC to global variant bottomsheet
      * 49607
      */
-    override fun onOpenGBVS(productId: String) {
+    override fun onOpenGBVS() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - variant bottomsheet atc entry point")
@@ -280,7 +288,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 14. click laporkan ulasan in ulasan tab
      * 49650
      */
-    override fun onClickReviewReport(productId: String) {
+    override fun onClickReviewReport() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - laporkan ulasan")
@@ -300,7 +308,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 15. click mode nonton in ulasan tab
      * 49651
      */
-    override fun onClickReviewWatchMode(productId: String) {
+    override fun onClickReviewWatchMode() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - mode nonton")
@@ -320,7 +328,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 16. click pause/play in video
      * 49845
      */
-    override fun onClickPauseOrPlayVideo(productId: String) {
+    override fun onClickPauseOrPlayVideo() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - pause play button")
@@ -340,7 +348,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 17. submit report from ulasan tab
      * 49850
      */
-    override fun onClickSubmitReport(productId: String) {
+    override fun onClickSubmitReport() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - submit report ulasan")
@@ -358,7 +366,7 @@ class ProductPreviewAnalyticsImpl @Inject constructor(
      * 18. like/unlike content
      * 49851
      */
-    override fun onClickLikeOrUnlike(productId: String) {
+    override fun onClickLikeOrUnlike() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - like button")

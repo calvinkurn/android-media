@@ -7,111 +7,115 @@ interface ProductPreviewAnalytics {
      * 1 - 18
      */
 
+    interface Factory {
+        fun create(productId: String): ProductPreviewAnalytics
+    }
+
     /**
      * 1. swipe left or right to next content / tab
      * 49587
      */
-    fun onSwipeContentAndTab(productId: String)
+    fun onSwipeContentAndTab()
 
     /**
      * 2. impress video
      * 49588
      */
-    fun onImpressVideo(productId: String)
+    fun onImpressVideo()
 
     /**
      * 3. impress ATC button
      * 49589
      */
-    fun onImpressATC(productId: String)
+    fun onImpressATC()
 
     /**
      * 4. click ATC button
      * 49590
      */
-    fun onClickATC(productId: String)
+    fun onClickATC()
 
     /**
      * 5. click content thumbnail in Produk tab
      * 49594
      */
-    fun onClickThumbnailProduct(productId: String)
+    fun onClickThumbnailProduct()
 
     /**
      * 6. impress image content
      * 49598
      */
-    fun onImpressImageContent(productId: String)
+    fun onImpressImageContent()
 
     /**
      * 7. impress Ingatkan Saya button
      * 49600
      */
-    fun onImpressRemindMe(productId: String)
+    fun onImpressRemindMe()
 
     /**
      * 8. click Ingatkan Saya button
      * 49601
      */
-    fun onClickRemindMe(productId: String)
+    fun onClickRemindMe()
 
     /**
      * 9. swipe up down to next content in Ulasan tab
      * 49602
      */
-    fun onSwipeReviewNextContent(productId: String)
+    fun onSwipeReviewNextContent()
 
     /**
      * 10. click account name
      * 49603
      */
-    fun onClickReviewAccountName(productId: String)
+    fun onClickReviewAccountName()
 
     /**
      * 11. Click 3 dots menu
      * 49605
      */
-    fun onClickReviewThreeDots(productId: String)
+    fun onClickReviewThreeDots()
 
     /**
      * 12. click Back button to PDP
      * 49606
      */
-    fun onClickBackButton(productId: String)
+    fun onClickBackButton()
 
     /**
      * 13. click ATC to global variant bottomsheet
      * 49607
      */
-    fun onOpenGBVS(productId: String)
+    fun onOpenGBVS()
 
     /**
      * 14. click laporkan ulasan in ulasan tab
      * 49650
      */
-    fun onClickReviewReport(productId: String)
+    fun onClickReviewReport()
 
     /**
      * 15. click mode nonton in ulasan tab
      * 49651
      */
-    fun onClickReviewWatchMode(productId: String)
+    fun onClickReviewWatchMode()
 
     /**
      * 16. click pause/play in video
      * 49845
      */
-    fun onClickPauseOrPlayVideo(productId: String)
+    fun onClickPauseOrPlayVideo()
 
     /**
      * 17. submit report from ulasan tab
      * 49850
      */
-    fun onClickSubmitReport(productId: String)
+    fun onClickSubmitReport()
 
     /**
      * 18. like/unlike content
      * 49851
      */
-    fun onClickLikeOrUnlike(productId: String)
+    fun onClickLikeOrUnlike()
 }

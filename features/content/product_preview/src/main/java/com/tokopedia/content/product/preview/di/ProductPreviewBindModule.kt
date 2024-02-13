@@ -15,5 +15,5 @@ abstract class ProductPreviewBindModule {
 
     @Binds
     @ProductPreviewScope
-    abstract fun bindAnalytic(analytic: ProductPreviewAnalyticsImpl): ProductPreviewAnalytics
+    abstract fun bindAnalytic(analytic: ProductPreviewAnalyticsImpl.Factory): ProductPreviewAnalytics.Factory
 }

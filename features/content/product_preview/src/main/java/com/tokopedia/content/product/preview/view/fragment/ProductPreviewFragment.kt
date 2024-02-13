@@ -55,7 +55,7 @@ import com.tokopedia.content.product.preview.R as contentproductpreviewR
 class ProductPreviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
     private val router: Router,
-    private val analytics: ProductPreviewAnalytics
+    private val analyticsFactory: ProductPreviewAnalytics.Factory
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
@@ -75,6 +75,10 @@ class ProductPreviewFragment @Inject constructor(
     private var _binding: FragmentProductPreviewBinding? = null
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
+
+    private val analytics: ProductPreviewAnalytics by lazyThreadSafetyNone {
+        analyticsFactory.create(viewModel.productPreviewSource.productId)
+    }
 
     private val pagerListener: ViewPager2.OnPageChangeCallback by lazyThreadSafetyNone {
         pageListenerObject()
@@ -250,7 +254,7 @@ class ProductPreviewFragment @Inject constructor(
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
                     is ProductPreviewEvent.TrackHorizontalScrolling -> {
-                        analytics.onSwipeContentAndTab(viewModel.productPreviewSource.productId)
+                        analytics.onSwipeContentAndTab()
                     }
                     else -> return@collect
                 }
@@ -271,7 +275,7 @@ class ProductPreviewFragment @Inject constructor(
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
         if (prev == model) return
 
-        analytics.onImpressATC(viewModel.productPreviewSource.productId)
+        analytics.onImpressATC()
         binding.viewFooter.apply {
             show()
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

@@ -37,7 +37,7 @@ import javax.inject.Inject
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 class ProductFragment @Inject constructor(
-    private val analytics: ProductPreviewAnalytics
+    private val analyticsFactory: ProductPreviewAnalytics.Factory
 ) : TkpdBaseV4Fragment(), ProductPreviewVideoListener {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel>()
@@ -45,6 +45,10 @@ class ProductFragment @Inject constructor(
     private var _binding: FragmentProductBinding? = null
     private val binding: FragmentProductBinding
         get() = _binding!!
+
+    private val analytics: ProductPreviewAnalytics by lazyThreadSafetyNone {
+        analyticsFactory.create(viewModel.productPreviewSource.productId)
+    }
 
     private var snapHelperMedia = PagerSnapHelper()
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
@@ -242,7 +246,7 @@ class ProductFragment @Inject constructor(
     }
 
     override fun onImpressedVideo() {
-        analytics.onImpressVideo(viewModel.productPreviewSource.productId)
+        analytics.onImpressVideo()
     }
 
     override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
