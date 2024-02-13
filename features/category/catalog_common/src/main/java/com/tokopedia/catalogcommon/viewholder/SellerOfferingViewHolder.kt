@@ -75,6 +75,13 @@ class SellerOfferingViewHolder(
             tvSlashPrice.setTextAndCheckShow(element.productSlashPrice)
             tvSlashPrice.strikethrough()
             tvLabelPromo.setTextAndCheckShow(element.labelPromo)
+            lnPromoBmsm.showWithCondition(element.labelPromo.isNotEmpty() || element.labelTotalDisc.isNotEmpty())
+            lnRating.showWithCondition(element.shopRating.isNotEmpty()
+                || element.totalShopRating.isNotEmpty() || element.totalSold.isNotEmpty())
+
+            clFreeOngkirEtaAndAddService.showWithCondition(element.freeOngkir.isNotEmpty()
+                || element.additionalService.isNotEmpty() || element.courier.isNotEmpty())
+
             tvLabelDisc.text = element.labelTotalDisc
             tvSalesRatingFloat.text = element.shopRating
             tvTotalSold.text = element.totalSold
