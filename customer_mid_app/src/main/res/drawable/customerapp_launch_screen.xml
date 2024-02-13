@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/background_splash_screen"/>
-    <item
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <item android:drawable="@color/background_splash_screen" />
+    <item>
         <bitmap
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerInside"
-            android:src="@drawable/ramadan_ekstra_customerapp_splash"/>
+            android:gravity="center"
+            android:src="@drawable/div_system_splash_bg_main" />
     </item>
 </layer-list>
