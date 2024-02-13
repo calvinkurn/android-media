@@ -235,7 +235,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         }
 
         if (!data.isNullOrEmpty()) {
-            val item = data[0]
+            val item = data.find { it.isSelected } ?: data.first()
             if (!item.filterKey.isNullOrEmpty() && !item.filterValue.isNullOrEmpty()) {
                 queryParameterMap[RPC_FILTER_KEU + item.filterKey] = item.filterValue
             }

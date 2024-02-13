@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.flashsaletokousecase.FlashSaleTokoUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -57,5 +58,15 @@ class FlashSaleTokoTabViewModel(
         }
 
         component.reInitComponentItems()
+
+        notifyFestiveSection()
+    }
+
+    private fun notifyFestiveSection() {
+        component.parentSectionId?.let {
+            if (!component.isBackgroundPresent) return@let
+            val section = getComponent(it, component.pageEndPoint)
+            section?.shouldRefreshComponent = true
+        }
     }
 }
