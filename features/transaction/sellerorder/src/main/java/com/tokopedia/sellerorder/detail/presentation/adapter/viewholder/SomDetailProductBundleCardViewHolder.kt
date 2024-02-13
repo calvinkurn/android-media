@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
@@ -22,6 +23,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class SomDetailProductBundleCardViewHolder(
     private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
+    private val addOnListener: BmgmAddOnViewHolder.Listener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
     itemView: View?
 ) : AbstractViewHolder<ProductBundleUiModel>(itemView) {
@@ -33,7 +35,7 @@ class SomDetailProductBundleCardViewHolder(
     private val binding by viewBinding<ItemSomProductBundlingBinding>()
 
     private val productAdapter by lazy {
-        SomDetailProductBundlingAdapter(actionListener, recyclerViewSharedPool)
+        SomDetailProductBundlingAdapter(actionListener, addOnListener, recyclerViewSharedPool)
     }
 
     override fun bind(element: ProductBundleUiModel) {

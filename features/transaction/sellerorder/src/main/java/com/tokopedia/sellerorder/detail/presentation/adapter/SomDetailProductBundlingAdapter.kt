@@ -9,7 +9,6 @@ import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.sellerorder.R
@@ -24,6 +23,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class SomDetailProductBundlingAdapter(
     private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
+    private val addOnListener: BmgmAddOnViewHolder.Listener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : RecyclerView.Adapter<SomDetailProductBundlingAdapter.ViewHolder>() {
 
@@ -44,7 +44,6 @@ class SomDetailProductBundlingAdapter(
     inner class ViewHolder(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView),
-        BmgmAddOnViewHolder.Listener,
         BmgmAddOnSummaryViewHolder.Delegate.Mediator,
         BmgmAddOnSummaryViewHolder.Delegate by BmgmAddOnSummaryViewHolder.Delegate.Impl() {
 
@@ -52,22 +51,6 @@ class SomDetailProductBundlingAdapter(
 
         init {
             registerAddOnSummaryDelegate(this)
-        }
-
-        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
-            actionListener?.onCopyAddOnDescription(label, description)
-        }
-
-        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
-            actionListener?.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
-        }
-
-        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
-            actionListener?.onAddOnsInfoLinkClicked(infoLink, type)
-        }
-
-        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
-            // noop
         }
 
         override fun getAddOnSummaryLayout(): View? {
@@ -79,7 +62,7 @@ class SomDetailProductBundlingAdapter(
         }
 
         override fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener {
-            return this
+            return addOnListener
         }
 
         fun bind(product: ProductBundleUiModel.ProductUiModel) {

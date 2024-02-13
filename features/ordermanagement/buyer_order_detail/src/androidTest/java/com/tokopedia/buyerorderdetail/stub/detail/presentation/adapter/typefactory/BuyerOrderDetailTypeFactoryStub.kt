@@ -19,6 +19,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBun
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
+import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.CourierDriverInfoViewHolderStub
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.PgRecommendationViewHolderStub
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.ProductViewHolderStub
@@ -43,7 +44,9 @@ class BuyerOrderDetailTypeFactoryStub(
     buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
     recyclerViewSharedPool: RecyclerView.RecycledViewPool,
-    courierButtonListener: CourierButtonListener
+    courierButtonListener: CourierButtonListener,
+    addOnListener: BuyerOrderDetailFragment.AddOnListener,
+    productBenefitListener: BuyerOrderDetailFragment.ProductBenefitListener
 ) : BuyerOrderDetailTypeFactory(
     productBundlingViewListener,
     tickerViewHolderListener,
@@ -55,12 +58,14 @@ class BuyerOrderDetailTypeFactoryStub(
     scpRewardsMedalTouchPointWidgetListener,
     owocInfoListener,
     bmgmListener,
+    addOnListener,
+    productBenefitListener,
+    orderResolutionListener,
+    recyclerViewSharedPool,
     productViewListener,
     bottomSheetListener,
     navigator,
     buyerOrderDetailBindRecomWidgetListener,
-    orderResolutionListener,
-    recyclerViewSharedPool,
     courierButtonListener
 ) {
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {

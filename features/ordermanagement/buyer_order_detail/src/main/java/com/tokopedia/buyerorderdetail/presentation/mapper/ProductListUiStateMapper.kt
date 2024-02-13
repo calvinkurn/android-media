@@ -146,6 +146,7 @@ object ProductListUiStateMapper {
                 canExpandCollapse = true,
                 showTotalPrice = true
             ),
+            addOnSummaryUiModel = addOnSummaryUiModel,
             isProcessing = uiModel.isProcessing.orFalse(),
             button = actionButton,
             productUrl = uiModel.thumbnailUrl
@@ -501,6 +502,9 @@ object ProductListUiStateMapper {
         val (numOfRemovedProductBundle, productBundlingList) = mapProductBundle(
             details?.bundles,
             bundleIcon,
+            addonInfo?.label.orEmpty(),
+            addonInfo?.iconUrl.orEmpty(),
+            addOnsExpandableState,
             orderId,
             orderStatusId,
             insuranceDetailData,
@@ -663,6 +667,9 @@ object ProductListUiStateMapper {
     private fun mapProductBundle(
         bundleDetail: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bundle>?,
         bundleIcon: String,
+        addOnLabel: String,
+        addOnIcon: String,
+        addOnsExpandableState: List<String>,
         orderId: String,
         orderStatusId: String,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
@@ -698,6 +705,9 @@ object ProductListUiStateMapper {
                         orderId,
                         orderStatusId,
                         bundle.bundleId,
+                        addOnLabel,
+                        addOnIcon,
+                        addOnsExpandableState,
                         insuranceDetailData,
                         singleAtcResultFlow,
                         warrantyClaimButtonImpressed
@@ -1090,7 +1100,7 @@ object ProductListUiStateMapper {
             insurance = null,
             button = mapActionButton(product.button),
             addOnSummaryUiModel = product.addonSummary?.let {
-                com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
+                AddOnSummaryUiModel(
                     addOnIdentifier = addOnIdentifier,
                     totalPriceText = if (it.totalPriceStr.isNotBlank()) {
                         StringRes(
@@ -1105,7 +1115,7 @@ object ProductListUiStateMapper {
                     addonItemList = it.addons?.map { addon ->
                         val addOnNote = addon.metadata?.addOnNote
                         val addOnInfoLink = addon.metadata?.infoLink
-                        com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
+                        AddOnSummaryUiModel.AddonItemUiModel(
                             priceText = addon.priceStr,
                             quantity = addon.quantity,
                             addonsId = addon.id,
@@ -1137,6 +1147,9 @@ object ProductListUiStateMapper {
         orderId: String,
         orderStatusId: String,
         bundleId: String,
+        addOnLabel: String,
+        addOnIcon: String,
+        addOnsExpandableState: List<String>,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         warrantyClaimButtonImpressed: Boolean
@@ -1160,8 +1173,57 @@ object ProductListUiStateMapper {
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
             insurance = mapInsurance(product.productId, bundleId, insuranceDetailData),
             productUrl = "",
-            impressHolder = ImpressHolder().apply { if (warrantyClaimButtonImpressed) invoke() }
+            impressHolder = ImpressHolder().apply { if (warrantyClaimButtonImpressed) invoke() },
+            addOnSummaryUiModel = mapProductBundleItemAddOn(product, addOnLabel, addOnIcon, addOnsExpandableState)
         )
+    }
+
+    private fun mapProductBundleItemAddOn(
+        product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bundle.OrderDetail,
+        addOnLabel: String,
+        addOnIcon: String,
+        addOnsExpandableState: List<String>
+    ): AddOnSummaryUiModel? {
+        return product.addonSummary?.let {
+            val addOnsIdentifier = generateAddOnsIdentifier(product.productId, product.orderDetailId)
+            AddOnSummaryUiModel(
+                addOnIdentifier = addOnsIdentifier,
+                totalPriceText = if (it.totalPriceStr.isNotBlank()) {
+                    StringRes(
+                        order_management_commonR.string.om_add_on_collapsed_title_format,
+                        listOf(it.totalPriceStr)
+                    )
+                } else {
+                    StringRes(Int.ZERO)
+                },
+                addonsLogoUrl = addOnIcon,
+                addonsTitle = addOnLabel,
+                addonItemList = it.addons?.map { addon ->
+                    val addOnNote = addon.metadata?.addOnNote
+                    val addOnInfoLink = addon.metadata?.infoLink
+                    AddOnSummaryUiModel.AddonItemUiModel(
+                        priceText = addon.priceStr,
+                        quantity = addon.quantity,
+                        addonsId = addon.id,
+                        addOnsName = addon.name,
+                        type = addon.type,
+                        addOnsThumbnailUrl = addon.imageUrl,
+                        toStr = addOnNote?.to.orEmpty(),
+                        fromStr = addOnNote?.from.orEmpty(),
+                        message = addOnNote?.notes.orEmpty(),
+                        noteCopyable = false,
+                        providedByShopItself = true,
+                        infoLink = addOnInfoLink.orEmpty(),
+                        tips = addOnNote?.tips.orEmpty(),
+                        orderId = "",
+                        orderDetailId = ""
+                    )
+                }.orEmpty(),
+                canExpandCollapse = true
+            ).also { addOnSummaryUiModel ->
+                addOnSummaryUiModel.isExpand = addOnsExpandableState.contains(addOnsIdentifier)
+            }
+        }
     }
 
     private fun mapActionButton(
@@ -1242,7 +1304,7 @@ object ProductListUiStateMapper {
             canExpandCollapse = true,
             showTotalPrice = true
         ).also {
-            it.isExpand = !addOnsExpandableState.contains(addOnsIdentifier)
+            it.isExpand = addOnsExpandableState.contains(addOnsIdentifier)
         }
     }
 

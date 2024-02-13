@@ -187,9 +187,9 @@ class BmgmAddOnSummaryViewHolder(
             }
 
             override fun bindAddonSummary(addOnSummary: AddOnSummaryUiModel?) {
-                val layout = _mediator.getAddOnSummaryLayout() ?: return
+                var layout = _mediator.getAddOnSummaryLayout() ?: return
                 if (addOnSummary?.addonItemList?.isNotEmpty() == true) {
-                    if (layout is ViewStub) layout.inflate() else layout.show()
+                    if (layout is ViewStub) layout = layout.inflate() else layout.show()
                     if (!::viewHolder.isInitialized) {
                         viewHolder = BmgmAddOnSummaryViewHolder(
                             bmgmAddOnListener = _mediator.getAddOnSummaryListener(),

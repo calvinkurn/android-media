@@ -20,10 +20,10 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class SomDetailNonProductBundleCardViewHolder(
     private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
+    private val addOnListener: BmgmAddOnViewHolder.Listener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
     itemView: View?
 ) : AbstractViewHolder<NonProductBundleUiModel>(itemView),
-    BmgmAddOnViewHolder.Listener,
     BmgmAddOnSummaryViewHolder.Delegate.Mediator,
     BmgmAddOnSummaryViewHolder.Delegate by BmgmAddOnSummaryViewHolder.Delegate.Impl() {
 
@@ -46,20 +46,6 @@ class SomDetailNonProductBundleCardViewHolder(
         setupContainerBackground()
     }
 
-    override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
-        actionListener?.onCopyAddOnDescription(label, description)
-    }
-
-    override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
-        actionListener?.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
-    }
-
-    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
-        actionListener?.onAddOnsInfoLinkClicked(infoLink, type)
-    }
-
-    override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
-
     override fun getAddOnSummaryLayout(): View? {
         return itemView.findViewById(R.id.layoutProductAddOn)
     }
@@ -69,7 +55,7 @@ class SomDetailNonProductBundleCardViewHolder(
     }
 
     override fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener {
-        return this
+        return addOnListener
     }
 
     private fun setupContainerBackground() {
