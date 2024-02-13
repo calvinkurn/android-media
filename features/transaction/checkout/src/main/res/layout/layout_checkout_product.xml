@@ -60,12 +60,43 @@
         android:layout_marginTop="4dp"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_variant"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="1 x Rp200.000" />
+
+    <View
+        android:id="@+id/divider_product_price_notes"
+        android:layout_width="1dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/Unify_NN500"
+        app:layout_constraintStart_toEndOf="@id/tv_product_price"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_variant" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_product_notes_edit"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_night_enable="@color/Unify_NN500"
+        app:icon_name="ADD_NOTE"
+        app:layout_constraintStart_toEndOf="@id/divider_product_price_notes"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_variant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_notes_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Catatan"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@id/ic_product_notes_edit"
+        app:layout_constraintStart_toEndOf="@id/ic_product_notes_edit"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_variant"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_notes"
@@ -73,7 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="@id/tv_product_price"
+        app:layout_constraintEnd_toEndOf="@id/tv_product_variant"
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_price"
         app:typographyType="paragraph_3"
