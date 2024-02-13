@@ -245,15 +245,15 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             errorMessage: String = "",
-        ): PlayBroadcastSetupCoverBottomSheet? {
+        ): PlayBroadcastSetupCoverBottomSheet {
             val oldInstance =
                 fragmentManager.findFragmentByTag(TAG) as? PlayBroadcastSetupCoverBottomSheet
             return (
                 oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                     classLoader,
                     PlayBroadcastSetupCoverBottomSheet::class.java.name
-                ) as? PlayBroadcastSetupCoverBottomSheet
-            )?.apply {
+                ) as PlayBroadcastSetupCoverBottomSheet
+            ).apply {
                 arguments = Bundle().apply {
                     putString(ERROR_MESSAGE_ARG, errorMessage)
                 }

@@ -1070,7 +1070,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(PlayBroadcastSetupCoverBottomSheet.TAG)
         if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
-        getSetupCoverBottomSheet(errorMessage)?.show(childFragmentManager)
+        getSetupCoverBottomSheet(errorMessage).show(childFragmentManager)
     }
 
     private fun getSetupCoverBottomSheet(errorMessage: String = "") =
@@ -1138,7 +1138,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun dismissSetupCover(source: Int) {
-        if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
+        if (getSetupCoverBottomSheet().isAdded) getSetupCoverBottomSheet().dismiss()
 
         if (parentViewModel.uploadedCoverSource == TAB_AUTO_GENERATED && source != TAB_AUTO_GENERATED) {
             toaster.showToaster(getString(R.string.play_setup_cover_upload_image_toaster))
