@@ -27,9 +27,8 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         private const val LABEL_CORNER_RADIUS_DP = 4
         private const val LABEL_STROKE_WIDTH_DP = 1
 
-        private const val COUNTDOWN_TIMER_INTERVAL_MS = 1000L
-
         private const val COUNTDOWN_TIMER_FORMAT = "%s : %s : %s"
+        private const val COUNTDOWN_TIMER_INTERVAL_MS = 1000L
     }
 
     private val binding: LayoutCartCampaignProductLabelBinding =
@@ -37,8 +36,6 @@ class CartCampaignProductLabel @JvmOverloads constructor(
             .inflate(LayoutInflater.from(context), this, true)
 
     private var timer: CountDownTimer? = null
-    private var onCountdownTick: ((remainingTimeMs: Long) -> Unit)? = null
-    private var onCountdownFinish: (() -> Unit)? = null
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
@@ -181,12 +178,10 @@ class CartCampaignProductLabel @JvmOverloads constructor(
 
                     tpgProductLabelCountdown.text =
                         COUNTDOWN_TIMER_FORMAT.format(hourText, minuteText, secondText)
-
-                    onCountdownTick?.invoke(millisUntilFinished)
                 }
 
                 override fun onFinish() {
-                    onCountdownFinish?.invoke()
+                    // no-op
                 }
             }
             tpgProductLabelCountdown.visible()
@@ -203,7 +198,5 @@ class CartCampaignProductLabel @JvmOverloads constructor(
     private fun clearTimer() {
         timer?.cancel()
         timer = null
-        onCountdownTick = null
-        onCountdownFinish = null
     }
 }
