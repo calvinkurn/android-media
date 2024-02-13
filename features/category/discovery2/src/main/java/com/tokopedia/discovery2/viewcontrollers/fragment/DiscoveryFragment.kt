@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -36,8 +35,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
-import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -202,12 +199,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.searchbar.R as searchbarR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
@@ -2332,7 +2327,6 @@ open class DiscoveryFragment :
     private fun getMiniCart(
         bmGmDataParam: BmGmDataParam? = null
     ) {
-        Timber.d("BMGM Set -> $bmGmDataParam")
         if (bmGmDataParam != null) {
             val shopId = listOf(bmGmDataParam.shopId)
             discoveryViewModel.getMiniCartBmGm(
@@ -2428,7 +2422,6 @@ open class DiscoveryFragment :
         requestingComponent: ComponentsItem?,
         parentPosition: Int = RecyclerView.NO_POSITION
     ) {
-        Timber.d("BMGM Set -> $bmGmDataParam")
         setBmGmDataParam(
             requestingComponent = requestingComponent,
             parentPosition = parentPosition
