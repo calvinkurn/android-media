@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.widget.productNameDelegate
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -28,6 +29,7 @@ class PartialContentView(
 ) {
 
     private val context = binding.root.context
+    private val productNameDelegate by binding.productNameDelegate()
 
     fun renderData(
         data: ProductContentMainData,
@@ -41,7 +43,7 @@ class PartialContentView(
             MethodChecker.fromHtml(data.productName)
         )
 
-        renderProductName(data.productName)
+        renderProductName(data = data)
 
         renderPriceCampaignSection(
             data = data,
@@ -76,8 +78,8 @@ class PartialContentView(
         }
     }
 
-    private fun renderProductName(productNameString: String) = with(binding) {
-        productName.text = MethodChecker.fromHtml(productNameString)
+    private fun renderProductName(data: ProductContentMainData) = with(binding) {
+        productNameDelegate.setTitle(title = data.productName, labelIcons = data.labelIcons)
 
         if (productName.lineCount == 2) {
             pdpContentContainer.setPadding(0, 0, 0, 6.toPx())
@@ -99,7 +101,7 @@ class PartialContentView(
                 freeOngkirImgUrl = freeOngkirImgUrl
             )
         } else {
-            //means we are rendering promo price in different component
+            // means we are rendering promo price in different component
             hidePriceSection()
         }
     }
@@ -116,7 +118,7 @@ class PartialContentView(
 
         renderCampaignPrice(
             data = data,
-            isUpcomingNplType = isUpcomingNplType,
+            isUpcomingNplType = isUpcomingNplType
         )
         renderCashBackSection(cashbackPercentage)
         renderFreeOngkir(
@@ -140,8 +142,8 @@ class PartialContentView(
     ) {
         when {
             isUpcomingNplType -> {
-                if (data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN
-                    || data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN
+                if (data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN ||
+                    data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN
                 ) {
                     renderCampaignInactiveNpl(data.price.priceFmt)
                 } else {
@@ -218,5 +220,8 @@ class PartialContentView(
             textSlashPrice.visibility = View.VISIBLE
             textDiscountRed.visibility = View.VISIBLE
         }
+    }
+
+    fun onViewRecycled() {
     }
 }

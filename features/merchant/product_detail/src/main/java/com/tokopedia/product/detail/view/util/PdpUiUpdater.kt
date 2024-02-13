@@ -317,6 +317,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         stockWording = data.stock.stockWording,
         isVariant = data.variant.isVariant,
         productName = data.name,
+        labelIcons = data.labelIcons,
         isProductActive = basic.isActive(),
         isShowPrice = data.isShowPrice
     ).apply {
