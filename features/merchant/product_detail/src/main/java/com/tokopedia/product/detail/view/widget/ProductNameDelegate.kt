@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.text.style.ImageSpanCenterVertical
 
 /**
  * Created by yovi.putra on 02/02/24"
@@ -133,7 +134,7 @@ internal class ProductNameDelegate(
     }
 
     private fun SpannableStringBuilder.setLabelIconSpan(drawable: Drawable) {
-        val imageSpan = CenteredImageSpan(drawable)
+        val imageSpan = ImageSpanCenterVertical(drawable)
 
         insert(Int.ZERO, "  ")
         setSpan(imageSpan, Int.ZERO, Int.ONE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

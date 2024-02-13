@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget
+package com.tokopedia.utils.text.style
 
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -6,7 +6,12 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.text.style.ImageSpan
 
-class CenteredImageSpan(drawable: Drawable) : ImageSpan(drawable) {
+/**
+ * Created by yovi.putra on 07/02/24"
+ * Project name: android-tokopedia-core
+ **/
+
+class ImageSpanCenterVertical(drawable: Drawable) : ImageSpan(drawable) {
 
     companion object {
         private const val HALF_DIVIDER = 2f
