@@ -99,6 +99,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     }
 
     private var optOutSuccessMessage: String = ""
+    private var shopDiscountManageProductSubsidyUiModel: ShopDiscountManageProductSubsidyUiModel? = null
     private val discountStatusName by lazy {
         arguments?.getString(BUNDLE_KEY_DISCOUNT_STATUS_NAME).orEmpty()
     }
@@ -467,7 +468,14 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     private fun handleDeleteDiscountResult(isDeletionSuccess: Boolean) {
         if (isDeletionSuccess) {
             val deletionWording = if (viewModel.isOnMultiSelectMode()) {
-                val deletedProductCount = viewModel.getSelectedProductCount()
+                val deletedProductCount = if (shopDiscountManageProductSubsidyUiModel != null) {
+                    shopDiscountManageProductSubsidyUiModel?.getListProductParentIdWithNonSubsidyVariant()?.size.orZero()
+                        .apply {
+                            shopDiscountManageProductSubsidyUiModel = null
+                        }
+                } else {
+                    viewModel.getSelectedProductCount()
+                }
                 String.format(getString(R.string.sd_bulk_discount_deleted), deletedProductCount)
             } else {
                 getString(R.string.sd_discount_deleted)
@@ -839,6 +847,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         data: ShopDiscountManageProductSubsidyUiModel,
         optOutSuccessMessage: String
     ) {
+        this.shopDiscountManageProductSubsidyUiModel = data
         this.optOutSuccessMessage = optOutSuccessMessage
         when(data.mode){
             ShopDiscountManageDiscountMode.DELETE -> {

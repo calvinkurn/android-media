@@ -124,6 +124,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             onSubsidyInformationClicked
         )
     }
+    private var shopDiscountManageProductSubsidyUiModel: ShopDiscountManageProductSubsidyUiModel? = null
 
     override fun getScreenName(): String = SearchProductFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
@@ -377,6 +378,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         dataModel: ShopDiscountManageProductSubsidyUiModel,
         optOutSuccessMessage: String
     ) {
+        this.shopDiscountManageProductSubsidyUiModel = dataModel
         this.optOutSuccessMessage = optOutSuccessMessage
         when(dataModel.mode){
             ShopDiscountManageDiscountMode.DELETE -> {
@@ -426,7 +428,14 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     private fun handleDeleteDiscountResult(isDeletionSuccess: Boolean) {
         if (isDeletionSuccess) {
             val deletionWording = if (viewModel.isOnMultiSelectMode()) {
-                val deletedProductCount = viewModel.getSelectedProductCount()
+                val deletedProductCount = if (shopDiscountManageProductSubsidyUiModel != null) {
+                    shopDiscountManageProductSubsidyUiModel?.getListProductParentIdWithNonSubsidyVariant()?.size.orZero()
+                        .apply {
+                            shopDiscountManageProductSubsidyUiModel = null
+                        }
+                } else {
+                    viewModel.getSelectedProductCount()
+                }
                 String.format(getString(R.string.sd_bulk_discount_deleted), deletedProductCount)
             } else {
                 getString(R.string.sd_discount_deleted)
