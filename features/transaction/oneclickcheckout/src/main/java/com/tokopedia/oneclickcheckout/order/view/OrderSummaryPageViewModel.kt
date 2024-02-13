@@ -1166,6 +1166,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                             userId = userSession.userId,
                             isSuccess = false
                         )
+                        listPromoExternalAutoApplyCode = arrayListOf()
                     }
                 }
 
@@ -1195,6 +1196,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                             userId = userSession.userId,
                             isSuccess = false
                         )
+                        listPromoExternalAutoApplyCode = arrayListOf()
                     }
                 }
 
