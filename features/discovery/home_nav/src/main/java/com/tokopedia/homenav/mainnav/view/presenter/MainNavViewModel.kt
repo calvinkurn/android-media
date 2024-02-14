@@ -69,7 +69,6 @@ import javax.inject.Inject
 class MainNavViewModel @Inject constructor(
     private val userSession: Lazy<UserSessionInterface>,
     private val baseDispatcher: Lazy<CoroutineDispatchers>,
-    private val getCategoryGroupUseCase: Lazy<GetCategoryGroupUseCase>,
     private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
     private val getNavNotification: Lazy<GetNavNotification>,
     private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
@@ -85,7 +84,6 @@ class MainNavViewModel @Inject constructor(
     companion object {
         private const val INDEX_MODEL_ACCOUNT = 0
         private const val INDEX_HOME_BACK_SEPARATOR = 1
-        private const val ON_GOING_TRANSACTION_TO_SHOW = 6
         private const val MAX_CARD_SHOWN_REVAMP = 5
 
         private const val SOURCE = "dave_home_nav"
@@ -135,15 +133,6 @@ class MainNavViewModel @Inject constructor(
             newMainNavList.addAll(position, visitables)
             _mainNavListVisitable = newMainNavList
             _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
-        } catch (_: Exception) { }
-    }
-
-    private fun deleteWidget(visitable: Visitable<*>) {
-        try {
-            val newMainNavList = _mainNavListVisitable.toMutableList()
-            newMainNavList.remove(visitable)
-            _mainNavListVisitable = newMainNavList
-            _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
         } catch (_: Exception) { }
     }
 
@@ -327,14 +316,6 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    fun refreshBuListData() {
-        launchCatchError(coroutineContext, block = {
-            findBuStartIndexPosition()?.let {
-                updateWidget(InitialShimmerDataModel(), it)
-            }
-        }) { }
-    }
-
     fun refreshReviewData() {
         launch {
             getReview()
@@ -415,11 +396,9 @@ class MainNavViewModel @Inject constructor(
                 val result = getNavNotification.get().executeOnBackground()
                 val complainNotification = result.unreadCountComplain
                 val inboxTicketNotification = result.unreadCountInboxTicket
-                val reviewNotification = result.unreadCountReview
                 navNotification = NavNotificationModel(
                     unreadCountComplain = complainNotification,
                     unreadCountInboxTicket = inboxTicketNotification,
-                    unreadCountReview = reviewNotification
                 )
                 if (complainNotification.isMoreThanZero()) updateMenu(ID_COMPLAIN, complainNotification.toString())
                 if (inboxTicketNotification.isMoreThanZero()) updateMenu(ID_TOKOPEDIA_CARE, inboxTicketNotification.toString())
@@ -647,26 +626,6 @@ class MainNavViewModel @Inject constructor(
             it is T
         }
         model?.let {
-            return _mainNavListVisitable.indexOf(it)
-        }
-        return null
-    }
-
-    private fun findBuStartIndexPosition(): Int? {
-        val findBUTitle = _mainNavListVisitable.firstOrNull {
-            it is HomeNavTitleDataModel && it.identifier == IDENTIFIER_TITLE_ALL_CATEGORIES
-        }
-        findBUTitle?.let {
-            return _mainNavListVisitable.indexOf(it) + 1
-        }
-        return null
-    }
-
-    private fun findExistingEndBuIndexPosition(): Int? {
-        val findHomeMenu = _mainNavListVisitable.findLast {
-            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.BU_ICON
-        }
-        findHomeMenu?.let {
             return _mainNavListVisitable.indexOf(it)
         }
         return null
