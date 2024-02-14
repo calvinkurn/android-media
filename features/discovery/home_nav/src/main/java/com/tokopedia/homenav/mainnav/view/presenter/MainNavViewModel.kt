@@ -25,14 +25,12 @@ import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
 import com.tokopedia.homenav.mainnav.domain.usecases.GetAffiliateUserUseCase
-import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetNavNotification
 import com.tokopedia.homenav.mainnav.domain.usecases.GetPaymentOrdersNavUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetProfileDataUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetReviewProductUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetShopInfoUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetUohOrdersNavUseCase
-import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerProfileDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerTransactionRevampDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
