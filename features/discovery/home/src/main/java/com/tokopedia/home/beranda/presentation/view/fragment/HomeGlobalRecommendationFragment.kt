@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +23,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -183,7 +185,6 @@ class HomeGlobalRecommendationFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.setBackgroundColor(Color.RED)
         setupArgs()
         fetchHomeRecommendationRollence()
         setupRecyclerView()
@@ -191,6 +192,7 @@ class HomeGlobalRecommendationFragment :
         initListeners()
         observeStateFlow()
         observeLiveData()
+        shouldToastShownInDebugMode()
     }
 
     override fun onPause() {
@@ -302,6 +304,12 @@ class HomeGlobalRecommendationFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun shouldToastShownInDebugMode() {
+        if (GlobalConfig.DEBUG) {
+            Toast.makeText(requireContext(), "For you global component", Toast.LENGTH_SHORT).show()
         }
     }
 
