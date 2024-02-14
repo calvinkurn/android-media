@@ -412,7 +412,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                                 itemPosition,
                                 playWidgetTrackerModel.categoryId,
                                 playWidgetTrackerModel.layoutCard,
-                                playWidgetTrackerModel.layoutItem,
+                                ActionField.PLAY_SHORT_VIDEO_LAYOUT_ITEM,
                                 playVideoWidgetUiModel.title
                             )
                         )
