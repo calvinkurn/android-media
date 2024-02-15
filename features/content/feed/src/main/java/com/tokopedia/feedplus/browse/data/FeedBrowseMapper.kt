@@ -169,12 +169,12 @@ class FeedBrowseMapper @Inject constructor() {
     internal fun mapWidgetResponse(response: StoriesGroupsResponseModel): StoryGroupsModel {
         return StoryGroupsModel(
             storyList = response.data.groups.mapNotNull {
-                if (!it.hasStory) return@mapNotNull null
+                if (!it.author.hasStory) return@mapNotNull null
                 StoryNodeModel(
                     id = it.value,
                     name = it.name,
                     thumbnailUrl = it.image,
-                    hasUnseenStory = it.isUnseenStoryExist,
+                    hasUnseenStory = it.author.isUnseenStoryExist,
                     appLink = it.appLink,
                     lastUpdatedAt = System.currentTimeMillis(),
                     authorType = AuthorType.Shop

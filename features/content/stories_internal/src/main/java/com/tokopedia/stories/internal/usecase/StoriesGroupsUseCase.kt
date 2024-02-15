@@ -38,6 +38,10 @@ class StoriesGroupsUseCase @Inject constructor(
                     image
                     appLink
                     webLink
+                    author {
+                        hasStory
+                        isUnseenStoryExist
+                    }
                   }
                 meta{
                   selectedGroupIndex

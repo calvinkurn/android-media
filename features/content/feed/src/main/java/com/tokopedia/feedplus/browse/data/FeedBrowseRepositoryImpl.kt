@@ -122,34 +122,34 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         source: String,
         cursor: String
     ): StoryGroupsModel = withContext(dispatchers.io) {
-//        val response = storiesGroupsUseCase(
-//            StoriesGroupsUseCase.Request(
-//                authorID = "",
-//                authorType = "",
-//                source = source,
-//                sourceID = "",
-//                entryPoint = "browse-page",
-//                cursor = cursor,
-//            )
-//        )
-//
-//        mapper.mapWidgetResponse(response)
-        delay(1.5.seconds)
-
-        StoryGroupsModel(
-            List(20) {
-                StoryNodeModel(
-                    id = if (it == 0) "7240865" else "10289867",
-                    name = "Story $it",
-                    thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/tPxBYm/2023/8/1/0fc7d4e1-c812-4bbf-8e73-45ccb3661c84.jpg",
-                    hasUnseenStory = it.isEven(),
-                    appLink = if (it == 0) "tokopedia://stories/shop/7240865" else "tokopedia://stories/shop/10289867",
-                    lastUpdatedAt = System.currentTimeMillis(),
-                    authorType = AuthorType.Shop
-                )
-            },
-            nextCursor = ""
+        val response = storiesGroupsUseCase(
+            StoriesGroupsUseCase.Request(
+                authorID = "",
+                authorType = "",
+                source = source,
+                sourceID = "",
+                entryPoint = "browse-page",
+                cursor = cursor,
+            )
         )
+
+        mapper.mapWidgetResponse(response)
+//        delay(1.5.seconds)
+
+//        StoryGroupsModel(
+//            List(20) {
+//                StoryNodeModel(
+//                    id = if (it == 0) "7240865" else "10289867",
+//                    name = "Story $it",
+//                    thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/tPxBYm/2023/8/1/0fc7d4e1-c812-4bbf-8e73-45ccb3661c84.jpg",
+//                    hasUnseenStory = it.isEven(),
+//                    appLink = if (it == 0) "tokopedia://stories/shop/7240865" else "tokopedia://stories/shop/10289867",
+//                    lastUpdatedAt = System.currentTimeMillis(),
+//                    authorType = AuthorType.Shop
+//                )
+//            },
+//            nextCursor = ""
+//        )
     }
 
     override suspend fun getUpdatedSeenStoriesStatus(

@@ -27,6 +27,11 @@ data class StoriesGroupsResponseModel(
         val value: String = "",
         @SerializedName("webLink")
         val webLink: String = "",
+        @SerializedName("author")
+        val author: Author = Author(),
+    )
+
+    data class Author(
         @SerializedName("hasStory")
         val hasStory: Boolean = false,
         @SerializedName("isUnseenStoryExist")
