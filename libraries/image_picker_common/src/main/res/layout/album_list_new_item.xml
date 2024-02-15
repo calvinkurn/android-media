@@ -15,7 +15,7 @@
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_80"
         android:scaleType="centerCrop"
-        tools:src="@drawable/circle_red"/>
+        tools:src="@drawable/image_picker_common_circle_red"/>
 
     <LinearLayout
         android:layout_width="match_parent"
