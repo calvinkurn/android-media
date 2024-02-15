@@ -35,12 +35,11 @@
         app:rll_bottomLeftRadius="@dimen/play_dp_12"
         app:rll_bottomRightRadius="@dimen/play_dp_12">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_partner"
             android:layout_width="@dimen/layout_lvl5"
             android:layout_height="@dimen/layout_lvl5"
-            android:layout_marginTop="@dimen/play_dp_12"
-            app:unify_image_type="circle" />
+            android:layout_marginTop="@dimen/play_dp_12" />
 
         <LinearLayout
             android:layout_width="wrap_content"

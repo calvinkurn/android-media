@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.play.databinding.ViewInteractiveFollowBinding
 import com.tokopedia.play_common.view.game.GameHeaderView
 
@@ -42,7 +43,7 @@ class InteractiveFollowView : ConstraintLayout {
     }
 
     fun setAvatarUrl(imageUrl: String) {
-        binding.ivPartner.setImageUrl(imageUrl)
+        binding.ivPartner.loadImageCircle(imageUrl) //TODO: check placeholder, error state, etc from ImageUnify
     }
 
     fun setBadgeUrl(badgeUrl: String) {

@@ -12,11 +12,11 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.play.R
 import com.tokopedia.play_common.R as play_commonR
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.view.RoundedConstraintLayout
-import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -104,7 +104,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     private fun setupView() {
         if (::tvTitle.isInitialized) tvTitle.text = mTitle
         if (::tvDetail.isInitialized) tvDetail.text = mSubtitle
-        if (::imgUser.isInitialized) imgUser.loadImage(mImageUrl)
+        if (::imgUser.isInitialized) imgUser.loadImageCircle(mImageUrl) //TODO: check placeholder, error state, etc from ImageUnify
         if(::vRoot.isInitialized) vRoot.background = MethodChecker.getDrawable(context, getInteractive(mGameUiModel ?: GameUiModel.Unknown))
     }
 

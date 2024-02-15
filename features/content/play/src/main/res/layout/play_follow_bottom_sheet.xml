@@ -34,18 +34,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/follow_header">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_icon"
             android:layout_width="@dimen/layout_lvl4"
             android:layout_height="@dimen/layout_lvl4"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_placeholder="@color/content_dms_partner_icon_placeholder"
-            app:unify_image_type="circle"
             tools:visibility="gone" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_badge"
             android:layout_width="@dimen/dp_12"
             android:layout_height="@dimen/dp_12"
@@ -53,7 +51,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_placeholder="@color/content_dms_partner_icon_placeholder"
             tools:visibility="gone" />
 
         <com.tokopedia.unifyprinciples.Typography

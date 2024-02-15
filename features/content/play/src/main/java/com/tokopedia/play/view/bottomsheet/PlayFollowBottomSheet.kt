@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
@@ -25,9 +26,9 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayPopUpConfigUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * @author by astidhiyaa on 27/10/22
@@ -115,8 +116,12 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
 
         binding.ivBadge.showWithCondition(partnerInfo.badgeUrl.isNotBlank())
         binding.ivIcon.showWithCondition(partnerInfo.iconUrl.isNotBlank())
-        binding.ivBadge.loadIcon(partnerInfo.badgeUrl)
-        binding.ivIcon.loadIcon(partnerInfo.iconUrl)
+        binding.ivBadge.loadIcon(partnerInfo.badgeUrl) {
+            setPlaceHolder(contentcommonR.color.content_dms_partner_icon_placeholder)
+        }
+        binding.ivIcon.loadImageCircle(partnerInfo.iconUrl) {
+            setPlaceHolder(contentcommonR.color.content_dms_partner_icon_placeholder)
+        }
         binding.tvPartnerName.text = partnerInfo.name
 
         binding.tvFollowDesc.text = config.text

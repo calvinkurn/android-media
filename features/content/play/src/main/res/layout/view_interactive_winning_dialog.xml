@@ -56,11 +56,10 @@
             tools:visibility="visible"
             />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_user"
             android:layout_width="@dimen/layout_lvl4"
             android:layout_height="@dimen/layout_lvl4"
-            app:unify_image_type="circle"
             tools:src="@tools:sample/avatars"
             />
 
