@@ -3,7 +3,6 @@ package com.tokopedia.applink.communication
 import android.content.Context
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
@@ -16,7 +15,6 @@ object DeeplinkMapperCommunication {
 
     private const val CHAT_SETTINGS = "chatsettings"
 
-    const val UNIVERSAL_INBOX_ROLLENCE = "newInbox_rollout"
     private const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
     const val TOKOCHAT_LIST_REMOTE_CONFIG = "android_enable_tokochat_list"
 
@@ -105,12 +103,7 @@ object DeeplinkMapperCommunication {
      */
     fun getRegisteredNavigationInbox(context: Context, deeplink: String): String {
         return if (isUserLoggedIn(context)) {
-            val useUnivInbox = isABTestActive(UNIVERSAL_INBOX_ROLLENCE) == UNIVERSAL_INBOX_ROLLENCE
-            return if (useUnivInbox) {
-                ApplinkConstInternalCommunication.UNIVERSAL_INBOX
-            } else {
-                ApplinkConsInternalHome.HOME_INBOX
-            }
+            ApplinkConstInternalCommunication.UNIVERSAL_INBOX
         } else {
             ApplinkConstInternalUserPlatform.LOGIN
         }
@@ -120,7 +113,9 @@ object DeeplinkMapperCommunication {
      * General mapper
      */
     fun getRegisteredNavigation(deeplink: String): String {
-        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
-            ApplinkConstInternalCommunication.INTERNAL_COMMUNICATION+"/")
+        return deeplink.replace(
+            DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
+            ApplinkConstInternalCommunication.INTERNAL_COMMUNICATION + "/"
+        )
     }
 }

@@ -2731,27 +2731,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check inbox host customerapp`() {
-        every {
-            DeeplinkMapperCommunication.isUserLoggedIn(any())
-        } returns true
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                DeeplinkMapperCommunication.UNIVERSAL_INBOX_ROLLENCE
-            )
-        } returns ""
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
-        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
-    }
-
-    @Test
     fun `check inbox host customerapp universal inbox`() {
         every {
             DeeplinkMapperCommunication.isUserLoggedIn(any())
         } returns true
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
-        } returns DeeplinkMapperCommunication.UNIVERSAL_INBOX_ROLLENCE
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://communication/universal-inbox"
         assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
     }
