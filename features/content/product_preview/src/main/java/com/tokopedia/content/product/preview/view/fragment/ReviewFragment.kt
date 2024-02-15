@@ -17,11 +17,13 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
 import com.tokopedia.content.product.preview.utils.LoginReviewContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
@@ -40,9 +42,12 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.ifNull
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
@@ -69,7 +74,7 @@ class ReviewFragment @Inject constructor(
         )
     }
 
-    private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
+    private val snapHelper = PagerSnapHelper()
 
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvReview.layoutManager) {
@@ -174,6 +179,38 @@ class ReviewFragment @Inject constructor(
                             }
                         }
 
+                        is ProductPreviewEvent.ShowSuccessToaster -> {
+                            val view = if (ReviewReportBottomSheet.get(childFragmentManager) != null) ReviewReportBottomSheet.get(childFragmentManager)?.requireView()?.rootView else requireView().rootView
+                            Toaster.build(
+                                view ?: return@collect,
+                                text = getString(event.message.orZero()),
+                                actionText = if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC) {
+                                    getString(
+                                        R.string.bottom_atc_success_click_toaster
+                                    )
+                                } else {
+                                    ""
+                                },
+                                duration = Toaster.LENGTH_LONG,
+                                clickListener = {
+                                    viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
+                                }
+                            ).show()
+                        }
+
+                        is ProductPreviewEvent.ShowErrorToaster -> {
+                            val view = if (ReviewReportBottomSheet.get(childFragmentManager) != null) ReviewReportBottomSheet.get(childFragmentManager)?.requireView()?.rootView else requireView().rootView
+                            Toaster.build(
+                                view ?: return@collect,
+                                text = event.message.message.ifNull { getString(event.type.textRes) },
+                                actionText = getString(R.string.bottom_atc_failed_click_toaster),
+                                duration = Toaster.LENGTH_LONG,
+                                clickListener = {
+                                    run { event.onClick() }
+                                },
+                                type = Toaster.TYPE_ERROR
+                            ).show()
+                        }
                         else -> {}
                     }
                 }

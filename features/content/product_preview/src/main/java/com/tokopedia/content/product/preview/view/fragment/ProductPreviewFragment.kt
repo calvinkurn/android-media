@@ -203,8 +203,8 @@ class ProductPreviewFragment @Inject constructor(
                         requireContext(),
                         event.appLink
                     )
-                    // TODO: need to check all toaster in PDP unified media
                     is ProductPreviewEvent.ShowSuccessToaster -> {
+                        if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.Report) return@collect
                         Toaster.build(
                             requireView().rootView,
                             text = getString(event.message.orZero()),
@@ -223,6 +223,7 @@ class ProductPreviewFragment @Inject constructor(
                     }
 
                     is ProductPreviewEvent.ShowErrorToaster -> {
+                        if (event.type == ProductPreviewEvent.ShowErrorToaster.Type.Report) return@collect
                         Toaster.build(
                             requireView().rootView,
                             text = event.message.message.ifNull { getString(event.type.textRes) },
