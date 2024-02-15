@@ -512,7 +512,8 @@ object DeeplinkDFApp {
     private fun getDfPromoGamification() = mutableListOf(
         // gamification
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_daily"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_60s")
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_60s"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification/ketupat_rewards_landing_page")
     )
 
     private fun getDfPromoTokopoints() = mutableListOf(
