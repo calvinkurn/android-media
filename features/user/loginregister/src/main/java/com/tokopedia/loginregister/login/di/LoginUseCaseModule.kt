@@ -8,9 +8,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
-import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
