@@ -246,15 +246,16 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                         onDelayFinished {
                             onScrollDown()
                             handleScrollDownEvent()
-                            checkShouldShowCoachMarkSubsidy()
                         }
                     },
                     onScrollUp = {
                         onDelayFinished {
                             onScrollUp()
                             handleScrollUpEvent()
-                            checkShouldShowCoachMarkSubsidy()
                         }
+                    },
+                    onScroll = {
+                        checkShouldShowCoachMarkSubsidy()
                     }
                 )
             )
