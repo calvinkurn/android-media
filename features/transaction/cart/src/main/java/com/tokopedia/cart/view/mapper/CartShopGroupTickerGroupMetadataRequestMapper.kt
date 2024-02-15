@@ -54,8 +54,6 @@ object CartShopGroupTickerGroupMetadataRequestMapper {
             listOrderData.add(
                 CartShopGroupTickerGroupMetadata.OrderData(
                     uniqueId = groupedByCartString.key,
-                    shop = CartShopGroupTickerGroupMetadata.OrderData.Shop(shopId = groupedByCartString.value[0].shopHolderData.shopId),
-                    warehouseId = groupedByCartString.value[0].warehouseId,
                     listGroupProduct = listGroupProductData,
                     orderMetadata = groupedByCartString.value[0].orderMetadata
                 )

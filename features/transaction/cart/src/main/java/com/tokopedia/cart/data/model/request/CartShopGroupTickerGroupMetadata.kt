@@ -11,10 +11,6 @@ data class CartShopGroupTickerGroupMetadata(
         val orderMetadata: String = "",
         @SerializedName("unique_id")
         val uniqueId: String = "",
-        @SerializedName("shop")
-        val shop: Shop = Shop(),
-        @SerializedName("warehouse_id")
-        val warehouseId: String = "",
         @SerializedName("group_product")
         val listGroupProduct: ArrayList<GroupProduct> = arrayListOf()
     ) {
