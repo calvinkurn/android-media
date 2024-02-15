@@ -23,7 +23,7 @@
             android:layout_height="@dimen/play_product_carousel_height"
             android:padding="@dimen/unify_space_8">
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_product"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

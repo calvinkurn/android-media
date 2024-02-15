@@ -47,7 +47,7 @@
         android:paddingEnd="@dimen/spacing_lvl4"
         >
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_crown"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"

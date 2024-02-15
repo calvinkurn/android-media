@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.databinding.ViewInteractiveFollowBinding
 import com.tokopedia.play_common.view.game.GameHeaderView
 
@@ -47,7 +47,7 @@ class InteractiveFollowView : ConstraintLayout {
 
     fun setBadgeUrl(badgeUrl: String) {
         binding.ivBadge.showWithCondition(badgeUrl.isNotEmpty())
-        if(badgeUrl.isNotEmpty()) binding.ivBadge.setImageUrl(badgeUrl)
+        if(badgeUrl.isNotEmpty()) binding.ivBadge.loadImage(badgeUrl) //TODO: check placeholder, error state, etc from ImageUnify
     }
 
     fun setPartnerName(name: String) {

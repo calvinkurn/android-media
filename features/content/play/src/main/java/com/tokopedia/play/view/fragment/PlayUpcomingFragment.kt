@@ -70,6 +70,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By : Jonathan Darwin on September 06, 2021
@@ -101,7 +102,7 @@ class PlayUpcomingFragment @Inject constructor(
     private lateinit var playUpcomingViewModel: PlayUpcomingViewModel
     private lateinit var playParentViewModel: PlayParentViewModel
 
-    private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
+    private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(unifyprinciplesR.dimen.spacing_lvl3) }
 
     override fun getScreenName(): String = "Play Upcoming"
 
@@ -348,7 +349,7 @@ class PlayUpcomingFragment @Inject constructor(
                         })
                         .skipMemoryCache(false)
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                        .into(binding.ivUpcomingCover)
+                        .into(binding.ivUpcomingCover) //TODO: check placeholder, error state, etc from ImageUnify
                 }
                 description.setupText(it.description)
                 upcomingTimer.setupTimer(it.startTime)

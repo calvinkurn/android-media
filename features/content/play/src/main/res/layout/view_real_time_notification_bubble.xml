@@ -9,7 +9,7 @@
     tools:background="@color/Unify_BN300"
     >
     
-    <com.tokopedia.unifycomponents.ImageUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_notif"
         android:layout_width="@dimen/play_real_time_notif_icon_size"
         android:layout_height="@dimen/play_real_time_notif_icon_size"

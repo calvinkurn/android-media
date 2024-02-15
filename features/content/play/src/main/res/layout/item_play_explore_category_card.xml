@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/unify_space_8">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_play_category_video"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/content_common_space_86"
@@ -41,7 +41,7 @@
         app:typographyType="paragraph_3"
         tools:text="Diskon Gede- Gedean  Giveaway Bardi Camera! Diskon Gede- Gedean  Giveaway Bardi Camera!" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_category_creator"
         android:layout_width="@dimen/play_dp_12"
         android:layout_height="@dimen/play_dp_12"
