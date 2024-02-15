@@ -186,12 +186,17 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ),
 
     GridAutomateCouponItem(
-        id = R.layout.grid_automate_coupon_layout,
+        id = R.layout.grid_automate_coupon_item_layout,
         componentName = ComponentNames.GridAutomateCouponItem.componentName
     ),
 
-//    CarouselAutomateCoupon(
-//        id = R.layout.carousel_automate_coupon_layout,
-//        componentName = ComponentNames.CarouselAutomateCoupon.componentName
-//    )
+    CarouselAutomateCoupon(
+        id = R.layout.carousel_automate_coupon_layout,
+        componentName = ComponentNames.CarouselAutomateCoupon.componentName
+    ),
+
+    CarouselAutomateCouponItem(
+        id = R.layout.carousel_automate_coupon_item_layout,
+        componentName = ComponentNames.CarouselAutomateCouponItem.componentName
+    )
 }

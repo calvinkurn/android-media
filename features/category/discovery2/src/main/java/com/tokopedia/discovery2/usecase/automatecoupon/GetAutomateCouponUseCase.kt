@@ -14,7 +14,7 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
 import com.tokopedia.discovery_component.widgets.automatecoupon.TimeLimit
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.asLowerCase
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import java.util.*
 import javax.inject.Inject
 
@@ -72,10 +72,17 @@ class GetAutomateCouponUseCase @Inject constructor(
         forEachIndexed { index, it ->
             if (it.info == null) return@forEachIndexed
 
-            val compName = if (component.data?.firstOrNull()?.couponLayout == Layout.Single.name.asLowerCase()) {
-                ComponentNames.SingleAutomateCoupon.componentName
-            } else {
-                ComponentNames.GridAutomateCoupon.componentName
+            val compName = when(component.data?.firstOrNull()?.couponLayout?.asCamelCase()) {
+                Layout.Single.name -> ComponentNames.SingleAutomateCoupon.componentName
+                Layout.Double.name -> ComponentNames.GridAutomateCouponItem.componentName
+                Layout.Carousel.name -> ComponentNames.CarouselAutomateCouponItem.componentName
+
+//                if (component.data?.firstOrNull()?.couponLayout == Layout.Single.name.asLowerCase()) {
+//                    ComponentNames.SingleAutomateCoupon.componentName
+//                } else {
+//                    ComponentNames.GridAutomateCouponItem.componentName
+//                }
+                else -> { return@forEachIndexed }
             }
 
             val componentsItem = ComponentsItem().apply {
