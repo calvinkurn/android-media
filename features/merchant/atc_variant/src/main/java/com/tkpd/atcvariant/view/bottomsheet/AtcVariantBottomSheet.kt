@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,9 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
@@ -809,11 +813,17 @@ class AtcVariantBottomSheet :
 
     override fun addToCartClick(buttonText: String) {
         this.buttonText = buttonText
+//        AppLogAnalytics.sendConfirmCart(TrackConfirmCart(
+//
+//        ))
         doAtc(ProductDetailCommonConstant.ATC_BUTTON)
     }
 
     override fun buyNowClick(buttonText: String) {
         this.buttonText = buttonText
+//        AppLogAnalytics.sendConfirmSku(TrackConfirmSku(
+//
+//        ))
         doAtc(ProductDetailCommonConstant.BUY_BUTTON)
     }
 
@@ -926,6 +936,7 @@ class AtcVariantBottomSheet :
 
     private fun doAtc(buttonAction: Int) {
         buttonActionType = buttonAction
+        Log.d("BYTEIO", "atc button clicked $buttonAction")
         context?.let {
             val isPartialySelected =
                 AtcVariantMapper.isPartiallySelectedOptionId(viewModel.getSelectedOptionIds())

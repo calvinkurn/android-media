@@ -15,6 +15,10 @@ import com.tkpd.atcvariant.util.AtcCommonMapper.generateAvailableButtonIngatkanS
 import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.ProductType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -29,6 +33,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -486,10 +491,36 @@ class AtcVariantViewModel @Inject constructor(
         val selectedChild = getVariantData()?.getChildByOptionId(
             getSelectedOptionIds()?.values.orEmpty().toList()
         )
+        val parentId = getVariantData()?.parentId.orEmpty()
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
         val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
         val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
             ?: selectedChild?.getFinalMinOrder() ?: 1
+
+        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
+            AppLogAnalytics.sendConfirmCart(TrackConfirmCart(
+                productId = parentId,
+                productCategory = categoryName,
+                productType = ProductType.AVAILABLE,
+                originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
+                salePrice = selectedChild?.priceFmt.orEmpty(),
+                skuId = selectedChild?.productId.orEmpty(),
+                currency = "Rp",
+                addSkuNum = 0, skuNumBefore = 0, skuNumAfter = 0
+            ))
+        } else if (actionButton == ProductDetailCommonConstant.OCC_BUTTON) {
+            AppLogAnalytics.sendConfirmSku(
+                TrackConfirmSku(
+                productId = parentId,
+                productCategory = categoryName,
+                productType = ProductType.AVAILABLE,
+                originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
+                salePrice = selectedChild?.priceFmt.orEmpty(),
+                skuId = selectedChild?.productId.orEmpty(),
+                currency = "Rp",
+                false, false,"",  false)
+            )
+        }
 
         if (selectedMiniCart != null && showQtyEditor) {
             getUpdateCartUseCase(selectedMiniCart, updatedQuantity, showQtyEditor)
