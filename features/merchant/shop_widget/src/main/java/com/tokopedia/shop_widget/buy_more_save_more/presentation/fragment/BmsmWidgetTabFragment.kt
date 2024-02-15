@@ -57,6 +57,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.util.NonFatalIssueLogger
 import com.tokopedia.shop_widget.buy_more_save_more.util.Status
 import com.tokopedia.shop_widget.databinding.FragmentBmsmWidgetBinding
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.R.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -141,7 +142,12 @@ class BmsmWidgetTabFragment :
             ?: ColorType.LIGHT
     }
 
-    private var productListAdapter = BmsmWidgetProductListAdapter(this@BmsmWidgetTabFragment)
+    private val productListAdapter by lazy {
+        BmsmWidgetProductListAdapter(
+            this@BmsmWidgetTabFragment,
+            colorThemeConfiguration == BmsmWidgetColorThemeConfig.REIMAGINE
+        )
+    }
 
     private var onSuccessAtc: (String, String, AddToCartDataModel) -> Unit = { _, _, _ -> }
     private var onErrorAtc: (String) -> Unit = {}
@@ -650,7 +656,7 @@ class BmsmWidgetTabFragment :
 
             BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(
                 context,
-                R.color.dms_static_black
+                color.Unify_NN1000
             )
         }
         setTextColor(textColor)

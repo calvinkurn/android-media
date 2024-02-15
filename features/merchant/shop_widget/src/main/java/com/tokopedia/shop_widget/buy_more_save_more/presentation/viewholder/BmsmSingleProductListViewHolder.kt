@@ -11,7 +11,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class BmsmSingleProductListViewHolder(
     itemView: View,
-    private val listener: BmsmWidgetItemEventListener
+    private val listener: BmsmWidgetItemEventListener,
+    val isOverrideTheme: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val binding: ItemBmsmWidgetSingleProductListBinding? by viewBinding()
@@ -35,7 +36,8 @@ class BmsmSingleProductListViewHolder(
             formattedPrice = campaign.discountedPrice.ifEmpty { price },
             countSoldRating = rating,
             hasAddToCartButton = true,
-            labelGroupList = labelGroup.toLabelGroup()
+            labelGroupList = labelGroup.toLabelGroup(),
+            forceLightModeColor = isOverrideTheme
         )
     }
 

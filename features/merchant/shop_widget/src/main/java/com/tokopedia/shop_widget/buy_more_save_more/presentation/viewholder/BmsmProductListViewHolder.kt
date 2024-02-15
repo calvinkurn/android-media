@@ -1,23 +1,18 @@
 package com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder
 
-import android.content.res.Resources
 import android.view.View
-import android.view.ViewGroup.LayoutParams
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.visibleWithCondition
-import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetItemEventListener
 import com.tokopedia.shop_widget.databinding.ItemBmsmWidgetProductListBinding
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BmsmProductListViewHolder(
     itemView: View,
-    private val listener: BmsmWidgetItemEventListener
+    private val listener: BmsmWidgetItemEventListener,
+    val isOverrideTheme: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
 
 
@@ -43,7 +38,8 @@ class BmsmProductListViewHolder(
             formattedPrice = campaign.discountedPrice.ifEmpty { price },
             countSoldRating = rating,
             hasAddToCartButton = true,
-            labelGroupList = labelGroup.toLabelGroup()
+            labelGroupList = labelGroup.toLabelGroup(),
+            forceLightModeColor = isOverrideTheme
         )
     }
 

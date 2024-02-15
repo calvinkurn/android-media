@@ -4,15 +4,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetItemEventListener
 import com.tokopedia.shop_widget.buy_more_save_more.util.Constant
 import com.tokopedia.shop_widget.databinding.ItemBmsmWidgetSeeAllBinding
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.shop_widget.R
 
 class BmsmSeeAllProductViewHolder(
     itemView: View,
-    private val listener: BmsmWidgetItemEventListener
+    private val listener: BmsmWidgetItemEventListener,
+    val isOverrideTheme: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val binding: ItemBmsmWidgetSeeAllBinding? by viewBinding()
@@ -27,6 +30,7 @@ class BmsmSeeAllProductViewHolder(
                     listener.onNavigateToOlp()
                 }
             }
+            if (isOverrideTheme) configReimagine()
         }
     }
 
@@ -34,5 +38,13 @@ class BmsmSeeAllProductViewHolder(
         val layoutParams = this.layoutParams
         layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
         this.layoutParams = layoutParams
+    }
+
+    private fun configReimagine() {
+        binding?.apply {
+            cardSeeAll.setCardBackgroundColor(MethodChecker.getColor(itemView.context, R.color.dms_static_white))
+            tpgRemainingProductCount.setTextColor(MethodChecker.getColor(itemView.context, R.color.dms_static_black))
+            tpgOtherProductLabel.setTextColor(MethodChecker.getColor(itemView.context, R.color.dms_static_black))
+        }
     }
 }
