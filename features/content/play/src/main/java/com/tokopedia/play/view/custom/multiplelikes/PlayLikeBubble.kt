@@ -11,9 +11,13 @@ class Bubble(
     parentHeight: Int,
 ) {
     private val startTime = System.currentTimeMillis()
-    private val paint = Paint().apply {
-        this.color = color
+    private val iconPaint = Paint().apply {
         this.alpha = if (reduceOpacity) HALF_OPACITY else FULL_OPACITY
+    }
+    private val bgPaint = Paint().apply {
+        this.color = color
+        val alphaFactor = if (reduceOpacity) HALF_OPACITY_FACTOR else FULL_OPACITY_FACTOR
+        this.alpha = (alphaFactor * this.alpha).toInt()
     }
     private val matrix = Matrix()
 
@@ -87,13 +91,13 @@ class Bubble(
             0f,
             0f,
             circleRadius,
-            paint
+            bgPaint
         )
         canvas.drawBitmap(
             icon,
             -circleCenter,
             -circleCenter,
-            paint
+            iconPaint
         )
         canvas.restore()
     }
@@ -118,5 +122,8 @@ class Bubble(
 
         private const val HALF_OPACITY = 120
         private const val FULL_OPACITY = 255
+
+        private const val HALF_OPACITY_FACTOR = 0.5f
+        private const val FULL_OPACITY_FACTOR = 1.0f
     }
 }
