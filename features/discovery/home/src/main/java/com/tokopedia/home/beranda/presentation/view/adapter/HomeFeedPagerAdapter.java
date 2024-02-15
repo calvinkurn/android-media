@@ -16,8 +16,9 @@ import com.tokopedia.home.beranda.presentation.view.fragment.BaseRecommendationF
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController;
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController;
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,22 +31,19 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     private final HomeEggListener homeEggListener;
     private final HomeTabFeedListener homeTabFeedListener;
     private final List<RecommendationTabDataModel> recommendationTabDataModelList = new ArrayList<>();
-
-    private final HomeRemoteConfigController homeRemoteConfigController;
+    private boolean shouldUseGlobalForYouComponent = false;
 
     public HomeFeedPagerAdapter(HomeCategoryListener homeCategoryListener,
                                 HomeEggListener homeEggListener,
                                 HomeTabFeedListener homeTabFeedListener,
                                 FragmentManager fragmentManager,
                                 List<RecommendationTabDataModel> recommendationTabDataModelList,
-                                RecyclerView.RecycledViewPool parentPool,
-                                HomeRemoteConfigController remoteConfigController) {
+                                RecyclerView.RecycledViewPool parentPool) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
         this.parentPool = parentPool;
         this.homeCategoryListener = homeCategoryListener;
-        this.homeRemoteConfigController = remoteConfigController;
         updateData(recommendationTabDataModelList);
     }
 
@@ -58,8 +56,7 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (homeRemoteConfigController.shouldGlobalComponentRecomEnabled()
-                && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
+        if (shouldUseGlobalForYouComponent && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
             HomeGlobalRecommendationFragment homeFeedFragment = HomeGlobalRecommendationFragment.Companion.newInstance(
                     position,
                     Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
@@ -85,8 +82,13 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        if (homeRemoteConfigController.shouldGlobalComponentRecomEnabled()
-                && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
+
+        if (container.getContext() != null) {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(container.getContext());
+            shouldUseGlobalForYouComponent = remoteConfig.getBoolean(RemoteConfigKey.HOME_GLOBAL_COMPONENT_FALLBACK, false);
+        }
+
+        if (shouldUseGlobalForYouComponent && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
             HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
             homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
             homeFeedFragment.setParentPool(parentPool);

@@ -40,8 +40,6 @@ interface HomeCategoryListener {
 
     val userId: String
 
-    val remoteConfigController: HomeRemoteConfigController
-
     fun onSectionItemClicked(actionLink: String)
 
     fun onCloseTicker()

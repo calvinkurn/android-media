@@ -342,9 +342,6 @@ open class HomeRevampFragment :
             0
         }
 
-    override val remoteConfigController: HomeRemoteConfigController
-        get() = homeRemoteConfigController
-
     @Inject
     lateinit var permissionCheckerHelper: Lazy<PermissionCheckerHelper>
 
