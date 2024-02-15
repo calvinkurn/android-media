@@ -273,6 +273,14 @@ class BmsmWidgetTabFragment :
             }
         }
 
+        viewModel.miniCartSimplifiedData.observe(viewLifecycleOwner) { minicartSimplifiedData ->
+            binding?.apply {
+                val offerMessage = minicartSimplifiedData.bmgmData.offerMessage
+                tpgSubTitleWidget.setUpsellingGwp(offerMessage)
+                tpgPdUpsellingWording.setUpsellingPd(offerMessage)
+            }
+        }
+
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
             sendLogger(throwable)
             setViewState(
@@ -344,9 +352,6 @@ class BmsmWidgetTabFragment :
                 setViewState(VIEW_ERROR, Status.GIFT_OOS)
             } else {
                 tpgTitleWidget.setTitle(offerMessage, upsellWording, defaultOfferMessage)
-                tpgSubTitleWidget.setUpsellingGwp(offerMessage)
-                tpgPdUpsellingWording.setUpsellingPd(offerMessage)
-
                 when (offerTypeId) {
                     OFFER_TYPE_PD -> setupPdHeader(offerMessage)
                     OFFER_TYPE_GWP -> setupGwpHeader(productGiftImages)

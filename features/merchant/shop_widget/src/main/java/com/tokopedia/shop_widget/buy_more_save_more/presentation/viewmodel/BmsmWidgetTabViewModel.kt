@@ -76,6 +76,10 @@ class BmsmWidgetTabViewModel @Inject constructor(
         get() = _miniCartAdd
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
 
+    private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData>()
+    val miniCartSimplifiedData: LiveData<MiniCartSimplifiedData>
+        get() = _miniCartSimplifiedData
+
     val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
     }
@@ -174,6 +178,7 @@ class BmsmWidgetTabViewModel @Inject constructor(
                         currentAppliedId = appliedTierId.orZero()
                     )
                 }
+                _miniCartSimplifiedData.postValue(miniCartSimplifiedData)
             },
             onError =  { }
         )
