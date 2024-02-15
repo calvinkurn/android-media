@@ -9,17 +9,13 @@ import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.databinding.AtcVariantPromoPriceBinding
 import com.tkpd.atcvariant.util.setBorderWithColor
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.imageassets.TokopediaImageUrl.PDP_ICON_PROMO_RED
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class AtcVariantPromoPriceWidget : ConstraintLayout {
-
-    companion object {
-        private const val ICON_PROMO_RED =
-            "https://images.tokopedia.net/img/pdp/icons/promo/Promo%20icon%20red.png"
-    }
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -44,27 +40,27 @@ class AtcVariantPromoPriceWidget : ConstraintLayout {
 
     fun renderView(
         promoPriceData: PromoPriceUiModel, originalPriceFmt: String
-    ) {
-        _binding?.atcVariantPromoContainerTextIcon?.showIfWithBlock(
+    ) = _binding?.run {
+        atcVariantPromoContainerTextIcon.showIfWithBlock(
             promoPriceData.promoPriceFmt.isNotEmpty()
         ) {
-            _binding?.atcVariantPromoContainerTextIcon?.setBorderWithColor(
+            atcVariantPromoContainerTextIcon.setBorderWithColor(
                 borderWidth = 2,
                 borderRadius = 8,
                 borderColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_RN100),
                 backgroundColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_RN50)
             )
 
-            _binding?.atcVariantPromoIconLeft?.loadImage(ICON_PROMO_RED)
+            atcVariantPromoIconLeft.loadImage(PDP_ICON_PROMO_RED)
         }
 
-        _binding?.atcVariantPromoTxtRight?.run {
+        atcVariantPromoTxtRight.run {
             text = promoPriceData.promoPriceFmt
             setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_RN500))
         }
 
-        _binding?.atcVariantPromoPriceOriginalPrice?.text = originalPriceFmt
-        _binding?.atcVariantPromoPriceSlashPrice?.run {
+        atcVariantPromoPriceOriginalPrice.text = originalPriceFmt
+        atcVariantPromoPriceSlashPrice.run {
             text = promoPriceData.slashPriceFmt
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }

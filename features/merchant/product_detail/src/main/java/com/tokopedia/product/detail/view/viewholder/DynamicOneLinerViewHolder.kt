@@ -62,11 +62,32 @@ class DynamicOneLinerViewHolder(
         }
 
         val url = data.applink
+        val showClickArea = url.isNotEmpty() ||
+            name == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_PROMO
+
+        setupChevronRight(
+            showClickArea = showClickArea,
+            chevronPos = data.chevronPos
+        )
+
+        setupClick(
+            url = url,
+            showClickArea = showClickArea,
+            text = data.text,
+            componentTrackDataModel = componentTrackDataModel
+        )
+        dynamicOneLinerSeparatorTop.showWithCondition(data.shouldShowSeparatorTop)
+        dynamicOneLinerSeparatorBottom.showWithCondition(data.shouldShowSeparatorBottom)
+    }
+
+    private fun setupChevronRight(
+        showClickArea: Boolean,
+        chevronPos: String
+    ) = with(binding) {
         dynamicOneLinerIconRight.showIfWithBlock(
-            url.isNotEmpty() ||
-                name == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_PROMO
+            showClickArea
         ) {
-            val chainStyle = when (data.chevronPos) {
+            val chainStyle = when (chevronPos) {
                 CHEVRON_POS_FOLLOW -> ConstraintSet.CHAIN_PACKED
                 CHEVRON_POS_END -> ConstraintSet.CHAIN_SPREAD_INSIDE
                 else -> null
@@ -80,24 +101,15 @@ class DynamicOneLinerViewHolder(
                 constraintSet.applyTo(dynamicOneLinerContent)
             }
         }
-
-        setupClick(
-            url = url,
-            name = name,
-            text = data.text,
-            componentTrackDataModel = componentTrackDataModel
-        )
-        dynamicOneLinerSeparatorTop.showWithCondition(data.shouldShowSeparatorTop)
-        dynamicOneLinerSeparatorBottom.showWithCondition(data.shouldShowSeparatorBottom)
     }
 
     private fun setupClick(
         url: String,
-        name: String,
         text: String,
+        showClickArea: Boolean,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
-        if (url.isNotEmpty() || name == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_PROMO) {
+        if (showClickArea) {
             itemView.setOnClickListener {
                 listener.onClickDynamicOneLiner(text, url, componentTrackDataModel)
             }

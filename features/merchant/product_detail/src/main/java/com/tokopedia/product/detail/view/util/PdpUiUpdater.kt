@@ -767,8 +767,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         //update promoCodes when change variant, no need to update when update p2data
         promoCodes: List<PromoCodesResponse>? = null
     ) {
+        val promo = promoPrice ?: return
+
         updateData(ProductDetailConstant.PRICE) {
-            promoPrice?.run {
+            promo.run {
                 normalPriceBoUrl = freeOngkirImgUrl
 
                 if (promoPriceData != null) {

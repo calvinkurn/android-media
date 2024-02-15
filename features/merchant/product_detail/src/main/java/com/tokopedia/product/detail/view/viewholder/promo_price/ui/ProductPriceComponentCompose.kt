@@ -256,13 +256,13 @@ fun PromoPriceCard(
     ConstraintLayout(
         modifier = Modifier
             .padding(start = 8.dp, top = 8.dp, end = 8.dp)
+            .clickable {
+                onPromoPriceClicked.invoke()
+            }
             .background(
                 data.cardBackgroundColor.color,
                 RoundedCornerShape(10.dp)
             )
-            .clickable {
-                onPromoPriceClicked.invoke()
-            }
     ) {
         val (superGraphic, header, divider, footer) = createRefs()
 

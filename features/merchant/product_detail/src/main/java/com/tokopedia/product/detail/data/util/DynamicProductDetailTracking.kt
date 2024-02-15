@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_SHARE_AFFILIATE_ICON
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_SHARE_REGULER
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionAction
@@ -20,7 +21,6 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
@@ -1644,8 +1644,10 @@ object DynamicProductDetailTracking {
         }
 
         private fun generateDimension72Price(productInfo: DynamicProductInfoP1?): String {
-            val defaultPrice = productInfo?.data?.price?.priceFmt.orEmpty()
-            val slashPrice = productInfo?.data?.price?.slashPriceFmt.orEmpty()
+            val data = productInfo?.data ?:  ComponentData()
+            val slashPrice = data.price.slashPriceFmt
+            val defaultPrice = data.price.priceFmt
+
             val couponPrice = productInfo?.data?.promoPrice?.promoPriceFmt.orEmpty().run {
                 ifEmpty {
                     "null"
