@@ -524,11 +524,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     textReviewColor = getTextColor(isDarkMode),
                     textTitleColor = getTextColor(isDarkMode),
                     textSubTitleColor = getTextColorTrustmaker(isDarkMode),
-                    backgroundColor = colorMapping(
-                        isDarkMode,
-                        catalogcommonR.drawable.bg_rounded_border_dark,
-                        catalogcommonR.drawable.bg_rounded_border_light
-                    ),
+                    backgroundColor = if (isDarkMode) "#1AAEB2BF" else "#FFFFFF",
                     styleIconPlay = ExpertReviewUiModel.StyleIconPlay(
                         iconColor = colorMapping(
                             isDarkMode,
