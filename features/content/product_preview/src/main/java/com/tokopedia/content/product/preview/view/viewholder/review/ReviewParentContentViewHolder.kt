@@ -208,6 +208,9 @@ class ReviewParentContentViewHolder(
             setupExpanded()
         }
         tvReviewDescription.show()
+        tvReviewDescription.setOnClickListener {
+            setupExpanded()
+        }
     }
 
     private fun setupExpanded() {
