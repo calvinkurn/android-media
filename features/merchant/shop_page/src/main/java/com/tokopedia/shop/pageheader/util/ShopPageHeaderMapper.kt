@@ -150,7 +150,7 @@ object ShopPageHeaderMapper {
 
     /**
      * This function check whether hexStringValue is formatted like 212121-20
-     * If it's match the format, then it will convert it to string hex with opacity (e.g. #33212121)
+     * If it's match the format, then it will convert it to string hex with opacity (e.g. 33212121)
      * otherwise it will return current hexStringValue
      */
     private fun parseFormattedHexString(hexStringValue: String): String {
