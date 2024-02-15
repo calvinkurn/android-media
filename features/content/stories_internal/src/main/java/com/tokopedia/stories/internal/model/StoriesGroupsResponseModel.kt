@@ -32,6 +32,8 @@ data class StoriesGroupsResponseModel(
     )
 
     data class Author(
+        @SerializedName("id")
+        val id: String = "",
         @SerializedName("hasStory")
         val hasStory: Boolean = false,
         @SerializedName("isUnseenStoryExist")

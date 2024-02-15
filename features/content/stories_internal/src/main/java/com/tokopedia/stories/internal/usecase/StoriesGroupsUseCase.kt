@@ -39,6 +39,7 @@ class StoriesGroupsUseCase @Inject constructor(
                     appLink
                     webLink
                     author {
+                        id
                         hasStory
                         isUnseenStoryExist
                     }

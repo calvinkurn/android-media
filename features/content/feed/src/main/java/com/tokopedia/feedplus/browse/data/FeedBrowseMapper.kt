@@ -171,7 +171,7 @@ class FeedBrowseMapper @Inject constructor() {
             storyList = response.data.groups.mapNotNull {
                 if (!it.author.hasStory) return@mapNotNull null
                 StoryNodeModel(
-                    id = it.value,
+                    id = it.author.id,
                     name = it.name,
                     thumbnailUrl = it.image,
                     hasUnseenStory = it.author.isUnseenStoryExist,
