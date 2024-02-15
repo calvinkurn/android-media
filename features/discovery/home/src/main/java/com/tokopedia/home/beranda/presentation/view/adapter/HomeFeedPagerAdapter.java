@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter;
 
+import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.collection.SparseArrayCompat;
@@ -38,12 +39,14 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
                                 HomeTabFeedListener homeTabFeedListener,
                                 FragmentManager fragmentManager,
                                 List<RecommendationTabDataModel> recommendationTabDataModelList,
-                                RecyclerView.RecycledViewPool parentPool) {
+                                RecyclerView.RecycledViewPool parentPool,
+                                Context context) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
         this.parentPool = parentPool;
         this.homeCategoryListener = homeCategoryListener;
+        fetchRemoteConfig(context);
         updateData(recommendationTabDataModelList);
     }
 
@@ -52,6 +55,11 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
         this.recommendationTabDataModelList.addAll(recommendationTabDataModelList);
         registeredFragments.clear();
         notifyDataSetChanged();
+    }
+
+    private void fetchRemoteConfig(Context context) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        shouldUseGlobalForYouComponent = remoteConfig.getBoolean(RemoteConfigKey.HOME_GLOBAL_COMPONENT_FALLBACK, false);
     }
 
     @Override
@@ -82,12 +90,6 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-
-        if (container.getContext() != null) {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(container.getContext());
-            shouldUseGlobalForYouComponent = remoteConfig.getBoolean(RemoteConfigKey.HOME_GLOBAL_COMPONENT_FALLBACK, false);
-        }
-
         if (shouldUseGlobalForYouComponent && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
             HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
             homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
