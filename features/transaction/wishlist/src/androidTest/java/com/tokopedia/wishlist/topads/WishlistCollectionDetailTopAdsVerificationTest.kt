@@ -104,7 +104,7 @@ class WishlistCollectionDetailTopAdsVerificationTest {
                         .getRecommendationDataAtIndex(wishlistIndex)
                         .recommendationProductCardModelData
 
-                    // pending root cause : banner topads
+                    // root cause failed issue : pending in topads banner (which is topads productName is empty)
                     for (recommendationIndex in recommendationItems.indices) {
                         scrollRecommendationRecyclerViewToIndex(recommendationIndex)
                         if (recommendationItems[recommendationIndex].isTopAds) {
@@ -112,7 +112,6 @@ class WishlistCollectionDetailTopAdsVerificationTest {
                             clickRecommendationRecyclerViewItem(recommendationIndex)
                         }
                     }
-                    break
                 }
             }
             loading(5000)
