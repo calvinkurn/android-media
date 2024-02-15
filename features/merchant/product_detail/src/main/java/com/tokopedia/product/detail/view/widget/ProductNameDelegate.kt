@@ -128,9 +128,8 @@ internal class ProductNameDelegate(
 
     private fun Drawable.resizeLabelIconSpec() {
         val ratio = intrinsicWidth.toFloat() / intrinsicHeight.toFloat()
-        val bottom = if (intrinsicHeight > KVI_ICON_HEIGHT) KVI_ICON_HEIGHT else intrinsicHeight
-        val right = bottom * ratio
-        setBounds(Int.ZERO, Int.ZERO, right.toInt(), bottom)
+        val right = KVI_ICON_HEIGHT * ratio
+        setBounds(Int.ZERO, Int.ZERO, right.toInt(), KVI_ICON_HEIGHT)
     }
 
     private fun SpannableStringBuilder.setLabelIconSpan(drawable: Drawable) {

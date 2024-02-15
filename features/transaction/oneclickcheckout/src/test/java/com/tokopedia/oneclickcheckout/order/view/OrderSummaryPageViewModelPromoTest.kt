@@ -1334,7 +1334,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(exactly = 1) {
-            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(isSuccess = true)
+            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(any(), any(), isSuccess = true)
         }
         assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
         assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
@@ -1364,7 +1364,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(exactly = 1) {
-            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(isSuccess = false)
+            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(any(), any(), isSuccess = false)
         }
         assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
         assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
@@ -1395,7 +1395,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(exactly = 1) {
-            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(isSuccess = false)
+            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(any(), any(), isSuccess = false)
         }
     }
 }
