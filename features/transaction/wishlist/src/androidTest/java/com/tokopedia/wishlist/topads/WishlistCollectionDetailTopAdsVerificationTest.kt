@@ -29,7 +29,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.tokopedia.wishlist.test.R as wishlistTestR
+import com.tokopedia.wishlist.test.R as wishlisttestR
 
 @TopAdsTest
 class WishlistCollectionDetailTopAdsVerificationTest {
@@ -63,7 +63,7 @@ class WishlistCollectionDetailTopAdsVerificationTest {
                         KEY_TOPADS_BANNER,
                         InstrumentationMockHelper.getRawString(
                             context,
-                            wishlistTestR.raw.response_topads_banner
+                            wishlisttestR.raw.response_topads_banner
                         ),
                         MockModelConfig.FIND_BY_CONTAINS
                     )
