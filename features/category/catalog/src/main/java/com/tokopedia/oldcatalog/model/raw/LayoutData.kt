@@ -316,8 +316,8 @@ data class LayoutData(
             @SerializedName("stats") val stats: Stats = Stats()
         ) {
             data class Stats(
-                val chatEta: String = "",
-                val orderProcessEta: String = ""
+                @SerializedName("chatEta") val chatEta: String = "",
+                @SerializedName("orderProcessEta") val orderProcessEta: String = ""
             )
         }
         data class Price(
