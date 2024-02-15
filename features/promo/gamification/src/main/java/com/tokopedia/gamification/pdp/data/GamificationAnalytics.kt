@@ -30,7 +30,10 @@ object GamificationAnalytics {
             .send()
     }
 
-    fun sendClickShareOnNavBarEvent(eventLabel: String, businessUnit: String, currentSite: String) {
+    fun sendClickShareOnNavBarEvent(eventLabel: String, businessUnit: String,
+                                    currentSite: String,
+                                    userID: String,
+                                    pagePath: String) {
         Tracker.Builder()
             .setEvent("clickCommunication")
             .setEventAction("click - share button")
@@ -39,6 +42,8 @@ object GamificationAnalytics {
             .setCustomProperty("trackerId", "49192")
             .setBusinessUnit(businessUnit)
             .setCurrentSite(currentSite)
+            .setUserId(userID)
+            .setCustomProperty("pagePath", pagePath)
             .build()
             .send()
     }

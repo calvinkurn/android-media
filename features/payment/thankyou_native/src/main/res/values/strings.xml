@@ -19,7 +19,7 @@
     <string name="thank_see_detail">Lihat Detail</string>
     <string name="thank_see_payment_methods">Lihat Cara Bayar</string>
     <string name="thank_bank_branch"><![CDATA[Atas nama <b>%s</b>]]></string>
-    <string name="thank_pay_before">Bayar Sebelum</string>
+    <string name="thank_pay_before">Bayar sebelum</string>
 
     <string name="thank_virtual_account_tag">Nomor Virtual Account</string>
     <string name="thank_klikBCA_virtual_account_tag">User ID KlikBCA</string>
@@ -127,6 +127,7 @@
     <string name="thankyou_klikbca_virtual_account_copied">User ID KlikBCA berhasil disalin</string>
     <string name="thank_wait_for_minute">Tunggu sebentar, ya..</string>
     <string name="thank_processing_payment">Pembayaranmu lagi diproses</string>
+    <string name="thank_processing_payment_2">Pembayaran lagi diproses...</string>
     <string name="thank_potensi_cashback">Potensi Cashback</string>
     <string name="thank_bbi_cash_back">Potensi Cashback BBI</string>
     <string name="thank_payment_method_count">+%d metode lain</string>
