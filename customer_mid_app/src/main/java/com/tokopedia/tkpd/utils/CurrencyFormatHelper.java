@@ -2,16 +2,10 @@ package com.tokopedia.tkpd.utils;
 
 import android.widget.EditText;
 
-import com.tokopedia.design.utils.CurrencyFormatUtil;
-
 import java.text.NumberFormat;
 import java.util.Locale;
 
-/**
- * use {@link CurrencyFormatUtil} for flexibility of currency (can use other than IDR, USD, etc)
- * modified by m.normansyah & steven.f
- * changed "," to "." for rupiah
- */
+
 public final class CurrencyFormatHelper {
 	private static final NumberFormat RupiahFormat = NumberFormat.getCurrencyInstance(Locale.US);
 	private static final NumberFormat DollarFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));;
