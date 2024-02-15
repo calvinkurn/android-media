@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.flashsaletokousecase.FlashSaleTokoUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -22,6 +21,7 @@ class FlashSaleTokoTabViewModel(
 ) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val tabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val notifyTargetedComponent: MutableLiveData<Pair<String, String>> = MutableLiveData()
 
     @JvmField
     @Inject
@@ -49,6 +49,7 @@ class FlashSaleTokoTabViewModel(
         get() = Dispatchers.Main + SupervisorJob()
 
     fun getTabLiveData(): LiveData<ArrayList<ComponentsItem>> = tabs
+    fun notifyTargetInFestiveSection(): LiveData<Pair<String, String>> = notifyTargetedComponent
 
     fun onTabClick(selectedFilterValue: String) {
         this.syncData.value = true
@@ -59,14 +60,14 @@ class FlashSaleTokoTabViewModel(
 
         component.reInitComponentItems()
 
-        notifyFestiveSection()
+        notifyFestiveSection(selectedFilterValue)
     }
 
-    private fun notifyFestiveSection() {
+    private fun notifyFestiveSection(selectedFilterValue: String) {
         component.parentSectionId?.let {
             if (!component.isBackgroundPresent) return@let
-            val section = getComponent(it, component.pageEndPoint)
-            section?.shouldRefreshComponent = true
+
+            notifyTargetedComponent.value = it to selectedFilterValue
         }
     }
 }
