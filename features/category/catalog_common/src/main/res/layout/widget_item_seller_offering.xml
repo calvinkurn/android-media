@@ -143,7 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/bg_rounded_border_light"
-            android:paddingVertical="10dp"
+            android:paddingBottom="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/clShopInfo">
@@ -160,7 +160,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="9dp"
                     android:orientation="horizontal">
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvVariantLabel"
@@ -177,7 +177,7 @@
                         android:id="@+id/tvVariantValue"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
+                        android:layout_marginStart="8dp"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/dms_static_text_color_light"
@@ -194,13 +194,11 @@
                         />
                 </LinearLayout>
 
-
                 <com.tokopedia.unifycomponents.DividerUnify
                     android:id="@+id/dividerVariant"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginBottom="12dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="9dp"
                     android:alpha="0.2"
                     android:background="@color/dms_static_divider" />
             </LinearLayout>
@@ -214,6 +212,7 @@
                 android:visibility="visible"
                 android:paddingHorizontal="12dp"
                 android:gravity="center_vertical"
+                android:layout_marginTop="12dp"
                 android:layout_marginHorizontal="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
