@@ -59,8 +59,8 @@ class ProductPreviewFragment @Inject constructor(
     private val router: Router
 ) : TkpdBaseV4Fragment() {
 
-    private val productPreviewSource: ProductPreviewSourceModel by lazyThreadSafetyNone {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private val productPreviewSource: ProductPreviewSourceModel
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(
                 PRODUCT_PREVIEW_SOURCE,
                 ProductPreviewSourceModel::class.java
@@ -68,7 +68,6 @@ class ProductPreviewFragment @Inject constructor(
         } else {
             arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
         } ?: ProductPreviewSourceModel.Empty
-    }
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
         viewModelFactory.create(productPreviewSource)
@@ -328,6 +327,7 @@ class ProductPreviewFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        coachMarkJob?.cancel()
         binding.vpProductPreview.unregisterOnPageChangeCallback(
             pagerListener
         )

@@ -57,7 +57,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     @Assisted val productPreviewSource: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
     private val userSessionInterface: UserSessionInterface,
-    private val sharedPreference: ProductPreviewSharedPreference
+    private val productPrevSharedPref: ProductPreviewSharedPreference
 ) : ViewModel() {
 
     @AssistedFactory
@@ -124,10 +124,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launchCatchError(block = {
-            val hasVisit = sharedPreference.hasVisited(productPreviewSource.source)
+            val hasVisit = productPrevSharedPref.hasVisited(productPreviewSource.source)
             if (hasVisit) return@launchCatchError
             _uiEvent.emit(ProductPreviewEvent.ShowCoachMark)
-            sharedPreference.setHasVisit(true, productPreviewSource.source)
+            productPrevSharedPref.setHasVisit(true, productPreviewSource.source)
         }){}
     }
 
