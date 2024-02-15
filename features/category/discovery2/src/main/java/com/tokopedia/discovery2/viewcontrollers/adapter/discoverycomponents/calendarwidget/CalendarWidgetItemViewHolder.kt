@@ -176,9 +176,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 layoutParams.width = ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)) / TRIPLE_WIDTH_RATIO)
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
-                imageLayoutParams.width =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_104)
-                imageLayoutParams.height = imageLayoutParams.width
+                imageLayoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_96)
                 calendarImage.layoutParams = imageLayoutParams
                 itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_6)
                 itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_3)
