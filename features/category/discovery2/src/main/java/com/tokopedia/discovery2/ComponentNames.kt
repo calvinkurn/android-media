@@ -179,4 +179,5 @@ enum class ComponentNames(val componentName: String) {
     GridAutomateCoupon("grid_automate_coupon"),
     GridAutomateCouponItem("grid_automate_coupon_item"),
     CarouselAutomateCoupon("carousel_automate_coupon"),
+    CarouselAutomateCouponItem("carousel_automate_coupon_item"),
 }
