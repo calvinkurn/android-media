@@ -373,8 +373,13 @@ class CartAdapter(
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         super.onViewRecycled(holder)
-        if (holder.itemViewType == CartRecommendationViewHolder.LAYOUT) {
-            (holder as CartRecommendationViewHolder).clearImage()
+        when (holder.itemViewType) {
+            CartRecommendationViewHolder.LAYOUT -> {
+                (holder as CartRecommendationViewHolder).clearImage()
+            }
+            CartRecentViewViewHolder.LAYOUT -> {
+                (holder as? CartRecentViewViewHolder)?.recycle()
+            }
         }
     }
 

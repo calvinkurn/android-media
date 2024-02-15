@@ -39,6 +39,8 @@ interface ActionListener {
 
     fun onRecentViewProductClicked(productId: String)
 
+    fun onRecentViewProductClicked(recommendationItem: RecommendationItem)
+
     fun onRecentViewImpression()
 
     fun onRecommendationProductClicked(recommendationItem: RecommendationItem)

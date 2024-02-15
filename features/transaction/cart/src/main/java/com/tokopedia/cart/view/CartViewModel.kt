@@ -69,7 +69,6 @@ import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cart.view.uimodel.EntryPointInfoEvent
 import com.tokopedia.cart.view.uimodel.FollowShopEvent
 import com.tokopedia.cart.view.uimodel.GetBmGmGroupProductTickerState
-import com.tokopedia.cart.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cart.view.uimodel.LoadRecommendationState
 import com.tokopedia.cart.view.uimodel.LoadWishlistV2State
 import com.tokopedia.cart.view.uimodel.RemoveFromWishlistEvent
@@ -124,6 +123,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
@@ -162,7 +163,6 @@ class CartViewModel @Inject constructor(
     private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
     private val userSessionInterface: UserSessionInterface,
     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-    private val getRecentViewUseCase: GetRecommendationUseCase,
     private val getWishlistV2UseCase: GetWishlistV2UseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addToCartUseCase: AddToCartUseCase,
@@ -208,9 +208,6 @@ class CartViewModel @Inject constructor(
     private val _cartCheckoutButtonState: MutableLiveData<CartCheckoutButtonState> =
         MutableLiveData()
     val cartCheckoutButtonState: LiveData<CartCheckoutButtonState> = _cartCheckoutButtonState
-
-    private val _recentViewState: MutableLiveData<LoadRecentReviewState> = MutableLiveData()
-    val recentViewState: LiveData<LoadRecentReviewState> = _recentViewState
 
     private val _wishlistV2State: MutableLiveData<LoadWishlistV2State> = MutableLiveData()
     val wishlistV2State: LiveData<LoadWishlistV2State> = _wishlistV2State
@@ -412,10 +409,11 @@ class CartViewModel @Inject constructor(
 
         if (cartDataList.value.isNotEmpty()) {
             cartDataList.value.add(++wishlistIndex, cartSectionHeaderHolderData)
-            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-                -1 -> wishlistIndex
-                else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
-            }
+            cartModel.firstCartSectionHeaderPosition =
+                when (cartModel.firstCartSectionHeaderPosition) {
+                    -1 -> wishlistIndex
+                    else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
+                }
             cartDataList.value.add(++wishlistIndex, cartWishlistHolderData)
             cartDataList.notifyObserver()
         }
@@ -423,9 +421,9 @@ class CartViewModel @Inject constructor(
 
     fun hasReachAllShopItems(data: Any): Boolean {
         return data is CartRecentViewHolderData ||
-            data is CartWishlistHolderData ||
-            data is CartTopAdsHeadlineData ||
-            data is CartRecommendationItemHolderData
+                data is CartWishlistHolderData ||
+                data is CartTopAdsHeadlineData ||
+                data is CartRecommendationItemHolderData
     }
 
     fun processToUpdateAndReloadCartData(
@@ -944,37 +942,7 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun processGetRecentViewData() {
-        _globalEvent.value = CartGlobalEvent.ItemLoading(true)
-        viewModelScope.launchCatchError(
-            context = dispatchers.io,
-            block = {
-                val recommendationWidgets = getRecentViewUseCase.getData(
-                    GetRecommendationRequestParam(
-                        pageNumber = 1,
-                        xSource = RECENT_VIEW_XSOURCE,
-                        pageName = PAGE_NAME_RECENT_VIEW,
-                        productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
-                        queryParam = ""
-                    )
-                )
-                withContext(dispatchers.main) {
-                    _recentViewState.value = LoadRecentReviewState.Success(recommendationWidgets)
-                }
-            },
-            onError = { throwable ->
-                Timber.d(throwable)
-                withContext(dispatchers.main) {
-                    _recentViewState.value = LoadRecentReviewState.Failed(throwable)
-                }
-            }
-        )
-    }
-
-    fun addCartRecentViewData(
-        cartSectionHeaderHolderData: CartSectionHeaderHolderData,
-        cartRecentViewHolderData: CartRecentViewHolderData
-    ) {
+    fun addCartRecentViewData() {
         var recentViewIndex = 0
         for ((index, item) in cartDataList.value.withIndex()) {
             if (item is CartEmptyHolderData ||
@@ -992,11 +960,19 @@ class CartViewModel @Inject constructor(
         }
 
         if (cartDataList.value.isNotEmpty()) {
-            cartDataList.value.add(++recentViewIndex, cartSectionHeaderHolderData)
-            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-                -1 -> recentViewIndex
-                else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
-            }
+            cartModel.firstCartSectionHeaderPosition =
+                when (cartModel.firstCartSectionHeaderPosition) {
+                    -1 -> recentViewIndex
+                    else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
+                }
+            val cartRecentViewHolderData = CartRecentViewHolderData(
+                recommendationWidgetMetadata = RecommendationWidgetMetadata(
+                    pageNumber = 1,
+                    pageName = PAGE_NAME_RECENT_VIEW,
+//                    xSource = RECENT_VIEW_XSOURCE,
+                    productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
+                )
+            )
             cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
             cartDataList.notifyObserver()
         }
@@ -2031,17 +2007,22 @@ class CartViewModel @Inject constructor(
                                 newCartGroupHolderData.productUiModelList[lastItemIndex]
                             val newCartItemHolderData = lastProductItem.copy()
                             newCartItemHolderData.isFinalItem = true
-                            val isValidGiftPurchase = newCartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.isValidGiftPurchase()
-                            newCartItemHolderData.cartBmGmTickerData.isShowBmGmDivider = isValidGiftPurchase
-                            val tierData = newCartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmTierProductList.firstOrNull()
+                            val isValidGiftPurchase =
+                                newCartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.isValidGiftPurchase()
+                            newCartItemHolderData.cartBmGmTickerData.isShowBmGmDivider =
+                                isValidGiftPurchase
+                            val tierData =
+                                newCartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmTierProductList.firstOrNull()
                             if (tierData != null) {
                                 tierData.purchaseBenefitData = tierData.purchaseBenefitData.copy(
                                     isShown = isValidGiftPurchase
                                 )
                             }
 
-                            newCartGroupHolderData.productUiModelList[lastItemIndex] = newCartItemHolderData
-                            newCartDataList[newCartDataList.indexOfFirst { it is CartItemHolderData && it.cartId == newCartItemHolderData.cartId }] = newCartItemHolderData
+                            newCartGroupHolderData.productUiModelList[lastItemIndex] =
+                                newCartItemHolderData
+                            newCartDataList[newCartDataList.indexOfFirst { it is CartItemHolderData && it.cartId == newCartItemHolderData.cartId }] =
+                                newCartItemHolderData
 
                             updateShopShownByCartGroup(newCartGroupHolderData)
                             newCartGroupHolderData.isAllSelected =
@@ -2207,7 +2188,11 @@ class CartViewModel @Inject constructor(
             val offerId = productWillDelete.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
             val cartStringOrder = productWillDelete.cartStringOrder
             val productListByOfferId =
-                CartDataHelper.getListProductByOfferIdAndCartStringOrder(cartDataList.value, offerId, cartStringOrder)
+                CartDataHelper.getListProductByOfferIdAndCartStringOrder(
+                    cartDataList.value,
+                    offerId,
+                    cartStringOrder
+                )
             if (productListByOfferId.size > 1) {
                 productListByOfferId.forEachIndexed { index, product ->
                     // move ticker to next index if product has ticker will be deleted
@@ -2364,7 +2349,7 @@ class CartViewModel @Inject constructor(
         val hasCheckedBundleProduct = cartGroupHolderData.productUiModelList
             .any { it.isSelected && it.isBundlingItem && it.bundleIds.isNotEmpty() }
         return cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
-            hasCheckedProductWithBundle && !hasCheckedBundleProduct
+                hasCheckedProductWithBundle && !hasCheckedBundleProduct
     }
 
     fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
@@ -2548,7 +2533,7 @@ class CartViewModel @Inject constructor(
                 ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
                 ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
                 ConstantTransactionAnalytics.Key.DIMENSION40 to
-                    ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
+                        ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
                 ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
                 ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
             )
@@ -2685,21 +2670,21 @@ class CartViewModel @Inject constructor(
     }
 
     fun updateRecentViewData(productId: String, isWishlist: Boolean) {
-        outerloop@ for (any in cartDataList.value) {
-            if (any is CartRecentViewHolderData) {
-                val recentViews = any.recentViewList
-                for (data in recentViews) {
-                    if (data.id == productId) {
-                        data.isWishlist = isWishlist
-                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(
-                            recentViews.indexOf(data)
-                        )
-                        break@outerloop
-                    }
-                }
-                break@outerloop
-            }
-        }
+//        outerloop@ for (any in cartDataList.value) {
+//            if (any is CartRecentViewHolderData) {
+//                val recentViews = any.recentViewList
+//                for (data in recentViews) {
+//                    if (data.id == productId) {
+//                        data.isWishlist = isWishlist
+//                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(
+//                            recentViews.indexOf(data)
+//                        )
+//                        break@outerloop
+//                    }
+//                }
+//                break@outerloop
+//            }
+//        }
     }
 
     fun removeWishlist(productId: String) {
@@ -2781,11 +2766,15 @@ class CartViewModel @Inject constructor(
         cartModel.availableCartItemImpressionList.addAll(availableCartItems)
     }
 
-    fun getBmGmGroupProductTicker(cartItemHolderData: CartItemHolderData, params: BmGmGetGroupProductTickerParams) {
+    fun getBmGmGroupProductTicker(
+        cartItemHolderData: CartItemHolderData,
+        params: BmGmGetGroupProductTickerParams
+    ) {
         if (cartModel.lastOfferId == "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}") {
             cartBmGmGroupTickerJob?.cancel()
         }
-        cartModel.lastOfferId = "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}"
+        cartModel.lastOfferId =
+            "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}"
         cartBmGmGroupTickerJob = viewModelScope.launch(dispatchers.io) {
             try {
                 val result = getGroupProductTickerUseCase(params)
@@ -2795,7 +2784,12 @@ class CartViewModel @Inject constructor(
                             GetBmGmGroupProductTickerState.Success(Pair(cartItemHolderData, result))
                     } else {
                         _bmGmGroupProductTickerState.value =
-                            GetBmGmGroupProductTickerState.Failed(Pair(cartItemHolderData, CartResponseErrorException(result.getGroupProductTicker.errorMessage.joinToString())))
+                            GetBmGmGroupProductTickerState.Failed(
+                                Pair(
+                                    cartItemHolderData,
+                                    CartResponseErrorException(result.getGroupProductTicker.errorMessage.joinToString())
+                                )
+                            )
                     }
                 }
             } catch (t: Throwable) {

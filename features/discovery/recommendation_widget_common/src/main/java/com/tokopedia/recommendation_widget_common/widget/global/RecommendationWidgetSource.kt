@@ -24,4 +24,11 @@ sealed interface RecommendationWidgetSource {
         override val eventCategory: String
             get() = "product detail page"
     }
+
+    class Cart(
+        userId: String,
+    ) : RecommendationWidgetSource {
+        override val eventCategory: String
+            get() = "cart page"
+    }
 }
