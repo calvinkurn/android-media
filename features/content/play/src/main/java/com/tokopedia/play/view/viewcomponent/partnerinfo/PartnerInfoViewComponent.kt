@@ -1,10 +1,12 @@
 package com.tokopedia.play.view.viewcomponent.partnerinfo
 
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
@@ -21,8 +23,8 @@ class PartnerInfoViewComponent(
     private val listener: Listener
 ) : ViewComponent(container, R.id.view_partner_info) {
 
-    private val ivIcon: ImageUnify = findViewById(contentcommonR.id.iv_icon)
-    private val ivBadge: ImageUnify = findViewById(contentcommonR.id.iv_badge)
+    private val ivIcon: AppCompatImageView = findViewById(contentcommonR.id.iv_icon)
+    private val ivBadge: AppCompatImageView = findViewById(contentcommonR.id.iv_badge)
     private val tvPartnerName: Typography = findViewById(contentcommonR.id.tv_partner_name)
     private val btnFollow: UnifyButton = findViewById(contentcommonR.id.btn_follow)
 
@@ -33,9 +35,9 @@ class PartnerInfoViewComponent(
     }
 
     fun setInfo(info: PlayPartnerInfo) {
-        ivIcon.setImageUrl(info.iconUrl)
+        ivIcon.loadImage(info.iconUrl) //TODO: check placeholder, error state, etc from ImageUnify
         if (info.badgeUrl.isNotBlank()) {
-            ivBadge.setImageUrl(info.badgeUrl)
+            ivBadge.loadImage(info.badgeUrl) //TODO: check placeholder, error state, etc from ImageUnify
             ivBadge.show()
         } else {
             ivBadge.hide()

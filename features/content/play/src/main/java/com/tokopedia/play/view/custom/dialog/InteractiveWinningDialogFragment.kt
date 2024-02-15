@@ -8,15 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
-import com.tokopedia.play_common.R as commonR
+import com.tokopedia.play_common.R as play_commonR
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.view.loadImage
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -32,7 +32,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
 
     private lateinit var tvTitle: Typography
     private lateinit var tvDetail: Typography
-    private lateinit var imgUser: ImageUnify
+    private lateinit var imgUser: AppCompatImageView
     private lateinit var vRoot: RoundedConstraintLayout
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -83,12 +83,12 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     private fun getInteractive(game: GameUiModel): Int {
         return when (game){
             is GameUiModel.Giveaway -> {
-                commonR.drawable.bg_play_interactive
+                play_commonR.drawable.bg_play_interactive
             }
             is GameUiModel.Quiz -> {
-                commonR.drawable.bg_quiz_winner
+                play_commonR.drawable.bg_quiz_winner
             }
-            else -> commonR.drawable.bg_play_interactive
+            else -> play_commonR.drawable.bg_play_interactive
         }
     }
 
