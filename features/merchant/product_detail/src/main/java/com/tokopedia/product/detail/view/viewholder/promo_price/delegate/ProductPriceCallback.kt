@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder.promo_price.delegate
 
 import com.tokopedia.mvcwidget.views.benefit.PromoBenefitBottomSheet
+import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.fragment.delegate.BaseComponentCallback
 import com.tokopedia.product.detail.view.viewholder.promo_price.event.ProductPriceEvent
@@ -34,10 +35,12 @@ class ProductPriceCallback(
             commonTracker = getCommonTracker()
         )
 
-        PromoBenefitBottomSheet.newInstance(
-            metaDataJson = data.bottomSheetParams,
-            productId = p1.basic.productID,
-            shopId = p1.basic.shopID
-        ).show(childFragmentManager, PROMO_PRICE_BS_TAG)
+        showImmediately(childFragmentManager, PROMO_PRICE_BS_TAG) {
+            PromoBenefitBottomSheet.newInstance(
+                metaDataJson = data.bottomSheetParams,
+                productId = p1.basic.productID,
+                shopId = p1.basic.shopID
+            )
+        }
     }
 }
