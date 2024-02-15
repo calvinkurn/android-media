@@ -6,7 +6,7 @@ import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerControlView
-import com.tokopedia.content.product.preview.databinding.ItemProductMediaVideoBinding
+import com.tokopedia.content.product.preview.databinding.ItemVideoProductPreviewBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewPlayerControl
@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class ProductMediaVideoViewHolder(
-    private val binding: ItemProductMediaVideoBinding,
+    private val binding: ItemVideoProductPreviewBinding,
     private val productPreviewVideoListener: ProductPreviewVideoListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -51,7 +51,7 @@ class ProductMediaVideoViewHolder(
     private fun bindVideoPlayer(content: ProductMediaUiModel) {
         mVideoId = String.format(PRODUCT_CONTENT_VIDEO_KEY_REF, content.url)
         mVideoPlayer = productPreviewVideoListener.getVideoPlayer(mVideoId)
-        binding.playerProductMediaVideo.player = mVideoPlayer?.exoPlayer
+        binding.playerVideo.player = mVideoPlayer?.exoPlayer
         binding.playerControl.player = mVideoPlayer?.exoPlayer
 
         binding.playerControl.setListener(object : ProductPreviewPlayerControl.Listener {
@@ -102,7 +102,7 @@ class ProductMediaVideoViewHolder(
         binding.apply {
             loaderVideo.show()
             if (mVideoPlayer?.exoPlayer?.currentPosition == 0L) {
-                playerProductMediaVideo.hide()
+                playerVideo.hide()
             }
         }
     }
@@ -110,14 +110,14 @@ class ProductMediaVideoViewHolder(
     private fun hideLoading() {
         binding.apply {
             loaderVideo.hide()
-            playerProductMediaVideo.show()
+            playerVideo.show()
         }
     }
 
     companion object {
         fun create(parent: ViewGroup, listener: ProductPreviewVideoListener) =
             ProductMediaVideoViewHolder(
-                binding = ItemProductMediaVideoBinding.inflate(
+                binding = ItemVideoProductPreviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
