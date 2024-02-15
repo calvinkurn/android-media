@@ -2,7 +2,6 @@ package com.tokopedia.order_management_common.presentation.viewholder
 
 import android.view.View
 import android.view.ViewStub
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -42,17 +41,12 @@ class BmgmAddOnSummaryViewHolder(
 
     private fun setupLayout() {
         binding?.setupRecyclerviewRecycledViewPool()
-        binding?.setupRecyclerViewLayoutManager()
         binding?.setupRecyclerViewAdapter()
         binding?.setupRecyclerViewItemDecoration()
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerviewRecycledViewPool() {
         rvAddOn.setRecycledViewPool(recyclerViewSharedPool)
-    }
-
-    private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewLayoutManager() {
-        (rvAddOn.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewAdapter() {
