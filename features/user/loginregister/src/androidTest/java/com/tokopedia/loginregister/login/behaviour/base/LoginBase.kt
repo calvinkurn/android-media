@@ -71,7 +71,6 @@ open class LoginBase : LoginRegisterBase() {
         val fakeComponentFactory = FakeActivityComponentFactory()
         ActivityComponentFactory.instance = fakeComponentFactory
         fakeComponentFactory.loginComponent.inject(this)
-//        GotoSdk.init(applicationContext as BaseMainApplication)
     }
 
     @After

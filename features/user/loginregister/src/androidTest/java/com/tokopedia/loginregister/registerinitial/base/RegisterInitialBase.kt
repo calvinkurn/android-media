@@ -60,7 +60,6 @@ open class RegisterInitialBase : LoginRegisterBase() {
         ActivityComponentFactory.instance = FakeActivityComponentFactory().also {
             registerComponent = it.registerComponent
         }
-//        GotoSdk.init(applicationContext as BaseMainApplication)
         registerComponent.inject(this)
     }
 
