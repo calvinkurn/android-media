@@ -5,147 +5,160 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-        android:id="@+id/cb_product"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/iu_product"
-        app:layout_constraintEnd_toStartOf="@+id/iu_product"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/iu_product" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iu_product"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cb_product"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/layout_info"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/normal_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/iu_product"
-        app:layout_constraintEnd_toStartOf="@+id/tp_add_wishlist"
-        app:layout_constraintStart_toEndOf="@+id/iu_product"
-        app:layout_constraintTop_toTopOf="@+id/iu_product">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tp_eta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            tools:text="Dikirim 12 Agu" />
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/cb_product"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iu_product"
+            app:layout_constraintEnd_toStartOf="@+id/iu_product"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iu_product" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout"
-            android:layout_width="match_parent"
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iu_product"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cb_product"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layout_info"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/tp_name"
-            app:layout_constraintEnd_toStartOf="@+id/iconUnify"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/iu_product"
+            app:layout_constraintEnd_toStartOf="@+id/tp_add_wishlist"
             app:layout_constraintStart_toEndOf="@+id/iu_product"
-            app:layout_constraintTop_toBottomOf="@+id/tp_eta">
+            app:layout_constraintTop_toTopOf="@+id/iu_product">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tp_price"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="display_2"
-                app:typographyWeight="bold"
-                tools:text="Rp5.000" />
+                android:layout_marginBottom="2dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/tp_name"
+                app:layout_constraintEnd_toStartOf="@+id/iconUnify"
+                app:layout_constraintStart_toEndOf="@+id/iu_product"
+                app:layout_constraintTop_toBottomOf="@+id/tp_eta">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tp_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="display_2"
+                    app:typographyWeight="bold"
+                    tools:text="Rp5.000" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tp_percentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tp_price"
+                    app:layout_constraintStart_toEndOf="@+id/tp_price"
+                    app:layout_constraintTop_toTopOf="@+id/tp_price"
+                    app:typographyType="small"
+                    app:typographyWeight="bold"
+                    tools:text="50%" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tp_slash_price"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_NN400"
+                    app:layout_constraintBottom_toBottomOf="@+id/tp_percentage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tp_percentage"
+                    app:layout_constraintTop_toTopOf="@+id/tp_percentage"
+                    app:typographyType="small"
+                    tools:text="110.000" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tp_percentage"
-                android:layout_width="wrap_content"
+                android:id="@+id/tp_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tp_price"
-                app:layout_constraintStart_toEndOf="@+id/tp_price"
-                app:layout_constraintTop_toTopOf="@+id/tp_price"
-                app:typographyType="small"
-                app:typographyWeight="bold"
-                tools:text="50%" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tp_slash_price"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="4dp"
+                android:layout_marginBottom="2dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Unify_NN400"
-                app:layout_constraintBottom_toBottomOf="@+id/tp_percentage"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tp_percentage"
-                app:layout_constraintTop_toTopOf="@+id/tp_percentage"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="Baby Pak Choy" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tp_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:textColor="@color/Unify_NN600"
                 app:typographyType="small"
-                tools:text="110.000" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                app:typographyWeight="reguler"
+                tools:text="350 gr" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tp_other_option"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Pilihan Lain"
+                android:textColor="@color/Unify_GN500"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                tools:text="Pilihan Lain" />
+        </LinearLayout>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icu_delete"
+            android:layout_width="24dp"
+            android:layout_height="0dp"
+            app:icon_color_light_enable="@color/Unify_NN600"
+            app:icon_name="DELETE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tp_name"
-            android:layout_width="match_parent"
+            android:id="@+id/tp_add_wishlist"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:ellipsize="end"
-            app:typographyType="display_3"
-            app:typographyWeight="reguler"
-            tools:text="Baby Pak Choy" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tp_weight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:textColor="@color/Unify_NN600"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            tools:text="350 gr" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tp_other_option"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="Pilihan Lain"
+            android:text="@string/tokopedianow_shopping_list_add_to_shopping_list"
             android:textColor="@color/Unify_GN500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"
-            app:typographyWeight="bold"
-            tools:text="Pilihan Lain" />
-    </LinearLayout>
+            app:typographyWeight="bold" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icu_delete"
-        android:layout_width="24dp"
-        android:layout_height="0dp"
-        app:icon_name="DELETE"
-        app:icon_color_light_enable="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tp_add_wishlist"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/layout_tokopedianow_shopping_list_horizontal_product_card_shimmering"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/tokopedianow_shopping_add_shopping_list"
-        android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3"
-        app:typographyWeight="bold" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

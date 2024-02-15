@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListViewModelModule
 import com.tokopedia.tokopedianow.shoppinglist.di.scope.ShoppingListScope
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
+import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.ShoppingListAnotherOptionBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.fragment.TokoNowShoppingListFragment
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import dagger.Component
 
 @ShoppingListScope
@@ -17,5 +17,5 @@ import dagger.Component
         dependencies = [BaseAppComponent::class])
 interface ShoppingListComponent {
     fun inject(fragment: TokoNowShoppingListFragment)
-    fun inject(bottomSheet: BottomSheetUnify)
+    fun inject(bottomSheet: ShoppingListAnotherOptionBottomSheet)
 }

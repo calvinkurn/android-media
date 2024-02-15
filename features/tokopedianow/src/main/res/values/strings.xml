@@ -281,6 +281,8 @@
     <!-- Shopping List -->
     <string name="tokopedianow_shopping_list_page_title">List Belanja</string>
     <string name="tokopedianow_shopping_list_repurchase">Beli Lagi</string>
-    <string name="tokopedianow_shopping_add_shopping_list">+ List Belanja</string>
-    <string name="tokopedianow_shopping_list_other_options">Pilihan lain</string>
+    <string name="tokopedianow_shopping_list_add_to_shopping_list">+ List Belanja</string>
+    <string name="tokopedianow_shopping_list_another_option">Pilihan lain</string>
+    <string name="tokopedianow_shopping_list_another_option_bottom_sheet_empty_layout_title">Tidak ada produk serupa yang tersedia</string>
+    <string name="tokopedianow_shopping_list_another_option_bottom_sheet_empty_layout_description">Kamu bisa cek rekomendasi lain di halaman List Belanja.</string>
 </resources>

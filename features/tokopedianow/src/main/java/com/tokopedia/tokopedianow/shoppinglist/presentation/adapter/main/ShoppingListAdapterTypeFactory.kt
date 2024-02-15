@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter
+package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowDividerViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderSpaceViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTitleViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.common.ShoppingListHorizontalProductCardItemTypeFactory
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListTopCheckAllUiModel

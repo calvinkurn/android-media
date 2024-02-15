@@ -7,6 +7,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTitleUiModel
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutState.NORMAL
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.ATC_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.EMPTY_STOCK
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
@@ -14,7 +15,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListTopCheckAllUiModel
 
-object VisitableMapper {
+object ShoppingListVisitableMapper {
     /**
      * -- Header Section --
      */
@@ -52,90 +53,90 @@ object VisitableMapper {
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000000000000000000000000000000000",
-                type = ATC_WISHLIST
+                type = ATC_WISHLIST,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
+                type = ATC_WISHLIST,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
+                type = ATC_WISHLIST,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
+                type = ATC_WISHLIST,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
+                type = ATC_WISHLIST,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
+                type = ATC_WISHLIST,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
+                type = ATC_WISHLIST,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
+                type = ATC_WISHLIST,
+                state = NORMAL
             )
         )
         add(
@@ -167,74 +168,74 @@ object VisitableMapper {
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = EMPTY_STOCK
+                type = EMPTY_STOCK,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = EMPTY_STOCK
+                type = EMPTY_STOCK,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000000000000000000000000000000000",
-                type = EMPTY_STOCK
+                type = EMPTY_STOCK,
+                state = NORMAL
             )
         )
         addAll(list)
     }
 
-    fun MutableList<Visitable<*>>.addRecommendationProducts() {
+    fun MutableList<Visitable<*>>.addRecommendedProducts() {
         val list = listOf(
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = PRODUCT_RECOMMENDATION
+                type = PRODUCT_RECOMMENDATION,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = PRODUCT_RECOMMENDATION
+                type = PRODUCT_RECOMMENDATION,
+                state = NORMAL
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                eta = "12 Desember",
                 price = "Rp5.000",
                 name = "Baby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000000000000000000000000000000000",
-                type = PRODUCT_RECOMMENDATION
+                type = PRODUCT_RECOMMENDATION,
+                state = NORMAL
             )
         )
         addAll(list)

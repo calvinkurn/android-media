@@ -1,8 +1,10 @@
 package com.tokopedia.tokopedianow.shoppinglist.di.module
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.tokopedianow.shoppinglist.di.scope.ShoppingListScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,4 +30,11 @@ class ShoppingListModule(
     fun provideUserSession(context: Context): UserSessionInterface {
         return UserSession(context)
     }
+
+    @ShoppingListScope
+    @Provides
+    fun provideGetCoroutineSingleRecommendationUseCase(
+        @ApplicationContext context: Context,
+        coroutineGqlRepository: GraphqlRepository
+    ): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(context, coroutineGqlRepository)
 }

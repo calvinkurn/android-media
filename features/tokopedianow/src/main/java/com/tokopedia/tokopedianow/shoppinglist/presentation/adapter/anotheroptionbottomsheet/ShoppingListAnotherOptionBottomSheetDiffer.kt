@@ -1,10 +1,10 @@
-package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.differ
+package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.anotheroptionbottomsheet
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel
 
-class ShoppingListDiffer : BaseTokopediaNowDiffer() {
+class ShoppingListAnotherOptionBottomSheetDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
 
@@ -12,10 +12,21 @@ class ShoppingListDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is RecipeUiModel && newItem is RecipeUiModel) {
+        return if (oldItem is ShoppingListHorizontalProductCardItemUiModel && newItem is ShoppingListHorizontalProductCardItemUiModel) {
             oldItem.id == newItem.id
         } else {
             oldItem == newItem
+        }
+    }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+
+        return if (oldItem is ShoppingListHorizontalProductCardItemUiModel && newItem is ShoppingListHorizontalProductCardItemUiModel) {
+            oldItem != newItem
+        } else {
+            super.getChangePayload(oldItemPosition, newItemPosition)
         }
     }
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokopedianow.shoppinglist.di.scope.ShoppingListScope
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.ShoppingListOtherProductsBottomSheetViewModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.ShoppingListAnotherOptionBottomSheetViewModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
 import dagger.Binds
 import dagger.Module
@@ -27,6 +27,6 @@ abstract class ShoppingListViewModelModule {
     @ShoppingListScope
     @Binds
     @IntoMap
-    @ViewModelKey(ShoppingListOtherProductsBottomSheetViewModel::class)
-    internal abstract fun shoppingListOtherProductsBottomSheetViewModel(viewModel: ShoppingListOtherProductsBottomSheetViewModel): ViewModel
+    @ViewModelKey(ShoppingListAnotherOptionBottomSheetViewModel::class)
+    internal abstract fun shoppingListOtherProductsBottomSheetViewModel(viewModel: ShoppingListAnotherOptionBottomSheetViewModel): ViewModel
 }

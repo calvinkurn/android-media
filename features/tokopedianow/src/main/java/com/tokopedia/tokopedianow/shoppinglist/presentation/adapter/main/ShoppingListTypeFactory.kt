@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter
+package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main
 
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListTopCheckAllUiModel

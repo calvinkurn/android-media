@@ -20,6 +20,8 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.ATC_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.EMPTY_STOCK
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutState.NORMAL
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutState.LOADING
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -41,16 +43,29 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         binding?.apply {
-            initImage(data)
-            initEta(data)
-            initPrice(data)
-            initName(data)
-            initWeight(data)
-            initPercentage(data)
-            initSlashPrice(data)
-            initOtherOption(data)
-            initRightButton(data)
-            initCheckbox(data)
+            when(data.state) {
+                LOADING -> {
+                    normalLayout.hide()
+                    loadingLayout.root.show()
+
+                    initShimmeringRightButton(data)
+                    initShimmeringCheckbox(data)
+                }
+                NORMAL -> {
+                    normalLayout.show()
+                    loadingLayout.root.hide()
+
+                    initImage(data)
+                    initPrice(data)
+                    initName(data)
+                    initWeight(data)
+                    initPercentage(data)
+                    initSlashPrice(data)
+                    initOtherOption(data)
+                    initRightButton(data)
+                    initCheckbox(data)
+                }
+            }
         }
     }
 
@@ -63,15 +78,6 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                     iuProduct.applyBrightnessFilter(getImageBrightness(data.type))
                 }
             )
-        }
-    }
-
-    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initEta(
-        data: ShoppingListHorizontalProductCardItemUiModel
-    ) {
-        tpEta.showIfWithBlock(data.eta.isNotBlank()) {
-            text = data.eta
-            tpEta.setTextColor(ContextCompat.getColor(context, if (data.type == EMPTY_STOCK) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950))
         }
     }
 
@@ -182,6 +188,58 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0),
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0))
             cbProduct.hide()
+        }
+    }
+
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initShimmeringRightButton(
+        data: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        loadingLayout.luAddWishlist.showIfWithBlock(data.type == PRODUCT_RECOMMENDATION) {
+            val constraintSet = ConstraintSet().apply {
+                clone(root)
+            }
+            constraintSet.connect(
+                R.id.layout_info,
+                ConstraintSet.END,
+                R.id.tp_add_wishlist,
+                ConstraintSet.START,
+                root.getDimens(unifyprinciplesR.dimen.unify_space_12)
+            )
+            constraintSet.applyTo(root)
+        }
+        loadingLayout.luDelete.showIfWithBlock(data.type != PRODUCT_RECOMMENDATION) {
+            val constraintSet = ConstraintSet().apply {
+                clone(root)
+            }
+            constraintSet.connect(
+                R.id.layout_info,
+                ConstraintSet.END,
+                R.id.icu_delete,
+                ConstraintSet.START,
+                root.getDimens(unifyprinciplesR.dimen.unify_space_16)
+            )
+            constraintSet.applyTo(root)
+        }
+    }
+
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.initShimmeringCheckbox(
+        data: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        if (data.type == ATC_WISHLIST) {
+            loadingLayout.luImage.setMargin(
+                root.getDimens(unifyprinciplesR.dimen.unify_space_8),
+                root.getDimens(unifyprinciplesR.dimen.unify_space_0),
+                root.getDimens(unifyprinciplesR.dimen.unify_space_0),
+                root.getDimens(unifyprinciplesR.dimen.unify_space_0)
+            )
+            loadingLayout.luCheckbox.show()
+        } else {
+            loadingLayout.luImage.setMargin(
+                root.getDimens(unifyprinciplesR.dimen.unify_space_0),
+                root.getDimens(unifyprinciplesR.dimen.unify_space_0),
+                root.getDimens(unifyprinciplesR.dimen.unify_space_0),
+                root.getDimens(unifyprinciplesR.dimen.unify_space_0))
+            loadingLayout.luCheckbox.hide()
         }
     }
 

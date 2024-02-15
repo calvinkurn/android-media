@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter
+package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

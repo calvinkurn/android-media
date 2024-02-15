@@ -13,14 +13,14 @@ import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addDivider
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addEmptyStockProducts
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addHeader
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addHeaderSpace
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addProductInCartWidget
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addRecommendationProducts
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addTitle
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.VisitableMapper.addWishlistProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListVisitableMapper.addDivider
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListVisitableMapper.addEmptyStockProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListVisitableMapper.addHeader
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListVisitableMapper.addHeaderSpace
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListVisitableMapper.addProductInCartWidget
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListVisitableMapper.addRecommendedProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListVisitableMapper.addTitle
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListVisitableMapper.addWishlistProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -82,7 +82,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         layout.addTitle(
             title = "Rekomendasi untukmu"
         )
-        layout.addRecommendationProducts()
+        layout.addRecommendedProducts()
 
 
         _firstPage.value = layout

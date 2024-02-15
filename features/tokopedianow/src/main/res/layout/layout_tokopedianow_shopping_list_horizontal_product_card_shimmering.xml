@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/lu_checkbox"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/lu_image"
+        app:layout_constraintEnd_toStartOf="@+id/lu_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lu_image"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/lu_image"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lu_checkbox"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="12dp"
+        app:loader_type="rect"/>
+
+    <LinearLayout
+        android:id="@+id/layout_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/lu_image"
+        app:layout_constraintEnd_toStartOf="@+id/lu_add_wishlist"
+        app:layout_constraintStart_toEndOf="@+id/lu_image"
+        app:layout_constraintTop_toTopOf="@+id/lu_image">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tp_name"
+            android:layout_width="108dp"
+            android:layout_height="18dp"
+            android:ellipsize="end"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tp_weight"
+            android:layout_width="138dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:ellipsize="end"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tp_other_option"
+            android:layout_width="56dp"
+            android:layout_height="12dp"
+            android:ellipsize="end"
+            app:loader_corner_radius="16dp"
+            app:loader_type="rect" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/lu_delete"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_color_light_enable="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/lu_add_wishlist"
+        android:layout_width="88dp"
+        android:layout_height="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

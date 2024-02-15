@@ -36,7 +36,6 @@
         app:toolbarInvertSearchBarColor="true" />
 
     <include
-        android:text="testing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/item_tokopedianow_shopping_list_top_check_all"

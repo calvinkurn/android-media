@@ -20,6 +20,7 @@ import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefres
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -34,9 +35,9 @@ import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListCo
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
-import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapter
-import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.ShoppingListAdapterTypeFactory
-import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.ShoppingListOtherProductsBottomSheet
+import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapter
+import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
+import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.ShoppingListAnotherOptionBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
@@ -275,7 +276,8 @@ class TokoNowShoppingListFragment :
 
     private fun createHorizontalProductCardItemCallback() = object : ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener{
         override fun onClickOtherOptions() {
-            ShoppingListOtherProductsBottomSheet().show(childFragmentManager, "shopping list")
+            val bottomSheet = ShoppingListAnotherOptionBottomSheet.newInstance("12514021813")
+            bottomSheet.show(childFragmentManager, ProductCardCompactSimilarProductBottomSheet::class.java.simpleName)
         }
     }
 
