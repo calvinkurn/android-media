@@ -10,6 +10,7 @@ import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
 
 object PlayServiceUtils {
@@ -44,7 +45,7 @@ object PlayServiceUtils {
         }
     }
 
-    fun getPlayStoreVersionName(context: Context):String {
+    fun getPlayStoreVersionName(context: Context): String {
         return try {
             val pm: PackageManager = context.packageManager
             val playStoreInfo = pm.getInstalledPackages(PackageManager.GET_META_DATA).first {
@@ -56,7 +57,7 @@ object PlayServiceUtils {
         }
     }
 
-    fun getPlayStoreLongVersionCode(context: Context):Long {
+    fun getPlayStoreLongVersionCode(context: Context): Long {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return -1
         return try {
             val pm: PackageManager = context.packageManager
@@ -69,7 +70,7 @@ object PlayServiceUtils {
         }
     }
 
-    fun getPlayServiceLongVersionCode(context: Context):Long {
+    fun getPlayServiceLongVersionCode(context: Context): Long {
         return try {
             val pm: PackageManager = context.packageManager
             PackageInfoCompat.getLongVersionCode(pm.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0))
@@ -78,7 +79,7 @@ object PlayServiceUtils {
         }
     }
 
-    fun getInstallerPackageName(context: Context):String {
+    fun getInstallerPackageName(context: Context): String {
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 context.packageManager.getInstallSourceInfo(context.packageName).installingPackageName
@@ -95,7 +96,12 @@ object PlayServiceUtils {
         try {
             activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${activity.packageName}")))
         } catch (e: ActivityNotFoundException) {
-            activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${activity.packageName}")))
+            val url = "https://play.google.com/store/apps/details?id=${activity.packageName}"
+            try {
+                activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            } catch (e: ActivityNotFoundException) {
+                RouteManager.route(activity, url)
+            }
         }
     }
 }

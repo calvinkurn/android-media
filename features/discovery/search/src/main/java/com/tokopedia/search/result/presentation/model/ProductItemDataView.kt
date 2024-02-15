@@ -73,6 +73,7 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
     var showButtonAtc: Boolean = false
     var parentId: String = DEFAULT_PARENT_ID
     var isPortrait: Boolean = false
+    var isImageBlurred: Boolean = false
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.productID == productID) {
@@ -177,10 +178,21 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
             .joinToString { it }
     }
 
+    fun createAdditionalLabel(
+        positionMap: Map<String, String>,
+    ): Map<String, String> {
+        return when {
+            isImageBlurred -> positionMap.plus(LABEL_POSITION_SHOW_BLUR to LABEL_POSITION_BLUR)
+            else -> positionMap
+        }
+    }
+
     val isKeywordIntentionLow : Boolean
         get() = keywordIntention == KEYWORD_INTENT_LOW
 
     companion object {
+        private const val LABEL_POSITION_SHOW_BLUR = "show"
+        private const val LABEL_POSITION_BLUR = "blur"
         fun create(
             topAds: TopAdsProductData,
             position: Int,
@@ -242,7 +254,11 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
         private fun mapLabelGroupList(labelGroupList: List<LabelGroup>): List<LabelGroupDataView> {
             return labelGroupList.map { labelGroup ->
                 LabelGroupDataView(
-                    labelGroup.position, labelGroup.type, labelGroup.title, labelGroup.imageUrl
+                    labelGroup.position,
+                    labelGroup.type,
+                    labelGroup.title,
+                    labelGroup.imageUrl,
+                    labelGroup.styleList.map(StyleDataView::create)
                 )
             }
         }

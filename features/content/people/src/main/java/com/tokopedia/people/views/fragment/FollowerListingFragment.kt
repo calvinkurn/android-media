@@ -1,14 +1,14 @@
 package com.tokopedia.people.views.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
+import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ViewFlipper
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.navigation.people.UserProfileActivityResult
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -33,6 +34,7 @@ import com.tokopedia.people.views.adapter.ProfileFollowersAdapter
 import com.tokopedia.people.views.adapter.listener.UserFollowListener
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
 import com.tokopedia.people.views.uimodel.PeopleUiModel
+import com.tokopedia.shop.common.util.ShopPageActivityResult
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
@@ -62,6 +64,28 @@ class FollowerListingFragment @Inject constructor(
             callback = this,
             followListener = this
         )
+    }
+
+    private val onDoFollowActionResult = registerForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode != RESULT_OK) return@registerForActivityResult
+        isLoggedIn = userSession.isLoggedIn
+        refreshMainUi()
+    }
+
+    private val onItemUserClickedResult = registerForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode != RESULT_OK) return@registerForActivityResult
+        val intent = result.data ?: return@registerForActivityResult
+        val isFollow = UserProfileActivityResult.isFollow(intent)
+        val userId = UserProfileActivityResult.getUserId(intent)
+        mAdapter.updateFollowUnfollowUser(userId, isFollow)
+    }
+
+    private val onItemShopClickedResult = registerForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode != RESULT_OK) return@registerForActivityResult
+        val intent = result.data ?: return@registerForActivityResult
+        val isFollow = ShopPageActivityResult.isFollow(intent)
+        val shopId = ShopPageActivityResult.getShopId(intent)
+        mAdapter.updateFollowUnfollowShop(shopId, isFollow)
     }
 
     override fun onCreateView(
@@ -230,27 +254,6 @@ class FollowerListingFragment @Inject constructor(
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
-            isLoggedIn = userSession.isLoggedIn
-            refreshMainUi()
-        } else if (requestCode == UserProfileFragment.REQUEST_CODE_USER_PROFILE) {
-            val position = data?.getIntExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, -1)
-            data?.getStringExtra(UserProfileFragment.EXTRA_FOLLOW_UNFOLLOW_STATUS)?.let {
-                if (position != null && position != -1) {
-                    if (position != -1) {
-                        if (it == UserProfileFragment.EXTRA_VALUE_IS_FOLLOWED) {
-                            mAdapter.updateFollowUnfollow(position, true)
-                        } else {
-                            mAdapter.updateFollowUnfollow(position, false)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     override fun onRetryPageLoad(pageNumber: Int) {
     }
 
@@ -260,12 +263,12 @@ class FollowerListingFragment @Inject constructor(
         val textTitle = view?.findViewById<TextView>(R.id.text_error_empty_title)
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
-        if (viewModel.username == userSession.userId) {
+        if (viewModel.userId == userSession.userId) {
             textTitle?.text = getString(peopleR.string.up_empty_page_my_follower_title)
         } else {
             textTitle?.text = getString(peopleR.string.up_empty_page_follower_title)
         }
-        textDescription?.showWithCondition(viewModel.username == userSession.userId)
+        textDescription?.showWithCondition(viewModel.userId == userSession.userId)
         textDescription?.text = getString(peopleR.string.up_empty_page_my_follower_desc)
     }
 
@@ -293,18 +296,18 @@ class FollowerListingFragment @Inject constructor(
         val intent = router.getIntent(
             requireContext(),
             model.appLink
-        ).apply {
-            putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
-        }
-        startActivityForResult(
-            intent,
-            UserProfileFragment.REQUEST_CODE_USER_PROFILE
         )
+        router.route(onItemUserClickedResult, intent)
     }
 
     override fun onItemShopClicked(model: PeopleUiModel.ShopUiModel, position: Int) {
         userProfileTracker.clickUserFollowers(model.id, false)
         router.route(requireContext(), model.appLink)
+        val intent = router.getIntent(
+            requireContext(),
+            model.appLink
+        )
+        router.route(onItemShopClickedResult, intent)
     }
 
     override fun onFollowUserClicked(model: PeopleUiModel.UserUiModel, position: Int) {
@@ -333,11 +336,8 @@ class FollowerListingFragment @Inject constructor(
         if (!isInternetAvailable(isFollowed)) return
 
         if (!userSession.isLoggedIn) {
-            val requestCode = FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
-            startActivityForResult(
-                router.getIntent(context, ApplinkConst.LOGIN),
-                requestCode
-            )
+            val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
+            router.route(onDoFollowActionResult, intent)
         } else {
             callNetworkRequest.invoke()
         }

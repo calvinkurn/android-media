@@ -79,7 +79,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_REJECTED
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
-import com.tokopedia.fingerprint.util.FingerPrintUtil.getPublicKey
+import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -840,7 +840,8 @@ class ShipmentViewModel @Inject constructor(
                         deviceId,
                         checkoutLeasingId,
                         isPlusSelected,
-                        false
+                        false,
+                        "merge"
                     )
                 )
                 if (view != null) {
@@ -1343,7 +1344,7 @@ class ShipmentViewModel @Inject constructor(
                 view?.activity
             )
             if (fpk != null) {
-                publicKey = getPublicKey(fpk)!!
+                publicKey = FingerprintUtil.getPublicKey(fpk)!!
                 fingerprintSupport = true
             }
         }

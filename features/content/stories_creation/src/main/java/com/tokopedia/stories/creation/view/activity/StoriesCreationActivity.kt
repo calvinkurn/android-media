@@ -1,6 +1,7 @@
 package com.tokopedia.stories.creation.view.activity
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.Surface
@@ -12,24 +13,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.picker.common.MediaPicker
-import com.tokopedia.picker.common.PageSource
-import com.tokopedia.picker.common.types.ModeType
-import com.tokopedia.picker.common.types.PageType
+import com.tokopedia.picker.common.basecomponent.utils.rootCurrentView
+import com.tokopedia.play_common.util.CacheUtil
 import com.tokopedia.play_common.util.VideoSnapshotHelper
-import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
-import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
-import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.analytic.StoriesCreationAnalytic
 import com.tokopedia.stories.creation.di.StoriesCreationInjector
+import com.tokopedia.stories.creation.util.showErrorToaster
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
 import com.tokopedia.stories.creation.view.model.StoriesMedia
@@ -39,7 +38,12 @@ import com.tokopedia.stories.creation.view.model.activityResult.MediaPickerForRe
 import com.tokopedia.stories.creation.view.model.activityResult.MediaPickerIntentData
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
+import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
+import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
+import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -65,6 +69,9 @@ class StoriesCreationActivity : BaseActivity() {
     @Inject
     lateinit var storiesCreationAnalytic: StoriesCreationAnalytic
 
+    @Inject
+    lateinit var dispatchers: CoroutineDispatchers
+
     private val viewModel by viewModels<StoriesCreationViewModel> { viewModelFactory }
 
     private val mediaPickerResult =
@@ -81,6 +88,7 @@ class StoriesCreationActivity : BaseActivity() {
         setupFragmentFactory()
         setupAttachFragmentListener()
         super.onCreate(savedInstanceState)
+        setupOnBackPressed()
         setupContentView()
     }
 
@@ -186,6 +194,24 @@ class StoriesCreationActivity : BaseActivity() {
         }
     }
 
+    private fun setupOnBackPressed() {
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    lifecycleScope.launch {
+                        runCatching {
+                            withContext(dispatchers.io) {
+                                CacheUtil.deleteFileFromCache(viewModel.mediaFilePath)
+                            }
+                        }
+                        finish()
+                    }
+                }
+            }
+        )
+    }
+
     private fun setupContentView() {
         setContent {
             LaunchedEffect(Unit) {
@@ -214,7 +240,7 @@ class StoriesCreationActivity : BaseActivity() {
                                 StoriesMediaCover.Error
                         },
                         onBackPressed = {
-                            finish()
+                            onBackPressedDispatcher.onBackPressed()
                         },
                         onClickChangeAccount = {
                             /** Won't handle for now since UGC is not supported yet */
@@ -265,7 +291,13 @@ class StoriesCreationActivity : BaseActivity() {
                             showInfoBottomSheet()
                         }
                         is StoriesCreationUiEvent.StoriesUploadQueued -> {
+                            setResult(RESULT_OK)
                             finish()
+                        }
+                        is StoriesCreationUiEvent.ShowError -> {
+                            this@StoriesCreationActivity.rootCurrentView().showErrorToaster(
+                                err = event.throwable
+                            )
                         }
                     }
             }
@@ -286,6 +318,7 @@ class StoriesCreationActivity : BaseActivity() {
 
     private fun openMediaPicker() {
         val intentData = MediaPickerIntentData(
+            storiesId = viewModel.storyId,
             minVideoDuration = viewModel.minVideoDuration,
             maxVideoDuration = viewModel.maxVideoDuration,
             previewActionText = getString(R.string.stories_creation_continue),

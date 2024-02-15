@@ -29,7 +29,7 @@ import com.tokopedia.home_component.util.ChannelStyleUtil
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
-import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
+import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -147,7 +147,7 @@ class DynamicLegoBannerViewHolder(
 
     private fun setViewportImpression(element: DynamicLegoBannerDataModel) {
         itemView.addOnImpressionListener(element.channelModel) {
-            if(HomeComponentRemoteConfigController.isUsingNewLegoTracking(remoteConfig)) {
+            if(HomeComponentFeatureFlag.isUsingNewLegoTracking(remoteConfig)) {
                 legoListener?.onViewportImpression(element.channelModel)
             }
             when (element.channelModel.channelConfig.layout) {

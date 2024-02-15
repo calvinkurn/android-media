@@ -11,7 +11,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.databinding.HomeFeedBannerBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 import com.tokopedia.topads.sdk.R as topadssdkR
 
 class HomeBannerFeedViewHolder(
@@ -24,27 +23,13 @@ class HomeBannerFeedViewHolder(
 
     private val binding = HomeFeedBannerBinding.bind(itemView)
 
-    private var item: BannerRecommendationDataModel? = null
-
     override fun bind(element: BannerRecommendationDataModel) {
-        item = element
         setBannerImageUrl(element.imageUrl)
         setBannerOnClickListener(element)
         setBannerImpression(element)
     }
 
-    override fun bindPayload(newItem: BannerRecommendationDataModel?) {
-        newItem?.let {
-            if (it.imageUrl != item?.imageUrl) {
-                setBannerImageUrl(it.imageUrl)
-            }
-            item = it
-        }
-    }
-
-    private fun setBannerOnClickListener(
-        element: BannerRecommendationDataModel
-    ) {
+    private fun setBannerOnClickListener(element: BannerRecommendationDataModel) {
         binding.bannerImageView.setOnClickListener {
             HomePageTracking.eventClickOnBannerFeed(
                 element,

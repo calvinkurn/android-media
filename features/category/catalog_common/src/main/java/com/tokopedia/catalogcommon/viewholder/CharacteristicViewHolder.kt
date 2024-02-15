@@ -1,6 +1,5 @@
 package com.tokopedia.catalogcommon.viewholder
 
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -9,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.ItemLayoutCharacteristicBinding
 import com.tokopedia.catalogcommon.databinding.WidgetItemCharacteristicBinding
+import com.tokopedia.catalogcommon.listener.CharacteristicListener
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -19,7 +19,10 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.utils.view.binding.viewBinding
 
 
-class CharacteristicViewHolder(itemView: View) :
+class CharacteristicViewHolder(
+    itemView: View,
+    val characteristicListener: CharacteristicListener? = null
+) :
     AbstractViewHolder<CharacteristicUiModel>(itemView) {
 
     companion object {
@@ -39,12 +42,19 @@ class CharacteristicViewHolder(itemView: View) :
             element.items.forEachIndexed { index, item ->
                 createItem(item)
                 if (index < element.items.size - Int.ONE) {
-                    binding?.lnRootUi?.addView(Divider(marginRight = HORIZONTAL_MARGIN, marginLeft = HORIZONTAL_MARGIN))
+                    binding?.lnRootUi?.addView(
+                        Divider(
+                            marginRight = HORIZONTAL_MARGIN,
+                            marginLeft = HORIZONTAL_MARGIN
+                        )
+                    )
                 }
             }
         }
 
         onceCreateView = true
+
+        characteristicListener?.onCharacteristicImpression(element.widgetName)
     }
 
     private fun createItem(item: CharacteristicUiModel.ItemCharacteristicUiModel) {
@@ -60,7 +70,11 @@ class CharacteristicViewHolder(itemView: View) :
         binding?.lnRootUi?.addView(layout.root)
     }
 
-    private fun Divider(width: Int = Int.ONE, marginRight: Int = Int.ZERO, marginLeft: Int = Int.ZERO): View {
+    private fun Divider(
+        width: Int = Int.ONE,
+        marginRight: Int = Int.ZERO,
+        marginLeft: Int = Int.ZERO
+    ): View {
         val view = View(itemView.context)
         val layoutParam = LinearLayout.LayoutParams(
             width.dpToPx(displayMetrics),

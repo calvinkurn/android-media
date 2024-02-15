@@ -1,12 +1,13 @@
 package com.tokopedia.search.result.product.samesessionrecommendation
 
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_SAME_SESSION_RECOMMENDATION
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
 
 class SameSessionRecommendationMapper {
     fun convertToSameSessionRecommendationDataView(
@@ -55,6 +56,7 @@ class SameSessionRecommendationMapper {
                 it.type,
                 it.title,
                 it.url,
+                it.styleList.map(StyleDataView::create)
             )
         }
     }

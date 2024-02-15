@@ -15,6 +15,8 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.upsell
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
@@ -126,7 +128,7 @@ class CheckoutCalculator @Inject constructor(
             if (shipmentData is CheckoutOrderModel) {
                 val cartItemModels = helper.getOrderProducts(listData, shipmentData.cartStringGroup)
                 for (cartItem in cartItemModels) {
-                    if (!cartItem.isError) {
+                    if (cartItem is CheckoutProductModel && !cartItem.isError) {
                         totalWeight += cartItem.weight * cartItem.quantity
                         totalItem += cartItem.quantity
                         if (cartItem.isProtectionOptIn) {
@@ -170,6 +172,10 @@ class CheckoutCalculator @Inject constructor(
                                 }
                             }
                         }
+                    } else if (cartItem is CheckoutProductBenefitModel) {
+                        totalWeight += cartItem.weight * cartItem.quantity
+                        totalItem += cartItem.quantity
+                        totalItemPrice += cartItem.quantity * cartItem.finalPrice
                     }
                 }
                 if (shipmentData.shipment.courierItemData != null && !shipmentData.isError) {
@@ -377,7 +383,7 @@ class CheckoutCalculator @Inject constructor(
                     val orderProducts =
                         helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
                     for (cartItemModel in orderProducts) {
-                        if (cartItemModel.addOnProduct.listAddOnProductData.any { it.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE && it.isChecked }) {
+                        if (cartItemModel is CheckoutProductModel && cartItemModel.addOnProduct.listAddOnProductData.any { it.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE && it.isChecked }) {
                             shouldShowInsuranceTnc = true
                         }
                     }

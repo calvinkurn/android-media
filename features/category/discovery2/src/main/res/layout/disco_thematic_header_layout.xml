@@ -9,10 +9,13 @@
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintDimensionRatio="H,3.82:1"
         android:contentDescription="@null"
         android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H,3.82:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -23,7 +26,7 @@
         app:layout_constraintGuide_percent="0.62" />
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieBgAnimation"
+        android:id="@+id/lottieAnimation"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitXY"
@@ -39,7 +42,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:textColor="@color/discovery2_dms_white"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,21 +54,12 @@
         android:id="@+id/subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
         android:textColor="@color/discovery2_dms_white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:typographyType="display_2"
         tools:text="50.000+ promo buat {First Name}!" />
-
-    <ImageView
-        android:id="@+id/balance_widget_view"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:background="@drawable/disco_bg_rounded_header"
-        android:contentDescription="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

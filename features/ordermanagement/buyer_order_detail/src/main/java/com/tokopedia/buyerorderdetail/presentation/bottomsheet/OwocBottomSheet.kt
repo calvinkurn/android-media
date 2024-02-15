@@ -22,6 +22,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocGroupedOrderWrapper
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.OwocViewModel
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -111,6 +112,7 @@ class OwocBottomSheet :
             val appComponent = (it.application as BaseMainApplication).baseAppComponent
             DaggerBuyerOrderDetailComponent.builder()
                 .baseAppComponent(appComponent)
+                .tokoChatConfigComponent(TokoChatConnection.getComponent(it))
                 .build()
                 .inject(this)
         }

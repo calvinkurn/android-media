@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toTopOf="@+id/pdp_button_container"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/pdp_navtoolbar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_pdp"
@@ -24,33 +24,17 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/pdp_toolbar_shadow"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="pdp_toolbar_shadow"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_navtoolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/pdp_navtoolbar"
-        app:srcCompat="@drawable/bg_pdp_toolbar_gradient"
-        app:unify_image_corner_radius="0"
-        tools:ignore="HardcodedText" />
-
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/pdp_navtoolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="1dp"
-        android:minHeight="?actionBarSize"
         android:visibility="gone"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeSearchbar"
         app:toolbarInitialTheme="light"

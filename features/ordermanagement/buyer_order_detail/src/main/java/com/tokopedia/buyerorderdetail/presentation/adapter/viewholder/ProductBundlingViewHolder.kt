@@ -13,6 +13,8 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.ProductBundlingItemAd
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.order_management_common.util.setupCardDarkMode
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -40,6 +42,7 @@ class ProductBundlingViewHolder(
     private var bundlingIconImage: ImageUnify? = null
     private var bundlingItemRecyclerView: RecyclerView? = null
     private var bundlingPriceText: Typography? = null
+    private var cardParentContainer: CardUnify? = null
 
     init {
         bindViews()
@@ -50,6 +53,7 @@ class ProductBundlingViewHolder(
         setupBundleHeader(element.bundleName, element.bundleIconUrl)
         setupBundleItems(element.bundleItemList)
         setupBundleTotalPrice(element.totalPriceText)
+        cardParentContainer?.setupCardDarkMode()
     }
 
     override fun bind(
@@ -113,6 +117,7 @@ class ProductBundlingViewHolder(
             bundlingIconImage = findViewById(R.id.iv_bom_detail_bundling_icon)
             bundlingItemRecyclerView = findViewById(R.id.rv_bom_detail_bundling)
             bundlingPriceText = findViewById(R.id.tv_bom_detail_bundling_price_value)
+            cardParentContainer = findViewById(R.id.container_bom_detail_bundling_parent)
         }
     }
 

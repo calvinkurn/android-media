@@ -12,9 +12,9 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.addLoadMore
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandComponentExtension.addReload
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.TierData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.minicart.common.domain.data.BmGmData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.unifycomponents.toPx
@@ -25,7 +25,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 class ShopOfferHeroBrandViewModel(
@@ -37,6 +36,7 @@ class ShopOfferHeroBrandViewModel(
         private const val PRODUCT_IMAGE_WIDTH = 165
 
         const val ERROR_MESSAGE_EMPTY_DATA = "empty data"
+        private const val HEADER_OFFER_TYPE_PD = "PD"
     }
 
     private val _header: MutableLiveData<Properties.Header?> = MutableLiveData()
@@ -95,7 +95,13 @@ class ShopOfferHeroBrandViewModel(
         productList.forEach { item ->
             item.data?.firstOrNull()?.let { dataItem ->
                 dataItem.hasNotifyMe = dataItem.notifyMe != null
-                productCardModels.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, component.name))
+                productCardModels.add(
+                    DiscoveryDataMapper().mapDataItemToProductCardModel(
+                        dataItem,
+                        component.name,
+                        component.properties?.cardType
+                    )
+                )
             }
         }
         this._productMaxHeight.value = productCardModels.getMaxHeightForGridView(
@@ -117,7 +123,7 @@ class ShopOfferHeroBrandViewModel(
     }
 
     fun getHeader() {
-        _header.value = component.getPropertyHeader()
+        _header.value = component.getComponentsItem()?.firstOrNull()?.getPropertyHeader()
     }
 
     fun loadFirstPageProductCarousel() {
@@ -131,7 +137,8 @@ class ShopOfferHeroBrandViewModel(
                         _productList.value = Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA))
                     }
                 )
-            }, onError = { throwable ->
+            },
+            onError = { throwable ->
                 component.noOfPagesLoaded = 1
                 component.verticalProductFailState = true
                 component.shouldRefreshComponent = null
@@ -168,7 +175,7 @@ class ShopOfferHeroBrandViewModel(
         return if (hasNextPage()) {
             productList.addLoadMore(component)
             productList
-        }  else {
+        } else {
             productList
         }
     }
@@ -188,17 +195,19 @@ class ShopOfferHeroBrandViewModel(
 
     fun areFiltersApplied(): Boolean = ((component.selectedSort != null && component.selectedFilters != null) && (component.selectedSort?.isNotEmpty() == true || component.selectedFilters?.isNotEmpty() == true))
 
+    fun isGwp(): Boolean = header.value?.offerType.equals(HEADER_OFFER_TYPE_PD, true).not()
+
     fun changeTier(
         isShimmerShown: Boolean,
-        bmGmDataList: List<BmGmData> = emptyList()
+        bmGmTierData: BmGmTierData? = null,
     ) {
         if (!hasHeader()) return
-
-        val offerMessages = bmGmDataList.filter { it.offerMessage.isNotEmpty() }.map { it.offerMessage }.firstOrNull()
         _tierChange.value = TierData(
-            isProgressBarShown = isShimmerShown || !offerMessages.isNullOrEmpty(),
+            isProgressBarShown = isShimmerShown || bmGmTierData != null,
             isShimmerShown = isShimmerShown,
-            offerMessages = offerMessages
+            offerMessages = bmGmTierData?.offerMessages,
+            flipTierWording = bmGmTierData?.flipTierWording.orEmpty(),
+            flipTierImage = bmGmTierData?.flipTierImage.orEmpty()
         )
     }
 

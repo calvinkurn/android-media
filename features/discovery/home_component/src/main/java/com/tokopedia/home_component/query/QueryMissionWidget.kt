@@ -30,6 +30,7 @@ internal object QueryMissionWidget {
         "      isTopads\n" +
         "      isCarousel\n" +
         "      shopID\n" +
+        "      campaignCode\n" +
         "    }\n" +
         "    config {\n" +
         "      styleParam\n" +

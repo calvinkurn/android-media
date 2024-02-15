@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/stl_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/steal_the_look_outer_padding"
+    android:paddingRight="@dimen/steal_the_look_outer_padding">
+
+    <include
+        layout="@layout/recommendation_widget_steal_the_look_grid_left"
+        android:id="@+id/stl_item_left_grid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="@string/steal_the_look_left_item_ratio"
+        app:layout_constraintHorizontal_weight="@integer/steal_the_look_left_item_horizontal_weight"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/stl_right_horizontal_padding"
+        app:layout_constraintHorizontal_bias="0"/>
+
+    <Space
+        android:id="@+id/stl_right_horizontal_padding"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_weight="@integer/steal_the_look_inner_padding_weight_half"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/stl_item_left_grid"
+        app:layout_constraintRight_toLeftOf="@id/stl_item_top_right_grid"/>
+
+    <include
+        layout="@layout/recommendation_widget_steal_the_look_grid_right"
+        android:id="@+id/stl_item_top_right_grid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintVertical_weight="@integer/steal_the_look_right_item_vertical_weight"
+        app:layout_constraintDimensionRatio="@string/steal_the_look_right_item_ratio"
+        app:layout_constraintHorizontal_weight="@integer/steal_the_look_right_item_horizontal_weight"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/stl_right_vertical_padding"
+        app:layout_constraintLeft_toRightOf="@id/stl_right_horizontal_padding"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintVertical_bias="0"/>
+
+    <Space
+        android:id="@+id/stl_right_vertical_padding"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintVertical_weight="@integer/steal_the_look_inner_padding_weight"
+        app:layout_constraintHorizontal_weight="@integer/steal_the_look_right_item_horizontal_weight"
+        app:layout_constraintTop_toBottomOf="@id/stl_item_top_right_grid"
+        app:layout_constraintBottom_toTopOf="@id/stl_item_bottom_right_grid"
+        app:layout_constraintLeft_toRightOf="@id/stl_right_horizontal_padding"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_bias="0.5"/>
+
+    <include
+        layout="@layout/recommendation_widget_steal_the_look_grid_right"
+        android:id="@+id/stl_item_bottom_right_grid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintVertical_weight="@integer/steal_the_look_right_item_vertical_weight"
+        app:layout_constraintDimensionRatio="@string/steal_the_look_right_item_ratio"
+        app:layout_constraintHorizontal_weight="@integer/steal_the_look_right_item_horizontal_weight"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintTop_toBottomOf="@id/stl_right_vertical_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/stl_right_horizontal_padding"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintVertical_bias="1"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

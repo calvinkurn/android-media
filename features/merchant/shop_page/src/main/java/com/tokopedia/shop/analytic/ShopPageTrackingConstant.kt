@@ -136,8 +136,11 @@ object ShopPageTrackingConstant {
     const val PACKAGE_VARIANT = "package variant"
     const val CLICK_SHARE_CHIPS = "click - share contextual chip"
     const val VIEW_SHARE_CHIPS = "view - share contextual chip"
-    const val IMPRESSION_BMGM_BANNER = "impression bmgm banner"
-    const val CLICK_BMGM_BANNER = "click bmgm banner"
+    const val IMPRESSION_GWP_WIDGET = "impression gwp widget"
+    const val CLICK_BMGM_WIDGET_TAB = "click bmgm widget tab"
+    const val CLICK_SEE_ALL_BMGM_WIDGET = "click lihat semua bmgm"
+    const val CLICK_PRODUCT_BMGM_WIDGET = "click bmgm product"
+    const val CLICK_ADD_TO_CART_BMGM_WIDGET = "click keranjang bmgm"
 
     // label
     const val CLICK_SHARE = "click share"
@@ -224,7 +227,7 @@ object ShopPageTrackingConstant {
     const val CLICK_SHOP_BANNER_LABEL = "click - shop banner - campaign tab - %1s - %2s"
     const val CLICK_SHARE_REGULER = "general"
     const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
-    const val LABEL_BMGM_BANNER = "%1s-%2s-%3s"
+    const val LABEL_BMSM_WIDGET = "%1s-%2s-%3s"
 
     // key
     const val EVENT = "event"
@@ -294,6 +297,8 @@ object ShopPageTrackingConstant {
     const val DIMENSION_45 = "dimension45"
     const val DIMENSION_38 = "dimension38"
     const val DIMENSION_40 = "dimension40"
+    const val DIMENSION_56 = "dimension56" // warehouse id
+    const val DIMENSION_58 = "dimension58" // is fulfilment
     const val DIMENSION_83 = "dimension83"
     const val DIMENSION_87 = "dimension87"
     const val DIMENSION_117 = "dimension117"
@@ -576,8 +581,11 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44365"
         const val TRACKER_ID_CLICK_PRODUCT_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44366"
         const val TRACKER_ID_CLICK_EXPLORE_SHOP_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44368"
-        const val TRACKER_ID_IMPRESS_BMGM_BANNER = "46749"
-        const val TRACKER_ID_CLICK_BMGM_BANNER = "46750"
+        const val TRACKER_ID_IMPRESS_BMGM_WIDGET = "49748"
+        const val TRACKER_ID_CLICK_BMGM_WIDGET_TAB = "49749"
+        const val TRACKER_ID_CLICK_SEE_ALL_BMGM_WIDGET = "49750"
+        const val TRACKER_ID_CLICK_PRODUCT_BMGM_WIDGET = "49751"
+        const val TRACKER_ID_CLICK_ATC_BMGM_WIDGET = "49752"
 
         // Showcase Navigation Widget
         const val TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION = "45924"

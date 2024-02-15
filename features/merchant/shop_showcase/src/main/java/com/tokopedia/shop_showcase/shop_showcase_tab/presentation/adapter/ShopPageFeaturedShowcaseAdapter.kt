@@ -12,19 +12,24 @@ import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.model.Featured
  * Created by Rafli Syam on 09/03/2021
  */
 class ShopPageFeaturedShowcaseAdapter(
-        private val shopPageFeaturedShowcaseListener: ShopPageFeaturedShowcaseListener
+    private val shouldForceToLightMode: Boolean,
+    private val shopPageFeaturedShowcaseListener: ShopPageFeaturedShowcaseListener
 ) : RecyclerView.Adapter<ShopPageFeaturedShowcaseViewHolder>() {
 
     private var showcaseFeaturedList: List<FeaturedShowcaseUiModel> = listOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopPageFeaturedShowcaseViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ShopPageFeaturedShowcaseViewHolder {
         return ShopPageFeaturedShowcaseViewHolder(
-                itemView = LayoutInflater.from(parent.context).inflate(
-                        R.layout.item_shop_featured_showcase,
-                        parent,
-                        false
-                ),
-                listener = shopPageFeaturedShowcaseListener
+            itemView = LayoutInflater.from(parent.context).inflate(
+                R.layout.item_shop_featured_showcase,
+                parent,
+                false
+            ),
+            listener = shopPageFeaturedShowcaseListener,
+            shouldForceToLightMode = shouldForceToLightMode
         )
     }
 

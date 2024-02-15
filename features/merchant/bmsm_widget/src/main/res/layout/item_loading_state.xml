@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/containerLoadingState"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="6dp"
+    android:background="@drawable/bg_gwp_gift_widget"
+    android:paddingStart="8dp"
+    android:paddingBottom="12dp">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmerGiftRibbon"
+        android:layout_width="48dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <RelativeLayout
+        android:id="@+id/shimmerProduct1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shimmerGiftRibbon"
+        android:layout_marginTop="12dp">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/imgGiftImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="2dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/imgGiftProductName"
+            android:layout_width="48dp"
+            android:layout_height="12dp"
+            android:layout_alignTop="@+id/imgGiftImage"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@+id/imgGiftImage"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/imgGiftProductPrice"
+            android:layout_width="88dp"
+            android:layout_height="12dp"
+            android:layout_below="@+id/imgGiftProductName"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@+id/imgGiftImage"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/shimmerProduct2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shimmerGiftRibbon"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_toEndOf="@+id/shimmerProduct1">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/imgGiftImage2"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="2dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/imgGiftProductName2"
+            android:layout_width="48dp"
+            android:layout_height="12dp"
+            android:layout_alignTop="@+id/imgGiftImage2"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@+id/imgGiftImage2"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/imgGiftProductPrice2"
+            android:layout_width="88dp"
+            android:layout_height="12dp"
+            android:layout_below="@+id/imgGiftProductName2"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@+id/imgGiftImage2"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect" />
+    </RelativeLayout>
+
+</RelativeLayout>

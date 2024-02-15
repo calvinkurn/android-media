@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.data.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop_widget.buy_more_save_more.entity.Product
 
 data class ShopLayoutWidget(
     @SerializedName("layoutID")
@@ -42,7 +43,7 @@ data class ShopLayoutWidget(
         @SerializedName("data")
         val data: List<Data> = listOf()
     ) {
-        //TODO need to sync this model on layoutV2 with header data from dynamicTab in the future so that we can map the data easier on ShopPageHomeMapper.mapToWidgetUiModel()
+        // TODO need to sync this model on layoutV2 with header data from dynamicTab in the future so that we can map the data easier on ShopPageHomeMapper.mapToWidgetUiModel()
         data class Header(
             @SerializedName("title")
             val title: String = "",
@@ -67,133 +68,149 @@ data class ShopLayoutWidget(
         )
 
         data class Data(
-                @SerializedName("bundleGroupID")
-                val bundleGroupId: String = "0",
-                @SerializedName("bundleName")
-                val bundleName: String = "",
-                @SerializedName("bundleDetails")
-                val bundleDetails: List<ProductBundleDetailsItem> = listOf(),
-                @SerializedName("bundleProducts")
-                val bundleProducts: List<BundleProduct> = listOf(),
-                @SerializedName("imageUrl")
-                val imageUrl: String = "",
-                @SerializedName("imageURL")
-                val imageURL: String = "",
-                @SerializedName("mainBannerPosition")
-                val mainBannerPosition: String = "",
-                @SerializedName("showcaseList")
-                val showcaseList: List<ShowcaseList> = emptyList(),
-                @SerializedName("appLink")
-                val appLink: String = "",
-                @SerializedName("webLink")
-                val webLink: String = "",
-                @SerializedName("videoUrl")
-                val videoUrl: String = "",
-                @SerializedName("linkUrl")
-                val linkUrl: String = "",
-                @SerializedName("linkID")
-                val linkId: String = "",
-                @SerializedName("productID")
-                val productID: String = "",
-                @SerializedName("name")
-                val name: String = "",
-                @SerializedName("Name")
-                val showcaseName: String = "",
-                @SerializedName("campaignID")
-                val campaignId: String = "",
-                @SerializedName("description")
-                val description: String = "",
-                @SerializedName("startDate")
-                val startDate: String = "",
-                @SerializedName("endDate")
-                val endDate: String = "",
-                @SerializedName("timeDescription")
-                val timeDescription: String = "",
-                @SerializedName("timeCounter")
-                val timeCounter: String = "",
-                @SerializedName("totalNotify")
-                val totalNotify: Int = 0,
-                @SerializedName("totalNotifyWording")
-                val totalNotifyWording: String = "",
-                @SerializedName("totalProduct")
-                val totalProduct: Int = 0,
-                @SerializedName("totalProductWording")
-                val totalProductWording: String = "",
-                @SerializedName("voucherWording")
-                val voucherWording: String = "",
-                @SerializedName("dynamicRule")
-                val dynamicRule: DynamicRule = DynamicRule(),
-                @SerializedName("banners")
-                val listBanner: List<Banner> = listOf(),
-                @SerializedName("products")
-                val listProduct: List<Product> = listOf(),
-                @SerializedName("backgroundGradientColor")
-                val backgroundGradientColor: BackgroundGradientColor = BackgroundGradientColor(),
-                @SerializedName("displayPrice")
-                val displayPrice: String = "",
-                @SerializedName("originalPrice")
-                val originalPrice: String = "",
-                @SerializedName("discountPercentage")
-                val discountPercentage: String = "",
-                @SerializedName("productUrl")
-                val productUrl: String = "",
-                @SerializedName("isShowFreeOngkir")
-                val isShowFreeOngkir: Boolean = false,
-                @SerializedName("freeOngkirPromoIcon")
-                val freeOngkirPromoIcon: String = "",
-                @SerializedName("isSoldOut")
-                val isSoldOut: Boolean = false,
-                @SerializedName("rating")
-                val rating: String = "",
-                @SerializedName("totalReview")
-                val totalReview: String = "",
-                @SerializedName("isPO")
-                val isPO: Boolean = false,
-                @SerializedName("cashback")
-                val cashback: Int = -1,
-                @SerializedName("statusCampaign")
-                val statusCampaign: String = "",
-                @SerializedName("labelGroups")
-                val labelGroups: List<LabelGroup> = listOf(),
-                @SerializedName("recommendationType")
-                val recommendationType: String = "",
-                @SerializedName("categoryBreadcrumbs")
-                val categoryBreadcrumbs: String = "",
-                @SerializedName("minimumOrder")
-                val minimumOrder: Int = 0,
-                @SerializedName("maximumOrder")
-                val maximumOrder: Int = 0,
-                @SerializedName("stock")
-                val stock: Int = 0,
-                @SuppressLint("Invalid Data Type")
-                @SerializedName("childIDs")
-                val listChildId: List<String> = listOf(),
-                @SerializedName("parentID")
-                val parentId: String = "",
-                @SerializedName("linkType")
-                val linkType: String = "",
-                @SerializedName("timeInfo")
-                val timeInfo: TimeInfo = TimeInfo(),
-                @SerializedName("productHotspot")
-                val productHotspot: List<ProductHotspot> = listOf(),
-                @SerializedName("text")
-                val text: String = "",
-                @SerializedName("ratio")
-                val ratio: String = "",
-                @SerializedName("Title")
-                val title: String = "",
-                @SerializedName("Banner")
-                val banner: String = "",
-                @SerializedName("EtalaseList")
-                val listEtalase: List<Etalase> = listOf(),
-                @SerializedName("tabLabel")
-                val tabLabel: String = "",
-                @SerializedName("tabName")
-                val tabName: String = "",
-                @SerializedName("componentList")
-                val componentList: List<Component> = emptyList(),
-                @SerializedName("bannerID")
-                val bannerId: String = "",
+            @SerializedName("bundleGroupID")
+            val bundleGroupId: String = "0",
+            @SerializedName("bundleName")
+            val bundleName: String = "",
+            @SerializedName("bundleDetails")
+            val bundleDetails: List<ProductBundleDetailsItem> = listOf(),
+            @SerializedName("bundleProducts")
+            val bundleProducts: List<BundleProduct> = listOf(),
+            @SerializedName("imageUrl")
+            val imageUrl: String = "",
+            @SerializedName("imageURL")
+            val imageURL: String = "",
+            @SerializedName("mainBannerPosition")
+            val mainBannerPosition: String = "",
+            @SerializedName("showcaseList")
+            val showcaseList: List<ShowcaseList> = emptyList(),
+            @SerializedName("appLink")
+            val appLink: String = "",
+            @SerializedName("webLink")
+            val webLink: String = "",
+            @SerializedName("videoUrl")
+            val videoUrl: String = "",
+            @SerializedName("linkUrl")
+            val linkUrl: String = "",
+            @SerializedName("linkID")
+            val linkId: String = "",
+            @SerializedName("productID")
+            val productID: String = "",
+            @SerializedName("name")
+            val name: String = "",
+            @SerializedName("Name")
+            val showcaseName: String = "",
+            @SerializedName("campaignID")
+            val campaignId: String = "",
+            @SerializedName("description")
+            val description: String = "",
+            @SerializedName("startDate")
+            val startDate: String = "",
+            @SerializedName("endDate")
+            val endDate: String = "",
+            @SerializedName("timeDescription")
+            val timeDescription: String = "",
+            @SerializedName("timeCounter")
+            val timeCounter: String = "",
+            @SerializedName("totalNotify")
+            val totalNotify: Int = 0,
+            @SerializedName("totalNotifyWording")
+            val totalNotifyWording: String = "",
+            @SerializedName("totalProduct")
+            val totalProduct: Int = 0,
+            @SerializedName("totalProductWording")
+            val totalProductWording: String = "",
+            @SerializedName("voucherWording")
+            val voucherWording: String = "",
+            @SerializedName("dynamicRule")
+            val dynamicRule: DynamicRule = DynamicRule(),
+            @SerializedName("banners")
+            val listBanner: List<Banner> = listOf(),
+            @SerializedName("products")
+            val listProduct: List<Product> = listOf(),
+            @SerializedName("backgroundGradientColor")
+            val backgroundGradientColor: BackgroundGradientColor = BackgroundGradientColor(),
+            @SerializedName("displayPrice")
+            val displayPrice: String = "",
+            @SerializedName("originalPrice")
+            val originalPrice: String = "",
+            @SerializedName("discountPercentage")
+            val discountPercentage: String = "",
+            @SerializedName("productUrl")
+            val productUrl: String = "",
+            @SerializedName("isShowFreeOngkir")
+            val isShowFreeOngkir: Boolean = false,
+            @SerializedName("freeOngkirPromoIcon")
+            val freeOngkirPromoIcon: String = "",
+            @SerializedName("isSoldOut")
+            val isSoldOut: Boolean = false,
+            @SerializedName("rating")
+            val rating: String = "",
+            @SerializedName("totalReview")
+            val totalReview: String = "",
+            @SerializedName("isPO")
+            val isPO: Boolean = false,
+            @SerializedName("cashback")
+            val cashback: Int = -1,
+            @SerializedName("statusCampaign")
+            val statusCampaign: String = "",
+            @SerializedName("labelGroups")
+            val labelGroups: List<LabelGroup> = listOf(),
+            @SerializedName("recommendationType")
+            val recommendationType: String = "",
+            @SerializedName("categoryBreadcrumbs")
+            val categoryBreadcrumbs: String = "",
+            @SerializedName("minimumOrder")
+            val minimumOrder: Int = 0,
+            @SerializedName("maximumOrder")
+            val maximumOrder: Int = 0,
+            @SerializedName("stock")
+            val stock: Int = 0,
+            @SuppressLint("Invalid Data Type")
+            @SerializedName("childIDs")
+            val listChildId: List<String> = listOf(),
+            @SerializedName("parentID")
+            val parentId: String = "",
+            @SerializedName("linkType")
+            val linkType: String = "",
+            @SerializedName("timeInfo")
+            val timeInfo: TimeInfo = TimeInfo(),
+            @SerializedName("productHotspot")
+            val productHotspot: List<ProductHotspot> = listOf(),
+            @SerializedName("text")
+            val text: String = "",
+            @SerializedName("ratio")
+            val ratio: String = "",
+            @SerializedName("Title")
+            val title: String = "",
+            @SerializedName("Banner")
+            val banner: String = "",
+            @SerializedName("EtalaseList")
+            val listEtalase: List<Etalase> = listOf(),
+            @SerializedName("tabLabel")
+            val tabLabel: String = "",
+            @SerializedName("tabName")
+            val tabName: String = "",
+            @SerializedName("componentList")
+            val componentList: List<Component> = emptyList(),
+            @SerializedName("bannerID")
+            val bannerId: String = "",
+            @SerializedName("warehouseID")
+            val warehouseID: String = "",
+            @SerializedName("OfferID")
+            val offerId: Long = 0,
+            @SerializedName("OfferName")
+            val offerName: String = "",
+            @SerializedName("OfferType")
+            val offerType: Int = 0,
+            @SerializedName("WarehouseIDs")
+            val warehouseIds: List<Long> = emptyList(),
+            @SerializedName("Thumbnails")
+            val thumbnails: List<String> = emptyList(),
+            @SerializedName("Products")
+            val bmsmListProduct: List<Product> = listOf(),
+            @SerializedName("OfferDetail")
+            val offeringDetail: OfferingDetail = OfferingDetail()
         ) {
             data class Component(
                 @SerializedName("componentID")
@@ -203,7 +220,7 @@ data class ShopLayoutWidget(
                 @SerializedName("componentType")
                 val componentType: String = "",
                 @SerializedName("data")
-                val data : List<Data> = emptyList()
+                val data: List<Data> = emptyList()
             ) {
                 data class Data(
                     @SerializedName("imageURL")
@@ -348,7 +365,12 @@ data class ShopLayoutWidget(
                 @SerializedName("showStockbar")
                 val showStockBar: Boolean = false,
                 @SerializedName("rating")
-                val rating: String = "",
+                val rating: Int = 0,
+                @SerializedName("isVbs")
+                val isVbs: Boolean = false,
+                @SerializedName("warehouseID")
+                val warehouseId: String = ""
+
             ) {
                 data class StockWording(
                     @SerializedName("title")
@@ -363,10 +385,10 @@ data class ShopLayoutWidget(
                 val dynamicRoleData: List<DynamicRoleData> = listOf()
             ) {
                 data class DynamicRoleData(
-                        @SerializedName("ruleID")
-                        val ruleID: String = "",
-                        @SerializedName("isActive")
-                        val isActive: Boolean = false
+                    @SerializedName("ruleID")
+                    val ruleID: String = "",
+                    @SerializedName("isActive")
+                    val isActive: Boolean = false
                 )
             }
 
@@ -384,7 +406,7 @@ data class ShopLayoutWidget(
                 @SerializedName("textColor")
                 val textColor: String = "",
                 @SerializedName("status")
-                val status: Int = -1,
+                val status: Int = -1
             )
             data class ProductHotspot(
                 @SerializedName("productID")
@@ -400,7 +422,7 @@ data class ShopLayoutWidget(
                 @SerializedName("isSoldOut")
                 val isSoldOut: Boolean = false,
                 @SerializedName("coordinate")
-                val coordinate: Coordinate = Coordinate(),
+                val coordinate: Coordinate = Coordinate()
             ) {
                 data class Coordinate(
                     @SerializedName("x")
@@ -408,6 +430,48 @@ data class ShopLayoutWidget(
                     @SerializedName("y")
                     val y: String = ""
                 )
+            }
+
+            data class OfferingDetail(
+                @SerializedName("TermAndCondition")
+                val termAndConditions: List<String> = emptyList(),
+                @SerializedName("StartDate")
+                val startDate: String = "",
+                @SerializedName("EndDate")
+                val endDate: String = "",
+                @SerializedName("TierList")
+                val tierList: List<Tier> = emptyList()
+            ) {
+                data class Tier(
+                    @SerializedName("TierID")
+                    val tierId: Long = 0,
+                    @SerializedName("Level")
+                    val level: Int = 0,
+                    @SerializedName("TierWording")
+                    val tierWording: String = "",
+                    @SerializedName("Rule")
+                    val rules: List<Rule> = emptyList(),
+                    @SerializedName("Benefit")
+                    val benefits: List<Benefit> = emptyList()
+                ) {
+                    data class Rule(
+                        @SerializedName("TypeID")
+                        val typeId: Long = 0,
+                        @SerializedName("Operation")
+                        val operation: String = "",
+                        @SerializedName("Value")
+                        val value: Int = 0
+                    )
+
+                    data class Benefit(
+                        @SerializedName("TypeID")
+                        val typeId: Long = 0,
+                        @SerializedName("Operation")
+                        val operation: String = "",
+                        @SerializedName("Value")
+                        val value: Int = 0
+                    )
+                }
             }
         }
     }

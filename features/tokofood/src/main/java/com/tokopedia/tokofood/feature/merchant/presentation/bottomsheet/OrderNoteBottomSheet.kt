@@ -34,6 +34,14 @@ class OrderNoteBottomSheet : BottomSheetUnify() {
 
     private var binding: BottomsheetOrderNoteLayoutBinding? = null
 
+    private val textChangeListener = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable) {
+            binding?.saveNotesButton?.isEnabled = s.isNotBlank() || orderNote.isNotBlank()
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewBinding = BottomsheetOrderNoteLayoutBinding.inflate(inflater, container, false)
         binding = viewBinding
@@ -51,8 +59,8 @@ class OrderNoteBottomSheet : BottomSheetUnify() {
     }
 
     override fun onDestroyView() {
+        removeListeners()
         super.onDestroyView()
-        binding = null
     }
 
     private fun setupView(binding: BottomsheetOrderNoteLayoutBinding?) {
@@ -61,13 +69,7 @@ class OrderNoteBottomSheet : BottomSheetUnify() {
                 this.notesInput.editText.setText(orderNote)
             }
             this.notesInput.minLine = MIN_LINES
-            this.notesInput.editText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable) {
-                    binding.saveNotesButton.isEnabled = s.isNotBlank() || orderNote.isNotBlank()
-                }
-            })
+            this.notesInput.editText.addTextChangedListener(textChangeListener)
             this.saveNotesButton.isEnabled = binding.notesInput.editText.text.isNotBlank()
             this.saveNotesButton.setOnClickListener {
                 val orderNote = binding.notesInput.editText.text.toString()
@@ -92,5 +94,12 @@ class OrderNoteBottomSheet : BottomSheetUnify() {
         if (!isVisible) {
             show(fragmentManager, TAG)
         }
+    }
+
+    private fun removeListeners() {
+        binding?.saveNotesButton?.setOnClickListener(null)
+        binding?.notesInput?.editText?.removeTextChangedListener(textChangeListener)
+        binding = null
+        clickListener = null
     }
 }

@@ -48,7 +48,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 1,
                     shopId = 5,
                     name = "Tahu Bulat",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15215612
                 )
             )
 
@@ -130,7 +131,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         orderQuantity = 0,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15215612"
                     ),
                     parentId = "1"
                 )
@@ -189,7 +191,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 1,
                     shopId = 5,
                     name = "Tahu Bulat",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15215612
                 )
             )
 
@@ -204,7 +207,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 0,
                     shopId = 3,
                     name = "Tahu Kotak",
-                    appUrl = "tokopedia://product/detail/2"
+                    appUrl = "tokopedia://product/detail/2",
+                    warehouseId = 15215613
                 )
             )
 
@@ -291,7 +295,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         orderQuantity = 0,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15215613"
                     ),
                     parentId = "0"
                 )
@@ -407,7 +412,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 1,
                     shopId = 5,
                     name = "Tahu Bulat",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15215612
                 )
             )
 
@@ -496,7 +502,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         orderQuantity = 0,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15215612"
                     ),
                     parentId = "1"
                 )
@@ -609,7 +616,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 1,
                     shopId = 2,
                     name = "Tahu Kotak",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15215612
                 ),
                 RecommendationItem(
                     productId = productId.toLong(),
@@ -617,7 +625,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     shopId = shopId.toInt(),
                     name = "Tahu Bulat",
                     appUrl = "tokopedia://product/detail/2",
-                    stock = stock
+                    stock = stock,
+                    warehouseId = 15215613
                 )
             )
 
@@ -715,7 +724,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         orderQuantity = 0,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15215612"
                     ),
                     parentId = "1"
                 ),
@@ -733,7 +743,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
                         needToChangeMaxLinesName = true,
-                        availableStock = 5
+                        availableStock = 5,
+                        warehouseId = "15215613"
                     ),
                     parentId = "1"
                 )

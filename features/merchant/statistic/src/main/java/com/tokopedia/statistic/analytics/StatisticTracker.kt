@@ -138,7 +138,9 @@ object StatisticTracker {
             action = TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH,
             category = getEventCategory(pageSource),
             label = arrayOf(
-                model.dataKey, state, value
+                model.dataKey,
+                state,
+                value
             ).joinToString(TrackingConstant.SEPARATOR)
         )
 
@@ -348,6 +350,62 @@ object StatisticTracker {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendTableMetaLabelClickEvent(
+        pageSource: String,
+        labelTitle: String,
+        productId: String
+    ) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = getEventCategory(pageSource),
+            action = TrackingConstant.CLICK_KVI_LVI_LABEL,
+            label = arrayOf(
+                labelTitle,
+                productId
+            ).joinToString(TrackingConstant.SEPARATOR)
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+        eventMap[TrackingConstant.TRACKER_ID] = TrackingConstant.TRACKER_ID_49470
+        eventMap[TrackingConstant.PRODUCT_ID] = productId
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendTableMetaMoreBottomSheetClickEvent(
+        pageSource: String,
+        bottomSheetTitle: String
+    ) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = getEventCategory(pageSource),
+            action = TrackingConstant.CLICK_MORE_KVI_LVI_BOTTOM_SHEET,
+            label = bottomSheetTitle
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+        eventMap[TrackingConstant.TRACKER_ID] = TrackingConstant.TRACKER_ID_49471
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendTableCloseBottomSheetClickEvent(
+        pageSource: String,
+        bottomSheetTitle: String
+    ) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = getEventCategory(pageSource),
+            action = TrackingConstant.CLICK_CLOSE_KVI_LVI_BOTTOM_SHEET,
+            label = bottomSheetTitle
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+        eventMap[TrackingConstant.TRACKER_ID] = TrackingConstant.TRACKER_ID_49472
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendPieChartImpressionEvent(pageSource: String, model: PieChartWidgetUiModel) {
         val value = model.data?.data?.summary?.value?.toString().orEmpty()
         val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
@@ -357,7 +415,9 @@ object StatisticTracker {
             category = getEventCategory(pageSource),
             action = TrackingConstant.IMPRESSION_WIDGET_PIE_CHART,
             label = arrayOf(
-                model.dataKey, state, value
+                model.dataKey,
+                state,
+                value
             ).joinToString(TrackingConstant.SEPARATOR)
         )
 
@@ -392,7 +452,9 @@ object StatisticTracker {
             category = getEventCategory(pageSource),
             action = TrackingConstant.IMPRESSION_WIDGET_BAR_CHART,
             label = arrayOf(
-                model.dataKey, state, value
+                model.dataKey,
+                state,
+                value
             ).joinToString(TrackingConstant.SEPARATOR)
         )
 

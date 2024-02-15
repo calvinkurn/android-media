@@ -88,7 +88,6 @@ interface PlayBroadcastMapper {
         coverUrl: String,
         date: String,
         duration: String,
-        isEligiblePostVideo: Boolean,
         author: ContentAccountUiModel,
     ): ChannelSummaryUiModel
 

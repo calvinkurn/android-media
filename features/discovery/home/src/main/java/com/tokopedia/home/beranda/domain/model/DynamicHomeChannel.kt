@@ -107,6 +107,9 @@ data class DynamicHomeChannel(
         @SerializedName("isShimmer")
         @Expose
         var isShimmer: Boolean = true,
+        @SerializedName("origami")
+        @Expose
+        var origami: String = "",
     ) : ImpressHolder() {
 
         private var position: Int = 0
@@ -180,6 +183,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_FLASH_SALE_WIDGET: String = "kejar_diskon_carousel"
             const val LAYOUT_SPECIAL_RELEASE_REVAMP: String = "rilisan_spesial"
             const val LAYOUT_SPECIAL_SHOP_FLASH_SALE: String = "flash_sale_toko"
+            const val LAYOUT_LEGO_3_AUTO: String = "lego_3_auto"
             const val channelId: String = "channelId"
             const val DIVIDER_NO_DIVIDER = 0
         }
@@ -208,6 +212,9 @@ data class DynamicHomeChannel(
         @Expose
         @SerializedName("imageUrl")
         val imageUrl: String = "",
+        @Expose
+        @SerializedName("imageList")
+        val imageList: ArrayList<ImageList> = arrayListOf(),
         @Expose
         @SerializedName("name")
         val name: String = "",
@@ -428,5 +435,20 @@ data class DynamicHomeChannel(
         @Expose
         @SerializedName("applink")
         val applink: String = ""
+    )
+
+    data class ImageList(
+        @Expose
+        @SerializedName("type")
+        val type: String = "",
+        @Expose
+        @SerializedName("imageUrl")
+        val imageUrl: String = "",
+        @Expose
+        @SerializedName("leftPadding")
+        val leftPadding: Float = 0f,
+        @Expose
+        @SerializedName("rightPadding")
+        val rightPadding: Float = 0f,
     )
 }

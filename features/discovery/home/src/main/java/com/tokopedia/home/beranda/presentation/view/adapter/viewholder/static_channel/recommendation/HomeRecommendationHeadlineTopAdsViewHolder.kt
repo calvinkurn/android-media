@@ -6,7 +6,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.databinding.HomeRecommedationHeadlineAdsLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
@@ -25,22 +24,11 @@ class HomeRecommendationHeadlineTopAdsViewHolder(
 
     private var binding: HomeRecommedationHeadlineAdsLayoutBinding? by viewBinding()
 
-    private var item: HomeRecommendationHeadlineTopAdsDataModel? = null
-
     override fun bind(element: HomeRecommendationHeadlineTopAdsDataModel) {
-        this.item = element
         setHeadlineAdsClickListener()
         setHeadlineAdsImpression()
         setDisplayHeadlineAds(element)
         hideHeadlineAdsShimmer()
-    }
-
-    override fun bindPayload(newItem: HomeRecommendationHeadlineTopAdsDataModel?) {
-        newItem?.let {
-            this.item = it
-            setDisplayHeadlineAds(it)
-            hideHeadlineAdsShimmer()
-        }
     }
 
     private fun setHeadlineAdsImpression() {

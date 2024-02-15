@@ -113,7 +113,7 @@ class RechargeGeneralLoginInstrumentTest {
         onView(withText("PBB Kab. Tangerang")).check(matches(isDisplayed()))
         onView(AllOf.allOf(withText("2017"), isDescendantOfA(withId(R.id.rv_digital_product)))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withText(VALID_INPUT_NUMBER_2), isDescendantOfA(withId(R.id.rv_digital_product)))).check(matches(isDisplayed()))
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(isEnabled()))
+        onView(withId(R.id.recharge_general_enquiry_button_compose)).check(matches(isEnabled()))
         onView(withId(R.id.recent_transaction_widget)).check(matches(isDisplayed()))
     }
 
@@ -125,7 +125,7 @@ class RechargeGeneralLoginInstrumentTest {
                 )
         )
         Thread.sleep(2000)
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(isEnabled()))
+        onView(withId(R.id.recharge_general_enquiry_button_compose)).check(matches(isEnabled()))
     }
 
     private fun validate_promo() {

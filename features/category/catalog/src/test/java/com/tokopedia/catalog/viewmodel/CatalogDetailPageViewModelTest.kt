@@ -25,12 +25,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.AfterEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runTest
 
 class CatalogDetailPageViewModelTest {
 
@@ -40,8 +39,10 @@ class CatalogDetailPageViewModelTest {
 
     @RelaxedMockK
     lateinit var catalogDetailUseCase: CatalogDetailUseCase
+
     @RelaxedMockK
     lateinit var getNotificationUseCase: GetNotificationUseCase
+
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
@@ -109,7 +110,7 @@ class CatalogDetailPageViewModelTest {
             catalogDetailUseCase.getCatalogDetailV4Comparison(any(), any())
         } returns ComparisonUiModel()
 
-        viewModel.getProductCatalogComparisons("", "")
+        viewModel.getProductCatalogComparisons("", listOf())
 
         assert(viewModel.comparisonUiModel.getOrAwaitValue() != null)
     }
@@ -120,7 +121,7 @@ class CatalogDetailPageViewModelTest {
             catalogDetailUseCase.getCatalogDetailV4Comparison(any(), any())
         } throws Throwable("Error")
 
-        viewModel.getProductCatalogComparisons("", "")
+        viewModel.getProductCatalogComparisons("", listOf())
 
         assert(viewModel.errorsToasterGetComparison.getOrAwaitValue().message == "Error")
     }
@@ -184,16 +185,16 @@ class CatalogDetailPageViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `When emitScrollEvent called, Then should emit scrollEvents`() = runTest {
-        var result: Int? = null
+        var result: String? = null
         val job = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.scrollEvents.collectLatest {
                 result = it
             }
         }
 
-        viewModel.emitScrollEvent(10)
+        viewModel.emitScrollEvent("Highlight")
         job.cancel()
 
-        assert(result == 10)
+        assert(result == "Highlight")
     }
 }

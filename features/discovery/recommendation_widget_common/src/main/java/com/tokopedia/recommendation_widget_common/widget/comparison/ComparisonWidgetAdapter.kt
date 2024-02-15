@@ -1,36 +1,38 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 
 class ComparisonWidgetAdapter(
-        var comparisonListModel: ComparisonListModel,
-        val comparisonWidgetInterface: ComparisonWidgetInterface,
-        val trackingQueue: TrackingQueue?,
-        val recommendationTrackingModel: RecommendationTrackingModel,
-        val userSessionInterface: UserSessionInterface
-): RecyclerView.Adapter<ComparisonWidgetItemViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComparisonWidgetItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comparison_widget, parent, false)
+    var comparisonListModel: ComparisonListModel,
+    val comparisonWidgetInterface: ComparisonWidgetInterface,
+    val trackingQueue: TrackingQueue?,
+    val recommendationTrackingModel: RecommendationTrackingModel,
+    val userSessionInterface: UserSessionInterface,
+    val shouldUseReimagineCard: Boolean
+) : RecyclerView.Adapter<ViewHolder>() {
 
-        val productCardView = view.findViewById<ProductCardGridView>(R.id.productCardView)
-        val layoutParams = productCardView.layoutParams
-        layoutParams.height = comparisonListModel.comparisonWidgetConfig.productCardHeight
-        productCardView.layoutParams = layoutParams
-
-        productCardView.applyCarousel()
-
-        return ComparisonWidgetItemViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return if (shouldUseReimagineCard) {
+            val view = onCreateView(parent, R.layout.item_comparison_reimagine_widget)
+            ComparisonReimagineWidgetItemViewHolder(view)
+        } else {
+            val view = onCreateView(parent, R.layout.item_comparison_widget)
+            ComparisonWidgetItemViewHolder(view)
+        }
     }
 
     override fun getItemCount(): Int {
         // for sticky product on the left
-        return if(comparisonListModel.comparisonData.isNotEmpty()) 1 else 0
+        return if (comparisonListModel.comparisonData.isNotEmpty()) 1 else 0
     }
 
     //viewType == position
@@ -38,16 +40,38 @@ class ComparisonWidgetAdapter(
         return position
     }
 
-    override fun onBindViewHolder(holder: ComparisonWidgetItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (position < comparisonListModel.comparisonData.size) {
-            holder.bind(
-                    comparisonListModel.comparisonData[position],
-                    comparisonListModel,
-                    comparisonWidgetInterface,
-                    recommendationTrackingModel,
-                    trackingQueue,
-                    userSessionInterface
-            )
+            if (shouldUseReimagineCard) {
+                bind(holder as ComparisonReimagineWidgetItemViewHolder, position)
+            } else {
+                bind(holder as ComparisonWidgetItemViewHolder, position)
+            }
         }
+    }
+
+    private fun onCreateView(parent: ViewGroup, @LayoutRes layoutId: Int): View {
+        val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
+
+        val productCardView = view.findViewById<ProductCardGridView>(R.id.productCardView)
+
+        val layoutParams = productCardView.layoutParams
+        layoutParams.height = comparisonListModel.comparisonWidgetConfig.productCardHeight
+        productCardView.layoutParams = layoutParams
+
+        productCardView.applyCarousel()
+
+        return view
+    }
+
+    private fun bind(holder: ComparisonViewHolder, position: Int) {
+        holder.bind(
+            comparisonListModel.comparisonData[position],
+            comparisonListModel,
+            comparisonWidgetInterface,
+            recommendationTrackingModel,
+            trackingQueue,
+            userSessionInterface
+        )
     }
 }

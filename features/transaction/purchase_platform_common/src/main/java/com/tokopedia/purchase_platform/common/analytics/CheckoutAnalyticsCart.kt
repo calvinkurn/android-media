@@ -733,14 +733,15 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-    fun eventClickUndoAfterDeleteProduct(userId: String) {
+    fun eventClickUndoAfterDeleteProduct(userId: String, eventLabel: String) {
         val gtmData = getGtmData(
             ConstantTransactionAnalytics.EventName.CLICK_ATC,
             ConstantTransactionAnalytics.EventCategory.CART,
             ConstantTransactionAnalytics.EventAction.CLICK_UNDO_AFTER_DELETE_PRODUCT,
-            ""
+            eventLabel
         )
         gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_UNDO_AFTER_DELETE_PRODUCT
         sendGeneralEvent(gtmData)
     }
 
@@ -1089,6 +1090,35 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
+    fun eventClickSwipeOnProductCard(productId: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.CLICK_SWIPE_ON_PRODUCT_CART,
+            productId
+        )
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_SWIPE_ON_PRODUCT_CART
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    fun sendEventClickRemoveCartFromSwipe(mapData: Map<String, Any>, userId: String) {
+        val bundle = bundleOf(
+            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.REMOVE_FROM_CART,
+            ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
+            ExtraKey.EVENT_ACTION to ConstantTransactionAnalytics.EventAction.CLICK_REMOVE_CART_FROM_SWIPE,
+            ExtraKey.EVENT_LABEL to "",
+            ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
+            ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
+            ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.CLICK_REMOVE_CART_FROM_SWIPE,
+            ExtraKey.ITEMS to mapData,
+            ExtraKey.USER_ID to userId
+        )
+
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.VIEW_ITEM, bundle)
+    }
+
     fun sendCartImpressionEvent(data: List<Map<String, Any>>, userId: String) {
         val bundle = bundleOf(
             ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.VIEW_ITEM,
@@ -1114,7 +1144,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
             ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
             ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.CLICK_BUTTON_MIN_TO_DELETE_CART,
-            ExtraKey.PROMOTIONS to mapData,
+            ExtraKey.ITEMS to mapData,
             ExtraKey.USER_ID to userId
         )
 
@@ -1155,6 +1185,59 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.CLICK_BMGM_RECOMMENDATION)
             .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
             .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4448
+    // Tracker ID: 49758
+    fun eventImpressionGwpRecommendation(
+        offerId: Long,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PG_IRIS)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.IMPRESSION_GWP_RECOMMENDATION)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel("$offerId")
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.VIEW_GWP_RECOMMENDATION)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(
+                ExtraKey.SESSION_IRIS,
+                ConstantTransactionAnalytics.CustomDimension.DIMENSION_SESSION_IRIS
+            )
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4448
+    // Tracker ID: 49759
+    fun eventClickGwpRecommendation(
+        offerId: Long,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PG)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_GWP_RECOMMENDATION)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel("$offerId")
+            .setCustomProperty(
+                ExtraKey.TRACKER_ID,
+                ConstantTransactionAnalytics.TrackerId.CLICK_GWP_RECOMMENDATION
+            )
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(
+                ExtraKey.SESSION_IRIS,
+                ConstantTransactionAnalytics.CustomDimension.DIMENSION_SESSION_IRIS
+            )
             .setShopId(shopId)
             .setUserId(userId)
             .build()

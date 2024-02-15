@@ -27,6 +27,7 @@ import com.tokopedia.buyerorderdetail.presentation.viewmodel.PartialOrderFulfill
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -210,6 +211,7 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
             val appComponent = (it.application as BaseMainApplication).baseAppComponent
             DaggerBuyerOrderDetailComponent.builder()
                 .baseAppComponent(appComponent)
+                .tokoChatConfigComponent(TokoChatConnection.getComponent(it))
                 .build()
                 .inject(this)
         }

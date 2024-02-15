@@ -82,6 +82,10 @@ object AceSearchProductV5Query {
                       title
                       type
                       url
+                      styles {
+                        key
+                        value
+                      }
                     }
                     rating
                     wishlist
@@ -95,6 +99,7 @@ object AceSearchProductV5Query {
                     meta {
                       warehouseID
                       componentID
+                      isImageBlurred
                     }
                   }
                 }
@@ -161,6 +166,10 @@ object AceSearchProductV5Query {
                   title
                   type
                   url
+                  styles {
+                    key
+                    value
+                  }
                 }
                 labelGroupsVariant {
                   title
@@ -186,6 +195,7 @@ object AceSearchProductV5Query {
                   parentID
                   warehouseID
                   isPortrait
+                  isImageBlurred
                 }
               }
               totalDataText

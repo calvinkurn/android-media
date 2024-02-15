@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.view.adapter.review
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
@@ -10,8 +11,10 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiSta
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 
 class ReviewParentAdapter(
-    private val reviewInteractionListener: ReviewInteractionListener,
+    private val reviewInteractionListener: ReviewInteractionListener
 ) : ListAdapter<ReviewContentUiModel, ViewHolder>(ReviewAdapterCallback()) {
+
+    private val mediasViewPool: RecycledViewPool = RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
@@ -19,6 +22,7 @@ class ReviewParentAdapter(
                 ReviewParentContentViewHolder.create(
                     parent = parent,
                     reviewInteractionListener = reviewInteractionListener,
+                    mediasViewPool = mediasViewPool
                 )
             }
             else -> super.createViewHolder(parent, viewType)
@@ -38,10 +42,11 @@ class ReviewParentAdapter(
         } else {
             payloads.forEach {
                 when (val payload = it) {
-                    is Payload.Like -> if (holder is ReviewParentContentViewHolder) {
-                        holder.bindLike(
-                            payload.state
-                        )
+                    is Payload.Like -> {
+                        (holder as ReviewParentContentViewHolder).bindLike(payload.state)
+                    }
+                    is Payload.WatchMode -> {
+                        (holder as ReviewParentContentViewHolder).bindWatchMode(payload.isWatchMode)
                     }
                 }
             }
@@ -52,12 +57,18 @@ class ReviewParentAdapter(
         return TYPE_CONTENT
     }
 
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+        (holder as ReviewParentContentViewHolder).onRecycled()
+    }
+
     companion object {
         private const val TYPE_CONTENT = 0
     }
 
     sealed interface Payload {
         data class Like(val state: ReviewLikeUiState) : Payload
+        data class WatchMode(val isWatchMode: Boolean) : Payload
     }
 
     internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewContentUiModel>() {
@@ -79,12 +90,11 @@ class ReviewParentAdapter(
             oldItem: ReviewContentUiModel,
             newItem: ReviewContentUiModel
         ): Any? {
-            // TODO: changes in specified item please define
             return when {
                 oldItem.likeState != newItem.likeState -> Payload.Like(newItem.likeState)
+                oldItem.isWatchMode != newItem.isWatchMode -> Payload.WatchMode(newItem.isWatchMode)
                 else -> super.getChangePayload(oldItem, newItem)
             }
         }
     }
-
 }

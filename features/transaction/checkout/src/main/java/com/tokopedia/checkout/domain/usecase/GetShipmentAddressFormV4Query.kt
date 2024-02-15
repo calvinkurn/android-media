@@ -95,6 +95,8 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       description
                       description_badge_url
                   }
+                  shipping_components
+                  grouping_state
                   add_ons {
                     status
                     add_on_data {
@@ -138,6 +140,8 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     timeslot_id
                     schedule_date
                     validation_metadata
+                    start_date
+                    is_recommend
                   }
                   rates_validation_flow
                   bo_code
@@ -233,6 +237,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                         cart_detail_type
                         bmgm {
                           offer_id
+                          offer_type_id
                           offer_name
                           offer_icon
                           offer_message
@@ -240,6 +245,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                           offer_landing_page_link
                           total_discount
                           offer_json_data
+                          is_tier_achieved
                           tier_product {
                             tier_id
                             tier_name
@@ -255,6 +261,19 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                               price_before_benefit
                               price_after_benefit
                               cart_id
+                            }
+                            benefit_wording
+                            action_wording
+                            benefit_quantity
+                            products_benefit {
+                                product_id
+                                quantity
+                                product_name
+                                product_cache_image_url
+                                original_price
+                                final_price
+                                weight
+                                actual_weight
                             }
                           }
                         }
@@ -416,6 +435,16 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       ship_group_id
                       additional_fee
                       minimum_weight
+                    }
+                  }
+                  shipment_action {
+                    sp_id
+                    action
+                    popup {
+                      title
+                      body
+                      button_ok
+                      button_cancel
                     }
                   }
                   dropshipper {

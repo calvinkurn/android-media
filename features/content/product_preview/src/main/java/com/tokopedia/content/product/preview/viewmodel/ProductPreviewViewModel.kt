@@ -28,8 +28,9 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.UpdateReviewPosition
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ToggleReviewWatchMode
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent.UnknownSourceData
 import com.tokopedia.content.product.preview.viewmodel.state.ProductReviewUiState
@@ -112,9 +113,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private val currentReview: ReviewContentUiModel
         get() {
-            return if (_reviewContentState.value.reviewContent.isEmpty() ||
-                _reviewPosition.value in 0 until _reviewContentState.value.reviewContent.size
-            ) {
+            val isEmpty = _reviewContentState.value.reviewContent.isEmpty()
+            val isInScope = _reviewPosition.value in 0 until _reviewContentState.value.reviewContent.size
+            return if (isEmpty || !isInScope) {
                 ReviewContentUiModel.Empty
             } else {
                 _reviewContentState.value.reviewContent[_reviewPosition.value]
@@ -138,13 +139,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
             LikeFromResult -> handleLikeFromResult()
             FetchReviewByIds -> handleFetchReviewByIds()
+            ToggleReviewWatchMode -> handleReviewWatchMode()
             is ProductSelected -> handleProductSelected(action.position)
+            is ReviewSelected -> handleReviewSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
             is ProductAction -> addToChart(action.model)
             is Navigate -> handleNavigate(action.appLink)
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
-            is UpdateReviewPosition -> handleUpdateReviewPosition(action.index)
             is Like -> handleLikeFromResult(action.item)
         }
     }
@@ -210,6 +212,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleReviewSelected(position: Int) {
+        if (_reviewPosition.value == position) return
+        _reviewPosition.value = position
+        updateReviewToUnWatchMode()
+    }
+
     private fun handleFetchReviewByIds() {
         viewModelScope.launchCatchError(block = {
             _reviewContentState.update { review -> review.copy(reviewPaging = ReviewPaging.Load) }
@@ -271,6 +279,16 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     }
                 )
             }
+        }
+    }
+
+    private fun updateReviewToUnWatchMode() {
+        _reviewContentState.update { review ->
+            review.copy(
+                reviewContent = review.reviewContent.map { reviewContent ->
+                    reviewContent.copy(isWatchMode = false)
+                }
+            )
         }
     }
 
@@ -410,10 +428,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleUpdateReviewPosition(position: Int) {
-        _reviewPosition.value = position
-    }
-
     private fun handleLikeFromResult(status: ReviewLikeUiState = currentReview.likeState) {
         if (status.withAnimation && !userSessionInterface.isLoggedIn) return
 
@@ -440,6 +454,20 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }) {
                 _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {})
             }
+        }
+    }
+
+    private fun handleReviewWatchMode() {
+        _reviewContentState.update { review ->
+            review.copy(
+                reviewContent = review.reviewContent.map { reviewContent ->
+                    if (reviewContent.reviewId == currentReview.reviewId) {
+                        reviewContent.copy(isWatchMode = !reviewContent.isWatchMode)
+                    } else {
+                        reviewContent.copy(isWatchMode = false)
+                    }
+                }
+            )
         }
     }
 }

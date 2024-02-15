@@ -126,7 +126,7 @@ open class BuyerOrderDetailTypeFactory(
                 buyerOrderDetailBindRecomWidgetListener
             )
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
-            AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent)
+            AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent, productViewListener, navigator)
             OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator, orderResolutionListener)
             PlatformFeeInfoViewHolder.LAYOUT -> PlatformFeeInfoViewHolder(parent, navigator)
             OrderInsuranceViewHolder.LAYOUT -> OrderInsuranceViewHolder(parent, navigator)

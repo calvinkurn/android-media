@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationCarouselBannerBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.ShopHomeShowCaseNavigationAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
@@ -21,7 +22,8 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeShowCaseNavigationCarouselViewHolder(
     itemView: View,
-    private val listener: ShopHomeReimagineShowcaseNavigationListener
+    private val listener: ShopHomeReimagineShowcaseNavigationListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) :
     AbstractViewHolder<ShowcaseNavigationUiModel>(itemView) {
 
@@ -94,6 +96,7 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
                 false
             )
             adapter = showCaseAdapter
+            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
 
         showCaseAdapter.submit(showcases)

@@ -13,7 +13,6 @@ object TrackingOtpConstant{
 
     object Screen{
         const val SCREEN_COTP = "Input OTP "
-        const val SCREEN_COTP_MISSCALL = "Input OTP miscall"
         const val SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page"
         const val SCREEN_VERIFICATION_METHOD = "change method"
         const val SCREEN_PUSH_NOTIF_RECEIVE = "OTP Push Notif - Receive page"

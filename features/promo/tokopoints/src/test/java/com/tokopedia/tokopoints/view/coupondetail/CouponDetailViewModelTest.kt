@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -74,38 +76,32 @@ class CouponDetailViewModelTest {
         runTest {
             val uniqueCode = "realCode"
             val texts = "text"
-            viewModel.data = mockk {
-                every { swipe } returns mockk {
-                    every { isNeedSwipe } returns true
-                    every { pin } returns mockk {
-                        every { isPinRequire } returns false
-                        every { text } returns texts
-                    }
-                    every { realCode } returns uniqueCode
-                }
-            }
 
-            val observer = mockk<Observer<Resources<CouponSwipeUpdate>>>()
-            val response = mockk<CouponSwipeUpdate> {
-                every {
-                    resultStatus
-                } returns mockk {
-                    every { code } returns 200
-                }
-            }
+            viewModel.data = CouponValueEntity(
+                swipe = CouponSwipeDetail(
+                    isNeedSwipe = true,
+                    pin = CouponSwipePin(isPinRequire = false, text = texts)
+                ),
+                realCode = uniqueCode
+            )
+
+            val swipeCouponResponse = CouponSwipeUpdate(
+                resultStatus = ResultStatusEntity(code = 200)
+            )
+
             coEvery { repository.swipeMyCoupon(any(), "") } returns mockk {
-                every { getData<CouponSwipeUpdateOuter>(CouponSwipeUpdateOuter::class.java) } returns mockk(relaxed = true) {
-                    every { swipeCoupon } returns response
-                }
+                every { getData<CouponSwipeUpdateOuter>(CouponSwipeUpdateOuter::class.java) } returns CouponSwipeUpdateOuter(
+                    swipeCoupon = swipeCouponResponse
+                )
                 every { getError(CouponSwipeUpdateOuter::class.java) } returns null
             }
-            viewModel.onCouponSwipe.observeForever(observer)
-            val method = viewModel::class.java.getDeclaredMethod("swipeMyCoupon", CouponValueEntity::class.java)
-            method.isAccessible = true
-            val parameters = arrayOfNulls<Any>(1)
-            parameters[0] = viewModel.data
-            method.invoke(viewModel, *parameters)
-            verify { observer.onChanged(any<Success<CouponSwipeUpdate>>()) }
+
+            viewModel.onSwipeComplete()
+
+            val expectedCouponLiveData = Success(swipeCouponResponse)
+
+            viewModel.onCouponSwipe
+                .verifyValueEquals(expectedCouponLiveData)
         }
     }
 
@@ -149,6 +145,23 @@ class CouponDetailViewModelTest {
             parameters[0] = viewModel.data
             method.invoke(viewModel, *parameters)
             verify { observer.onChanged(any<ErrorMessage<CouponSwipeUpdate>>()) }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `given isNeedSwipe false when call onSwipeComplete should not update onCouponSwipe live data`() {
+        runTest {
+            val isNeedSwipe = false
+
+            viewModel.data = CouponValueEntity(
+                swipe = CouponSwipeDetail(isNeedSwipe = isNeedSwipe)
+            )
+
+            viewModel.onSwipeComplete()
+
+            viewModel.onCouponSwipe
+                .verifyValueEquals(null)
         }
     }
 
@@ -315,6 +328,17 @@ class CouponDetailViewModelTest {
     }
 
     @Test
+    fun `given reFetchRealCode throws exception when reFetchRealCode should set onReFetch live data with ErrorMessage`() {
+        runTest {
+            coEvery { repository.reFetchRealCode(any()) } throws Throwable()
+
+            viewModel.reFetchRealCode()
+
+            assertEquals(ErrorMessage<String>(""), viewModel.onReFetch.value)
+        }
+    }
+
+    @Test
     fun redeemCoupon() {
 
         runTest {
@@ -339,16 +363,12 @@ class CouponDetailViewModelTest {
     @Test
     fun `redeem fail`(){
         runTest {
-            val redeemCouponObserver = mockk<Observer<Resources<String>>>()
-            viewModel.onRedeemCoupon.observeForever(redeemCouponObserver)
+            coEvery { repository.redeemCoupon(any()) } throws NullPointerException()
+
             viewModel.redeemCoupon("code", "cta")
-            verify { redeemCouponObserver.onChanged(any<ErrorMessage<String>>()) }
-            coEvery { repository.redeemCoupon(any()) } returns mockk() {
-                every { getError(ApplyCouponBaseEntity::class.java) } returns null
-                every { getData<ApplyCouponBaseEntity>(ApplyCouponBaseEntity::class.java) } returns null
-            }
-            viewModel.redeemCoupon("code", "cta")
-            verify { redeemCouponObserver.onChanged(any<ErrorMessage<String>>()) }
+
+            viewModel.onRedeemCoupon
+                .verifyValueEquals(ErrorMessage<String>("cta"))
         }
     }
 
@@ -356,16 +376,33 @@ class CouponDetailViewModelTest {
     @Test
     fun `phone verification before coupon redeem`() {
         runTest {
-            val userInfoObserver = mockk<Observer<PhoneVerificationResponse>>()
+            val phoneVerificationResponse =
+                PhoneVerificationResponse(mfGetUserInfo = MfGetUserInfo(verifiedMsisdn = true))
+
             coEvery { repository.getUserPhoneVerificationInfo() } returns mockk {
                 every {
                     getData<PhoneVerificationResponse>(PhoneVerificationResponse::class.java)
-                } returns mockk()
+                } returns phoneVerificationResponse
                 every { getError(PhoneVerificationResponse::class.java) } returns null
             }
-            viewModel.userInfo.observeForever(userInfoObserver)
+
             viewModel.isPhonerVerfied()
-            verify { userInfoObserver.onChanged(any()) }
+
+            viewModel.userInfo
+                .verifyValueEquals(phoneVerificationResponse)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `given phone verification throws exception when call isPhonerVerfied should NOT crash`() {
+        runTest {
+            coEvery { repository.getUserPhoneVerificationInfo() } throws NullPointerException()
+
+            viewModel.isPhonerVerfied()
+
+            viewModel.userInfo
+                .verifyValueEquals(null)
         }
     }
 
@@ -378,7 +415,35 @@ class CouponDetailViewModelTest {
 
         viewModel = CouponDetailViewModel(bundle, repository)
         assertEquals("12345", viewModel.couponCode)
+    }
 
+    @Test
+    fun `given couponCode empty when init viewmodel should update detailLiveData with Loading`() {
+        val couponCode = ""
+
+        val bundle = mockk<Bundle>()
+        coEvery { bundle.getString("coupon_code") } returns couponCode
+
+        viewModel = CouponDetailViewModel(bundle, repository)
+
+        assert(viewModel.detailLiveData.value is Loading)
+        assert(viewModel.finish.value is Unit)
+    }
+
+    @Test
+    fun `given getCouponDetail throws exception when init viewmodel should update detailLiveData with ErrorMessage`() {
+        val exception = MessageErrorException(null)
+
+        val couponCode = "5125"
+        val bundle = mockk<Bundle>()
+
+        coEvery { repository.getCouponDetail(couponCode) } throws exception
+        coEvery { bundle.getString("coupon_code") } returns couponCode
+
+        viewModel = CouponDetailViewModel(bundle, repository)
+
+        viewModel.detailLiveData
+            .verifyValueEquals(ErrorMessage<CouponValueEntity>(""))
     }
 
     @After

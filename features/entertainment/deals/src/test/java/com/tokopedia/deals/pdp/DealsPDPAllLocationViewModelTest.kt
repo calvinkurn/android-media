@@ -1,11 +1,9 @@
 package com.tokopedia.deals.pdp
 
-import com.tokopedia.deals.pdp.data.Outlet
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -19,7 +17,7 @@ class DealsPDPAllLocationViewModelTest : DealsPDPAllLocationViewModelTestFixture
     fun `when getting search result by name give expected search result`() {
         val rawOutlets = createPDPData().eventProductDetail.productDetailData.outlets
         val expectedOutlets = listOf(
-            Outlet(
+            com.tokopedia.deals.ui.pdp.data.Outlet(
                 id = "20196",
                 productId = "0",
                 locationId = "318",
@@ -41,7 +39,7 @@ class DealsPDPAllLocationViewModelTest : DealsPDPAllLocationViewModelTestFixture
             )
         )
 
-        var outlet: List<Outlet>? = null
+        var outlet: List<com.tokopedia.deals.ui.pdp.data.Outlet>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -60,7 +58,7 @@ class DealsPDPAllLocationViewModelTest : DealsPDPAllLocationViewModelTestFixture
     fun `when getting search result by district give expected search result`() {
         val rawOutlets = createPDPData().eventProductDetail.productDetailData.outlets
         val expectedOutlets = listOf(
-            Outlet(
+            com.tokopedia.deals.ui.pdp.data.Outlet(
                 id = "20196",
                 productId = "0",
                 locationId = "318",
@@ -82,7 +80,7 @@ class DealsPDPAllLocationViewModelTest : DealsPDPAllLocationViewModelTestFixture
             )
         )
 
-        var outlet: List<Outlet>? = null
+        var outlet: List<com.tokopedia.deals.ui.pdp.data.Outlet>? = null
 
         runBlockingTest {
             val collectorJob = launch {

@@ -25,7 +25,7 @@ data class TopupBillsPersoFavNumberItem(
     @SerializedName("trackingData")
     val trackingData: TopupBillsPersoFavNumberTrackingData = TopupBillsPersoFavNumberTrackingData(),
     @SerializedName("label1")
-    val label1: String,
+    val label1: String = "",
     @SerializedName("label2")
-    val label2: String
+    val label2: String = ""
 ): Parcelable

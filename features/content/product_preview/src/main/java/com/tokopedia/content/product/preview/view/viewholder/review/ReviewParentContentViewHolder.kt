@@ -44,7 +44,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewParentContentViewHolder(
     private val binding: ItemReviewParentContentBinding,
-    private val reviewInteractionListener: ReviewInteractionListener
+    private val reviewInteractionListener: ReviewInteractionListener,
+    private val mediasViewPool: RecyclerView.RecycledViewPool
 ) : ViewHolder(binding.root),
     ProductPreviewVideoListener {
 
@@ -52,17 +53,17 @@ class ReviewParentContentViewHolder(
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View) {
                 if (reviewMediaAdapter.itemCount < 0) return
-                binding.rvReviewMedia.addOnScrollListener(contentScrollListener)
+                binding.rvReviewMedia.addOnScrollListener(mediaScrollListener)
             }
 
             override fun onViewDetachedFromWindow(p0: View) {
                 mVideoPlayer = null
-                binding.rvReviewMedia.removeOnScrollListener(contentScrollListener)
+                binding.rvReviewMedia.removeOnScrollListener(mediaScrollListener)
             }
         })
     }
 
-    private val contentScrollListener = object : RecyclerView.OnScrollListener() {
+    private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
             val position = getContentCurrentPosition()
@@ -112,11 +113,26 @@ class ReviewParentContentViewHolder(
     }
 
     fun bind(item: ReviewContentUiModel) {
+        bindWatchMode(item.isWatchMode)
         bindMedia(item.medias, item.mediaSelectedPosition)
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
         setupTap(item)
+    }
+
+    fun onRecycled() {
+        onMediaRecycled()
+    }
+
+    fun bindWatchMode(isWatchMode: Boolean) {
+        binding.groupReviewDetails.showWithCondition(!isWatchMode)
+        binding.groupReviewInteraction.showWithCondition(!isWatchMode)
+        binding.icWatchMode.showWithCondition(isWatchMode)
+
+        binding.icWatchMode.setOnClickListener {
+            reviewInteractionListener.updateReviewWatchMode()
+        }
     }
 
     private fun bindMedia(
@@ -127,7 +143,9 @@ class ReviewParentContentViewHolder(
 
         adapter = reviewMediaAdapter
         layoutManager = layoutManagerMedia
-        addOnScrollListener(contentScrollListener)
+        setHasFixedSize(true)
+        addOnScrollListener(mediaScrollListener)
+        setRecycledViewPool(mediasViewPool)
         snapHelperMedia.attachToRecyclerView(this)
         itemAnimator = null
 
@@ -135,6 +153,11 @@ class ReviewParentContentViewHolder(
 
         setupPageControlMedia(media.size, mediaSelectedPosition)
         scrollToPosition(mediaSelectedPosition)
+    }
+
+    private fun onMediaRecycled() = with(binding.rvReviewMedia) {
+        removeOnScrollListener(mediaScrollListener)
+        reviewMediaAdapter.submitList(emptyList())
     }
 
     private fun bindAuthor(author: ReviewAuthorUiModel) = with(binding.layoutAuthorReview) {
@@ -230,7 +253,7 @@ class ReviewParentContentViewHolder(
 
     private fun setupTap(item: ReviewContentUiModel) {
         binding.ivReviewMenu.setOnClickListener {
-            reviewInteractionListener.onMenuClicked(item.menus)
+            reviewInteractionListener.onMenuClicked()
         }
 
         val gesture = GestureDetector(
@@ -274,7 +297,7 @@ class ReviewParentContentViewHolder(
 
     private fun setupPageControlMedia(
         mediaSize: Int,
-        mediaSelectedPosition: Int,
+        mediaSelectedPosition: Int
     ) = with(binding.pcReviewContent) {
         setIndicator(mediaSize)
         setCurrentIndicator(mediaSelectedPosition)
@@ -311,7 +334,7 @@ class ReviewParentContentViewHolder(
     data class DescriptionUiModel(
         var isExpanded: Boolean = false,
         var originalText: SpannedString = buildSpannedString { },
-        var truncatedText: SpannedString = buildSpannedString { },
+        var truncatedText: SpannedString = buildSpannedString { }
     )
 
     companion object {
@@ -321,14 +344,16 @@ class ReviewParentContentViewHolder(
 
         fun create(
             parent: ViewGroup,
-            reviewInteractionListener: ReviewInteractionListener
+            reviewInteractionListener: ReviewInteractionListener,
+            mediasViewPool: RecyclerView.RecycledViewPool
         ) = ReviewParentContentViewHolder(
             binding = ItemReviewParentContentBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             ),
-            reviewInteractionListener = reviewInteractionListener
+            reviewInteractionListener = reviewInteractionListener,
+            mediasViewPool = mediasViewPool
         )
     }
 }

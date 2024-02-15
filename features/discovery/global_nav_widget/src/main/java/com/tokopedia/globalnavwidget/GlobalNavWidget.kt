@@ -8,15 +8,21 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
+import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_SHOP
 import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogAdapter
 import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogItemDecoration
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -67,6 +73,10 @@ class GlobalNavWidget: BaseCustomView {
         findViewById(R.id.singleGlobalNavInfo)
     }
 
+    private val globalNavShopContainer: CardUnify2? by lazy(NONE) {
+        findViewById(R.id.globalNavShopWidgetContainer)
+    }
+
     private val backgroundGradientColorList = intArrayOf(-0x51a, -0x1a0a01, -0x140011, -0x1511)
 
     constructor(context: Context): super(context) {
@@ -85,14 +95,31 @@ class GlobalNavWidget: BaseCustomView {
         View.inflate(context, R.layout.global_nav_widget_layout, this)
     }
 
-    fun setData(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
-        if (globalNavWidgetModel.itemList.size == 1) {
-            hideGlobalNavListContainer()
-            handleSingleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
-        }
-        else {
-            hideSingleGlobalNavCard()
-            handleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
+    fun setData(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener,
+    ) {
+        val isOnlyOneItem = globalNavWidgetModel.itemList.size == 1
+        when {
+            isOnlyOneItem && globalNavWidgetModel.navTemplate == NAV_TEMPLATE_SHOP -> {
+                hideGlobalNavListContainer()
+                hideSingleGlobalNavCard()
+                showGlobalNavigationShopWidget()
+                val globalNavShopWidgetRender = GlobalNavShopWidgetRender(this)
+                globalNavShopWidgetRender.setItemGlobalNavigation(
+                    globalNavWidgetModel,
+                    globalNavWidgetListener,
+                )
+            }
+            isOnlyOneItem -> {
+                hideGlobalNavListContainer()
+                handleSingleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
+            }
+            else -> {
+                hideSingleGlobalNavCard()
+                hideGlobalNavigationShopWidget()
+                handleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
+            }
         }
     }
 
@@ -118,7 +145,11 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun setBackgroundFromModel(backgroundImgUrl: String) {
         globalNavContainerLayout?.let {
-            ImageHandler.loadBackgroundImage(it, backgroundImgUrl)
+            backgroundImgUrl.getBitmapImageUrl(it.context) { bitmapResult ->
+                try {
+                    it.background = bitmapResult.toDrawable(it.resources)
+                } catch (_: Exception) {}
+            }
         }
     }
 
@@ -170,7 +201,7 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun AppCompatImageView.setSingleGlobalNavIconImageWithUrl(url: String, hiddenView: AppCompatImageView?) {
         shouldShowWithAction(url.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(context, it, url)
+            it?.loadImageFitCenter(url)
             hiddenView?.visibility = View.GONE
         }
     }
@@ -412,5 +443,13 @@ class GlobalNavWidget: BaseCustomView {
         catalogAdapter.setItemList(globalNavWidgetModel.itemList)
 
         return catalogAdapter
+    }
+
+    private fun showGlobalNavigationShopWidget() {
+        globalNavShopContainer?.show()
+    }
+
+    private fun hideGlobalNavigationShopWidget() {
+        globalNavShopContainer?.hide()
     }
 }
