@@ -67,7 +67,7 @@ class ShopDiscountSellerInfoBottomSheetViewModel @Inject constructor(
             val tickerData = withContext(dispatcherProvider.io) {
                 getTargetedTickerUseCase.execute(
                     GetTargetedTickerUseCase.Param(
-                        page = "seller.selpart-flash-sale",
+                        page = GetTargetedTickerUseCase.PAGE_SLASH_PRICE,
                         targets = listOf(
                             GetTargetedTickerUseCase.Param.Target(
                                 type = tickerUnificationConfig.target.type,
