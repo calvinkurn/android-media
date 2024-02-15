@@ -85,7 +85,7 @@ class AddToCartOcsUseCase @Inject constructor(
                     params.productId, params.productName, params.price,
                     params.quantity.toString(), params.category, params.categoryLevel1Id,
                     params.categoryLevel1Name, params.categoryLevel2Id, params.categoryLevel2Name,
-                    params.categoryLevel3Id, params.categoryLevel3Name, params.userId
+                    params.categoryLevel3Id, params.categoryLevel3Name, params.userId, params.shopId
                 )
             }
             return result
