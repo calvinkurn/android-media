@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.presentation.util.animation
+package com.tokopedia.content.common.util
 
 import android.animation.Animator
 import android.animation.ValueAnimator
@@ -7,7 +7,7 @@ import androidx.annotation.FloatRange
 /**
  * Created by kenny.hadisaputra on 08/08/23
  */
-class FeedPostAlphaAnimator(
+class ContentAlphaAnimator(
     private val listener: Listener
 ) {
 
@@ -49,6 +49,6 @@ class FeedPostAlphaAnimator(
     }
 
     interface Listener {
-        fun onAnimateAlpha(animator: FeedPostAlphaAnimator, alpha: Float)
+        fun onAnimateAlpha(animator: ContentAlphaAnimator, alpha: Float)
     }
 }
