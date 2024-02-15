@@ -84,7 +84,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
             event = Event.add_to_cart,
             eventAction = "click - add to cart media fullscreen",
             eventLabel = productId,
-            itemList = "/unified view pdp",
+            itemList = "",
             products = listOf(
                 ContentEnhanceEcommerce.Product(
                     itemId = productId,
