@@ -1,7 +1,7 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.cartrevamp.view.uimodel.CartOnBoardingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartOnBoardingBottomSheetData
 
 data class OnboardingBottomSheet(
     @SerializedName("type")

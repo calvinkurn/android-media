@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
+import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -13,23 +14,22 @@ object HomeRollenceController {
     var rollenceLoadTime: String = ""
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
     var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
+    var iconJumperSREValue: String = ""
 
     fun fetchHomeRollenceValue() {
         fetchAtfRollenceValue()
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
+        HomeComponentFeatureFlag.fetchMissionRollenceValue()
     }
 
     @JvmStatic
     fun fetchIconJumperValue() {
-        iconJumperValue = try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.ICON_JUMPER,
-                RollenceKey.ICON_JUMPER_DEFAULT
-            )
-        } catch (_: Exception) {
+        iconJumperValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.ICON_JUMPER,
             RollenceKey.ICON_JUMPER_DEFAULT
-        }
+        )
+        iconJumperSREValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.ICON_JUMPER_SRE_KEY)
     }
 
     private fun fetchAtfRollenceValue() {
@@ -87,6 +87,12 @@ object HomeRollenceController {
 
     @JvmStatic
     fun isIconJumper(): Boolean {
-        return iconJumperValue == RollenceKey.ICON_JUMPER_EXP
+        return iconJumperValue == RollenceKey.ICON_JUMPER_EXP ||
+            iconJumperSREValue == RollenceKey.ICON_JUMPER_SRE_VALUE
+    }
+
+    @JvmStatic
+    fun isIconJumperSRE(): Boolean {
+        return iconJumperSREValue == RollenceKey.ICON_JUMPER_SRE_VALUE
     }
 }

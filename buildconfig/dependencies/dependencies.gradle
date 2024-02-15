@@ -121,6 +121,8 @@ ext {
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
     androidxFragment = '1.5.7'
+    divKitVersion = '28.4.0'
+    divKitLottieVersion = '3.0.1'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
@@ -372,6 +374,14 @@ ext {
             ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
             influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05",
             rechargePcidss        : "com.tokopedia.recharge_credit_card.widget:recharge-pcidss:${rechargePcidssVersion}@aar"
+    ]
+
+    sduiDependencies = [
+            divcore               : "com.yandex.div:div-core:$divKitVersion",
+            div                   : "com.yandex.div:div:$divKitVersion",
+            divjson               : "com.yandex.div:div-json:$divKitVersion",
+            divlottie             : "com.yandex.div:div-lottie:$divKitLottieVersion",
+            divutils              : "com.yandex.div:utils:$divKitVersion",
     ]
 
     testDependencies = [

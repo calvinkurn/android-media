@@ -14,11 +14,17 @@ import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.vi
 /**
  * Created by yfsx on 5/3/21.
  */
-class CommonRecomCarouselCardTypeFactoryImpl (private val data: RecommendationWidget) :
-        BaseAdapterTypeFactory(), CommonRecomCarouselCardTypeFactory {
+class CommonRecomCarouselCardTypeFactoryImpl constructor(
+    private val data: RecommendationWidget,
+    private val forceUseOldProductCard: Boolean
+) : BaseAdapterTypeFactory(), CommonRecomCarouselCardTypeFactory {
 
     override fun type(dataModel: RecomCarouselProductCardDataModel): Int {
-        return RecomCarouselProductCardViewHolder.LAYOUT
+        return if (dataModel.recomItem.isUseQuantityEditor() && forceUseOldProductCard) {
+            RecomCarouselProductCardViewHolder.LAYOUT_V4
+        } else {
+            RecomCarouselProductCardViewHolder.LAYOUT_V5
+        }
     }
 
     override fun type(bannerModel: RecomCarouselBannerDataModel): Int {
@@ -31,15 +37,10 @@ class CommonRecomCarouselCardTypeFactoryImpl (private val data: RecommendationWi
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            RecomCarouselProductCardViewHolder.LAYOUT -> {
-                RecomCarouselProductCardViewHolder(parent, data)
-            }
-            RecomCarouselSeeMoreViewHolder.LAYOUT -> {
-                RecomCarouselSeeMoreViewHolder(parent, data)
-            }
-            RecomCarouselBannerViewHolder.LAYOUT -> {
-                RecomCarouselBannerViewHolder(parent, data)
-            }
+            RecomCarouselProductCardViewHolder.LAYOUT_V4 -> RecomCarouselProductCardViewHolder(parent, data)
+            RecomCarouselProductCardViewHolder.LAYOUT_V5 -> RecomCarouselProductCardViewHolder(parent, data)
+            RecomCarouselSeeMoreViewHolder.LAYOUT -> RecomCarouselSeeMoreViewHolder(parent, data)
+            RecomCarouselBannerViewHolder.LAYOUT -> RecomCarouselBannerViewHolder(parent, data)
             else -> {
                 super.createViewHolder(parent, type)
             }

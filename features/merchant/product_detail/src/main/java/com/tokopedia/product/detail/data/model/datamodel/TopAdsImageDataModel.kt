@@ -11,6 +11,9 @@ data class TopAdsImageDataModel(
         var data: ArrayList<TopAdsImageViewModel>?= null
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name

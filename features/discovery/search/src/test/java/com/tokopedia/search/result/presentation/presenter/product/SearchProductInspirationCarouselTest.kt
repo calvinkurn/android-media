@@ -44,7 +44,7 @@ private const val dynamicProductNoSuggestion = "searchproduct/inspirationcarouse
 private const val keywordProduct = "searchproduct/inspirationcarousel/keyword-product.json"
 private const val dealsCarouselWithCardButton = "searchproduct/inspirationcarousel/deals-with-card-button.json"
 
-internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
+internal class SearchProductInspirationCarouselTest : ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val keyword = "samsung"
@@ -52,7 +52,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         SearchApiConst.Q to keyword,
         SearchApiConst.START to "0",
         SearchApiConst.UNIQUE_ID to "unique_id",
-        SearchApiConst.USER_ID to "0",
+        SearchApiConst.USER_ID to "0"
     )
     private val expectedDimension90 = Dimension90Utils.getDimension90(searchParameter)
 
@@ -174,7 +174,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                 this.layout,
                 expectedOptionPosition,
                 expected.title,
-                expectedDimension90,
+                expectedDimension90
             )
             actual.inspirationCarouselType shouldBe this.type
             actual.layout shouldBe this.layout
@@ -191,7 +191,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     private fun `When Load More`() {
-        val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+        val searchParameter: Map<String, Any> = mutableMapOf<String, Any>().also {
             it[SearchApiConst.Q] = keyword
             it[SearchApiConst.START] = "0"
             it[SearchApiConst.UNIQUE_ID] = "unique_id"
@@ -225,25 +225,23 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             if (index == 2) {
                 visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
-                        "visitable list at index $index should be InspirationCarouselViewModel"
+                    "visitable list at index $index should be InspirationCarouselViewModel"
                 )
                 assert((visitable as InspirationCarouselDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                     "Inspiration Carousel layout should be $LAYOUT_INSPIRATION_CAROUSEL_GRID"
                 }
                 visitable.assertInspirationCarouselDataView(searchProductModel.searchInspirationCarousel.data[4])
-            }
-            else if (index == 7) {
+            } else if (index == 7) {
                 visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
-                        "visitable list at index $index should be InspirationCarouselViewModel"
+                    "visitable list at index $index should be InspirationCarouselViewModel"
                 )
                 assert((visitable as InspirationCarouselDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_INFO) {
                     "Inspiration Carousel layout should be $LAYOUT_INSPIRATION_CAROUSEL_INFO"
                 }
                 visitable.assertInspirationCarouselDataView(searchProductModel.searchInspirationCarousel.data[5])
-            }
-            else {
+            } else {
                 visitable.shouldBeInstanceOf<ProductItemDataView>(
-                        "visitable list at index $index should be ProductItemViewModel"
+                    "visitable list at index $index should be ProductItemViewModel"
                 )
             }
         }
@@ -290,13 +288,12 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         visitableList.forEachIndexed { index, visitable ->
             if (index == 1) {
                 visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
-                        "visitable list at index $index should be InspirationCarouselViewModel"
+                    "visitable list at index $index should be InspirationCarouselViewModel"
                 )
                 (visitable as InspirationCarouselDataView).assertInspirationCarouselDataView(searchProductModel.searchInspirationCarousel.data[0])
-            }
-            else {
+            } else {
                 visitable.shouldBeInstanceOf<ProductItemDataView>(
-                        "visitable list at index $index should be ProductItemViewModel"
+                    "visitable list at index $index should be ProductItemViewModel"
                 )
             }
         }
@@ -448,25 +445,25 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                 }
                 5 -> {
                     visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
-                            "visitable list at index $index should be InspirationCarouselViewModel"
+                        "visitable list at index $index should be InspirationCarouselViewModel"
                     )
                     (visitable as InspirationCarouselDataView).assertInspirationCarouselDataView(searchProductModel.searchInspirationCarousel.data[1])
                 }
                 6 -> {
                     visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
-                            "visitable list at index $index should be InspirationCarouselViewModel"
+                        "visitable list at index $index should be InspirationCarouselViewModel"
                     )
                     (visitable as InspirationCarouselDataView).assertInspirationCarouselDataView(searchProductModel.searchInspirationCarousel.data[0])
                 }
                 15 -> {
                     visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
-                            "visitable list at index $index should be InspirationCarouselViewModel"
+                        "visitable list at index $index should be InspirationCarouselViewModel"
                     )
                     (visitable as InspirationCarouselDataView).assertInspirationCarouselDataView(searchProductModel.searchInspirationCarousel.data[2])
                 }
                 else -> {
                     visitable.shouldBeInstanceOf<ProductItemDataView>(
-                            "visitable list at index $index should be ProductItemViewModel"
+                        "visitable list at index $index should be ProductItemViewModel"
                     )
                 }
             }
@@ -489,7 +486,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         visitableList.forEachIndexed { index, visitable ->
             visitable.shouldBeInstanceOf<ProductItemDataView>(
-                    "visitable list at index $index should be ProductItemViewModel"
+                "visitable list at index $index should be ProductItemViewModel"
             )
         }
     }
@@ -589,8 +586,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                 }
                 else -> {
                     (visitable is InspirationCarouselDataView).shouldBe(
-                            false,
-                            "Visitable index $index should not be inspiration carousel"
+                        false,
+                        "Visitable index $index should not be inspiration carousel"
                     )
                 }
             }
@@ -598,11 +595,11 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     private fun Visitable<*>.assertInspirationCarouselChips(
-            index: Int,
-            expectedInspirationCarousel: SearchProductModel.InspirationCarouselData,
+        index: Int,
+        expectedInspirationCarousel: SearchProductModel.InspirationCarouselData
     ) {
         shouldBeInstanceOf<InspirationCarouselDataView>(
-                "visitable list at index $index should be InspirationCarouselViewModel"
+            "visitable list at index $index should be InspirationCarouselViewModel"
         )
         assert((this as InspirationCarouselDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS) {
             "Inspiration Carousel layout should be $LAYOUT_INSPIRATION_CAROUSEL_CHIPS"
@@ -618,10 +615,11 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     private fun Visitable<*>.assertInspirationCarouselHexColor(
-            expectedInspirationCarousel: SearchProductModel.InspirationCarouselData
+        expectedInspirationCarousel: SearchProductModel.InspirationCarouselData
     ) {
-        if (this !is InspirationCarouselDataView)
+        if (this !is InspirationCarouselDataView) {
             throw AssertionError("Not inspiration carousel data view")
+        }
 
         options.forEachIndexed { optionIndex, option ->
             val expectedOption = expectedInspirationCarousel.inspirationCarouselOptions[optionIndex]
@@ -632,10 +630,11 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     private fun Visitable<*>.assertInspirationCarouselChipImageUrl(
-            expectedInspirationCarousel: SearchProductModel.InspirationCarouselData
+        expectedInspirationCarousel: SearchProductModel.InspirationCarouselData
     ) {
-        if (this !is InspirationCarouselDataView)
+        if (this !is InspirationCarouselDataView) {
             throw AssertionError("Not inspiration carousel data view")
+        }
 
         options.forEachIndexed { optionIndex, option ->
             val expectedOption = expectedInspirationCarousel.inspirationCarouselOptions[optionIndex]
@@ -654,16 +653,16 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         `Then verify view set product list`()
         `Then assert inspiration carousel product list`(
-                1,
-                searchProductModel,
-                ::assertCarouselProductTypeDynamic
+            1,
+            searchProductModel,
+            ::assertCarouselProductTypeDynamic
         )
     }
 
     private fun `Then assert inspiration carousel product list`(
         suggestionDataViewCount: Int,
         searchProductModel: SearchProductModel,
-        assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit,
+        assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit
     ) {
         /**
          * Dynamic Carousel Product feature has same UI with Broad Match
@@ -672,10 +671,10 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         val visitableList = visitableListSlot.captured
         val firstProductPosition = visitableList.indexOfFirst { it is ProductItemDataView }
         val assertionData = CarouselProductListAssertionData(
-                suggestionDataViewCount,
-                firstProductPosition,
-                inspirationCarouselData,
-                assertType
+            suggestionDataViewCount,
+            firstProductPosition,
+            inspirationCarouselData,
+            assertType
         )
 
         visitableList.forEachIndexed { index, visitable ->
@@ -698,7 +697,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         suggestionDataViewCount: Int,
         firstProductPosition: Int,
         val inspirationCarouselData: SearchProductModel.InspirationCarouselData,
-        val assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit,
+        val assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit
     ) {
         private val hasTitle = suggestionDataViewCount > 0
         private val carouselPosition = inspirationCarouselData.position
@@ -718,7 +717,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     private fun assertInspirationCarouselAsBroadMatch(
         index: Int,
         assertionData: CarouselProductListAssertionData,
-        visitable: Visitable<*>,
+        visitable: Visitable<*>
     ) {
         val inspirationCarouselData = assertionData.inspirationCarouselData
         val assertType = assertionData.assertType
@@ -731,7 +730,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                 assertionData.inspirationCarouselOptionIndex,
                 inspirationCarouselData,
                 assertionData.hasTopSeparator(index),
-                assertionData.hasBottomSeparator(index),
+                assertionData.hasBottomSeparator(index)
             )
 
             val broadMatchDataView = visitable as BroadMatchDataView
@@ -742,7 +741,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     private fun Visitable<*>.assertSuggestionViewModel(
-            inspirationCarouselData: SearchProductModel.InspirationCarouselData,
+        inspirationCarouselData: SearchProductModel.InspirationCarouselData
     ) {
         val suggestionDataView = this as SuggestionDataView
 
@@ -756,7 +755,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         inspirationCarouselOptionIndex: Int,
         inspirationCarouselData: SearchProductModel.InspirationCarouselData,
         hasTopSeparator: Boolean,
-        hasBottomSeparator: Boolean,
+        hasBottomSeparator: Boolean
     ) {
         val shouldBeBroadMatchMessage =
             "Visitable list at index $visitableIndex should be Broad Match Data View"
@@ -767,14 +766,14 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         (this as BroadMatchDataView).assertBroadMatchDataView(
             inspirationCarouselOption,
             hasTopSeparator,
-            hasBottomSeparator,
+            hasBottomSeparator
         )
     }
 
     private fun BroadMatchDataView.assertBroadMatchDataView(
         inspirationCarouselOption: SearchProductModel.InspirationCarouselOption,
         hasTopSeparator: Boolean,
-        hasBottomSeparator: Boolean,
+        hasBottomSeparator: Boolean
     ) {
         keyword shouldBe inspirationCarouselOption.title
         subtitle shouldBe inspirationCarouselOption.subtitle
@@ -790,17 +789,17 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         inspirationCarouselProducts.forEachIndexed { index, inspirationCarouselProduct ->
             broadMatchItemDataViewList[index].assertBroadMatchItemViewModel(
-                    index,
-                    inspirationCarouselProduct,
-                    inspirationCarouselOption.title,
+                index,
+                inspirationCarouselProduct,
+                inspirationCarouselOption.title
             )
         }
     }
 
     private fun BroadMatchItemDataView.assertBroadMatchItemViewModel(
-            index: Int,
-            inspirationCarouselProduct: SearchProductModel.InspirationCarouselProduct,
-            expectedAlternativeKeyword: String,
+        index: Int,
+        inspirationCarouselProduct: SearchProductModel.InspirationCarouselProduct,
+        expectedAlternativeKeyword: String
     ) {
         id shouldBe inspirationCarouselProduct.id
         name shouldBe inspirationCarouselProduct.name
@@ -831,7 +830,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         }
 
         badgeItemDataViewList.listShouldBe(inspirationCarouselProduct.badgeList) { actual, expected ->
-            actual.title shouldBe  expected.title
+            actual.title shouldBe expected.title
             actual.imageUrl shouldBe expected.imageUrl
             actual.isShown shouldBe expected.isShown
         }
@@ -845,14 +844,14 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
     private fun Visitable<*>.assertNotBroadMatchDataView(visitableIndex: Int) {
         (this is BroadMatchDataView).shouldBe(
-                false,
-                "Visitable index $visitableIndex should not be broad match"
+            false,
+            "Visitable index $visitableIndex should not be broad match"
         )
     }
 
     private fun assertCarouselProductTypeDynamic(
         broadMatchDataView: BroadMatchDataView,
-        inspirationCarouselData: SearchProductModel.InspirationCarouselData,
+        inspirationCarouselData: SearchProductModel.InspirationCarouselData
     ) {
         val carouseLOptionType = broadMatchDataView.carouselOptionType
         carouseLOptionType.shouldBeInstanceOf<DynamicCarouselOption>()
@@ -891,15 +890,15 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         `Then verify view set product list`()
         `Then assert inspiration carousel product list`(
-                1,
-                searchProductModel,
-                ::assertCarouselProductTypeBroadMatch,
+            1,
+            searchProductModel,
+            ::assertCarouselProductTypeBroadMatch
         )
     }
 
     private fun assertCarouselProductTypeBroadMatch(
         broadMatchDataView: BroadMatchDataView,
-        ignored: SearchProductModel.InspirationCarouselData,
+        ignored: SearchProductModel.InspirationCarouselData
     ) {
         val carouselOptionType = broadMatchDataView.carouselOptionType
         carouselOptionType.shouldBeInstanceOf<BroadMatch>()

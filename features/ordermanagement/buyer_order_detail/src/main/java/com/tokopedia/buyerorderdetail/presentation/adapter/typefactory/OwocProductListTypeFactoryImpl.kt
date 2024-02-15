@@ -52,10 +52,18 @@ class OwocProductListTypeFactoryImpl(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OwocProductListHeaderViewHolder.LAYOUT -> OwocProductListHeaderViewHolder(parent, owocProductListHeaderListener)
-            OwocProductViewHolder.LAYOUT -> OwocProductViewHolder(parent)
+            OwocProductViewHolder.LAYOUT -> OwocProductViewHolder(
+                parent,
+                navigator,
+                recyclerviewPoolListener
+            )
             OwocProductBundlingViewHolder.LAYOUT -> OwocProductBundlingViewHolder(parent, navigator, recyclerviewPoolListener)
             OwocProductListToggleViewHolder.LAYOUT -> OwocProductListToggleViewHolder(parent, owocSectionGroupListener)
-            OwocAddonsViewHolder.LAYOUT -> OwocAddonsViewHolder(parent)
+            OwocAddonsViewHolder.LAYOUT -> OwocAddonsViewHolder(
+                parent,
+                navigator,
+                recyclerviewPoolListener
+            )
             OwocThickDividerViewHolder.LAYOUT -> OwocThickDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

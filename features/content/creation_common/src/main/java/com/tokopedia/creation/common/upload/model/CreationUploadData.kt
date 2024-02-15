@@ -142,6 +142,9 @@ sealed interface CreationUploadData {
 
         @SerializedName(KEY_SOURCE_ID)
         val sourceId: String,
+
+        @SerializedName(KEY_IS_INTERSPERSED)
+        val isInterspersed: Boolean,
     ) : CreationUploadData {
 
         val firstMediaUri: String
@@ -170,6 +173,7 @@ sealed interface CreationUploadData {
                 CreationUploadQueueEntity.Shorts(
                     mediaUriList = mediaUriList,
                     sourceId = sourceId,
+                    isInterspersed = isInterspersed,
                 )
             )
         }
@@ -275,6 +279,7 @@ sealed interface CreationUploadData {
         private const val KEY_DRAFT_ID = "draftId"
         private const val KEY_ACTIVITY_ID = "activityId"
         private const val KEY_APPLINK = "applink"
+        private const val KEY_IS_INTERSPERSED = "is_interspersed"
 
         fun parseFromJson(json: String, gson: Gson): CreationUploadData {
             val uploadDataEntity = gson.fromJson<CreationUploadQueueEntity>(
@@ -331,6 +336,7 @@ sealed interface CreationUploadData {
                         authorType = entity.authorType,
                         mediaUriList = shortsEntity.mediaUriList,
                         sourceId = shortsEntity.sourceId,
+                        isInterspersed = shortsEntity.isInterspersed,
                     )
                 }
                 CreationUploadType.Stories ->  {
@@ -389,6 +395,7 @@ sealed interface CreationUploadData {
             sourceId: String,
             authorId: String,
             authorType: String,
+            isInterspersed: Boolean,
         ): CreationUploadData {
 
             return Shorts(
@@ -403,6 +410,7 @@ sealed interface CreationUploadData {
                 sourceId = sourceId,
                 authorId = authorId,
                 authorType = authorType,
+                isInterspersed = isInterspersed,
             )
         }
 

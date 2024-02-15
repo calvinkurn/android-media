@@ -2,12 +2,12 @@ package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.view.uimodel.CartDeleteItemData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.DeleteCartEvent
 import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
-import com.tokopedia.cartrevamp.view.uimodel.CartDeleteItemData
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
