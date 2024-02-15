@@ -113,7 +113,7 @@
                         android:id="@+id/tvShopResponsiveChat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_NN600"
+                        android:textColor="@color/dms_static_color_secondary"
                         app:typographyType="small"
                         tools:text="± 40 menit balas chat" />
 
@@ -129,7 +129,7 @@
                         android:id="@+id/tvShopResponsiveOrder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_NN600"
+                        android:textColor="@color/dms_static_color_secondary"
                         app:typographyType="small"
                         tools:text="± 3 jam pesanan diproses" />
                 </LinearLayout>
@@ -211,7 +211,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingVertical="10dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:paddingHorizontal="12dp"
                 android:gravity="center_vertical"
                 android:layout_marginHorizontal="10dp"
@@ -304,6 +304,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/Unify_NN950"
                         app:typographyType="display_2"
+                        app:typographyWeight="bold"
                         tools:text="Rp9.500.000" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -334,6 +335,7 @@
                         android:textColor="@color/dms_static_catalog_color_error_dark"
                         android:visibility="visible"
                         app:typographyType="small"
+                        app:typographyWeight="bold"
                         tools:text="Rp9.500.000" />
 
                     <com.tokopedia.unifyprinciples.Typography
