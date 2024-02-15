@@ -30,7 +30,7 @@ class SubmitReportUseCase @Inject constructor(
 
     data class Param(
         @SerializedName("feedbackID")
-        val reviewId: Int,
+        val reviewId: String,
 
         @SerializedName("reasonCode")
         val reasonCode: Int,
