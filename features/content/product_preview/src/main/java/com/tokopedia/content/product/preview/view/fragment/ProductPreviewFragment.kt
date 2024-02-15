@@ -146,12 +146,6 @@ class ProductPreviewFragment @Inject constructor(
                 title = "",
                 description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard),
                 position = CoachMark2.POSITION_BOTTOM
-            ),
-            CoachMark2Item(
-                anchorView = binding.anchorAtc,
-                title = "",
-                description = getString(contentproductpreviewR.string.product_prev_coachmark_bottomnav),
-                position = CoachMark2.POSITION_TOP
             )
         )
     }
@@ -311,17 +305,11 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleCoachMark() {
+        if (productPreviewSource.source !is ProductPreviewSourceModel.ProductSourceData) return
         coachMarkJob?.cancel()
         coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(DELAY_COACH_MARK)
-            val finalList = coachMarkItems.filter {
-                if (productPreviewSource.source is ProductPreviewSourceModel.ProductSourceData) {
-                    true
-                } else {
-                    it.anchorView == binding.anchorAtc
-                }
-            } as ArrayList<CoachMark2Item>
-            coachMark.showCoachMark(step = finalList)
+            coachMark.showCoachMark(step = coachMarkItems)
         }
     }
 

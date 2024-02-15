@@ -124,10 +124,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launchCatchError(block = {
-            val hasVisit = productPrevSharedPref.hasVisited(productPreviewSource.source)
+            val hasVisit = productPrevSharedPref.hasVisited()
             if (hasVisit) return@launchCatchError
             _uiEvent.emit(ProductPreviewEvent.ShowCoachMark)
-            productPrevSharedPref.setHasVisit(true, productPreviewSource.source)
+            productPrevSharedPref.setHasVisit(true)
         }){}
     }
 
