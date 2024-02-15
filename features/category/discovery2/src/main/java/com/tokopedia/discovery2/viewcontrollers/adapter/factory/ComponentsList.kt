@@ -172,5 +172,11 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ),
 
     TabsImage(R.layout.tabs_layout, ComponentNames.TabsImage.componentName),
-    TabsImageItem(R.layout.tabs_image_item_layout, ComponentNames.TabsImageItem.componentName)
+    TabsImageItem(R.layout.tabs_image_item_layout, ComponentNames.TabsImageItem.componentName),
+
+    // Automate Coupon
+    SingleAutomateCoupon(
+        id = R.layout.single_automate_coupon_layout,
+        componentName = ComponentNames.SingleAutomateCoupon.componentName
+    )
 }
