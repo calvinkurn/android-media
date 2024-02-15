@@ -572,7 +572,13 @@ class ProductListViewModelTest {
         //Given
         coEvery {
             getSlashPriceProductDetailUseCase.executeOnBackground()
-        } returns GetSlashPriceProductDetailResponse()
+        } returns GetSlashPriceProductDetailResponse(
+            GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail(
+                responseHeader = ResponseHeader(
+                    success = true
+                )
+            )
+        )
         //When
         viewModel.getListProductDetailForManageSubsidy(
             listOf("123", "456"),
@@ -589,7 +595,13 @@ class ProductListViewModelTest {
         //Given
         coEvery {
             getSlashPriceProductDetailUseCase.executeOnBackground()
-        } returns GetSlashPriceProductDetailResponse()
+        } returns GetSlashPriceProductDetailResponse(
+            GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail(
+                responseHeader = ResponseHeader(
+                    success = true
+                )
+            )
+        )
         //When
         viewModel.getListProductDetailForManageSubsidy(
             listOf("123", "456"),
@@ -607,7 +619,13 @@ class ProductListViewModelTest {
         val mode = ""
         coEvery {
             getSlashPriceProductDetailUseCase.executeOnBackground()
-        } returns GetSlashPriceProductDetailResponse()
+        } returns GetSlashPriceProductDetailResponse(
+            GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail(
+                responseHeader = ResponseHeader(
+                    success = true
+                )
+            )
+        )
         //When
         viewModel.getListProductDetailForManageSubsidy(
             listOf("123", "456"),
@@ -626,6 +644,9 @@ class ProductListViewModelTest {
             getSlashPriceProductDetailUseCase.executeOnBackground()
         } returns GetSlashPriceProductDetailResponse(
             GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail(
+                responseHeader = ResponseHeader(
+                    success = true
+                ),
                 productList = listOf(
                     GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList(
                         rule = SlashPriceProductRule(

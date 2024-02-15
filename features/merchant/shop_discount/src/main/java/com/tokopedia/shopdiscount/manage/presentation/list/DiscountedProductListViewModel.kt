@@ -239,7 +239,7 @@ class DiscountedProductListViewModel @Inject constructor(
             val productDetailData = getProductDetailData(listProductId, status, true)
             val responseHeader = productDetailData.responseHeader
             if (!responseHeader.success) {
-                _manageProductSubsidyUiModelLiveData.postValue(Fail(Exception(responseHeader.reason)))
+                _manageProductSubsidyUiModelLiveData.postValue(Fail(Exception(responseHeader.errorMessages.firstOrNull().orEmpty())))
             } else {
                 val listProductDetailUiModel =
                     ShopDiscountProductDetailMapper.mapToShopDiscountProductDetailUiModel(
