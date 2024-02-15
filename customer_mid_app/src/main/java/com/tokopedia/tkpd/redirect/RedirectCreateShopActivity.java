@@ -33,7 +33,7 @@ public class RedirectCreateShopActivity extends AppCompatActivity {
     @SuppressLint("ResourcePackage")
     private void setStatusBar(){
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN600));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.dms_static_green_600));
     }
 
     private void setToolbar(){
