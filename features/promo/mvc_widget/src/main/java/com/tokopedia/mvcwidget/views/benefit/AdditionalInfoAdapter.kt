@@ -10,7 +10,7 @@ import com.tokopedia.mvcwidget.utils.getUnifyColorFromHex
 class AdditionalInfoAdapter : RecyclerView.Adapter<AdditionalInfoAdapter.InfoViewHolder>() {
 
     private var list: List<String> = listOf()
-    private var color: String = "#6D7588"
+    private var color: String = ""
 
     fun submitList(list: List<String>, color: String) {
         this.list = list

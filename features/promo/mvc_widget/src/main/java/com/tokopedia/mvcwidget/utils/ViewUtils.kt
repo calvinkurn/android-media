@@ -1,11 +1,13 @@
 package com.tokopedia.mvcwidget.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.widget.TextView
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 
+@SuppressLint("UnsupportedDarkModeColor")
 internal fun Context.getUnifyColorFromHex(hex: String): Int {
     return runCatching {
         stringToUnifyColor(this, hex).unifyColor!!
