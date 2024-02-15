@@ -47,7 +47,7 @@
         android:id="@+id/group_review_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="layout_author_review, iv_review_star, tv_review_details, tv_review_description, iv_review_menu" />
+        app:constraint_referenced_ids="layout_author_review, iv_review_star, tv_review_details, tv_review_description" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_review_interaction"

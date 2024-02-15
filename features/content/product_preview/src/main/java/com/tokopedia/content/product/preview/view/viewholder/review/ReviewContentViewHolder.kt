@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.common.util.ContentAlphaAnimator
 import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.product.preview.R
@@ -66,6 +67,21 @@ class ReviewContentViewHolder(
             }
         })
     }
+
+    private val alphaAnimator = ContentAlphaAnimator(object : ContentAlphaAnimator.Listener {
+        override fun onAnimateAlpha(animator: ContentAlphaAnimator, alpha: Float) {
+            opacityViewList.forEach { it.alpha = alpha }
+        }
+    })
+
+    private val opacityViewList = listOf(
+        binding.layoutAuthorReview.root,
+        binding.layoutLikeReview.root,
+        binding.ivReviewMenu,
+        binding.ivReviewStar,
+        binding.tvReviewDescription,
+        binding.tvReviewDetails,
+    )
 
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -127,6 +143,10 @@ class ReviewContentViewHolder(
         setupTap(item)
     }
 
+    fun bindScrolling(isScrolling: Boolean) {
+        onScrolling(isScrolling)
+    }
+
     fun onRecycled() {
         onMediaRecycled()
     }
@@ -163,6 +183,15 @@ class ReviewContentViewHolder(
 
         setupPageControlMedia(media.size, mediaSelectedPosition)
         scrollToPosition(mediaSelectedPosition)
+    }
+
+    private fun onScrolling(isScrolling: Boolean) {
+        val startAlpha = opacityViewList.first().alpha
+        if (isScrolling) {
+            alphaAnimator.animateToAlpha(startAlpha)
+        } else {
+            alphaAnimator.animateToOpaque(startAlpha)
+        }
     }
 
     private fun onMediaRecycled() = with(binding.rvReviewMedia) {
