@@ -1,8 +1,6 @@
 package com.tokopedia.checkout.revamp.view.processor
 
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderInsurance
@@ -10,100 +8,25 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
-import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.request.EditPinpointParam
-import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
-import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
-import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
-import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetScheduleDeliveryCoroutineUseCase
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
-import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiCoroutineUseCase
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesCoroutineUseCase
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.logisticcart.shipping.processor.LogisticProcessorGetRatesParam
+import com.tokopedia.logisticcart.shipping.processor.LogisticProcessorGetSchellyParam
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class CheckoutLogisticProcessor @Inject constructor(
-    private val updatePinpointUseCase: UpdatePinpointUseCase,
-    private val ratesUseCase: GetRatesCoroutineUseCase,
-    private val ratesApiUseCase: GetRatesApiCoroutineUseCase,
-    private val ratesWithScheduleUseCase: GetRatesWithScheduleDeliveryCoroutineUseCase,
-    private val ratesResponseStateConverter: RatesResponseStateConverter,
-    private val shippingCourierConverter: ShippingCourierConverter,
-    private val scheduleDeliveryUseCase: GetScheduleDeliveryCoroutineUseCase,
-    private val schellyMapper: ScheduleDeliveryMapper,
-    private val dispatchers: CoroutineDispatchers
+    private val schellyMapper: ScheduleDeliveryMapper
 ) {
-
-    var isBoUnstackEnabled = false
-
-    suspend fun editAddressPinpoint(
-        latitude: String,
-        longitude: String,
-        recipientAddressModel: RecipientAddressModel
-    ): EditAddressResult {
-        return withContext(dispatchers.io) {
-            return@withContext try {
-                val requestParams =
-                    generateUpdatePinpointParam(latitude, longitude, recipientAddressModel)
-                val response = updatePinpointUseCase(requestParams)
-                val statusSuccess = response.keroEditAddress.data.isSuccess == 1
-                if (statusSuccess) {
-                    recipientAddressModel.latitude = latitude
-                    recipientAddressModel.longitude = longitude
-                    EditAddressResult(isSuccess = true)
-                } else {
-                    EditAddressResult(
-                        isSuccess = false,
-                        errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
-                    )
-                }
-            } catch (t: Throwable) {
-                Timber.d(t)
-                EditAddressResult(isSuccess = false, throwable = t)
-            }
-        }
-    }
-
-    private fun generateUpdatePinpointParam(
-        addressLatitude: String,
-        addressLongitude: String,
-        recipientAddressModel: RecipientAddressModel
-    ): UpdatePinpointParam {
-        val params = EditPinpointParam(
-            addressId = recipientAddressModel.id.toLongOrZero(),
-            addressName = recipientAddressModel.addressName,
-            address1 = recipientAddressModel.street,
-            postalCode = recipientAddressModel.postalCode,
-            district = recipientAddressModel.destinationDistrictId,
-            city = recipientAddressModel.cityId,
-            province = recipientAddressModel.provinceId,
-            address2 = "$addressLatitude, $addressLongitude",
-            receiverName = recipientAddressModel.recipientName,
-            phone = recipientAddressModel.recipientPhoneNumber
-        )
-
-        return UpdatePinpointParam(input = params)
-    }
 
     fun getProductForRatesRequest(orderProducts: List<CheckoutItem>): ArrayList<Product> {
         val products = arrayListOf<Product>()
@@ -315,646 +238,86 @@ class CheckoutLogisticProcessor @Inject constructor(
         return ratesParamBuilder.build()
     }
 
-    suspend fun getRates(
-        ratesParam: RatesParam,
-        shopShipments: List<ShopShipment>,
-        selectedServiceId: Int,
-        selectedSpId: Int,
+    fun getSchellyProcessorParam(
         orderModel: CheckoutOrderModel,
-        isOneClickShipment: Boolean,
+        orderProducts: List<CheckoutItem>,
+        address: RecipientAddressModel,
         isTradeIn: Boolean,
-        isTradeInByDropOff: Boolean
-    ): RatesResult? {
-        return withContext(dispatchers.io) {
-            try {
-                var shippingRecommendationData = ratesUseCase(ratesParam)
-                shippingRecommendationData = ratesResponseStateConverter.fillState(
-                    shippingRecommendationData,
-                    shopShipments,
-                    selectedSpId,
-                    selectedServiceId
-                )
-                val boPromoCode = getBoPromoCode(
-                    orderModel
-                )
-                var errorReason = "rates invalid data"
-                if (orderModel.shouldResetCourier) {
-                    orderModel.shouldResetCourier =
-                        false
-                    error("racing condition against epharmacy validation")
-                }
-                if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                    if (isBoUnstackEnabled && orderModel.boCode.isNotEmpty()) {
-                        val logisticPromo =
-                            shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == orderModel.boCode && !it.disabled }
-                        if (logisticPromo != null) {
-                            for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                                if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
-                                    for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                        shippingCourierUiModel.isSelected = false
-                                    }
-                                    for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                        if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
-                                            if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-                                                CheckoutLogger.logOnErrorLoadCourierNew(
-                                                    MessageErrorException(
-                                                        shippingCourierUiModel.productData.error.errorMessage
-                                                    ),
-                                                    orderModel,
-                                                    isOneClickShipment,
-                                                    isTradeIn,
-                                                    isTradeInByDropOff,
-                                                    boPromoCode
-                                                )
-                                                return@withContext null
-                                            } else {
-                                                val courierItemData =
-                                                    generateCourierItemData(
-                                                        false,
-                                                        selectedSpId,
-                                                        orderModel,
-                                                        shippingCourierUiModel,
-                                                        shippingRecommendationData,
-                                                        logisticPromo
-                                                    )
-                                                return@withContext RatesResult(
-                                                    courierItemData,
-                                                    generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
-                                                    shippingDurationUiModel.shippingCourierViewModelList
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            errorReason = "promo not matched"
-                        }
-                    } else {
-                        for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                            if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
-                                for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    shippingCourierUiModel.isSelected = false
-                                }
-                                val newSelectedSpId = getSelectedSpId(
-                                    orderModel,
-                                    selectedSpId,
-                                    shippingDurationUiModel
-                                )
-                                for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    if (shippingCourierUiModel.productData.shipperProductId == newSelectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
-                                        if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-                                            CheckoutLogger.logOnErrorLoadCourierNew(
-                                                MessageErrorException(
-                                                    shippingCourierUiModel.productData.error.errorMessage
-                                                ),
-                                                orderModel,
-                                                isOneClickShipment,
-                                                isTradeIn,
-                                                isTradeInByDropOff,
-                                                boPromoCode
-                                            )
-                                            return@withContext null
-                                        } else {
-                                            val courierItemData = generateCourierItemData(
-                                                false,
-                                                newSelectedSpId,
-                                                orderModel,
-                                                shippingCourierUiModel,
-                                                shippingRecommendationData
-                                            )
-                                            if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
-                                                // courier should only be used with BO, but no BO code found
-                                                CheckoutLogger.logOnErrorLoadCourierNew(
-                                                    MessageErrorException("rates ui hidden but no promo"),
-                                                    orderModel,
-                                                    isOneClickShipment,
-                                                    isTradeIn,
-                                                    isTradeInByDropOff,
-                                                    boPromoCode
-                                                )
-                                                return@withContext null
-                                            }
-                                            val shouldValidatePromo =
-                                                courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
-                                            if (!shouldValidatePromo) {
-                                                shippingCourierUiModel.isSelected = true
-                                            }
-                                            return@withContext RatesResult(
-                                                courierItemData,
-                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
-                                                shippingDurationUiModel.shippingCourierViewModelList
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // corner case auto selection if BE default duration failed
-                        if (orderModel.isAutoCourierSelection) {
-                            val shippingDuration =
-                                shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error.errorId.isEmpty() && it.serviceData.error.errorMessage.isEmpty() }
-                            if (shippingDuration != null) {
-                                val shippingCourier =
-                                    shippingDuration.shippingCourierViewModelList.firstOrNull {
-                                        it.productData.error.errorMessage.isEmpty()
-                                    }
-                                if (shippingCourier != null) {
-                                    val courierItemData = generateCourierItemData(
-                                        false,
-                                        selectedSpId,
-                                        orderModel,
-                                        shippingCourier,
-                                        shippingRecommendationData
-                                    )
-                                    val shouldValidatePromo =
-                                        courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
-                                    if (!shouldValidatePromo) {
-                                        shippingCourier.isSelected = true
-                                    }
-                                    return@withContext RatesResult(
-                                        courierItemData,
-                                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
-                                        shippingDuration.shippingCourierViewModelList
-                                    )
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    errorReason = "rates empty data"
-                }
-                CheckoutLogger.logOnErrorLoadCourierNew(
-                    MessageErrorException(
-                        errorReason
-                    ),
-                    orderModel,
-                    isOneClickShipment,
-                    isTradeIn,
-                    isTradeInByDropOff,
-                    boPromoCode
-                )
-                return@withContext null
-            } catch (t: Throwable) {
-                Timber.d(t)
-                if (t is AkamaiErrorException) {
-                    return@withContext RatesResult(
-                        null,
-                        CheckoutOrderInsurance(),
-                        emptyList(),
-                        t.message ?: ""
-                    )
-                }
-                return@withContext null
-            }
-        }
-    }
-
-    private fun generateCourierItemData(
-        isForceReloadRates: Boolean,
-        spId: Int,
-        orderModel: CheckoutOrderModel,
-        shippingCourierUiModel: ShippingCourierUiModel,
-        shippingRecommendationData: ShippingRecommendationData,
-        logisticPromo: LogisticPromoUiModel? = null
-    ): CourierItemData {
-        var courierItemData =
-            shippingCourierConverter.convertToCourierItemDataNew(
-                shippingCourierUiModel,
-                shippingRecommendationData,
-                orderModel.validationMetadata
-            )
-
-        // Auto apply Promo Stacking Logistic
-        var logisticPromoChosen = logisticPromo
-        if (orderModel.isDisableChangeCourier) {
-            // set error log
-            shippingRecommendationData.listLogisticPromo.firstOrNull()?.let {
-                courierItemData.logPromoMsg = it.disableText
-                courierItemData.logPromoDesc = it.description
-            }
-            // must get promo for tokonow
-            logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
-                it.promoCode.isNotEmpty() && !it.disabled
-            }
-        } else if (isForceReloadRates) {
-            logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
-                !it.disabled && it.isApplied
-            }
-        } else if (!isBoUnstackEnabled) {
-            logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
-                !it.disabled && /*it.shipperId == shipperId &&*/ it.shipperProductId == spId && it.promoCode.isNotEmpty()
-            }
-        }
-        if (logisticPromoChosen?.shipperProductId != null && logisticPromoChosen.shipperProductId != courierItemData.shipperProductId) {
-            val courierUiModel = shippingRecommendationData.shippingDurationUiModels.first {
-                it.serviceData.serviceId == logisticPromoChosen.serviceId
-            }.shippingCourierViewModelList.first {
-                it.productData.shipperProductId == logisticPromoChosen.shipperProductId
-            }
-            courierItemData = shippingCourierConverter.convertToCourierItemDataNew(
-                courierUiModel,
-                shippingRecommendationData,
-                orderModel.validationMetadata
-            )
-        }
-        logisticPromoChosen?.let {
-            courierItemData.logPromoCode = it.promoCode
-            courierItemData.discountedRate = it.discountedRate
-            courierItemData.shippingRate = it.shippingRate
-            courierItemData.benefitAmount = it.benefitAmount
-            courierItemData.promoTitle = it.title
-            courierItemData.isHideShipperName = it.hideShipperName
-            courierItemData.shipperName = it.shipperName
-            courierItemData.etaText = it.etaData.textEta
-            courierItemData.etaErrorCode = it.etaData.errorCode
-            courierItemData.freeShippingChosenCourierTitle = it.freeShippingChosenCourierTitle
-            courierItemData.freeShippingChosenImage = it.imageChosenFreeShipping
-            courierItemData.freeShippingMetadata = it.freeShippingMetadata
-            courierItemData.benefitClass = it.benefitClass
-            courierItemData.shippingSubsidy = it.shippingSubsidy
-            courierItemData.boCampaignId = it.boCampaignId
-            courierItemData.boOrderMessage = it.orderMessage
-        }
-        return courierItemData
-    }
-
-    private fun getBoPromoCode(
-        shipmentCartItemModel: CheckoutOrderModel
-    ): String {
-        if (isBoUnstackEnabled) {
-            return shipmentCartItemModel.boCode
-        }
-        return ""
-    }
-
-    private fun getSelectedSpId(
-        shipmentCartItemModel: CheckoutOrderModel,
-        spId: Int,
-        shippingDurationUiModel: ShippingDurationUiModel
-    ): Int {
-        val currentServiceId =
-            shipmentCartItemModel.shipment.courierItemData?.serviceId
-        return if (currentServiceId != null &&
-            currentServiceId > 0 &&
-            shippingDurationUiModel.serviceData.serviceId == currentServiceId &&
-            shippingDurationUiModel.serviceData.selectedShipperProductId > 0
-        ) {
-            shippingDurationUiModel.serviceData.selectedShipperProductId
-        } else {
-            return spId
-        }
-    }
-
-    suspend fun getRatesWithScheduleDelivery(
-        ratesParam: RatesParam,
-        shopShipments: List<ShopShipment>,
-        selectedServiceId: Int,
-        selectedSpId: Int,
+        isTradeInDropOff: Boolean,
+        codData: CodModel?,
+        cartDataForRates: String,
+        pslCode: String,
+        useMvc: Boolean,
+        promo: CheckoutPromoModel,
+        // specific schelly
         fullfilmentId: String,
-        orderModel: CheckoutOrderModel,
-        isOneClickShipment: Boolean,
+        recommend: Boolean,
+        startDate: String
+    ): LogisticProcessorGetSchellyParam {
+        val ratesGeneralParam = getRatesParam(
+            orderModel,
+            orderProducts,
+            address,
+            isTradeIn,
+            isTradeInDropOff,
+            codData,
+            cartDataForRates,
+            pslCode,
+            useMvc,
+            promo
+        )
+        val schellyParam = schellyMapper.map(
+            ratesGeneralParam,
+            fullfilmentId,
+            startDate,
+            recommend
+        )
+
+        return LogisticProcessorGetSchellyParam(
+            schellyParam = schellyParam,
+            validationMetadata = orderModel.validationMetadata
+        )
+    }
+
+    fun getRatesProcessorParam(
+        order: CheckoutOrderModel,
+        orderProducts: List<CheckoutItem>,
+        address: RecipientAddressModel,
         isTradeIn: Boolean,
-        isTradeInByDropOff: Boolean
-    ): RatesResult? {
-        return withContext(dispatchers.io) {
-            try {
-                val schellyParam =
-                    schellyMapper.map(
-                        ratesParam,
-                        fullfilmentId,
-                        startDate = orderModel.startDate,
-                        isRecommend = orderModel.isRecommendScheduleDelivery
-                    )
-                var shippingRecommendationData =
-                    ratesWithScheduleUseCase(ratesParam to schellyParam)
-                shippingRecommendationData = ratesResponseStateConverter.fillState(
-                    shippingRecommendationData,
-                    shopShipments,
-                    selectedSpId,
-                    0
-                )
-                val boPromoCode = getBoPromoCode(
-                    orderModel
-                )
-                var errorReason = "rates invalid data"
-                if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.scheduleDeliveryData != null) {
-                    if (isBoUnstackEnabled && orderModel.boCode.isNotEmpty()) {
-                        val logisticPromo =
-                            shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == orderModel.boCode && !it.disabled }
-                        if (logisticPromo != null) {
-                            for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                                if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
-                                    for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                        shippingCourierUiModel.isSelected = false
-                                    }
-                                    for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                        if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
-                                            if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-                                                CheckoutLogger.logOnErrorLoadCourierNew(
-                                                    MessageErrorException(
-                                                        shippingCourierUiModel.productData.error.errorMessage
-                                                    ),
-                                                    orderModel,
-                                                    isOneClickShipment,
-                                                    isTradeIn,
-                                                    isTradeInByDropOff,
-                                                    boPromoCode
-                                                )
-                                                return@withContext null
-                                            } else {
-                                                val courierItemData =
-                                                    generateCourierItemDataWithScheduleDelivery(
-                                                        false,
-                                                        selectedServiceId,
-                                                        selectedSpId,
-                                                        orderModel,
-                                                        shippingCourierUiModel,
-                                                        shippingRecommendationData,
-                                                        logisticPromo
-                                                    )
-                                                return@withContext RatesResult(
-                                                    courierItemData,
-                                                    generateCheckoutOrderInsuranceFromCourier(
-                                                        courierItemData,
-                                                        orderModel
-                                                    ),
-                                                    shippingDurationUiModel.shippingCourierViewModelList
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            errorReason = "promo not matched"
-                        }
-                    } else {
-                        for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                            if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
-                                for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    shippingCourierUiModel.isSelected = false
-                                }
-                                for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
-                                        if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-                                            CheckoutLogger.logOnErrorLoadCourierNew(
-                                                MessageErrorException(
-                                                    shippingCourierUiModel.productData.error.errorMessage
-                                                ),
-                                                orderModel,
-                                                isOneClickShipment,
-                                                isTradeIn,
-                                                isTradeInByDropOff,
-                                                boPromoCode
-                                            )
-                                            return@withContext null
-                                        } else {
-                                            val courierItemData =
-                                                generateCourierItemDataWithScheduleDelivery(
-                                                    false,
-                                                    selectedServiceId,
-                                                    selectedSpId,
-                                                    orderModel,
-                                                    shippingCourierUiModel,
-                                                    shippingRecommendationData
-                                                )
-                                            if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
-                                                // courier should only be used with BO, but no BO code found
-                                                CheckoutLogger.logOnErrorLoadCourierNew(
-                                                    MessageErrorException("rates ui hidden but no promo"),
-                                                    orderModel,
-                                                    isOneClickShipment,
-                                                    isTradeIn,
-                                                    isTradeInByDropOff,
-                                                    boPromoCode
-                                                )
-                                                return@withContext null
-                                            }
-                                            val shouldValidatePromo =
-                                                courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
-                                            if (!shouldValidatePromo) {
-                                                shippingCourierUiModel.isSelected = true
-                                            }
-                                            return@withContext RatesResult(
-                                                courierItemData,
-                                                generateCheckoutOrderInsuranceFromCourier(
-                                                    courierItemData,
-                                                    orderModel
-                                                ),
-                                                shippingDurationUiModel.shippingCourierViewModelList
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // corner case auto selection if BE default duration failed
-                        if (orderModel.isAutoCourierSelection || orderModel.isDisableChangeCourier) {
-                            val shippingDuration =
-                                shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error.errorId.isEmpty() && it.serviceData.error.errorMessage.isEmpty() }
-                            if (shippingDuration != null) {
-                                val shippingCourier =
-                                    shippingDuration.shippingCourierViewModelList.firstOrNull {
-                                        it.productData.error.errorMessage.isEmpty()
-                                    }
-                                if (shippingCourier != null) {
-                                    val courierItemData =
-                                        generateCourierItemDataWithScheduleDelivery(
-                                            false,
-                                            selectedServiceId,
-                                            selectedSpId,
-                                            orderModel,
-                                            shippingCourier,
-                                            shippingRecommendationData
-                                        )
-                                    val shouldValidatePromo =
-                                        courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
-                                    if (!shouldValidatePromo) {
-                                        shippingCourier.isSelected = true
-                                    }
-                                    return@withContext RatesResult(
-                                        courierItemData,
-                                        generateCheckoutOrderInsuranceFromCourier(
-                                            courierItemData,
-                                            orderModel
-                                        ),
-                                        shippingDuration.shippingCourierViewModelList
-                                    )
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    errorReason = "rates empty data"
-                }
-                CheckoutLogger.logOnErrorLoadCourierNew(
-                    MessageErrorException(
-                        errorReason
-                    ),
-                    orderModel,
-                    isOneClickShipment,
-                    isTradeIn,
-                    isTradeInByDropOff,
-                    boPromoCode
-                )
-                return@withContext null
-            } catch (t: Throwable) {
-                Timber.d(t)
-                if (t is AkamaiErrorException) {
-                    return@withContext RatesResult(
-                        null,
-                        CheckoutOrderInsurance(),
-                        emptyList(),
-                        t.message ?: ""
-                    )
-                }
-                return@withContext null
-            }
-        }
+        isTradeInDropOff: Boolean,
+        codData: CodModel?,
+        cartDataForRates: String,
+        pslCode: String,
+        useMvc: Boolean,
+        promo: CheckoutPromoModel
+    ): LogisticProcessorGetRatesParam {
+        val ratesParam = getRatesParam(
+            order,
+            orderProducts,
+            address,
+            isTradeIn,
+            isTradeInDropOff,
+            codData,
+            cartDataForRates,
+            pslCode,
+            useMvc,
+            promo
+        )
+        return LogisticProcessorGetRatesParam(
+            ratesParam = ratesParam,
+            selectedServiceId = order.shippingId,
+            selectedSpId = order.spId,
+            boPromoCode = order.boCode,
+            shouldResetCourier = order.shouldResetCourier,
+            validationMetadata = order.validationMetadata,
+            isDisableChangeCourier = order.isDisableChangeCourier,
+            currentServiceId = order.shipment.courierItemData?.serviceId,
+            isAutoCourierSelection = order.isAutoCourierSelection,
+            isTradeInDropOff = isTradeInDropOff
+        )
     }
 
-    suspend fun getScheduleDelivery(
-        ratesParam: RatesParam,
-        fullfilmentId: String,
-        orderModel: CheckoutOrderModel,
-        isOneClickShipment: Boolean
-    ): RatesResult? {
-        return withContext(dispatchers.io) {
-            try {
-                val schellyResponse =
-                    scheduleDeliveryUseCase(
-                        schellyMapper.map(
-                            ratesParam,
-                            fullfilmentId,
-                            isRecommend = orderModel.isRecommendScheduleDelivery,
-                            startDate = orderModel.startDate
-                        )
-                    )
-                val schellyData =
-                    schellyResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
-                val courierItemData =
-                    shippingCourierConverter.schellyToCourierItemData(
-                        schellyData,
-                        orderModel.validationMetadata
-                    )
-                handleSyncShipmentCartItemModel(courierItemData, orderModel)
-                val schellyHasSchedule = courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true
-                val schellyUnavailable = courierItemData.scheduleDeliveryUiModel?.available == false
-                if (schellyHasSchedule || schellyUnavailable) {
-                    return@withContext RatesResult(
-                        courierItemData,
-                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
-                        emptyList()
-                    )
-                } else {
-                    val errorReason = "schelly is not selected"
-                    val boPromoCode = getBoPromoCode(
-                        orderModel
-                    )
-                    CheckoutLogger.logOnErrorLoadCourierNew(
-                        MessageErrorException(
-                            errorReason
-                        ),
-                        orderModel,
-                        isOneClickShipment,
-                        false,
-                        false,
-                        boPromoCode
-                    )
-                    return@withContext null
-                }
-            } catch (t: Throwable) {
-                Timber.d(t)
-                if (t is AkamaiErrorException) {
-                    return@withContext RatesResult(
-                        null,
-                        CheckoutOrderInsurance(),
-                        emptyList(),
-                        t.message ?: ""
-                    )
-                }
-                return@withContext null
-            }
-        }
-    }
-
-    private fun generateCourierItemDataWithScheduleDelivery(
-        isForceReloadRates: Boolean,
-        shipperId: Int,
-        spId: Int,
-        orderModel: CheckoutOrderModel,
-        shippingCourierUiModel: ShippingCourierUiModel,
-        shippingRecommendationData: ShippingRecommendationData,
-        logisticPromo: LogisticPromoUiModel? = null
-    ): CourierItemData {
-        var courierItemData =
-            shippingCourierConverter.convertToCourierItemDataNew(
-                shippingCourierUiModel,
-                shippingRecommendationData,
-                orderModel.validationMetadata
-            )
-
-        // Auto apply Promo Stacking Logistic
-        var logisticPromoChosen = logisticPromo
-        if (orderModel.isDisableChangeCourier) {
-            // set error log
-            shippingRecommendationData.listLogisticPromo.firstOrNull()?.let {
-                courierItemData.logPromoMsg = it.disableText
-                courierItemData.logPromoDesc = it.description
-            }
-            // must get promo for tokonow
-            logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
-                it.promoCode.isNotEmpty() && !it.disabled
-            }
-        } else if (isForceReloadRates) {
-            logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
-                !it.disabled && it.isApplied
-            }
-        } else if (!isBoUnstackEnabled) {
-            logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
-                !it.disabled && it.shipperId == shipperId && it.shipperProductId == spId && it.promoCode.isNotEmpty()
-            }
-        }
-        if (logisticPromoChosen?.shipperProductId != null && logisticPromoChosen.shipperProductId != courierItemData.shipperProductId) {
-            val courierUiModel = shippingRecommendationData.shippingDurationUiModels.first {
-                it.serviceData.serviceId == logisticPromoChosen.serviceId
-            }.shippingCourierViewModelList.first {
-                it.productData.shipperProductId == logisticPromoChosen.shipperProductId
-            }
-            courierItemData = shippingCourierConverter.convertToCourierItemDataNew(
-                courierUiModel,
-                shippingRecommendationData,
-                orderModel.validationMetadata
-            )
-        }
-
-        handleSyncShipmentCartItemModel(courierItemData, orderModel)
-
-        logisticPromoChosen?.let {
-            courierItemData.logPromoCode = it.promoCode
-            courierItemData.discountedRate = it.discountedRate
-            courierItemData.shippingRate = it.shippingRate
-            courierItemData.benefitAmount = it.benefitAmount
-            courierItemData.promoTitle = it.title
-            courierItemData.isHideShipperName = it.hideShipperName
-            courierItemData.shipperName = it.shipperName
-            courierItemData.etaText = it.etaData.textEta
-            courierItemData.etaErrorCode = it.etaData.errorCode
-            courierItemData.freeShippingChosenCourierTitle = it.freeShippingChosenCourierTitle
-            courierItemData.freeShippingChosenImage = it.imageChosenFreeShipping
-            courierItemData.freeShippingMetadata = it.freeShippingMetadata
-            courierItemData.benefitClass = it.benefitClass
-            courierItemData.shippingSubsidy = it.shippingSubsidy
-            courierItemData.boCampaignId = it.boCampaignId
-            courierItemData.boOrderMessage = it.orderMessage
-        }
-        return courierItemData
-    }
-
-    private fun handleSyncShipmentCartItemModel(
+    fun handleSyncShipmentCartItemModel(
         courierItemData: CourierItemData,
         orderModel: CheckoutOrderModel
     ) {
@@ -980,150 +343,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             }
         }
     }
-
-    suspend fun getRatesWithBoCode(
-        ratesParam: RatesParam,
-        shopShipments: List<ShopShipment>,
-        selectedServiceId: Int,
-        selectedSpId: Int,
-        orderModel: CheckoutOrderModel,
-        isTradeInDropOff: Boolean,
-        promoCode: String,
-        isOneClickShipment: Boolean,
-        isTradeIn: Boolean
-    ): RatesResult? {
-        return withContext(dispatchers.io) {
-            try {
-                var shippingRecommendationData = if (isTradeInDropOff) {
-                    ratesApiUseCase(ratesParam)
-                } else {
-                    ratesUseCase(ratesParam)
-                }
-                shippingRecommendationData = ratesResponseStateConverter.fillState(
-                    shippingRecommendationData,
-                    shopShipments,
-                    selectedSpId,
-                    selectedServiceId
-                )
-                var errorReason = "rates invalid data"
-                if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty() && shippingRecommendationData.listLogisticPromo.isNotEmpty()) {
-                    val logisticPromo =
-                        shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == promoCode && !it.disabled }
-                    if (logisticPromo != null) {
-                        for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                            if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
-                                for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    shippingCourierUiModel.isSelected = false
-                                }
-                                for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    if (isTradeInDropOff || shippingCourierUiModel.productData.shipperProductId == selectedSpId && shippingCourierUiModel.productData.shipperId == selectedServiceId) {
-                                        if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-                                            CheckoutLogger.logOnErrorLoadCourierNew(
-                                                MessageErrorException(
-                                                    shippingCourierUiModel.productData.error.errorMessage
-                                                ),
-                                                orderModel,
-                                                isOneClickShipment,
-                                                isTradeIn,
-                                                isTradeInDropOff,
-                                                promoCode
-                                            )
-                                            return@withContext null
-                                        } else {
-                                            shippingCourierUiModel.isSelected = true
-                                            val courierItemData =
-                                                generateCourierItemDataWithLogisticPromo(
-                                                    shippingCourierUiModel,
-                                                    shippingRecommendationData,
-                                                    logisticPromo
-                                                )
-                                            return@withContext RatesResult(
-                                                courierItemData,
-                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
-                                                shippingDurationUiModel.shippingCourierViewModelList
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        errorReason = "promo not found"
-                    }
-                } else {
-                    errorReason = "rates empty data"
-                }
-                throw MessageErrorException(errorReason)
-            } catch (t: Throwable) {
-                Timber.d(t)
-                CheckoutLogger.logOnErrorLoadCourierNew(
-                    t,
-                    orderModel,
-                    isOneClickShipment,
-                    isTradeIn,
-                    isTradeInDropOff,
-                    promoCode
-                )
-                if (t is AkamaiErrorException) {
-                    return@withContext RatesResult(
-                        null,
-                        CheckoutOrderInsurance(),
-                        emptyList(),
-                        t.message ?: ""
-                    )
-                }
-                return@withContext null
-            }
-        }
-    }
-
-    private fun generateCourierItemDataWithLogisticPromo(
-        shippingCourierUiModel: ShippingCourierUiModel,
-        shippingRecommendationData: ShippingRecommendationData,
-        logisticPromoUiModel: LogisticPromoUiModel
-    ): CourierItemData {
-        val courierItemData =
-            shippingCourierConverter.convertToCourierItemDataNew(
-                shippingCourierUiModel,
-                shippingRecommendationData
-            )
-
-        courierItemData.apply {
-            logPromoMsg = logisticPromoUiModel.disableText
-            logPromoDesc = logisticPromoUiModel.description
-            logPromoCode = logisticPromoUiModel.promoCode
-            discountedRate = logisticPromoUiModel.discountedRate
-            shippingRate = logisticPromoUiModel.shippingRate
-            benefitAmount = logisticPromoUiModel.benefitAmount
-            promoTitle = logisticPromoUiModel.title
-            isHideShipperName = logisticPromoUiModel.hideShipperName
-            shipperName = logisticPromoUiModel.shipperName
-            etaText = logisticPromoUiModel.etaData.textEta
-            etaErrorCode = logisticPromoUiModel.etaData.errorCode
-            freeShippingChosenCourierTitle = logisticPromoUiModel.freeShippingChosenCourierTitle
-            freeShippingChosenImage = logisticPromoUiModel.imageChosenFreeShipping
-            freeShippingMetadata = logisticPromoUiModel.freeShippingMetadata
-            benefitClass = logisticPromoUiModel.benefitClass
-            shippingSubsidy = logisticPromoUiModel.shippingSubsidy
-            boCampaignId = logisticPromoUiModel.boCampaignId
-            boOrderMessage = logisticPromoUiModel.orderMessage
-        }
-        return courierItemData
-    }
 }
-
-data class EditAddressResult(
-    val isSuccess: Boolean,
-    val errorMessage: String = "",
-    val throwable: Throwable? = null
-)
-
-data class RatesResult(
-    val courier: CourierItemData?,
-    val insurance: CheckoutOrderInsurance,
-    val couriers: List<ShippingCourierUiModel>,
-    val akamaiError: String = ""
-)
 
 internal fun generateCheckoutOrderInsuranceFromCourier(
     courierItemData: CourierItemData,

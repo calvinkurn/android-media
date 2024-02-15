@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.databinding.ItemCourierBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.utils.ShippingBottomSheetUtils.constructErrorUi
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.logisticcart.R as logisticcartR
@@ -86,14 +87,20 @@ class ShippingCourierViewHolder(private val binding: ItemCourierBinding, private
                     shippingCourierUiModel.productData.shipperName,
                     tvCourier.context.getString(logisticcartR.string.content_desc_tv_courier)
                 )
-                if (shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                    tvPriceOrDuration.text = shippingCourierUiModel.productData.error.errorMessage
-                    tvPriceOrDuration.setTextColor(
-                        ContextCompat.getColor(
-                            tvCourier.context,
-                            unifyprinciplesR.color.Unify_NN950_68
-                        )
+                tvPriceOrDuration.setTextColor(
+                    ContextCompat.getColor(
+                        tvCourier.context,
+                        unifyprinciplesR.color.Unify_RN500
                     )
+                )
+                tvPriceOrDuration.text = shippingCourierUiModel.productData.error.run {
+                    constructErrorUi(
+                        binding.root.context,
+                        errorMessage,
+                        errorId
+                    )
+                }
+                if (shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     tvCourier.setTextColor(
                         ContextCompat.getColor(
                             tvCourier.context,
@@ -108,13 +115,6 @@ class ShippingCourierViewHolder(private val binding: ItemCourierBinding, private
                         )
                     }
                 } else {
-                    tvPriceOrDuration.text = shippingCourierUiModel.productData.error.errorMessage
-                    tvPriceOrDuration.setTextColor(
-                        ContextCompat.getColor(
-                            tvCourier.context,
-                            unifyprinciplesR.color.Unify_RN500
-                        )
-                    )
                     tvCourier.setTextColor(
                         ContextCompat.getColor(
                             tvCourier.context,

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
@@ -63,6 +64,8 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.processor.CheckoutShippingProcessor
+import com.tokopedia.logisticcart.shipping.processor.LogisticProcessorGetRatesParam
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -109,6 +112,7 @@ import javax.inject.Inject
 class CheckoutViewModel @Inject constructor(
     private val cartProcessor: CheckoutCartProcessor,
     private val logisticProcessor: CheckoutLogisticProcessor,
+    private val logisticCartProcessor: CheckoutShippingProcessor,
     private val promoProcessor: CheckoutPromoProcessor,
     private val addOnProcessor: CheckoutAddOnProcessor,
     private val paymentProcessor: CheckoutPaymentProcessor,
@@ -172,6 +176,8 @@ class CheckoutViewModel @Inject constructor(
     private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
 
     private var isPromoRevamp: Boolean? = null
+
+    private var isBoUnstackEnabled: Boolean = false
 
     var isCartCheckoutRevamp: Boolean = false
     var usePromoEntryPointNewInterface: Boolean = false
@@ -237,7 +243,9 @@ class CheckoutViewModel @Inject constructor(
                         cartDataForRates = saf.cartShipmentAddressFormData.cartData
                         codData = saf.cartShipmentAddressFormData.cod
                         campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
-                        logisticProcessor.isBoUnstackEnabled =
+                        logisticCartProcessor.isBoUnstackEnabled =
+                            saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
+                        isBoUnstackEnabled =
                             saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
                         summariesAddOnUiModel =
                             ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(saf.cartShipmentAddressFormData.listSummaryAddons)
@@ -744,7 +752,11 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val editAddressResult =
-                logisticProcessor.editAddressPinpoint(latitude, longitude, recipientAddressModel)
+                logisticCartProcessor.editAddressPinpoint(
+                    latitude,
+                    longitude,
+                    recipientAddressModel
+                )
             pageState.value = CheckoutPageState.Normal
             if (editAddressResult.isSuccess) {
                 loadSAF(
@@ -1003,9 +1015,11 @@ class CheckoutViewModel @Inject constructor(
             ShippingComponents.SCHELLY_WITH_RATES -> {
                 loadShippingWithSelly(order = order, cartPosition = cartPosition)
             }
+
             ShippingComponents.SCHELLY -> {
                 loadSelly(cartPosition = cartPosition, order = order)
             }
+
             ShippingComponents.RATES -> {
                 loadShippingNormal(cartPosition = cartPosition, order = order)
             }
@@ -1024,28 +1038,31 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
-        val result = logisticProcessor.getScheduleDelivery(
-            logisticProcessor.getRatesParam(
-                order,
-                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
-                listData.value.address()!!.recipientAddressModel,
-                isTradeIn,
-                isTradeInByDropOff,
-                codData,
-                cartDataForRates,
-                "",
-                false,
-                listData.value.promo()!!
-            ),
-            fullfilmentId = order.fulfillmentId.toString(),
-            orderModel = order,
-            isOneClickShipment = isOneClickShipment
+        val schellyParam = logisticProcessor.getSchellyProcessorParam(
+            order,
+            helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+            listData.value.address()!!.recipientAddressModel,
+            isTradeIn,
+            isTradeInByDropOff,
+            codData,
+            cartDataForRates,
+            "",
+            false,
+            listData.value.promo()!!,
+            order.fulfillmentId.toString(),
+            order.isRecommendScheduleDelivery,
+            order.startDate
+        )
+
+        val result = logisticCartProcessor.getScheduleDelivery(
+            schellyParam
         )
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
         if (orderModel != null) {
-            if (result?.courier != null) {
-                val courierItemData = result.courier
+            val courierItemData = result?.courier
+            if (courierItemData != null) {
+                logisticProcessor.handleSyncShipmentCartItemModel(courierItemData, order)
                 orderModel.validationMetadata = order.validationMetadata
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
@@ -1094,15 +1111,38 @@ class CheckoutViewModel @Inject constructor(
                     return
                 }
             }
-            if (result != null && result.akamaiError.isNotEmpty()) {
-                pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
+
+            // handle error
+            val ratesError = result?.ratesError
+            val boPromoCode = getBoPromoCode(order)
+            if (ratesError != null) {
+                if (ratesError is MessageErrorException) {
+                    CheckoutLogger.logOnErrorLoadCourierNew(
+                        ratesError,
+                        order,
+                        isOneClickShipment,
+                        isTradeIn,
+                        isTradeInByDropOff,
+                        boPromoCode
+                    )
+                } else if (ratesError is AkamaiErrorException) {
+                    ratesError.message?.let {
+                        pageState.value = CheckoutPageState.AkamaiRatesError(it)
+                    }
+                }
             }
+
             val newOrderModel = orderModel.copy(
                 shipment = orderModel.shipment.copy(
                     isLoading = false,
                     courierItemData = result?.courier,
                     shippingCourierUiModels = emptyList(),
-                    insurance = result?.insurance ?: CheckoutOrderInsurance(),
+                    insurance = result?.courier?.run {
+                        generateCheckoutOrderInsuranceFromCourier(
+                            this,
+                            order
+                        )
+                    } ?: CheckoutOrderInsurance(),
                     isHasShownCourierError = false
                 )
             )
@@ -1130,31 +1170,44 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
-        val result = logisticProcessor.getRatesWithScheduleDelivery(
-            logisticProcessor.getRatesParam(
-                order,
-                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
-                listData.value.address()!!.recipientAddressModel,
-                isTradeIn,
-                isTradeInByDropOff,
-                codData,
-                cartDataForRates,
-                "",
-                false,
-                listData.value.promo()!!
-            ),
-            order.shopShipmentList,
-            order.shippingId,
-            order.spId,
-            order.fulfillmentId.toString(),
+        val ratesParam = logisticProcessor.getRatesProcessorParam(
             order,
-            isOneClickShipment, isTradeIn, isTradeInByDropOff
+            helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+            listData.value.address()!!.recipientAddressModel,
+            isTradeIn,
+            isTradeInByDropOff,
+            codData,
+            cartDataForRates,
+            "",
+            false,
+            listData.value.promo()!!
+        )
+        val schellyParam = logisticProcessor.getSchellyProcessorParam(
+            order,
+            helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+            listData.value.address()!!.recipientAddressModel,
+            isTradeIn,
+            isTradeInByDropOff,
+            codData,
+            cartDataForRates,
+            "",
+            false,
+            listData.value.promo()!!,
+            order.fulfillmentId.toString(),
+            order.isRecommendScheduleDelivery,
+            order.startDate
+        )
+
+        val result = logisticCartProcessor.getRatesWithScheduleDelivery(
+            ratesParam,
+            schellyParam
         )
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
         if (orderModel != null) {
-            if (result?.courier != null) {
-                val courierItemData = result.courier
+            val courierItemData = result?.courier
+            if (courierItemData != null) {
+                logisticProcessor.handleSyncShipmentCartItemModel(courierItemData, order)
                 orderModel.validationMetadata = order.validationMetadata
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
@@ -1203,15 +1256,37 @@ class CheckoutViewModel @Inject constructor(
                     return
                 }
             }
-            if (result != null && result.akamaiError.isNotEmpty()) {
-                pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
+            // handle error
+            val ratesError = result?.ratesError
+            if (ratesError != null) {
+                if (ratesError is MessageErrorException) {
+                    val boPromoCode = getBoPromoCode(order)
+                    CheckoutLogger.logOnErrorLoadCourierNew(
+                        ratesError,
+                        order,
+                        isOneClickShipment,
+                        isTradeIn,
+                        isTradeInByDropOff,
+                        boPromoCode
+                    )
+                } else if (ratesError is AkamaiErrorException) {
+                    ratesError.message?.let {
+                        pageState.value = CheckoutPageState.AkamaiRatesError(it)
+                    }
+                }
             }
+
             val newOrderModel = orderModel.copy(
                 shipment = orderModel.shipment.copy(
                     isLoading = false,
                     courierItemData = result?.courier,
                     shippingCourierUiModels = result?.couriers ?: emptyList(),
-                    insurance = result?.insurance ?: CheckoutOrderInsurance(),
+                    insurance = result?.courier?.run {
+                        generateCheckoutOrderInsuranceFromCourier(
+                            this,
+                            order
+                        )
+                    } ?: CheckoutOrderInsurance(),
                     isHasShownCourierError = false
                 )
             )
@@ -1239,32 +1314,25 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
-        val result = logisticProcessor.getRates(
-            logisticProcessor.getRatesParam(
-                order,
-                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
-                listData.value.address()!!.recipientAddressModel,
-                isTradeIn,
-                isTradeInByDropOff,
-                codData,
-                cartDataForRates,
-                "",
-                false,
-                listData.value.promo()!!
-            ),
-            order.shopShipmentList,
-            order.shippingId,
-            order.spId,
+        val ratesParam = logisticProcessor.getRatesProcessorParam(
             order,
-            isOneClickShipment,
+            helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+            listData.value.address()!!.recipientAddressModel,
             isTradeIn,
-            isTradeInByDropOff
+            isTradeInByDropOff,
+            codData,
+            cartDataForRates,
+            "",
+            false,
+            listData.value.promo()!!
         )
+
+        val result = logisticCartProcessor.getRatesGeneral(ratesParam)
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
         if (orderModel != null) {
-            if (result?.courier != null) {
-                val courierItemData = result.courier
+            val courierItemData = result?.courier
+            if (courierItemData != null) {
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
@@ -1312,9 +1380,29 @@ class CheckoutViewModel @Inject constructor(
                     return
                 }
             }
-            if (result != null && result.akamaiError.isNotEmpty()) {
-                pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
+
+            // handle error
+            val ratesError = result?.ratesError
+            if (ratesError != null) {
+                if (ratesError is MessageErrorException) {
+                    val boPromoCode = getBoPromoCode(order)
+                    CheckoutLogger.logOnErrorLoadCourierNew(
+                        ratesError,
+                        order,
+                        isOneClickShipment,
+                        isTradeIn,
+                        isTradeInByDropOff,
+                        boPromoCode
+                    )
+                } else if (ratesError is AkamaiErrorException) {
+                    ratesError.message?.let {
+                        pageState.value = CheckoutPageState.AkamaiRatesError(it)
+                    }
+                } else if (order.shouldResetCourier) {
+                    order.shouldResetCourier = false
+                }
             }
+
             if (orderModel.boCode.isNotEmpty()) {
                 promoProcessor.clearPromo(
                     ClearPromoOrder(
@@ -1340,7 +1428,12 @@ class CheckoutViewModel @Inject constructor(
                     isLoading = false,
                     courierItemData = result?.courier,
                     shippingCourierUiModels = result?.couriers ?: emptyList(),
-                    insurance = result?.insurance ?: CheckoutOrderInsurance(),
+                    insurance = result?.courier?.run {
+                        generateCheckoutOrderInsuranceFromCourier(
+                            this,
+                            order
+                        )
+                    } ?: CheckoutOrderInsurance(),
                     isHasShownCourierError = false
                 )
             )
@@ -1444,6 +1537,15 @@ class CheckoutViewModel @Inject constructor(
                 else -> false
             }
         )
+    }
+
+    private fun getBoPromoCode(
+        shipmentCartItemModel: CheckoutOrderModel
+    ): String {
+        if (isBoUnstackEnabled) {
+            return shipmentCartItemModel.boCode
+        }
+        return ""
     }
 
     fun generateValidateUsePromoRequest(list: List<CheckoutItem>? = null): ValidateUsePromoRequest {
@@ -1624,7 +1726,11 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             val shipmentAction =
                 order.shipmentAction[newCourierItemData.selectedShipper.shipperProductId.toLong()]
-            if (shipmentAction != null && !shipmentAction.action.equals(this@CheckoutViewModel.shipmentAction, ignoreCase = true)) {
+            if (shipmentAction != null && !shipmentAction.action.equals(
+                    this@CheckoutViewModel.shipmentAction,
+                    ignoreCase = true
+                )
+            ) {
                 if (shipmentAction.popup.title.isEmpty() && shipmentAction.popup.body.isEmpty()) {
                     doShipmentAction(shipmentAction)
                     return@launch
@@ -2415,30 +2521,34 @@ class CheckoutViewModel @Inject constructor(
             if (voucher.code == order.shipment.courierItemData?.selectedShipper?.logPromoCode) {
                 continue
             }
-            val result = logisticProcessor.getRatesWithBoCode(
-                logisticProcessor.getRatesParam(
-                    order,
-                    helper.getOrderProducts(checkoutItems, order.cartStringGroup),
-                    checkoutItems.address()!!.recipientAddressModel,
-                    isTradeIn,
-                    isTradeInByDropOff,
-                    codData,
-                    cartDataForRates,
-                    "",
-                    false,
-                    checkoutItems.promo()!!
-                ),
-                order.shopShipmentList,
-                voucher.shippingId,
-                voucher.spId,
+            val ratesParam = logisticProcessor.getRatesParam(
                 order,
+                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+                checkoutItems.address()!!.recipientAddressModel,
+                isTradeIn,
                 isTradeInByDropOff,
-                voucher.code,
-                isOneClickShipment,
-                isTradeIn
+                codData,
+                cartDataForRates,
+                "",
+                false,
+                checkoutItems.promo()!!
             )
-            if (result?.courier != null) {
-                val courierItemData = result.courier
+            val result = logisticCartProcessor.getRatesWithBoCode(
+                LogisticProcessorGetRatesParam(
+                    ratesParam = ratesParam,
+                    selectedServiceId = voucher.shippingId,
+                    selectedSpId = voucher.spId,
+                    isTradeInDropOff = isTradeInByDropOff,
+                    boPromoCode = voucher.code,
+                    currentServiceId = null,
+                    isAutoCourierSelection = order.isAutoCourierSelection,
+                    isDisableChangeCourier = order.isDisableChangeCourier,
+                    shouldResetCourier = order.shouldResetCourier,
+                    validationMetadata = order.validationMetadata
+                )
+            )
+            val courierItemData = result?.courier
+            if (courierItemData != null) {
                 val shouldValidatePromo =
                     !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()
                 if (shouldValidatePromo) {
@@ -2487,8 +2597,23 @@ class CheckoutViewModel @Inject constructor(
                     ).toMutableList()
                 }
             } else {
-                if (result != null && result.akamaiError.isNotEmpty()) {
-                    pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
+                // handle error
+                val ratesError = result?.ratesError
+                val boPromoCode = getBoPromoCode(order)
+                if (ratesError != null) {
+                    CheckoutLogger.logOnErrorLoadCourierNew(
+                        ratesError,
+                        order,
+                        isOneClickShipment,
+                        isTradeIn,
+                        isTradeInByDropOff,
+                        boPromoCode
+                    )
+                    if (ratesError is AkamaiErrorException) {
+                        ratesError.message?.let {
+                            pageState.value = CheckoutPageState.AkamaiRatesError(it)
+                        }
+                    }
                 }
                 promoProcessor.clearPromo(
                     ClearPromoOrder(
@@ -2710,7 +2835,12 @@ class CheckoutViewModel @Inject constructor(
     fun setDropshipSwitch(isChecked: Boolean, position: Int) {
         val checkoutItems = listData.value.toMutableList()
         val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
-        if (isChecked && checkoutProcessor.checkProtectionAddOnOptIn(getOrderProducts(checkoutOrderModel.cartStringGroup))) {
+        if (isChecked && checkoutProcessor.checkProtectionAddOnOptIn(
+                getOrderProducts(
+                        checkoutOrderModel.cartStringGroup
+                    )
+            )
+        ) {
             viewModelScope.launch(dispatchers.immediate) {
                 commonToaster.emit(
                     CheckoutPageToaster(
@@ -2719,7 +2849,8 @@ class CheckoutViewModel @Inject constructor(
                     )
                 )
             }
-            val newOrder = checkoutOrderModel.copy(stateDropship = CheckoutDropshipWidget.State.DISABLED)
+            val newOrder =
+                checkoutOrderModel.copy(stateDropship = CheckoutDropshipWidget.State.DISABLED)
             checkoutItems[position] = newOrder
             listData.value = checkoutItems
         } else {
@@ -2821,7 +2952,12 @@ class CheckoutViewModel @Inject constructor(
         val eGoldAttribute =
             crossSellGroup?.crossSellList?.firstOrNullInstanceOf(CheckoutEgoldModel::class.java)
         if (eGoldAttribute != null && eGoldAttribute.egoldAttributeModel.isEligible && eGoldAttribute.egoldAttributeModel.isChecked) {
-            result.add(Pair(eGoldAttribute.getCategoryName(), eGoldAttribute.getCrossSellProductId()))
+            result.add(
+                Pair(
+                    eGoldAttribute.getCategoryName(),
+                    eGoldAttribute.getCrossSellProductId()
+                )
+            )
         }
         val listShipmentCrossSellModel =
             crossSellGroup?.crossSellList?.filterIsInstance(CheckoutCrossSellModel::class.java)
@@ -2829,11 +2965,17 @@ class CheckoutViewModel @Inject constructor(
         if (listShipmentCrossSellModel.isNotEmpty()) {
             for (crossSellModel in listShipmentCrossSellModel) {
                 if (crossSellModel.isChecked) {
-                    result.add(Pair(crossSellModel.getCategoryName(), crossSellModel.getCrossSellProductId()))
+                    result.add(
+                        Pair(
+                            crossSellModel.getCategoryName(),
+                            crossSellModel.getCrossSellProductId()
+                        )
+                    )
                 }
             }
         }
-        val donationModel = crossSellGroup?.crossSellList?.firstOrNullInstanceOf(CheckoutDonationModel::class.java)
+        val donationModel =
+            crossSellGroup?.crossSellList?.firstOrNullInstanceOf(CheckoutDonationModel::class.java)
         if (donationModel != null && donationModel.donation.isChecked) {
             result.add(Pair(donationModel.getCategoryName(), donationModel.getCrossSellProductId()))
         }

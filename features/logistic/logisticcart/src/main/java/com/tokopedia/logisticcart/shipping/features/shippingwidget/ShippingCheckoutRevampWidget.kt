@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.databinding.ItemShipmentShippingExperienceCheckoutRevampBinding
 import com.tokopedia.logisticcart.scheduledelivery.view.ShippingScheduleRevampWidget
@@ -31,6 +30,8 @@ import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingWidgetCourierError
+import com.tokopedia.logisticcart.shipping.model.ShippingWidgetState
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -59,7 +60,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         defStyleAttr
     )
 
-    private var binding: ItemShipmentShippingExperienceCheckoutRevampBinding? = null
+    var binding: ItemShipmentShippingExperienceCheckoutRevampBinding? = null
     private var mListener: ShippingWidgetListener? = null
     private var delayChangeCheckboxInsurance: Job? = null
 
@@ -80,21 +81,15 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
     interface ShippingWidgetListener {
 
-        fun onChangeDurationClickListener(
-            currentAddress: RecipientAddressModel
-        )
+        fun onChangeDurationClickListener()
 
-        fun onChangeCourierClickListener(
-            currentAddress: RecipientAddressModel
-        )
+        fun onChangeCourierClickListener()
 
         fun onOnTimeDeliveryClicked(url: String)
 
         fun onClickSetPinpoint()
 
-        fun onClickLayoutFailedShipping(
-            recipientAddressModel: RecipientAddressModel
-        )
+        fun onClickLayoutFailedShipping()
 
         fun onViewErrorInCourierSection(logPromoDesc: String)
 
@@ -104,11 +99,17 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
         fun onInsuranceCheckedForTrackingAnalytics()
 
-        fun onInsuranceChecked(shippingWidgetUiModel: ShippingWidgetUiModel)
+        fun onInsuranceChecked(insuranceData: InsuranceWidgetUiModel?)
 
         fun onInsuranceInfoTooltipClickedTrackingAnalytics()
 
         fun showInsuranceBottomSheet(description: String)
+
+        fun onViewCartErrorState(error: ShippingWidgetState.CartError)
+
+        fun onRenderVibrationAnimation(shippingWidgetUiModel: ShippingWidgetUiModel)
+
+        fun onRenderNoSelectedShippingLayout()
     }
 
     override fun onDetachedFromWindow() {
@@ -120,11 +121,83 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         mListener = shippingWidgetListener
     }
 
-    fun hideShippingStateLoading() {
+    fun render(shippingWidgetUiModel: ShippingWidgetUiModel) {
+        when (shippingWidgetUiModel.state) {
+            is ShippingWidgetState.CartError -> {
+                renderErrorCourierState(shippingWidgetUiModel.state)
+            }
+
+            ShippingWidgetState.Loading -> {
+                prepareLoadCourierState()
+                renderLoadingCourierState()
+            }
+
+            is ShippingWidgetState.CourierError -> {
+                when (shippingWidgetUiModel.state.type) {
+                    ShippingWidgetCourierError.NEED_PINPOINT -> {
+                        renderErrorPinpointCourier()
+                    }
+
+                    ShippingWidgetCourierError.COURIER_UNAVAILABLE -> {
+                        showLayoutStateFailedShipping(shippingWidgetUiModel)
+                    }
+
+                    ShippingWidgetCourierError.SHIPPING_NOT_SELECTED -> {
+                        showLayoutNoSelectedShipping(
+                            shippingWidgetUiModel
+                        )
+                    }
+                }
+            }
+
+            is ShippingWidgetState.ScheduleDeliveryShipping -> {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                renderScheduleDeliveryWidget(shippingWidgetUiModel.state)
+            }
+
+            is ShippingWidgetState.FreeShipping -> {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                showLayoutFreeShippingCourier()
+                renderFreeShippingCourier(shippingWidgetUiModel.state)
+            }
+
+            is ShippingWidgetState.SingleShipping -> {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                renderSingleShippingCourier(shippingWidgetUiModel.state)
+            }
+
+            is ShippingWidgetState.WhitelabelShipping -> {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                renderWhitelabelService(shippingWidgetUiModel.state)
+            }
+
+            is ShippingWidgetState.NormalShipping -> {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                renderNormalShippingCourier(shippingWidgetUiModel.state)
+            }
+        }
+        renderShippingVibrationAnimation(shippingWidgetUiModel)
+    }
+
+    fun hideTradeInShippingInfo() {
+        binding?.itemShipmentTradeInPickup?.layoutTradeInShippingInfo?.gone()
+    }
+
+    private fun hideShippingStateLoading() {
         binding?.purchasePlatformPartialShimmeringList?.root?.gone()
     }
 
-    fun renderShippingVibrationAnimation(
+    private fun renderShippingVibrationAnimation(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
@@ -145,6 +218,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
 
                         override fun onAnimationEnd(animator: Animator) {
                             shippingWidgetUiModel.isTriggerShippingVibrationAnimation = false
+                            mListener?.onRenderVibrationAnimation(shippingWidgetUiModel)
                         }
 
                         override fun onAnimationCancel(animator: Animator) {
@@ -160,7 +234,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun renderErrorCourierState(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    private fun renderErrorCourierState(error: ShippingWidgetState.CartError) {
         binding?.apply {
             purchasePlatformPartialShimmeringList.root.gone()
             layoutStateNoSelectedShipping.gone()
@@ -172,22 +246,21 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutShipmentInsurance.gone()
             shippingNowWidget.gone()
             itemShipmentTradeInPickup.root.gone()
-            if (shippingWidgetUiModel.courierErrorTitle.isEmpty()) {
+            if (error.title.isEmpty()) {
                 labelErrorShippingTitle.text =
                     context.getString(logisticcartR.string.checkout_error_shipping_title)
             } else {
-                labelErrorShippingTitle.text = shippingWidgetUiModel.courierErrorTitle
+                labelErrorShippingTitle.text = error.title
             }
             layoutStateHasErrorShipping.visible()
             purchasePlatformPartialShimmeringList.root.gone()
             containerShippingExperience.visible()
             containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_grey)
+            mListener?.onViewCartErrorState(error)
         }
     }
 
-    fun showLayoutFreeShippingCourier(
-        shippingWidgetUiModel: ShippingWidgetUiModel
-    ) {
+    private fun showLayoutFreeShippingCourier() {
         binding?.apply {
             purchasePlatformPartialShimmeringList.root.gone()
             itemShipmentTradeInPickup.root.gone()
@@ -201,33 +274,33 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutShipmentInsurance.gone()
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedFreeShipping.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
         }
     }
 
-    fun renderFreeShippingCourier(shippingWidgetUiModel: ShippingWidgetUiModel) {
-        hideShipperName(shippingWidgetUiModel.hideShipperName)
-        renderFreeShippingTitle(shippingWidgetUiModel)
-        renderFreeShippingCod(shippingWidgetUiModel)
-        renderFreeShippingEta(shippingWidgetUiModel)
-        showInsuranceInfo(shippingWidgetUiModel)
-        renderFreeShippingLogo(shippingWidgetUiModel.freeShippingLogo)
+    private fun renderFreeShippingCourier(state: ShippingWidgetState.FreeShipping) {
+        hideShipperName(state.isHideShipperName)
+        renderFreeShippingTitle(state)
+        renderFreeShippingCod(state)
+        renderFreeShippingEta(state)
+        showInsuranceInfo(state.insuranceWidgetUiModel)
+        renderFreeShippingLogo(state.logoUrl)
     }
 
-    fun setLabelSelectedShippingCourier(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    private fun setLabelSelectedShippingCourier(state: ShippingWidgetState.NormalShipping) {
         binding?.apply {
-            val courierName = "${shippingWidgetUiModel.courierName} (${
+            val courierName = "${state.courierName} (${
             convertPriceValueToIdrFormat(
-                shippingWidgetUiModel.courierShipperPrice,
+                state.courierShipperPrice,
                 false
             ).removeDecimalSuffix()
             })"
 
-            if (shippingWidgetUiModel.etaErrorCode == 0 && shippingWidgetUiModel.estimatedTimeArrival.isNotEmpty()) {
+            if (state.etaErrorCode == 0 && state.eta.isNotEmpty()) {
                 renderLabelAndCourierName(
                     courierName = courierName,
-                    labelPriceOrDuration = shippingWidgetUiModel.estimatedTimeArrival.ifEmpty {
+                    labelPriceOrDuration = state.eta.ifEmpty {
                         context.getString(
                             logisticcartR.string.estimasi_tidak_tersedia
                         )
@@ -235,10 +308,10 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                 )
             } else {
                 renderLabelAndCourierName(
-                    courierName = shippingWidgetUiModel.courierName,
+                    courierName = state.courierName,
                     labelPriceOrDuration =
                     convertPriceValueToIdrFormat(
-                        shippingWidgetUiModel.courierShipperPrice,
+                        state.courierShipperPrice,
                         false
                     ).removeDecimalSuffix()
                 )
@@ -246,7 +319,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun showLayoutNoSelectedShipping(
+    private fun showLayoutNoSelectedShipping(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
@@ -262,33 +335,34 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutShipmentInsurance.gone()
             layoutStateNoSelectedShipping.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
+            mListener?.onRenderNoSelectedShippingLayout()
             containerShippingExperience.visible()
         }
     }
 
-    fun showLayoutTradeIn(shippingWidgetUiModel: ShippingWidgetUiModel) {
-        binding?.apply {
-            purchasePlatformPartialShimmeringList.root.gone()
-            layoutStateNoSelectedShipping.gone()
-            layoutStateHasSelectedNormalShipping.gone()
-            layoutStateHasSelectedFreeShipping.gone()
-            layoutStateHasSelectedWhitelabelShipping.gone()
-            layoutStateHasSelectedSingleShipping.gone()
-            shippingNowWidget.gone()
-            layoutStateHasErrorShipping.gone()
-            layoutStateFailedShipping.gone()
-            layoutShipmentInsurance.gone()
-            itemShipmentTradeInPickup.layoutTradeInShippingInfo.visible()
-            itemShipmentTradeInPickup.tvTradeInShippingPriceTitle.visible()
-            itemShipmentTradeInPickup.tvTradeInShippingPriceDetail.visible()
-            containerShippingExperience.visible()
-        }
-        showInsuranceInfo(shippingWidgetUiModel)
-    }
+//    fun showLayoutTradeIn(shippingWidgetUiModel: ShippingWidgetUiModel) {
+//        binding?.apply {
+//            purchasePlatformPartialShimmeringList.root.gone()
+//            layoutStateNoSelectedShipping.gone()
+//            layoutStateHasSelectedNormalShipping.gone()
+//            layoutStateHasSelectedFreeShipping.gone()
+//            layoutStateHasSelectedWhitelabelShipping.gone()
+//            layoutStateHasSelectedSingleShipping.gone()
+//            shippingNowWidget.gone()
+//            layoutStateHasErrorShipping.gone()
+//            layoutStateFailedShipping.gone()
+//            layoutShipmentInsurance.gone()
+//            itemShipmentTradeInPickup.layoutTradeInShippingInfo.visible()
+//            itemShipmentTradeInPickup.tvTradeInShippingPriceTitle.visible()
+//            itemShipmentTradeInPickup.tvTradeInShippingPriceDetail.visible()
+//            containerShippingExperience.visible()
+//        }
+//        showInsuranceInfo(shippingWidgetUiModel)
+//    }
 
-    fun showLayoutStateFailedShipping(
+    private fun showLayoutStateFailedShipping(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
@@ -306,20 +380,23 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutShipmentInsurance.gone()
 
             layoutStateFailedShipping.setOnClickListener {
-                mListener?.onClickLayoutFailedShipping(shippingWidgetUiModel.currentAddress)
+                mListener?.onClickLayoutFailedShipping()
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
-    fun renderSingleShippingCourier(
-        shippingWidgetUiModel: ShippingWidgetUiModel
+    private fun renderSingleShippingCourier(
+        state: ShippingWidgetState.SingleShipping
     ) {
         showLayoutSingleShippingCourier()
         binding?.labelSelectedSingleShippingTitle?.text =
-            getSingleShippingTitle(shippingWidgetUiModel)
+            getSingleShippingTitle(state)
         doCheckLabelSingleShippingPromo(
-            shippingWidgetUiModel
+            logPromoDesc = state.logPromoDesc,
+            voucherLogisticExists = state.voucherLogisticExists,
+            isHasShownCourierError = state.isHasShownCourierError,
+            onViewErrorCourier = { state.isHasShownCourierError = true }
         ) { labelSingleShippingPromo ->
             if (labelSingleShippingPromo?.isNotBlank() == true) {
                 showLabelSingleShippingMessage(labelSingleShippingPromo)
@@ -327,11 +404,11 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                 hideLabelSingleShippingMessage()
             }
         }
-        showInsuranceInfo(shippingWidgetUiModel)
+        showInsuranceInfo(state.insuranceWidgetUiModel)
     }
 
-    fun renderWhitelabelKurirRekomendasiService(
-        shippingWidgetUiModel: ShippingWidgetUiModel
+    private fun renderWhitelabelService(
+        state: ShippingWidgetState.WhitelabelShipping
     ) {
         binding?.apply {
             purchasePlatformPartialShimmeringList.root.gone()
@@ -345,28 +422,29 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedWhitelabelShipping.visible()
             layoutStateHasSelectedWhitelabelShipping.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
-            if (shippingWidgetUiModel.estimatedTimeDelivery.isNotEmpty()) {
-                val titleText = "${shippingWidgetUiModel.estimatedTimeDelivery} (${
+            if (state.serviceName.isNotEmpty()) {
+                val titleText = "${state.serviceName} (${
                 convertPriceValueToIdrFormat(
-                    shippingWidgetUiModel.courierShipperPrice,
+                    state.courierShipperPrice,
                     false
                 ).removeDecimalSuffix()
                 })"
-                val htmlLinkHelper = HtmlLinkHelper(labelSelectedWhitelabelShipping.context, titleText)
+                val htmlLinkHelper =
+                    HtmlLinkHelper(labelSelectedWhitelabelShipping.context, titleText)
                 labelSelectedWhitelabelShipping.text = htmlLinkHelper.spannedString
                 labelSelectedWhitelabelShipping.setWeight(Typography.BOLD)
             }
 
-            if (shippingWidgetUiModel.whitelabelEtaText.isNotEmpty()) {
+            if (state.eta.isNotEmpty()) {
                 labelWhitelabelShippingEta.visible()
-                labelWhitelabelShippingEta.text = shippingWidgetUiModel.whitelabelEtaText
+                labelWhitelabelShippingEta.text = state.eta
             } else {
                 labelWhitelabelShippingEta.gone()
             }
 
-            val ontimeDelivery: OntimeDelivery? = shippingWidgetUiModel.ontimeDelivery
+            val ontimeDelivery: OntimeDelivery? = state.ontimeDelivery
             if (ontimeDelivery?.available == true) {
                 var whitelabelDescription = ""
                 if (ontimeDelivery.textUrl.isNotEmpty() && ontimeDelivery.urlDetail.isNotEmpty()) {
@@ -401,20 +479,20 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                 labelWhitelabelDescription.gone()
             }
         }
-        showInsuranceInfo(shippingWidgetUiModel)
+        showInsuranceInfo(state.insuranceWidgetUiModel)
     }
 
-    fun renderNormalShippingCourier(
-        shippingWidgetUiModel: ShippingWidgetUiModel
+    private fun renderNormalShippingCourier(
+        state: ShippingWidgetState.NormalShipping
     ) {
-        showNormalShippingCourier(shippingWidgetUiModel)
-        setLabelSelectedShippingCourier(shippingWidgetUiModel)
-        showImageMerchantVoucher(shippingWidgetUiModel.merchantVoucher)
-        showLabelCodOnNormalShipping(shippingWidgetUiModel.cashOnDelivery)
-        showInsuranceInfo(shippingWidgetUiModel)
+        showNormalShippingCourier(state)
+        setLabelSelectedShippingCourier(state)
+        showImageMerchantVoucher(state.merchantVoucherModel)
+        showLabelCodOnNormalShipping(state.cashOnDelivery)
+        showInsuranceInfo(state.insuranceWidgetUiModel)
     }
 
-    fun prepareLoadCourierState() {
+    private fun prepareLoadCourierState() {
         binding?.apply {
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
@@ -427,7 +505,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun renderLoadingCourierState() {
+    private fun renderLoadingCourierState() {
         binding?.apply {
             purchasePlatformPartialShimmeringList.loaderUnify1.type = LoaderUnify.TYPE_RECT
             purchasePlatformPartialShimmeringList.loaderUnify2.type = LoaderUnify.TYPE_RECT
@@ -446,7 +524,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun onLoadCourierStateData() {
+    private fun onLoadCourierStateData() {
         binding?.apply {
             purchasePlatformPartialShimmeringList.loaderUnify1.type = LoaderUnify.TYPE_RECT
             purchasePlatformPartialShimmeringList.loaderUnify2.type = LoaderUnify.TYPE_RECT
@@ -464,18 +542,14 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun hideTradeInShippingInfo() {
-        binding?.itemShipmentTradeInPickup?.layoutTradeInShippingInfo?.gone()
-    }
-
-    fun hideTradeInTitleAndDetail() {
+    private fun hideTradeInTitleAndDetail() {
         binding?.apply {
             itemShipmentTradeInPickup.tvTradeInShippingPriceTitle.gone()
             itemShipmentTradeInPickup.tvTradeInShippingPriceDetail.gone()
         }
     }
 
-    fun renderErrorPinpointCourier() {
+    private fun renderErrorPinpointCourier() {
         binding?.apply {
             layoutStateNoSelectedShipping.gone()
             purchasePlatformPartialShimmeringList.root.gone()
@@ -496,7 +570,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             context?.apply {
                 val pinpointErrorMessage =
                     getString(logisticcartR.string.checkout_label_set_pinpoint_description) + " "
-                val pinpointErrorAction = getString(logisticcartR.string.checkout_label_set_pinpoint_action)
+                val pinpointErrorAction =
+                    getString(logisticcartR.string.checkout_label_set_pinpoint_action)
                 val spannableString = SpannableString(pinpointErrorMessage + pinpointErrorAction)
                 spannableString.setSpan(
                     ForegroundColorSpan(
@@ -520,15 +595,18 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun renderScheduleDeliveryWidget(
-        shippingWidgetUiModel: ShippingWidgetUiModel
+    private fun renderScheduleDeliveryWidget(
+        state: ShippingWidgetState.ScheduleDeliveryShipping
     ) {
         showScheduleDeliveryWidget()
 
         var labelNow2H: CharSequence? = null
 
         doCheckLabelSingleShippingPromo(
-            shippingWidgetUiModel
+            onViewErrorCourier = { state.isHasShownCourierError = true },
+            isHasShownCourierError = state.isHasShownCourierError,
+            logPromoDesc = state.label2Hour,
+            voucherLogisticExists = state.voucherLogisticExists
         ) { labelSingleShippingPromo ->
             labelNow2H = labelSingleShippingPromo
         }
@@ -536,11 +614,11 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         binding?.shippingNowWidget
             ?.bind(
                 titleNow2H = getSingleShippingTitleForScheduleWidget(
-                    shippingWidgetUiModel
+                    state
                 ),
-                descriptionNow2H = getOrderMessageOFOC(shippingWidgetUiModel),
+                descriptionNow2H = state.orderMessage,
                 labelNow2H = labelNow2H,
-                scheduleDeliveryUiModel = shippingWidgetUiModel.scheduleDeliveryUiModel?.copy(),
+                scheduleDeliveryUiModel = state.scheduleDeliveryUiModel?.copy(),
                 listener = object : ShippingScheduleRevampWidget.ShippingScheduleWidgetListener {
                     override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
                         mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
@@ -551,10 +629,10 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     }
                 }
             )
-        showInsuranceInfo(shippingWidgetUiModel)
+        showInsuranceInfo(state.insuranceWidgetUiModel)
     }
 
-    fun showContainerShippingExperience() {
+    private fun showContainerShippingExperience() {
         binding?.apply {
             layoutStateNoSelectedShipping.gone()
             purchasePlatformPartialShimmeringList.root.gone()
@@ -616,21 +694,21 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         binding?.labelFreeShippingCourierName?.visibility = if (isHideShipperName) GONE else VISIBLE
     }
 
-    private fun renderFreeShippingTitle(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    private fun renderFreeShippingTitle(state: ShippingWidgetState.FreeShipping) {
         binding?.apply {
             // Change duration to promo title after promo is applied
             val htmlLinkHelper = HtmlLinkHelper(
                 labelSelectedFreeShipping.context,
-                shippingWidgetUiModel.freeShippingTitle
+                state.title
             )
             labelSelectedFreeShipping.text = htmlLinkHelper.spannedString
         }
     }
 
-    private fun renderFreeShippingEta(shippingWidgetUiModel: ShippingWidgetUiModel) {
-        if (shippingWidgetUiModel.etaErrorCode == 0) {
+    private fun renderFreeShippingEta(state: ShippingWidgetState.FreeShipping) {
+        if (state.etaErrorCode == 0) {
             val labelFreeShippingEtaText =
-                shippingWidgetUiModel.estimatedTimeArrival.ifEmpty {
+                state.eta.ifEmpty {
                     context.getString(logisticcartR.string.estimasi_tidak_tersedia)
                 }
             showLabelFreeShippingEtaText(labelFreeShippingEtaText)
@@ -651,7 +729,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     private fun showNormalShippingCourier(
-        shippingWidgetUiModel: ShippingWidgetUiModel
+        state: ShippingWidgetState.NormalShipping
     ) {
         binding?.apply {
             purchasePlatformPartialShimmeringList.root.gone()
@@ -665,31 +743,31 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateHasSelectedNormalShipping.visible()
             TextAndContentDescriptionUtil.setTextAndContentDescription(
                 labelSelectedShippingDuration,
-                shippingWidgetUiModel.estimatedTimeDelivery ?: "",
+                state.serviceName,
                 context.getString(logisticcartR.string.content_desc_label_selected_shipping_duration)
             )
 
             labelSelectedShippingDuration.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
 
             iconChevronChooseDuration.setOnClickListener {
-                mListener?.onChangeDurationClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeDurationClickListener()
             }
 
             labelSelectedShippingPriceOrDuration.setOnClickListener {
-                mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeCourierClickListener()
             }
 
             labelSelectedShippingCourier.setOnClickListener {
-                mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeCourierClickListener()
             }
 
             iconChevronChooseCourier.setOnClickListener {
-                mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeCourierClickListener()
             }
             viewSpaceNormalShippingCourier.setOnClickListener {
-                mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
+                mListener?.onChangeCourierClickListener()
             }
         }
     }
@@ -721,18 +799,21 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     private fun doCheckLabelSingleShippingPromo(
-        shippingWidgetUiModel: ShippingWidgetUiModel,
+        logPromoDesc: String,
+        voucherLogisticExists: Boolean,
+        isHasShownCourierError: Boolean,
+        onViewErrorCourier: () -> Unit,
         labelSingleShippingPromo: (CharSequence?) -> Unit
     ) {
-        if (shippingWidgetUiModel.logPromoDesc.isNotEmpty()) {
+        if (logPromoDesc.isNotEmpty()) {
             labelSingleShippingPromo.invoke(
                 MethodChecker.fromHtml(
-                    shippingWidgetUiModel.logPromoDesc
+                    logPromoDesc
                 )
             )
-            if (!shippingWidgetUiModel.voucherLogisticExists && !shippingWidgetUiModel.isHasShownCourierError) {
-                mListener?.onViewErrorInCourierSection(shippingWidgetUiModel.logPromoDesc.orEmpty())
-                shippingWidgetUiModel.isHasShownCourierError = true
+            if (!voucherLogisticExists && !isHasShownCourierError) {
+                mListener?.onViewErrorInCourierSection(logPromoDesc)
+                onViewErrorCourier()
             }
         } else {
             labelSingleShippingPromo.invoke(null)
@@ -740,24 +821,21 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     private fun getSingleShippingTitle(
-        shippingWidgetUiModel: ShippingWidgetUiModel
+        state: ShippingWidgetState.SingleShipping
     ): CharSequence? {
-        return if (shippingWidgetUiModel.voucherLogisticExists) {
+        return if (state.voucherLogisticExists) {
             // Change duration to promo title after promo is applied
-            shippingWidgetUiModel.freeShippingTitle.convertToSpannedString()
+            state.freeShippingTitle.convertToSpannedString()
         } else {
             return getTitleFromNameAndPrice(
-                courierName = shippingWidgetUiModel.courierName,
-                shipperPrice = shippingWidgetUiModel.courierShipperPrice
+                courierName = state.courierName,
+                shipperPrice = state.courierShipperPrice
             )
         }
     }
 
-    private fun getOrderMessageOFOC(
-        shippingWidgetUiModel: ShippingWidgetUiModel
-    ): String {
-        return shippingWidgetUiModel.boOrderMessage.ifEmpty { shippingWidgetUiModel.courierOrderMessage }
-    }
+    private val ShippingWidgetState.ScheduleDeliveryShipping.orderMessage: String
+        get() = boOrderMessage.ifEmpty { courierOrderMessage }
 
     private fun String.convertToSpannedString(): CharSequence? {
         return HtmlLinkHelper(
@@ -779,15 +857,15 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     private fun getSingleShippingTitleForScheduleWidget(
-        shippingWidgetUiModel: ShippingWidgetUiModel
+        state: ShippingWidgetState.ScheduleDeliveryShipping
     ): CharSequence? {
-        return if (shippingWidgetUiModel.freeShippingTitle.isNotEmpty()) {
+        return if (state.freeShippingTitle.isNotEmpty()) {
             // Change duration to promo title after promo is applied
-            shippingWidgetUiModel.freeShippingTitle.convertToSpannedString()
-        } else if (shippingWidgetUiModel.courierName.isNotEmpty()) {
+            state.freeShippingTitle.convertToSpannedString()
+        } else if (state.courierName.isNotEmpty()) {
             val title = getTitleFromNameAndPrice(
-                courierName = shippingWidgetUiModel.courierName,
-                shipperPrice = shippingWidgetUiModel.courierShipperPrice
+                courierName = state.courierName,
+                shipperPrice = state.courierShipperPrice
             )
 
             StringBuilder().apply {
@@ -799,22 +877,12 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    private fun getSingleShippingLabelEta(
-        shippingWidgetUiModel: ShippingWidgetUiModel
-    ): String? {
-        return if (shippingWidgetUiModel.etaErrorCode == 0 && shippingWidgetUiModel.estimatedTimeArrival.isNotEmpty()) {
-            shippingWidgetUiModel.estimatedTimeArrival
-        } else {
-            context.getString(logisticcartR.string.estimasi_tidak_tersedia)
-        }
-    }
-
     private fun showLabelCodOnNormalShipping(codProductData: CashOnDeliveryProduct?) {
         binding?.lblCodAvailable?.showCodLabel(codProductData)
     }
 
-    private fun renderFreeShippingCod(shippingWidgetUiModel: ShippingWidgetUiModel) {
-        binding?.lblCodFreeShipping?.showCodLabel(shippingWidgetUiModel.cashOnDelivery)
+    private fun renderFreeShippingCod(state: ShippingWidgetState.FreeShipping) {
+        binding?.lblCodFreeShipping?.showCodLabel(state.cashOnDelivery)
     }
 
     private fun Label?.showCodLabel(codProductData: CashOnDeliveryProduct?) {
@@ -844,8 +912,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    private fun showInsuranceInfo(shippingWidgetUiModel: ShippingWidgetUiModel) {
-        val insuranceData: InsuranceWidgetUiModel? = shippingWidgetUiModel.insuranceData
+    private fun showInsuranceInfo(insuranceData: InsuranceWidgetUiModel?) {
         if (insuranceData != null) {
             binding?.run {
                 if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
@@ -853,13 +920,13 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     tvInsuranceTitle.setInsuranceWording(insuranceData)
                     checkboxInsurance.gone()
                     if (insuranceData.useInsurance != true) {
-                        onChangeInsuranceState(shippingWidgetUiModel, true)
+                        onChangeInsuranceState(insuranceData, true)
                     }
                 } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO || insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NONE) {
                     layoutShipmentInsurance.gone()
                     spacingInsuranceNormalShipping.visible()
                     if (insuranceData.useInsurance != false) {
-                        onChangeInsuranceState(shippingWidgetUiModel, false)
+                        onChangeInsuranceState(insuranceData, false)
                     }
                 } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
                     layoutShipmentInsurance.visible()
@@ -869,7 +936,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                         delayChangeCheckboxInsurance?.cancel()
                         delayChangeCheckboxInsurance = GlobalScope.launch(Dispatchers.Main) {
                             delay(DEBOUNCE_TIME_INSURANCE)
-                            onChangeInsuranceState(shippingWidgetUiModel, checked)
+                            onChangeInsuranceState(insuranceData, checked)
                         }
                     }
                     layoutShipmentInsurance.setOnClickListener {
@@ -896,16 +963,15 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     private fun onChangeInsuranceState(
-        shippingWidgetUiModel: ShippingWidgetUiModel,
+        insuranceData: InsuranceWidgetUiModel?,
         checked: Boolean
     ) {
-        val insuranceData: InsuranceWidgetUiModel? = shippingWidgetUiModel.insuranceData
         insuranceData?.run {
             useInsurance = checked
             if (checked) {
                 mListener?.onInsuranceCheckedForTrackingAnalytics()
             }
-            mListener?.onInsuranceChecked(shippingWidgetUiModel)
+            mListener?.onInsuranceChecked(insuranceData)
         }
     }
 
