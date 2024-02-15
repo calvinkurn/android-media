@@ -1,9 +1,8 @@
 package com.tokopedia.play.broadcaster.util.logger.error
 
-import android.util.Log
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -35,9 +34,7 @@ class BroadcasterErrorLoggerImpl @Inject constructor() : BroadcasterErrorLogger 
     private fun sendLog(
         messages: Map<String, String>,
     ) {
-        if (GlobalConfig.DEBUG) {
-            Log.d(TAG_BROADCASTER_ERROR, messages.toString())
-        }
+        Timber.tag(TAG_BROADCASTER_ERROR).d(messages.toString())
 
         ServerLogger.log(
             Priority.P2,
