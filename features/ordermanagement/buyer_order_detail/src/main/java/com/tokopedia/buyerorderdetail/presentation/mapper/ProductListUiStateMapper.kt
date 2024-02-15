@@ -623,7 +623,6 @@ object ProductListUiStateMapper {
             mapProduct(
                 details = details,
                 product = it,
-                addonSummary = it.addonSummary,
                 orderId = orderId,
                 orderStatusId = orderStatusId,
                 isPof = isPof,
@@ -927,7 +926,6 @@ object ProductListUiStateMapper {
             mapProduct(
                 details = details,
                 product = it,
-                addonSummary = it.addonSummary,
                 orderId = orderId,
                 orderStatusId = orderStatusId,
                 isPof = isPof,
@@ -943,7 +941,6 @@ object ProductListUiStateMapper {
     private fun mapProduct(
         details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
         product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle,
-        addonSummary: AddonSummary?,
         orderId: String,
         orderStatusId: String,
         isPof: Boolean,
