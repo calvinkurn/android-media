@@ -13,7 +13,7 @@ import dagger.assisted.AssistedInject
 
 /**
  * https://mynakama.tokopedia.com/datatracker/requestdetail/view/4459
- * 1 - 17
+ * 1 - 18
  */
 class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     @Assisted private val productId: String,
