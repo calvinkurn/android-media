@@ -278,7 +278,7 @@ data class RechargeHomepageSections(
         @SerializedName("tracking")
         @Expose
         val tracking: List<Tracking> = listOf(),
-    ): ImpressHolder()
+    )
 }
 
 interface RechargeHomepageSectionModel : Visitable<RechargeHomepageAdapterTypeFactory> {

@@ -39,10 +39,6 @@ class RechargeHomepageTodoWidgetBottomSheet : BottomSheetUnify(), BottomSheetTod
         dismiss()
     }
 
-    override fun onImpressBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton) {
-        listener?.onImpressBottomSheetTodoWidget(optionButton)
-    }
-
     private fun initView() {
         isFullpage = false
         isDragable = false
@@ -57,10 +53,17 @@ class RechargeHomepageTodoWidgetBottomSheet : BottomSheetUnify(), BottomSheetTod
                 rvBottomsheetTodoWidget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 rvBottomsheetTodoWidget.adapter = adapter
                 adapter.setData(optionButtons)
+                onImpressOptionButton(optionButtons)
             }
         }
 
         setChild(binding?.root)
+    }
+
+    private fun onImpressOptionButton(listOptionButton: List<RechargeHomepageSections.OptionButton>) {
+        listOptionButton.forEach {
+           listener?.onImpressBottomSheetTodoWidget(it)
+        }
     }
 
     interface BottomSheetTodoWidgetListener {

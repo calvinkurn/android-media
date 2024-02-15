@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.ViewBottomsheetRechargeHomepageTodoWidgetBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 
 class BottomSheetTodoWidgetAdapter :
     RecyclerView.Adapter<BottomSheetTodoWidgetAdapter.BottomSheetTodoWidgetViewHolder>() {
@@ -49,14 +48,10 @@ class BottomSheetTodoWidgetAdapter :
             binding.root.setOnClickListener {
                 listener?.onClickBottomSheetTodoWidget(optionButton)
             }
-            binding.root.addOnImpressionListener(optionButton) {
-                listener?.onImpressBottomSheetTodoWidget(optionButton)
-            }
         }
     }
 
     interface BottomSheetAdapterTodoWidgetListener {
         fun onClickBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton)
-        fun onImpressBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton)
     }
 }
