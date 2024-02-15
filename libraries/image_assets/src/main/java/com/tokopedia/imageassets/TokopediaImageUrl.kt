@@ -414,4 +414,5 @@ object TokopediaImageUrl {
     const val BMSM_GWP_WIDGET_ILLUSTRATION = "https://images.tokopedia.net/img/illustration/seller/Medium_General_Giftbox_Faded.png"
     const val BMSM_PD_WIDGET_ILLUSTRATION = "https://images.tokopedia.net/img/illustration/seller/Medium_General_Token_Faded.png"
     const val SRE_SELLER_HOME_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/sah_ramadhan_thematic_backdrop.png"
+    const val ILLUSTRATION_GENERAL_EMPTY_BASKET = "https://images.tokopedia.net/img/illustration/global/Medium_General_Empty_Basket.png"
 }

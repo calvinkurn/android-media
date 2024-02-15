@@ -462,7 +462,7 @@ class BmsmWidgetTabFragment :
                 Status.OOS -> {
                     emptyPageLarge.apply {
                         visible()
-                        setImageUrl(TokopediaImageUrl.OLP_NOT_FOUND_ILLUSTRATION)
+                        setImageUrl(TokopediaImageUrl.ILLUSTRATION_GENERAL_EMPTY_BASKET)
                         setTitle(title)
                         setDescription(description)
                         emptyStateTitleID.setEmptyStateTextColor()
