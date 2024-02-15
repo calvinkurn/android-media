@@ -63,6 +63,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -197,7 +198,9 @@ class BmsmWidgetTabFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AtcVariantHelper.ATC_VARIANT_RESULT_CODE) viewModel.getMinicartV3()
+        AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+            if (atcMessage.isNotEmpty()) viewModel.getMinicartV3()
+        }
     }
 
     override fun onAtcClicked(product: Product) {
@@ -455,6 +458,7 @@ class BmsmWidgetTabFragment :
                         text = context.getString(R.string.bmsm_widget_gift_oos_description)
                     }
                 }
+
                 Status.OOS -> {
                     emptyPageLarge.apply {
                         visible()
@@ -485,7 +489,7 @@ class BmsmWidgetTabFragment :
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                 shopId = shopId.toString(),
-                saveAfterClose = false,
+                saveAfterClose = true,
                 extParams = AtcVariantHelper.generateExtParams(
                     mapOf(
                         EXT_PARAM_OFFER_ID to stringOfferIds,
@@ -580,7 +584,7 @@ class BmsmWidgetTabFragment :
             context,
             R.color.dms_static_white
         )
-        if (childCount.isZero()){
+        if (childCount.isZero()) {
             setFactory {
                 Typography(context).apply {
                     setType(Typography.SMALL)
@@ -614,7 +618,7 @@ class BmsmWidgetTabFragment :
                 R.color.dms_pd_sub_title_text_color
             )
         }
-        if (childCount.isZero()){
+        if (childCount.isZero()) {
             setFactory {
                 Typography(context).apply {
                     setType(Typography.SMALL)
