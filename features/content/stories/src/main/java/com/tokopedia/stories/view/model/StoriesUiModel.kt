@@ -146,7 +146,7 @@ data class StoriesDetailItem(
 
 enum class StoriesType(val value: String) {
     Category("category"),
-    Shop("shop");
+    Author("author");
 
     companion object {
         private val values = values()

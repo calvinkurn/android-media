@@ -370,7 +370,7 @@ class StoriesViewModel @AssistedInject constructor(
         run {
             if (mDetailPos == mDetailSize - 1) {
                 val type = mGroup.type
-                if (type != StoriesType.Shop) return@run
+                if (type != StoriesType.Author) return@run
                 setHasSeenAllStories(mGroup.groupId, AuthorType.Seller)
             }
         }
