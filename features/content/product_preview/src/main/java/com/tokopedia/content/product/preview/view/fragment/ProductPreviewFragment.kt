@@ -1,6 +1,7 @@
 package com.tokopedia.content.product.preview.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -291,7 +292,21 @@ class ProductPreviewFragment @Inject constructor(
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) return
+        when (resultCode) {
+            AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
+                AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+                    if (this.mapOfSelectedVariantOption.isNullOrEmpty()) return@onActivityResultAtcVariant
+                    analytics.onClickVariantGBVS()
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     private fun handleAtc(model: BottomNavUiModel) {
+        analytics.onClickATC(model)
         if (model.buttonState == OOS) analytics.onClickRemindMe()
         if (model.hasVariant) {
             AtcVariantHelper.goToAtcVariant(
@@ -299,7 +314,9 @@ class ProductPreviewFragment @Inject constructor(
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
                 shopId = model.shop.id,
                 productId = viewModel.productPreviewSource.productId,
-                startActivitResult = { intent, _ -> startActivity(intent) }
+                startActivitResult = { intent, resultCode ->
+                    startActivityForResult(intent, resultCode)
+                }
             )
         } else {
             viewModel.onAction(ProductPreviewAction.ProductAction(model))

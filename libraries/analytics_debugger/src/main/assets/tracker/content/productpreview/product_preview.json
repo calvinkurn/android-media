@@ -47,19 +47,14 @@
       "currentSite": "tokopediamarketplace",
       "items": [
         {
-          "category_id": "{category child id}",
-          "dimension40": "/unified view pdp",
-          "dimension45": "{cart_id}",
-          "item_brand": "{product_brand}",
-          "item_category": "{cat name lv1} / {cat name lv2} / {cat name lv3}",
+          "category_id": ".* / .* / .*",
+          "item_category": ".* / .* / .*",
           "item_id": ".*",
           "item_name": ".*",
           "item_variant": ".*",
-          "price": "{this is float}",
-          "quantity": ".*",
+          "price": ".*",
           "shop_id": ".*",
-          "shop_name": ".*",
-          "shop_type": ".*"
+          "shop_name": ".*"
         }
       ],
       "productId": ".*",

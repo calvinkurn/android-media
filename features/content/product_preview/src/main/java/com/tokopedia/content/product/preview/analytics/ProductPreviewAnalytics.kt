@@ -1,5 +1,7 @@
 package com.tokopedia.content.product.preview.analytics
 
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+
 interface ProductPreviewAnalytics {
 
     /**
@@ -33,7 +35,7 @@ interface ProductPreviewAnalytics {
      * 4. click ATC button
      * 49590
      */
-    fun onClickATC()
+    fun onClickATC(bottomNavUiModel: BottomNavUiModel)
 
     /**
      * 5. click content thumbnail in Produk tab
@@ -87,7 +89,7 @@ interface ProductPreviewAnalytics {
      * 13. click ATC to global variant bottomsheet
      * 49607
      */
-    fun onOpenGBVS()
+    fun onClickVariantGBVS()
 
     /**
      * 14. click laporkan ulasan in ulasan tab

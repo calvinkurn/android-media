@@ -5,13 +5,15 @@ import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.analytic.manager.ContentAnalyticManager
 import com.tokopedia.content.analytic.model.ContentEnhanceEcommerce
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 
 /**
  * https://mynakama.tokopedia.com/datatracker/requestdetail/view/4459
- * 1 - 18
+ * 1 - 17
  */
 class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     @Assisted private val productId: String,
@@ -69,31 +71,32 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     /**
      * 4. click ATC button
      * 49590
-     * TODO
      */
-    override fun onClickATC() {
+    override fun onClickATC(bottomNavUiModel: BottomNavUiModel) {
+        var categoryId = ""
+        var itemCategory = ""
+        bottomNavUiModel.categoryTree.forEachIndexed { index, categoryTree ->
+            categoryId += if (index != 0) " / " else "" + categoryTree.id
+            itemCategory += if (index != 0) " / " else "" + categoryTree.name
+        }
         analyticManager.sendEEProduct(
             event = Event.add_to_cart,
             eventAction = "click - add to cart media fullscreen",
             eventLabel = productId,
-            itemList = "",
+            itemList = "/unified view pdp",
             products = listOf(
                 ContentEnhanceEcommerce.Product(
-                    itemId = "",
-                    itemName = "",
+                    itemId = productId,
+                    itemName = bottomNavUiModel.title,
                     itemBrand = "",
-                    itemCategory = "",
-                    itemVariant = "",
-                    price = "",
+                    itemCategory = itemCategory,
+                    itemVariant = bottomNavUiModel.hasVariant.toString(),
+                    price = bottomNavUiModel.price.finalPrice,
                     index = "",
                     customFields = mapOf(
-                        "category_id" to "category_child_id",
-                        "dimension40" to "/unified view pdp",
-                        "dimension45" to "cart_id",
-                        "quantity" to "quantity",
-                        "shop_id" to "shopId",
-                        "shop_name" to "shopName",
-                        "shop_type" to "shop_type"
+                        "category_id" to categoryId,
+                        "shop_id" to bottomNavUiModel.shop.id,
+                        "shop_name" to bottomNavUiModel.shop.name
                     )
                 )
             ),
@@ -209,9 +212,8 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     /**
      * 13. click ATC to global variant bottomsheet
      * 49607
-     * TODO can't implement from our side (check gvbs tracker from corresponding team)
      */
-    override fun onOpenGBVS() {
+    override fun onClickVariantGBVS() {
         analyticManager.sendClickContent(
             eventAction = "click - variant bottomsheet atc entry point",
             eventLabel = productId,

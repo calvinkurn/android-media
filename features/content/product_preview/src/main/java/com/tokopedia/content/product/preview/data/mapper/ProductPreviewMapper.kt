@@ -148,6 +148,13 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 BottomNavUiModel.ButtonState.getByValue(
                     response.data.buttonState
                 ) // Variant product always active, to open GVBS.
+            },
+            categoryTree = response.data.categoryTree.map { categoryTree ->
+                BottomNavUiModel.CategoryTree(
+                    id = categoryTree.id,
+                    name = categoryTree.name,
+                    title = categoryTree.title
+                )
             }
         )
 
