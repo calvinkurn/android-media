@@ -118,6 +118,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             when (it) {
                 is Success -> {
                     if (!it.data.responseHeader.success) {
+                        updateProductList()
                         if (it.data.responseHeader.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
                             showToasterError(it.data.responseHeader.errorMessages.firstOrNull().orEmpty())
                         } else {
