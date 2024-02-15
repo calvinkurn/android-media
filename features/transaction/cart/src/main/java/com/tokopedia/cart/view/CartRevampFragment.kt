@@ -1392,11 +1392,11 @@ class CartRevampFragment :
                 note = data.notes
             )
         )
-//        bottomSheet.setListener(listener = { newNote ->
-//            cartPageAnalytics.eventClickSaveOnNoteBottomSheet(data.notes.isEmpty(), data.cartId)
-//            data.notes = newNote
-//            playNoteAnimation(newNote, noteIcon, noteLottieIcon, position)
-//        })
+        bottomSheet.setListener(listener = { newNote ->
+            cartPageAnalytics.eventClickSaveOnNoteBottomSheet(data.notes.isEmpty(), data.cartId)
+            data.notes = newNote
+            playNoteAnimation(newNote, noteIcon, noteLottieIcon, position)
+        })
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
         bottomSheet.show(childFragmentManager, CartNoteBottomSheet.TAG)
     }

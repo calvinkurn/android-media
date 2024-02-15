@@ -2844,6 +2844,13 @@ class CheckoutViewModel @Inject constructor(
         return checkoutProcessor.checkProtectionAddOnOptIn(getOrderProducts(cartStringGroup))
     }
 
+    fun setProductNote(note: String, position: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val product = checkoutItems[position] as CheckoutProductModel
+        checkoutItems[position] = product.copy(noteToSeller = note)
+        listData.value = checkoutItems
+    }
+
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
 

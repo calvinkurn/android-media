@@ -43,4 +43,6 @@
     <string name="cart_action_save">Simpan</string>
     <string name="cart_label_new_note_bottom_sheet_title">Catatan produk</string>
     <string name="cart_text_note_hint">Pastikan tidak ada data pribadi, ya.</string>
+    <string name="cart_button_notes_empty_content_desc">button change note empty</string>
+    <string name="cart_button_notes_filled_content_desc">button change note filled</string>
 </resources>

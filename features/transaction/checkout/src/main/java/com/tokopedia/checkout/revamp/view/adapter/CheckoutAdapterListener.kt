@@ -53,6 +53,8 @@ interface CheckoutAdapterListener {
 
     fun onImpressionAddOnGiftingProductLevel(productId: String)
 
+    fun onEditProductNote(note: String, position: Int)
+
     fun openAddOnGiftingOrderLevelBottomSheet(order: CheckoutOrderModel)
 
     fun addOnGiftingOrderLevelImpression(order: CheckoutOrderModel)

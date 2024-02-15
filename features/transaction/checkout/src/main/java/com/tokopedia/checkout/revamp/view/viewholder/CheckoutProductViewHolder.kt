@@ -43,6 +43,8 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductRevampBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
+import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheet
+import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheetData
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -174,6 +176,9 @@ class CheckoutProductViewHolder(
             tvProductName.isVisible = false
             tvProductVariant.isVisible = false
             tvProductPrice.isVisible = false
+            dividerProductPriceNotes.isVisible = false
+            icProductNotesEdit.isVisible = false
+            tvProductNotesEdit.isVisible = false
             tvProductNotes.isVisible = false
             tvProductAddOnsSectionTitle.isVisible = false
             tvProductAddOnsSeeAll.isVisible = false
@@ -244,8 +249,47 @@ class CheckoutProductViewHolder(
             productBinding.tvProductNotes.isVisible = false
         }
 
+        renderProductNotesEdit(product)
         renderAddOnProduct(product)
         renderAddOnGiftingProduct(product)
+    }
+
+    private fun renderProductNotesEdit(product: CheckoutProductModel) {
+        if (product.noteToSeller.isNotEmpty()) {
+            productBinding.icProductNotesEdit.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
+            productBinding.icProductNotesEdit.contentDescription =
+                binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_filled_content_desc)
+        } else {
+            productBinding.icProductNotesEdit.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
+            productBinding.icProductNotesEdit.contentDescription =
+                binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_empty_content_desc)
+        }
+        productBinding.icProductNotesEdit.setOnClickListener {
+            val cartNoteBottomSheet = CartNoteBottomSheet.newInstance(
+                CartNoteBottomSheetData(
+                    productName = product.name,
+                    productImage = product.imageUrl,
+                    variant = product.variant
+                )
+            )
+            cartNoteBottomSheet.setListener {
+                listener.onEditProductNote(it, bindingAdapterPosition)
+            }
+            cartNoteBottomSheet.show(listener.getHostFragmentManager(), CartNoteBottomSheet.TAG)
+        }
+        productBinding.tvProductNotesEdit.setOnClickListener {
+            val cartNoteBottomSheet = CartNoteBottomSheet.newInstance(
+                CartNoteBottomSheetData(
+                    productName = product.name,
+                    productImage = product.imageUrl,
+                    variant = product.variant
+                )
+            )
+            cartNoteBottomSheet.setListener {
+                listener.onEditProductNote(it, bindingAdapterPosition)
+            }
+            cartNoteBottomSheet.show(listener.getHostFragmentManager(), CartNoteBottomSheet.TAG)
+        }
     }
 
     private fun hideBundleViews() {

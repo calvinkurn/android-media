@@ -26,8 +26,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
-import com.tokopedia.cart.view.customview.BmGmWidgetView
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cart.view.customview.BmGmWidgetView
 import com.tokopedia.cart.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cart.view.customview.CartViewBinderHelper
 import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
@@ -1214,15 +1214,15 @@ class CartItemViewHolder(
     }
 
     private fun renderProductNotesEmpty() {
-        binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note)
+        binding.buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
         binding.buttonChangeNote.contentDescription =
-            binding.root.context.getString(R.string.cart_button_notes_empty_content_desc)
+            binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_empty_content_desc)
     }
 
     private fun renderProductNotesFilled() {
-        binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note_completed)
+        binding.buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
         binding.buttonChangeNote.contentDescription =
-            binding.root.context.getString(R.string.cart_button_notes_filled_content_desc)
+            binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_filled_content_desc)
     }
 
     private fun renderOldQuantity(

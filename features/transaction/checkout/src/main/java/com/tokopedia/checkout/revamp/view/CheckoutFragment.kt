@@ -1348,6 +1348,10 @@ class CheckoutFragment :
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId)
     }
 
+    override fun onEditProductNote(note: String, position: Int) {
+        viewModel.setProductNote(note, position)
+    }
+
     private fun onUpdateResultAddOnProductLevelBottomSheet(data: Intent?) {
         if (data != null) {
             val saveAddOnStateResult =

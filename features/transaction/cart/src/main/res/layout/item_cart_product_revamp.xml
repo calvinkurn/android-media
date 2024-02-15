@@ -604,7 +604,7 @@
                     android:contentDescription="@string/content_desc_button_change_note"
                     app:layout_constraintStart_toEndOf="@id/fl_image_product"
                     app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
-                    app:srcCompat="@drawable/ic_cart_add_note"
+                    app:srcCompat="@drawable/ic_pp_add_note"
                     tools:visibility="visible" />
 
                 <com.airbnb.lottie.LottieAnimationView
