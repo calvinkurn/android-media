@@ -2,6 +2,7 @@ package com.tokopedia.content.product.preview.analytics
 
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.analytic.manager.ContentAnalyticManager
 import com.tokopedia.content.analytic.model.ContentEnhanceEcommerce
@@ -22,7 +23,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
 
     private val analyticManager = analyticManagerFactory.create(
         businessUnit = BusinessUnit.content,
-        eventCategory = categoryName
+        eventCategory = EventCategory.unifiedViewPDP
     )
 
     @AssistedFactory
