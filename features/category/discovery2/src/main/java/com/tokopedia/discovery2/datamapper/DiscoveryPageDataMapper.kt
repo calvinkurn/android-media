@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.automatecoupon.Layout
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -30,6 +31,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.yout
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
@@ -249,6 +251,10 @@ class DiscoveryPageDataMapper(
                         position = position
                     )
                 )
+            }
+
+            ComponentNames.AutomateCoupon.componentName -> {
+                parseAutomateCoupon(component, listComponents)
             }
 
             else -> listComponents.add(component)
@@ -888,6 +894,23 @@ class DiscoveryPageDataMapper(
             .construct(query, component.pagePath)
 
         parameter?.run { component.searchParameter = SearchParameter(this) }
+    }
+
+    private fun parseAutomateCoupon(
+        component: ComponentsItem,
+        listComponents: ArrayList<ComponentsItem>
+    ) {
+        val layout = component.data?.firstOrNull()?.couponLayout
+        layout?.let {
+            Layout.valueOf(it.asCamelCase())
+            val componentName = when (Layout.valueOf(it.asCamelCase())) {
+                Layout.Single -> ComponentNames.SingleAutomateCoupon.componentName
+                Layout.Double -> ComponentNames.DoubleAutomateCoupon.componentName
+                Layout.Carousel -> ComponentNames.CarouselAutomateCoupon.componentName
+            }
+
+            listComponents.add(component.copy(name = componentName))
+        }
     }
 }
 

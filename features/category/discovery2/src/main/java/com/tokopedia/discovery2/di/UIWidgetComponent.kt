@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.di
 
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.SingleAutomateCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetCarouselViewModel
@@ -98,4 +99,5 @@ interface UIWidgetComponent {
     fun inject(shopOfferHeroBrandViewModel: ShopOfferHeroBrandViewModel)
     fun inject(shopOfferSupportingBrandViewModel: ShopOfferSupportingBrandViewModel)
     fun inject(shopOfferSupportingBrandItemViewModel: ShopOfferSupportingBrandItemViewModel)
+    fun inject(singleAutomateCouponViewModel: SingleAutomateCouponViewModel)
 }

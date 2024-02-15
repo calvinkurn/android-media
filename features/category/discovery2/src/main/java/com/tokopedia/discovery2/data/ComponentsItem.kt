@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
+import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.orFalse
@@ -117,7 +118,8 @@ data class ComponentsItem(
     var isFirstShown: Boolean = true,
     var itemPosition: Int = 0,
     var isBackgroundPresent: Boolean = false,
-    var isTargetedTabComponent: Boolean = false
+    var isTargetedTabComponent: Boolean = false,
+    var automateCoupons: List<AutomateCouponModel>? = null
 ) {
 
     private var componentsItem: List<ComponentsItem>? = null
