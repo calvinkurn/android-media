@@ -94,5 +94,7 @@ data class GetRecommendationRequestParam(
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0
+
+        const val X_SOURCE_DEFAULT_VALUE = "recom_widget"
     }
 }
