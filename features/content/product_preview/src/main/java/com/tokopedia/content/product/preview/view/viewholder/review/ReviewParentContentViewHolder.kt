@@ -1,6 +1,7 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
 import android.graphics.Typeface
+import android.os.Build
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.TextPaint
@@ -60,6 +61,17 @@ class ReviewParentContentViewHolder(
                 binding.rvReviewMedia.removeOnScrollListener(contentScrollListener)
             }
         })
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            binding.tvReviewDescription.setOnScrollChangeListener { view, _, _, _, _ ->
+                if (!descriptionUiModel.isExpanded) return@setOnScrollChangeListener
+                binding.reviewOverlay.setBottomFadingEdgeBounds(
+                    if (binding.tvReviewDescription.canScrollVertically(1)) FADING_EDGE_HEIGHT else 0
+                )
+                binding.reviewOverlay.setTopFadingEdgeBounds(
+                    if (binding.tvReviewDescription.canScrollVertically(-1)) FADING_EDGE_HEIGHT else 0
+                )
+            }
+        }
     }
 
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
@@ -181,6 +193,10 @@ class ReviewParentContentViewHolder(
             val text = tvReviewDescription.layout
             if (text.lineCount <= MAX_LINES_THRESHOLD) return@doOnLayout
 
+            tvReviewDescription.setOnClickListener {
+                setupExpanded()
+            }
+
             val start = text.getLineStart(0)
             val end = text.getLineEnd(MAX_LINES_THRESHOLD - 1)
 
@@ -208,9 +224,6 @@ class ReviewParentContentViewHolder(
             setupExpanded()
         }
         tvReviewDescription.show()
-        tvReviewDescription.setOnClickListener {
-            setupExpanded()
-        }
     }
 
     private fun setupExpanded() {
@@ -332,6 +345,7 @@ class ReviewParentContentViewHolder(
         private const val MAX_LINES_VALUE = 25
         private const val MAX_LINES_THRESHOLD = 2
         private const val READ_MORE_COUNT = 16
+        private const val FADING_EDGE_HEIGHT = 20
 
         fun create(
             parent: ViewGroup,
