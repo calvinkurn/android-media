@@ -10,16 +10,16 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.model.UiState
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListAnotherOptionBottomSheetVisitableMapper.addEmptyState
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListAnotherOptionBottomSheetVisitableMapper.addErrorState
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListAnotherOptionBottomSheetVisitableMapper.addRecommendedProducts
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.ShoppingListAnotherOptionBottomSheetVisitableMapper.addShimmeringRecommendedProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addEmptyState
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addErrorState
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addShimmeringRecommendedProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addRecommendedProducts
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
-class ShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
+class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val productRecommendationUseCase: GetSingleRecommendationUseCase,
     dispatchers: CoroutineDispatchers
@@ -28,15 +28,11 @@ class ShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
         const val RECOMMENDATION_PAGE_NAME = "tokonow_similar"
     }
 
-    private val layout: MutableList<Visitable<*>> = mutableListOf()
+    private val mutableLayout: MutableList<Visitable<*>> = mutableListOf()
 
-    private val _productRecommendation: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(
-        UiState.Loading(
-            data = layout.addShimmeringRecommendedProducts()
-        )
-    )
-    val productRecommendation: StateFlow<UiState<List<Visitable<*>>>>
-        get() = _productRecommendation
+    private val _layout: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(UiState.Loading(data = mutableLayout.addShimmeringRecommendedProducts()))
+    val layout: StateFlow<UiState<List<Visitable<*>>>>
+        get() = _layout
 
     fun loadLayout(productId: String) {
         launchCatchError(
@@ -50,18 +46,15 @@ class ShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
                     isTokonow = true
                 )
                 val productRecommendation = productRecommendationUseCase.getData(param)
-                layout.clear()
-                _productRecommendation.value = UiState.Success(
-                    data = if (productRecommendation.recommendationItemList.isNotEmpty())
-                        layout.addRecommendedProducts(productRecommendation)
-                    else
-                        layout.addEmptyState()
+                mutableLayout.clear()
+                _layout.value = UiState.Success(
+                    data = if (productRecommendation.recommendationItemList.isNotEmpty()) mutableLayout.addRecommendedProducts(productRecommendation) else mutableLayout.addEmptyState()
                 )
             },
             onError = { throwable ->
-                layout.clear()
-                _productRecommendation.value = UiState.Error(
-                    data = layout.addErrorState(throwable),
+                mutableLayout.clear()
+                _layout.value = UiState.Error(
+                    data = mutableLayout.addErrorState(throwable),
                     throwable = throwable
                 )
             }
@@ -69,9 +62,9 @@ class ShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
     }
 
     fun loadLoadingState() {
-        layout.clear()
-        _productRecommendation.value = UiState.Loading(
-            data = layout.addShimmeringRecommendedProducts()
+        mutableLayout.clear()
+        _layout.value = UiState.Loading(
+            data = mutableLayout.addShimmeringRecommendedProducts()
         )
     }
 }

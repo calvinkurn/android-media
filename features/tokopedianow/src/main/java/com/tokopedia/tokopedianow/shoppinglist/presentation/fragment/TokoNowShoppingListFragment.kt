@@ -30,6 +30,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowShoppingListBinding
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
@@ -37,7 +38,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
-import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.ShoppingListAnotherOptionBottomSheet
+import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.TokoNowShoppingListAnotherOptionBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
@@ -53,7 +54,6 @@ class TokoNowShoppingListFragment :
     TokoNowChooseAddressWidgetListener
 {
     companion object {
-        private const val PAGE_NAME = "Toko Now Shopping List"
         fun newInstance(): TokoNowShoppingListFragment = TokoNowShoppingListFragment()
     }
 
@@ -79,8 +79,14 @@ class TokoNowShoppingListFragment :
         )
     }
 
-    private var binding
-        by autoClearedNullable<FragmentTokopedianowShoppingListBinding>()
+    private val loadMoreListener: RecyclerView.OnScrollListener
+        by lazy { createLoadMoreListener() }
+
+    private var binding: FragmentTokopedianowShoppingListBinding?
+        by autoClearedNullable()
+
+    private var layoutManager: LinearLayoutManager?
+        by autoClearedNullable()
 
     /**
      * -- internal variable section --
@@ -108,12 +114,11 @@ class TokoNowShoppingListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        observeLiveData()
-
         switchToDarkStatusBar()
 
         binding?.apply {
+            observeLiveData()
+
             setupRecyclerView()
             setupNavigationToolbar()
             setupOnScrollListener()
@@ -138,7 +143,7 @@ class TokoNowShoppingListFragment :
         navToolbar.post {
             setHeaderSpace(navToolbar)
             setHeaderModel(navToolbar.context)
-            viewModel.loadFirstPage()
+            viewModel.loadLayout()
         }
     }
 
@@ -165,10 +170,12 @@ class TokoNowShoppingListFragment :
     }
 
     private fun FragmentTokopedianowShoppingListBinding.setupRecyclerView() {
+        layoutManager = LinearLayoutManager(context)
         rvShoppingList.apply {
             adapter = this@TokoNowShoppingListFragment.adapter
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = this@TokoNowShoppingListFragment.layoutManager
             addItemDecoration(ShoppingListDecoration())
+            addOnScrollListener(loadMoreListener)
         }
     }
 
@@ -176,7 +183,6 @@ class TokoNowShoppingListFragment :
         navToolbar.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setupToolbarWithStatusBar(activity = requireActivity())
-            setToolbarPageName(PAGE_NAME)
             setIcon(
                 IconBuilder()
                     .addCart()
@@ -186,9 +192,13 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun observeLiveData() {
-        viewModel.firstPage.observe(viewLifecycleOwner) {
+    private fun FragmentTokopedianowShoppingListBinding.observeLiveData() {
+        viewModel.layout.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+        }
+
+        viewModel.isOnScrollNotNeeded.observe(viewLifecycleOwner) {
+            rvShoppingList.removeOnScrollListener(loadMoreListener)
         }
     }
 
@@ -276,8 +286,21 @@ class TokoNowShoppingListFragment :
 
     private fun createHorizontalProductCardItemCallback() = object : ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener{
         override fun onClickOtherOptions() {
-            val bottomSheet = ShoppingListAnotherOptionBottomSheet.newInstance("12514021813")
+            val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet.newInstance("12514021813")
             bottomSheet.show(childFragmentManager, ProductCardCompactSimilarProductBottomSheet::class.java.simpleName)
+        }
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val lastVisiblePosition = layoutManager?.findLastVisibleItemPosition()
+            if (lastVisiblePosition != RecyclerView.NO_POSITION) {
+                val lastVisibleViewHolder = recyclerView.findViewHolderForAdapterPosition(lastVisiblePosition.orZero())
+                viewModel.loadMoreProductRecommendation(
+                    lastVisibleViewHolder is TokoNowLoadingMoreViewHolder
+                )
+            }
         }
     }
 

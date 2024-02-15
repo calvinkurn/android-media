@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.shoppinglist.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowHeaderSpaceUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
@@ -10,12 +12,11 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutState.NORMAL
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.ATC_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.EMPTY_STOCK
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListTopCheckAllUiModel
 
-object ShoppingListVisitableMapper {
+object MainVisitableMapper {
     /**
      * -- Header Section --
      */
@@ -46,6 +47,14 @@ object ShoppingListVisitableMapper {
                 backgroundGradientColor = headerModel.backgroundGradientColor
             )
         )
+    }
+
+    fun MutableList<Visitable<*>>.addLoadMore() {
+        add(LoadingMoreModel())
+    }
+
+    fun MutableList<Visitable<*>>.removeLoadMore() {
+        removeFirst { it is LoadingMoreModel }
     }
 
     fun MutableList<Visitable<*>>.addWishlistProducts() {
@@ -196,45 +205,6 @@ object ShoppingListVisitableMapper {
                 percentage = "50%",
                 slashPrice = "Rp100.000000000000000000000000000000000",
                 type = EMPTY_STOCK,
-                state = NORMAL
-            )
-        )
-        addAll(list)
-    }
-
-    fun MutableList<Visitable<*>>.addRecommendedProducts() {
-        val list = listOf(
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = PRODUCT_RECOMMENDATION,
-                state = NORMAL
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = PRODUCT_RECOMMENDATION,
-                state = NORMAL
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000000000000000000000000000000000",
-                type = PRODUCT_RECOMMENDATION,
                 state = NORMAL
             )
         )

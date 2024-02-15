@@ -21,22 +21,22 @@ import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.anotheroptionbottomsheet.ShoppingListAnotherOptionBottomSheetAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListAnotherOptionBottomSheetErrorStateViewHolder
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.ShoppingListAnotherOptionBottomSheetViewModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListAnotherOptionBottomSheetViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
+class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val KEY_PRODUCT_ID = "productId"
 
-        private val TAG: String = ShoppingListAnotherOptionBottomSheet::class.java.simpleName
+        private val TAG: String = TokoNowShoppingListAnotherOptionBottomSheet::class.java.simpleName
 
         fun newInstance(
             productId: String
-        ): ShoppingListAnotherOptionBottomSheet {
-            val bottomSheet = ShoppingListAnotherOptionBottomSheet()
+        ): TokoNowShoppingListAnotherOptionBottomSheet {
+            val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet()
             val bundle = Bundle()
             bundle.putString(KEY_PRODUCT_ID, productId)
             bottomSheet.arguments = bundle
@@ -49,7 +49,7 @@ class ShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
      */
 
     @Inject
-    lateinit var viewModel: ShoppingListAnotherOptionBottomSheetViewModel
+    lateinit var viewModel: TokoNowShoppingListAnotherOptionBottomSheetViewModel
 
     /**
      * -- private variable section --
@@ -123,7 +123,7 @@ class ShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
     private fun collectProductRecommendation() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.productRecommendation.collect { uiState ->
+                viewModel.layout.collect { uiState ->
                     when (uiState) {
                         is UiState.Loading -> {
                             if (!uiState.data.isNullOrEmpty()) {
@@ -161,7 +161,7 @@ class ShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
-            adapter = this@ShoppingListAnotherOptionBottomSheet.adapter
+            adapter = this@TokoNowShoppingListAnotherOptionBottomSheet.adapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(ShoppingListDecoration())
         }
