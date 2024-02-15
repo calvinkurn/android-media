@@ -121,7 +121,7 @@ ext {
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
     androidxFragment = '1.5.7'
-    divKitVersion = '3.0.1'
+    divKitVersion = '28.4.0'
     divKitLottieVersion = '3.0.1'
     debugToolsEnabled = true
 
@@ -163,8 +163,8 @@ ext {
     unifyExplorePromoVersion = '1.0.3.2'
     unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.13'
-    nestPrinciplesVersion = '1.0.6'
-    nestComponentsVersion = '1.0.11'
+    nestPrinciplesVersion = '1.0.7'
+    nestComponentsVersion = '1.0.13'
 
     gradlePlugin = [
             crashlytics                     : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -263,8 +263,8 @@ ext {
     ]
 
     gotoOneKyc = [
-            resource : "com.gojek.android:OneKycResources:2.2.2@aar",
-            oneKycSdk : "com.gojek.android:OneKycSdk:2.2.2@aar",
+            resource : "com.gojek.android:OneKycResources:2.4.3@aar",
+            oneKycSdk : "com.gojek.android:OneKycSdk:2.4.3@aar",
             clickStream : "com.gojek.android:clickstream:4.0.3-alpha",
             protoToko : "com.gojek.clickstream:proto-toko:4.273.5",
             protoSdk : "com.gojek.clickstream:proto-sdk:1.18.2"

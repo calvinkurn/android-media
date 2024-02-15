@@ -324,6 +324,8 @@ public class RemoteConfigKey {
 
     public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
 
+    public static final String ANDROID_ENABLE_THANKYOUPAGE_V2 = "android_enable_new_thankyoupage";
+
     public static final String ANDROID_PDP_THEMATIC_CAMPAIGN_COMPOSE_ENABLE = "android_pdp_thematic_campaign_compose";
 
     public static final String ANDROID_PDP_UPCOMING_CAMPAIGN_COMPOSE_ENABLE = "android_pdp_upcoming_campaign_compose";
@@ -331,5 +333,7 @@ public class RemoteConfigKey {
     public static final String ANDROID_PDP_ENABLE_TABLET_MODE = "android_pdp_enable_tablet_mode";
 
     public static final String ANDROID_ENABLE_SDUI_CAMPAIGN_WIDGET_HOME = "android_home_enable_sdui";
+
+    public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
 
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatlist.analytic
 
+import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic.Other.Companion.NONE
+import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic.Other.Companion.VOUCHER
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -49,15 +51,21 @@ class ChatListAnalytic @Inject constructor(
         companion object {
             const val BUYER = "buyer"
             const val SELLER = "seller"
+
             const val BUSSINESS_UNIT = "businessUnit"
             const val CURRENT_SITE = "currentSite"
             const val COMMUNICATION = "communication"
             const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+
             const val TRACKER_ID = "trackerId"
-
             const val TRACKER_ID_39092 = "39092"
-
             const val TRACKER_ID_39093 = "39093"
+
+            const val NONE = "none"
+            const val VOUCHER = "voucher"
+            const val MANUAL = "manual"
+            const val BROADCAST = "broadcast"
+            const val SMART_REPLY = "smart reply"
         }
     }
 
@@ -98,13 +106,40 @@ class ChatListAnalytic @Inject constructor(
     }
 
     //    #CL6
-    fun eventClickChatList(label: String) {
+    /**
+     * {role} : seller/buyer
+     * {source name}: feature to related message (ex: manual, broadcast, auto reply, smart reply, etc)
+     * {read status} : read status when user click (please fill unread or read)
+     * {msg_id}: message id
+     * {use case label}: highlighted label on chat list when user click, ex: produk baru, promo toko, etc. if no use case label please fill "none"
+     * {voucher label}: voucher label on chatlist, please fill "voucher" else "none"
+     * {counter}: number of unread message when user click (green label)
+     * {position}: position (row number) of the chat in message room when user click
+     */
+    fun eventClickChatList(
+        role: String,
+        messageId: String,
+        sourceName: String,
+        readStatus: String,
+        label: String,
+        iconLabel: String,
+        counter: String,
+        position: String
+    ) {
+        val labelValue = label.ifBlank {
+            NONE
+        }
+        val voucherLabel = if (iconLabel.isBlank()) {
+            NONE
+        } else {
+            VOUCHER
+        }
         TrackApp.getInstance().gtm.sendGeneralEvent(
             TrackAppUtils.gtmData(
-                Event.CLICK_INBOX_CHAT,
+                Event.CLICK_COMMUNICATION,
                 Category.CATEGORY_INBOX_CHAT,
                 Action.ACTION_CLICK_ON_CHATLIST,
-                label
+                "$role - $messageId - $sourceName - $readStatus - $labelValue - $voucherLabel - $counter - $position"
             )
         )
     }
