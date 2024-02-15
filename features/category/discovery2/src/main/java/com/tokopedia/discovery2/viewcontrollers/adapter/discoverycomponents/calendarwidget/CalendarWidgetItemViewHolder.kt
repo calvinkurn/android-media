@@ -63,9 +63,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun setUpCalendar(componentsItem: ComponentsItem, dataItem: DataItem) {
         if ((
-            componentsItem.properties?.calendarLayout.equals(Calendar.CAROUSEL) ||
-                componentsItem.properties?.calendarLayout.equals(Calendar.GRID)
-            ) && componentsItem.properties?.calendarType.equals(Calendar.DYNAMIC)
+                componentsItem.properties?.calendarLayout.equals(Calendar.CAROUSEL) ||
+                    componentsItem.properties?.calendarLayout.equals(Calendar.GRID)
+                ) && componentsItem.properties?.calendarType.equals(Calendar.DYNAMIC)
         ) {
             setUpCalendarForImageBanner(dataItem)
         } else {
@@ -177,7 +177,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
                 imageLayoutParams.width =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_96)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_104)
                 imageLayoutParams.height = imageLayoutParams.width
                 calendarImage.layoutParams = imageLayoutParams
                 itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_6)
@@ -272,6 +272,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarButton.text =
                     itemView.context.getString(R.string.discovery_button_event_expired)
                 calendarButton.buttonType = UnifyButton.Type.ALTERNATE
+                calendarButton.buttonVariant = UnifyButton.Variant.GHOST
             } else {
                 calendarButton.show()
                 calendarExpiredAlpha.hide()
@@ -289,6 +290,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     calendarButton.text =
                         itemView.context.getString(R.string.discovery_button_event_ongoing)
                     calendarButton.buttonType = UnifyButton.Type.MAIN
+                    calendarButton.buttonVariant = UnifyButton.Variant.FILLED
                     calendarButton.setOnClickListener {
                         if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
                             RouteManager.route(itemView.context, buttonApplink)
@@ -303,6 +305,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     }
                 } else {
                     calendarButton.text = itemView.context.getString(R.string.discovery_button_event_reminder)
+                    calendarButton.buttonVariant = UnifyButton.Variant.FILLED
                     calendarButton.buttonType = UnifyButton.Type.ALTERNATE
                     if (calendarWidgetItemViewModel?.isUserLoggedIn() == true) {
                         calendarWidgetItemViewModel?.checkUserPushStatus(notifyCampaignId)
