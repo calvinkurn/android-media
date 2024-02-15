@@ -2445,7 +2445,7 @@
                         },
                         "products": [
                           {
-                            "checkbox_state": false,
+                            "checkbox_state": true,
                             "cart_id": 3696853985,
                             "product_information": [
                               "Cashback 5%"

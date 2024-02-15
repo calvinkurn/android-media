@@ -4,8 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeLayoutResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeTickerResponse
@@ -51,7 +53,7 @@ abstract class TokoFoodHomeViewModelTestFixture {
     lateinit var tokoFoodMerchantListUseCase: TokoFoodMerchantListUseCase
 
     @RelaxedMockK
-    lateinit var keroEditAddressUseCase: KeroEditAddressUseCase
+    lateinit var keroEditAddressUseCase: UpdatePinpointWithAddressIdUseCase
 
     @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
@@ -103,15 +105,15 @@ abstract class TokoFoodHomeViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetKeroEditAddress_thenReturn(keroEditAddressResponse: KeroEditAddressResponse) {
+    protected fun onGetKeroEditAddress_thenReturn(keroEditAddressResponse: KeroEditAddressResponse.Data) {
         coEvery {
-            keroEditAddressUseCase.execute("", "", "")
-        } returns keroEditAddressResponse.keroEditAddress.data.isEditSuccess()
+            keroEditAddressUseCase(KeroEditAddressParam("", "", "", ManageAddressSource.TOKOFOOD))
+        } returns keroEditAddressResponse.keroEditAddress.data
     }
 
     protected fun onGetKeroEditAddress_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            keroEditAddressUseCase.execute("", "", "")
+            keroEditAddressUseCase(KeroEditAddressParam("", "", "", ManageAddressSource.TOKOFOOD))
         } throws errorThrowable
     }
 

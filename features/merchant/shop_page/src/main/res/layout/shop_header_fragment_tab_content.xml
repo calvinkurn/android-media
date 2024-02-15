@@ -178,7 +178,6 @@
                                     app:layout_constraintRight_toLeftOf="@id/text_shop_name"
                                     app:layout_constraintTop_toTopOf="@id/text_shop_name"
                                     app:layout_constraintVertical_bias="0.5"
-                                    tools:src="@drawable/ic_badge_gold"
                                     tools:visibility="visible" />
 
                                 <com.tokopedia.unifyprinciples.Typography
@@ -349,8 +348,7 @@
                                     app:layout_constraintHorizontal_bias="0"
                                     app:layout_constraintLeft_toRightOf="@id/dot_separator_shop_status"
                                     app:layout_constraintRight_toRightOf="parent"
-                                    app:layout_constraintTop_toTopOf="@id/text_online_description"
-                                    tools:src="@drawable/ic_badge_free_return" />
+                                    app:layout_constraintTop_toTopOf="@id/text_online_description" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
 

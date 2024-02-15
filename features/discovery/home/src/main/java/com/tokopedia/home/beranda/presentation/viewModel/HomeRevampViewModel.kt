@@ -29,7 +29,6 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUs
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeThematicUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
@@ -37,7 +36,6 @@ import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
@@ -50,11 +48,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.usecase.thematic.ThematicModel
+import com.tokopedia.home_component.usecase.thematic.ThematicUseCase
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -108,7 +107,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeRemoteConfigController: Lazy<HomeRemoteConfigController>,
     private val homeAtfUseCase: Lazy<HomeAtfUseCase>,
     private val todoWidgetRepository: Lazy<TodoWidgetRepository>,
-    private val homeThematicUseCase: Lazy<HomeThematicUseCase>,
+    private val homeThematicUseCase: Lazy<ThematicUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -121,7 +120,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     val homeLiveDynamicChannel: LiveData<HomeDynamicChannelModel>
         get() = _homeLiveDynamicChannel
-    private val _homeLiveDynamicChannel: MutableLiveData<HomeDynamicChannelModel> = MutableLiveData()
+    private val _homeLiveDynamicChannel: MutableLiveData<HomeDynamicChannelModel> =
+        MutableLiveData()
 
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
@@ -162,8 +162,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
     val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
 
-    val thematicLiveData: LiveData<HomeThematicModel> get() = _thematicLiveData
-    private val _thematicLiveData = MutableLiveData<HomeThematicModel>()
+    val thematicLiveData: LiveData<ThematicModel> get() = _thematicLiveData
+    private val _thematicLiveData = MutableLiveData<ThematicModel>()
 
     private var fetchFirstData = false
     private var homeFlowStarted = false
@@ -193,25 +193,42 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private inline fun <reified T> findWidget(predicate: (T) -> Boolean = { true }, actionOnFound: (T, Int) -> Unit) {
-        homeDataModel.list.withIndex().find { it.value is T && predicate.invoke(it.value as T) }.let {
-            it?.let {
-                if (it.value is T) {
-                    actionOnFound.invoke(it.value as T, it.index)
+        homeDataModel.list.withIndex().find { it.value is T && predicate.invoke(it.value as T) }
+            .let {
+                it?.let {
+                    if (it.value is T) {
+                        actionOnFound.invoke(it.value as T, it.index)
+                    }
                 }
             }
-        }
     }
 
     private fun addWidget(visitable: Visitable<*>, position: Int? = null) {
-        homeDataModel.addWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
+        homeDataModel.addWidgetModel(visitable, position) {
+            _homeLiveDynamicChannel.postValue(
+                homeDataModel
+            )
+        }
     }
 
-    private fun updateWidget(visitable: Visitable<*>, position: Int, visitableToChange: Visitable<*>? = null) {
-        homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
+    private fun updateWidget(
+        visitable: Visitable<*>,
+        position: Int,
+        visitableToChange: Visitable<*>? = null
+    ) {
+        homeDataModel.updateWidgetModel(
+            visitable,
+            visitableToChange,
+            position
+        ) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 
     private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
-        homeDataModel.deleteWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
+        homeDataModel.deleteWidgetModel(visitable, position) {
+            _homeLiveDynamicChannel.postValue(
+                homeDataModel
+            )
+        }
     }
 
     private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
@@ -222,7 +239,10 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun injectCouponTimeBased() {
         launch {
-            if (userSession.get().isLoggedIn) homeBalanceWidgetUseCase.get().onGetInjectCouponTimeBased()
+            if (userSession.get().isLoggedIn) {
+                homeBalanceWidgetUseCase.get()
+                    .onGetInjectCouponTimeBased()
+            }
         }
     }
 
@@ -245,7 +265,9 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                val visitable = updateHeaderData(homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel))
+                val visitable = updateHeaderData(
+                    homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel)
+                )
                 visitable?.let { updateWidget(visitable, index) }
             }
         }
@@ -297,7 +319,14 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun updateHeaderData(visitable: Visitable<*>?, index: Int = 0): Visitable<*>? {
-        visitable?.let { findWidget<HomeHeaderDataModel> { model, index -> updateWidget(it, index) } }
+        visitable?.let {
+            findWidget<HomeHeaderDataModel> { model, index ->
+                updateWidget(
+                    it,
+                    index
+                )
+            }
+        }
         return visitable
     }
 
@@ -462,7 +491,8 @@ open class HomeRevampViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             _oneClickCheckoutHomeComponent.postValue(
                 Event(
-                    homeListCarouselUseCase.get().onOneClickCheckOut(channel, grid, position, getUserId())
+                    homeListCarouselUseCase.get()
+                        .onOneClickCheckOut(channel, grid, position, getUserId())
                 )
             )
         }) {
@@ -472,8 +502,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun onCloseBuyAgain(channelId: String, position: Int) {
-        findWidget<RecommendationListCarouselDataModel> {
-                listCarouselModel, index ->
+        findWidget<RecommendationListCarouselDataModel> { listCarouselModel, index ->
             launch {
                 if (homeListCarouselUseCase.get().onClickCloseListCarousel(channelId)) {
                     deleteWidget(listCarouselModel, position)
@@ -542,7 +571,11 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getDynamicChannelDataOnExpired(visitable: Visitable<*>, channelModel: ChannelModel, position: Int) {
+    fun getDynamicChannelDataOnExpired(
+        visitable: Visitable<*>,
+        channelModel: ChannelModel,
+        position: Int
+    ) {
         launchCatchError(coroutineContext, block = {
             val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
 
@@ -698,7 +731,10 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
+    fun shouldUpdatePlayWidgetToggleReminder(
+        channelId: String,
+        reminderType: PlayWidgetReminderType
+    ) {
         if (!userSession.get().isLoggedIn) {
             _playWidgetReminderEvent.value = Pair(channelId, reminderType)
         } else {
@@ -712,10 +748,14 @@ open class HomeRevampViewModel @Inject constructor(
                 )
             }
             launch {
-                when (homePlayUseCase.get().onUpdatePlayWidgetToggleReminder(channelId, reminderType)) {
+                when (
+                    homePlayUseCase.get()
+                        .onUpdatePlayWidgetToggleReminder(channelId, reminderType)
+                ) {
                     true -> {
                         _playWidgetReminderObservable.postValue(Result.success(reminderType))
                     }
+
                     else -> {
                         updateCarouselPlayWidget {
                             it.copy(
@@ -762,6 +802,7 @@ open class HomeRevampViewModel @Inject constructor(
             updateHomeData(homeDataModel)
         }
     }
+
     fun getCMHomeWidgetData(isForceRefresh: Boolean = true) {
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             launchCatchError(coroutineContext, {
@@ -875,7 +916,8 @@ open class HomeRevampViewModel @Inject constructor(
                         }
                     }
                 }
-            } catch (_: Exception) { }
+            } catch (_: Exception) {
+            }
         }
     }
 
@@ -889,7 +931,8 @@ open class HomeRevampViewModel @Inject constructor(
                         visitableToChange = currentDataModel,
                         position = index
                     )
-                    val newDataModel = homeRecommendationUseCase.get().getShopFlashSaleProducts(currentDataModel, shopId)
+                    val newDataModel = homeRecommendationUseCase.get()
+                        .getShopFlashSaleProducts(currentDataModel, shopId)
                     updateWidget(
                         visitable = newDataModel,
                         visitableToChange = currentDataModel,
@@ -905,7 +948,7 @@ open class HomeRevampViewModel @Inject constructor(
             val thematic = homeThematicUseCase.get().executeOnBackground()
             _thematicLiveData.postValue(thematic)
         }) {
-            _thematicLiveData.postValue(HomeThematicModel(isShown = false))
+            _thematicLiveData.postValue(ThematicModel(isShown = false))
         }
     }
 }

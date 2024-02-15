@@ -1,22 +1,17 @@
 package com.tokopedia.catalogcommon.viewholder
 
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager.widget.ViewPager
-import androidx.viewpager.widget.ViewPager.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
-import com.tokopedia.catalogcommon.adapter.ImageSlidePagerAdapter
 import com.tokopedia.catalogcommon.adapter.ImageSliderAdapter
 import com.tokopedia.catalogcommon.databinding.WidgetItemSliderImageTextBinding
+import com.tokopedia.catalogcommon.listener.SliderImageTextListener
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
-import com.tokopedia.catalogcommon.util.orDefaultColor
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.utils.view.binding.viewBinding
 
-class SliderImageTextViewHolder(itemView: View) :
+class SliderImageTextViewHolder(itemView: View, val listener: SliderImageTextListener? = null) :
     AbstractViewHolder<SliderImageTextUiModel>(itemView) {
 
     companion object {
@@ -29,6 +24,8 @@ class SliderImageTextViewHolder(itemView: View) :
     override fun bind(element: SliderImageTextUiModel) {
         val imageSlideAdapter = ImageSliderAdapter(element.items)
         binding?.rvSlider?.adapter = imageSlideAdapter
-        binding?.rvSlider?.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        binding?.rvSlider?.layoutManager =
+            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        listener?.onSliderImageTextImpression(element.widgetName)
     }
 }

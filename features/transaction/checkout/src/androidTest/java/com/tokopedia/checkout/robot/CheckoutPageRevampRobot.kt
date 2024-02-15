@@ -20,6 +20,7 @@ import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCostViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCrossSellViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutOrderViewHolder
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductBenefitViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutPromoViewHolder
 import com.tokopedia.common.payment.PaymentConstant
@@ -32,6 +33,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import com.tokopedia.dialog.R as dialogR
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.promousage.R as promousageR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
@@ -76,6 +78,10 @@ class CheckoutPageRevampRobot {
             scrollRecyclerViewToPosition(activityRule, recyclerView, i)
             when (recyclerView.findViewHolderForAdapterPosition(i)) {
                 is CheckoutProductViewHolder -> {
+                    position = i
+                    if (currentIndex == productIndex) break else currentIndex += 1
+                }
+                is CheckoutProductBenefitViewHolder -> {
                     position = i
                     if (currentIndex == productIndex) break else currentIndex += 1
                 }
@@ -370,6 +376,14 @@ class CheckoutPageRevampRobot {
                     )
                 )
         }
+    }
+
+    fun clickPrimaryButtonDialogUnify() {
+        onView(ViewMatchers.withId(dialogR.id.dialog_btn_primary)).perform(ViewActions.click())
+    }
+
+    fun clickSecondaryButtonDialogUnify() {
+        onView(ViewMatchers.withId(dialogR.id.dialog_btn_secondary_long)).perform(ViewActions.click())
     }
 
     infix fun validateAnalytics(func: ResultRevampRobot.() -> Unit): ResultRevampRobot {
@@ -716,6 +730,39 @@ class CheckoutPageRevampRobot {
                                 val layout = view.findViewById<Typography>(R.id.tv_checkout_bmgm_title)
                                 assertEquals(View.VISIBLE, layout.visibility)
                                 assertEquals(bmsmTitle, layout.text.toString())
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertBmsmProductBenefit(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        productIndex: Int,
+        title: String,
+        description: String
+    ) {
+        val position = scrollRecyclerViewToShipmentCartItem(activityRule, productIndex)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String = "Assert Bmsm Product Benefit UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                assertEquals(
+                                    title,
+                                    view.findViewById<Typography>(R.id.tv_product_name_benefit).text.toString()
+                                )
+                                assertEquals(
+                                    description,
+                                    view.findViewById<Typography>(R.id.tv_product_price_benefit).text.toString()
+                                )
                             }
                         }
                     )

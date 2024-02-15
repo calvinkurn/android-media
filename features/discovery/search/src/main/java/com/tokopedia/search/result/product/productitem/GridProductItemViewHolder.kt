@@ -8,6 +8,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardReimagineGridBinding
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.video_widget.VideoPlayer
@@ -38,12 +39,12 @@ class GridProductItemViewHolder(
                 true
             }
 
-            setOnClickListener {
-                productListener.onItemClicked(productItemData, bindingAdapterPosition)
-            }
-
             addOnImpressionListener(productItemData) {
                 productListener.onProductImpressed(productItemData, bindingAdapterPosition)
+            }
+
+            setOnClickListener {
+                productListener.onItemClicked(productItemData, bindingAdapterPosition)
             }
         }
     }
@@ -59,9 +60,9 @@ class GridProductItemViewHolder(
             labelGroupList = labelGroupList(element),
             rating = element.ratingString,
             shopBadge = shopBadge(element),
-            freeShipping = freeShipping(element),
             videoUrl = element.customVideoURL,
             hasThreeDots = true,
+            isSafeProduct = element.isImageBlurred
         )
 
     private fun labelGroupList(element: ProductItemDataView) =
@@ -73,7 +74,11 @@ class GridProductItemViewHolder(
             title = labelGroupDataView.title,
             type = labelGroupDataView.type,
             imageUrl = labelGroupDataView.imageUrl,
+            styles = labelGroupDataView.styleList.map(::style)
         )
+
+    private fun style(item: StyleDataView) =
+        ProductCardModel.LabelGroup.Style(item.key, item.value)
 
     private fun shopBadge(element: ProductItemDataView): ProductCardModel.ShopBadge {
         val shopBadge = element.badgesList?.firstOrNull()
@@ -82,11 +87,6 @@ class GridProductItemViewHolder(
             title = shopBadge?.title ?: ""
         )
     }
-
-    private fun freeShipping(element: ProductItemDataView) =
-        ProductCardModel.FreeShipping(
-            imageUrl = element.freeOngkirDataView.imageUrl,
-        )
 
     override fun onViewRecycled() {
         binding?.searchProductCardGridReimagine?.recycle()

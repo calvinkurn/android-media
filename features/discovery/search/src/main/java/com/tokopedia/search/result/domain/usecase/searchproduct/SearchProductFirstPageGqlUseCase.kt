@@ -14,9 +14,10 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
-import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.UserProfileDobModel
+import com.tokopedia.search.result.domain.usecase.InspirationCarouselQuery.createSearchInspirationCarouselRequest
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -59,7 +60,7 @@ class SearchProductFirstPageGqlUseCase(
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
         val query = getQueryFromParameters(searchProductParams)
-        val params = UrlParamUtils.generateUrlParamString(searchProductParams)
+        val params = UrlParamUtils.generateUrlParamString(searchProductParams) + sreParams()
         val headlineAdsParams = createHeadlineParams(
             requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
             HEADLINE_ITEM_VALUE_FIRST_PAGE,
@@ -75,6 +76,7 @@ class SearchProductFirstPageGqlUseCase(
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)
             addGetLastFilterRequest(requestParams, params)
+            addUserProfileDobRequest(reimagineRollence)
         }
 
         graphqlUseCase.clearRequest()
@@ -127,18 +129,10 @@ class SearchProductFirstPageGqlUseCase(
         )
 
     private fun MutableList<GraphqlRequest>.addInspirationCarouselRequest(requestParams: RequestParams, params: String) {
-        if (!requestParams.isSkipInspirationCarousel()) {
-            add(createSearchInspirationCarouselRequest(params = params))
-        }
-    }
+        if (requestParams.isSkipInspirationCarousel()) return
 
-    @GqlQuery("InspirationCarousel", SEARCH_INSPIRATION_CAROUSEL_QUERY)
-    private fun createSearchInspirationCarouselRequest(params: String): GraphqlRequest =
-        GraphqlRequest(
-            InspirationCarousel(),
-            SearchInspirationCarouselModel::class.java,
-            mapOf(GQL.KEY_PARAMS to params)
-        )
+        add(createSearchInspirationCarouselRequest(params = params))
+    }
 
     private fun MutableList<GraphqlRequest>.addInspirationWidgetRequest(requestParams: RequestParams, params: String) {
         if (!requestParams.isSkipInspirationWidget()) {
@@ -196,8 +190,7 @@ class SearchProductFirstPageGqlUseCase(
                 )
                 emitter.onNext(topAdsImageViewModelList)
                 emitter.onCompleted()
-            }
-            catch (throwable: Throwable) {
+            } catch (throwable: Throwable) {
                 searchLogger.logTDNError(throwable)
                 emitter.onNext(listOf())
             }
@@ -227,6 +220,20 @@ class SearchProductFirstPageGqlUseCase(
         return searchProductModel
     }
 
+    @GqlQuery("UserProfileDob", USER_PROFILE_DOB_QUERY)
+    private fun createUserProfileDobRequest(): GraphqlRequest =
+        GraphqlRequest(
+            UserProfileDob(),
+            UserProfileDobModel::class.java,
+        )
+
+    private fun MutableList<GraphqlRequest>.addUserProfileDobRequest(
+        reimagineRollence: ReimagineRollence,
+    ) {
+        if (reimagineRollence.search3ProductCard().isUseAceSearchProductV5())
+            add(createUserProfileDobRequest())
+    }
+
     override fun unsubscribe() {
         super.unsubscribe()
 
@@ -252,7 +259,9 @@ class SearchProductFirstPageGqlUseCase(
                             total_data
                             val_max
                             val_min
-                            hex_color
+                            hex_color 
+                            image_url_active
+                            image_url_inactive
                             child {
                                 key
                                 value
@@ -302,104 +311,6 @@ class SearchProductFirstPageGqlUseCase(
                             background_url
                             logo_url
                             component_id
-                        }
-                    }
-                }
-            }
-        """
-
-        private const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
-            query SearchInspirationCarousel(${'$'}params: String!) {
-                searchInspirationCarouselV2(params: ${'$'}params) {
-                    data {
-                        title
-                        type
-                        position
-                        layout
-                        tracking_option
-                        options {
-                            title
-                            subtitle
-                            icon_subtitle
-                            url
-                            applink
-                            banner_image_url
-                            banner_link_url
-                            banner_applink_url
-                            identifier
-                            meta
-                            component_id
-                            product {
-                                id
-                                name
-                                price
-                                price_str
-                                image_url
-                                rating
-                                count_review
-                                url
-                                applink
-                                description
-                                rating_average
-                                component_id
-                                label_groups {
-                                    title
-                                    type
-                                    position
-                                    url
-                                }
-                                original_price
-                                discount_percentage
-                                label
-                                discount
-                              	badges {
-                                    title
-                                    image_url
-                                    show
-                                }
-                              	shop {
-                                    id
-                                    name
-                                    city
-                                }
-                                freeOngkir {
-                                    isActive
-                                    image_url
-                                }
-                                ads {
-                                    id
-                                    productClickUrl
-                                    productWishlistUrl
-                                    productViewUrl
-                                }
-                                customvideo_url
-                                bundle_id
-                                parent_id
-                                min_order
-                                stockbar {
-                                    stock
-                                    original_stock
-                                    percentage_value
-                                    value
-                                    color
-                                }
-                                warehouse_id_default
-                            }
-                            card_button {
-                                title
-                                applink
-                            }
-                            bundle {
-                                shop {
-                                    name
-                                    url
-                                }
-                                count_sold
-                                price
-                                original_price
-                                discount
-                                discount_percentage
-                            }
                         }
                     }
                 }
@@ -458,5 +369,19 @@ class SearchProductFirstPageGqlUseCase(
                 }
               }
             }"""
+
+        const val USER_PROFILE_DOB_QUERY = """
+        query userProfileDob(){
+            userProfileDob{
+                userID
+                age
+                bday
+                isDobExist
+                isDobVerified
+                isAdult
+                error
+            }
+        }
+    """
     }
 }

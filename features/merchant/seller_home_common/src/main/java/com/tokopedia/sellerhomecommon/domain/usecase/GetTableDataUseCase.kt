@@ -70,6 +70,7 @@ class GetTableDataUseCase(
                         type
                         meta
                         iconUrl
+                        additionalValue
                       }
                       id
                     }

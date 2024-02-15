@@ -8,5 +8,7 @@ internal object GlobalNavWidgetConstant {
 
     const val NAV_TEMPLATE_CATALOG = "catalog"
 
+    const val NAV_TEMPLATE_SHOP = "shop"
+
     const val GLOBAL_NAV_SPAN_COUNT = 5
 }

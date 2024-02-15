@@ -1,10 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicProductMediaBinding
@@ -16,7 +14,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 class ProductMediaViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductMediaDataModel>(view) {
+) : ProductDetailPageViewHolder<ProductMediaDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
@@ -65,7 +63,9 @@ class ProductMediaViewHolder(
         ProductDetailConstant.PAYLOAD_MEDIA_UPDATE -> {
             setupViewpager(element, true)
         }
-        else -> {}
+        else -> {
+            //NO-OP
+        }
     }
 
     private fun setupViewpager(element: ProductMediaDataModel, resetPosition: Boolean = false) {
@@ -80,16 +80,13 @@ class ProductMediaViewHolder(
             recommendation = element.recommendation,
             isPrefetch = element.isPrefetch
         )
+
+        if (resetPosition) {
+            binding.viewMediaPager.scrollToPosition(0)
+        }
     }
 
     fun detachView() {
         listener.getProductVideoCoordinator()?.onPause()
     }
-
-    private fun getComponentTrackData(element: ProductMediaDataModel?) = ComponentTrackDataModel(
-        element?.type
-            ?: "",
-        element?.name ?: "",
-        adapterPosition + 1
-    )
 }

@@ -2,6 +2,8 @@ package com.tokopedia.checkout.domain.mapper
 
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnWording
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnsProduct
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.BmGmData
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.BmGmTierProduct
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
@@ -12,6 +14,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippi
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.PaymentLevelAddOnItem
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAction
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
@@ -19,6 +22,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentSu
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.SubtotalAddOn
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
+import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmBenefitProductModel
 import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmProductModel
 import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmTierProductModel
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
@@ -39,6 +43,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction.ShipmentActionPopup
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
@@ -64,7 +69,6 @@ import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
-import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmTierProduct
 import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyEnablerResponse
@@ -248,7 +252,8 @@ class ShipmentMapper @Inject constructor() {
                     groupInfoBadgeUrl = it.groupInformation.badgeUrl,
                     groupInfoDescription = it.groupInformation.description,
                     groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl,
-                    groupMetadata = it.groupMetadata
+                    groupMetadata = it.groupMetadata,
+                    shipmentAction = mapShipmentAction(it.shipmentAction)
                 ).apply {
                     isError =
                         it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
@@ -298,6 +303,8 @@ class ShipmentMapper @Inject constructor() {
                     )
                     scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
+                    shippingComponents = it.shippingComponents
+                    groupingState = it.groupingState
                     listSubtotalAddOn = mapSubtotalAddOn(it.listSubtotalAddOns)
                 }
             )
@@ -425,6 +432,7 @@ class ShipmentMapper @Inject constructor() {
                     if (cartDetail.cartDetailInfo.cartDetailType.lowercase() == CART_DETAIL_TYPE_BMGM) {
                         isBmgmItem = true
                         bmgmOfferId = cartDetail.cartDetailInfo.bmgmData.offerId
+                        bmgmOfferTypeId = cartDetail.cartDetailInfo.bmgmData.offerTypeId
                         bmgmIconUrl = cartDetail.cartDetailInfo.bmgmData.offerIcon
                         bmgmOfferName = cartDetail.cartDetailInfo.bmgmData.offerName
                         bmgmOfferMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage
@@ -437,6 +445,7 @@ class ShipmentMapper @Inject constructor() {
                             }
                         bmgmTotalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount
                         bmgmTierProductList = mapBmgmTierProductToDomainModel(
+                            cartDetail.cartDetailInfo.bmgmData,
                             cartDetail.cartDetailInfo.bmgmData.tierProductList,
                             cartDetail.products
                         )
@@ -1278,7 +1287,9 @@ class ShipmentMapper @Inject constructor() {
         return ScheduleDeliveryData(
             scheduleDelivery.timeslotId,
             scheduleDelivery.scheduleDate,
-            scheduleDelivery.validationMetadata
+            scheduleDelivery.validationMetadata,
+            scheduleDelivery.startDate,
+            scheduleDelivery.isRecommend
         )
     }
 
@@ -1312,11 +1323,14 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapBmgmTierProductToDomainModel(
+        bmGmData: BmGmData,
         tierProductList: List<BmGmTierProduct>,
         products: List<com.tokopedia.checkout.data.model.response.shipmentaddressform.Product>
     ): List<CheckoutBmgmTierProductModel> {
         return tierProductList.map { bmgmTier ->
             CheckoutBmgmTierProductModel(
+                offerId = bmGmData.offerId,
+                offerTypeId = bmGmData.offerTypeId,
                 tierId = bmgmTier.tierId,
                 tierName = bmgmTier.tierName,
                 tierMessage = bmgmTier.tierMessage,
@@ -1339,6 +1353,19 @@ class ShipmentMapper @Inject constructor() {
                         wholesalePrice = matchedProduct?.productWholesalePrice.orZero(),
                         cartId = bmgmProduct.cartId
                     )
+                },
+                benefitWording = bmgmTier.benefitWording,
+                benefitProductList = bmgmTier.productsBenefit.map {
+                    CheckoutBmgmBenefitProductModel(
+                        productId = it.productId,
+                        productName = it.productName,
+                        imageUrl = it.productImage,
+                        quantity = it.quantity,
+                        originalPrice = it.originalPrice,
+                        finalPrice = it.finalPrice,
+                        weight = it.weight,
+                        weightActual = it.actualWeight
+                    )
                 }
             )
         }
@@ -1350,6 +1377,22 @@ class ShipmentMapper @Inject constructor() {
         } else {
             paymentLevelAddOns.map { it.id }
         }
+    }
+
+    private fun mapShipmentAction(shipmentAction: List<ShipmentAction>): HashMap<Long, com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction> {
+        return HashMap(
+            shipmentAction.associateBy({ it.spId }, {
+                com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction(
+                    action = it.action,
+                    popup = ShipmentActionPopup(
+                        title = it.popup.title,
+                        body = it.popup.body,
+                        primaryButton = it.popup.buttonOk,
+                        secondaryButton = it.popup.buttonCancel
+                    )
+                )
+            })
+        )
     }
 
     companion object {

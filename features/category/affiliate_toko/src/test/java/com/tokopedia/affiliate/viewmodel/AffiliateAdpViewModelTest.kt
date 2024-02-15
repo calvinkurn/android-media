@@ -18,7 +18,6 @@ import com.tokopedia.affiliate.sse.model.AffiliateSSEAction
 import com.tokopedia.affiliate.sse.model.AffiliateSSECloseReason
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
-import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceItemTypeUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSEAuthTokenUseCase
@@ -50,7 +49,6 @@ class AffiliateAdpViewModelTest {
     private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase = mockk()
     private val affiliatePerformanceItemTypeUseCase: AffiliatePerformanceItemTypeUseCase = mockk()
     private val affiliateSSEAuthTokenUseCase: AffiliateSSEAuthTokenUseCase = mockk()
-    private val getUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase = mockk()
     private val dispatchers: CoroutineDispatchers = mockk()
     private val affiliateSSE: AffiliateSSE = mockk(relaxed = true)
     private var affiliateAdpViewModel = spyk(
@@ -61,7 +59,6 @@ class AffiliateAdpViewModelTest {
             affiliatePerformanceItemTypeUseCase,
             affiliatePerformanceDataUseCase,
             affiliateSSEAuthTokenUseCase,
-            getUnreadNotificationUseCase,
             dispatchers,
             affiliateSSE
         )
@@ -286,29 +283,6 @@ class AffiliateAdpViewModelTest {
         affiliateAdpViewModel.onRangeChanged(range)
 
         assertEquals(null, affiliateAdpViewModel.getRangeChanged().value)
-    }
-
-    @Test
-    fun `successfully getting unread notification count`() {
-        coEvery {
-            getUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliateAdpViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateAdpViewModel.getUnreadNotificationCount().value)
-    }
-
-    @Test
-    fun `should reset notification count to zero`() {
-        coEvery {
-            getUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliateAdpViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateAdpViewModel.getUnreadNotificationCount().value)
-
-        affiliateAdpViewModel.resetNotificationCount()
-        assertEquals(0, affiliateAdpViewModel.getUnreadNotificationCount().value)
     }
 
     @Test

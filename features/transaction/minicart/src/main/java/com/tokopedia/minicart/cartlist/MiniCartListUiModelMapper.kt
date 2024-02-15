@@ -3,7 +3,6 @@ package com.tokopedia.minicart.cartlist
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.ProductDataModel
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -208,7 +207,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             val groupCount = availableSection.availableGroup.count()
             availableSection.availableGroup.forEachIndexed { groupIndex, availableGroup ->
                 // Add shop
-                miniCartShopUiModel = mapShopUiModel(availableGroup.shop, availableGroup.shipmentInformation)
+                // miniCartShopUiModel = mapShopUiModel(availableGroup.shop, availableGroup.shipmentInformation)
 
                 // Add available product
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
@@ -387,6 +386,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productInitialPriceBeforeDrop = product.initialPrice
             productPrice = product.productPrice
             productInformation = product.productInformation
+            productTagInfo = product.productTagInfo
             productNotes = product.productNotes
             productQty = if (product.productSwitchInvenage == 0) {
                 productQuantity
@@ -548,6 +548,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productParentId = visitable.parentId
                     quantity = visitable.productQty
                     notes = visitable.productNotes
+                    productTagInfo = visitable.productTagInfo
                     cartString = visitable.cartString
                     campaignId = visitable.campaignId
                     attribution = visitable.attribution

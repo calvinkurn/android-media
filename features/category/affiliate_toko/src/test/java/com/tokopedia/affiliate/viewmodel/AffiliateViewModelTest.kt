@@ -1,27 +1,37 @@
 package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliate.PAGE_ZERO
-import com.tokopedia.affiliate.model.response.*
-import com.tokopedia.affiliate.usecase.*
+import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
+import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
+import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class AffiliateViewModelTest{
+class AffiliateViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
-    private var affiliateViewModel = spyk(AffiliateViewModel(userSessionInterface, affiliateValidateUserStatus))
+    private val getUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase = mockk()
+    private var affiliateViewModel = spyk(
+        AffiliateViewModel(
+            userSessionInterface,
+            affiliateValidateUserStatus,
+            getUnreadNotificationUseCase
+        )
+    )
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -29,12 +39,11 @@ class AffiliateViewModelTest{
     @Before
     @Throws(Exception::class)
     fun setUp() {
-
         coEvery { userSessionInterface.userId } returns ""
         coEvery { userSessionInterface.email } returns ""
 
         MockKAnnotations.init(this)
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
     }
 
     @After
@@ -64,4 +73,28 @@ class AffiliateViewModelTest{
         assertEquals(affiliateViewModel.getErrorMessage().value, throwable)
     }
 
+    /**************************** notification *******************************************/
+
+    @Test
+    fun `successfully getting unread notification count`() {
+        coEvery {
+            getUnreadNotificationUseCase.getUnreadNotifications()
+        } returns 5
+
+        affiliateViewModel.fetchUnreadNotificationCount()
+        assertEquals(5, affiliateViewModel.getUnreadNotificationCount().value)
+    }
+
+    @Test
+    fun `should reset notification count to zero`() {
+        coEvery {
+            getUnreadNotificationUseCase.getUnreadNotifications()
+        } returns 5
+
+        affiliateViewModel.fetchUnreadNotificationCount()
+        assertEquals(5, affiliateViewModel.getUnreadNotificationCount().value)
+
+        affiliateViewModel.resetNotificationCount()
+        assertEquals(0, affiliateViewModel.getUnreadNotificationCount().value)
+    }
 }

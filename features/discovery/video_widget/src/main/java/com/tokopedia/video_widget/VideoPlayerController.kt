@@ -124,4 +124,8 @@ class VideoPlayerController(
             imageView = null
         }
     }
+
+    companion object {
+        fun empty() = VideoPlayerController(null, 0, 0)
+    }
 }

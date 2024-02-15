@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="olp_tier_list_dms_text_color">#E9FFFF</color>
+    <color name="dms_black_transparent">#66000000</color>
+    <color name="dms_white_transparent">#80FFFFFF</color>
 </resources>

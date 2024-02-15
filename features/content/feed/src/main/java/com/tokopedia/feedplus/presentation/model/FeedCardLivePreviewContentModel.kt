@@ -25,6 +25,7 @@ data class FeedCardLivePreviewContentModel(
     val hasVoucher: Boolean,
     val campaign: FeedCardCampaignModel,
     val products: List<FeedCardProductModel>,
+    val isLive: Boolean = true,
     override val contentType: FeedContentType = FeedContentType.PlayLivePreview,
     override val share: FeedShareModel? = null
 ) : Visitable<FeedAdapterTypeFactory>, FeedContentUiModel {

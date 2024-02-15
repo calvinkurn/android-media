@@ -52,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -123,7 +124,6 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCo
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailIncomeViewHolder
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.BottomSheetManager
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBaseRejectOrderBottomSheet
@@ -138,8 +138,8 @@ import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiMode
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
-import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -216,6 +216,9 @@ open class SomDetailFragment :
     protected val bottomSheetManager by lazy {
         view?.let { if (it is ViewGroup) BottomSheetManager(it, childFragmentManager) else null }
     }
+
+    private val addOnsExpandableState = mutableListOf<String>()
+    private val bmgmProductBenefitExpandableState = mutableListOf<String>()
 
     private fun createChatIcon(context: Context): IconUnify {
         return IconUnify(requireContext(), IconUnify.CHAT).apply {
@@ -434,9 +437,10 @@ open class SomDetailFragment :
                 checkUserRole()
             }
         }
+
         recyclerViewSharedPool.setMaxRecycledViews(
-            SomDetailAddOnViewHolder.RES_LAYOUT,
-            SomDetailAddOnViewHolder.MAX_RECYCLED_VIEWS
+            R.layout.item_som_detail_add_on,
+            10
         )
     }
 
@@ -658,7 +662,9 @@ open class SomDetailFragment :
             SomDetailMapper.mapSomGetOrderDetailResponseToVisitableList(
                 somDetail,
                 somDynamicPriceResponse,
-                resolutionTicketStatusResponse
+                resolutionTicketStatusResponse,
+                addOnsExpandableState,
+                bmgmProductBenefitExpandableState
             )
         )
         transparencyFeeCoachMarkHandler.attach()
@@ -1216,10 +1222,27 @@ open class SomDetailFragment :
         // no op
     }
 
+    override fun onBmgmProductBenefitExpand(isExpand: Boolean, identifier: String) {
+        expandCollapseBmgmProductBenefit(identifier, isExpand)
+    }
+
+    override fun onBmgmProductBenefitClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+        onClickProduct(addOn.orderDetailId.toLongOrZero())
+    }
+
     override fun onDetailIncomeClicked() {
+        SomAnalytics.eventDetailIncomeClicked()
         val somDetailTransparencyFeeBottomSheet =
             SomDetailTransparencyFeeBottomSheet.newInstance(orderId)
         somDetailTransparencyFeeBottomSheet.show(childFragmentManager)
+    }
+
+    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+        SomNavigator.openAppLink(context, infoLink)
+    }
+
+    override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+        expandCollapseAddOn(addOnsIdentifier, isExpand)
     }
 
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
@@ -1710,6 +1733,22 @@ open class SomDetailFragment :
 
     protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
         return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
+    }
+
+    private fun expandCollapseAddOn(addOnIdentifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            addOnsExpandableState.remove(addOnIdentifier)
+        } else {
+            addOnsExpandableState.add(addOnIdentifier)
+        }
+    }
+
+    private fun expandCollapseBmgmProductBenefit(identifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            bmgmProductBenefitExpandableState.remove(identifier)
+        } else {
+            bmgmProductBenefitExpandableState.add(identifier)
+        }
     }
 
     inner class TransparencyFeeCoachMarkHandler : RecyclerView.OnScrollListener() {

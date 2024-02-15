@@ -89,8 +89,9 @@ class MissionWidgetViewHolder(
     }
 
     private fun MissionWidgetListDataModel.convertToVisitables(): List<Visitable<MissionWidgetTypeFactory>> {
-        val titleHeight = missionWidgetUtil.findMaxTitleHeight(this, itemView.context)
-        val subtitleHeight = missionWidgetUtil.findMaxSubtitleHeight(this, itemView.context)
+        val width = missionWidgetUtil.getWidth(itemView.context)
+        val titleHeight = missionWidgetUtil.findMaxTitleHeight(this, width, itemView.context)
+        val subtitleHeight = missionWidgetUtil.findMaxSubtitleHeight(this, width, itemView.context)
         return missionWidgetList.mapIndexed { index, item ->
             CarouselMissionWidgetDataModel(
                 data = item,
@@ -98,6 +99,7 @@ class MissionWidgetViewHolder(
                 channelName = name,
                 headerName = header.name,
                 withSubtitle = isWithSubtitle(),
+                width = width,
                 titleHeight = titleHeight,
                 subtitleHeight = subtitleHeight,
                 verticalPosition = verticalPosition,

@@ -3,7 +3,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemTableColumnImageBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
@@ -28,7 +28,7 @@ class TableColumnImageViewHolder(
             val dp4 = root.context.resources.getDimension(
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2
             )
-            ImageHandler.loadImageRounded(root.context, imgTableColumn, element.valueStr, dp4)
+            imgTableColumn?.loadImageRounded(element.valueStr, dp4)
         }
     }
 }

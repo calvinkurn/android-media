@@ -18,7 +18,6 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSI
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_NFC
-import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_MEDIA_AUDIO
@@ -72,7 +71,6 @@ class PermissionCheckerHelper {
         const val PERMISSION_NFC = Manifest.permission.NFC
         const val PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE
         const val PERMISSION_READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
-        const val PERMISSION_READ_CALL_LOG = Manifest.permission.READ_CALL_LOG
     }
 
     interface PermissionCheckListener {
@@ -163,7 +161,6 @@ class PermissionCheckerHelper {
             PERMISSION_READ_CONTACT -> context.getString(R.string.permission_contacts)
             PERMISSION_NFC -> context.getString(R.string.permission_nfc)
             PERMISSION_CALL_PHONE -> context.getString(R.string.permission_phone)
-            PERMISSION_READ_CALL_LOG -> context.getString(R.string.permission_call_log)
             else -> ""
         }
     }

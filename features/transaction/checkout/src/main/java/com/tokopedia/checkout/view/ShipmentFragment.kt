@@ -3415,6 +3415,7 @@ class ShipmentFragment :
                 ChosenAddress(
                     ChosenAddress.MODE_ADDRESS,
                     locationDataModel.addrId,
+                    locationDataModel.city,
                     locationDataModel.district,
                     locationDataModel.postalCode,
                     if (!TextUtils.isEmpty(locationDataModel.latitude) && !TextUtils.isEmpty(
@@ -3425,6 +3426,8 @@ class ShipmentFragment :
                     } else {
                         ""
                     },
+                    locationDataModel.latitude,
+                    locationDataModel.longitude,
                     ChosenAddressTokonow(
                         lca.shop_id,
                         lca.warehouse_id,
@@ -3437,6 +3440,7 @@ class ShipmentFragment :
                 ChosenAddress(
                     ChosenAddress.MODE_ADDRESS,
                     recipientAddressModel.id,
+                    recipientAddressModel.cityId,
                     recipientAddressModel.destinationDistrictId,
                     recipientAddressModel.postalCode,
                     if (!TextUtils.isEmpty(recipientAddressModel.latitude) && !TextUtils.isEmpty(
@@ -3447,6 +3451,8 @@ class ShipmentFragment :
                     } else {
                         ""
                     },
+                    recipientAddressModel.latitude,
+                    recipientAddressModel.longitude,
                     ChosenAddressTokonow(
                         lca.shop_id,
                         lca.warehouse_id,

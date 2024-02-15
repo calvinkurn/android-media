@@ -28,7 +28,7 @@ class ProductListViewHolder(
             setProductModel(data)
             setAddToCartOnClickListener {
                 productListListener.onAtcButtonClicked(
-                    mapperToCatalogProductAtcUiModel(element ?: return@setAddToCartOnClickListener),
+                    mapperToCatalogProductAtcUiModel(element),
                     element,
                     adapterPosition
                 )

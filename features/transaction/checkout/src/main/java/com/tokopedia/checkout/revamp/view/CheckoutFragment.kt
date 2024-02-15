@@ -26,8 +26,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstBmsm
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -45,6 +45,7 @@ import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.databinding.ToastRectangleBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.revamp.di.CheckoutModule
@@ -60,6 +61,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
@@ -80,7 +82,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.fingerprint.util.FingerPrintUtil
+import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -556,6 +558,10 @@ class CheckoutFragment :
                 is CheckoutPageState.AkamaiRatesError -> {
                     showToastErrorAkamai(it.message)
                 }
+
+                is CheckoutPageState.ShipmentActionPopUpConfirmation -> {
+                    showShipmentActionPopUpConfirmation(it.cartStringGroup, it.action)
+                }
             }
         }
 
@@ -645,6 +651,32 @@ class CheckoutFragment :
             if (toasterErrorAkamai?.isShownOrQueued == false) {
                 toasterErrorAkamai?.show()
             }
+        }
+    }
+
+    private fun showShipmentActionPopUpConfirmation(cartStringGroup: String, shipmentAction: ShipmentAction) {
+        context?.let {
+            val dialogUnify = DialogUnify(it, if (shipmentAction.popup.secondaryButton.isNotBlank()) DialogUnify.VERTICAL_ACTION else DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            dialogUnify.setTitle(shipmentAction.popup.title)
+            dialogUnify.setDescription(shipmentAction.popup.body)
+            dialogUnify.setPrimaryCTAText(shipmentAction.popup.primaryButton)
+            dialogUnify.setPrimaryCTAClickListener {
+                dialogUnify.dismiss()
+                viewModel.doShipmentAction(shipmentAction)
+                checkoutAnalyticsCourierSelection.eventClickOkToSplitOrderOfoc()
+            }
+            dialogUnify.setSecondaryCTAText(shipmentAction.popup.secondaryButton)
+            dialogUnify.setSecondaryCTAClickListener {
+                dialogUnify.dismiss()
+                val index = viewModel.listData.value.indexOfFirst { item -> item is CheckoutOrderModel && item.cartStringGroup == cartStringGroup }
+                if (index > 0) {
+                    adapter.notifyItemChanged(index)
+                }
+            }
+            dialogUnify.setCanceledOnTouchOutside(false)
+            dialogUnify.setCancelable(false)
+            dialogUnify.show()
+            checkoutAnalyticsCourierSelection.eventViewSplitOfocPopUpBox()
         }
     }
 
@@ -1341,7 +1373,7 @@ class CheckoutFragment :
                     arrayListOf()
                 for ((_, productName) in addOnBottomSheetModel.products) {
                     for (item in orderProducts) {
-                        if (productName.equals(item.name, ignoreCase = true)) {
+                        if (item is CheckoutProductModel && productName.equals(item.name, ignoreCase = true)) {
                             val product = GiftingProduct()
                             product.cartId = item.cartId.toString()
                             product.productId = item.productId.toString()
@@ -1374,15 +1406,17 @@ class CheckoutFragment :
                 val listProduct =
                     arrayListOf<GiftingProduct>()
                 for (cartItemModel in orderProducts) {
-                    val product = GiftingProduct()
-                    product.cartId = cartItemModel.cartId.toString()
-                    product.productId = cartItemModel.productId.toString()
-                    product.productName = cartItemModel.name
-                    product.productPrice = cartItemModel.price.toLong()
-                    product.productQuantity = cartItemModel.quantity
-                    product.productImageUrl = cartItemModel.imageUrl
-                    product.productParentId = cartItemModel.variantParentId
-                    listProduct.add(product)
+                    if (cartItemModel is CheckoutProductModel) {
+                        val product = GiftingProduct()
+                        product.cartId = cartItemModel.cartId.toString()
+                        product.productId = cartItemModel.productId.toString()
+                        product.productName = cartItemModel.name
+                        product.productPrice = cartItemModel.price.toLong()
+                        product.productQuantity = cartItemModel.quantity
+                        product.productImageUrl = cartItemModel.imageUrl
+                        product.productParentId = cartItemModel.variantParentId
+                        listProduct.add(product)
+                    }
                 }
 
                 val addOnDataList = arrayListOf<AddOnData>()
@@ -1911,6 +1945,7 @@ class CheckoutFragment :
                 ChosenAddress(
                     ChosenAddress.MODE_ADDRESS,
                     locationDataModel.addrId,
+                    locationDataModel.city,
                     locationDataModel.district,
                     locationDataModel.postalCode,
                     if (locationDataModel.latitude.isNotEmpty() &&
@@ -1920,6 +1955,8 @@ class CheckoutFragment :
                     } else {
                         ""
                     },
+                    locationDataModel.latitude,
+                    locationDataModel.longitude,
                     ChosenAddressTokonow(
                         lca.shop_id,
                         lca.warehouse_id,
@@ -1932,6 +1969,7 @@ class CheckoutFragment :
                 ChosenAddress(
                     ChosenAddress.MODE_ADDRESS,
                     recipientAddressModel.id,
+                    recipientAddressModel.cityId,
                     recipientAddressModel.destinationDistrictId,
                     recipientAddressModel.postalCode,
                     if (recipientAddressModel.latitude.isNotEmpty() &&
@@ -1941,6 +1979,8 @@ class CheckoutFragment :
                     } else {
                         ""
                     },
+                    recipientAddressModel.latitude,
+                    recipientAddressModel.longitude,
                     ChosenAddressTokonow(
                         lca.shop_id,
                         lca.warehouse_id,
@@ -2185,7 +2225,7 @@ class CheckoutFragment :
                     activity
                 )
                 if (fpk != null) {
-                    publicKey = FingerPrintUtil.getPublicKey(fpk)
+                    publicKey = FingerprintUtil.getPublicKey(fpk)
                 }
             }
             viewModel.checkout(publicKey, { onTriggerEpharmacyTracker(it) }) {
@@ -2201,7 +2241,7 @@ class CheckoutFragment :
             shopId,
             userSessionInterface.userId
         )
-        RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
+        RouteManager.route(context, ApplinkConstBmsm.BMGM_MINI_CART_DETAIL)
     }
 
     private fun onTriggerEpharmacyTracker(showErrorToaster: Boolean) {
@@ -2713,5 +2753,18 @@ class CheckoutFragment :
 
     override fun onSendImpressionDropshipWidgetAnalytics() {
         checkoutAnalyticsCourierSelection.eventViewDropshipWidget()
+    }
+
+    override fun onViewGwpBenefit(benefit: CheckoutProductBenefitModel) {
+        if (!benefit.hasTriggerImpression) {
+            benefit.hasTriggerImpression = true
+            checkoutAnalyticsCourierSelection.eventImpressionGwp(
+                benefit.offerId,
+                benefit.sumOfCheckoutProductsQuantity,
+                benefit.sumOfBenefitProductsQuantity,
+                benefit.shopId,
+                userSessionInterface.userId
+            )
+        }
     }
 }

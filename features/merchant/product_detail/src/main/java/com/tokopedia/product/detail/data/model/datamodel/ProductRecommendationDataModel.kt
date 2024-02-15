@@ -22,6 +22,9 @@ data class ProductRecommendationDataModel(
     var position: Int = -1
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     val isRecomenDataEmpty: Boolean

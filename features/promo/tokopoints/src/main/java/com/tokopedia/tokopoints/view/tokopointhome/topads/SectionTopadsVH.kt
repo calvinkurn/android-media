@@ -3,7 +3,7 @@ package com.tokopedia.tokopoints.view.tokopointhome.topads
 import android.text.TextUtils
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageBackground
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
@@ -34,7 +34,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
         binding?.apply {
             val title = tvTopadTitle
             val subtitle = tvTopadsSubTitle
-            ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+            view?.loadImageBackground(content.backgroundImgURLMobile)
             val btnSeeAll = tvTopadsSeeAll
             if (!content.cta.isEmpty) {
                 btnSeeAll.visibility = View.VISIBLE

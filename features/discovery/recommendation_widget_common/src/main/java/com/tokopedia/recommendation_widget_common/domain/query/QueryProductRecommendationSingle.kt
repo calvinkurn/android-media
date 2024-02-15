@@ -11,8 +11,8 @@ import com.tokopedia.recommendation_widget_common.domain.query.QueryProductRecom
 internal object QueryProductRecommendationSingle {
     const val PRODUCT_RECOMMENDATION_SINGLE_QUERY_NAME = "ProductRecommendationSingleQuery"
     const val PRODUCT_RECOMMENDATION_SINGLE_QUERY: String = "" +
-        "query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!) {\n" +
-        "                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam){\n" +
+        "query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!, ${'$'}productCardVersion: Int) {\n" +
+        "                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam, productCardVersion : ${'$'}productCardVersion){\n" +
         "                   data {\n" +
         "                       tID\n" +
         "                       source\n" +
@@ -66,6 +66,10 @@ internal object QueryProductRecommendationSingle {
         "                            title\n" +
         "                            type\n" +
         "                            url\n" +
+        "                            styles{\n" +
+        "                               key\n" +
+        "                               value\n" +
+        "                            }\n" +
         "                          }\n" +
         "                          badges {\n" +
         "                              title\n" +

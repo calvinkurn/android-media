@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +19,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
@@ -50,7 +50,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,7 +60,6 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.layout_hotel_image_slider.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -69,6 +67,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.resources.common.R as resourcescommonR
 
 /**
  * @author by jessica on 15/04/19
@@ -168,7 +168,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                         ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
                         else -> view?.let { v ->
                             Toaster.build(v, ErrorHandler.getErrorMessage(activity, it.throwable), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                                    getString(resourcescommonR.string.general_label_ok)).show()
                         }
                     }
                 }
@@ -232,7 +232,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             it.filterRecyclerView.listener = this
             it.filterRecyclerView.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
                 getString(R.string.hotel_room_list_filter_free_cancelable)),
-                com.tokopedia.unifyprinciples.R.color.Unify_GN300)
+                unifyprinciplesR.color.Unify_GN300)
 
             it.recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -423,11 +423,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         }
     }
 
-    override fun onPhotoClickListener(room: HotelRoom, imageUrls: List<String>, position: Int) {
+    override fun onPhotoClickListener(imageView: ImageView, room: HotelRoom, imageUrls: List<String>, position: Int) {
         trackingHotelUtil.hotelClickRoomListPhoto(context, room.additionalPropertyInfo.propertyId, room.roomId,
                 room.roomPrice.priceAmount.roundToLong().toString(), ROOM_LIST_SCREEN_NAME)
         if (imagePreviewViewer == null) imagePreviewViewer = ImagePreviewViewer()
-        imagePreviewViewer?.startImagePreviewViewer(room.roomInfo.name, image_banner, imageUrls, requireContext(), position)
+        imagePreviewViewer?.startImagePreviewViewer(room.roomInfo.name, imageView, imageUrls, requireContext(), position)
     }
 
     private fun navigateToLoginPage() {

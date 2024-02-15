@@ -62,7 +62,6 @@ import com.tokopedia.applink.promo.DeeplinkMapperPromo.invokeScpToasterUniversal
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.recommendation.DeeplinkMapperRecommendation
-import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.search.DeeplinkMapperSearch
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
@@ -293,7 +292,7 @@ object DeeplinkMainApp {
             }
         ),
         "feed" to mutableListOf(
-            DLP.matchPattern("browse") { _: Context, deeplink: String ->
+            DLP.startsWith("browse") { _: Context, deeplink: String ->
                 DeeplinkMapperContent.getRegisteredNavigation(deeplink)
             },
             DLP.goTo { deeplink: String ->
@@ -634,11 +633,6 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
         ),
-        "order-details" to mutableListOf(
-            DLP.startsWith("umroh") { deeplink: String ->
-                DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail(deeplink)
-            }
-        ),
         "order_list" to mutableListOf(
             DLP.goTo { context: Context, deeplink: String ->
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
@@ -740,8 +734,8 @@ object DeeplinkMainApp {
             DLP.matchPattern("benefit_package") { _: String ->
                 ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE
             },
-            DLP.startsWith("interrupt") { deeplink: String ->
-                PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(deeplink)
+            DLP.startsWith("interrupt") { context: Context, _: Uri, deeplink: String ->
+                PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(context, deeplink)
             }
         ),
         "privacy-center" to mutableListOf(
@@ -877,11 +871,6 @@ object DeeplinkMainApp {
         "rewards" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperPromo.getRegisteredNavigationTokopoints(deeplink)
-            }
-        ),
-        "s" to mutableListOf(
-            DLP.startsWith("umroh") { deeplink: String ->
-                DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah(deeplink)
             }
         ),
         "saldo" to mutableListOf(
@@ -1256,7 +1245,7 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("bottomsheet/{type}") { deeplink: String ->
                 DeeplinkMapperCommunication.getRegisteredNavigation(deeplink)
-            },
+            }
         ),
         "tokopoints" to mutableListOf(
             DLP.goTo { deeplink: String ->

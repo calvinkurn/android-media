@@ -45,6 +45,7 @@ import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
+import com.tokopedia.developer_options.tracker.DevOpsTracker
 import com.tokopedia.encryption.security.sha256
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -87,6 +88,9 @@ class DeveloperOptionActivity :
         const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE = false
+        const val SCP_LOGIN_TOGGLE = "mainapp_scp_login_toggle"
+        const val SCP_LOGIN_TOGGLE_KEY = "key_scp_login_toggle"
+
         const val LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle"
         const val LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle"
         const val LEAK_CANARY_TOGGLE_KEY_SELLER = "key_leakcanary_toggle_seller"
@@ -150,6 +154,7 @@ class DeveloperOptionActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DevOpsTracker.init(this)
         checkDebuggingModeOrNot()
         inject()
         autoAuthorized()

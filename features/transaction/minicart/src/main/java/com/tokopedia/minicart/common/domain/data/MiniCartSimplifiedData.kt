@@ -1,7 +1,8 @@
 package com.tokopedia.minicart.common.domain.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
+import com.tokopedia.cartcommon.data.response.common.ProductTagInfo
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class MiniCartSimplifiedData(
     var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
@@ -16,11 +17,21 @@ fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String)
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemBundleGroup(bundleGroupId: String): MiniCartItem.MiniCartItemBundleGroup? {
-    return get(MiniCartItemKey(bundleGroupId, MiniCartItemType.BUNDLE)) as? MiniCartItem.MiniCartItemBundleGroup
+    return get(
+        MiniCartItemKey(
+            bundleGroupId,
+            MiniCartItemType.BUNDLE
+        )
+    ) as? MiniCartItem.MiniCartItemBundleGroup
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemParentProduct(parentId: String): MiniCartItem.MiniCartItemParentProduct? {
-    return get(MiniCartItemKey(parentId, MiniCartItemType.PARENT)) as? MiniCartItem.MiniCartItemParentProduct
+    return get(
+        MiniCartItemKey(
+            parentId,
+            MiniCartItemType.PARENT
+        )
+    ) as? MiniCartItem.MiniCartItemParentProduct
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.mapProductsWithProductId(): Map<String, MiniCartItem.MiniCartItemProduct> {
@@ -81,6 +92,7 @@ sealed class MiniCartItem {
         var quantity: Int = 0,
         var notes: String = "",
         var cartString: String = "",
+        var productTagInfo: List<ProductTagInfo> = emptyList(),
 
         // Fields below are for analytics & atc occ purpose only
         internal var campaignId: String = "",
@@ -111,6 +123,50 @@ data class ShoppingSummaryBottomSheetData(
     var items: List<Visitable<*>> = emptyList()
 )
 
-data class BmGmData(
-    val offerMessage: List<String> = emptyList()
+data class BmgmMiniCartDataUiModel(
+    val offerId: Long = 0,
+    val offerTypeId: Long = 0,
+    val offerMessage: List<String> = listOf(),
+    val tierMessage: String = String.EMPTY,
+    val tierImage: String = String.EMPTY,
+    val hasReachMaxDiscount: Boolean = false,
+    val priceBeforeBenefit: Double = 0.0,
+    val finalPrice: Double = 0.0,
+    val tiersApplied: List<TierUiModel> = emptyList()
+)
+
+data class TierUiModel(
+    val tierId: Long = 0,
+    val tierMessage: String = "",
+    val tierDiscountStr: String = "",
+    val priceBeforeBenefit: Double = 0.0,
+    val priceAfterBenefit: Double = 0.0,
+    val products: List<ProductUiModel> = emptyList(),
+    val benefitWording: String = "",
+    val actionWording: String = "",
+    val benefitQuantity: Int = 0,
+    val benefitProducts: List<ProductBenefitUiModel> = emptyList()
+) {
+    fun isDiscountTier(): Boolean {
+        return tierId != 0L
+    }
+}
+
+data class ProductUiModel(
+    val productId: String = "",
+    val warehouseId: String = "",
+    val productName: String = "",
+    val productImage: String = "",
+    val cartId: String = "",
+    val finalPrice: Double = 0.0,
+    val quantity: Int = 0
+)
+
+data class ProductBenefitUiModel(
+    val productId: String = "",
+    val quantity: Int = 0,
+    val productName: String = "",
+    val productImage: String = "",
+    val originalPrice: Double = 0.0,
+    val finalPrice: Double = 0.0
 )

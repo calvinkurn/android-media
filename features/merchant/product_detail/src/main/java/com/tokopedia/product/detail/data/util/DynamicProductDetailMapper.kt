@@ -47,7 +47,7 @@ import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
-import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
@@ -63,7 +63,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
@@ -73,6 +73,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
@@ -90,12 +91,14 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_STEAL_THE_LOOK
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
-import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
@@ -132,7 +135,7 @@ object DynamicProductDetailMapper {
         data.forEachIndexed { index, component ->
             when (component.type) {
                 ProductDetailConstant.NOTIFY_ME -> {
-                    listOfComponent.add(ProductNotifyMeDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductNotifyMeUiModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.DISCUSSION_FAQ -> {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
@@ -374,6 +377,21 @@ object DynamicProductDetailMapper {
                         ShipmentUiModel(type = component.type, name = component.componentName)
                     )
                 }
+                ProductDetailConstant.GWP_TYPE -> {
+                    listOfComponent.add(
+                        GWPUiModel(type = component.type, name = component.componentName)
+                    )
+                }
+                ProductDetailConstant.SDUI_VIEW -> {
+                    val sduiData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    listOfComponent.add(
+                        SDUIDataModel(
+                            type = component.type,
+                            name = component.componentName,
+                            jsonString = sduiData.sduiData
+                        )
+                    )
+                }
             }
         }
         return listOfComponent
@@ -404,7 +422,9 @@ object DynamicProductDetailMapper {
             }
 
             else -> {
-                if (component.componentName.startsWith(RECOM_VERTICAL)) {
+                if (component.componentName.startsWith(RECOM_VERTICAL) ||
+                    component.componentName.contains(RECOM_STEAL_THE_LOOK)
+                ) {
                     PdpRecommendationWidgetDataModel(
                         recommendationWidgetModel = mapPdpRecommendationWidgetModel(component, dynamicProductInfoP1, index)
                     )
@@ -1019,7 +1039,7 @@ object DynamicProductDetailMapper {
         type: String,
         name: String,
         data: ComponentData?
-    ): OngoingCampaignDataModel? {
+    ): OngoingCampaignUiModel? {
         if (data == null) return null
 
         val mainData = ProductContentMainData(
@@ -1031,7 +1051,7 @@ object DynamicProductDetailMapper {
             isVariant = data.variant.isVariant,
             productName = data.name
         )
-        return OngoingCampaignDataModel(
+        return OngoingCampaignUiModel(
             type = type,
             name = name,
             data = mainData
@@ -1069,7 +1089,8 @@ object DynamicProductDetailMapper {
             pageName = component.componentName,
             pageType = component.type,
             queryParam = data?.queryParam.orEmpty(),
-            criteriaThematicIDs = thematicIds
+            criteriaThematicIDs = thematicIds,
+            productIds = listOf(dynamicProductInfoP1.basic.productID)
         )
         val trackingModel = RecommendationWidgetTrackingModel(
             androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
@@ -1080,7 +1101,7 @@ object DynamicProductDetailMapper {
         return RecommendationWidgetModel(
             metadata = metadata,
             trackingModel = trackingModel,
-            source = source,
+            source = source
         )
     }
 
