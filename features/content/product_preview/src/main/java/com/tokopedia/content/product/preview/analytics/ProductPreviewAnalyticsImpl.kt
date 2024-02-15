@@ -22,7 +22,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
 
     private val analyticManager = analyticManagerFactory.create(
         businessUnit = BusinessUnit.content,
-        eventCategory = "unified view pdp"
+        eventCategory = categoryName
     )
 
     @AssistedFactory

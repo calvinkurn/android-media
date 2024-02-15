@@ -219,9 +219,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun handleReviewMediaSelected(position: Int) {
-        val currentPos = _reviewContentState.value
-            .reviewContent[_reviewPosition.value]
-            .medias.indexOfFirst { it.selected }
+        val currentPos = currentReview.medias.indexOfFirst { it.selected }
         if (currentPos < 0 || currentPos == position) return
 
         _reviewContentState.update { reviewUiModel ->
