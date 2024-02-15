@@ -76,7 +76,8 @@ class HomeRecommendationFeedViewHolder(
             this,
             listener.childsFragmentManager,
             recommendationTabDataModelList,
-            listener.parentPool
+            listener.parentPool,
+            listener.remoteConfigController
         )
 
         binding.viewPagerHomeFeeds.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT

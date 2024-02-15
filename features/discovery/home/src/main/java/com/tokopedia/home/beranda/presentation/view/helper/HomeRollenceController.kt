@@ -16,7 +16,6 @@ object HomeRollenceController {
     var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
     var iconJumperSREValue: String = ""
     var isMegaTabEnabled = false
-    var shouldGlobalComponentRecomEnabled: Boolean = false
 
     fun fetchHomeRollenceValue() {
         fetchAtfRollenceValue()
@@ -24,7 +23,6 @@ object HomeRollenceController {
         fetchAtfCacheRollenceValue()
         fetchHomeMegaTabRollenceValue()
         HomeComponentFeatureFlag.fetchMissionRollenceValue()
-        fetchGlobalComponentMigrationFallback()
     }
 
     @JvmStatic
@@ -86,19 +84,6 @@ object HomeRollenceController {
         }
 
         isMegaTabEnabled = megaTab.isNotEmpty()
-    }
-
-    private fun fetchGlobalComponentMigrationFallback() {
-        // set the default value to exp variant so that users that are not included
-        // in the experiment still get the new caching mechanism
-        shouldGlobalComponentRecomEnabled = try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getBoolean(
-                RollenceKey.HOME_GLOBAL_COMPONENT_FALLBACK,
-                false
-            )
-        } catch (_: Exception) {
-            false
-        }
     }
 
     fun isLoadAtfFromCache(): Boolean {

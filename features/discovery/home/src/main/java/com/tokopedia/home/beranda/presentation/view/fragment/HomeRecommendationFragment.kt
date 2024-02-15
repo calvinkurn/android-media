@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -64,8 +63,8 @@ import com.tokopedia.play.widget.ui.PlayVideoWidgetView
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
@@ -195,7 +194,6 @@ class HomeRecommendationFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.setBackgroundColor(Color.BLUE)
         setupArgs()
         fetchHomeRecommendationRollence()
         setupRecyclerView()

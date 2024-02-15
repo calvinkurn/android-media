@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.fragment.BaseRecommendationF
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController;
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController;
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController;
 
 import java.util.ArrayList;
@@ -30,17 +31,21 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     private final HomeTabFeedListener homeTabFeedListener;
     private final List<RecommendationTabDataModel> recommendationTabDataModelList = new ArrayList<>();
 
+    private final HomeRemoteConfigController homeRemoteConfigController;
+
     public HomeFeedPagerAdapter(HomeCategoryListener homeCategoryListener,
                                 HomeEggListener homeEggListener,
                                 HomeTabFeedListener homeTabFeedListener,
                                 FragmentManager fragmentManager,
                                 List<RecommendationTabDataModel> recommendationTabDataModelList,
-                                RecyclerView.RecycledViewPool parentPool) {
+                                RecyclerView.RecycledViewPool parentPool,
+                                HomeRemoteConfigController remoteConfigController) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
         this.parentPool = parentPool;
         this.homeCategoryListener = homeCategoryListener;
+        this.homeRemoteConfigController = remoteConfigController;
         updateData(recommendationTabDataModelList);
     }
 
@@ -53,7 +58,7 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (HomeRollenceController.INSTANCE.getShouldGlobalComponentRecomEnabled()
+        if (homeRemoteConfigController.shouldGlobalComponentRecomEnabled()
                 && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
             HomeGlobalRecommendationFragment homeFeedFragment = HomeGlobalRecommendationFragment.Companion.newInstance(
                     position,
@@ -80,7 +85,7 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        if (HomeRollenceController.INSTANCE.getShouldGlobalComponentRecomEnabled()
+        if (homeRemoteConfigController.shouldGlobalComponentRecomEnabled()
                 && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
             HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
             homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
