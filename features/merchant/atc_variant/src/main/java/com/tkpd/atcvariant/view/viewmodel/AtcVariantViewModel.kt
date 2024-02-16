@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
@@ -611,6 +612,23 @@ class AtcVariantViewModel @Inject constructor(
         val result = withContext(dispatcher.io) {
             addToCartUseCase.createObservable(requestParams).toBlocking().single()
         }
+        val selectedChild = getVariantData()?.getChildByOptionId(
+            getSelectedOptionIds()?.values.orEmpty().toList()
+        )
+        val parentId = getVariantData()?.parentId.orEmpty()
+        val addToCartRequest = requestParams.getObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as? AddToCartRequestParams
+        AppLogAnalytics.sendConfirmCartResult(
+            TrackConfirmCartResult(
+                productId = parentId,
+                productCategory = addToCartRequest?.category.orEmpty(),
+                productType = ProductType.AVAILABLE,
+                originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
+                salePrice = selectedChild?.priceFmt.orEmpty(),
+                skuId = selectedChild?.productId.orEmpty(),
+                currency = "Rp", addSkuNum = 0, skuNumBefore = 0,
+                skuNumAfter = 0, isSuccess = "", failReason = ""
+            )
+        )
         if (result.isDataError()) {
             val errorMessage = result.errorMessage.firstOrNull() ?: ""
             _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
