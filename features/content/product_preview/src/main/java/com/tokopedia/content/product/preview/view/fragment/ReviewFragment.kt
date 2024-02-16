@@ -96,14 +96,14 @@ class ReviewFragment @Inject constructor(
                     RecyclerView.SCROLL_STATE_IDLE -> {
                         val position = getCurrentPosition()
                         viewModel.onAction(ProductPreviewAction.ReviewContentSelected(position))
-                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(false))
+                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, false))
                     }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         val position = getCurrentPosition()
-                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(true))
+                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, true))
                     }
                     else -> {
-                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(false))
+//                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(false))
                         super.onScrollStateChanged(recyclerView, newState)
                     }
                 }

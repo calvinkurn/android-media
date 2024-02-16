@@ -17,7 +17,7 @@ sealed interface ProductPreviewAction {
     object FetchReviewByIds : ProductPreviewAction
     data class ProductMediaSelected(val position: Int) : ProductPreviewAction
     data class ReviewContentSelected(val position: Int) : ProductPreviewAction
-    data class ReviewContentScrolling(val isScrolling: Boolean) : ProductPreviewAction
+    data class ReviewContentScrolling(val position: Int, val isScrolling: Boolean) : ProductPreviewAction
     data class ReviewMediaSelected(val position: Int) : ProductPreviewAction
     data class TabSelected(val position: Int) : ProductPreviewAction
     data class FetchReview(val isRefresh: Boolean, val page: Int) : ProductPreviewAction

@@ -80,7 +80,7 @@ class ReviewContentViewHolder(
         binding.ivReviewMenu,
         binding.ivReviewStar,
         binding.tvReviewDescription,
-        binding.tvReviewDetails,
+        binding.tvReviewDetails
     )
 
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
@@ -135,6 +135,7 @@ class ReviewContentViewHolder(
     }
 
     fun bind(item: ReviewContentUiModel) {
+        bindScrolling(item.isScrolling)
         bindWatchMode(item.isWatchMode)
         bindMedia(item.medias, item.mediaSelectedPosition)
         bindAuthor(item.author)
