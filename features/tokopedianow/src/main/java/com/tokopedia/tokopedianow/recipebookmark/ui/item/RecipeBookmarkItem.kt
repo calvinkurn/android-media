@@ -40,6 +40,7 @@ import com.tokopedia.tokopedianow.recipecommon.ui.item.RecipeTagItem
 
 @Composable
 fun RecipeBookmarkItem(
+    position: Int,
     recipe: RecipeUiModel,
     analytics: RecipeBookmarkAnalytics,
     lazyListState: LazyListState,
@@ -51,7 +52,6 @@ fun RecipeBookmarkItem(
     val picture = recipe.picture
     val portion = recipe.portion
     val tags = recipe.tags.orEmpty()
-    val position = recipe.position
 
     val context = LocalContext.current
 

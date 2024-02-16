@@ -51,8 +51,7 @@ object RecipeBookmarksMapper {
                 duration = response.duration,
                 tags = mapTag(response.tags),
                 picture = response.images?.firstOrNull()?.urlOriginal.orEmpty(),
-                appUrl = response.appUrl,
-                position = index
+                appUrl = response.appUrl
             )
         }
     }

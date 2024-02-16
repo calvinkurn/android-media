@@ -111,9 +111,10 @@ fun RecipeBookmarkList(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         state = lazyListState
     ) {
-        itemsIndexed(items = items, key = { index, item -> item.getId(index) }) { _, item ->
+        itemsIndexed(items = items, key = { index, item -> item.getId(index) }) { index, item ->
             when (item) {
                 is RecipeUiModel -> RecipeBookmarkItem(
+                    position = index,
                     recipe = item,
                     analytics = analytics,
                     lazyListState = lazyListState,
