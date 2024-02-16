@@ -1,7 +1,5 @@
 package com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -9,7 +7,6 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
@@ -18,25 +15,30 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addRecommendedProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addDivider
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addEmptyStockProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addHeader
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addHeaderSpace
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addLoadMore
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductInCartWidget
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addShimmeringPage
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addTitle
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addWishlistProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeLoadMore
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LoadMoreDataModel
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class TokoNowShoppingListViewModel @Inject constructor(
@@ -66,60 +68,45 @@ class TokoNowShoppingListViewModel @Inject constructor(
         const val PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER = 1
     }
 
-    private val _layout = MutableLiveData<List<Visitable<*>>>()
-    private val _isOnScrollNotNeeded = MutableLiveData<Unit>()
+    private val layout: MutableList<Visitable<*>> = arrayListOf()
 
-    private val mutableLayout: MutableList<Visitable<*>> = arrayListOf()
-    private var needToLoadMoreData: LoadMoreDataModel = LoadMoreDataModel(isNeededToLoadMore = true)
+    private val _isOnScrollNotNeeded: SingleLiveEvent<Unit> = SingleLiveEvent()
+    private val _uiState: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(
+        UiState.Loading(
+            data = layout.addShimmeringPage()
+        )
+    )
+
+    private var needToLoadMoreData: LoadMoreDataModel = LoadMoreDataModel(
+        isNeededToLoadMore = true
+    )
     private var job: Job? = null
 
-    val layout: LiveData<List<Visitable<*>>>
-        get() = _layout
-    val isOnScrollNotNeeded: LiveData<Unit>
+    val uiState
+        get() = _uiState.asStateFlow()
+    val isOnScrollNotNeeded
         get() = _isOnScrollNotNeeded
 
-    var headerSpace: Int = Int.ZERO
     var headerModel: HeaderModel = HeaderModel()
 
     fun loadLayout() {
         job = launchCatchError(
             block = {
-                /**
-                 * Add wishlist products
-                 */
+                layout.clear()
 
-                mutableLayout.addHeaderSpace(
-                    space = headerSpace,
-                    headerModel = headerModel
+                layout.addHeader(
+                    headerModel = headerModel,
+                    state = SHOW
                 )
-                mutableLayout.addHeader(
-                    headerModel = headerModel
-                )
-                mutableLayout.addWishlistProducts()
 
-                /**
-                 * Add empty stock products
-                 */
-
-                mutableLayout.addDivider()
-                mutableLayout.addTitle(
-                    title = "Stok habis"
-                )
-                mutableLayout.addEmptyStockProducts()
-
-                /**
-                 * Add product in cart widget
-                 */
-
-                mutableLayout.addDivider()
-                mutableLayout.addTitle(
-                    title = "5 produk ada di keranjang"
-                )
-                mutableLayout.addProductInCartWidget()
-
+                addWishlistSection()
+                addEmptyStockSection()
+                addProductInCartSection()
                 addProductRecommendationSection()
 
-                _layout.postValue(mutableLayout)
+                _uiState.value = UiState.Success(
+                    layout.toMutableList()
+                )
             },
             onError = {
 
@@ -127,23 +114,27 @@ class TokoNowShoppingListViewModel @Inject constructor(
         )
     }
 
-    private suspend fun addProductRecommendationSection() {
-        val productRecommendation = getProductRecommendationDeferred(
-            pageNumber = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
-        ).await()
+    private fun addWishlistSection() {
+        // do some logic
+        layout.addWishlistProducts()
+    }
 
-        if (productRecommendation.recommendationItemList.isNotEmpty()) {
-            mutableLayout.addDivider()
-            mutableLayout.addTitle(title = productRecommendation.title)
-            mutableLayout.addRecommendedProducts(productRecommendation)
+    private fun addEmptyStockSection() {
+        // do some logic
+        layout.addDivider()
+        layout.addTitle(
+            title = "Stok habis"
+        )
+        layout.addEmptyStockProducts()
+    }
 
-            if (productRecommendation.hasNext) mutableLayout.addLoadMore()
-
-            needToLoadMoreData = needToLoadMoreData.copy(
-                isNeededToLoadMore = productRecommendation.hasNext,
-                counter = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER.inc()
-            )
-        }
+    private fun addProductInCartSection() {
+        // do some logic
+        layout.addDivider()
+        layout.addTitle(
+            title = "5 produk ada di keranjang"
+        )
+        layout.addProductInCartWidget()
     }
 
     private suspend fun getProductRecommendationDeferred(
@@ -160,29 +151,22 @@ class TokoNowShoppingListViewModel @Inject constructor(
         productRecommendationUseCase.getData(param)
     }
 
-    private fun addLoadMoreProductRecommendationSection(
-        productRecommendation: RecommendationWidget
-    ) {
-        mutableLayout.removeLoadMore()
-        mutableLayout.addRecommendedProducts(productRecommendation)
+    private suspend fun addProductRecommendationSection() {
+        val productRecommendation = getProductRecommendationDeferred(
+            pageNumber = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
+        ).await()
 
-        if (productRecommendation.hasNext) mutableLayout.addLoadMore()
+        if (productRecommendation.recommendationItemList.isNotEmpty()) {
+            layout.addDivider()
+            layout.addTitle(title = productRecommendation.title)
+            layout.addRecommendedProducts(productRecommendation)
 
-        _layout.postValue(mutableLayout)
+            if (productRecommendation.hasNext) layout.addLoadMore()
+        }
 
         needToLoadMoreData = needToLoadMoreData.copy(
             isNeededToLoadMore = productRecommendation.hasNext,
-            counter = needToLoadMoreData.counter.inc()
-        )
-    }
-
-    private fun removeLoadMoreSection() {
-        mutableLayout.removeLoadMore()
-
-        _layout.postValue(mutableLayout)
-
-        needToLoadMoreData = needToLoadMoreData.copy(
-            isNeededToLoadMore = false
+            counter = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER.inc()
         )
     }
 
@@ -198,10 +182,29 @@ class TokoNowShoppingListViewModel @Inject constructor(
                             pageNumber = needToLoadMoreData.counter
                         ).await()
 
-                        if (productRecommendation.recommendationItemList.isNotEmpty()) addLoadMoreProductRecommendationSection(productRecommendation) else removeLoadMoreSection()
+                        layout.removeLoadMore()
+
+                        if (productRecommendation.recommendationItemList.isNotEmpty()) {
+                            layout.addRecommendedProducts(productRecommendation)
+
+                            if (productRecommendation.hasNext) layout.addLoadMore()
+                        }
+
+                        _uiState.value = UiState.Success(layout.toMutableList())
+
+                        needToLoadMoreData = needToLoadMoreData.copy(
+                            isNeededToLoadMore = productRecommendation.hasNext,
+                            counter = needToLoadMoreData.counter.inc()
+                        )
                     },
                     onError = {
-                        removeLoadMoreSection()
+                        layout.removeLoadMore()
+
+                        _uiState.value = UiState.Success(layout.toMutableList())
+
+                        needToLoadMoreData = needToLoadMoreData.copy(
+                            isNeededToLoadMore = false
+                        )
                     }
                 )
             }

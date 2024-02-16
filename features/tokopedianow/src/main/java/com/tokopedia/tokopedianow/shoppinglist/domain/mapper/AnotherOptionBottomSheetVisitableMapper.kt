@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.bottomsheet.ShoppingListAnotherOptionBottomSheetEmptyStateUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.bottomsheet.ShoppingListAnotherOptionBottomSheetErrorStateUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutState.LOADING
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 
 object AnotherOptionBottomSheetVisitableMapper {
     fun MutableList<Visitable<*>>.addShimmeringRecommendedProducts(): MutableList<Visitable<*>> {

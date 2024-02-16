@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.shoppinglist.domain.model
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel.GradientColor
+import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel.GradientColor
 
 data class HeaderModel(
     val pageTitle: String = String.EMPTY,

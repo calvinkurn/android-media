@@ -5,12 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <View
+        android:id="@+id/view_top_spacing"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="20dp" />
+
     <com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
         android:id="@+id/layout_icon_pull_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:color_type="white"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/view_top_spacing"/>
 
     <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
         android:id="@+id/choose_address_widget"
@@ -37,6 +59,20 @@
         tools:text="List Belanja Kesukaanmu Mau Pilih Yang Mana"
         tools:visibility="visible" />
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/siv_title"
+        android:layout_width="106dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/Unify_Static_White"
+        app:layout_constraintEnd_toStartOf="@id/tp_cta"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        app:layout_goneMarginEnd="16dp"
+        app:loader_corner_radius="16dp" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_cta"
         android:layout_width="wrap_content"
@@ -45,6 +81,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/tp_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/choose_address_widget"
+        app:layout_constraintVertical_bias="1.0"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Beli Lagi"
+        tools:visibility="visible" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/siv_cta"
+        android:layout_width="74dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/siv_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/siv_title"
         app:layout_constraintVertical_bias="1.0"
         app:typographyType="display_2"
         app:typographyWeight="bold"

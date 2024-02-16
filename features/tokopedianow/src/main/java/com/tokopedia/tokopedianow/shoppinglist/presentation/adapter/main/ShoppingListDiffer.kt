@@ -11,12 +11,7 @@ class ShoppingListDiffer : BaseTokopediaNowDiffer() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-
-        return if (oldItem is RecipeUiModel && newItem is RecipeUiModel) {
-            oldItem.id == newItem.id
-        } else {
-            oldItem == newItem
-        }
+        return oldItem == newItem
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

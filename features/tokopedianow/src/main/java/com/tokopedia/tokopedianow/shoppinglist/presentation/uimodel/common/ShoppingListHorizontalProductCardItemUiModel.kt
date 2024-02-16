@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.common.ShoppingListHorizontalProductCardItemTypeFactory
 
 data class ShoppingListHorizontalProductCardItemUiModel(
@@ -14,7 +15,7 @@ data class ShoppingListHorizontalProductCardItemUiModel(
     val percentage: String = String.EMPTY,
     val slashPrice: String = String.EMPTY,
     val type: LayoutType,
-    val state: LayoutState
+    @TokoNowLayoutState val state: Int = TokoNowLayoutState.SHOW
 ): Visitable<ShoppingListHorizontalProductCardItemTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: ShoppingListHorizontalProductCardItemTypeFactory): Int = typeFactory.type(this)
 
@@ -22,10 +23,5 @@ data class ShoppingListHorizontalProductCardItemUiModel(
         ATC_WISHLIST,
         EMPTY_STOCK,
         PRODUCT_RECOMMENDATION
-    }
-
-    enum class LayoutState {
-        LOADING,
-        NORMAL
     }
 }

@@ -8,17 +8,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder.CategoryNavigationListener
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder.TokoNowHeaderListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder.TokoNowHeaderListener
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProgressBarTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTickerTypeFactory
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowHeaderTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowThematicHeaderTypeFactory
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
@@ -28,7 +28,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDy
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProgressBarViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
@@ -52,7 +52,7 @@ class CategoryAdapterTypeFactory(
     productAdsCarouselListener,
     tokoNowView
 ), CategoryTypeFactory,
-    TokoNowHeaderTypeFactory,
+    TokoNowThematicHeaderTypeFactory,
     TokoNowCategoryMenuTypeFactory,
     TokoNowProductRecommendationTypeFactory,
     TokoNowProgressBarTypeFactory,
@@ -67,7 +67,7 @@ class CategoryAdapterTypeFactory(
     override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProgressBarUiModel): Int = TokoNowProgressBarViewHolder.LAYOUT
     override fun type(uiModel: TokoNowTickerUiModel): Int = TokoNowTickerViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowHeaderUiModel): Int = TokoNowHeaderViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowThematicHeaderUiModel): Int = TokoNowThematicHeaderViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -99,7 +99,7 @@ class CategoryAdapterTypeFactory(
             TokoNowTickerViewHolder.LAYOUT -> TokoNowTickerViewHolder(
                 itemView = view
             )
-            TokoNowHeaderViewHolder.LAYOUT -> TokoNowHeaderViewHolder(
+            TokoNowThematicHeaderViewHolder.LAYOUT -> TokoNowThematicHeaderViewHolder(
                 itemView = view,
                 listener = tokoNowHeaderListener
             )

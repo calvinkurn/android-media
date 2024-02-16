@@ -40,7 +40,7 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcase
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseItemViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
@@ -323,7 +323,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
      * -- callback function section --
      */
 
-    private fun createTitleCallback() = object : TokoNowHeaderViewHolder.TokoNowHeaderListener {
+    private fun createTitleCallback() = object : TokoNowThematicHeaderViewHolder.TokoNowHeaderListener {
         override fun onClickCtaHeader() {
             RouteManager.route(
                 context,

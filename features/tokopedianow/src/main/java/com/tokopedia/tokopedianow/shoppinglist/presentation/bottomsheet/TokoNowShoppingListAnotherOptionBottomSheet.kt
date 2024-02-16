@@ -58,12 +58,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
     private val adapter by lazy {
         ShoppingListAnotherOptionBottomSheetAdapter(
             ShoppingListAnotherOptionBottomSheetAdapterTypeFactory(
-                bottomSheetErrorStateListener = object : ShoppingListAnotherOptionBottomSheetErrorStateViewHolder.ShoppingListAnotherOptionBottomSheetErrorStateListener {
-                    override fun onClickRefresh() {
-                        viewModel.loadLoadingState()
-                        viewModel.loadLayout(productId.orEmpty())
-                    }
-                }
+                bottomSheetErrorStateListener = createBottomSheetErrorStatCallback()
             )
         )
     }
@@ -123,7 +118,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
     private fun collectProductRecommendation() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.layout.collect { uiState ->
+                viewModel.uiState.collect { uiState ->
                     when (uiState) {
                         is UiState.Loading -> {
                             if (!uiState.data.isNullOrEmpty()) {
@@ -164,6 +159,17 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
             adapter = this@TokoNowShoppingListAnotherOptionBottomSheet.adapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(ShoppingListDecoration())
+        }
+    }
+
+    /**
+     * -- callback function section --
+     */
+
+    private fun createBottomSheetErrorStatCallback() = object : ShoppingListAnotherOptionBottomSheetErrorStateViewHolder.ShoppingListAnotherOptionBottomSheetErrorStateListener {
+        override fun onClickRefresh() {
+            viewModel.loadLoadingState()
+            viewModel.loadLayout(productId.orEmpty())
         }
     }
 

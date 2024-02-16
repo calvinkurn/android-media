@@ -23,5 +23,4 @@ class ShoppingListTopCheckAllViewHolder(
             tpAllPrice.text = element.allPrice
         }
     }
-
 }

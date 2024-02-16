@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
-import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowHeaderSpaceUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
@@ -23,7 +23,7 @@ internal object CategoryDetailMapper {
         localCacheModel = localCacheModel
     )
 
-    fun CategoryDetailResponse.mapToCategoryTitle(): TokoNowHeaderUiModel = TokoNowHeaderUiModel(
+    fun CategoryDetailResponse.mapToCategoryTitle(): TokoNowThematicHeaderUiModel = TokoNowThematicHeaderUiModel(
         pageTitle = categoryDetail.data.name,
         backgroundLightColor = categoryDetail.data.colorObj.hexLight,
         backgroundDarkColor = categoryDetail.data.colorObj.hexDark

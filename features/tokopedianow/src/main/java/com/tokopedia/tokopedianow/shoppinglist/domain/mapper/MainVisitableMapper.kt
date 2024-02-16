@@ -3,48 +3,79 @@ package com.tokopedia.tokopedianow.shoppinglist.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowHeaderSpaceUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTitleUiModel
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutState.NORMAL
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.ATC_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.EMPTY_STOCK
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
 
 object MainVisitableMapper {
+
     /**
      * -- Header Section --
      */
 
-    fun MutableList<Visitable<*>>.addHeaderSpace(
-        space: Int,
-        headerModel: HeaderModel
-    ) {
-        add(
-            TokoNowHeaderSpaceUiModel(
-                space = space,
-                backgroundColor = headerModel.backgroundGradientColor?.startColor
+    fun MutableList<Visitable<*>>.addShimmeringPage(
+    ): MutableList<Visitable<*>> {
+        val newList = arrayListOf(
+            TokoNowThematicHeaderUiModel(
+                state = LOADING
+            ),
+            ShoppingListHorizontalProductCardItemUiModel(
+                type = ATC_WISHLIST,
+                state = LOADING
+            ),
+            ShoppingListHorizontalProductCardItemUiModel(
+                type = ATC_WISHLIST,
+                state = LOADING
+            ),
+            TokoNowDividerUiModel(),
+            TokoNowTitleUiModel(
+                state = LOADING
+            ),
+            ShoppingListHorizontalProductCardItemUiModel(
+                type = PRODUCT_RECOMMENDATION,
+                state = LOADING
+            ),
+            ShoppingListHorizontalProductCardItemUiModel(
+                type = PRODUCT_RECOMMENDATION,
+                state = LOADING
+            ),
+            ShoppingListHorizontalProductCardItemUiModel(
+                type = PRODUCT_RECOMMENDATION,
+                state = LOADING
+            ),
+            ShoppingListHorizontalProductCardItemUiModel(
+                type = PRODUCT_RECOMMENDATION,
+                state = LOADING
             )
         )
+        addAll(newList)
+        return this
     }
 
     fun MutableList<Visitable<*>>.addHeader(
-        headerModel: HeaderModel
+        headerModel: HeaderModel,
+        @TokoNowLayoutState state: Int
     ) {
         add(
-            TokoNowHeaderUiModel(
+            TokoNowThematicHeaderUiModel(
                 pageTitle = headerModel.pageTitle,
                 pageTitleColor = headerModel.pageTitleColor,
                 ctaText = headerModel.ctaText,
                 ctaTextColor = headerModel.ctaTextColor,
                 ctaChevronIsShown = headerModel.ctaChevronIsShown,
                 ctaChevronColor = headerModel.ctaChevronColor,
-                backgroundGradientColor = headerModel.backgroundGradientColor
+                backgroundGradientColor = headerModel.backgroundGradientColor,
+                state = state
             )
         )
     }
@@ -67,8 +98,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000000000000000000000000000000000",
-                type = ATC_WISHLIST,
-                state = NORMAL
+                type = ATC_WISHLIST
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
@@ -78,8 +108,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST,
-                state = NORMAL
+                type = ATC_WISHLIST
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
@@ -89,8 +118,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST,
-                state = NORMAL
+                type = ATC_WISHLIST
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
@@ -100,8 +128,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST,
-                state = NORMAL
+                type = ATC_WISHLIST
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
@@ -111,8 +138,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST,
-                state = NORMAL
+                type = ATC_WISHLIST
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
@@ -122,8 +148,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST,
-                state = NORMAL
+                type = ATC_WISHLIST
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
@@ -133,8 +158,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST,
-                state = NORMAL
+                type = ATC_WISHLIST
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
@@ -144,8 +168,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = ATC_WISHLIST,
-                state = NORMAL
+                type = ATC_WISHLIST
             )
         )
         add(
@@ -182,8 +205,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = EMPTY_STOCK,
-                state = NORMAL
+                type = EMPTY_STOCK
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
@@ -193,8 +215,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000",
-                type = EMPTY_STOCK,
-                state = NORMAL
+                type = EMPTY_STOCK
             ),
             ShoppingListHorizontalProductCardItemUiModel(
                 id = "123121",
@@ -204,8 +225,7 @@ object MainVisitableMapper {
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000000000000000000000000000000000",
-                type = EMPTY_STOCK,
-                state = NORMAL
+                type = EMPTY_STOCK
             )
         )
         addAll(list)

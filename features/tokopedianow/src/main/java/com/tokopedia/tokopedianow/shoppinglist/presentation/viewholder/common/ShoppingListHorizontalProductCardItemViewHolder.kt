@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
 import com.tokopedia.tokopedianow.common.util.ImageUtil.applyBrightnessFilter
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListHorizontalProductCardBinding
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
@@ -20,8 +22,6 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.Shopp
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.ATC_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.EMPTY_STOCK
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutState.NORMAL
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutState.LOADING
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -51,7 +51,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                     initShimmeringRightButton(data)
                     initShimmeringCheckbox(data)
                 }
-                NORMAL -> {
+                SHOW -> {
                     normalLayout.show()
                     loadingLayout.root.hide()
 
