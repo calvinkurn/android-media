@@ -70,7 +70,7 @@ object CouponWidgetMapper {
             backgroundUrl = toUrl("background-image"),
             timeLimit = TimeLimit.Timer(
                 prefix = toText("expired-text"),
-                endDate = (toText("expired-value-unix").value
+                endDate = (toText("expired-time-unix").value
                     .toLongOrZero() * 1000)
                     .toDate()
             ),
