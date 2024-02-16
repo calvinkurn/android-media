@@ -4,6 +4,7 @@ import com.tokopedia.network.exception.MessageErrorException
 
 data class RedeemCouponUiModel(
     val isRedeemSucceed: Boolean,
-    val redirectUrl: String?,
+    val redirectUrl: String,
+    val redirectAppLink: String,
     val errorException: MessageErrorException?
 )

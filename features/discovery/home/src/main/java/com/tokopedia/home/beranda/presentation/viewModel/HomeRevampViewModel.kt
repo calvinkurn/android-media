@@ -967,15 +967,14 @@ open class HomeRevampViewModel @Inject constructor(
                             this[couponPosition] = coupon.copy(
                                 button = if (result.isRedeemSucceed) {
                                     val ctaData = coupon.button.model ?: return@findWidget
-                                    val redirectUrl = result.redirectUrl ?: ctaData.url
 
                                     val newCtaData = CouponCtaState.Data(
                                         catalogId = catalogId,
-                                        url = redirectUrl,
-                                        appLink = ctaData.appLink
+                                        url = result.redirectUrl.ifEmpty { ctaData.url },
+                                        appLink = result.redirectAppLink.ifEmpty { ctaData.appLink }
                                     )
 
-                                    CouponCtaState.Redirect(ctaData)
+                                    CouponCtaState.Redirect(newCtaData)
                                 } else {
                                     coupon.button
                                 }

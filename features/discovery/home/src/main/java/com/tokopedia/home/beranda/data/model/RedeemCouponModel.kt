@@ -25,18 +25,18 @@ data class RedeemCouponModel(
         )
 
         data class CtaAction(
-            @SerializedName("url")
-            val url: String = "",
-
-            @SerializedName("applink")
-            val appLink: String = ""
+            @SerializedName("jsonMetadata")
+            val jsonMetadata: String = "",
         )
 
-        fun redirectUrl(): String {
-            if (ctaList.isEmpty()) return ""
-            val cta = ctaList.first()
-
-            return cta.url.ifEmpty { cta.appLink }
-        }
+        fun jsonMetaData(): String = ctaList.first().jsonMetadata
     }
 }
+
+data class RedeemCouponRedirection(
+    @SerializedName("url")
+    val url: String,
+
+    @SerializedName("app_link")
+    val appLink: String,
+)
