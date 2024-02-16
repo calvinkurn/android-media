@@ -139,14 +139,14 @@ class ShippingDurationViewHolder(
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
                         tvDurationOrPrice.context,
-                        unifyprinciplesR.color.Unify_N700_44
+                        unifyprinciplesR.color.Unify_NN950_44
                     )
                 )
             } else {
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
                         tvDurationOrPrice.context,
-                        unifyprinciplesR.color.Unify_N700_96
+                        unifyprinciplesR.color.Unify_NN950_96
                     )
                 )
             }
