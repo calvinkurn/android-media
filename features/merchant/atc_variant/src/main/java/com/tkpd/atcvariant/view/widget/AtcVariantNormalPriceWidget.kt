@@ -44,8 +44,6 @@ class AtcVariantNormalPriceWidget : ConstraintLayout {
 
         if (headerData.isCampaignActive) {
             renderCampaignActive(headerData)
-        } else if (headerData.hideGimmick) {
-            renderNoCampaign(headerData.productSlashPrice)
         } else {
             renderNoCampaign(headerData.productMainPrice)
         }
