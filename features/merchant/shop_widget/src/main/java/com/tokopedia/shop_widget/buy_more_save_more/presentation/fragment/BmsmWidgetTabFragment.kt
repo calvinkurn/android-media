@@ -285,8 +285,10 @@ class BmsmWidgetTabFragment :
         viewModel.miniCartSimplifiedData.observe(viewLifecycleOwner) { minicartSimplifiedData ->
             binding?.apply {
                 val offerMessage = minicartSimplifiedData.bmgmData.offerMessage
-                tpgSubTitleWidget.setUpsellingGwp(offerMessage)
-                tpgPdUpsellingWording.setUpsellingPd(offerMessage)
+                when (offerTypeId) {
+                    OFFER_TYPE_PD -> tpgPdUpsellingWording.setUpsellingPd(offerMessage)
+                    OFFER_TYPE_GWP -> tpgSubTitleWidget.setUpsellingGwp(offerMessage)
+                }
             }
         }
 
