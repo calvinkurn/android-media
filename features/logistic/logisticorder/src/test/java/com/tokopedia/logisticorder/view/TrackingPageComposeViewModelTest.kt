@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.logisticorder.domain.response.GetLogisticTrackingResponse
 import com.tokopedia.logisticorder.domain.response.LogisticTrackingResponse
 import com.tokopedia.logisticorder.domain.response.Page
-import com.tokopedia.logisticorder.domain.response.TickerUnificationTargets
+import com.tokopedia.logisticorder.domain.response.TickerUnificationParams
 import com.tokopedia.logisticorder.domain.response.TrackingData
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
@@ -167,14 +167,14 @@ class TrackingPageComposeViewModelTest {
 
     @Test
     fun `Targeted Ticker Success`() {
-        val targetedTickerParam: List<TickerUnificationTargets> = listOf(
-            TickerUnificationTargets(
+        val targetedTickerParam = TickerUnificationParams(target = listOf(
+            TickerUnificationParams.Target(
                 type = "type",
                 values = listOf("a", "b", "c")
             )
-        )
+        ))
         coEvery { getTrackingUseCase(any()) } returns GetLogisticTrackingResponse(
-            LogisticTrackingResponse(data = TrackingData(page = Page(tickerUnificationTargets = targetedTickerParam)))
+            LogisticTrackingResponse(data = TrackingData(page = Page(tickerUnificationParams = targetedTickerParam)))
         )
 
         val response = GetTargetedTickerResponse()
