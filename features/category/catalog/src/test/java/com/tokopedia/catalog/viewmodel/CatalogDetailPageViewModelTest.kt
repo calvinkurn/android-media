@@ -2,6 +2,8 @@ package com.tokopedia.catalog.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.tkpd.atcvariant.usecase.GetProductVariantAggregatorUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
@@ -46,13 +48,21 @@ class CatalogDetailPageViewModelTest {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
+    @RelaxedMockK
+    lateinit var aggregatorUseCase: GetProductVariantAggregatorUseCase
+
+    @RelaxedMockK
+    lateinit var addToCartUseCase: AddToCartUseCase
+
     private val viewModel by lazy {
         spyk(
             CatalogDetailPageViewModel(
                 CoroutineTestDispatchersProvider,
                 catalogDetailUseCase,
                 getNotificationUseCase,
-                userSession
+                aggregatorUseCase,
+                userSession,
+                addToCartUseCase
             )
         )
     }
