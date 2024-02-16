@@ -1412,12 +1412,22 @@ class CartRevampFragment :
         )
         if (index >= 0) {
             val shopHeaderData = groupData.first()
+            var productSize = 0
             if (shopHeaderData is CartGroupHolderData) {
                 checkCartShopGroupTicker(shopHeaderData)
+                productSize = shopHeaderData.productUiModelList.size
                 onNeedToUpdateViewItem(index)
             }
-            onNeedToUpdateViewItem(itemPosition)
+            if (shouldUpdateAllProducts()) {
+                onNeedToUpdateMultipleViewItem(index + 1, productSize)
+            } else {
+                onNeedToUpdateViewItem(itemPosition)
+            }
         }
+    }
+
+    private fun shouldUpdateAllProducts(): Boolean {
+        return true
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {

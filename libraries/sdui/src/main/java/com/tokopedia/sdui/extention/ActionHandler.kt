@@ -7,12 +7,11 @@ import com.tokopedia.sdui.utils.DivActionUtils
 import com.tokopedia.track.TrackApp
 import com.yandex.div.core.DivActionHandler
 import com.yandex.div.core.DivViewFacade
-import com.yandex.div.json.expressions.ExpressionResolver
 import com.yandex.div2.DivAction
+import com.yandex.div2.DivSightAction
 import org.json.JSONObject
 import com.yandex.div2.DivVisibilityAction
 import java.lang.Exception
-import java.lang.IllegalArgumentException
 import java.net.URI
 
 
@@ -41,7 +40,7 @@ class ActionHandler(
     }
 
     override fun handleAction(
-        action: DivVisibilityAction,
+        action: DivSightAction,
         view: DivViewFacade,
         actionUid: String
     ): Boolean {
