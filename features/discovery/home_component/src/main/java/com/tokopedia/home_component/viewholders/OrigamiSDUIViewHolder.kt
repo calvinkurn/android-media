@@ -62,9 +62,6 @@ open class OrigamiSDUIViewHolder(
                     "click see all card" -> listenerTracker.onSeeMoreCardClicked(it.channelModel, "")
 
                     // Kd4
-                    "view product" -> {
-                        listenerTracker.onWidgetImpressed(it.channelModel, bindingAdapterPosition)
-                    }
                     "click product" -> {
                         listenerTracker.onCardClicked(
                             it.channelModel,
@@ -90,6 +87,9 @@ open class OrigamiSDUIViewHolder(
                         adapterPosition,
                         trackerPayload.getInt("position")
                     )
+                    "view product" -> {
+                        listenerTracker.onWidgetImpressed(it.channelModel, bindingAdapterPosition)
+                    }
                 }
             }
         }
