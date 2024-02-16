@@ -180,13 +180,15 @@ data class Properties(
      * onSuccessGif: (resource, dataSource)
      */
     fun listener(
-        onSuccess: (Bitmap?, MediaDataSource?, Boolean) -> Unit = { _, _, _ -> },
+        onSuccess: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
         onError: (MediaException?) -> Unit = { _ -> },
-        onSuccessGif: (GifDrawable?, MediaDataSource?) -> Unit = { _, _ -> }
+        onSuccessGif: (GifDrawable?, MediaDataSource?) -> Unit = { _, _ -> },
+        onSuccessWithResource: (Bitmap?, MediaDataSource?, Boolean) -> Unit = { _, _, _ -> },
     ) = apply {
         this.loaderListener = object : MediaListener {
             override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?, isFirstResource: Boolean) {
-                onSuccess(resource, dataSource, isFirstResource)
+                onSuccess(resource, dataSource)
+                onSuccessWithResource(resource, dataSource, isFirstResource)
             }
 
             override fun onFailed(error: MediaException?) {
