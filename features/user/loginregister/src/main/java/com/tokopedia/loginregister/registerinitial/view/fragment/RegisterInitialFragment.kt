@@ -1424,7 +1424,7 @@ class RegisterInitialFragment :
     }
 
     private fun onGoToForbiddenPage() {
-        ForbiddenActivity.startActivity(activity)
+        ForbiddenActivity.startActivity(requireContext())
     }
 
     private fun getTickerType(hexColor: String): Int {

@@ -545,7 +545,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     fun onForbidden() {
-        ForbiddenActivity.startActivity(activity)
+        ForbiddenActivity.startActivity(requireContext())
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
