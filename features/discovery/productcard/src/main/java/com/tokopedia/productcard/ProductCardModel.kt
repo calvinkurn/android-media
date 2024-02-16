@@ -26,11 +26,6 @@ import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
-/**
- * @param colorMode: A property to determine the appearance of product card content color. 
- * Pass ColorMode.LIGHT or ColorMode.DARK to override product card content color to be always on LIGHT or DARK color regardless device theme
- * or implement ProductCardColor interface on your module to suit product card color according to your page color design,
- */
 data class ProductCardModel (
         val productImageUrl: String = "",
         @Deprecated("Cannot wishlist from product card anymore")
