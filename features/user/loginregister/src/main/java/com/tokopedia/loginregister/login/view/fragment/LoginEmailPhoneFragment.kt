@@ -1341,7 +1341,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
                 onErrorLogin(it, "${it.errorDescription} - ${LoginErrorCode.ERROR_EMAIL_TOKEN_EXCEPTION}")
             } else {
-                val forbiddenMessage = context?.getString(com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+                val forbiddenMessage = context?.getString(sessioncommonR.string.default_request_error_forbidden_auth)
                 val errorMessage = it.getMessage(requireActivity())
                 if (errorMessage.removeErrorCode() == forbiddenMessage) {
                     onGoToForbiddenPage()
@@ -1353,7 +1353,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun onGoToForbiddenPage() {
-        ForbiddenActivity.startActivity(activity)
+        context?.let {
+            ForbiddenActivity.startActivity(it)
+        }
     }
 
     override fun onSuccessGetUserInfo(profilePojo: ProfilePojo) {
