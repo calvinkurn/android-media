@@ -1,7 +1,6 @@
 package com.tokopedia.productcard.reimagine
 
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.experiments.ColorMode
 import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine

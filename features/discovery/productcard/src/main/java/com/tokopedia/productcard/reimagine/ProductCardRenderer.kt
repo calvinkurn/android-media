@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.experiments.ColorMode
 import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.LabelGroupStyle.TEXT_COLOR
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
@@ -36,7 +35,6 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.unifyprinciples.ColorMode as UnifyColorMode
 
 internal class ProductCardRenderer(
     private val view: View,
@@ -386,7 +384,8 @@ internal class ProductCardRenderer(
         val hasCustomCutoutFillColor = colorMode.labelBenefitViewColor.cutoutFillColor.isNotEmpty()
         if (hasCustomCutoutFillColor) {
             labelBenefitView?.setCutoutFillColor(colorMode.labelBenefitViewColor.cutoutFillColor)
+        } else {
+            labelBenefitView?.setCutoutFillColor(unifyprinciplesR.color.Unify_NN0)
         }
-  
     }
 }
