@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
  * Created by meyta on 2/22/18.
  */
 class ForbiddenActivity : BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return ForbiddenFragment.createInstance()
     }
 

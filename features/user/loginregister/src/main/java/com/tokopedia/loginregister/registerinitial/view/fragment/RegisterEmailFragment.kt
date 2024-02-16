@@ -544,8 +544,10 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         redirectView?.visibility = View.VISIBLE
     }
 
-    fun onForbidden() {
-        ForbiddenActivity.startActivity(requireContext())
+    private fun onForbidden() {
+        context?.let {
+            ForbiddenActivity.startActivity(it)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
