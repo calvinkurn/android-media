@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel
+package com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY

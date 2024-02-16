@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowDividerViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTitleViewHolder
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListHorizontalProductCardItemViewHolder
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListTopCheckAllViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShoppingListDecoration: RecyclerView.ItemDecoration() {

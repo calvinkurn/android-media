@@ -1,11 +1,11 @@
-package com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder
+package com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListTopCheckAllBinding
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListTopCheckAllUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShoppingListTopCheckAllViewHolder(

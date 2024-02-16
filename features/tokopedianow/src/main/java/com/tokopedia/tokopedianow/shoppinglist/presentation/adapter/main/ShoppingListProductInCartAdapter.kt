@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListProductInCartItemBinding
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.ShoppingListProductInCartItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListProductInCartItemViewHolder
 
 class ShoppingListProductInCartAdapter(
     private var itemList: List<ShoppingListProductInCartItemUiModel>

@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder
+package com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.bottomsheet
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.setupLayout
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListAnotherOptionErrorStateBinding
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListAnotherOptionBottomSheetErrorStateUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.bottomsheet.ShoppingListAnotherOptionBottomSheetErrorStateUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShoppingListAnotherOptionBottomSheetErrorStateViewHolder (

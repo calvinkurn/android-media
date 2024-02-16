@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main
 
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListProductInCartUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListTopCheckAllUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 
 interface ShoppingListTypeFactory {
     fun type(uiModel: ShoppingListProductInCartUiModel): Int

@@ -1,10 +1,10 @@
-package com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder
+package com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.bottomsheet
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.ShoppingListAnotherOptionBottomSheetEmptyStateUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.bottomsheet.ShoppingListAnotherOptionBottomSheetEmptyStateUiModel
 
 class ShoppingListAnotherOptionBottomSheetEmptyStateViewHolder (
     itemView: View

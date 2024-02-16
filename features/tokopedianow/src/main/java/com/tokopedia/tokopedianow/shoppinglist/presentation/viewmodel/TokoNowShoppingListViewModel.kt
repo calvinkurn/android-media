@@ -194,7 +194,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
             isLastVisibleLoadingMore && job?.isCompleted.orFalse() -> {
                 job = launchCatchError(
                     block = {
-                        throw Throwable()
                         val productRecommendation = getProductRecommendationDeferred(
                             pageNumber = needToLoadMoreData.counter
                         ).await()

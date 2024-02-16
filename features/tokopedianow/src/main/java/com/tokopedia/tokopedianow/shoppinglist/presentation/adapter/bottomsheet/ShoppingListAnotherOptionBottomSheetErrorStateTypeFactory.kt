@@ -1,0 +1,7 @@
+package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.bottomsheet
+
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.bottomsheet.ShoppingListAnotherOptionBottomSheetErrorStateUiModel
+
+interface ShoppingListAnotherOptionBottomSheetErrorStateTypeFactory {
+    fun type(uiModel: ShoppingListAnotherOptionBottomSheetErrorStateUiModel): Int
+}
