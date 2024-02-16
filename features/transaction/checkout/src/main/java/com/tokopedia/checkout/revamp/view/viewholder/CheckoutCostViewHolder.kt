@@ -42,6 +42,7 @@ class CheckoutCostViewHolder(
         }
 
         renderOtherFee(cost)
+        renderPaymentFee(cost)
 
         binding.tvCheckoutCostTotalValue.setTextAndContentDescription(
             cost.totalPriceString,
@@ -428,6 +429,20 @@ class CheckoutCostViewHolder(
                 binding.llCheckoutCostOthers.addView(itemBinding.root)
             }
             binding.llCheckoutCostOthers.isVisible = true
+        }
+    }
+
+    private fun renderPaymentFee(cost: CheckoutCostModel) {
+        binding.apply {
+            tvCheckoutCostPaymentFeeTitle.isVisible = false
+            icCheckoutCostPaymentFee.isVisible = false
+            tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
+            tvCheckoutCostPaymentFeeValue.isVisible = false
+            tvCheckoutCostPaymentsTitle.isVisible = false
+            tvCheckoutCostPaymentsValue.isVisible = false
+            icCheckoutCostPaymentsToggle.isVisible = false
+            vCheckoutCostPaymentsExpandedSeparator.isVisible = false
+            llCheckoutCostPaymentsExpanded.isVisible = false
         }
     }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.checkoutpayment.data
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class CreditCardTenorListRequest(
@@ -8,7 +7,6 @@ data class CreditCardTenorListRequest(
     @SerializedName("token_id")
     val tokenId: String = "",
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("user_id")
     val userId: Long = 0L,
 

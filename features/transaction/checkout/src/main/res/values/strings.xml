@@ -154,4 +154,9 @@
     <string name="dropship_phone">Nomor Telepon</string>
     <string name="dropship_error_protection_usage">Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan</string>
 
+    <string name="checkout_cost_header_title">Cek ringkasan belanjamu, yuk</string>
+    <string name="checkout_cost_others_title">Total Lainnya</string>
+    <string name="checkout_cost_payments_title">Biaya Transaksi</string>
+    <string name="checkout_cost_total_title">Total Belanja</string>
+
 </resources>
