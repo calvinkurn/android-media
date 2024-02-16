@@ -940,7 +940,7 @@ object CartUiModelMapper {
         val remainingTimeMillis = expiredTime - serverTime
         return CartProductLabelData(
             type = productLabel.labelType,
-            remainingTimeMillis = remainingTimeMillis,
+            localExpiredTimeMillis = System.currentTimeMillis() + remainingTimeMillis,
             imageLogoUrl = productLabel.labelDetail.assetLabel.imageAsset.imageLabel,
             iconUrl = productLabel.labelDetail.assetLabel.textAsset.squareIcon,
             text = productLabel.labelDetail.assetLabel.textAsset.label,

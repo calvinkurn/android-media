@@ -11,9 +11,11 @@ import com.tokopedia.cart.databinding.LayoutCartCampaignProductLabelBinding
 import com.tokopedia.cart.view.uimodel.HexColor
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.cart.R as cartR
 
 class CartCampaignProductLabel @JvmOverloads constructor(
     context: Context,
@@ -27,8 +29,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         private const val LABEL_CORNER_RADIUS_DP = 4
         private const val LABEL_STROKE_WIDTH_DP = 1
 
-        private const val COUNTDOWN_TIMER_FORMAT = "%s : %s : %s"
-        private const val COUNTDOWN_TIMER_INTERVAL_MS = 1000L
+        private const val COUNTDOWN_TIMER_INTERVAL_MS = 1_000L
     }
 
     private val binding: LayoutCartCampaignProductLabelBinding =
@@ -167,17 +168,32 @@ class CartCampaignProductLabel @JvmOverloads constructor(
             }
             timer?.cancel()
             timer = object : CountDownTimer(remainingTimeMillis, COUNTDOWN_TIMER_INTERVAL_MS) {
+
                 override fun onTick(millisUntilFinished: Long) {
                     val seconds = (millisUntilFinished / 1000) % 60
                     val minutes = (millisUntilFinished / (1000 * 60) % 60)
                     val hours = (millisUntilFinished / (1000 * 60 * 60))
+                    val days = (millisUntilFinished / (1000 * 60 * 60 * 24))
 
                     val hourText = "${if (hours < 10) 0.toString() else ""}$hours"
                     val minuteText = "${if (minutes < 10) 0.toString() else ""}$minutes"
                     val secondText = "${if (seconds < 10) 0.toString() else ""}$seconds"
 
-                    tpgProductLabelCountdown.text =
-                        COUNTDOWN_TIMER_FORMAT.format(hourText, minuteText, secondText)
+                    if (days.isMoreThanZero()) {
+                        tpgProductLabelCountdown.text =
+                            context.getString(
+                                cartR.string.label_cart_countdown_timer_days_format,
+                                days.toInt().toString()
+                            )
+                    } else {
+                        tpgProductLabelCountdown.text =
+                            context.getString(
+                                cartR.string.label_cart_countdown_timer_format,
+                                hourText,
+                                minuteText,
+                                secondText
+                            )
+                    }
                 }
 
                 override fun onFinish() {

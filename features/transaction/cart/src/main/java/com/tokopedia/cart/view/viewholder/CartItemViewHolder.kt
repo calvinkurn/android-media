@@ -1930,10 +1930,11 @@ class CartItemViewHolder(
             }
 
             CartProductLabelData.TYPE_TIMER -> {
-                val hasRemainingTime = productLabelData.remainingTimeMillis > 0
+                val remainingTimeMillis = productLabelData.localExpiredTimeMillis - System.currentTimeMillis()
+                val hasRemainingTime = remainingTimeMillis > 0
                 if (hasRemainingTime) {
                     binding.cartCampaignProductLabel.showTimedLabel(
-                        remainingTimeMillis = productLabelData.remainingTimeMillis,
+                        remainingTimeMillis = remainingTimeMillis,
                         iconUrl = productLabelData.iconUrl,
                         backgroundColor = productLabelData.lineColor
                     )

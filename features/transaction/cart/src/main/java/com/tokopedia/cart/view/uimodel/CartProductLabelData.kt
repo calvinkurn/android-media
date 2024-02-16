@@ -2,7 +2,7 @@ package com.tokopedia.cart.view.uimodel
 
 data class CartProductLabelData(
     val type: String = "",
-    val remainingTimeMillis: Long = 0,
+    val localExpiredTimeMillis: Long = 0,
     val imageLogoUrl: String = "",
     val iconUrl: String = "",
     val text: String = "",
