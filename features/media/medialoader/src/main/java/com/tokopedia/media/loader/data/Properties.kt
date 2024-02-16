@@ -2,8 +2,10 @@ package com.tokopedia.media.loader.data
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import com.bumptech.glide.TransitionOptions
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.listener.NetworkResponseListener
@@ -16,6 +18,7 @@ data class Properties(
     internal var data: Any? = null,
     internal var renderDelay: Long = 0L,
     internal var thumbnailUrl: String = "",
+    internal var thumbnailSize: Float? = null,
     internal var blurHash: Boolean = false,
     internal var isAnimate: Boolean = false,
     internal var isCircular: Boolean = false,
@@ -31,6 +34,7 @@ data class Properties(
     internal var loaderListener: MediaListener? = null,
     internal var transform: Transformation<Bitmap>? = null,
     internal var transforms: List<Transformation<Bitmap>>? = null,
+    internal var transition: TransitionOptions<BitmapTransitionOptions, Bitmap>? = null,
     internal var centerCrop: Boolean = false,
     internal var centerInside: Boolean = false,
     internal var fitCenter: Boolean = false,
@@ -102,6 +106,11 @@ data class Properties(
     // display a thumbnail before rendering the actual image
     fun thumbnailUrl(url: String) = apply {
         this.thumbnailUrl = url
+    }
+
+    // set thumbnail size multiplier
+    fun thumbnailSize(multiplier: Float) = apply {
+        this.thumbnailSize = multiplier
     }
 
     // an activation of blurHash (as the placeholder replacement)
@@ -215,6 +224,11 @@ data class Properties(
     // mapping multiple transform
     fun transforms(transforms: List<Transformation<Bitmap>>) = apply {
         this.transforms = transforms
+    }
+
+    // mapping transition
+    fun transition(transition: TransitionOptions<BitmapTransitionOptions, Bitmap>?) = apply {
+        this.transition = transition
     }
 
     // set built-in centerCrop

@@ -16,7 +16,9 @@ import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.utils.FeatureToggleManager
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
+import com.tokopedia.media.loader.utils.transition
 import com.tokopedia.media.loader.utils.mediaLoad
+import java.util.concurrent.TimeUnit
 
 object MediaLoaderTarget {
 
@@ -32,6 +34,10 @@ object MediaLoaderTarget {
 
     fun loadImage(context: Context, properties: Properties, target: MediaBitmapEmptyTarget<Bitmap>) {
         loadImageTarget(context, properties)?.into(target)
+    }
+
+    fun loadImageFuture(context: Context, timeout: Long, properties: Properties): Bitmap? {
+        return loadImageTarget(context, properties)?.submit()?.get(timeout, TimeUnit.MILLISECONDS)
     }
 
     fun clear(context: Context, target: CustomTarget<Bitmap>) {
@@ -52,6 +58,7 @@ object MediaLoaderTarget {
             .with(context)
             .asBitmap()
             .transform(properties)
+            .transition(properties)
             .commonOptions(properties)
             .dynamicPlaceHolder(context, properties)
             .thumbnail(setThumbnailUrl(context, properties))

@@ -2,6 +2,7 @@ package com.tokopedia.media.loader.utils
 
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -53,4 +54,11 @@ internal fun <T> GlideRequest<T>.loadLookup(context: Context, resId: Int): Glide
         ) // Look up the dynamic resource in the split namespace.
         .build()
     return load(uri)
+}
+
+internal fun GlideRequest<Bitmap>.transition(properties: Properties): GlideRequest<Bitmap> {
+    properties.transition?.let {
+        this.transition(it)
+    }
+    return this
 }
