@@ -316,19 +316,21 @@ class ReviewContentViewHolder(
             val videoUrl = data.url
 
             val instance = videoPlayerManager.occupy(
-                String.format(
-                    REVIEW_CONTENT_VIDEO_KEY_REF,
-                    videoUrl
-                )
+                String.format(REVIEW_CONTENT_VIDEO_KEY_REF, videoUrl)
             )
             val videoPlayer = mVideoPlayer ?: instance
             mVideoPlayer = videoPlayer
-            mVideoPlayer?.start(
-                videoUrl = videoUrl,
-                isMute = false,
-                playWhenReady = false
-            )
+
+            onStartVideoPlayer(videoUrl)
         }
+    }
+
+    private fun onStartVideoPlayer(videoUrl: String) {
+        mVideoPlayer?.start(
+            videoUrl = videoUrl,
+            isMute = false,
+            playWhenReady = false
+        )
     }
 
     private fun setupPageControlMedia(
