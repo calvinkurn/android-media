@@ -45,7 +45,7 @@ internal object MediaListenerBuilder {
         ): Boolean {
             try {
                 when (T::class){
-                    Bitmap::class -> onResourceReady(context, properties, startTime, (resource as Bitmap), (target as Target<Bitmap>), dataSource)
+                    Bitmap::class -> onResourceReady(context, properties, startTime, (resource as Bitmap), (target as Target<Bitmap>), dataSource, isFirstResource)
                     GifDrawable::class -> properties.loaderListener?.onLoaded((resource as GifDrawable), dataSource(dataSource))
                 }
             }catch (e: Exception) {
@@ -80,7 +80,8 @@ internal object MediaListenerBuilder {
         startTime: Long,
         resource: Bitmap?,
         target: Target<Bitmap>?,
-        dataSource: DataSource?
+        dataSource: DataSource?,
+        isFirstResource: Boolean
     ): Boolean {
         val loadTime = (System.currentTimeMillis() - startTime).toString()
 
@@ -111,7 +112,7 @@ internal object MediaListenerBuilder {
             resource?.adaptiveSizeImageRequest(target)
         }
 
-        properties.loaderListener?.onLoaded(resource, dataSource(dataSource))
+        properties.loaderListener?.onLoaded(resource, dataSource(dataSource), isFirstResource )
         return false
     }
 }

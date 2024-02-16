@@ -5,15 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
 import android.net.Uri
-import android.os.Build
 import android.util.AttributeSet
-import android.util.Size
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.models.Asset
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
-import timber.log.Timber
 
 open class AssetImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -52,11 +49,9 @@ open class AssetImageView @JvmOverloads constructor(
     }
 
     fun loadAsset(asset: Asset) {
-
-        Glide.with(this)
-            .load(asset.contentUri)
-            .fitCenter()
-            .into(this)
+        this.loadImage(asset.contentUri) {
+            fitCenter()
+        }
     }
 
     fun loadUriThumbnail(uri: Uri, height: Int) {
@@ -79,11 +74,10 @@ open class AssetImageView @JvmOverloads constructor(
     }
 
     fun loadGlideThumbnail(uri: Uri) {
-        Glide.with(this)
-            .load(uri)
-            .thumbnail(0.33f)
-            .centerCrop()
-            .into(this)
+        this.loadImage(uri) {
+            thumbnailSize(0.33f)
+            centerCrop()
+        }
     }
 
     fun loadAssetThumbnail(asset: Asset, height: Int) {

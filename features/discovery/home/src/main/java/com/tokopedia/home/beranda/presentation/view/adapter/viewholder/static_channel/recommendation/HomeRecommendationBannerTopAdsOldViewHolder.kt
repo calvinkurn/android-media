@@ -1,14 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
@@ -19,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
@@ -72,35 +67,21 @@ class HomeRecommendationBannerTopAdsOldViewHolder(
                     loadVerticalBanner(recommendationBannerTopAdsDataModelDataModel, it)
                 } else {
                     it.bannerType = BANNER_TYPE_HORIZONTAL
-                    Glide.with(itemView.context)
-                        .load(topAdsImageViewModel.imageUrl)
-                        .transform(RoundedCorners(8))
-                        .fitCenter()
-                        .addListener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                it.hide()
-                                binding?.homeRecomTopadsLoaderImage?.hide()
-                                return false
-                            }
 
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
+                    it.loadImage(topAdsImageViewModel.imageUrl) {
+                        transform(RoundedCorners(8))
+                        fitCenter()
+                        listener(
+                            onSuccess = { _, _ ->
                                 it.show()
                                 binding?.homeRecomTopadsLoaderImage?.hide()
-                                return false
+                            },
+                            onError = { _ ->
+                                it.hide()
+                                binding?.homeRecomTopadsLoaderImage?.hide()
                             }
-                        })
-                        .into(it)
+                        )
+                    }
                 }
             }
         }
