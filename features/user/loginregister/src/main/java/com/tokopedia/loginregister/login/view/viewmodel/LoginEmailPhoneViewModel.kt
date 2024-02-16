@@ -32,14 +32,14 @@ import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
+import com.tokopedia.sessioncommon.data.admin.AdminResult
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
@@ -56,9 +56,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val discoverUseCase: DiscoverUseCase,
     private val activateUserUseCase: ActivateUserUseCase,
     private val loginTokenUseCase: LoginTokenUseCase,
-    private val getProfileUseCase: GetProfileUseCase,
     private val tickerInfoUseCase: TickerInfoUseCase,
-    private val getAdminTypeUseCase: GetAdminTypeUseCase,
+    private val getProfileAndAdmin: GetUserInfoAndAdminUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val dynamicBannerUseCase: DynamicBannerUseCase,
@@ -190,23 +189,64 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
-        launch(dispatchers.main) {
+//        getProfileUseCase.execute(
+//            GetProfileSubscriber(
+//                userSession,
+//                { mutableProfileResponse.value = Success(it) },
+//                { mutableProfileResponse.value = Fail(it) },
+//                getAdminTypeUseCase = getAdminTypeUseCase,
+//                showLocationAdminPopUp = {
+//                    mutableShowLocationAdminPopUp.value = Success(true)
+//                },
+//                onLocationAdminRedirection = {
+//                    mutableAdminRedirection.value = Success(true)
+//                },
+//                showErrorGetAdminType = {
+//                    mutableShowLocationAdminPopUp.value = Fail(it)
+//                }
+//            )
+//        )
+        launch {
             try {
-                val profile = getProfileUseCase(Unit)
-                val isProfileValid = profile.profileInfo.userId.isNotBlank() &&
-                    profile.profileInfo.userId != "0"
-                if (isProfileValid) {
-                    try {
-                        val adminResponse = getAdminTypeUseCase(GET_ADMIN_TYPE_SOURCE)
-                        onSuccessGetAdminType(adminResponse, profile)
-                    } catch (e: Exception) {
-                        mutableShowLocationAdminPopUp.value = Fail(e)
+                val admin = getProfileAndAdmin(Unit)
+                when (admin) {
+                    is AdminResult.AdminResultOnSuccessGetProfile -> {
+                        mutableProfileResponse.value = Success(admin.profile)
+                    }
+                    is AdminResult.AdminResultOnLocationAdminRedirection -> {
+                        mutableAdminRedirection.value = Success(true)
+                    }
+                    is AdminResult.AdminResultShowLocationPopup -> {
+                        mutableShowLocationAdminPopUp.value = Success(true)
+                    }
+                    is AdminResult.AdminResultOnErrorGetProfile -> {
+                        mutableProfileResponse.value = Fail(admin.e)
+                    }
+                    is AdminResult.AdminResultOnErrorGetAdmin -> {
+                        mutableShowLocationAdminPopUp.value = Fail(admin.e)
                     }
                 }
             } catch (e: Exception) {
                 mutableProfileResponse.value = Fail(e)
             }
         }
+//        launch(dispatchers.main) {
+//            try {
+//                val profile = getProfileUseCase(Unit)
+//                val isProfileValid = profile.profileInfo.userId.isNotBlank() &&
+//                    profile.profileInfo.userId != "0"
+//                if (isProfileValid) {
+//                    try {
+//                        val adminResponse = getAdminTypeUseCase(GET_ADMIN_TYPE_SOURCE)
+//                        onSuccessGetAdminType(adminResponse, profile)
+//                    } catch (e: Exception) {
+//                        mutableShowLocationAdminPopUp.value = Fail(e)
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                mutableProfileResponse.value = Fail(e)
+//            }
+//        }
     }
 
     private fun onSuccessGetAdminType(adminResponse: AdminTypeResponse, profile: ProfilePojo) {

@@ -7,10 +7,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 open class GetAdminTypeUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
+    private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<String, AdminTypeResponse>(dispatcher.io) {
 
@@ -48,6 +50,25 @@ open class GetAdminTypeUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: String): AdminTypeResponse {
-        return repository.request(graphqlQuery(), mapOf(PARAM_SOURCE to params))
+        val admin = repository.request<Map<String, Any>, AdminTypeResponse>(graphqlQuery(), mapOf(PARAM_SOURCE to params))
+        onGetAdminTypeSuccess(admin)
+        return admin
+    }
+
+    private fun onGetAdminTypeSuccess(admin: AdminTypeResponse) {
+        val adminDataResponse = admin.response
+        val adminData = adminDataResponse.data
+        val roleType = adminData.detail.roleType
+        val isShopOwner = roleType.isShopOwner
+        val isLocationAdmin = roleType.isLocationAdmin
+        val isShopAdmin = roleType.isShopAdmin
+        val isMultiLocationShop = adminDataResponse.isMultiLocationShop
+
+        userSession.apply {
+            setIsShopOwner(isShopOwner)
+            setIsLocationAdmin(isLocationAdmin)
+            setIsShopAdmin(isShopAdmin)
+            setIsMultiLocationShop(isMultiLocationShop)
+        }
     }
 }
