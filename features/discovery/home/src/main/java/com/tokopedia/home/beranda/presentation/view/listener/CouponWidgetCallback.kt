@@ -6,15 +6,16 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.visitable.CouponCtaState
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import java.util.HashMap
 
 class CouponWidgetCallback(val listener: HomeCategoryListener) : CouponWidgetListener {
 
-    override fun ctaClick(state: CouponCtaState, position: Int) {
+    override fun ctaClick(oldWidgetData: CouponWidgetDataModel, state: CouponCtaState, position: Int) {
         when(state) {
             is CouponCtaState.Claim -> {
                 if (state.data.catalogId.isEmpty()) return
-                listener.onCouponWidgetClaim(state.data.catalogId, position)
+                listener.onCouponWidgetClaim(oldWidgetData, state.data.catalogId, position)
             }
             is CouponCtaState.Redirect -> {
                 val actionLink = state.data.appLink.ifEmpty { state.data.url }

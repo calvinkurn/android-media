@@ -153,6 +153,7 @@ import com.tokopedia.home_component.usecase.thematic.ThematicModel
 import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -1913,8 +1914,8 @@ open class HomeRevampFragment :
         }
     }
 
-    override fun onCouponWidgetClaim(catalogId: String, couponPosition: Int) {
-        getHomeViewModel().onCouponClaim(catalogId, couponPosition)
+    override fun onCouponWidgetClaim(oldWidgetData: CouponWidgetDataModel, catalogId: String, couponPosition: Int) {
+        getHomeViewModel().onCouponClaim(oldWidgetData, catalogId, couponPosition)
     }
 
     override fun onChooseAddressServerDown() {

@@ -948,7 +948,7 @@ open class HomeRevampViewModel @Inject constructor(
         )
     }
 
-    fun onCouponClaim(catalogId: String, couponPosition: Int) {
+    fun onCouponClaim(oldWidgetData: CouponWidgetDataModel, catalogId: String, couponPosition: Int) {
         launch {
             val result = claimCouponUseCase.get().invoke(catalogId)
 
@@ -958,34 +958,37 @@ open class HomeRevampViewModel @Inject constructor(
                     return@withContext
                 }
 
-                findWidget<CouponWidgetDataModel> { model, position ->
-                    val updatedCoupons = model.coupons.toMutableList().apply {
-                        val coupon = this[couponPosition]
+                findWidget<CouponWidgetDataModel>(
+                    predicate = { it.visitableId() == oldWidgetData.visitableId() },
+                    actionOnFound = { model, position ->
+                        val updatedCoupons = model.coupons.toMutableList().apply {
+                            val coupon = this[couponPosition]
 
-                        this[couponPosition] = coupon.copy(
-                            button = if (result.isRedeemSucceed) {
-                                val ctaData = coupon.button.model ?: return@findWidget
-                                val redirectUrl = result.redirectUrl ?: ctaData.url
+                            this[couponPosition] = coupon.copy(
+                                button = if (result.isRedeemSucceed) {
+                                    val ctaData = coupon.button.model ?: return@findWidget
+                                    val redirectUrl = result.redirectUrl ?: ctaData.url
 
-                                val newCtaData = CouponCtaState.Data(
-                                    catalogId = catalogId,
-                                    url = redirectUrl,
-                                    appLink = ctaData.appLink
-                                )
+                                    val newCtaData = CouponCtaState.Data(
+                                        catalogId = catalogId,
+                                        url = redirectUrl,
+                                        appLink = ctaData.appLink
+                                    )
 
-                                CouponCtaState.Redirect(newCtaData)
-                            } else {
-                                coupon.button
-                            }
+                                    CouponCtaState.Redirect(ctaData)
+                                } else {
+                                    coupon.button
+                                }
+                            )
+                        }
+
+                        updateWidget(
+                            visitable = model.copy(coupons = updatedCoupons),
+                            visitableToChange = model,
+                            position = position
                         )
                     }
-
-                    updateWidget(
-                        visitable = model.copy(coupons = updatedCoupons),
-                        visitableToChange = model,
-                        position = position
-                    )
-                }
+                )
             }
         }
     }

@@ -4,9 +4,10 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 
 class CouponWidgetAdapter constructor(
-    private val data: MutableList<CouponWidgetDataItemModel> = mutableListOf(),
+    private val data: MutableList<Pair<CouponWidgetDataModel, CouponWidgetDataItemModel>> = mutableListOf(),
     private val listener: CouponWidgetListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -19,10 +20,12 @@ class CouponWidgetAdapter constructor(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val (oldWidgetData, couponData) = data[position]
+
         if (holder is SingleCouponWidgetViewHolder) {
-            holder.onBind(data[position])
+            holder.onBind(oldWidgetData, couponData)
         } else if (holder is GridCouponWidgetViewHolder) {
-            holder.onBind(data[position])
+            holder.onBind(oldWidgetData, couponData)
         }
     }
 
@@ -36,12 +39,23 @@ class CouponWidgetAdapter constructor(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(coupons: List<CouponWidgetDataItemModel>) {
+    fun setData(widgetData: CouponWidgetDataModel) {
+        val newData = mapData(widgetData)
+
         data.clear()
-        data.addAll(coupons)
+        data.addAll(newData)
 
         notifyDataSetChanged()
     }
+
+    /**
+     * This internal map occurs due we have to send the old widget data.
+     *
+     * The main purpose is, if the cupon widget shows multiple times in homepage, hence we have to
+     * update the button state partially based on coupon data as well as its visitable model.
+     */
+    private fun mapData(data: CouponWidgetDataModel) =
+        data.coupons.map { Pair(data, it) }
 
     companion object {
         private const val FULL = 0

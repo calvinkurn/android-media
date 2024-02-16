@@ -9,6 +9,7 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponMo
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.LayoutCouponWidgetSingleBinding
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SingleCouponWidgetViewHolder constructor(
@@ -18,8 +19,8 @@ class SingleCouponWidgetViewHolder constructor(
 
     private val binding: LayoutCouponWidgetSingleBinding? by viewBinding()
 
-    fun onBind(model: CouponWidgetDataItemModel) {
-        val state = ButtonStateHandler(model.button, bindingAdapterPosition, listener)
+    fun onBind(oldWidgetData: CouponWidgetDataModel, model: CouponWidgetDataItemModel) {
+        val state = ButtonStateHandler(oldWidgetData, model.button, bindingAdapterPosition, listener)
 
         binding?.couponView?.setState(state)
         binding?.couponView?.setModel(model.coupon as AutomateCouponModel.List)

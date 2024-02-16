@@ -35,20 +35,20 @@ class CouponWidgetViewHolder constructor(
 
         onWidgetImpressionListener(element)
         setupHeaderAndBackgroundWidget(element)
-        setupDynamicCouponWidgetAdapter(element.coupons)
+        setupDynamicCouponWidgetAdapter(element)
     }
 
-    private fun setupDynamicCouponWidgetAdapter(coupons: List<CouponWidgetDataItemModel>) {
+    private fun setupDynamicCouponWidgetAdapter(element: CouponWidgetDataModel) {
         if (binding?.lstCoupon?.adapter == null) {
             val adapter = CouponWidgetAdapter(listener = listener)
             binding?.lstCoupon?.layoutManager = DynamicGridLayoutManager(itemView.context)
             binding?.lstCoupon?.addItemDecoration(DynamicGridLayoutManager.Decorator())
             binding?.lstCoupon?.adapter = adapter
 
-            adapter.setData(coupons)
+            adapter.setData(element)
         } else {
             val adapter = binding?.lstCoupon?.adapter as? CouponWidgetAdapter
-            adapter?.setData(coupons)
+            adapter?.setData(element)
         }
     }
 

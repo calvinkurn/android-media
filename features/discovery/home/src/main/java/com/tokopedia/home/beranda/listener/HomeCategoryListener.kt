@@ -10,6 +10,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -139,5 +140,5 @@ interface HomeCategoryListener {
 
     fun onLoginWidgetClick()
 
-    fun onCouponWidgetClaim(catalogId: String, couponPosition: Int)
+    fun onCouponWidgetClaim(oldWidgetData: CouponWidgetDataModel, catalogId: String, couponPosition: Int)
 }
