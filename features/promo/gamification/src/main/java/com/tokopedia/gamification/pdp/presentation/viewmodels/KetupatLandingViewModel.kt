@@ -95,7 +95,7 @@ class KetupatLandingViewModel @Inject constructor(
                             categoryID = JSONObject(this.toString()).getLong("categoryID"),
                             limit = JSONObject(this.toString()).getLong("limit"),
                             page = JSONObject(this.toString()).getLong("page"),
-                            serviceID = "marketplace"
+                            serviceID = ""
                         )
                     }
                     this.gamiGetScratchCardLandingPage.sections.find { it?.type == "benefit-coupon-slug" }?.jsonParameter.apply {
