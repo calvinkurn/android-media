@@ -31,6 +31,7 @@ import retrofit2.Retrofit
 /**
  * @author by nisie on 10/15/18.
  */
+@Deprecated("unused class")
 @Module
 class LoginRegisterModule {
     @Provides

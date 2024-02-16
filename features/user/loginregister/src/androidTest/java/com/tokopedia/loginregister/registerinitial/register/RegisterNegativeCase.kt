@@ -4,9 +4,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.containsString
@@ -15,9 +15,9 @@ import org.junit.Test
 @UiTest
 class RegisterNegativeCase: RegisterInitialBase() {
 
+    /* Test Case 3: Disable button "Selanjutnya" when input text is empty */
     @Test
-    /* Disable button "Selanjutnya" when input text is empty */
-    fun whenInvalidInput_registerButtonIsDisabled() {
+    fun testCase3_whenInvalidInput_registerButtonIsDisabled() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             onView(withId(R.id.register_btn)).check(matches(isEnabled()))
@@ -50,6 +50,27 @@ class RegisterNegativeCase: RegisterInitialBase() {
             isDisplayingSubGivenText(errorMsg)
         }
     }
+
+//    /* Disable button "Selanjutnya" when input text is blacklisted email */
+//    @Test
+//    fun showError_ifEmailIsBlacklisted() {
+//        isDefaultRegisterCheck = false
+//        val errorMsg = "Alamat email tidak dapat digunakan."
+//        val data = RegisterCheckPojo(
+//            RegisterCheckData(
+//                errors = arrayListOf(
+//                    errorMsg
+//                )
+//            )
+//        )
+//        fakeRepo.registerCheckConfig = Config.WithResponse(data)
+//
+//        runTest {
+//            inputEmailOrPhone("kim.mingyu@seventeen.com")
+//            clickSubmit()
+//            isDisplayingGivenText(errorMsg)
+//        }
+//    }
 
     @Test
     /* Show snackbar if discover providers is empty */

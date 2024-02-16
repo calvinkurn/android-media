@@ -28,10 +28,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.stub.Config
@@ -53,9 +53,9 @@ class LoginNormalCase : LoginBase() {
         val data = RegisterCheckPojo(
             RegisterCheckData(
                 isExist = true,
-                userID = "123456",
+                userID = "7891022",
                 registerType = "email",
-                view = "yoris.prayogo@tokopedia.com",
+                view = "kim.mingyu@tokopedia.com",
                 isPending = false
             )
         )

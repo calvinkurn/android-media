@@ -12,17 +12,18 @@ import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.common.domain.query.MutationRegisterCheck
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckParam
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.common.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
@@ -50,7 +51,7 @@ import javax.inject.Inject
  */
 
 class RegisterInitialViewModel @Inject constructor(
-    private val registerCheckUseCase: GraphqlUseCase<RegisterCheckPojo>,
+    private val registerCheckUseCase: RegisterCheckUseCase,
     private val registerRequestUseCase: GraphqlUseCase<RegisterRequestPojo>,
     private val registerRequestUseCaseV2: GraphqlUseCase<RegisterRequestV2>,
     private val activateUserUseCase: ActivateUserUseCase,
@@ -144,8 +145,8 @@ class RegisterInitialViewModel @Inject constructor(
             val result = discoverUseCase(PARAM_DISCOVER_REGISTER)
             mutableGetProviderResponse.value = Success(result.data)
         }, onError = {
-                mutableGetProviderResponse.value = Fail(it)
-            })
+            mutableGetProviderResponse.value = Fail(it)
+        })
     }
 
     fun registerGoogle(accessToken: String, email: String) {
@@ -204,13 +205,10 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun registerCheck(id: String) {
         launchCatchError(coroutineContext, {
-            val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
-            registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
-            registerCheckUseCase.setRequestParams(params)
-            registerCheckUseCase.setGraphqlQuery(MutationRegisterCheck.getQuery())
             idlingResourceProvider?.increment()
-            val response = registerCheckUseCase.executeOnBackground()
-            onSuccessRegisterCheck().invoke(response)
+            val params = RegisterCheckParam(id)
+            val result = registerCheckUseCase(params)
+            onSuccessRegisterCheck().invoke(result)
         }, {
             onFailedRegisterCheck().invoke(it)
         })
@@ -422,7 +420,7 @@ class RegisterInitialViewModel @Inject constructor(
                 mutableRegisterCheckResponse.value = Success(it.data)
             } else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty()) {
                 mutableRegisterCheckResponse.value =
-                    Fail(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
+                    Fail(MessageErrorException(it.data.errors[0]))
             } else {
                 mutableRegisterCheckResponse.value = Fail(RuntimeException())
             }
@@ -446,7 +444,7 @@ class RegisterInitialViewModel @Inject constructor(
             mutableRegisterRequestResponse.value = Success(result)
         } else if (result.errors.isNotEmpty() && result.errors[0].message.isNotEmpty()) {
             mutableRegisterRequestResponse.value =
-                Fail(com.tokopedia.network.exception.MessageErrorException(result.errors[0].message))
+                Fail(MessageErrorException(result.errors[0].message))
         } else {
             mutableRegisterRequestResponse.value = Fail(RuntimeException())
         }
@@ -515,7 +513,6 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun clearBackgroundTask() {
         registerRequestUseCase.cancelJobs()
-        registerCheckUseCase.cancelJobs()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
     }

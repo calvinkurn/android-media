@@ -26,13 +26,14 @@ class RegisterInitialModule {
         return UserSession(context)
     }
 
-    @Provides
-    fun provideResources(@ApplicationContext context: Context): Resources = context.resources
-
+    //need to be removed after all usecases move to coroutine usecase
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository {
         return getInstance().graphqlRepository
     }
+
+    @Provides
+    fun provideResources(@ApplicationContext context: Context): Resources = context.resources
 
     @ActivityScope
     @Provides

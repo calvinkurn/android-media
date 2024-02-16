@@ -16,6 +16,7 @@ import dagger.Component
 /**
  * @author by nisie on 10/15/18.
  */
+@Deprecated("unused class")
 @ActivityScope
 @Component(
     modules = [
@@ -33,6 +34,4 @@ interface LoginRegisterComponent {
     fun provideSeamlessLoginAnalytics(): SeamlessLoginAnalytics
     fun provideCoroutineDispatchers(): CoroutineDispatchers
 
-    @ApplicationContext
-    fun provideGqlRepository(): GraphqlRepository
 }
