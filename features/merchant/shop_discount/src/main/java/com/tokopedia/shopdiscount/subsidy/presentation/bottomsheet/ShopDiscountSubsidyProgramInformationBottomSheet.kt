@@ -186,10 +186,10 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
 
     private fun setSubsidyPeriodSection() {
         val subsidyPeriodStart =
-            programInformationDetailUiModel?.subsidyInfo?.subsidyDateStart?.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE)
+            programInformationDetailUiModel?.subsidyInfo?.subsidyDateStart?.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITHOUT_TIMEZONE)
                 ?.parseTo(DateConstant.DATE_TIME_MINUTE_PRECISION).orEmpty()
         val subsidyPeriodEnd =
-            programInformationDetailUiModel?.subsidyInfo?.subsidyDateEnd?.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE)
+            programInformationDetailUiModel?.subsidyInfo?.subsidyDateEnd?.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITHOUT_TIMEZONE)
                 ?.parseTo(DateConstant.DATE_TIME_MINUTE_PRECISION).orEmpty()
         if (subsidyPeriodStart.isNotEmpty() && subsidyPeriodEnd.isNotEmpty()) {
             subsidyPeriodSection?.show()
