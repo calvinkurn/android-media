@@ -34,7 +34,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
 import com.tokopedia.applink.RouteManager
@@ -423,7 +422,7 @@ class ShopPageReimagineHeaderFragment :
     private var queryParamTab: String = ""
     private var shopPageHeaderP1Data: ShopPageHeaderP1HeaderData? = null
     private var isAlreadyGetShopPageP2Data: Boolean = false
-    private var performanceMonitoringShopPrefetch: PerformanceMonitoring? = null
+//    private var performanceMonitoringShopPrefetch: PerformanceMonitoring? = null
 
     private val storiesManager by storiesManager(StoriesEntryPoint.ShopPageReimagined) {
         setAnimationStrategy(OneTimeAnimationStrategy())
@@ -1180,7 +1179,6 @@ class ShopPageReimagineHeaderFragment :
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_V4_TRACE_ACTIVITY_PREPARE)
-        performanceMonitoringShopPrefetch = PerformanceMonitoring.start(ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1)
         sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_SHARED_PREFERENCE, Context.MODE_PRIVATE)
         shopHeaderViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageHeaderViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
@@ -1257,6 +1255,10 @@ class ShopPageReimagineHeaderFragment :
             observeShopPageMiniCartSharedViewModel()
             getInitialData()
             initViews(view)
+
+            // Handle Shop Page Prefetch Data
+            // performanceMonitoringShopPrefetch = PerformanceMonitoring.start(ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1)
+            startTraceMonitoring(ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1)
             handlePrefetchData()
         }
 
@@ -1313,8 +1315,8 @@ class ShopPageReimagineHeaderFragment :
         tabLayout?.removeAllTabs()
         viewPagerAdapterHeader?.notifyDataSetChanged()
 
-        performanceMonitoringShopPrefetch?.stopTrace()
-        performanceMonitoringShopPrefetch = null
+//        performanceMonitoringShopPrefetch?.stopTrace()
+//        performanceMonitoringShopPrefetch = null
     }
 
     private fun getPrefetchData(): ShopPrefetchData? {
@@ -1455,6 +1457,14 @@ class ShopPageReimagineHeaderFragment :
 
     private fun stopMonitoringPerformance() {
         (activity as? ShopPageHeaderActivity)?.stopShopHeaderPerformanceMonitoring()
+    }
+
+    private fun startTraceMonitoring(traceName: String) {
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startTraceMonitoring(it, traceName)
+            }
+        }
     }
 
     private fun initStickyLogin() {
