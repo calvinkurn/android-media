@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnRepeat
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ViewStoriesOnboardingBinding
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -34,11 +35,14 @@ class StoriesOnboardView : ConstraintLayout {
         ObjectAnimator.ofFloat(binding.animHand, View.TRANSLATION_X, -30f, 30f).apply {
             duration = 800L
             repeatCount = Animation.INFINITE
+            doOnRepeat {
+                rotate.start()
+            }
         }
-    private val rotate = ObjectAnimator.ofFloat(binding.animHand, View.ROTATION, 0f, 30f).apply {
+    private val rotate = ObjectAnimator.ofFloat(binding.animHand, View.ROTATION, 0f, -20f).apply {
         duration = UnifyMotion.T3
-        repeatCount = Animation.INFINITE
     }
+
     private val anim = AnimatorSet().apply {
         play(animatorX)
     }
