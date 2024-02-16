@@ -19,13 +19,15 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.product.preview.R
-import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
+import com.tokopedia.content.product.preview.databinding.ItemReviewContentBinding
 import com.tokopedia.content.product.preview.utils.REVIEW_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewMediaAdapter
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
+import com.tokopedia.content.product.preview.view.listener.MediaImageListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
+import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
@@ -42,12 +44,14 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ReviewParentContentViewHolder(
-    private val binding: ItemReviewParentContentBinding,
+class ReviewContentViewHolder(
+    private val binding: ItemReviewContentBinding,
     private val reviewInteractionListener: ReviewInteractionListener,
-    private val mediasViewPool: RecyclerView.RecycledViewPool
+    private val reviewMediaListener: ReviewMediaListener,
+    private val mediaViewPool: RecyclerView.RecycledViewPool
 ) : ViewHolder(binding.root),
-    ProductPreviewVideoListener {
+    ProductPreviewVideoListener,
+    MediaImageListener {
 
     init {
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -68,6 +72,7 @@ class ReviewParentContentViewHolder(
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
             val position = getContentCurrentPosition()
             binding.pcReviewContent.setCurrentIndicator(position)
+            reviewMediaListener.onMediaSelected(position)
         }
     }
 
@@ -78,7 +83,8 @@ class ReviewParentContentViewHolder(
 
     private val reviewMediaAdapter: ReviewMediaAdapter by lazyThreadSafetyNone {
         ReviewMediaAdapter(
-            productPreviewVideoListener = this
+            productPreviewVideoListener = this,
+            mediaImageLister = this
         )
     }
 
@@ -135,6 +141,10 @@ class ReviewParentContentViewHolder(
         }
     }
 
+    fun bindMediaDataChanged(mediaData: List<ReviewMediaUiModel>) {
+        reviewMediaAdapter.submitList(mediaData)
+    }
+
     private fun bindMedia(
         media: List<ReviewMediaUiModel>,
         mediaSelectedPosition: Int
@@ -145,7 +155,7 @@ class ReviewParentContentViewHolder(
         layoutManager = layoutManagerMedia
         setHasFixedSize(true)
         addOnScrollListener(mediaScrollListener)
-        setRecycledViewPool(mediasViewPool)
+        setRecycledViewPool(mediaViewPool)
         snapHelperMedia.attachToRecyclerView(this)
         itemAnimator = null
 
@@ -165,11 +175,7 @@ class ReviewParentContentViewHolder(
         ivAuthor.loadImageCircle(url = author.avatarUrl)
         lblAuthorStats.setLabel(author.type)
         lblAuthorStats.showWithCondition(author.type.isNotBlank())
-
-        lblAuthorStats.setOnClickListener {
-            reviewInteractionListener.onReviewCredibilityClicked(author)
-        }
-        tvAuthorName.setOnClickListener {
+        root.setOnClickListener {
             reviewInteractionListener.onReviewCredibilityClicked(author)
         }
     }
@@ -303,6 +309,14 @@ class ReviewParentContentViewHolder(
         setCurrentIndicator(mediaSelectedPosition)
     }
 
+    override fun onImpressedImage() {
+        reviewMediaListener.onImpressedImage()
+    }
+
+    override fun onImpressedVideo() {
+        reviewMediaListener.onImpressedVideo()
+    }
+
     private fun getContentCurrentPosition(): Int {
         val snappedView = snapHelperMedia.findSnapView(layoutManagerMedia)
             ?: return RecyclerView.NO_POSITION
@@ -314,10 +328,12 @@ class ReviewParentContentViewHolder(
     }
 
     override fun pauseVideo(id: String) {
+        reviewInteractionListener.onPauseResumeVideo()
         videoPlayerManager.pause(id)
     }
 
     override fun resumeVideo(id: String) {
+        reviewInteractionListener.onPauseResumeVideo()
         videoPlayerManager.resume(id)
     }
 
@@ -345,15 +361,17 @@ class ReviewParentContentViewHolder(
         fun create(
             parent: ViewGroup,
             reviewInteractionListener: ReviewInteractionListener,
-            mediasViewPool: RecyclerView.RecycledViewPool
-        ) = ReviewParentContentViewHolder(
-            binding = ItemReviewParentContentBinding.inflate(
+            reviewMediaListener: ReviewMediaListener,
+            mediaViewPool: RecyclerView.RecycledViewPool
+        ) = ReviewContentViewHolder(
+            binding = ItemReviewContentBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             ),
             reviewInteractionListener = reviewInteractionListener,
-            mediasViewPool = mediasViewPool
+            reviewMediaListener = reviewMediaListener,
+            mediaViewPool = mediaViewPool
         )
     }
 }

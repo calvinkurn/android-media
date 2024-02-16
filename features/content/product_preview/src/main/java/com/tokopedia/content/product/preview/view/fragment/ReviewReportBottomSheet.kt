@@ -23,9 +23,10 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
     ): View? {
         val composeView = ComposeView(requireContext()).apply {
             setContent {
-                ReportScreen(reports = listOfReport, onSubmit = {
-                    mListener?.onReasonClicked(it)
-                })
+                ReportScreen(
+                    reports = listOfReport,
+                    onSubmit = { mListener?.onSubmitOption(it) }
+                )
             }
         }
         setChild(composeView)
@@ -53,7 +54,7 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onReasonClicked(report: ReviewReportUiModel)
+        fun onSubmitOption(report: ReviewReportUiModel)
     }
 
     private val listOfReport: List<ReviewReportUiModel>

@@ -1,19 +1,19 @@
-package com.tokopedia.content.product.preview.view.viewholder.review
+package com.tokopedia.content.product.preview.view.viewholder.product
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.databinding.ItemImageProductPreviewBinding
 import com.tokopedia.content.product.preview.view.components.items.ItemImageProductPreview
 import com.tokopedia.content.product.preview.view.listener.MediaImageListener
-import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 
-class ReviewMediaImageViewHolder(
+class ProductMediaImageViewHolder(
     private val binding: ItemImageProductPreviewBinding,
     private val mediaImageLister: MediaImageListener
-) : ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     init {
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -29,7 +29,7 @@ class ReviewMediaImageViewHolder(
         )
     }
 
-    fun bind(content: ReviewMediaUiModel) {
+    fun bind(content: ProductMediaUiModel) {
         binding.cvProductPreviewMediaImage.apply {
             setContent {
                 ItemImageProductPreview(imageUrl = content.url)
@@ -41,7 +41,7 @@ class ReviewMediaImageViewHolder(
         fun create(
             parent: ViewGroup,
             mediaImageLister: MediaImageListener
-        ) = ReviewMediaImageViewHolder(
+        ) = ProductMediaImageViewHolder(
             binding = ItemImageProductPreviewBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,

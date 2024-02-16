@@ -33,7 +33,8 @@ data class ReviewContentUiModel(
 data class ReviewMediaUiModel(
     val mediaId: String = "",
     val type: MediaType = MediaType.Unknown,
-    val url: String = ""
+    val url: String = "",
+    val selected: Boolean = false
 )
 
 data class ReviewLikeUiState(

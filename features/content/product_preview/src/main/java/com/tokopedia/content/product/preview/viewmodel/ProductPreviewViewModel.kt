@@ -26,9 +26,11 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Navigate
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewMediaSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.TabSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ToggleReviewWatchMode
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent.UnknownSourceData
@@ -86,7 +88,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
 
     private val _tabContentState = MutableStateFlow(ProductPreviewTabUiModel.Empty)
-    private val _productContentState = MutableStateFlow(ProductUiModel.Empty)
+    private val _productMediaState = MutableStateFlow(ProductUiModel.Empty)
     private val _reviewContentState = MutableStateFlow(ReviewUiModel.Empty)
     private val _bottomNavContentState = MutableStateFlow(BottomNavUiModel.Empty)
     private val _reviewPosition = MutableStateFlow(0)
@@ -97,13 +99,13 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val uiState: Flow<ProductReviewUiState>
         get() = combine(
             _tabContentState,
-            _productContentState,
+            _productMediaState,
             _reviewContentState,
             _bottomNavContentState
-        ) { tabContentState, productContent, reviewContent, bottomNavContent ->
+        ) { tabContentState, productMedia, reviewContent, bottomNavContent ->
             ProductReviewUiState(
                 tabsUiModel = tabContentState,
-                productUiModel = productContent,
+                productUiModel = productMedia,
                 reviewUiModel = reviewContent,
                 bottomNavUiModel = bottomNavContent
             )
@@ -129,8 +131,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
             LikeFromResult -> handleLikeFromResult()
             FetchReviewByIds -> handleFetchReviewByIds()
             ToggleReviewWatchMode -> handleReviewWatchMode()
-            is ProductSelected -> handleProductSelected(action.position)
-            is ReviewSelected -> handleReviewSelected(action.position)
+            is ProductMediaSelected -> handleProductMediaSelected(action.position)
+            is ReviewContentSelected -> handleReviewContentSelected(action.position)
+            is ReviewMediaSelected -> handleReviewMediaSelected(action.position)
+            is TabSelected -> handleTabSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
             is ProductAction -> addToChart(action.model)
             is Navigate -> handleNavigate(action.appLink)
@@ -156,7 +160,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun updateProductMainDataSource(source: ProductSourceData) {
-        _productContentState.update { it.copy(productList = source.productSourceList) }
+        _productMediaState.update { it.copy(productMedia = source.productSourceList) }
     }
 
     private fun updateTabProductSource(source: ProductSourceData) {
@@ -191,20 +195,59 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }) { _uiEvent.emit(UnknownSourceData) }
     }
 
-    private fun handleProductSelected(position: Int) {
-        _productContentState.update { productUiModel ->
+    private fun handleProductMediaSelected(position: Int) {
+        val currentPos = _productMediaState.value.productMedia.indexOfFirst { it.selected }
+        if (currentPos < 0 || currentPos == position) return
+
+        _productMediaState.update { productUiModel ->
             productUiModel.copy(
-                productList = productUiModel.productList.mapIndexed { index, content ->
-                    content.copy(selected = index == position)
+                productMedia = productUiModel.productMedia.mapIndexed { index, media ->
+                    media.copy(selected = index == position)
                 }
             )
         }
+
+        emitTrackAllHorizontalScrollEvent()
     }
 
-    private fun handleReviewSelected(position: Int) {
+    private fun handleReviewContentSelected(position: Int) {
         if (_reviewPosition.value == position) return
+        if (_reviewPosition.value < position) emitTrackReviewNextVerticalScrollEvent()
+
         _reviewPosition.value = position
         updateReviewToUnWatchMode()
+    }
+
+    private fun handleReviewMediaSelected(position: Int) {
+        val currentPos = currentReview.medias.indexOfFirst { it.selected }
+        if (currentPos < 0 || currentPos == position) return
+
+        _reviewContentState.update { reviewUiModel ->
+            reviewUiModel.copy(
+                reviewContent = reviewUiModel.reviewContent.mapIndexed { indexContent, reviewContent ->
+                    if (indexContent == _reviewPosition.value) {
+                        reviewContent.copy(
+                            medias = reviewContent.medias.mapIndexed { indexMedia, reviewMedia ->
+                                reviewMedia.copy(selected = indexMedia == position)
+                            },
+                            mediaSelectedPosition = if (indexContent == position) {
+                                indexContent
+                            } else {
+                                reviewContent.mediaSelectedPosition
+                            }
+                        )
+                    } else {
+                        reviewContent
+                    }
+                }
+            )
+        }
+
+        emitTrackAllHorizontalScrollEvent()
+    }
+
+    private fun handleTabSelected(position: Int) {
+        emitTrackAllHorizontalScrollEvent()
     }
 
     private fun handleFetchReviewByIds() {
@@ -268,6 +311,18 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     }
                 )
             }
+        }
+    }
+
+    private fun emitTrackAllHorizontalScrollEvent() {
+        viewModelScope.launch {
+            _uiEvent.emit(ProductPreviewEvent.TrackAllHorizontalScroll)
+        }
+    }
+
+    private fun emitTrackReviewNextVerticalScrollEvent() {
+        viewModelScope.launch {
+            _uiEvent.emit(ProductPreviewEvent.TrackReviewNextVerticalScroll)
         }
     }
 

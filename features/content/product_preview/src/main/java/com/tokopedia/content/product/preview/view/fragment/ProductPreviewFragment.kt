@@ -1,6 +1,7 @@
 package com.tokopedia.content.product.preview.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,18 +17,21 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.doOnApplyWindowInsets
 import com.tokopedia.content.common.util.requestApplyInsetsWhenAttached
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.preview.analytics.ProductPreviewAnalytics
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_SOURCE
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel.ButtonState.OOS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
@@ -52,7 +56,8 @@ import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 class ProductPreviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
-    private val router: Router
+    private val router: Router,
+    private val analyticsFactory: ProductPreviewAnalytics.Factory
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
@@ -72,6 +77,10 @@ class ProductPreviewFragment @Inject constructor(
     private var _binding: FragmentProductPreviewBinding? = null
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
+
+    private val analytics: ProductPreviewAnalytics by lazyThreadSafetyNone {
+        analyticsFactory.create(viewModel.productPreviewSource.productId)
+    }
 
     private val pagerListener: ViewPager2.OnPageChangeCallback by lazyThreadSafetyNone {
         pageListenerObject()
@@ -149,6 +158,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun onClickHandler() = with(binding) {
         layoutProductPreviewTab.icBack.setOnClickListener {
+            analytics.onClickBackButton()
             activity?.finish()
         }
         layoutProductPreviewTab.tvProductTabTitle.setOnClickListener {
@@ -163,6 +173,14 @@ class ProductPreviewFragment @Inject constructor(
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             updateSelectedTabView(position)
+        }
+
+        override fun onPageScrollStateChanged(state: Int) {
+            super.onPageScrollStateChanged(state)
+            if (state != SCROLL_STATE_IDLE) return
+
+            val position = binding.vpProductPreview.currentItem
+            viewModel.onAction(ProductPreviewAction.TabSelected(position))
         }
     }
 
@@ -238,6 +256,9 @@ class ProductPreviewFragment @Inject constructor(
                         binding.viewFooter.gone()
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
+                    is ProductPreviewEvent.TrackAllHorizontalScroll -> {
+                        analytics.onSwipeContentAndTab()
+                    }
                     else -> return@collect
                 }
             }
@@ -257,6 +278,9 @@ class ProductPreviewFragment @Inject constructor(
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
         if (prev == model) return
 
+        analytics.onImpressATC()
+        if (model.buttonState == OOS) analytics.onImpressRemindMe()
+
         binding.viewFooter.apply {
             show()
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -268,14 +292,31 @@ class ProductPreviewFragment @Inject constructor(
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) return
+        when (resultCode) {
+            AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
+                AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+                    if (this.mapOfSelectedVariantOption.isNullOrEmpty()) return@onActivityResultAtcVariant
+                    analytics.onClickVariantGBVS()
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     private fun handleAtc(model: BottomNavUiModel) {
+        analytics.onClickATC(model)
+        if (model.buttonState == OOS) analytics.onClickRemindMe()
         if (model.hasVariant) {
             AtcVariantHelper.goToAtcVariant(
                 context = requireContext(),
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
                 shopId = model.shop.id,
                 productId = viewModel.productPreviewSource.productId,
-                startActivitResult = { intent, _ -> startActivity(intent) }
+                startActivitResult = { intent, resultCode ->
+                    startActivityForResult(intent, resultCode)
+                }
             )
         } else {
             viewModel.onAction(ProductPreviewAction.ProductAction(model))
