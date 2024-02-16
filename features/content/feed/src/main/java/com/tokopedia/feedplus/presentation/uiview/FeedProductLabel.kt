@@ -60,7 +60,7 @@ fun FeedProductLabel(
     }
 
     AnimatedVisibility(visible = isVisible) {
-        NestTheme {
+        NestTheme(darkTheme = false) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,

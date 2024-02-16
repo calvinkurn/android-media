@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -35,6 +36,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import kotlinx.coroutines.delay
 import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.feedplus.R
 
 /**
  * @author by astidhiyaa on 22/01/24
@@ -47,7 +49,7 @@ fun FeedProductHighlight(
     onAtcClick: (FeedCardProductModel) -> Unit,
     onProductClick: (FeedCardProductModel) -> Unit,
 ) {
-    NestTheme {
+    NestTheme(darkTheme = false) {
         AnimatedVisibility(
             visible = isVisible,
             enter = slideInVertically(),
@@ -103,7 +105,7 @@ fun FeedProductHighlight(
 
                 //Button ATC
                 NestButton(
-                    text = "+",
+                    text = stringResource(id = R.string.feed_product_highlight_atc),
                     variant = ButtonVariant.FILLED,
                     size = ButtonSize.SMALL,
                     trailingIcon = unifycomponentsR.drawable.iconunify_cart,
