@@ -1,25 +1,26 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.checkoutpayment.data.AdditionalInfoData
+import com.tokopedia.checkoutpayment.data.BenefitSummaryInfoData
+import com.tokopedia.checkoutpayment.data.CartData
+import com.tokopedia.checkoutpayment.data.CartDetail
+import com.tokopedia.checkoutpayment.data.CartDetailsItem
+import com.tokopedia.checkoutpayment.data.CreditCardTenorListRequest
+import com.tokopedia.checkoutpayment.data.PaymentData
+import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.data.PromoDetail
+import com.tokopedia.checkoutpayment.domain.CreditCardTenorListData
+import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
-import com.tokopedia.oneclickcheckout.order.data.payment.AdditionalInfoData
-import com.tokopedia.oneclickcheckout.order.data.payment.BenefitSummaryInfoData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartDetail
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentData
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
-import com.tokopedia.oneclickcheckout.order.data.payment.PromoDetail
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.SAVE_ADD_ON_STATE_QUANTITY
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccPaymentParameter
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccRedirectParam
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
-import com.tokopedia.oneclickcheckout.order.view.model.CreditCardTenorListData
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -30,7 +31,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.oneclickcheckout.utils.TestUtil.getPrivateField
 import com.tokopedia.oneclickcheckout.utils.TestUtil.mockPrivateField
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
@@ -830,11 +830,8 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         every {
             userSessionInterface.userId
         } returns userId.toString()
-        every {
-            creditCardTenorListUseCase.generateParam(any())
-        } returns ccTenorListRequest
         coEvery {
-            creditCardTenorListUseCase.executeSuspend(any())
+            creditCardTenorListUseCase(any())
         } returns creditCardTenorListData
         coEvery {
             updateCartOccUseCase.executeSuspend(any())

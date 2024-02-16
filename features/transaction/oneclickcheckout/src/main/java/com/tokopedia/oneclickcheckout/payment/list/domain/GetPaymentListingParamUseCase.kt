@@ -1,10 +1,10 @@
 package com.tokopedia.oneclickcheckout.payment.list.domain
 
 import com.google.gson.Gson
+import com.tokopedia.checkoutpayment.data.PaymentRequest
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.payment.list.data.ListingParam
 import com.tokopedia.oneclickcheckout.payment.list.data.PaymentListingParamGqlResponse
 import com.tokopedia.oneclickcheckout.payment.list.data.PaymentListingParamRequest

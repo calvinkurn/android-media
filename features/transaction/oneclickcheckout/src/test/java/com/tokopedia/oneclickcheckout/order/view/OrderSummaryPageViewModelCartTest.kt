@@ -2,6 +2,20 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
+import com.tokopedia.checkoutpayment.data.AdditionalInfoData
+import com.tokopedia.checkoutpayment.data.BenefitSummaryInfoData
+import com.tokopedia.checkoutpayment.data.CartData
+import com.tokopedia.checkoutpayment.data.CartDetail
+import com.tokopedia.checkoutpayment.data.CartDetailsItem
+import com.tokopedia.checkoutpayment.data.CreditCardTenorListRequest
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentData
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentOption
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentTicker
+import com.tokopedia.checkoutpayment.data.PaymentData
+import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.data.PromoDetail
+import com.tokopedia.checkoutpayment.domain.CreditCardTenorListData
+import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -20,23 +34,10 @@ import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentTicker
-import com.tokopedia.oneclickcheckout.order.data.payment.AdditionalInfoData
-import com.tokopedia.oneclickcheckout.order.data.payment.BenefitSummaryInfoData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartDetail
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentData
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
-import com.tokopedia.oneclickcheckout.order.data.payment.PromoDetail
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
-import com.tokopedia.oneclickcheckout.order.view.model.CreditCardTenorListData
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
@@ -67,7 +68,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
@@ -1384,8 +1384,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         )
 
         every { userSessionInterface.userId } returns "123"
-        every { creditCardTenorListUseCase.generateParam(any()) } returns ccTenorListRequest
-        coEvery { creditCardTenorListUseCase.executeSuspend(any()) } returns creditCardTenorListData
+        coEvery { creditCardTenorListUseCase(any()) } returns creditCardTenorListData
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1451,8 +1450,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         )
 
         every { userSessionInterface.userId } returns "123"
-        every { creditCardTenorListUseCase.generateParam(any()) } returns ccTenorListRequest
-        coEvery { creditCardTenorListUseCase.executeSuspend(any()) } returns creditCardTenorListData
+        coEvery { creditCardTenorListUseCase(any()) } returns creditCardTenorListData
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1486,7 +1484,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         )
 
         every { userSessionInterface.userId } returns "123"
-        coEvery { creditCardTenorListUseCase.executeSuspend(any()) } throws Exception()
+        coEvery { creditCardTenorListUseCase(any()) } throws Exception()
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1546,8 +1544,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         )
 
         every { userSessionInterface.userId } returns "123"
-        every { creditCardTenorListUseCase.generateParam(any()) } returns ccTenorListRequest
-        coEvery { creditCardTenorListUseCase.executeSuspend(any()) } returns creditCardTenorListData
+        coEvery { creditCardTenorListUseCase(any()) } returns creditCardTenorListData
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1599,7 +1596,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             isActive = true,
             installmentTerm = 4
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
+        coEvery { goCicilInstallmentOptionUseCase(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1672,7 +1669,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             isActive = true,
             installmentTerm = 4
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
+        coEvery { goCicilInstallmentOptionUseCase(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1746,7 +1743,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4
         )
         val tickerMessage = "tickerMessage"
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(ticker = GoCicilInstallmentTicker(tickerMessage), installmentOptions = listOf(option1, option2, option3))
+        coEvery { goCicilInstallmentOptionUseCase(any()) } returns GoCicilInstallmentData(ticker = GoCicilInstallmentTicker(tickerMessage), installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1823,7 +1820,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4,
             isRecommended = true
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
+        coEvery { goCicilInstallmentOptionUseCase(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1899,7 +1896,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4,
             isRecommended = false
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
+        coEvery { goCicilInstallmentOptionUseCase(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1975,7 +1972,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4,
             isRecommended = false
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
+        coEvery { goCicilInstallmentOptionUseCase(any()) } returns GoCicilInstallmentData(installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2036,7 +2033,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             )
         )
 
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } throws IOException()
+        coEvery { goCicilInstallmentOptionUseCase(any()) } throws IOException()
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2091,7 +2088,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify(inverse = true) {
-            goCicilInstallmentOptionUseCase.executeSuspend(any())
+            goCicilInstallmentOptionUseCase(any())
         }
     }
 
@@ -2117,7 +2114,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify(inverse = true) {
-            goCicilInstallmentOptionUseCase.executeSuspend(any())
+            goCicilInstallmentOptionUseCase(any())
         }
     }
 
@@ -2143,7 +2140,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify(inverse = true) {
-            goCicilInstallmentOptionUseCase.executeSuspend(any())
+            goCicilInstallmentOptionUseCase(any())
         }
     }
 
@@ -2180,7 +2177,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coVerify(ordering = Ordering.ORDERED) {
             updateCartOccUseCase.executeSuspend(any())
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
-            goCicilInstallmentOptionUseCase.executeSuspend(any())
+            goCicilInstallmentOptionUseCase(any())
         }
     }
 
@@ -2206,7 +2203,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify {
-            goCicilInstallmentOptionUseCase.executeSuspend(any())
+            goCicilInstallmentOptionUseCase(any())
             updateCartOccUseCase.executeSuspend(any())
         }
     }
@@ -2233,7 +2230,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify {
-            goCicilInstallmentOptionUseCase.executeSuspend(any())
+            goCicilInstallmentOptionUseCase(any())
         }
         coVerify(inverse = true) {
             updateCartOccUseCase.executeSuspend(any())

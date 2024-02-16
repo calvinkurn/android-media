@@ -1,35 +1,23 @@
-package com.tokopedia.oneclickcheckout.order.domain
+package com.tokopedia.checkoutpayment.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentData
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentGqlResponse
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
+import com.tokopedia.checkoutpayment.generateAppVersionForPayment
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.oneclickcheckout.common.utils.generateAppVersionForPayment
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentGqlResponse
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import javax.inject.Inject
 
 class GoCicilInstallmentOptionUseCase @Inject constructor(
-    @ApplicationContext private val graphqlRepository: GraphqlRepository
-) {
-
-    @GqlQuery(GoCicilInstallmentOptionQuery, QUERY)
-    suspend fun executeSuspend(param: GoCicilInstallmentRequest): GoCicilInstallmentData {
-        val request = GraphqlRequest(
-            GoCicilInstallmentOptionQuery(),
-            GoCicilInstallmentGqlResponse::class.java,
-            generateParam(param)
-        )
-        val response = graphqlRepository.response(listOf(request))
-            .getSuccessData<GoCicilInstallmentGqlResponse>()
-        if (!response.response.success) {
-            throw MessageErrorException()
-        }
-        return response.response.data
-    }
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+): CoroutineUseCase<GoCicilInstallmentRequest, GoCicilInstallmentData>(dispatchers.io) {
 
     private fun generateParam(param: GoCicilInstallmentRequest): Map<String, Any?> {
         return mapOf(
@@ -88,5 +76,24 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(
                 }
             }
         """
+    }
+
+    override fun graphqlQuery(): String {
+        return QUERY
+    }
+
+    @GqlQuery(GoCicilInstallmentOptionQuery, QUERY)
+    override suspend fun execute(params: GoCicilInstallmentRequest): GoCicilInstallmentData {
+        val request = GraphqlRequest(
+            GoCicilInstallmentOptionQuery(),
+            GoCicilInstallmentGqlResponse::class.java,
+            generateParam(params)
+        )
+        val response = graphqlRepository.response(listOf(request))
+            .getSuccessData<GoCicilInstallmentGqlResponse>()
+        if (!response.response.success) {
+            throw MessageErrorException()
+        }
+        return response.response.data
     }
 }

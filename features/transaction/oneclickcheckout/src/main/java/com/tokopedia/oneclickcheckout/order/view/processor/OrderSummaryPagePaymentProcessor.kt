@@ -2,41 +2,43 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import android.annotation.SuppressLint
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkoutpayment.data.AdditionalInfoData
+import com.tokopedia.checkoutpayment.data.BenefitSummaryInfoData
+import com.tokopedia.checkoutpayment.data.CartAddOnData
+import com.tokopedia.checkoutpayment.data.CartAddressData
+import com.tokopedia.checkoutpayment.data.CartData
+import com.tokopedia.checkoutpayment.data.CartDetail
+import com.tokopedia.checkoutpayment.data.CartDetailData
+import com.tokopedia.checkoutpayment.data.CartDetailsItem
+import com.tokopedia.checkoutpayment.data.CartGroupData
+import com.tokopedia.checkoutpayment.data.CartProductCategoryData
+import com.tokopedia.checkoutpayment.data.CartProductData
+import com.tokopedia.checkoutpayment.data.CartShippingInfoData
+import com.tokopedia.checkoutpayment.data.CartShopOrderData
+import com.tokopedia.checkoutpayment.data.CreditCardTenorListRequest
+import com.tokopedia.checkoutpayment.data.DetailsItemData
+import com.tokopedia.checkoutpayment.data.GoCicilAddressRequest
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentOption
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
+import com.tokopedia.checkoutpayment.data.GoCicilProductRequest
+import com.tokopedia.checkoutpayment.data.PaymentData
+import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
+import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.data.PromoDetail
+import com.tokopedia.checkoutpayment.data.SummariesItemData
+import com.tokopedia.checkoutpayment.data.UsageSummariesData
+import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
+import com.tokopedia.checkoutpayment.domain.CreditCardTenorListUseCase
+import com.tokopedia.checkoutpayment.domain.DynamicPaymentFeeUseCase
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOptionUseCase
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.common.PAYMENT_CC_TYPE_TENOR_FULL
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
-import com.tokopedia.oneclickcheckout.order.data.payment.AdditionalInfoData
-import com.tokopedia.oneclickcheckout.order.data.payment.BenefitSummaryInfoData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartAddOnData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartAddressData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartDetail
-import com.tokopedia.oneclickcheckout.order.data.payment.CartDetailData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartGroupData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartProductCategoryData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartProductData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartShippingInfoData
-import com.tokopedia.oneclickcheckout.order.data.payment.CartShopOrderData
-import com.tokopedia.oneclickcheckout.order.data.payment.DetailsItemData
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentData
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentFeeRequest
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
-import com.tokopedia.oneclickcheckout.order.data.payment.PromoDetail
-import com.tokopedia.oneclickcheckout.order.data.payment.SummariesItemData
-import com.tokopedia.oneclickcheckout.order.data.payment.UsageSummariesData
-import com.tokopedia.oneclickcheckout.order.data.payment.VoucherOrderItemData
-import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
-import com.tokopedia.oneclickcheckout.order.domain.DynamicPaymentFeeUseCase
-import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
@@ -44,7 +46,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -69,7 +70,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val creditCardData = creditCardTenorListUseCase.executeSuspend(
+                val creditCardData = creditCardTenorListUseCase(
                     generateCreditCardTenorListRequest(
                         orderPayment,
                         userId,
@@ -121,7 +122,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         )
     }
 
-    private fun mapAfpbToInstallmentTerm(tenor: TenorListData): OrderPaymentInstallmentTerm {
+    private fun mapAfpbToInstallmentTerm(tenor: com.tokopedia.checkoutpayment.domain.TenorListData): OrderPaymentInstallmentTerm {
         var intTerm = 0
         if (tenor.type != PAYMENT_CC_TYPE_TENOR_FULL) intTerm = tenor.type.toIntOrZero()
         return OrderPaymentInstallmentTerm(
@@ -147,12 +148,27 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             gatewayCode = orderPayment.gatewayCode,
             merchantCode = orderPayment.creditCard.additionalData.merchantCode,
             profileCode = orderPayment.creditCard.additionalData.profileCode,
-            userId = userId,
+            userId = userId.toLongOrZero(),
             paymentAmount = orderCost.totalPriceWithoutPaymentFees,
             merchantType = orderCart.shop.merchantType,
-            address = orderProfile.address,
-            shop = orderCart.shop,
-            products = orderCart.products,
+            address = GoCicilAddressRequest(
+                orderProfile.address.addressStreet,
+                orderProfile.address.provinceName,
+                orderProfile.address.cityName,
+                orderProfile.address.country,
+                orderProfile.address.postalCode
+            ),
+            shopId = orderCart.shop.shopId,
+            products = orderCart.products.map {
+                GoCicilProductRequest(
+                    it.productId,
+                    it.productPrice,
+                    it.orderQuantity,
+                    it.categoryId.toLongOrZero(),
+                    it.lastLevelCategory,
+                    it.categoryIdentifier
+                )
+            },
             promoCodes = promoCodes,
             additionalData = orderPayment.additionalData,
             detailData = paymentRequest
@@ -166,7 +182,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val response = goCicilInstallmentOptionUseCase.executeSuspend(
+                val response = goCicilInstallmentOptionUseCase(
                     request
                 )
                 val installmentList = mapInstallmentOptions(

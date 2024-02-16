@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.order.data.payment
+package com.tokopedia.checkoutpayment.data
 
 class PaymentFeeRequest(
     val profileCode: String = "",

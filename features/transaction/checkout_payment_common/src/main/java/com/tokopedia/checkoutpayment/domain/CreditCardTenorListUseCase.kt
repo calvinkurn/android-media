@@ -1,29 +1,23 @@
-package com.tokopedia.oneclickcheckout.order.domain
+package com.tokopedia.checkoutpayment.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkoutpayment.data.CreditCardTenorList
+import com.tokopedia.checkoutpayment.data.CreditCardTenorListRequest
+import com.tokopedia.checkoutpayment.data.CreditCardTenorListResponse
+import com.tokopedia.checkoutpayment.data.TenorListItem
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorList
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListResponse
-import com.tokopedia.oneclickcheckout.order.data.creditcard.TenorListItem
-import com.tokopedia.oneclickcheckout.order.view.model.CreditCardTenorListData
-import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 05/08/21.
- */
-class CreditCardTenorListUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) {
+class CreditCardTenorListUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<CreditCardTenorListRequest, CreditCardTenorListData>(dispatchers.io) {
 
-    suspend fun executeSuspend(param: CreditCardTenorListRequest): CreditCardTenorListData {
-        val request = GraphqlRequest(QUERY, CreditCardTenorListResponse::class.java, generateParam(param))
-        val response = graphqlRepository.response(listOf(request)).getSuccessData<CreditCardTenorListResponse>()
-        return mapCreditCardTenorListData(response.ccTenorList)
-    }
-
-    fun generateParam(input: CreditCardTenorListRequest): Map<String, Any?> {
+    private fun generateParam(input: CreditCardTenorListRequest): Map<String, Any?> {
         return mapOf(INPUT to input)
     }
 
@@ -76,5 +70,17 @@ class CreditCardTenorListUseCase @Inject constructor(@ApplicationContext private
                 }
             }
         """.trimIndent()
+    }
+
+    override fun graphqlQuery(): String {
+        return QUERY
+    }
+
+    override suspend fun execute(params: CreditCardTenorListRequest): CreditCardTenorListData {
+        val request =
+            GraphqlRequest(QUERY, CreditCardTenorListResponse::class.java, generateParam(params))
+        val response = graphqlRepository.response(listOf(request))
+            .getSuccessData<CreditCardTenorListResponse>()
+        return mapCreditCardTenorListData(response.ccTenorList)
     }
 }

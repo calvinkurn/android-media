@@ -1,10 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentData
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentOption
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -19,7 +20,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardsNu
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessage
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessageButton
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
@@ -3829,7 +3829,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        coVerify(inverse = true) { creditCardTenorListUseCase.executeSuspend(any()) }
+        coVerify(inverse = true) { creditCardTenorListUseCase(any()) }
         assertEquals(
             OrderTotal(
                 OrderCost(),
@@ -3889,7 +3889,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        coVerify(inverse = true) { goCicilInstallmentOptionUseCase.executeSuspend(any()) }
+        coVerify(inverse = true) { goCicilInstallmentOptionUseCase(any()) }
         assertEquals(
             OrderTotal(
                 OrderCost(),
@@ -3950,7 +3950,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             isActive = true,
             installmentTerm = 4
         )
-        coEvery { goCicilInstallmentOptionUseCase.executeSuspend(any()) } returns GoCicilInstallmentData(
+        coEvery { goCicilInstallmentOptionUseCase(any()) } returns GoCicilInstallmentData(
             installmentOptions = listOf(
                 option1,
                 option2,

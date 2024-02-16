@@ -1,30 +1,42 @@
-package com.tokopedia.oneclickcheckout.order.data.gocicil
+package com.tokopedia.checkoutpayment.data
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+
+data class GoCicilAddressRequest(
+    val addressStreet: String = "",
+    val provinceName: String = "",
+    val cityName: String = "",
+    val country: String = "",
+    val postalCode: String = ""
+)
+
+data class GoCicilProductRequest(
+    var productId: String = "",
+    var productPrice: Double = 0.0,
+    var orderQuantity: Int = 0,
+    var categoryId: Long = 0,
+    var lastLevelCategory: String = "",
+    var categoryIdentifier: String = ""
+)
 
 data class GoCicilInstallmentRequest(
     val gatewayCode: String = "",
     val merchantCode: String = "",
     val profileCode: String = "",
-    val userId: String = "",
+    val userId: Long = 0,
     val paymentAmount: Double = 0.0,
     val merchantType: String = "",
-    val address: OrderProfileAddress = OrderProfileAddress(),
-    val shop: OrderShop = OrderShop(),
-    val products: MutableList<OrderProduct> = ArrayList(),
+    val address: GoCicilAddressRequest = GoCicilAddressRequest(),
+    val shopId: String = "",
+    val products: List<GoCicilProductRequest> = emptyList(),
     val promoCodes: List<String> = emptyList(),
     val additionalData: String = "",
     val detailData: PaymentRequest
 ) {
     val userDefinedValue
         get() = JsonObject().apply {
-            addProperty(USER_DEFINED_VALUE_KEY_USER_ID, userId.toLongOrZero())
+            addProperty(USER_DEFINED_VALUE_KEY_USER_ID, userId)
         }.toString()
 
     private val destinationAddress
@@ -38,7 +50,7 @@ data class GoCicilInstallmentRequest(
 
     private val sellerData
         get() = JsonObject().apply {
-            addProperty(ORDER_METADATA_SELLER_DATA_ID, shop.shopId)
+            addProperty(ORDER_METADATA_SELLER_DATA_ID, shopId)
         }
 
     private val productData
@@ -52,7 +64,7 @@ data class GoCicilInstallmentRequest(
                         add(
                             ORDER_METADATA_PRODUCT_DATA_CATEGORY,
                             JsonObject().apply {
-                                addProperty(ORDER_METADATA_PRODUCT_CATEGORY_ID, product.categoryId.toLongOrZero())
+                                addProperty(ORDER_METADATA_PRODUCT_CATEGORY_ID, product.categoryId)
                                 addProperty(ORDER_METADATA_PRODUCT_CATEGORY_NAME, product.lastLevelCategory)
                                 addProperty(ORDER_METADATA_PRODUCT_CATEGORY_IDENTIFIER, product.categoryIdentifier)
                             }

@@ -1,4 +1,4 @@
-package com.tokopedia.checkoutpayment
+package com.tokopedia.checkoutpayment.view
 
 data class CheckoutPaymentWidgetData(
     val state: CheckoutPaymentWidgetState = CheckoutPaymentWidgetState.None

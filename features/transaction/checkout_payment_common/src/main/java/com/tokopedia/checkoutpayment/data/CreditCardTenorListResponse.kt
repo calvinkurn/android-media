@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.order.data.creditcard
+package com.tokopedia.checkoutpayment.data
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,8 +1,7 @@
-package com.tokopedia.oneclickcheckout.order.data.creditcard
+package com.tokopedia.checkoutpayment.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 
 data class CreditCardTenorListRequest(
 

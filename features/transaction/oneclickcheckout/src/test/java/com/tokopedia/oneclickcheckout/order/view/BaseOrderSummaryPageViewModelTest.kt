@@ -3,6 +3,9 @@ package com.tokopedia.oneclickcheckout.order.view
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
+import com.tokopedia.checkoutpayment.domain.CreditCardTenorListUseCase
+import com.tokopedia.checkoutpayment.domain.DynamicPaymentFeeUseCase
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
@@ -11,10 +14,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
-import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
-import com.tokopedia.oneclickcheckout.order.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
-import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor

@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.order.data.payment
+package com.tokopedia.checkoutpayment.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName

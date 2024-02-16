@@ -1,15 +1,15 @@
-package com.tokopedia.oneclickcheckout.order.domain
+package com.tokopedia.checkoutpayment.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkoutpayment.data.PaymentFeeGqlResponse
+import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentFeeGqlResponse
-import com.tokopedia.oneclickcheckout.order.data.payment.PaymentFeeRequest
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import javax.inject.Inject
 
 class DynamicPaymentFeeUseCase @Inject constructor(

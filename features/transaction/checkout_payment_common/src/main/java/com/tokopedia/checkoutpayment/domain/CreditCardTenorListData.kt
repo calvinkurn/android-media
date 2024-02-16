@@ -1,8 +1,5 @@
-package com.tokopedia.oneclickcheckout.order.view.model
+package com.tokopedia.checkoutpayment.domain
 
-/**
- * Created by fwidjaja on 06/08/21.
- */
 data class CreditCardTenorListData(
     val processTime: String = "",
     val errorCode: String = "",
