@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -29,6 +30,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.carouselproductcard.R as carouselproductcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -165,7 +167,8 @@ class ShopHomeCarousellProductViewHolder(
                 productRating = if (it.rating != 0.0) it.rating.toString() else "",
                 forceLightModeColor = shopHomeListener.isOverrideTheme(),
                 patternColorType = shopHomeListener.getPatternColorType(),
-                backgroundColor = shopHomeListener.getBackgroundColor()
+                backgroundColor = shopHomeListener.getBackgroundColor(),
+                isDeviceOnDarkModeTheme = recyclerView?.context?.isDarkMode().orFalse()
             )
         }
         if (isProductCardSingleOrDouble(shopHomeProductViewModelList)) {

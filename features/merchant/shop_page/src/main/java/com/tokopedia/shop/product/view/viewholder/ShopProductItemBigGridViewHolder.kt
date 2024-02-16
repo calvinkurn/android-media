@@ -17,6 +17,7 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.fragment.ShopProductTabInterface
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopProductItemBigGridViewHolder(
@@ -53,7 +54,8 @@ class ShopProductItemBigGridViewHolder(
             isShowThreeDots = isShowTripleDot,
             isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
             patternType = productTabInterface?.getPatternColorType().orEmpty(),
-            backgroundColor = productTabInterface?.getBackgroundColor().orEmpty()
+            backgroundColor = productTabInterface?.getBackgroundColor().orEmpty(),
+            isDeviceOnDarkModeTheme = productCard?.context?.isDarkMode().orFalse()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         ).disableDirectPurchaseCapability()

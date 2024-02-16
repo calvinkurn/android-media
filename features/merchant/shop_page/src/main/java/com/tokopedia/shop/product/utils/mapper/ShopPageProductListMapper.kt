@@ -221,7 +221,8 @@ object ShopPageProductListMapper {
         isShowThreeDots: Boolean = true,
         isForceLightMode: Boolean = false,
         patternType: String = "",
-        backgroundColor: String = ""
+        backgroundColor: String = "",
+        isDeviceOnDarkModeTheme: Boolean = false
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -262,7 +263,12 @@ object ShopPageProductListMapper {
                     title = it.title
                 )
             },
-            colorMode = productCardColorHelper.determineProductCardColorMode(isForceLightMode, patternType, backgroundColor)
+            colorMode = productCardColorHelper.determineProductCardColorMode(
+                isDeviceOnDarkModeTheme = isDeviceOnDarkModeTheme,
+                shouldOverrideTheme = isForceLightMode,
+                patternColorType = patternType,
+                backgroundColor = backgroundColor
+            )
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
             val productCardModel = if (shopProductUiModel.isVariant) {
