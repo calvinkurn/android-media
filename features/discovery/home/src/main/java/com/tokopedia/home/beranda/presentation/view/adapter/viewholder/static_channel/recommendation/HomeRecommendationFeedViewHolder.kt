@@ -20,7 +20,7 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.kotlin.extensions.view.onTabReselected
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
-import java.util.*
+import com.tokopedia.remoteconfig.RemoteConfig
 
 /**
  * Created by henrypriyono on 22/03/18.
@@ -28,6 +28,7 @@ import java.util.*
 
 class HomeRecommendationFeedViewHolder(
     view: View,
+    private val remoteConfig: RemoteConfig,
     private val listener: HomeCategoryListener,
     private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<HomeRecommendationFeedDataModel>(view), HomeTabFeedListener {
@@ -77,7 +78,7 @@ class HomeRecommendationFeedViewHolder(
             listener.childsFragmentManager,
             recommendationTabDataModelList,
             listener.parentPool,
-            itemView.context
+            remoteConfig
         )
 
         binding.viewPagerHomeFeeds.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT

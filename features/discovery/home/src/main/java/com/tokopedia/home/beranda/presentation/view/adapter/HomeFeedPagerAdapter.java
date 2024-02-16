@@ -40,13 +40,13 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
                                 FragmentManager fragmentManager,
                                 List<RecommendationTabDataModel> recommendationTabDataModelList,
                                 RecyclerView.RecycledViewPool parentPool,
-                                Context context) {
+                                RemoteConfig remoteConfig) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
         this.parentPool = parentPool;
         this.homeCategoryListener = homeCategoryListener;
-        fetchRemoteConfig(context);
+        fetchRemoteConfig(remoteConfig);
         updateData(recommendationTabDataModelList);
     }
 
@@ -57,9 +57,9 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-    private void fetchRemoteConfig(Context context) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        shouldUseGlobalForYouComponent = remoteConfig.getBoolean(RemoteConfigKey.HOME_GLOBAL_COMPONENT_FALLBACK, false);
+    private void fetchRemoteConfig(RemoteConfig remoteConfig) {
+        shouldUseGlobalForYouComponent = remoteConfig
+                .getBoolean(RemoteConfigKey.HOME_GLOBAL_COMPONENT_FALLBACK, false);
     }
 
     @Override
