@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.experiments.ColorMode
 import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.LabelGroupStyle.TEXT_COLOR
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
@@ -33,6 +32,7 @@ import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.T
 import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -62,6 +62,8 @@ internal class ProductCardRenderer(
     private val offerLabel by view.lazyView<Typography?>(R.id.productCardLabelOffer)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
+    private val buttonAddToCart by view.lazyView<UnifyButton?>(R.id.productCardAddToCart)
+    private val labelBenefitView by view.lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
     private val credibilityText by view.lazyView<Typography?>(R.id.productCardLabelCredibility)
@@ -376,5 +378,14 @@ internal class ProductCardRenderer(
         discountText?.setTextColor(discountTextColor)
         credibilityText?.setTextColor(credibilityTextColor)
         ratingText?.setTextColor(ratingTextColor)
+        
+        buttonAddToCart?.applyColorMode(colorMode.buttonColorMode)
+        
+        val hasCustomCutoutFillColor = colorMode.labelBenefitViewColor.cutoutFillColor.isNotEmpty()
+        if (hasCustomCutoutFillColor) {
+            labelBenefitView?.setCutoutFillColor(colorMode.labelBenefitViewColor.cutoutFillColor)
+        } else {
+            labelBenefitView?.setCutoutFillColor(unifyprinciplesR.color.Unify_NN0)
+        }
     }
 }

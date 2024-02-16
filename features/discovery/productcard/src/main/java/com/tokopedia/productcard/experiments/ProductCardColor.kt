@@ -1,5 +1,7 @@
 package com.tokopedia.productcard.experiments
 
+import com.tokopedia.unifyprinciples.ColorMode
+
 interface ProductCardColor {
     val cardBackgroundColor: Int
     val productNameTextColor: Int
@@ -8,4 +10,8 @@ interface ProductCardColor {
     val soldCountTextColor: Int
     val discountTextColor: Int
     val ratingTextColor: Int
+    val buttonColorMode: ColorMode
+    val labelBenefitViewColor: LabelBenefitViewColor
+    
+    data class LabelBenefitViewColor(val cutoutFillColor: String)
 }
