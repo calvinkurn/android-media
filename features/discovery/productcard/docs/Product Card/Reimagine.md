@@ -129,7 +129,7 @@ Similar as before, you can use function `setProductModel` to set the Product Car
 
 ###Color Mode
 What is `colorMode` property on ProductCardModel.kt? 
-A property to determine the appearance of product card content color regardless of the selected device theme
+A property to override the appearance of product card content color regardless of the selected device theme
 
 How to use Color Mode?
 Implement ProductCardColor interface on your module and implement its properties to suit product card color according to your page color design then pass the instance to `colorMode` property of ProductCardModel.kt
