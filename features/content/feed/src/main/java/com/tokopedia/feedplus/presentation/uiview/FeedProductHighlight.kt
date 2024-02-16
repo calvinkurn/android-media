@@ -86,11 +86,11 @@ fun FeedProductHighlight(
                         start.linkTo(image.end, 12.dp)
                         end.linkTo(btnClose.start, 4.dp)
                     })
-                //Product Original Price
-                val originalPrice =
-                    if (product.isDiscount) product.priceOriginalFmt else product.priceFmt
+                //Product Final Price
+                val finalPrice =
+                    if (product.isDiscount) product.priceDiscountFmt else product.priceFmt
                 NestTypography(
-                    text = originalPrice,
+                    text = finalPrice,
                     textStyle = NestTheme.typography.heading3.copy(
                         color = NestTheme.colors.NN._0
                     ),
@@ -132,7 +132,7 @@ fun FeedProductHighlight(
 
                 if (product.isDiscount) {
                     NestTypography(
-                        text = product.priceDiscountFmt,
+                        text = product.priceFmt,
                         textStyle = NestTheme.typography.small.copy(
                             color = NestTheme.colors.NN._0,
                             textDecoration = TextDecoration.LineThrough
