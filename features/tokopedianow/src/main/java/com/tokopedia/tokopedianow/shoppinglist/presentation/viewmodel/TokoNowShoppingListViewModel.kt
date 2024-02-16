@@ -131,6 +131,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         val productRecommendation = getProductRecommendationDeferred(
             pageNumber = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
         ).await()
+
         if (productRecommendation.recommendationItemList.isNotEmpty()) {
             mutableLayout.addDivider()
             mutableLayout.addTitle(title = productRecommendation.title)
@@ -159,50 +160,49 @@ class TokoNowShoppingListViewModel @Inject constructor(
         productRecommendationUseCase.getData(param)
     }
 
+    private fun addLoadMoreProductRecommendationSection(
+        productRecommendation: RecommendationWidget
+    ) {
+        mutableLayout.removeLoadMore()
+        mutableLayout.addRecommendedProducts(productRecommendation)
+
+        if (productRecommendation.hasNext) mutableLayout.addLoadMore()
+
+        _layout.postValue(mutableLayout)
+
+        needToLoadMoreData = needToLoadMoreData.copy(
+            isNeededToLoadMore = productRecommendation.hasNext,
+            counter = needToLoadMoreData.counter.inc()
+        )
+    }
+
+    private fun removeLoadMoreSection() {
+        mutableLayout.removeLoadMore()
+
+        _layout.postValue(mutableLayout)
+
+        needToLoadMoreData = needToLoadMoreData.copy(
+            isNeededToLoadMore = false
+        )
+    }
+
     fun loadMoreProductRecommendation(
         isLastVisibleLoadingMore: Boolean
     ) {
         when {
-            !needToLoadMoreData.isNeededToLoadMore -> {
-                _isOnScrollNotNeeded.value = Unit
-            }
+            !needToLoadMoreData.isNeededToLoadMore -> _isOnScrollNotNeeded.value = Unit
             isLastVisibleLoadingMore && job?.isCompleted.orFalse() -> {
                 job = launchCatchError(
                     block = {
+                        throw Throwable()
                         val productRecommendation = getProductRecommendationDeferred(
                             pageNumber = needToLoadMoreData.counter
                         ).await()
 
-                        needToLoadMoreData = if (productRecommendation.recommendationItemList.isNotEmpty()) {
-                            mutableLayout.removeLoadMore()
-                            mutableLayout.addRecommendedProducts(productRecommendation)
-
-                            if (productRecommendation.hasNext) {
-                                mutableLayout.addLoadMore()
-                            }
-
-                            _layout.postValue(mutableLayout)
-
-                            needToLoadMoreData.copy(
-                                isNeededToLoadMore = productRecommendation.hasNext,
-                                counter = needToLoadMoreData.counter.inc()
-                            )
-                        } else {
-                            mutableLayout.removeLoadMore()
-                            _layout.postValue(mutableLayout)
-
-                            needToLoadMoreData.copy(
-                                isNeededToLoadMore = false
-                            )
-                        }
+                        if (productRecommendation.recommendationItemList.isNotEmpty()) addLoadMoreProductRecommendationSection(productRecommendation) else removeLoadMoreSection()
                     },
                     onError = {
-                        mutableLayout.removeLoadMore()
-                        _layout.postValue(mutableLayout)
-
-                        needToLoadMoreData = needToLoadMoreData.copy(
-                            isNeededToLoadMore = false
-                        )
+                        removeLoadMoreSection()
                     }
                 )
             }
