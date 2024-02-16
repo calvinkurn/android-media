@@ -80,7 +80,7 @@
                         tools:text="Samsung Indonesia" />
 
                     <View
-                        android:id="@+id/tvPoint"
+                        android:id="@+id/vPointShopLocationAndShopName"
                         android:layout_width="4dp"
                         android:layout_height="4dp"
                         android:layout_marginStart="4dp"
@@ -118,7 +118,7 @@
                         tools:text="± 40 menit balas chat" />
 
                     <View
-                        android:id="@+id/vPointCredibility"
+                        android:id="@+id/vPointResponseCredibility"
                         android:layout_width="4dp"
                         android:layout_height="4dp"
                         android:layout_marginStart="4dp"
@@ -426,16 +426,12 @@
                     android:gravity="center_vertical"
                     >
 
-
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvEstimation"
                         android:layout_width="wrap_content"
                         android:layout_height="18dp"
-                        android:layout_marginStart="4dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/Unify_NN950_68"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="small"
                         tools:text="Tiba Hari ini"
                         tools:visibility="visible" />
