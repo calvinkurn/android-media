@@ -20,7 +20,7 @@ import dagger.Component
     modules = [
         ShopCreationModule::class,
         ShopCreationViewModelModule::class,
-        SessionModule::class
+        SessionModule::class //TODO: remove this after GetProfileUseCase migrated to coroutine usecase
     ], dependencies = [BaseAppComponent::class]
 )
 interface ShopCreationComponent {

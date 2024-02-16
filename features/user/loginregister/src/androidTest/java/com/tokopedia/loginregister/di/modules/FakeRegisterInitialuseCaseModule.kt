@@ -10,7 +10,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class MockRegisterInitialuseCaseModule {
+class FakeRegisterInitialuseCaseModule {
 
     @Provides
     fun provideGetProfileUseCaseStub(

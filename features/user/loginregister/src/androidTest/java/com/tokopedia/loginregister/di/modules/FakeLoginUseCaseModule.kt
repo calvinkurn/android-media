@@ -30,7 +30,7 @@ import dagger.Provides
  */
 
 @Module
-class LoginUseCaseModuleStub {
+class FakeLoginUseCaseModule {
 
     @ActivityScope
     @Provides
