@@ -23,6 +23,7 @@ data class FeedCardProductModel(
     val priceOriginalFmt: String = "",
     val priceDiscount: Double = 0.0,
     val priceDiscountFmt: String = "",
+    val priceFormatPriority: String = "",
     val totalSold: Int = 0,
     val isBebasOngkir: Boolean = false,
     val bebasOngkirStatus: String = "",
@@ -36,7 +37,7 @@ data class FeedCardProductModel(
     val cartable: Boolean = false,
     val isCashback: Boolean = false,
     val cashbackFmt: String = "",
-    val isAvailable: Boolean = false,
+    val isAvailable: Boolean = false
 )
 
 data class FeedCardProductAffiliate(

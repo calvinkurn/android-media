@@ -14,7 +14,7 @@ data class ContentTaggedProductUiModel(
     val appLink: String,
     val campaign: Campaign,
     val affiliate: Affiliate,
-    val stock: Stock,
+    val stock: Stock
 ) {
     data class Affiliate(
         val id: String,
@@ -38,7 +38,6 @@ data class ContentTaggedProductUiModel(
     ) : Price
 
     data class CampaignPrice(
-        val originalFormattedPrice: String,
         val formattedPrice: String,
         override val price: Double
     ) : Price
@@ -49,7 +48,7 @@ data class ContentTaggedProductUiModel(
     ) : Price
 
     sealed interface Price {
-        val price : Double
+        val price: Double
     }
 
     val finalPrice: Double
@@ -86,8 +85,8 @@ data class ContentTaggedProductUiModel(
     }
 
     sealed class Stock {
-        object OutOfStock: Stock()
-        object Available: Stock() //add raw stock if needed
+        object OutOfStock : Stock()
+        object Available : Stock() // add raw stock if needed
     }
 
     enum class SourceType {

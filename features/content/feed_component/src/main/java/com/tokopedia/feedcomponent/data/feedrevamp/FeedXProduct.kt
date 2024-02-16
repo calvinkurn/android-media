@@ -52,6 +52,8 @@ data class FeedXProduct(
     var priceOriginal: Int = 0,
     @SerializedName("priceOriginalFmt")
     var priceOriginalFmt: String = "",
+    @SerializedName("priceFormatPriority")
+    var priceFormatPriority: String = "",
     @SerializedName("star")
     var star: Int = 0,
     @SerializedName("totalSold")
@@ -95,3 +97,16 @@ data class FeedXProductAffiliate(
     @SerializedName("channel")
     val channel: String = ""
 ) : Parcelable
+
+enum class FeedProductFormatPriority {
+    Masked, Discount, Original;
+
+    companion object {
+        fun getFormatPriority(formatPriority: String): FeedProductFormatPriority =
+            when (formatPriority.lowercase()) {
+                "masked" -> Masked
+                "discount" -> Discount
+                else -> Original
+            }
+    }
+}

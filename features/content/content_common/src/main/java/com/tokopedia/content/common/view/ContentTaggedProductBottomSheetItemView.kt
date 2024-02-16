@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.CardUnify
 import kotlin.math.roundToInt
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created by shruti.agarwal on 23/02/23
@@ -68,17 +69,21 @@ class ContentTaggedProductBottomSheetItemView(
         when (price) {
             is ContentTaggedProductUiModel.CampaignPrice -> {
                 binding.tvProductDiscount.hide()
-                binding.tvOriginalPrice.show()
-                binding.tvOriginalPrice.text = price.originalFormattedPrice
+                binding.tvOriginalPrice.hide()
                 binding.tvCurrentPrice.text = price.formattedPrice
             }
+
             is ContentTaggedProductUiModel.DiscountedPrice -> {
                 binding.tvProductDiscount.show()
                 binding.tvOriginalPrice.show()
-                binding.tvProductDiscount.text = context.getString(com.tokopedia.content.common.R.string.feed_product_discount_percent, price.discount)
+                binding.tvProductDiscount.text = context.getString(
+                    contentcommonR.string.feed_product_discount_percent,
+                    price.discount
+                )
                 binding.tvOriginalPrice.text = price.originalFormattedPrice
                 binding.tvCurrentPrice.text = price.formattedPrice
             }
+
             is ContentTaggedProductUiModel.NormalPrice -> {
                 binding.tvProductDiscount.hide()
                 binding.tvOriginalPrice.hide()

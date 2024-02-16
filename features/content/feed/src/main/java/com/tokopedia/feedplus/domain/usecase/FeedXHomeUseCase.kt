@@ -368,6 +368,7 @@ class FeedXHomeUseCase @Inject constructor(
               priceOriginalFmt
               priceDiscount
               priceDiscountFmt
+              priceFormatPriority
               totalSold
               isBebasOngkir
               bebasOngkirStatus
@@ -384,7 +385,7 @@ class FeedXHomeUseCase @Inject constructor(
         cursor: String = "",
         limit: Int = 0,
         detailId: String = "",
-        entryPoint: String = "",
+        entryPoint: String = ""
     ): Map<String, Any> {
         val whId = addressHelper.getChosenAddress().tokonow.warehouseId
         val params = mutableMapOf(
@@ -413,7 +414,7 @@ class FeedXHomeUseCase @Inject constructor(
             cursor = "",
             limit = LIMIT_DETAIL,
             detailId = sourceId,
-            entryPoint = entryPoint,
+            entryPoint = entryPoint
         )
     }
 

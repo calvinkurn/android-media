@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedProductFormatPriority
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 
@@ -25,21 +26,20 @@ object MapperProductsToXProducts {
             appLink = product.applink,
             title = product.name,
             imageUrl = product.coverUrl,
-            price = if (campaign.isUpcoming) {
-                ContentTaggedProductUiModel.CampaignPrice(
-                    originalFormattedPrice = product.priceFmt,
+            price = when (FeedProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
+                FeedProductFormatPriority.Masked -> ContentTaggedProductUiModel.CampaignPrice(
                     formattedPrice = product.priceMaskedFmt,
                     price = product.priceMasked
                 )
-            } else if (product.isDiscount) {
-                ContentTaggedProductUiModel.DiscountedPrice(
+
+                FeedProductFormatPriority.Discount -> ContentTaggedProductUiModel.DiscountedPrice(
                     discount = product.discount.toInt(),
                     originalFormattedPrice = product.priceOriginalFmt,
                     formattedPrice = product.priceDiscountFmt,
                     price = product.priceDiscount
                 )
-            } else {
-                ContentTaggedProductUiModel.NormalPrice(
+
+                FeedProductFormatPriority.Original -> ContentTaggedProductUiModel.NormalPrice(
                     formattedPrice = product.priceFmt,
                     price = product.price
                 )
@@ -51,8 +51,11 @@ object MapperProductsToXProducts {
                     it.channel
                 )
             },
-            stock = if (product.isAvailable || sourceType == ContentTaggedProductUiModel.SourceType.NonOrganic)
-                ContentTaggedProductUiModel.Stock.Available else ContentTaggedProductUiModel.Stock.OutOfStock
+            stock = if (product.isAvailable || sourceType == ContentTaggedProductUiModel.SourceType.NonOrganic) {
+                ContentTaggedProductUiModel.Stock.Available
+            } else {
+                ContentTaggedProductUiModel.Stock.OutOfStock
+            }
         )
     }
 

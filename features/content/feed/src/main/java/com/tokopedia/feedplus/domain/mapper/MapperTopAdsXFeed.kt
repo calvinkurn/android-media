@@ -1,8 +1,8 @@
 package com.tokopedia.feedplus.domain.mapper
 
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -135,6 +135,7 @@ object MapperTopAdsXFeed {
         priceOriginalFmt = product.campaign.originalPrice.replace(" ", ""),
         priceDiscount = 0.0,
         priceDiscountFmt = product.priceFormat.replace(" ", ""),
+        priceFormatPriority = if (product.campaign.discountPercentage > 0) "discount" else "original",
         totalSold = product.countSold.toIntSafely(),
         isBebasOngkir = product.freeOngkir.isActive,
         bebasOngkirStatus = "",
