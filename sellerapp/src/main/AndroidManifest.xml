@@ -1049,9 +1049,9 @@
             android:required="false" />
         <activity
             android:name=".deeplink.DeepLinkActivity"
+            android:exported="true"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link_topseller"
-            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -1059,86 +1059,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="/topads"
-                    android:scheme="https" />
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="/topads/*"
-                    android:scheme="https" />
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="/peluang"
-                    android:scheme="https" />
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="/peluang.pl"
-                    android:scheme="https" />
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="/invoice.pl"
-                    android:scheme="https" />
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="/topads"
-                    android:scheme="http" />
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="/topads/*"
-                    android:scheme="http" />
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="/peluang"
-                    android:scheme="http" />
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="/peluang.pl"
-                    android:scheme="http" />
-                <data
-                    android:host="*.tokopedia.com"
-                    android:pathPattern="invoice.pl"
-                    android:scheme="http" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="/topads"
-                    android:scheme="https" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="/topads/*"
-                    android:scheme="https" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="/peluang"
-                    android:scheme="https" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="/peluang.pl"
-                    android:scheme="https" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="/invoice.pl"
-                    android:scheme="https" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="/topads"
-                    android:scheme="http" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="/topads/*"
-                    android:scheme="http" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="/peluang"
-                    android:scheme="http" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="/peluang.pl"
-                    android:scheme="http" />
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern="invoice.pl"
-                    android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+                <data android:host="tokopedia.com" />
+                <data android:host="*.tokopedia.com" />
+                <data android:pathPattern="/topads" />
+                <data android:pathPattern="/topads/*" />
             </intent-filter>
         </activity>
 

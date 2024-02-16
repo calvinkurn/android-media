@@ -48,6 +48,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.ProductTabletLeftSectionDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTabletRightSectionDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
@@ -79,7 +80,6 @@ import com.tokopedia.product.detail.view.viewholder.ProductMiniShopWidgetViewHol
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofStockViewHolder
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.ProductNotifyMeViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationQeOldViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
@@ -92,18 +92,20 @@ import com.tokopedia.product.detail.view.viewholder.ProductTickerInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.TabletLeftSectionViewHolder
 import com.tokopedia.product.detail.view.viewholder.TabletRightSectionViewHolder
+import com.tokopedia.product.detail.view.viewholder.SDUIViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMViewHolder
+import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
+import com.tokopedia.product.detail.view.viewholder.gwp.GWPViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.review.ui.ProductReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
-import com.tokopedia.recommendation_widget_common.RecomTemporary
 
 class DynamicProductDetailAdapterFactoryImpl(
     private val listener: DynamicProductDetailListener,
@@ -114,14 +116,8 @@ class DynamicProductDetailAdapterFactoryImpl(
     private val pdpCallback: PdpCallbackDelegate
 
 ) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
-
-    @RecomTemporary
     override fun type(data: ProductRecommendationDataModel): Int {
-        return if (data.recomWidgetData?.hasQuantityEditor() == true) {
-            ProductRecommendationQeOldViewHolder.LAYOUT
-        } else {
-            ProductRecommendationViewHolder.LAYOUT
-        }
+        return ProductRecommendationViewHolder.LAYOUT
     }
 
     override fun type(data: ProductGeneralInfoDataModel): Int {
@@ -308,16 +304,19 @@ class DynamicProductDetailAdapterFactoryImpl(
         return TabletRightSectionViewHolder.LAYOUT
     }
 
+    override fun type(data: GWPUiModel): Int {
+        return GWPViewHolder.LAYOUT
+    }
+
+    override fun type(data: SDUIDataModel): Int {
+        return SDUIViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
             FintechWidgetV2ViewHolder.LAYOUT -> FintechWidgetV2ViewHolder(view, listener)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
-                view,
-                listener,
-                affiliateCookieHelper
-            )
-            ProductRecommendationQeOldViewHolder.LAYOUT -> ProductRecommendationQeOldViewHolder(
                 view,
                 listener,
                 affiliateCookieHelper
@@ -449,6 +448,8 @@ class DynamicProductDetailAdapterFactoryImpl(
             BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
             TabletLeftSectionViewHolder.LAYOUT -> TabletLeftSectionViewHolder(view, listener, this)
             TabletRightSectionViewHolder.LAYOUT -> TabletRightSectionViewHolder(view, listener, this)
+            GWPViewHolder.LAYOUT -> GWPViewHolder(view, pdpCallback.gwp)
+            SDUIViewHolder.LAYOUT -> SDUIViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

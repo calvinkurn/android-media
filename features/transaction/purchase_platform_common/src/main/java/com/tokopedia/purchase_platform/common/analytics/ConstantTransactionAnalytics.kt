@@ -430,6 +430,9 @@ object ConstantTransactionAnalytics {
         const val CLICK_SNK_BMGM = "click snk bmgm"
         const val CLICK_BMGM_RECOMMENDATION = "click bmgm recommendation"
         const val IMPRESSION_BMGM_RECOMMENDATION = "impression bmgm recommendation"
+        const val IMPRESSION_GWP_RECOMMENDATION = "impression gwp recommendation"
+        const val CLICK_GWP_RECOMMENDATION = "click gwp recommendation"
+        const val IMPRESSION_GWP_BENEFIT = "impression gwp"
 
         // dropship
         const val IMPRESSION_DROPSHIP_WIDGET = "impression dropship widget"
@@ -520,6 +523,7 @@ object ConstantTransactionAnalytics {
         const val PROMOTIONS = "promotions"
         const val PLATFORM_FEE = "platformFee"
         const val ITEMS = "items"
+        const val SESSION_IRIS = "sessionIris"
     }
 
     object ScreenName {
@@ -543,7 +547,7 @@ object ConstantTransactionAnalytics {
         const val DIMENSION_BUSINESS_UNIT_HOME_BROWSE = "home & browse"
         const val DIMENSION_BUSINESS_UNIT_FINTECH = "fintech"
         const val DIMENSION_BUSINESS_UNIT_PROMO = "promo"
-        const val DIMENSION_SESSION_IRIS = "sessionIris"
+        const val DIMENSION_SESSION_IRIS = "session_iris"
     }
 
     object TrackerId {
@@ -610,6 +614,9 @@ object ConstantTransactionAnalytics {
         const val CLICK_SNK_BMGM = "46781"
         const val CLICK_BMGM_RECOMMENDATION = "47209"
         const val VIEW_BMGM_RECOMMENDATION = "47208"
+        const val VIEW_GWP_RECOMMENDATION = "49758"
+        const val CLICK_GWP_RECOMMENDATION = "49759"
+        const val VIEW_GWP_BENEFIT = "49760"
 
         // dropship
         const val IMPRESSION_DROPSHIP_WIDGET = "48774"

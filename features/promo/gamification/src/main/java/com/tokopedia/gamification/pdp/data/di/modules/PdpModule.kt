@@ -5,6 +5,12 @@ import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.pdp.data.di.scopes.GamificationPdpScope
 import com.tokopedia.gamification.pdp.domain.Mapper
 import com.tokopedia.gamification.pdp.domain.usecase.GamingRecommendationProductUseCase
+import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponSlugUseCase
+import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponUseCase
+import com.tokopedia.gamification.pdp.domain.usecase.KetupatLandingUseCase
+import com.tokopedia.gamification.pdp.domain.usecase.KetupatReferralEventTimeStampUseCase
+import com.tokopedia.gamification.pdp.domain.usecase.KetupatReferralUserRegistrationUseCase
+import com.tokopedia.gamification.pdp.repository.GamificationRepository
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -18,6 +24,34 @@ import dagger.Provides
 
 @Module(includes = [TopAdsWishlistModule::class,ActivityContextModule::class])
 class PdpModule {
+
+    @GamificationPdpScope
+    @Provides
+    fun provideKetupatReferralUserRegistrationUseCase(gamificationRepository: GamificationRepository): KetupatReferralUserRegistrationUseCase {
+        return KetupatReferralUserRegistrationUseCase(gamificationRepository)
+    }
+
+    fun provideKetupatReferralEventTimeStampUseCase(gamificationRepository: GamificationRepository): KetupatReferralEventTimeStampUseCase {
+        return KetupatReferralEventTimeStampUseCase(gamificationRepository)
+    }
+
+    @GamificationPdpScope
+    @Provides
+    fun provideKetupatLandingUseCase(gamificationRepository: GamificationRepository): KetupatLandingUseCase {
+        return KetupatLandingUseCase(gamificationRepository)
+    }
+
+    @GamificationPdpScope
+    @Provides
+    fun provideKetupatBenefitCouponUseCase(gamificationRepository: GamificationRepository): KetupatBenefitCouponUseCase {
+        return KetupatBenefitCouponUseCase(gamificationRepository)
+    }
+
+    @GamificationPdpScope
+    @Provides
+    fun provideKetupatBenefitCouponSlugUseCase(gamificationRepository: GamificationRepository): KetupatBenefitCouponSlugUseCase {
+        return KetupatBenefitCouponSlugUseCase(gamificationRepository)
+    }
 
     @GamificationPdpScope
     @Provides
