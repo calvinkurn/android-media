@@ -127,8 +127,8 @@ class CartCampaignProductLabel @JvmOverloads constructor(
             if (backgroundColor.hexCode.isNotBlank()) {
                 val tickerBackgroundDrawable = GradientDrawable().apply {
                     orientation = GradientDrawable.Orientation.LEFT_RIGHT
-                    val backgroundColor = Color.parseColor(backgroundColor.hexCode)
-                    colors = intArrayOf(backgroundColor, backgroundColor)
+                    val color = Color.parseColor(backgroundColor.hexCode)
+                    colors = intArrayOf(color, color)
                     val cornerRadius = context.dpToPx(LABEL_CORNER_RADIUS_DP)
                     shape = GradientDrawable.RECTANGLE
                     cornerRadii = floatArrayOf(
