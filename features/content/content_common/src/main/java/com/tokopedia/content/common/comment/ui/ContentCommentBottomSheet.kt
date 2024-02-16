@@ -635,7 +635,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140
-        private const val DELAY_EXPAND = 1000L
+        private const val DELAY_EXPAND = 500L
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
