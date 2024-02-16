@@ -1,5 +1,6 @@
 package com.tokopedia.stories.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -192,7 +193,6 @@ class StoriesViewModel @AssistedInject constructor(
         MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
     val userReportReasonList: Result<List<PlayUserReportReasoningUiModel>>
         get() = _userReportReasonList.value ?: Success(emptyList())
-
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
@@ -790,8 +790,11 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun setupOnboard() {
-        viewModelScope.launch {
-            _storiesEvent.emit(StoriesUiEvent.OnboardShown)
+        if (!sharedPref.hasVisit()) {
+            viewModelScope.launch {
+                _storiesEvent.tryEmit(StoriesUiEvent.OnboardShown)
+            }
+            sharedPref.setHasVisit(true)
         }
     }
 }

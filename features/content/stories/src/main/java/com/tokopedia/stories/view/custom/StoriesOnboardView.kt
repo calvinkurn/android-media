@@ -1,11 +1,16 @@
 package com.tokopedia.stories.view.custom
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
+import android.view.animation.Animation
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.stories.databinding.ViewStoriesOnboardingBinding
 import com.tokopedia.stories.R
+import com.tokopedia.stories.databinding.ViewStoriesOnboardingBinding
+import com.tokopedia.unifyprinciples.UnifyMotion
 
 /**
  * @author by astidhiyaa on 28/08/23
@@ -25,14 +30,33 @@ class StoriesOnboardView : ConstraintLayout {
         this, true
     )
 
+    private val animatorX =
+        ObjectAnimator.ofFloat(binding.animHand, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 800L
+            repeatCount = Animation.INFINITE
+        }
+    private val rotate = ObjectAnimator.ofFloat(binding.animHand, View.ROTATION, 0f, 30f).apply {
+        duration = UnifyMotion.T3
+        repeatCount = Animation.INFINITE
+    }
+    private val anim = AnimatorSet().apply {
+        play(animatorX)
+    }
+
     init {
         binding.lottieSwipeProduct.setAnimationFromUrl(context.getString(R.string.stories_onboard_swipe_anim))
-        binding.lottieSwipeProduct.setFailureListener {  }
+        binding.lottieSwipeProduct.setFailureListener { }
 
         binding.lottieTapNext.setAnimationFromUrl(context.getString(R.string.stories_onboard_tap_anim))
-        binding.lottieTapNext.setFailureListener {  }
+        binding.lottieTapNext.setFailureListener { }
+    }
 
-        binding.lottieTapMoveCategory.setAnimation(context.getString(R.string.stories_onboard_horizontal_swipe_anim))
-        binding.lottieTapMoveCategory.setFailureListener {}
+    fun checkAnim() {
+        anim.start()
+    }
+
+    override fun onDetachedFromWindow() {
+        anim.cancel()
+        super.onDetachedFromWindow()
     }
 }

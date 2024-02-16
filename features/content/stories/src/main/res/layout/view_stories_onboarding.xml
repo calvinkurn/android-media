@@ -22,15 +22,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_timer" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_tap_move_category"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/anim_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:srcCompat="@drawable/stories_category_arrow"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_onboard_close"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_onboard_close"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/anim_hand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toEndOf="@+id/anim_arrow"
+        app:layout_constraintStart_toStartOf="@+id/anim_arrow"
+        app:layout_constraintTop_toBottomOf="@id/anim_arrow"
+        app:srcCompat="@drawable/stories_category_hand" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_stories_onboard_category"
@@ -38,9 +49,9 @@
         android:layout_height="wrap_content"
         android:text="@string/stories_onboard_move_category"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintEnd_toEndOf="@+id/lottie_tap_move_category"
-        app:layout_constraintStart_toStartOf="@+id/lottie_tap_move_category"
-        app:layout_constraintTop_toBottomOf="@+id/lottie_tap_move_category"
+        app:layout_constraintEnd_toEndOf="@+id/anim_hand"
+        app:layout_constraintStart_toStartOf="@+id/anim_hand"
+        app:layout_constraintTop_toBottomOf="@+id/anim_hand"
         app:typographyType="display_2" />
 
     <com.tokopedia.unifyprinciples.Typography

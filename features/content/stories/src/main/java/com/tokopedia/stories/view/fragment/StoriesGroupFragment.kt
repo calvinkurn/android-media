@@ -123,6 +123,7 @@ class StoriesGroupFragment @Inject constructor(
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
 
         binding.vStoriesOnboarding.setOnClickListener {
+            viewModelAction(StoriesUiAction.ResumeStories)
             binding.vStoriesOnboarding.gone()
         }
     }
@@ -178,7 +179,11 @@ class StoriesGroupFragment @Inject constructor(
                     }
 
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
-                    is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.show()
+                    is StoriesUiEvent.OnboardShown -> {
+                        viewModelAction(PauseStories)
+                        binding.vStoriesOnboarding.show()
+                        binding.vStoriesOnboarding.checkAnim()
+                    }
                     else -> return@collect
                 }
             }
