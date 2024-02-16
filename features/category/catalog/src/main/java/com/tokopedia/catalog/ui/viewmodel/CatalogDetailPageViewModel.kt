@@ -52,12 +52,12 @@ class CatalogDetailPageViewModel @Inject constructor(
     val comparisonUiModel: LiveData<ComparisonUiModel?>
         get() = _comparisonUiModel
 
-    private val _addToCartDataModel = MutableLiveData<AddToCartDataModel>()
-    val addToCartDataModel: LiveData<AddToCartDataModel>
+    private val _addToCartDataModel = MutableLiveData<AddToCartDataModel?>()
+    val addToCartDataModel: LiveData<AddToCartDataModel?>
         get() = _addToCartDataModel
 
-    private val _variantName = MutableLiveData<String>()
-    val variantName: LiveData<String>
+    private val _variantName = MutableLiveData<String?>()
+    val variantName: LiveData<String?>
         get() = _variantName
 
     private val _scrollEvents = MutableStateFlow("")
