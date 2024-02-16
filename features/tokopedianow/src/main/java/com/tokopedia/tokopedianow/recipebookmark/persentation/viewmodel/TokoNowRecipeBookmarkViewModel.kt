@@ -97,7 +97,13 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         )
     }
 
-    private fun onResponseAddRecipeBE(position: Int, isRemoving: Boolean, recipeId: String, errorMessage: String, isSuccess: Boolean) {
+    private fun onResponseAddRecipeBE(
+        position: Int,
+        isRemoving: Boolean,
+        recipeId: String,
+        errorMessage: String,
+        isSuccess: Boolean
+    ) {
         if (isSuccess) {
             restoreRecipeRemoved(
                 tempPosition = position,
@@ -225,7 +231,12 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         }
     }
 
-    private fun onFailAddRemoveRecipeFE(isRemoving: Boolean, position: Int, recipeId: String, throwable: Throwable) {
+    private fun onFailAddRemoveRecipeFE(
+        isRemoving: Boolean,
+        position: Int,
+        recipeId: String,
+        throwable: Throwable
+    ) {
         updateVisitableList()
 
         setAction(
@@ -264,7 +275,11 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     /**
      * @see noNeedLoadMore - if true no need to load more recipe bookmark
      */
-    private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, header: Header, hasNext: Boolean) {
+    private fun onResponseLoadMoreBE(
+        recipeBookmarks: List<RecipeUiModel>,
+        header: Header,
+        hasNext: Boolean
+    ) {
         noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
         visitableList.removeRecipeProgressBar()
 
@@ -295,7 +310,11 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         updateVisitableList()
     }
 
-    private fun updateLayoutWithTempRecipeRemoved(isRemoving: Boolean, position: Int, recipeId: String) {
+    private fun updateLayoutWithTempRecipeRemoved(
+        isRemoving: Boolean,
+        position: Int,
+        recipeId: String
+    ) {
         if (isRemoving) {
             restoreRecipeRemoved(
                 tempPosition = position,
