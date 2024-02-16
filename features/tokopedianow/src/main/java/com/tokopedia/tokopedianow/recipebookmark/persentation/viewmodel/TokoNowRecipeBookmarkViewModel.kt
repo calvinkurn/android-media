@@ -468,7 +468,8 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         }
     }
 
-    private fun shouldLoadMore(event: LoadMoreRecipeBookmarkList) =
-        !noNeedLoadMore && event.scrolledToBottom &&
-            visitableList.last() !is RecipeProgressBarUiModel
+    private fun shouldLoadMore(event: LoadMoreRecipeBookmarkList): Boolean {
+        return !noNeedLoadMore && event.scrolledToBottom &&
+            visitableList.lastOrNull() !is RecipeProgressBarUiModel
+    }
 }
