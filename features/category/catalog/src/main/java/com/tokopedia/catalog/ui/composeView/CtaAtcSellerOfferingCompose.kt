@@ -61,17 +61,15 @@ fun CtaSellerOffering(
     var switchState by remember { mutableStateOf(1) }
 
     val context = LocalContext.current
-    val maxSwitchState = if (variantText.isNotEmpty()) 4 else 3
+    val maxSwitchState = if (variantText.isNotEmpty() && rating.isNotEmpty()) 4 else 3
 
     if (rating.isNotEmpty() || variantText.isNotEmpty()) {
         LaunchedEffect(Unit) {
             while (true) {
                 delay(2000)
-                switchState += 1
-                if (switchState == 2 && rating.isEmpty() && variantText.isNotEmpty()) {
-                    switchState = 3
-                }
-                if (switchState >= maxSwitchState) {
+                if (switchState < maxSwitchState) {
+                    switchState += 1
+                } else {
                     switchState = 1
                 }
             }
@@ -118,15 +116,14 @@ fun CtaSellerOffering(
                     ShopInfo(theme, shopName = shopName, badge = badge)
                 }
                 this@Column.AnimatedVisibility(
-                    visible = switchState == 2,
+                    visible = switchState == 2 && rating.isNotEmpty(),
                     enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
                     exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
                 ) {
                     ShopCredibility(context, theme, rating, sold)
                 }
-                // If need variant
                 this@Column.AnimatedVisibility(
-                    visible = switchState == 3,
+                    visible = switchState == 3 || (switchState == 2 && rating.isEmpty() && variantText.isNotEmpty()),
                     enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
                     exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
                 ) {
