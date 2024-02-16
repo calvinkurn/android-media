@@ -173,7 +173,9 @@ class BmgmAddOnSummaryViewHolder(
 
         class Impl : Delegate {
 
+            @Suppress("LateinitUsage")
             private lateinit var viewHolder: BmgmAddOnSummaryViewHolder
+            @Suppress("LateinitUsage")
             private lateinit var _mediator: Mediator
 
             override fun registerAddOnSummaryDelegate(mediator: Mediator) {
