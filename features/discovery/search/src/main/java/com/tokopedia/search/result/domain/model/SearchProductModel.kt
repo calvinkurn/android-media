@@ -11,7 +11,6 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Option.Companion.KEY_PRICE_RANGE
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -686,7 +685,19 @@ data class SearchProductModel(
 
             @SerializedName("url")
             @Expose
-            val url: String = ""
+            val url: String = "",
+            @SerializedName("styles")
+            @Expose
+            val styleList: List<Style> = listOf(),
+    )
+
+    data class Style(
+        @SerializedName("key")
+        @Expose
+        val key: String = "",
+        @SerializedName("value")
+        @Expose
+        val value: String = "",
     )
 
     data class ProductLabelGroupVariant(

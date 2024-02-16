@@ -8,16 +8,21 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase.Companion.PARAM_VALUE_MINICART
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
+@Deprecated(
+    "This usecase is no longer maintained since Feb 2023",
+    ReplaceWith(
+        "GetMiniCartWidgetUseCase",
+        "com.tokopedia.minicart.domain.GetMiniCartWidgetUseCase"
+    )
+)
 class GetMiniCartListSimplifiedUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
-    private val miniCartSimplifiedMapper: MiniCartSimplifiedMapper,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) : UseCase<MiniCartSimplifiedData>() {
 
@@ -54,6 +59,21 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
         this.delay = delay
     }
 
+    fun setParams(shopIds: List<String>, source: MiniCartSource, bmGmParam: BmgmParamModel, usecase: String) {
+        params = mapOf(
+            GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
+            GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
+                GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
+                GetMiniCartListUseCase.PARAM_KEY_USE_CASE to usecase,
+                GetMiniCartListUseCase.PARAM_KEY_BMGM to bmGmParam
+            )
+        )
+        this.shopIds = shopIds
+        this.delay = delay
+    }
+
     fun setParams(shopIds: List<String>, promoId: String, promoCode: String, source: MiniCartSource, delay: Long = 0) {
         params = mapOf(
             GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
@@ -82,7 +102,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
         val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
-            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
+            return response.miniCart.toSimplifiedData()
         } else {
             throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
         }
@@ -163,6 +183,9 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                             price_before_benefit
                             price_after_benefit
                             cart_id
+                          }
+                          products_benefit {
+                            product_cache_image_url
                           }
                         }
                       }

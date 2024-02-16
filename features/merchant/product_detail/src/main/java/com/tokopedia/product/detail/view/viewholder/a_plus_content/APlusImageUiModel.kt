@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TabletPosition
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class APlusImageUiModel(
@@ -20,6 +21,10 @@ data class APlusImageUiModel(
     var haveBottomPadding: Boolean = false,
     var trackerData: TrackerData = TrackerData()
 ) : DynamicPdpDataModel {
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
