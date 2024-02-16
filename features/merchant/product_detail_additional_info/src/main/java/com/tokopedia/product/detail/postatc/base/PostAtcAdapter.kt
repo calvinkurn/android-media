@@ -122,6 +122,11 @@ class PostAtcAdapter(
         return delegatesManager.getItemViewType(currentList, position)
     }
 
+    override fun onViewRecycled(holder: PostAtcViewHolder<*>) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
     /**
      * Finish - Override Area
      */
