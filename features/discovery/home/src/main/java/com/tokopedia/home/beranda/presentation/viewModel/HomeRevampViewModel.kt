@@ -916,20 +916,22 @@ open class HomeRevampViewModel @Inject constructor(
                 }
 
                 findWidget<CouponWidgetDataModel> { model, position ->
-                    updateWidget(
-                        visitable = model.copy(
-                            coupons = model.coupons.toMutableList().also {
-                                val data = it[couponPosition]
-                                val currentCtaState = data.button
+                    val updatedCoupons = model.coupons.toMutableList().apply {
+                        val coupon = this[couponPosition]
 
-                                data.button = if (isClaimSucceed) {
-                                    val ctaModel = currentCtaState.model ?: return@findWidget
-                                    CouponCtaState.Redirect(ctaModel)
-                                } else {
-                                    currentCtaState
-                                }
+                        this[couponPosition] = coupon.copy(
+                            button = if (isClaimSucceed) {
+                                val model = coupon.button.model ?: return@findWidget
+                                CouponCtaState.Redirect(model)
+                            } else {
+                                coupon.button
                             }
-                        ),
+                        )
+                    }
+
+                    updateWidget(
+                        visitable = model.copy(coupons = updatedCoupons),
+                        visitableToChange = model,
                         position = position
                     )
                 }

@@ -10,7 +10,10 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetAdapter
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.viewholders.layoutmanager.DynamicGridLayoutManager
+import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CouponWidgetViewHolder constructor(
@@ -30,20 +33,40 @@ class CouponWidgetViewHolder constructor(
     override fun bind(element: CouponWidgetDataModel?) {
         if (element == null || element.coupons.isEmpty()) return
 
-        binding?.headerView?.bind(element.header())
-        binding?.root?.setGradientBackground(element.backgroundGradientColor)
+        onWidgetImpressionListener(element)
+        setupHeaderAndBackgroundWidget(element)
+        setupDynamicCouponWidgetAdapter(element.coupons)
+    }
 
+    private fun setupDynamicCouponWidgetAdapter(coupons: List<CouponWidgetDataItemModel>) {
         if (binding?.lstCoupon?.adapter == null) {
             val adapter = CouponWidgetAdapter(listener = listener)
             binding?.lstCoupon?.layoutManager = DynamicGridLayoutManager(itemView.context)
             binding?.lstCoupon?.addItemDecoration(DynamicGridLayoutManager.Decorator())
             binding?.lstCoupon?.adapter = adapter
 
-            adapter.setData(element.coupons)
+            adapter.setData(coupons)
         } else {
             val adapter = binding?.lstCoupon?.adapter as? CouponWidgetAdapter
-            adapter?.setData(element.coupons)
+            adapter?.setData(coupons)
         }
+    }
+
+    private fun setupHeaderAndBackgroundWidget(element: CouponWidgetDataModel) {
+        binding?.headerView?.bind(element.header())
+        binding?.root?.setGradientBackground(element.backgroundGradientColor)
+    }
+
+    private fun onWidgetImpressionListener(element: CouponWidgetDataModel) {
+        itemView.addOnImpressionListener(element, object : ViewHintListener {
+            override fun onViewHint() {
+                listener.impressionTrack(
+                    model = element.channelModel,
+                    position = bindingAdapterPosition,
+                    coupons = element.coupons
+                )
+            }
+        })
     }
 
     companion object {

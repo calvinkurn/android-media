@@ -1,21 +1,21 @@
 package com.tokopedia.home_component.visitable
 
-import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class CouponWidgetDataModel(
     val channelModel: ChannelModel,
     val backgroundGradientColor: ArrayList<String>,
     val coupons: List<CouponWidgetDataItemModel>
-) : HomeComponentVisitable {
+) : HomeComponentVisitable, ImpressHolder() {
 
     override fun visitableId() = channelModel.id
 
     override fun equalsWith(b: Any?) = b == this
 
-    override fun getChangePayloadFrom(b: Any?) = Bundle()
+    override fun getChangePayloadFrom(b: Any?) = null
 
     override fun type(typeFactory: HomeComponentTypeFactory): Int {
         return typeFactory.type(this)
