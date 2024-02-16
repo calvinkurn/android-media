@@ -193,34 +193,6 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
-//    @Deprecated("SCP code need to be removed")
-//    @Test
-//    fun goToRegisterInitial_IfNotRegistered_WhenRollenceScpCvsdkActive() {
-//        val data = RegisterCheckPojo(
-//            RegisterCheckData(
-//                isExist = false,
-//                userID = "0",
-//                registerType = "email",
-//                view = "yoris.prayogo@tokopedia.com"
-//            )
-//        )
-//        fakeRepo.registerCheckConfig = Config.WithResponse(data)
-//
-//        runTest {
-//            setupRollence(isScpActive = true)
-//            mockOtpPageRegisterEmail()
-//            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
-//            clickSubmit()
-//
-//            onView(withText("Ya, Daftar"))
-//                .inRoot(isDialog())
-//                .check(matches(isDisplayed()))
-//                .perform(click())
-//
-//            intended(hasData(ApplinkConstInternalUserPlatform.SCP_OTP))
-//        }
-//    }
-
     /**
      * Success redirection to tokopedia://addname if user able to login
      */
@@ -355,21 +327,6 @@ class LoginNormalCase : LoginBase() {
             }
         }
     }
-
-//    @Deprecated("SCP code need to be removed")
-//    @Test
-//    fun gotoVerification_true() {
-//        runTest {
-//            Thread.sleep(1000)
-//
-//            val viewDevOpts = onView(withText("Developer Options"))
-//            if (GlobalConfig.isAllowDebuggingTools()) {
-//                viewDevOpts.check(matches(isDisplayed()))
-//            } else {
-//                viewDevOpts.check(matches(not(isDisplayed())))
-//            }
-//        }
-//    }
 
     private fun mockAddNameProfilePage() {
         intending(hasData(ApplinkConst.ADD_NAME_PROFILE)).respondWith(

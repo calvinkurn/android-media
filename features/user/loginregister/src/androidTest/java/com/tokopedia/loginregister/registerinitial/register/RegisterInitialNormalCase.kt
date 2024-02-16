@@ -1,15 +1,9 @@
 package com.tokopedia.loginregister.registerinitial.register
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
@@ -18,54 +12,46 @@ import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.loginregister.utils.respondWithOk
 import com.tokopedia.test.application.annotations.UiTest
-import io.mockk.every
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import org.junit.Test
 
 @UiTest
-class RegisterNormalCase : RegisterInitialBase() {
+class RegisterInitialNormalCase : RegisterInitialBase() {
 
-    /* Test case 2: Go to login page if registered email dialog clicked */
+    /* Go to login page if email registered already */
     @Test
-    fun testCase2_gotoLogin_IfDialogClicked() {
-        isDefaultRegisterCheck = false
+    fun gotoLogin_IfEmailRegistered() {
         val data = RegisterCheckData(
             isExist = true,
             userID = "123456",
             registerType = "email",
             view = "yoris.prayogooooo@tokopedia.com"
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+        fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         runTest {
             intending(hasComponent(LoginActivity::class.java.name)).respondWithOk()
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
             isDialogDisplayed("Email Sudah Terdaftar")
-
-            onView(withText("Ya, Masuk"))
-                .inRoot(isDialog())
-                .check(matches(isDisplayed()))
-                .perform(click())
+            clickOnDialog("Ya, Masuk")
 
             intended(hasComponent(LoginActivity::class.java.name))
         }
     }
 
-    /* Go to verification page if email not exist */
+    /* Go to OTP page if email not exist */
     @Test
-    fun gotoVerificationpage_IfNotRegistered() {
-        isDefaultRegisterCheck = false
+    fun gotoOtpPage_IfEmailIsNotRegistered() {
         val data = RegisterCheckData(
             isExist = false,
             userID = "123456",
             registerType = "email",
             view = "yoris.prayogo+3@tokopedia.com"
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+        fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         runTest {
             setupRollence()
@@ -90,26 +76,6 @@ class RegisterNormalCase : RegisterInitialBase() {
         }
     }
 
-    //    @Deprecated("SCP code need to be removed")
-//    @Test
-//    fun gotoScpVerificationpage_WhenRollenceCvsdkActive_IfNotRegistered() {
-//        isDefaultRegisterCheck = false
-//        val data = RegisterCheckData(isExist = false, userID = "123456", registerType = "email", view = "yoris.prayogo+3@tokopedia.com")
-//        registerCheckUseCase.response = RegisterCheckPojo(data)
-//
-//        runTest {
-//            mockkStatic(RemoteConfigInstance::class)
-//            every {
-//                RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION)
-//            } returns DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION
-//            intending(hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()))).respondWithOk()
-//            inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
-//            clickSubmit()
-//            intended(hasData(ApplinkConstInternalUserPlatform.SCP_OTP))
-//            unmockkStatic(RemoteConfigInstance::class)
-//        }
-//    }
-
     /** automation click on button masuk top right on register page **/
     @Test
     fun goToLogin_TopRight() {
@@ -129,55 +95,71 @@ class RegisterNormalCase : RegisterInitialBase() {
         }
     }
 
-    /* Show not registered dialog if phone registered */
-    @Test
-    fun showNotRegisteredDialog_IfPhoneRegistered() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(
-            isExist = true,
-            userID = "123456",
-            registerType = "phone",
-            view = "082242454511"
-        )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
-
-        runTest {
-            inputEmailOrPhone("082242454511")
-            clickSubmit()
-            isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
-        }
-    }
-
     /* Show proceed dialog if phone not registered */
     @Test
-    fun showProceedPhoneDialog_IfPhoneNotRegistered() {
-        isDefaultRegisterCheck = false
+    fun gotoAddNamePage_IfPhoneNotRegistered() {
         val data = RegisterCheckData(
             isExist = false,
             userID = "0",
             registerType = "phone",
             view = "08224245450411"
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+        fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         runTest {
+            setupRollence()
+            intending(
+                hasData(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalUserPlatform.COTP,
+                        RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER.toString()
+                    )
+                )
+            ).respondWithOk()
+
+            //redirect user to add register name on profile completion page
+            intending(
+                hasData(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
+                    )
+                )
+            ).respondWithOk()
+
             inputEmailOrPhone("08224245450411")
             clickSubmit()
             isDialogDisplayed("08224245450411")
+            clickOnDialog("Ya, Benar")
+
+            intended(
+                hasData(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalUserPlatform.COTP,
+                        RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER.toString()
+                    )
+                )
+            )
+
+            intended(
+                hasData(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
+                    )
+                )
+            )
         }
     }
 
-    /* Go to login page if registered phone dialog clicked */
+    /* Go to login page if phone number registered already */
     @Test
-    fun gotoLogin_IfPhoneDialogClicked() {
-        isDefaultRegisterCheck = false
+    fun gotoOtpPage_IfPhoneNumberRegistered() {
         val data = RegisterCheckData(
             isExist = true,
             userID = "123456",
             registerType = "phone",
             view = "082242454511"
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+        fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         runTest {
             setupRollence()
@@ -186,17 +168,13 @@ class RegisterNormalCase : RegisterInitialBase() {
                     UriUtil.buildUri(
                         ApplinkConstInternalUserPlatform.COTP,
                         RegisterConstants.OtpType.OTP_LOGIN_PHONE_NUMBER.toString()
-                    ).toString()
+                    )
                 )
             ).respondWithOk()
             inputEmailOrPhone("082242454511")
             clickSubmit()
             isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
-
-            onView(withText("Ya, Masuk"))
-                .inRoot(isDialog())
-                .check(matches(isDisplayed()))
-                .perform(click())
+            clickOnDialog("Ya, Masuk")
 
             intended(
                 hasData(

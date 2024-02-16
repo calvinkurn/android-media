@@ -10,17 +10,55 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.registerinitial.base.RegisterEmailBase
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.core.AnyOf.anyOf
+import org.junit.Assert
 import org.junit.Test
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 @UiTest
-class RegisterEmailNegativeCase : RegisterEmailBase() {
+class RegisterEmailCase : RegisterEmailBase() {
 
     private val emptyErrorText = "Harus diisi"
     private val lengthLessThan3Text = "Minimum 3 karakter"
+    private val lengthMoreThan35Text = "Maksimal 35 karakter"
+    private val nameContainsCharAndNumber = "Hanya dapat menggunakan huruf"
+
+    @Test
+    fun registerWithEmail_finishPageifAllDataValid() {
+        fakeRepo.registerRequestConfig = Config.Success
+        setupActivity {
+            it.putExtra("email", "kim.mingyu@gmail.com")
+        }
+
+        emailInputIsEnabled(R.id.wrapper_email)
+        /* Disable button "Daftar" when input name is empty */
+        inputName("Kim Mingyu")
+        inputPassword("abcdefg12345")
+        shouldBeEnabled(R.id.register_button)
+
+        clickRegister()
+        Assert.assertTrue(activityTestRule.activity.isFinishing)
+    }
+
+    @Test
+    fun showError_ifNameIsUsingForbiddenName() {
+        fakeRepo.registerRequestConfig = Config.Error
+        setupActivity {
+            it.putExtra("email", "kim.mingyu@gmail.com")
+        }
+
+        emailInputIsEnabled(R.id.wrapper_email)
+        /* Disable button "Daftar" when input name is empty */
+        inputName("Tokopedia")
+        inputPassword("abcdefg12345")
+        shouldBeEnabled(R.id.register_button)
+
+        clickRegister()
+        isDisplayingSubGivenText("Nama lengkap mengandung kata yang dilarang")
+    }
 
     @Test
     fun disableNextButton_ifNameEmpty() {
@@ -44,6 +82,14 @@ class RegisterEmailNegativeCase : RegisterEmailBase() {
             /* Show error if name length < 3 */
             inputName("yo")
             onView(anyOf(withText(lengthLessThan3Text))).check(matches(isDisplayed()))
+
+            /* Show error if name length > 35 */
+            inputName("sonicsonicsoncsonicsonicsonicsonicsonic")
+            onView(anyOf(withText(lengthMoreThan35Text))).check(matches(isDisplayed()))
+
+            /* Show error if name contains char and number */
+            inputName("ababa121332")
+            onView(anyOf(withText(nameContainsCharAndNumber))).check(matches(isDisplayed()))
 
             /* Show error if password is empty */
             inputPassword("abcdefg123456")

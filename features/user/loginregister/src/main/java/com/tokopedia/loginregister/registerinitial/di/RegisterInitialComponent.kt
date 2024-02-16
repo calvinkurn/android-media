@@ -14,7 +14,6 @@ import dagger.Component
     modules = [
         RegisterInitialModule::class,
         RegisterInitialQueryModule::class,
-        RegisterInitialUseCaseModule::class,
         RegisterInitialViewModelModule::class
     ], dependencies = [BaseAppComponent::class]
 )

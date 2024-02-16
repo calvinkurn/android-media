@@ -15,6 +15,7 @@ import com.tokopedia.loginregister.common.Event
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.annotations.CassavaTest
@@ -36,7 +37,6 @@ class RegisterInitialTest: RegisterInitialBase() {
     @Test
     fun check_register_email_success_tracker() {
         //Given
-        isDefaultRegisterCheck = false
         val data = RegisterCheckData(
             isExist = false ,
             isPending = false,
@@ -44,7 +44,7 @@ class RegisterInitialTest: RegisterInitialBase() {
             registerType = "email",
             view = emailNotRegistered
         )
-        registerCheckUseCase.response = RegisterCheckPojo(data)
+        fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         val profileInfo = ProfileInfo(userId = "123456", fullName = "Kelvin Saputra")
         val profilePojo = ProfilePojo(profileInfo)
@@ -62,8 +62,7 @@ class RegisterInitialTest: RegisterInitialBase() {
     @Test
     fun check_register_email_failed_tracker() {
         //Given
-        isDefaultRegisterCheck = false
-        registerCheckUseCase.isError = true
+        fakeRepo.registerCheckConfig = Config.Error
 
         //When
         runTest {
@@ -111,10 +110,5 @@ class RegisterInitialTest: RegisterInitialBase() {
                 "failed - ${Event.ANY}"
             )
         )
-    }
-
-    @After
-    fun finishTest() {
-        isDefaultRegisterCheck = true
     }
 }
