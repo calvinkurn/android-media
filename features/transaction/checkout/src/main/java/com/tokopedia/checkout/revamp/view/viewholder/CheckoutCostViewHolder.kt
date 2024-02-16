@@ -169,7 +169,9 @@ class CheckoutCostViewHolder(
                     listener.checkPlatformFee()
                 }
 
-                override fun onDismiss() {}
+                override fun onDismiss() {
+                    /* no-op */
+                }
             })
         } else {
             binding.tickerPlatformFeeInfo.gone()
@@ -237,13 +239,16 @@ class CheckoutCostViewHolder(
     }
 
     private fun renderOtherFee(cost: CheckoutCostModel) {
-        val insuranceCourierList = if (cost.hasInsurance) listOf(cost.shippingInsuranceFee) else emptyList()
+        val insuranceCourierList =
+            if (cost.hasInsurance) listOf(cost.shippingInsuranceFee) else emptyList()
         val giftingList = if (cost.hasAddOn) listOf(cost.totalAddOnPrice) else emptyList()
         val egoldList = if (cost.emasPrice > 0.0) listOf(cost.emasPrice) else emptyList()
         val donationList = if (cost.donation > 0.0) listOf(cost.donation) else emptyList()
         if ((insuranceCourierList.size + cost.listAddOnSummary.size + giftingList.size + cost.listCrossSell.size + egoldList.size + donationList.size) > 2) {
             // render in collapsable group
-            binding.tvCheckoutCostOthersValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cost.totalOtherFee, false).removeDecimalSuffix()
+            binding.tvCheckoutCostOthersValue.text =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(cost.totalOtherFee, false)
+                    .removeDecimalSuffix()
             binding.icCheckoutCostOthersToggle.setOnClickListener {
                 if (binding.llCheckoutCostOthersExpanded.isVisible) {
                     cost.isExpandOtherFee = false
@@ -267,11 +272,13 @@ class CheckoutCostViewHolder(
                     false
                 )
                 itemBinding.tvCheckoutCostItemTitle.setText(R.string.checkout_label_total_shipping_insurance)
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    it,
-                    false
-                ).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        it,
+                        false
+                    ).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
             }
             cost.listAddOnSummary.forEach {
@@ -282,7 +289,8 @@ class CheckoutCostViewHolder(
                 )
                 itemBinding.tvCheckoutCostItemTitle.text = it.wording
                 itemBinding.tvCheckoutCostItemValue.text = it.priceLabel
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
             }
             cost.listCrossSell.forEach {
@@ -292,8 +300,11 @@ class CheckoutCostViewHolder(
                     false
                 )
                 itemBinding.tvCheckoutCostItemTitle.text = it.crossSellModel.orderSummary.title
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.crossSellModel.price, false).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(it.crossSellModel.price, false)
+                        .removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
             }
             giftingList.forEach {
@@ -303,11 +314,13 @@ class CheckoutCostViewHolder(
                     false
                 )
                 itemBinding.tvCheckoutCostItemTitle.setText(R.string.checkout_label_total_gifting)
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    it,
-                    false
-                ).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        it,
+                        false
+                    ).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
             }
             egoldList.forEach {
@@ -316,9 +329,12 @@ class CheckoutCostViewHolder(
                     binding.llCheckoutCostOthersExpanded,
                     false
                 )
-                itemBinding.tvCheckoutCostItemTitle.text = binding.root.resources.getString(R.string.label_emas)
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemTitle.text =
+                    binding.root.resources.getString(R.string.label_emas)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
             }
             donationList.forEach {
@@ -327,9 +343,12 @@ class CheckoutCostViewHolder(
                     binding.llCheckoutCostOthersExpanded,
                     false
                 )
-                itemBinding.tvCheckoutCostItemTitle.text = binding.root.resources.getString(R.string.label_donation)
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemTitle.text =
+                    binding.root.resources.getString(R.string.label_donation)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
             }
 
@@ -363,11 +382,13 @@ class CheckoutCostViewHolder(
                     false
                 )
                 itemBinding.tvCheckoutCostItemTitle.setText(R.string.checkout_label_total_shipping_insurance)
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    it,
-                    false
-                ).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        it,
+                        false
+                    ).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthers.addView(itemBinding.root)
             }
             cost.listAddOnSummary.forEach {
@@ -378,7 +399,8 @@ class CheckoutCostViewHolder(
                 )
                 itemBinding.tvCheckoutCostItemTitle.text = it.wording
                 itemBinding.tvCheckoutCostItemValue.text = it.priceLabel
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthers.addView(itemBinding.root)
             }
             cost.listCrossSell.forEach {
@@ -388,8 +410,11 @@ class CheckoutCostViewHolder(
                     false
                 )
                 itemBinding.tvCheckoutCostItemTitle.text = it.crossSellModel.orderSummary.title
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.crossSellModel.price, false).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(it.crossSellModel.price, false)
+                        .removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthers.addView(itemBinding.root)
             }
             giftingList.forEach {
@@ -399,11 +424,13 @@ class CheckoutCostViewHolder(
                     false
                 )
                 itemBinding.tvCheckoutCostItemTitle.setText(R.string.checkout_label_total_gifting)
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    it,
-                    false
-                ).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        it,
+                        false
+                    ).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthers.addView(itemBinding.root)
             }
             egoldList.forEach {
@@ -412,9 +439,12 @@ class CheckoutCostViewHolder(
                     binding.llCheckoutCostOthers,
                     false
                 )
-                itemBinding.tvCheckoutCostItemTitle.text = binding.root.resources.getString(R.string.label_emas)
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemTitle.text =
+                    binding.root.resources.getString(R.string.label_emas)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthers.addView(itemBinding.root)
             }
             donationList.forEach {
@@ -423,9 +453,12 @@ class CheckoutCostViewHolder(
                     binding.llCheckoutCostOthers,
                     false
                 )
-                itemBinding.tvCheckoutCostItemTitle.text = binding.root.resources.getString(R.string.label_donation)
-                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false).removeDecimalSuffix()
-                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                itemBinding.tvCheckoutCostItemTitle.text =
+                    binding.root.resources.getString(R.string.label_donation)
+                itemBinding.tvCheckoutCostItemValue.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                    8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthers.addView(itemBinding.root)
             }
             binding.llCheckoutCostOthers.isVisible = true

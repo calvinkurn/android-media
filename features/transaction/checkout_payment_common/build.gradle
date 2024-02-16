@@ -46,6 +46,7 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeCoil
     implementation rootProject.ext.composeDependencies.composeConstraint
 
+    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.nestComponents
 
     implementation rootProject.ext.miscDependencies.coroutineCore
