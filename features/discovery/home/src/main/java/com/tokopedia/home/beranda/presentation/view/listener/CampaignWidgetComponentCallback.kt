@@ -79,10 +79,11 @@ class CampaignWidgetComponentCallback(
         )
     }
 
-    override fun onCardClicked(channel: ChannelModel, position: Int) {
+    override fun onCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             Kd4SquareTracker.cardClicked(
                 channel,
+                channelGrid,
                 homeCategoryListener.userId,
                 position
             ) as HashMap<String, Any>

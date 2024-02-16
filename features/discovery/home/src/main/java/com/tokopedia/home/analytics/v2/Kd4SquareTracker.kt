@@ -3,6 +3,7 @@ package com.tokopedia.home.analytics.v2
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
 import com.tokopedia.home.analytics.HomePageTracking.PROMOTIONS
+import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.constant.TrackerConstant
 
@@ -39,7 +40,7 @@ object Kd4SquareTracker : BaseTracking() {
     // TrackerID: 50021
     private const val CARD_CLICK_TRACKER_ID = "50021"
     private const val CARD_CLICK_ACTION = "click on banner dynamic channel 4 square"
-    fun cardClicked(model: ChannelModel, userId: String, position: Int): Map<String, Any> {
+    fun cardClicked(model: ChannelModel, channelGrid: ChannelGrid, userId: String, position: Int): Map<String, Any> {
         val attribute = model.trackingAttributionModel
 
         return DataLayer.mapOf(
@@ -55,7 +56,7 @@ object Kd4SquareTracker : BaseTracking() {
             TrackerConstant.USERID, userId,
             PROMOTIONS, listOf(
                 DataLayer.mapOf(
-                    "creative_name", model.channelHeader.name,
+                    "creative_name", channelGrid.attribution,
                     "creative_slot", (position + 1).toString(),
                     "item_id", "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
                     "name", "/ - p${position} - dynamic channel 4 square - banner - ${attribute.headerName}",

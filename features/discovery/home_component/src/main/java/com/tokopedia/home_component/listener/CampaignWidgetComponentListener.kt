@@ -35,6 +35,6 @@ interface CampaignWidgetComponentListener {
 
     // KD4
     fun onWidgetImpressed(channel: ChannelModel, position: Int)
-    fun onCardClicked(channel: ChannelModel, position: Int)
+    fun onCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int)
     fun onViewAllChevronClicked(channel: ChannelModel)
 }
