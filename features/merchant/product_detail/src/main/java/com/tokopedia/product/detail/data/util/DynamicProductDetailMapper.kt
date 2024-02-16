@@ -944,6 +944,7 @@ object DynamicProductDetailMapper {
                 (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp()) ||
                 (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) ||
                 (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp()) ||
+                (it.name() == ProductDetailConstant.VIEW_TO_VIEW && GlobalConfig.isSellerApp()) ||
                 /***
                  * remove palugada type with name
                  * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
