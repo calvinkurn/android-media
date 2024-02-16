@@ -161,20 +161,20 @@ class MixLeftComponentViewHolder (itemView: View,
             )
             image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageLoaderStateListener{
                 override fun successLoad(view: ImageView) {
-                    parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
+                    parallaxBackground.setGradientBackgroundIfAny(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
                 }
 
                 override fun failedLoad(view: ImageView) {
-                    parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
+                    parallaxBackground.setGradientBackgroundIfAny(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
                 }
             })
         } else {
             image.invisible()
-            parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
+            parallaxBackground.setGradientBackgroundIfAny(channel.channelBanner.gradientColor)
             loadingBackground.hide()
         }
     }
