@@ -14,7 +14,7 @@ import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
-import com.tokopedia.shop.common.util.ShopProductCardColorHelper
+import com.tokopedia.shop.common.util.productcard.ShopProductCardColorHelper
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
@@ -220,7 +220,8 @@ object ShopPageProductListMapper {
         isWideContent: Boolean,
         isShowThreeDots: Boolean = true,
         isForceLightMode: Boolean = false,
-        patternType: String = ""
+        patternType: String = "",
+        backgroundColor: String = ""
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -252,6 +253,7 @@ object ShopPageProductListMapper {
             stockBarLabel = shopProductUiModel.stockLabel,
             stockBarPercentage = shopProductUiModel.stockBarPercentage,
             isWideContent = isWideContent,
+            isWishlisted = shopProductUiModel.isWishList,
             forceLightModeColor = isForceLightMode,
             shopBadgeList = shopProductUiModel.badge.map {
                 ProductCardModel.ShopBadge(
@@ -260,7 +262,7 @@ object ShopPageProductListMapper {
                     title = it.title
                 )
             },
-            colorMode = productCardColorHelper.determineProductCardColorMode(isForceLightMode, patternType)
+            colorMode = productCardColorHelper.determineProductCardColorMode(isForceLightMode, patternType, backgroundColor)
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
             val productCardModel = if (shopProductUiModel.isVariant) {

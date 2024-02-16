@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.util.ShopProductCardColorHelper
+import com.tokopedia.shop.common.extension.disableDirectPurchaseCapability
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopProductCardListBinding
@@ -37,7 +37,6 @@ class ShopProductItemListViewHolder(
 
     private val viewBinding: ItemShopProductCardListBinding? by viewBinding()
     private val productCardView: ProductCardListView? = viewBinding?.productCardView
-    private val productCardColorHelper = ShopProductCardColorHelper()
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         val stockBarLabel = shopProductUiModel.stockLabel
@@ -53,10 +52,11 @@ class ShopProductItemListViewHolder(
             isWideContent = false,
             isShowThreeDots = isShowTripleDot,
             isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
-            patternType = productTabInterface?.getPatternColorType().orEmpty()
+            patternType = productTabInterface?.getPatternColorType().orEmpty(),
+            backgroundColor = productTabInterface?.getBackgroundColor().orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
-        )
+        ).disableDirectPurchaseCapability()
         productCardView?.setProductModel(productCardModel)
         productCardView?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, adapterPosition)
@@ -102,21 +102,6 @@ class ShopProductItemListViewHolder(
                 shopProductUiModel.minimumOrder
             )
         }
-
-        handleOverrideProductCardColor()
     }
-
-    private fun handleOverrideProductCardColor() {
-        if (productCardColorHelper.shouldOverrideProductCardColor(
-                shouldOverrideTheme = productTabInterface?.isOverrideTheme().orFalse(),
-                patternType = productTabInterface?.getPatternColorType().orEmpty()
-            )
-        ) {
-            productCardColorHelper.overrideProductCardContentToLightColor(
-                view = viewBinding?.productCardView,
-                colorSchema = productTabInterface?.getShopPageColorSchema(),
-                backgroundColor = productTabInterface?.getBackgroundColor().orEmpty()
-            )
-        }
-    }
+    
 }

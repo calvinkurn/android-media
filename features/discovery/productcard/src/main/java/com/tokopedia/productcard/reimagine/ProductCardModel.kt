@@ -2,6 +2,7 @@ package com.tokopedia.productcard.reimagine
 
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.experiments.ColorMode
+import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine
 
@@ -21,7 +22,7 @@ data class ProductCardModel(
     val stockInfo: StockInfo = StockInfo(),
     val isSafeProduct: Boolean = false,
     val isInBackground: Boolean = false,
-    val colorMode: ColorMode? = null
+    val colorMode: ProductCardColor? = null 
 ) {
 
     fun labelBenefit(): LabelGroupReimagine? =

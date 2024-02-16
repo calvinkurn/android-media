@@ -164,7 +164,8 @@ class ShopHomeCarousellProductViewHolder(
                 isWideContent = false,
                 productRating = if (it.rating != 0.0) it.rating.toString() else "",
                 forceLightModeColor = shopHomeListener.isOverrideTheme(),
-                patternColorType = shopHomeListener.getPatternColorType()
+                patternColorType = shopHomeListener.getPatternColorType(),
+                backgroundColor = shopHomeListener.getBackgroundColor()
             )
         }
         if (isProductCardSingleOrDouble(shopHomeProductViewModelList)) {

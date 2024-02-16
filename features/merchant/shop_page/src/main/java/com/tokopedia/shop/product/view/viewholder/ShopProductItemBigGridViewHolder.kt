@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.util.ShopProductCardColorHelper
+import com.tokopedia.shop.common.extension.disableDirectPurchaseCapability
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopNewproductBigGridBinding
@@ -37,7 +37,6 @@ class ShopProductItemBigGridViewHolder(
 
     private val viewBinding: ItemShopNewproductBigGridBinding? by viewBinding()
     private val productCard: ProductCardGridView? = viewBinding?.productCard
-    private val productCardColorHelper = ShopProductCardColorHelper()
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         val stockBarLabel = shopProductUiModel.stockLabel
@@ -53,10 +52,11 @@ class ShopProductItemBigGridViewHolder(
             isWideContent = true,
             isShowThreeDots = isShowTripleDot,
             isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
-            patternType = productTabInterface?.getPatternColorType().orEmpty()
+            patternType = productTabInterface?.getPatternColorType().orEmpty(),
+            backgroundColor = productTabInterface?.getBackgroundColor().orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
-        )
+        ).disableDirectPurchaseCapability()
         productCard?.setProductModel(productCardModel)
         productCard?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, adapterPosition)
@@ -104,22 +104,6 @@ class ShopProductItemBigGridViewHolder(
             shopProductClickedListener?.onProductAtcDefaultClick(
                 shopProductUiModel,
                 shopProductUiModel.minimumOrder
-            )
-        }
-
-        handleOverrideProductCardColor()
-    }
-
-    private fun handleOverrideProductCardColor() {
-        if (productCardColorHelper.shouldOverrideProductCardColor(
-                shouldOverrideTheme = productTabInterface?.isOverrideTheme().orFalse(),
-                patternType = productTabInterface?.getPatternColorType().orEmpty()
-            )
-        ) {
-            productCardColorHelper.overrideProductCardContentToLightColor(
-                view = viewBinding?.productCard,
-                colorSchema = productTabInterface?.getShopPageColorSchema(),
-                backgroundColor = productTabInterface?.getBackgroundColor().orEmpty()
             )
         }
     }
