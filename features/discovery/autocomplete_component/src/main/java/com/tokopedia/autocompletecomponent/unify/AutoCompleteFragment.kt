@@ -33,7 +33,7 @@ class AutoCompleteFragment @Inject constructor(
 
         setContent {
             NestTheme {
-                AutoCompleteScreen(viewModel, iris, activity as AutoCompleteListener?)
+                AutoCompleteScreen(viewModel, iris, (activity as? AutoCompleteListener))
             }
         }
         viewModel.onScreenInitialized()

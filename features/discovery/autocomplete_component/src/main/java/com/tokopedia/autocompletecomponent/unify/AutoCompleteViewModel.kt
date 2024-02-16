@@ -74,7 +74,7 @@ internal class AutoCompleteViewModel @Inject constructor(
         )
 
     private fun parameterStateIsSuggestions(parameter: Map<String, String> = stateValue.parameter) =
-        parameter.getOrDefault(SearchApiConst.Q, null).isNullOrBlank().not()
+        parameter[SearchApiConst.Q].isNullOrBlank().not()
 
     private fun getSuggestionStateData(parameter: Map<String, String>) {
         val requestParams = getParamsMainQuery(parameter, userSession)

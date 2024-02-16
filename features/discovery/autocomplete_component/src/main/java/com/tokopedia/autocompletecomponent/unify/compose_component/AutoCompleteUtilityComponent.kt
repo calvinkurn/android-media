@@ -80,6 +80,51 @@ internal fun AutoCompleteLeftIcon(item: SuggestionUnifyImage) {
 }
 
 @Composable
+internal fun AutoCompleteLeftIconEducation(item: SuggestionUnifyImage) {
+    ConstraintLayout(
+        modifier = Modifier.size(24.dp)
+    ) {
+        val (iconTitle, iconSubtitle) = createRefs()
+        var imageModifier = Modifier
+            .constrainAs(iconTitle) {
+                start.linkTo(parent.start)
+                top.linkTo(parent.top)
+                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom)
+                width = Dimension.fillToConstraints
+                height = Dimension.fillToConstraints
+            }
+            .clip(RoundedCornerShape(item.radius.toIntOrZero().dp))
+        if (item.isBorder) {
+            imageModifier = imageModifier.border(
+                1.dp,
+                NestTheme.colors.NN._300,
+                RoundedCornerShape(item.radius.toIntOrZero().dp)
+            )
+        }
+        NestImage(
+            source = ImageSource.Remote(
+                source = item.imageUrl
+            ),
+            modifier = imageModifier
+        )
+        if (item.iconImageUrl.isNotBlank()) {
+            NestImage(
+                source = ImageSource.Remote(
+                    source = item.iconImageUrl
+                ),
+                modifier = Modifier
+                    .size(16.dp)
+                    .constrainAs(iconSubtitle) {
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                    }
+            )
+        }
+    }
+}
+
+@Composable
 internal fun AutoCompleteDescription(
     title: SuggestionUnifyTitle,
     searchTerm: String,
@@ -257,6 +302,28 @@ internal fun AutoCompleteRightLabel(item: SuggestionUnifyLabel, onItemClicked: (
     NestTypography(
         text = item.text,
         textStyle = NestTheme.typography.display3.copy(color = textColor),
+        modifier = Modifier.clickable {
+            onItemClicked()
+        }
+    )
+}
+
+@Composable
+internal fun AutocompleteRightLabelEducation(item: SuggestionUnifyLabel, onItemClicked: () -> Unit = {}) {
+    val textColor: Color = if (item.textColor.isNotBlank()) {
+        Color(android.graphics.Color.parseColor(item.textColor))
+    } else {
+        NestTheme.colors.GN._500
+    }
+
+    val backgroundColor = if (item.bgColor.isNotBlank()) {
+        Color(android.graphics.Color.parseColor(item.bgColor))
+    } else {
+        Color.Transparent
+    }
+    NestTypography(
+        text = item.text,
+        textStyle = NestTheme.typography.display2.copy(color = textColor, fontWeight = FontWeight.ExtraBold),
         modifier = Modifier.clickable {
             onItemClicked()
         }
