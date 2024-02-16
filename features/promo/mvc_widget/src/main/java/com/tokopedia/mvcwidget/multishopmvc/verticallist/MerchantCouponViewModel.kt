@@ -19,7 +19,6 @@ class MerchantCouponViewModel @Inject constructor(private val usecase: MerchantC
                 couponData.value = LiveDataResult.success(MerchantCouponData(data))
             }
         }) {
-            println(it)
             couponData.value = LiveDataResult.error(it)
         }
     }

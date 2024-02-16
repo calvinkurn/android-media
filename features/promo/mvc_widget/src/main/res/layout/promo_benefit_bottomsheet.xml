@@ -22,8 +22,7 @@
             android:layout_height="68dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/temp_superbg" />
+            android:scaleType="fitXY" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_close"

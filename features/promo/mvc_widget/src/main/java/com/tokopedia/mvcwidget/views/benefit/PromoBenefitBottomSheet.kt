@@ -30,6 +30,7 @@ import com.tokopedia.mvcwidget.databinding.PromoBenefitBottomsheetBinding
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.mvcwidget.trackers.PromoBenefitAnalytics
 import com.tokopedia.mvcwidget.utils.getUnifyColorFromHex
+import com.tokopedia.mvcwidget.utils.parseColorSafely
 import com.tokopedia.mvcwidget.utils.setAttribute
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -101,12 +102,12 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                         viewModel.state.collect { model ->
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 drawable?.colorFilter = BlendModeColorFilter(
-                                    Color.parseColor(model.bgColor),
+                                    requireContext().parseColorSafely(model.bgColor),
                                     BlendMode.SRC_ATOP
                                 )
                             } else {
                                 drawable?.setColorFilter(
-                                    Color.parseColor(model.bgColor),
+                                    requireContext().parseColorSafely(model.bgColor),
                                     PorterDuff.Mode.SRC_ATOP
                                 )
                             }
