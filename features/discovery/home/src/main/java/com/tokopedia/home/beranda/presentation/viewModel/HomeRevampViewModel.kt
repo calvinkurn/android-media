@@ -950,11 +950,11 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun onCouponClaim(catalogId: String, couponPosition: Int) {
         launch {
-            val (isClaimSucceed, failure) = claimCouponUseCase.get().invoke(catalogId)
+            val result = claimCouponUseCase.get().invoke(catalogId)
 
             withContext(homeDispatcher.get().main) {
-                if (failure != null) {
-                    _errorEventLiveData.value = Event(failure)
+                if (result.errorException != null) {
+                    _errorEventLiveData.value = Event(result.errorException)
                     return@withContext
                 }
 
@@ -963,9 +963,17 @@ open class HomeRevampViewModel @Inject constructor(
                         val coupon = this[couponPosition]
 
                         this[couponPosition] = coupon.copy(
-                            button = if (isClaimSucceed) {
-                                val model = coupon.button.model ?: return@findWidget
-                                CouponCtaState.Redirect(model)
+                            button = if (result.isRedeemSucceed) {
+                                val ctaData = coupon.button.model ?: return@findWidget
+                                val redirectUrl = result.redirectUrl ?: ctaData.url
+
+                                val newCtaData = CouponCtaState.Data(
+                                    catalogId = catalogId,
+                                    url = redirectUrl,
+                                    appLink = ctaData.appLink
+                                )
+
+                                CouponCtaState.Redirect(newCtaData)
                             } else {
                                 coupon.button
                             }
