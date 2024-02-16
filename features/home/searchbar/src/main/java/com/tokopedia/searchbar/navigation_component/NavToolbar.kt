@@ -30,11 +30,17 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_FROM
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
@@ -245,6 +251,13 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
         configureToolbarContentTypeBasedOnAttribute()
+
+        layoutSearch.addOnImpressionListener(ImpressHolder()) {
+            AppLogSearch.eventShowSearch(
+                SEARCH_ENTRANCE to if (toolbarPageName == "/") HOMEPAGE else "",
+                ENTER_FROM to if (toolbarPageName == "/") HOMEPAGE else "",
+            )
+        }
     }
 
     /**
@@ -408,8 +421,9 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                 after: Int
             ) -> Unit
         )? = null,
-        editorActionCallback: ((hint: String) -> Unit)? = null
-
+        editorActionCallback: ((hint: String) -> Unit)? = null,
+        hintImpressionCallback: ((hint: HintData, index: Int) -> Unit)? = null,
+        hintClickCallback: ((hint: HintData, index: Int) -> Unit)? = null,
     ) {
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
@@ -421,7 +435,9 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
             topNavComponentListener = this,
             disableDefaultGtmTracker = disableDefaultGtmTracker,
             navSearchbarInterface = navSearchbarInterface,
-            editorActionCallback = editorActionCallback
+            editorActionCallback = editorActionCallback,
+            hintImpressionCallback = hintImpressionCallback,
+            hintClickCallback = hintClickCallback,
         )
         this.searchbarType = searchbarType
         searchbarTypeValidation(

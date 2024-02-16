@@ -133,4 +133,5 @@ object AppLogParam {
     const val IS_USE_CACHE = "is_use_cache"
     const val REQUEST_ID = "request_id"
     const val SHOP_ID = "shop_id"
+    const val ITEM_ORDER = "item_order"
 }

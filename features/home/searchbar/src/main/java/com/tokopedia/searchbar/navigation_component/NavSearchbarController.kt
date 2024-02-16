@@ -37,7 +37,9 @@ class NavSearchbarController(val view: View,
                                                       start: Int,
                                                       count: Int,
                                                       after: Int) -> Unit)? = null,
-                             val editorActionCallback: ((hint: String)-> Unit)?
+                             val editorActionCallback: ((hint: String)-> Unit)?,
+                             val hintImpressionCallback: ((hint: HintData, index: Int) -> Unit)? = null,
+                             val hintClickCallback: ((hint: HintData, index: Int) -> Unit)? = null,
 ) : CoroutineScope {
 
     companion object {
@@ -154,7 +156,11 @@ class NavSearchbarController(val view: View,
     }
 
     private fun setHintSingle(hint: HintData) {
-        etSearch?.hint = if (hint.placeholder.isEmpty()) view.context.getString(R.string.search_tokopedia) else hint.placeholder
+        val (placeholder, index) =
+            if (hint.placeholder.isEmpty()) view.context.getString(R.string.search_tokopedia) to -1
+            else hint.placeholder to 0
+        etSearch?.hint = placeholder
+        hintImpressionCallback?.invoke(hint, index)
         etSearch?.setOnClickListener {
             if (!disableDefaultGtmTracker) {
                 NavToolbarTracking.clickNavToolbarComponent(
@@ -176,12 +182,14 @@ class NavSearchbarController(val view: View,
             hints: List<HintData>,
             durationAutoTransition: Long
     ) {
-        var iterator = hints.iterator()
+        var iterator = hints.iterator().withIndex()
 
         animationJob = launch {
             while (true) {
                 var hint = view.context.getString(R.string.search_tokopedia)
                 var keyword = ""
+                var index = -1
+                var hintData = HintData(hint, keyword)
                 val slideUpIn = AnimationUtils.loadAnimation(view.context, R.anim.search_bar_slide_up_in)
                 slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
                 val slideOutUp = AnimationUtils.loadAnimation(view.context, R.anim.slide_out_up)
@@ -190,18 +198,23 @@ class NavSearchbarController(val view: View,
                     override fun onAnimationRepeat(animation: Animation?) {}
                     override fun onAnimationEnd(animation: Animation?) {
                         if (iterator.hasNext()) {
-                            val placeholder = iterator.next()
-                            hint = placeholder.placeholder
-                            keyword = placeholder.keyword
+                            val nextIndexedIterator = iterator.next()
+                            index = nextIndexedIterator.index
+                            hintData = nextIndexedIterator.value
+                            hint = hintData.placeholder
+                            keyword = hintData.keyword
                         } else {
-                            iterator = hints.iterator()
-                            val placeholder = iterator.next()
-                            hint = placeholder.placeholder
-                            keyword = placeholder.keyword
+                            iterator = hints.iterator().withIndex()
+                            val nextIndexedIterator = iterator.next()
+                            index = nextIndexedIterator.index
+                            hintData = nextIndexedIterator.value
+                            hint = hintData.placeholder
+                            keyword = hintData.keyword
                         }
                         etSearch?.hint = hint
                         etSearch?.startAnimation(slideUpIn)
                         searchbarImpressionCallback?.invoke(hint)
+                        hintImpressionCallback?.invoke(hintData, index)
                     }
 
                     override fun onAnimationStart(animation: Animation?) {}
@@ -215,6 +228,7 @@ class NavSearchbarController(val view: View,
                                 userId = topNavComponentListener.getUserId()
                         )
                     }
+                    hintClickCallback?.invoke(hintData, index)
                     if (searchbarClickCallback == null) {
                         onClickHint()
                     } else {
