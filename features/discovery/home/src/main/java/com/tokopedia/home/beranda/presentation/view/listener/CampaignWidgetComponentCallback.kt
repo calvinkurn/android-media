@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.listener
 
 import android.content.Context
 import com.tokopedia.home.analytics.v2.CampaignWidgetTracking
+import com.tokopedia.home.analytics.v2.Kd4SquareTracker
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.CampaignWidgetComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -66,5 +67,31 @@ class CampaignWidgetComponentCallback(
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
+    }
+
+    override fun onWidgetImpressed(channel: ChannelModel, position: Int) {
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+            Kd4SquareTracker.widgetImpressed(
+                channel,
+                homeCategoryListener.userId,
+                position
+            ) as HashMap<String, Any>
+        )
+    }
+
+    override fun onCardClicked(channel: ChannelModel, position: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Kd4SquareTracker.cardClicked(
+                channel,
+                homeCategoryListener.userId,
+                position
+            ) as HashMap<String, Any>
+        )
+    }
+
+    override fun onViewAllChevronClicked(channel: ChannelModel) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Kd4SquareTracker.viewAllChevronClicked(channel) as HashMap<String, Any>
+        )
     }
 }

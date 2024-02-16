@@ -60,6 +60,17 @@ open class OrigamiSDUIViewHolder(
                     )
                     "click see all header" -> listenerTracker.onSeeAllBannerClicked(it.channelModel, "")
                     "click see all card" -> listenerTracker.onSeeMoreCardClicked(it.channelModel, "")
+
+                    // Kd4
+                    "impression on banner dynamic channel 4 square" -> {
+                        listenerTracker.onWidgetImpressed(it.channelModel, bindingAdapterPosition)
+                    }
+                    "click on banner dynamic channel 4 square" -> {
+                        listenerTracker.onCardClicked(it.channelModel, bindingAdapterPosition)
+                    }
+                    "click view all chevron on dynamic channel 4 square" -> {
+                        listenerTracker.onViewAllChevronClicked(it.channelModel)
+                    }
                 }
             }
         }
