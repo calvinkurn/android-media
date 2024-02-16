@@ -174,14 +174,19 @@ data class Properties(
     }
 
     // use custom listener for the image loader callback
+    /**
+     * onSuccess: (resource, dataSource, isFirstResource)
+     * onError: (exception)
+     * onSuccessGif: (resource, dataSource)
+     */
     fun listener(
-        onSuccess: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
+        onSuccess: (Bitmap?, MediaDataSource?, Boolean) -> Unit = { _, _, _ -> },
         onError: (MediaException?) -> Unit = { _ -> },
         onSuccessGif: (GifDrawable?, MediaDataSource?) -> Unit = { _, _ -> }
     ) = apply {
         this.loaderListener = object : MediaListener {
-            override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?) {
-                onSuccess(resource, dataSource)
+            override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?, isFirstResource: Boolean) {
+                onSuccess(resource, dataSource, isFirstResource)
             }
 
             override fun onFailed(error: MediaException?) {
