@@ -462,8 +462,8 @@ object ShopPageHomeMapper {
                         mapToDisplayImageWidget(
                             widgetResponse,
                             widgetLayout,
-                            false,
-                            ShopPageColorSchema()
+                            isOverrideTheme,
+                            colorSchema
                         )
                     }
 
