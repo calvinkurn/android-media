@@ -21,6 +21,15 @@ internal fun Context.getUnifyColorFromHex(hex: String): Int {
     }
 }
 
+internal fun Context.parseColorSafely(hex: String): Int {
+    return runCatching { Color.parseColor(hex) }.getOrDefault(
+        ContextCompat.getColor(
+            this,
+            unifyprinciplesR.color.Unify_RN50
+        )
+    )
+}
+
 internal fun TextView.setAttribute(text: String, color: Int, typeFace: String) {
     this.text = text
     setTextColor(color)
