@@ -1,7 +1,6 @@
 package com.tokopedia.discovery_component.widgets.automatecoupon
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.DimenRes
@@ -9,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery_component.R
 import com.tokopedia.discovery_component.databinding.AutomateCouponGridLayoutBinding
+import com.tokopedia.discovery_component.widgets.utils.HexColorParser
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
@@ -105,7 +105,9 @@ class AutomateCouponGridView @JvmOverloads constructor(
 
     private fun Typography.render(dynamicColorText: DynamicColorText) {
         text = MethodChecker.fromHtml(dynamicColorText.value)
-        setTextColor(Color.parseColor(dynamicColorText.colorHex))
+        HexColorParser.parse(dynamicColorText.colorHex) {
+            setTextColor(it)
+        }
     }
     //endregion
 }
