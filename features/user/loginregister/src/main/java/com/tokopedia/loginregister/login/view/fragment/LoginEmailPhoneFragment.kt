@@ -1353,7 +1353,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun onGoToForbiddenPage() {
-        ForbiddenActivity.startActivity(requireContext())
+        context?.let {
+            ForbiddenActivity.startActivity(it)
+        }
     }
 
     override fun onSuccessGetUserInfo(profilePojo: ProfilePojo) {
