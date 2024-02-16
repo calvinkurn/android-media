@@ -83,7 +83,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -149,6 +148,7 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.usecase.thematic.ThematicModel
 import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
@@ -177,6 +177,7 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notifications.inApp.ketupat.GamificationPopUpHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
@@ -354,6 +355,8 @@ open class HomeRevampFragment :
 
     @Inject
     lateinit var homeRemoteConfigController: HomeRemoteConfigController
+
+    var gamificationPopUpHandler: GamificationPopUpHandler? = null
 
     @Inject
     lateinit var homePrefController: HomePrefController
@@ -968,7 +971,7 @@ open class HomeRevampFragment :
     }
 
     private fun notifyHomeThematicChanges(
-        thematicModel: HomeThematicModel,
+        thematicModel: ThematicModel,
         isBackgroundLoaded: Boolean = false
     ) {
         getThematicUtil().thematicModel = thematicModel
@@ -1090,6 +1093,15 @@ open class HomeRevampFragment :
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
+        // trigger gamification popup flow
+        executeGamificationPopUpFlow()
+    }
+
+    private fun executeGamificationPopUpFlow() {
+        if (gamificationPopUpHandler == null) {
+            gamificationPopUpHandler = GamificationPopUpHandler()
+        }
+        activity?.let { gamificationPopUpHandler?.onFragmentResume(it) }
     }
 
     private fun conditionalViewModelRefresh() {

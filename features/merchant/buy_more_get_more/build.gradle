@@ -56,6 +56,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
 
+    implementation projectOrAar(rootProject.ext.features.bmsmWidget)
+    implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.minicart)
 
@@ -110,6 +112,9 @@ dependencies {
     //Shop Common
     implementation projectOrAar(rootProject.ext.features.shopCommon)
 
+    //Shop Widget
+    implementation projectOrAar(rootProject.ext.features.shopPageWidget)
+
     //Logistic
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 
@@ -130,6 +135,9 @@ dependencies {
 
     //Recom common
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+
+    //Purchase Platform Common
+    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
 
     // UI test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

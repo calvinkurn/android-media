@@ -5,6 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
+import com.tokopedia.search.result.domain.usecase.searchproduct.sreParams
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -18,7 +19,7 @@ class GetInspirationCarouselChipsProductsUseCase(
     override fun createObservable(
         requestParams: RequestParams
     ): Observable<InspirationCarouselChipsProductModel> {
-        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
+        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters) + sreParams()
         val graphqlRequest = GraphqlRequest(
             GetInspirationCarouselChipProductsQuery(),
             InspirationCarouselChipsProductModel::class.java,

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/csat_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Gimana pengalamanmu dengan Tokopedia TokopediaTokopediaTokopedia Care?" />
+
+        <LinearLayout
+            android:id="@+id/csat_emoji_container"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/csat_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/csat_caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/csat_emoji_container"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Tidak Puas" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/dividerUnify"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/csat_caption" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/csat_reason_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dividerUnify"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Apa yang bikin kamu kecewa?" />
+
+        <LinearLayout
+            android:id="@+id/csat_reason_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/csat_reason_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/csat_other_reason_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/csat_reason_container"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Gimana kami bisa memperbaikinya?" />
+
+        <com.tokopedia.unifycomponents.TextAreaUnify2
+            android:id="@+id/csat_other_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/csat_other_reason_title" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/csat_button_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="@string/chatbot_csat_submit_label"
+            app:layout_constraintTop_toBottomOf="@+id/csat_other_reason"
+            tools:layout_editor_absoluteX="16dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
