@@ -371,7 +371,7 @@ ext {
             mp4parser             : "com.googlecode.mp4parser:isoparser:$mp4parserVersion",
             profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion",
             desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion",
-            ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
+            ffmpeg                : "com.arthenica:mobileffmpeg:4.4-bd-modified@aar",
             influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05",
             rechargePcidss        : "com.tokopedia.recharge_credit_card.widget:recharge-pcidss:${rechargePcidssVersion}@aar"
     ]
