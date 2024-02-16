@@ -154,7 +154,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://shipping/tracking/1718057773"
+        return ""
     }
 
     data class Model(
