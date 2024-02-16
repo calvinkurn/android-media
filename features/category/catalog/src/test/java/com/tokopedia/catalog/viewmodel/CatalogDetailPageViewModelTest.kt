@@ -3,13 +3,21 @@ package com.tokopedia.catalog.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tkpd.atcvariant.usecase.GetProductVariantAggregatorUseCase
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -206,5 +214,79 @@ class CatalogDetailPageViewModelTest {
         job.cancel()
 
         assert(result == "Highlight")
+    }
+
+    @Test
+    fun `Add To Cart Response Success with status ok`() {
+        val paramViewModel = CatalogProductAtcUiModel()
+        val paramUseCase = AddToCartRequestParams(
+            productId = paramViewModel.productId,
+            shopId = paramViewModel.shopId,
+            quantity = paramViewModel.quantity,
+            warehouseId = paramViewModel.warehouseId
+        )
+        val response = AddToCartDataModel(data = DataModel(success = 1), status = "OK", errorMessage = arrayListOf("error"))
+        coEvery {
+            addToCartUseCase.setParams(paramUseCase)
+            addToCartUseCase.executeOnBackground()
+        } returns response
+
+        viewModel.addProductToCart(paramViewModel)
+
+        assert(viewModel.addToCartDataModel.value?.isStatusError() == false)
+    }
+
+    @Test
+    fun `Add To Cart Response Fail`() {
+        val paramViewModel = CatalogProductAtcUiModel()
+        val paramUseCase = AddToCartRequestParams(
+            productId = paramViewModel.productId,
+            shopId = paramViewModel.shopId,
+            quantity = paramViewModel.quantity,
+            warehouseId = paramViewModel.warehouseId
+        )
+        val error = Throwable()
+        coEvery {
+            addToCartUseCase.setParams(paramUseCase)
+            addToCartUseCase.executeOnBackground()
+        } throws error
+
+        viewModel.addProductToCart(paramViewModel)
+
+        assert(viewModel.errorsToaster.value == error)
+    }
+
+    @Test
+    fun `getVariantInfo Response Success`() {
+        val testData = listOf("Merah", "L")
+        coEvery {
+            aggregatorUseCase.executeOnBackground(any())
+        } returns ProductVariantAggregatorUiData(
+            variantData = ProductVariant(
+                defaultChild = "123",
+                children = listOf(
+                    VariantChild(
+                        productId = "123",
+                        optionName = testData
+                    )
+                )
+            )
+        )
+
+        viewModel.getVariantInfo()
+
+        assert(viewModel.variantName.getOrAwaitValue() == testData.joinToString())
+    }
+
+    @Test
+    fun `getVariantInfo Response Fail`() {
+        val error = MessageErrorException("error")
+        coEvery {
+            aggregatorUseCase.executeOnBackground(any())
+        } throws error
+
+        viewModel.getVariantInfo()
+
+        assert(viewModel.errorsToaster.getOrAwaitValue().message == "error")
     }
 }
