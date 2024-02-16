@@ -36,7 +36,19 @@ data class FestiveEligibilityPolicy(
             ComponentNames.CalendarWidgetCarousel.componentName,
             ComponentNames.ProductHighlight.componentName,
             ComponentNames.ProductCardCarousel.componentName,
-            ComponentNames.ShopOfferHeroBrand.componentName
+            ComponentNames.ShopOfferHeroBrand.componentName,
+            ComponentNames.Margin.componentName,
+            ComponentNames.ShopCardView.componentName,
+            ComponentNames.ShopCardItemView.componentName,
+            ComponentNames.MerchantVoucherGrid.componentName,
+            ComponentNames.MerchantVoucherGridItem.componentName,
+            ComponentNames.ShopOfferSupportingBrand.componentName,
+            ComponentNames.ContentCard.componentName,
+            ComponentNames.BannerCarousel.componentName,
+            ComponentNames.ClaimCoupon.componentName,
+            ComponentNames.TimerSprintSale.componentName,
+            ComponentNames.MerchantVoucher.componentName,
+            ComponentNames.FlashSaleTokoTab.componentName
         )
     }
 }

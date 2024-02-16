@@ -136,6 +136,8 @@ open class MainEditorActivity : AppCompatActivity(),
 
         setDataParam()
         initObserver()
+
+        viewModel.onEvent(MainEditorEvent.CacheClearChecker)
     }
 
     override fun onDestroy() {

@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
+import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -14,11 +15,14 @@ object HomeRollenceController {
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
     var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
     var iconJumperSREValue: String = ""
+    var isMegaTabEnabled = false
 
     fun fetchHomeRollenceValue() {
         fetchAtfRollenceValue()
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
+        fetchHomeMegaTabRollenceValue()
+        HomeComponentFeatureFlag.fetchMissionRollenceValue()
     }
 
     @JvmStatic
@@ -65,6 +69,21 @@ object HomeRollenceController {
         } catch (_: Exception) {
             RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
         }
+    }
+
+    private fun fetchHomeMegaTabRollenceValue() {
+        // set the default value to exp variant so that users that are not included
+        // in the experiment still get the new caching mechanism
+        val megaTab = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.HOME_MEGATAB,
+                ""
+            )
+        } catch (_: Exception) {
+            ""
+        }
+
+        isMegaTabEnabled = megaTab.isNotEmpty()
     }
 
     fun isLoadAtfFromCache(): Boolean {

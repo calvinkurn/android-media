@@ -1,21 +1,26 @@
 package com.tokopedia.product.detail.view.fragment.delegate
 
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.componentization.ComponentCallback
+import com.tokopedia.product.detail.view.componentization.ComponentEvent
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
+import com.tokopedia.product.detail.view.viewholder.ActionUiModel
+import timber.log.Timber
 
 /**
  * Created by yovi.putra on 14/11/23"
  * Project name: android-tokopedia-core
  **/
 
-abstract class BaseComponentCallback<Event : BaseComponentEvent>(
+abstract class BaseComponentCallback<Event : ComponentEvent>(
     private val mediator: PdpComponentCallbackMediator
-) : ComponentCallback<BaseComponentEvent> {
+) : ComponentCallback<ComponentEvent> {
 
     protected val context
         get() = mediator.rootView.context
@@ -26,27 +31,32 @@ abstract class BaseComponentCallback<Event : BaseComponentEvent>(
     protected val queueTracker
         get() = mediator.queueTracker
 
+    val impressionHolders
+        get() = viewModel.impressionHolders
+
+    val parentRecyclerViewPool
+        get() = mediator.recyclerViewPool
+
+    val isRemoteCacheableActive
+        get() = viewModel.getDynamicProductInfoP1?.cacheState?.remoteCacheableActive.orFalse()
+
     @Suppress("UNCHECKED_CAST")
-    override fun event(event: BaseComponentEvent) {
-        when (event) {
-            is OnImpressComponent -> {
-                onImpressComponent(trackData = event.trackData)
-            }
-
-            is GoToApplink -> {
-                RouteManager.route(context, event.applink)
-            }
-            else -> {
-                val mEvent = event as? Event
-
-                if (mEvent != null) {
-                    onEvent(event = mEvent)
-                }
-            }
-        }
+    override fun event(event: ComponentEvent) {
+        Timber.tag("pdp_event").d(event.toString())
+        extractBasicEvent(event = event)
     }
 
     protected abstract fun onEvent(event: Event)
+
+    @Suppress("UNCHECKED_CAST")
+    private fun extractBasicEvent(event: ComponentEvent) {
+        when (event) {
+            is BasicComponentEvent.OnImpressComponent -> onImpressComponent(trackData = event.trackData)
+            else -> runCatching { event as Event }
+                .onSuccess { onEvent(event = it) }
+                .onFailure { Timber.e(it) }
+        }
+    }
 
     private fun onImpressComponent(trackData: ComponentTrackDataModel) {
         if (viewModel.getDynamicProductInfoP1?.cacheState?.isPrefetch == true) return
@@ -85,12 +95,31 @@ abstract class BaseComponentCallback<Event : BaseComponentEvent>(
         return viewModel.getP2ShipmentPlusByProductId()?.text.orEmpty()
     }
 
-    protected fun ComponentTrackDataModel.asCommonTracker(): CommonTracker? {
+    private fun goToAppLink(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
+    private fun goToWebView(link: String) {
+        val webViewStartsWith = "${ApplinkConst.WEBVIEW}?url="
+        val appLink = if (link.startsWith(webViewStartsWith)) {
+            link
+        } else {
+            "$webViewStartsWith$link"
+        }
+
+        RouteManager.route(context, appLink)
+    }
+
+    protected fun getCommonTracker(): CommonTracker? {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return null
-        return CommonTracker(
-            productInfo = productInfo,
-            userId = viewModel.userId,
-            componentTracker = this
-        )
+        return CommonTracker(productInfo = productInfo, userId = viewModel.userId)
+    }
+
+    protected fun ActionUiModel.navigate(others: ActionUiModel.() -> Unit = {}) {
+        when (type) {
+            ActionUiModel.WEBVIEW -> goToWebView(link = link)
+            ActionUiModel.APPLINK -> goToAppLink(appLink = link)
+            else -> others()
+        }
     }
 }

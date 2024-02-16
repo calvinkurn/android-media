@@ -21,6 +21,7 @@
     <dimen name="home_dynamic_header_bottom_padding_with_timer_old">8dp</dimen>
 
     <!--Widgets-->
+    <dimen name="home_recommendation_mega_tab_padding">8dp</dimen>
     <dimen name="home_reminder_card_min_height">110dp</dimen>
     <dimen name="home_reminder_background_margin">6dp</dimen>
     <dimen name="home_reminder_product_icon_card_padding">10dp</dimen>
@@ -50,7 +51,8 @@
 
     <dimen name="home_mission_widget_card_image_size">128dp</dimen>
     <dimen name="home_mission_widget_card_margin_horizontal_subtitle">8dp</dimen>
-    <dimen name="home_mission_widget_clear_image_size">100dp</dimen>
+    <dimen name="home_mission_widget_clear_small_image_size">100dp</dimen>
+    <dimen name="home_mission_widget_clear_big_image_size">116dp</dimen>
     <dimen name="home_mission_widget_clear_image_corner_radius">8dp</dimen>
     <dimen name="home_mission_widget_clear_horizontal_padding">12dp</dimen>
     <dimen name="home_mission_widget_clear_bottom_padding">8dp</dimen>
@@ -68,9 +70,9 @@
     <dimen name="home_dynamic_icon_big_image_corner_radius">12dp</dimen>
 
     <dimen name="home_dynamic_icon_small_padding_top">4dp</dimen>
-    <dimen name="home_dynamic_icon_small_margin_top_title">6dp</dimen>
-    <dimen name="home_dynamic_icon_small_image_size">42dp</dimen>
-    <dimen name="home_dynamic_icon_small_title_width">58dp</dimen>
+    <dimen name="home_dynamic_icon_small_margin_top_title">4dp</dimen>
+    <dimen name="home_dynamic_icon_small_image_size">48dp</dimen>
+    <dimen name="home_dynamic_icon_small_title_width">56dp</dimen>
     <dimen name="home_dynamic_icon_small_image_corner_radius">8dp</dimen>
 
     <dimen name="home_deals_outer_card_padding">4dp</dimen>

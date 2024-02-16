@@ -2,21 +2,27 @@ package com.tokopedia.home_component.util
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.PaintDrawable
 import android.util.TypedValue
 import android.view.View
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.productcard.R as productcardR
 
 /**
  * Created by Lukas on 2019-08-20
@@ -105,8 +111,17 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
         } else {
             this.setBackgroundColor(Color.parseColor(colorArray[0]))
         }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
     }
+}
+
+fun View.setGradientBackgroundIfAny(gradientColor: ArrayList<String>) {
+    if(gradientColor.isEmpty()) {
+        hide()
+        return
+    }
+    show()
+    setGradientBackground(gradientColor)
 }
 
 fun View.setGradientBackgroundRounded(colorArray: ArrayList<String>, cornerRadius: Float = DEFAULT_ROUNDED_CORNER) {
@@ -164,4 +179,14 @@ fun RecyclerView.removeAllItemDecoration() {
             this.removeItemDecorationAt(i)
         }
     }
+}
+
+fun ImageView.overlay() {
+    setColorFilter(
+        ContextCompat.getColor(
+            context,
+            productcardR.color.dms_product_card_reimagine_image_overlay,
+        ),
+        PorterDuff.Mode.SRC_OVER
+    )
 }

@@ -77,34 +77,14 @@
                 app:layout_constraintEnd_toEndOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
 
-            <ImageView
-                android:id="@+id/productCardOverlay3"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:contentDescription="@string/content_desc_imageLabelOverlay"
+            <include
+                layout="@layout/product_card_reimagine_label_overlay"
+                android:id="@+id/productCardOverlayContainer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
-                app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
-
-            <ImageView
-                android:id="@+id/productCardOverlay2"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:contentDescription="@string/content_desc_imageLabelOverlay"
-                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
-                app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
-
-            <ImageView
-                android:id="@+id/productCardOverlay1"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:contentDescription="@string/content_desc_imageLabelOverlay"
-                app:layout_constraintStart_toStartOf="@id/productCardMediaAnchor"
+                app:layout_constraintTop_toTopOf="@id/productCardMediaAnchor"
+                app:layout_constraintEnd_toEndOf="@id/productCardMediaAnchor"
                 app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor" />
 
             <ImageView
@@ -240,7 +220,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/product_card_reimagine_nett_price_height"
                     android:gravity="center"
-                    android:paddingStart="20dp"
+                    android:paddingStart="22dp"
                     android:paddingEnd="4dp"
                     android:paddingVertical="2dp"
                     android:layout_below="@id/productCardPrice"
@@ -299,6 +279,13 @@
                 app:typographyWeight="bold"
                 tools:text="10%" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/productCardDiscountSlashedPriceBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="productCardPriceContainer,productCardSlashedPrice,productCardDiscount" />
+
             <com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
                 android:id="@+id/productCardLabelBenefit"
                 android:layout_width="wrap_content"
@@ -307,7 +294,7 @@
                 android:paddingVertical="2dp"
                 android:background="@drawable/product_card_reimagine_label_background"
                 android:layout_marginTop="@dimen/product_card_reimagine_label_benefit_margin_top"
-                app:layout_constraintTop_toBottomOf="@id/productCardPriceContainer"
+                app:layout_constraintTop_toBottomOf="@id/productCardDiscountSlashedPriceBarrier"
                 app:layout_constraintStart_toStartOf="@id/productCardGuidelineStartContent" />
 
             <com.tokopedia.unifyprinciples.Typography

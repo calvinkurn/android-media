@@ -8,6 +8,8 @@ import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
@@ -48,7 +50,7 @@ class LabelBenefitView: FrameLayout {
 
     private fun init(attrs: AttributeSet? = null) {
         text = Typography(context).apply { initText() }
-        addView(text)
+        addView(text, LayoutParams(WRAP_CONTENT, MATCH_PARENT))
 
         initBackground()
 

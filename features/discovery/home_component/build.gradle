@@ -49,6 +49,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.sdui)
+
     // Unify
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons

@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter
 
-import android.content.Context
 import android.graphics.Color
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
@@ -9,17 +8,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailAddonsListBinding
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder.ProductViewListener
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel.AddonItemUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
-class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>) :
+class AddonsItemAdapter(
+    private val addonsItemList: List<AddonItemUiModel>,
+    private val listener: ProductViewListener
+) :
     RecyclerView.Adapter<AddonsItemAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,6 +53,18 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                 setupDividerAddon()
                 setDataViews(item)
                 setupAddNoteViews(item)
+                setupInfoLink(item.infoLink, item.type)
+            }
+        }
+
+        private fun ItemBuyerOrderDetailAddonsListBinding.setupInfoLink(
+            infoLink: String,
+            type: String
+        ) {
+            icBomDetailAddonsInfo.showIfWithBlock(infoLink.isNotEmpty()) {
+                setOnClickListener {
+                    listener.onAddOnsInfoClickedNonBundle(infoLink, type)
+                }
             }
         }
 
@@ -58,30 +75,20 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
         private fun ItemBuyerOrderDetailAddonsListBinding.setupAddNoteViews(item: AddonsListUiModel.AddonItemUiModel) {
             setupToMetadata(item.toStr)
             setupFromMetadata(item.fromStr)
-            setupMessageMetadata(item.message)
+            setupMessageMetadata(item.message, item.tips)
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setDataViews(item: AddonsListUiModel.AddonItemUiModel) {
-            tvBomDetailAddonsName.text = getAddonNameText(root.context, item)
-            ivBomDetailAddonsThumbnail.setImageUrl(item.addOnsThumbnailUrl)
+            tvBomDetailAddonsName.text = item.addOnsName
+            ivBomDetailAddonsThumbnail.showIfWithBlock(item.addOnsThumbnailUrl.isNotEmpty()) {
+                ivBomDetailAddonsThumbnail.setImageUrl(item.addOnsThumbnailUrl)
+            }
             tvBomDetailAddonsPriceQuantity.text =
                 root.context.getString(
                     R.string.label_product_price_and_quantity,
                     item.quantity,
                     item.priceText
                 )
-        }
-
-        private fun getAddonNameText(context: Context, item: AddonsListUiModel.AddonItemUiModel): String {
-            return if (item.providedByShopItself) {
-                context.getString(
-                    R.string.order_addons_type_and_name,
-                    item.type,
-                    item.addOnsName
-                )
-            } else {
-                item.type
-            }
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setupToMetadata(toStr: String) {
@@ -108,15 +115,39 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
             }
         }
 
-        private fun ItemBuyerOrderDetailAddonsListBinding.setupMessageMetadata(message: String) {
-            if (message.isBlank()) {
+        private fun ItemBuyerOrderDetailAddonsListBinding.setupMessageMetadata(
+            message: String,
+            tips: String
+        ) {
+            if (tips.isBlank() && message.isBlank()) {
                 tvBomDetailAddonsMessageValue.hide()
                 tvBomDetailAddonsReadMoreMessage.hide()
-            } else {
-                tvBomDetailAddonsMessageValue.run {
-                    show()
-                    initCollapseAddonMessage(message)
-                }
+                return
+            }
+
+            if (message.isNotBlank()) {
+                renderNotes(message)
+                return
+            }
+
+            if (tips.isNotBlank()) {
+                renderTips(tips)
+                return
+            }
+        }
+
+        private fun ItemBuyerOrderDetailAddonsListBinding.renderNotes(notes: String) {
+            tvBomDetailAddonsMessageValue.run {
+                show()
+                initCollapseAddonMessage(notes)
+            }
+        }
+
+        private fun ItemBuyerOrderDetailAddonsListBinding.renderTips(notes: String) {
+            tvBomDetailAddonsReadMoreMessage.hide()
+            tvBomDetailAddonsMessageValue.run {
+                show()
+                text = HtmlLinkHelper(context, notes).spannedString
             }
         }
 
