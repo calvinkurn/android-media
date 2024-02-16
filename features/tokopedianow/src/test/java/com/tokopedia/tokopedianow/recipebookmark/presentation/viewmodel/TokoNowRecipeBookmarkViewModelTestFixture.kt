@@ -211,7 +211,7 @@ open class TokoNowRecipeBookmarkViewModelTestFixture {
         assertEquals(expectedUiAction, actualUiAction)
     }
 
-    protected fun verifyGetRecipeBookmarkUseCaseCalled() {
-        coVerify { getRecipeBookmarksUseCase.execute(any(), any(), any()) }
+    protected fun verifyGetRecipeBookmarkUseCaseCalled(times: Int = 1) {
+        coVerify(exactly = times) { getRecipeBookmarksUseCase.execute(any(), any(), any()) }
     }
 }

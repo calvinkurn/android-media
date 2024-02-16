@@ -127,6 +127,36 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
         verifyList(expectedItemList = null)
     }
 
+    @Test
+    fun `given hasNext response false when scrolledToBottom should only call get recipe bookmark use case ONCE`() {
+        val response = "recipebookmark/recipebookmarksuccessequalsto8hasnextfalse.json"
+            .jsonToObject<GetRecipeBookmarksResponse>()
+
+        getRecipeBookmarksUseCase
+            .mockGetRecipeBookmark(
+                response = response
+            )
+
+        viewModel.onEvent(RecipeBookmarkEvent.LoadRecipeBookmarkList)
+
+        viewModel.onEvent(RecipeBookmarkEvent.LoadMoreRecipeBookmarkList(scrolledToBottom = true))
+
+        verifyGetRecipeBookmarkUseCaseCalled(times = 1)
+    }
+
+    @Test
+    fun `given visitable list empty when scrolledToBottom should NOT call get recipe bookmark use case`() {
+        viewModel
+            .mockPrivateField(
+                name = "visitableList",
+                value = SnapshotStateList<RecipeProgressBarUiModel>()
+            )
+
+        viewModel.onEvent(RecipeBookmarkEvent.LoadMoreRecipeBookmarkList(scrolledToBottom = true))
+
+        verifyGetRecipeBookmarkUseCaseCalled(times = 0)
+    }
+
     private fun mockNoNeedLoadMoreAndLayout() {
         val visitableList = SnapshotStateList<RecipeProgressBarUiModel>()
         visitableList.add(RecipeProgressBarUiModel())
