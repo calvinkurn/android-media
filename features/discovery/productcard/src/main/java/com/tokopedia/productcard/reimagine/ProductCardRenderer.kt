@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -45,9 +44,8 @@ internal class ProductCardRenderer(
 
     private val outlineView by view.lazyView<View?>(R.id.productCardOutline)
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
-    private val cardConstraintLayout by view.lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by view.lazyView<ImageView?>(R.id.productCardImage)
-    private val labelOverlay = LabelOverlay(view, type)
+    private val labelOverlay = LabelOverlay(view)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val labelPreventiveOverlay by view.lazyView<Typography?>(R.id.productCardLabelPreventiveOverlay)
     private val labelPreventiveBlock by view.lazyView<Typography?>(R.id.productCardLabelPreventiveBlock)
@@ -89,7 +87,6 @@ internal class ProductCardRenderer(
         renderShopSection(productCardModel)
         renderRibbon(productCardModel)
         renderSafeContent(productCardModel)
-        renderAddToCart(productCardModel)
         handleColorMode(productCardModel.colorMode)
     }
 
@@ -348,14 +345,7 @@ internal class ProductCardRenderer(
     private fun renderSafeContent(productCardModel: ProductCardModel) {
         safeGroup?.showWithCondition(productCardModel.isSafeProduct)
     }
-
-    private fun renderAddToCart(productCardModel: ProductCardModel) {
-        val cardConstraintLayout = cardConstraintLayout ?: return
-
-        view.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
-            AddToCartButton(cardConstraintLayout, type.addToCartConstraints())
-        }
-    }
+    
 
     private fun handleColorMode(colorMode: ProductCardColor?) {
         if (colorMode == null) return

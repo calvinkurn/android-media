@@ -46,6 +46,7 @@
     <color name="dms_static_light_RN100">#FFDBE2</color>
     <color name="dms_static_light_GN500">#00AA5B</color>
     <color name="dms_static_light_GN100">#C9FDE0</color>
+    <color name="dms_static_light_NN200">#D6DFEB</color>
 
     <color name="dms_static_dark_NN400">#696D78</color>
     <color name="dms_static_dark_NN950_96">#F5F5F6FF</color>
