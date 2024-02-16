@@ -93,6 +93,7 @@ import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
@@ -743,7 +744,7 @@ open class BuyerOrderDetailFragment :
 
     private fun onFailedMultiAddToCart(result: MultiATCState.Fail) {
         if (result.throwable == null) {
-            showErrorToaster(result.message.getStringValue(context))
+            showErrorToaster(result.message.getString(context))
         } else {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, result.throwable)
@@ -1175,6 +1176,34 @@ open class BuyerOrderDetailFragment :
 
     override fun onCopyAddOnDescription(label: String, description: CharSequence) {
         // no op for bmgm add on because there is no function copy
+    }
+
+    override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
+        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
+    }
+
+    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+        BuyerOrderDetailTracker.AddOnsInformation.clickAddOnsInfo(
+            orderId = viewModel.getOrderId(),
+            addOnsType = type
+        )
+        navigator.openAppLink(infoLink, false)
+    }
+
+    override fun onAddOnsInfoClickedNonBundle(infoLink: String, type: String) {
+        onAddOnsInfoLinkClicked(infoLink, type)
+    }
+
+    override fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean) {
+        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
+    }
+
+    override fun onBmgmProductBenefitExpand(isExpand: Boolean, identifier: String) {
+        viewModel.expandCollapseBmgmProductBenefit(identifier, isExpand)
+    }
+
+    override fun onBmgmProductBenefitClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+        navigator.goToProductSnapshotPage(addOn.orderId, addOn.orderDetailId)
     }
 
     private fun showToaster(message: String) {

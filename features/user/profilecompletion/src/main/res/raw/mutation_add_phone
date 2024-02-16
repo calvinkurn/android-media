@@ -1,7 +1,0 @@
-mutation add_phone($phone: String!, $currValidateToken: String) {
-  userProfileUpdate(phone: $phone, currValidateToken: $currValidateToken) {
-    isSuccess
-    completionScore
-    errors
-  }
-}

@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
  */
 
 public class LoadingShimmeringGridViewHolder extends AbstractViewHolder<LoadingModel> {
-    public static final int LAYOUT = com.tokopedia.design.R.layout.item_shimmering_grid;
+    public static final int LAYOUT = com.tokopedia.baselist.R.layout.item_shimmering_base_grid;
 
     public LoadingShimmeringGridViewHolder(View itemView) {
         super(itemView);

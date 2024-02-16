@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.ItemDiscoveryShopOfferSupportingBrandLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
@@ -184,9 +185,8 @@ class ShopOfferSupportingBrandItemViewHolder(
     private fun ItemDiscoveryShopOfferSupportingBrandLayoutBinding.setCardBackgroundColor(
         item: DataItem
     ) {
-        container.backgroundTintList = ColorStateList.valueOf(
-            Color.parseColor(item.boxColor)
-        )
+        val bgColor = Utils.getValidHexCode(itemView.context, item.boxColor)
+        container.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgColor))
     }
 
     private fun ItemDiscoveryShopOfferSupportingBrandLayoutBinding.setTextColor(mode: String) {

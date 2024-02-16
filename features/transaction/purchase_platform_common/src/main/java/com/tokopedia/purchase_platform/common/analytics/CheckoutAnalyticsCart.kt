@@ -1190,4 +1190,57 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             .build()
             .send()
     }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4448
+    // Tracker ID: 49758
+    fun eventImpressionGwpRecommendation(
+        offerId: Long,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PG_IRIS)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.IMPRESSION_GWP_RECOMMENDATION)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel("$offerId")
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.VIEW_GWP_RECOMMENDATION)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(
+                ExtraKey.SESSION_IRIS,
+                ConstantTransactionAnalytics.CustomDimension.DIMENSION_SESSION_IRIS
+            )
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4448
+    // Tracker ID: 49759
+    fun eventClickGwpRecommendation(
+        offerId: Long,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PG)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_GWP_RECOMMENDATION)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel("$offerId")
+            .setCustomProperty(
+                ExtraKey.TRACKER_ID,
+                ConstantTransactionAnalytics.TrackerId.CLICK_GWP_RECOMMENDATION
+            )
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(
+                ExtraKey.SESSION_IRIS,
+                ConstantTransactionAnalytics.CustomDimension.DIMENSION_SESSION_IRIS
+            )
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
 }

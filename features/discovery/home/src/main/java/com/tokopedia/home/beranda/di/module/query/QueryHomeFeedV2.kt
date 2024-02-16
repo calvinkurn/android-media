@@ -7,8 +7,8 @@ import com.tokopedia.home.beranda.di.module.query.QueryHomeFeedV2.HOME_FEED_V2_Q
 @GqlQuery(HOME_FEED_V2_QUERY_NAME, HOME_FEED_V2_QUERY)
 internal object QueryHomeFeedV2 {
     const val HOME_FEED_V2_QUERY_NAME = "HomeFeedV2Query"
-    const val HOME_FEED_V2_QUERY = "query getHomeRecommendationProductV2(\$sourceType: String, \$productPage: Int, \$location: String) {\n" +
-        "  getHomeRecommendationProductV2(sourceType: \$sourceType, page: \"home\", type: \"banner,banner_ads,position,banner_ads_vertical\", productPage: \$productPage, location: \$location) {\n" +
+    const val HOME_FEED_V2_QUERY = "query getHomeRecommendationProductV2(\$sourceType: String, \$productPage: Int, \$location: String, \$productCardVersion: String!) {\n" +
+        "  getHomeRecommendationProductV2(sourceType: \$sourceType, page: \"home\", type: \"banner,banner_ads,position,banner_ads_vertical\", productPage: \$productPage, location: \$location, productCardVersion: \$productCardVersion) {\n" +
         "    pageName\n" +
         "    layoutName\n" +
         "    hasNextPage\n" +
@@ -58,6 +58,10 @@ internal object QueryHomeFeedV2 {
         "        type\n" +
         "        title\n" +
         "        position\n" +
+        "        styles {\n" +
+        "           key\n" +
+        "           value\n" +
+        "        }\n" +
         "      }\n" +
         "    }\n" +
         "    banners {\n" +
