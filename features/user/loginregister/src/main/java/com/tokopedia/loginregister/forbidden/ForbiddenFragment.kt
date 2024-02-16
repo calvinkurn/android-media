@@ -33,7 +33,7 @@ class ForbiddenFragment : TkpdBaseV4Fragment() {
         val btnRetry = view.findViewById<UnifyButton>(R.id.btn_retry_forbidden)
         title.text = MethodChecker.fromHtml(getString(R.string.forbidden_title))
         desc.text = MethodChecker.fromHtml(getString(R.string.forbidden_msg))
-        desc.setOnClickListener { v: View? ->
+        desc.setOnClickListener {
             RouteManager.route(
                 activity,
                 ApplinkConstInternalGlobal.WEBVIEW,
