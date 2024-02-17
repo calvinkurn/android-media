@@ -41,8 +41,8 @@ class ShopProductCardColorHelper {
     }
 
     /**
-     * If shop is non reimagine (e.g normal shop or festivity) return dark themed and light themed product card color instance 
-     * to make the product card background transparent 
+     * If shop is non reimagine (e.g normal shop or festivity) we still need to return dark themed and light themed product card color concrete implementation 
+     * that respect the device-selected theme and make the product card background transparent
      */
     private fun determineColorModeForNonShopReimagine(
         isDeviceOnDarkModeTheme: Boolean,
