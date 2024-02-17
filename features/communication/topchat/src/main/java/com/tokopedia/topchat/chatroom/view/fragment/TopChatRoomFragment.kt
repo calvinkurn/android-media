@@ -3683,8 +3683,8 @@ open class TopChatRoomFragment :
             isSeller = isSeller(),
             widgetType = TopChatRoomOrderWidgetTypeEnum.CANCEL,
             orderId = uiModel.orderId,
-            orderStatus = "", // TODO: ask BE
-            invoiceId = ""
+            orderStatus = uiModel.orderStatus,
+            invoiceId = uiModel.invoiceId
         )
         context?.let {
             val intent = RouteManager.getIntent(it, uiModel.appLink)

@@ -9,6 +9,8 @@ class TopChatRoomOrderCancellationUiModel private constructor(
 ) : SendableUiModel(builder), Visitable<TopChatTypeFactory> {
 
     val orderId = builder.orderId
+    val orderStatus = builder.orderStatus
+    val invoiceId = builder.invoiceId
     val title = builder.title
     val appLink = builder.appLink
 
@@ -19,11 +21,23 @@ class TopChatRoomOrderCancellationUiModel private constructor(
     class Builder : SendableUiModel.Builder<Builder, TopChatRoomOrderCancellationUiModel>() {
 
         internal var orderId: String = ""
+        internal var orderStatus: String = ""
+        internal var invoiceId: String = ""
         internal var title: String = ""
         internal var appLink: String = ""
 
         fun withOrderId(orderId: String): Builder {
             this.orderId = orderId
+            return self()
+        }
+
+        fun withOrderStatus(orderStatus: String): Builder {
+            this.orderStatus = orderStatus
+            return self()
+        }
+
+        fun withInvoiceId(invoiceId: String): Builder {
+            this.invoiceId = invoiceId
             return self()
         }
 
@@ -40,6 +54,5 @@ class TopChatRoomOrderCancellationUiModel private constructor(
         override fun build(): TopChatRoomOrderCancellationUiModel {
             return TopChatRoomOrderCancellationUiModel(this)
         }
-
     }
 }

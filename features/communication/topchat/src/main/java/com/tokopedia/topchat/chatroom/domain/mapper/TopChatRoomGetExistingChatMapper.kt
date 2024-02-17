@@ -24,18 +24,28 @@ import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncement
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.domain.pojo.roommetadata.User
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.merchantvoucher.common.gql.data.*
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherAmount
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherBanner
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherOwner
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherStatus
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherType
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
-import com.tokopedia.topchat.chatroom.domain.pojo.ordercancellation.TopChatRoomOrderCancellationPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.ordercancellation.TopChatRoomOrderCancellationWrapperPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
-import com.tokopedia.topchat.chatroom.view.uimodel.*
+import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomOrderCancellationUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import javax.inject.Inject
 
@@ -67,7 +77,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                         }
                         // Merge broadcast bubble
                         chatDateTime.isBroadCast() &&
-                                chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
+                            chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
                             val broadcast = mergeBroadcast(
                                 replyIndex,
                                 chatItemPojoByDate.replies,
@@ -75,14 +85,15 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                                 getAttachmentIds(pojo.chatReplies.attachmentIds)
                             )
                             val broadcastUiModel = createBroadCastUiModel(
-                                chatDateTime, broadcast.first
+                                chatDateTime,
+                                broadcast.first
                             )
                             listChat.add(broadcastUiModel)
                             replyIndex += broadcast.second
                         }
                         // Merge product bubble
                         hasAttachment(chatDateTime) &&
-                                chatDateTime.isAlsoProductAttachment(nextItem) -> {
+                            chatDateTime.isAlsoProductAttachment(nextItem) -> {
                             val products = mergeProduct(
                                 replyIndex,
                                 chatItemPojoByDate.replies,
@@ -150,7 +161,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun mergeBroadcast(
-        index: Int, replies: List<Reply>, blastId: String, attachmentIds: List<String>
+        index: Int,
+        replies: List<Reply>,
+        blastId: String,
+        attachmentIds: List<String>
     ): Pair<Map<String, Visitable<*>>, Int> {
         val broadcast = ArrayMap<String, Visitable<*>>()
         var idx = index
@@ -257,7 +271,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
 
     private fun convertToCtaHeaderMsg(reply: Reply): Visitable<*> {
         val attachment = gson.fromJson(
-            reply.attachment.attributes, HeaderCtaButtonAttachment::class.java
+            reply.attachment.attributes,
+            HeaderCtaButtonAttachment::class.java
         )
         return MessageUiModel.Builder()
             .withResponseFromGQL(reply)
@@ -267,7 +282,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
 
     override fun convertToImageAnnouncement(item: Reply): Visitable<*> {
         val pojoAttribute = gson.fromJson(
-            item.attachment.attributes, ImageAnnouncementPojo::class.java
+            item.attachment.attributes,
+            ImageAnnouncementPojo::class.java
         )
         return ImageAnnouncementUiModel(item, pojoAttribute)
     }
@@ -424,13 +440,15 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     private fun convertToOrderCancellation(item: Reply): Visitable<*> {
         val pojo = gson.fromJson(
             item.attachment.attributes,
-            TopChatRoomOrderCancellationPojo::class.java
+            TopChatRoomOrderCancellationWrapperPojo::class.java
         )
         return TopChatRoomOrderCancellationUiModel.Builder()
             .withResponseFromGQL(item)
-            .withOrderId(pojo.orderId)
-            .withTitle(pojo.button.title)
-            .withAppLink(pojo.button.appLink)
+            .withOrderId(pojo.data.orderId)
+            .withOrderStatus(pojo.data.orderStatus.toString())
+            .withInvoiceId(pojo.data.invoiceId)
+            .withTitle(pojo.data.button.title)
+            .withAppLink(pojo.data.button.appLink)
             .build()
     }
 }
