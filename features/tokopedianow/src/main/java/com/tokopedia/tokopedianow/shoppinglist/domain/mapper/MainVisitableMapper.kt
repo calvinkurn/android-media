@@ -103,7 +103,7 @@ object MainVisitableMapper {
                 id = "123121",
                 image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
                 price = "Rp5.000",
-                name = "Baby Pak Choy",
+                name = "Baby Pak Choy Baby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak Choy",
                 weight = "350gr",
                 percentage = "50%",
                 slashPrice = "Rp100.000000000000000000000000000000000",

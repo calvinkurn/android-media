@@ -27,7 +27,6 @@
         app:loader_type="rect"/>
 
     <LinearLayout
-        android:id="@+id/layout_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -39,7 +38,6 @@
         app:layout_constraintTop_toTopOf="@+id/lu_image">
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/tp_name"
             android:layout_width="108dp"
             android:layout_height="18dp"
             android:ellipsize="end"
@@ -47,7 +45,6 @@
             app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/tp_weight"
             android:layout_width="138dp"
             android:layout_height="16dp"
             android:layout_marginTop="4dp"
@@ -57,7 +54,6 @@
             app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/tp_other_option"
             android:layout_width="56dp"
             android:layout_height="12dp"
             android:ellipsize="end"
