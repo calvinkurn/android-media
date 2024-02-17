@@ -20,7 +20,7 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond
 import com.tokopedia.applink.order.DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_SECONDARY_BUTTON_TEXT
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerorder.R
@@ -40,7 +40,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
+class BuyerRequestCancelRespondFragment :
+    BaseDaggerFragment(),
     IBuyerRequestCancelRespondListener.Mediator,
     IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl(),
     IBuyerRequestCancelRespondBottomSheetManager.Mediator,
@@ -112,7 +113,7 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
     }
 
     override fun getBuyerRequestCancelRespondOrderStatusCode(): Int {
-        return activity?.intent?.getIntExtra(INTENT_PARAM_ORDER_STATUS_CODE, 0).orZero()
+        return activity?.intent?.getStringExtra(INTENT_PARAM_ORDER_STATUS_CODE).orEmpty().toIntOrZero()
     }
 
     override fun getBuyerRequestCancelRespondOrderStatusText(): String {
@@ -190,10 +191,13 @@ class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessRespond(message: String) {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_SUCCESS, true)
-            putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_MESSAGE, message)
-        })
+        activity?.setResult(
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_SUCCESS, true)
+                putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_MESSAGE, message)
+            }
+        )
         bottomSheet?.dismiss()
     }
 
