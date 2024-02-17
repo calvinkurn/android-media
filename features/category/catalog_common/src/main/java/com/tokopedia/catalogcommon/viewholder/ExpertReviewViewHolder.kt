@@ -126,7 +126,7 @@ class ExpertReviewViewHolder(
         )
         val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)
         if (drawable is GradientDrawable) {
-            drawable.setColor(Color.parseColor(element.backgroundColor))
+            drawable.setColor(Color.parseColor("#${element.backgroundColor}"))
             view.clLayout.background = drawable
         }
     }

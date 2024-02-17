@@ -21,4 +21,10 @@
     <color name="dms_static_color_tertiary_for_dark">#696D78</color>
     <color name="dms_static_color_tertiary_for_light">#AAB4C8</color>
     <color name="dms_static_color_ocean_blue">#1AAEB2BF</color>
+    <color name="dms_static_color_crimson_red">#94192A</color>
+    <color name="dms_static_color_burgundy">#430F16</color>
+    <color name="dms_static_color_misty_blue">#BFC9D9</color>
+    <color name="dms_static_color_slate_gray">#4F525C</color>
+    <color name="dms_static_color_cotton_candy_pink">#FFB2C2</color>
+    <color name="dms_static_color_pearl_white">#FFF5F6</color>
 </resources>
