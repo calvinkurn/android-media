@@ -156,6 +156,7 @@ class ShareExAnalytics @Inject constructor(
             shareId = shareId.toString()
         )
         val bundle = Bundle().apply {
+            putString(ShareExAnalyticsConst.Key.EVENT, ShareExAnalyticsConst.Event.VIEW_ITEM)
             putString(ShareExAnalyticsConst.Key.EVENT_ACTION, ShareExAnalyticsConst.Action.IMPRESSION_TICKER_AFFILIATE)
             putString(ShareExAnalyticsConst.Key.EVENT_LABEL, updatedLabel)
             putString(ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_31185)
