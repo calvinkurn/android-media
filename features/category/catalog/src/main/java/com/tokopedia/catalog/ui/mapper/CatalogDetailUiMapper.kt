@@ -40,6 +40,7 @@ import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.relativeDate
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isEven
@@ -230,7 +231,7 @@ class CatalogDetailUiMapper @Inject constructor(
             val colorBorderButton = if (remoteModel.globalStyle?.darkMode.orFalse()) {
                 catalogR.color.catalog_dms_light_color
             } else {
-                catalogR.color.catalog_dm_green
+                catalogR.color.catalog_dms_green
             }
             val textColorPrice = if (remoteModel.globalStyle?.darkMode.orFalse()) {
                 catalogR.color.catalog_dms_light_color
@@ -854,7 +855,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 cardColor = if (bgColor.isNotEmpty()) {
                     "#$bgColor"
                 } else {
-                    "#FFFFFF"
+                    String.EMPTY
                 }
             )
         } ?: SellerOfferingUiModel()

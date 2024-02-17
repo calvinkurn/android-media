@@ -29,7 +29,7 @@ data class SellerOfferingUiModel(
     var estimationShipping: String = "",
     var isShopGuarantee: Boolean = false,
     val paymentOption: PaymentOption = PaymentOption(),
-    val cardColor: String = "#212121",
+    val cardColor: String = "",
     val additionalService: String = "",
     var variantsName: String = "",
     val courier: String = ""

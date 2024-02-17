@@ -21,5 +21,5 @@
     <color name="catalog_dms_light_color_support_feature">#212121</color>
     <color name="catalog_dms_dark_color_text_common">#F5F6FF</color>
     <color name="catalog_dms_light_color_text_common">#212121</color>
-    <color name="catalog_dm_green">#00AA5B</color>
+    <color name="catalog_dms_green">#00AA5B</color>
 </resources>
