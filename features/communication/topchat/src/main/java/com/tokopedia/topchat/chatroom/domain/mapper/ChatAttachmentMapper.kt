@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
-import com.tokopedia.topchat.chatroom.domain.pojo.ordercancellation.TopChatRoomOrderCancellationPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.preattach.PreAttachPayloadResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
@@ -61,9 +60,6 @@ class ChatAttachmentMapper @Inject constructor() {
             AttachmentType.Companion.TYPE_PRODUCT_BUNDLING.toIntOrZero() -> {
                 convertToProductBundlingPojo(attachment)
             }
-            AttachmentType.Companion.TYPE_ORDER_CANCELLATION.toIntOrZero() -> {
-                convertToOrderCancellation(attachment)
-            }
             else -> null
         }
     }
@@ -84,19 +80,12 @@ class ChatAttachmentMapper @Inject constructor() {
 
     private fun convertToReviewReminderAttachment(attachment: Attachment): Any? {
         return CommonUtil.fromJson<ReviewReminderAttribute>(
-                attachment.attributes,
-                ReviewReminderAttribute::class.java
+            attachment.attributes,
+            ReviewReminderAttribute::class.java
         )
     }
 
     private fun convertToProductBundlingPojo(attachment: Attachment): ProductBundlingPojo {
         return CommonUtil.fromJson(attachment.attributes, ProductBundlingPojo::class.java)
-    }
-
-    private fun convertToOrderCancellation(attachment: Attachment): TopChatRoomOrderCancellationPojo {
-        return CommonUtil.fromJson(
-            attachment.attributes,
-            TopChatRoomOrderCancellationPojo::class.java
-        )
     }
 }
