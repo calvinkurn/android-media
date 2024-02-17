@@ -26,10 +26,12 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addHeader
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addLoadMore
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductInCartWidget
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addRetry
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addShimmeringPage
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addTitle
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addWishlistProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeLoadMore
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeRetry
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LoadMoreDataModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,6 +39,7 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -92,6 +95,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     fun loadLayout() {
         job = launchCatchError(
             block = {
+                delay(3000)
                 layout.clear()
 
                 layout.addHeader(
@@ -170,6 +174,15 @@ class TokoNowShoppingListViewModel @Inject constructor(
         )
     }
 
+    fun switchRetryToLoadMore() {
+        layout.removeRetry()
+        layout.addLoadMore()
+
+        _uiState.value = UiState.Success(
+            layout.toMutableList()
+        )
+    }
+
     fun loadMoreProductRecommendation(
         isLastVisibleLoadingMore: Boolean
     ) {
@@ -190,7 +203,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
                             if (productRecommendation.hasNext) layout.addLoadMore()
                         }
 
-                        _uiState.value = UiState.Success(layout.toMutableList())
+                        _uiState.value = UiState.Success(
+                            layout.toMutableList()
+                        )
 
                         needToLoadMoreData = needToLoadMoreData.copy(
                             isNeededToLoadMore = productRecommendation.hasNext,
@@ -199,11 +214,10 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     },
                     onError = {
                         layout.removeLoadMore()
+                        layout.addRetry()
 
-                        _uiState.value = UiState.Success(layout.toMutableList())
-
-                        needToLoadMoreData = needToLoadMoreData.copy(
-                            isNeededToLoadMore = false
+                        _uiState.value = UiState.Success(
+                            layout.toMutableList()
                         )
                     }
                 )

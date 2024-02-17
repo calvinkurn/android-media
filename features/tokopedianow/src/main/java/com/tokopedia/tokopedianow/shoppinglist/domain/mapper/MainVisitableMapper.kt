@@ -16,6 +16,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
 
 object MainVisitableMapper {
 
@@ -86,6 +87,14 @@ object MainVisitableMapper {
 
     fun MutableList<Visitable<*>>.removeLoadMore() {
         removeFirst { it is LoadingMoreModel }
+    }
+
+    fun MutableList<Visitable<*>>.addRetry() {
+        add(ShoppingListRetryUiModel())
+    }
+
+    fun MutableList<Visitable<*>>.removeRetry() {
+        removeFirst { it is ShoppingListRetryUiModel }
     }
 
     fun MutableList<Visitable<*>>.addWishlistProducts() {

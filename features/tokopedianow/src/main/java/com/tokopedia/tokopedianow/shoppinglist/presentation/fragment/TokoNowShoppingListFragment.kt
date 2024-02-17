@@ -45,6 +45,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.TokoNowShoppingListAnotherOptionBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -89,7 +90,8 @@ class TokoNowShoppingListFragment :
                 tokoNowView = this@TokoNowShoppingListFragment,
                 headerListener = createHeaderCallback(),
                 chooseAddressListener = this@TokoNowShoppingListFragment,
-                shoppingListHorizontalProductCardItemListener = createHorizontalProductCardItemCallback()
+                productCardItemListener = createHorizontalProductCardItemCallback(),
+                retryListener = createRetryCallback()
             )
         )
     }
@@ -304,14 +306,21 @@ class TokoNowShoppingListFragment :
         )
     }
 
-    private fun createHorizontalProductCardItemCallback() = object : ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener{
+    private fun createHorizontalProductCardItemCallback() = object : ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener {
         override fun onClickOtherOptions() {
             val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet.newInstance("12514021813")
             bottomSheet.show(childFragmentManager, ProductCardCompactSimilarProductBottomSheet::class.java.simpleName)
         }
     }
 
-    private fun createLoadMoreListener(): RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
+    private fun createRetryCallback() = object : ShoppingListRetryViewHolder.ShoppingListRetryListener {
+        override fun onClickRetry() {
+            viewModel.switchRetryToLoadMore()
+            viewModel.loadMoreProductRecommendation(true)
+        }
+    }
+
+    private fun createLoadMoreListener()  = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             val lastVisiblePosition = layoutManager?.findLastVisibleItemPosition()

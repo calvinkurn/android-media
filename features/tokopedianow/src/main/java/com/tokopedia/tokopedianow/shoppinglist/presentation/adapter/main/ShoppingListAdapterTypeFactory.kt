@@ -22,9 +22,11 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTitleViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.common.ShoppingListHorizontalProductCardItemTypeFactory
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListProductInCartViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
 
@@ -32,7 +34,8 @@ class ShoppingListAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
     private val headerListener: TokoNowThematicHeaderViewHolder.TokoNowHeaderListener? = null,
     private val chooseAddressListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
-    private val shoppingListHorizontalProductCardItemListener: ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener? = null
+    private val productCardItemListener: ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener? = null,
+    private val retryListener: ShoppingListRetryViewHolder.ShoppingListRetryListener? = null
 ):
     BaseAdapterTypeFactory(),
     ShoppingListTypeFactory,
@@ -51,6 +54,7 @@ class ShoppingListAdapterTypeFactory(
     override fun type(uiModel: ShoppingListHorizontalProductCardItemUiModel): Int = ShoppingListHorizontalProductCardItemViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListProductInCartUiModel): Int = ShoppingListProductInCartViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListTopCheckAllUiModel): Int = ShoppingListTopCheckAllViewHolder.LAYOUT
+    override fun type(uiModel: ShoppingListRetryUiModel): Int = ShoppingListRetryViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -75,13 +79,17 @@ class ShoppingListAdapterTypeFactory(
 
             ShoppingListHorizontalProductCardItemViewHolder.LAYOUT -> ShoppingListHorizontalProductCardItemViewHolder(
                 itemView = parent,
-                listener = shoppingListHorizontalProductCardItemListener
+                listener = productCardItemListener
             )
             ShoppingListProductInCartViewHolder.LAYOUT -> ShoppingListProductInCartViewHolder(
                 itemView = parent
             )
             ShoppingListTopCheckAllViewHolder.LAYOUT -> ShoppingListTopCheckAllViewHolder(
                 itemView = parent
+            )
+            ShoppingListRetryViewHolder.LAYOUT -> ShoppingListRetryViewHolder(
+                itemView = parent,
+                listener = retryListener
             )
             else -> super.createViewHolder(parent, type)
         }
