@@ -344,8 +344,7 @@ object AppLogAnalytics {
     fun send(event: String, params: JSONObject) {
         Cassava.save(params, event, "ByteIO")
         AppLog.onEventV3(event, params)
-        Log.d("BYTEIO", "sending event : $event")
-        Log.d("BYTEIO", "Ip address: ${TTNetDetectInfo.TTNetDetectHttpGetInfo().ip}")
+        Log.d(TAG, "sending event ($event), value: ${params.toString(2)} ")
     }
 
     @JvmStatic
@@ -353,7 +352,7 @@ object AppLogAnalytics {
         initAppLog(application.applicationContext)
         EventsSenderUtils.setEventsSenderEnable("573733", true, application)
         EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
-        Log.d("BYTEIO", "applog dId: ${AppLog.getDid()}")
+        Log.d(TAG, "AppLog dId: ${AppLog.getDid()} userUniqueId: ${AppLog.getUserUniqueID()} userId: ${AppLog.getUserUniqueID()}")
     }
 
 }
