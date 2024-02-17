@@ -555,6 +555,7 @@ class CatalogDetailPageFragment :
             }
         }
         viewModel.variantName.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
             widgetAdapter.displayVariantTextToSellerOffering(it)
             binding?.icCtaSellerOffering?.ctaAtc?.setVariantText(it)
         }
@@ -570,6 +571,7 @@ class CatalogDetailPageFragment :
 
     private fun observeAddToCartDataModel(view: View) {
         viewModel.addToCartDataModel.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
             if (it.isStatusError()) {
                 Toaster.build(
                     view,

@@ -859,60 +859,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 }
             )
         } ?: SellerOfferingUiModel()
-        // DummyData
-//        return SellerOfferingUiModel(
-//            productImage = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/9/11/5a1321a4-fd2c-4060-b2b7-005d65175504.jpg",
-//            shopBadge = "https://images.tokopedia.net/img/official_store_badge.png",
-//            shopName = "toko purchase platform os",
-//            shopImage= "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/8/25/07b4f897-d605-40e6-80ad-3ed5f92d387b.jpg",
-//            stockBar = 95,
-//            productName = "Samsung",
-//            productPrice = "Rp9.000.000",
-//            productSlashPrice = "Rp10.000.000",
-//            shopLocation = "Jakarta",
-//            chatResponseTime = "± 40 menit balas chat",
-//            orderProcessTime = "± 3 jam pesanan diproses",
-//            labelPromo = "Promo 500rb",
-//            labelTotalDisc = "+2 lain, disc 10%",
-//            shopRating = "5.0",
-//            totalShopRating = "100",
-//            totalSold = "10rb+ terjual",
-//            freeOngkir = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/116496e7-df32-4c13-a485-9b9607cfdd02.png",
-//            estimationShipping = "Tiba hari ini",
-//            isShopGuarantee = false,
-//            installment = "Cicil dari Rp450.000/bulan",
-//            variantsName = "Varian 1, Variant 2",
-//            additionalService = "Garansi Toko",
-//            cardColor = bgColor,
-//            courier = "Kurir Toko"
-//        )
     }
-
-//    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToSellerOffering(
-//        darkMode: Boolean
-//    ): SellerOfferingUiModel {
-//        return SellerOfferingUiModel(
-//            productImage = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/9/11/5a1321a4-fd2c-4060-b2b7-005d65175504.jpg",
-//            shopBadge = "https://images.tokopedia.net/img/official_store_badge.png",
-//            shopName = "toko purchase platform os",
-//            stockBar = 95,
-//            productName = "Samsung",
-//            productPrice = "Rp9.000.000",
-//            productSlashPrice = "Rp10.000.000",
-//            shopLocation = "Jakarta",
-//            chatResponseTime = "± 40 menit balas chat",
-//            orderProcessTime = "± 3 jam pesanan diproses",
-//            labelPromo = "Promo 500rb",
-//            labelTotalDisc = "+2 lain, disc 10%",
-//            shopRating = "5.0",
-//            totalShopRating = "100",
-//            totalSold = "10rb+ terjual",
-//            freeOngkir = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/116496e7-df32-4c13-a485-9b9607cfdd02.png",
-//            estimationShipping = "Tiba hari ini",
-//            isShopGuarantee = false,
-//            installment = "Cicil dari Rp450.000/bulan"
-//        )
-//    }
 
     private fun getTextColor(darkMode: Boolean): Int {
         val textColorRes = if (darkMode) {
