@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 
 class SmsBroadcastReceiver: BroadcastReceiver() {
 
-    private lateinit var listener: ReceiveSMSListener
+    private var listener: ReceiveSMSListener? = null
 
     fun register(context: Context, listener: ReceiveSMSListener) {
         this.listener = listener
@@ -36,9 +36,9 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
                     val message = (extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as? String).orEmpty()
                     val otp = findSixDigitNumber(message)
 
-                    if(::listener.isInitialized && otp?.toIntOrNull() != null) {
+                    if(otp?.toIntOrNull() != null) {
                         Toast.makeText(context, "OTP : $otp", Toast.LENGTH_SHORT).show()
-                        listener.onReceiveOTP(otp)
+                        listener?.onReceiveOTP(otp)
                     }
                 }
                 CommonStatusCodes.TIMEOUT -> {
