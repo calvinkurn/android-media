@@ -37,7 +37,6 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
                     val otp = findSixDigitNumber(message)
 
                     if(otp?.toIntOrNull() != null) {
-                        Toast.makeText(context, "OTP : $otp", Toast.LENGTH_SHORT).show()
                         listener?.onReceiveOTP(otp)
                     }
                 }
