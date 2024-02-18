@@ -514,7 +514,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             productCategory = p1.basic.category.name,
             productType = ProductType.AVAILABLE,
             originalPrice = p1.data.price.priceFmt,
-            salePrice = p1.finalPrice.toString(),
+            salePrice = p1.data.campaign.priceFmt,
             false, false, false // todo: TBD
         )
     }
