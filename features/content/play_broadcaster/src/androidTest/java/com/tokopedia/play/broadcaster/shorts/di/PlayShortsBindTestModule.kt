@@ -58,6 +58,8 @@ import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticS
 import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.interspersing.PlayShortsInterspersingAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.interspersing.PlayShortsInterspersingAnalyticImpl
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import dagger.Binds
@@ -89,6 +91,10 @@ abstract class PlayShortsBindTestModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsAffiliateAnalytic(analytic: PlayShortsAffiliateAnalyticImpl): PlayShortsAffiliateAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsInterspersingAnalytic(analytic: PlayShortsInterspersingAnalyticImpl): PlayShortsInterspersingAnalytic
 
     @Binds
     @PlayShortsScope

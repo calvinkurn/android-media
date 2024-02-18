@@ -134,7 +134,7 @@ class PofBottomSheet : BottomSheetUnify(),
             viewModel.uiState.collectLatest { uiState ->
                 Handler(Looper.getMainLooper()).post {
                     if (activity?.isFinishing == false && isAdded && !isDetached) {
-                        setTitle(uiState.title.getStringWithDefaultValue(context))
+                        setTitle(uiState.title.getString(context))
                         updateResetButton(uiState.showResetButton)
                         updateBody(uiState.items)
                         updateFooter(uiState.footerUiState)
@@ -152,7 +152,7 @@ class PofBottomSheet : BottomSheetUnify(),
                     Toaster
                         .build(
                             view = view,
-                            text = toaster.text.getStringWithDefaultValue(view.context),
+                            text = toaster.text.getString(view.context),
                             duration = toaster.duration,
                             type = toaster.type
                         ).show()

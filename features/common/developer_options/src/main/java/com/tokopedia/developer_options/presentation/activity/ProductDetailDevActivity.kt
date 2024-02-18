@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -24,6 +26,11 @@ class ProductDetailDevActivity : BaseActivity() {
     companion object {
         const val PDP_LAYOUT_ID_TEST_SHARED_PREF_KEY = "layoutIdSharedPref"
         const val PDP_LAYOUT_ID_STRING_KEY = "layoutIdTest"
+
+        const val PDP_COMPONENT_FILTER_SHARED_PREF_KEY = "componentFilterSharedPref"
+        const val PDP_COMPONENT_FILTER_VALUE = "componentFilterValue"
+        const val PDP_COMPONENT_FILTER_CONDITION = "componentFilterCondition"
+        const val PDP_COMPONENT_FILTER_OPTION = "componentFilterOption"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,6 +109,54 @@ class ProductDetailDevActivity : BaseActivity() {
         findViewById<UnifyButton>(R.id.pdp_educational_btn).setOnClickListener {
             val typeData = educationalType.textFieldInput.text.toString()
             RouteManager.route(this, ApplinkConst.PRODUCT_EDUCATIONAL, typeData)
+        }
+
+        val componentSharedPref = getSharedPreferences(PDP_COMPONENT_FILTER_SHARED_PREF_KEY, MODE_PRIVATE)
+        val savedComponentValue = componentSharedPref.getString(PDP_COMPONENT_FILTER_VALUE, "")
+        val savedComponentCondition = componentSharedPref.getString(PDP_COMPONENT_FILTER_CONDITION, "filter out")
+        val savedComponentOption = componentSharedPref.getString(PDP_COMPONENT_FILTER_OPTION, "type")
+
+        val componentValue = findViewById<TextFieldUnify>(R.id.pdp_component_name)
+        val componentConditionFilter = findViewById<RadioButton>(R.id.pdp_component_condition_filter)
+        val componentConditionOnly = findViewById<RadioButton>(R.id.pdp_component_condition_only)
+        val componentOptionType = findViewById<RadioButton>(R.id.pdp_component_filter_type)
+        val componentOptionName = findViewById<RadioButton>(R.id.pdp_component_filter_name)
+
+        if (savedComponentValue?.isNotBlank() == true) {
+            componentValue.textFieldInput.setText(savedComponentValue)
+        }
+
+        if (savedComponentCondition.equals("filter out", true)) {
+            componentConditionFilter.isChecked = true
+        } else if (savedComponentCondition.equals("show only", true)) {
+            componentConditionOnly.isChecked = true
+        }
+
+        if(savedComponentOption.equals("type", true)){
+            componentOptionType.isChecked = true
+        } else if(savedComponentOption.equals("name", true)){
+            componentOptionName.isChecked = true
+        }
+
+        findViewById<UnifyButton>(R.id.pdp_component_btn).setOnClickListener {
+
+            val checkedConditionId = findViewById<RadioGroup>(R.id.pdp_component_group_condition).checkedRadioButtonId
+            val checkedCondition = findViewById<RadioButton>(checkedConditionId).text.toString()
+
+            val checkedOptionId = findViewById<RadioGroup>(R.id.pdp_component_group_filter).checkedRadioButtonId
+            val checkedOption = findViewById<RadioButton>(checkedOptionId).text.toString()
+
+            val componentValueString = componentValue.textFieldInput.text.toString()
+
+            componentSharedPref.edit()
+                .putString(PDP_COMPONENT_FILTER_VALUE, componentValueString)
+                .putString(PDP_COMPONENT_FILTER_CONDITION, checkedCondition)
+                .putString(PDP_COMPONENT_FILTER_OPTION, checkedOption)
+                .apply()
+
+
+            val messageSuccess = "$checkedCondition Component $checkedOption: $componentValueString"
+            Toast.makeText(this@ProductDetailDevActivity, messageSuccess, Toast.LENGTH_SHORT).show()
         }
     }
 }

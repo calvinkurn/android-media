@@ -2,6 +2,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+			bmsmWidget						: ":features:merchant:bmsm_widget",
 			buyMoreGetMore					: ":features:merchant:buy_more_get_more",
             sellerShopNib                   : ":features:merchant:seller_shop_nib",
             sellerPersona                   : ":features:merchant:seller_persona",
@@ -94,6 +95,7 @@ ext {
 
             discoveryCommon                 : ":features:discovery:discovery_common",
             home                            : ":features:discovery:home",
+			homeExploreCategory				: ":features:discovery:home_explore_category",
             homeComponent                   : ":features:discovery:home_component",
             homeComponentHeader             : ":features:discovery:home_component_header",
             homeRecom                       : ":features:discovery:home_recom",

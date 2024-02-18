@@ -8,7 +8,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.navigation.data.mapper.NotificationRequestMapper
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
-import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -28,37 +27,39 @@ import dagger.Provides
 @Module(includes = [TopAdsWishlistModule::class, RecommendationModule::class])
 class GlobalNavModule {
     @Provides
-    fun provideMainParentPresenter(getNotificationUseCase: GetBottomNavNotificationUseCase, userSession: UserSessionInterface): MainParentPresenter {
+    fun provideMainParentPresenter(
+        getNotificationUseCase: GetBottomNavNotificationUseCase,
+        userSession: UserSessionInterface
+    ): MainParentPresenter {
         return MainParentPresenter(getNotificationUseCase, userSession)
     }
 
     @Provides
     fun provideGetBottomNavNotificationUseCase(
-            getDrawerNotificationUseCase: GetDrawerNotificationUseCase,
-            getNewFeedCheckerUseCase: GetNewFeedCheckerUseCase): GetBottomNavNotificationUseCase {
-        return GetBottomNavNotificationUseCase(
-                getDrawerNotificationUseCase,
-                getNewFeedCheckerUseCase)
+        getDrawerNotificationUseCase: GetDrawerNotificationUseCase
+    ): GetBottomNavNotificationUseCase {
+        return GetBottomNavNotificationUseCase(getDrawerNotificationUseCase)
     }
 
     @Provides
-    fun provideGetNewFeedCheckerUseCase(@ApplicationContext context: Context): GetNewFeedCheckerUseCase {
-        return GetNewFeedCheckerUseCase(context)
-    }
-
-    @Provides
-    fun provideGetDrawerNotificationUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase): GetDrawerNotificationUseCase {
+    fun provideGetDrawerNotificationUseCase(
+        @ApplicationContext context: Context,
+        graphqlUseCase: GraphqlUseCase
+    ): GetDrawerNotificationUseCase {
         return GetDrawerNotificationUseCase(context, graphqlUseCase, NotificationRequestMapper())
     }
 
     @Provides
-    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+    fun provideGraphqlRepository(): GraphqlRepository =
+        GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
-    fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase = AddToWishlistV2UseCase(graphqlRepository)
+    fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase =
+        AddToWishlistV2UseCase(graphqlRepository)
 
     @Provides
-    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(graphqlRepository)
+    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase =
+        DeleteWishlistV2UseCase(graphqlRepository)
 
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {

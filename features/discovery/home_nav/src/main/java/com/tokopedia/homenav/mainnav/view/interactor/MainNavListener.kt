@@ -18,8 +18,6 @@ interface MainNavListener : HomeNavListener {
 
     fun onErrorShopInfoRefreshClicked(position: Int)
 
-    fun onErrorBuListClicked(position: Int)
-
     fun onErrorTransactionListClicked(position: Int)
 
     fun getTrackingQueueObj(): TrackingQueue?
@@ -29,8 +27,6 @@ interface MainNavListener : HomeNavListener {
     fun onErrorAffiliateInfoRefreshClicked(position: Int)
 
     fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel)
-
-    fun onErrorWishlistClicked()
 
     fun onWishlistCardClicked(wishlistModel: NavWishlistModel, position: Int)
 

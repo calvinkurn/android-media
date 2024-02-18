@@ -1,12 +1,13 @@
 package com.tokopedia.cart.domain.usecase
 
-import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
-import com.tokopedia.cart.domain.mapper.mapUpdateCartData
-import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
+import com.tokopedia.cart.domain.mapper.mapUpdateCartData
+import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -33,7 +34,7 @@ class UpdateCartUseCaseTest {
     private lateinit var updateCartUseCase: UpdateCartUseCase
 
     val params = UpdateCartWrapperRequest(
-        updateCartRequestList = listOf(com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest())
+        updateCartRequestList = listOf(UpdateCartRequest())
     )
 
     @Before

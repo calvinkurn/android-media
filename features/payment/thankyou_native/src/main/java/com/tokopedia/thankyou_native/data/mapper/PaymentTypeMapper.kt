@@ -10,6 +10,8 @@ object Tokopedia : PaymentType()
 object InstantPayment : PaymentType()
 object HomeCredit : PaymentType()
 object Kredivo : PaymentType()
+object KlikBCA : PaymentType()
+object Jenius : PaymentType()
 
 object PaymentTypeMapper {
 
@@ -24,6 +26,8 @@ object PaymentTypeMapper {
             "INSTANT" -> InstantPayment
             "HCI" -> HomeCredit
             "KREDIVO" -> Kredivo
+            "KLIKBCA" -> KlikBCA
+            "JENIUS" -> Jenius
             else -> null
         }
     }

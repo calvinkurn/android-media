@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.R
@@ -174,7 +174,7 @@ class ShopHomeReimagineTerlarisViewHolder(
                     )
                 )
             }
-            ImageHandler.loadImageRounded2(itemView.context, productImg1, productList[0][0].imageUrl.orEmpty(), 8.toPx().toFloat())
+            productImg1?.loadImageRounded(productList[0][0].imageUrl.orEmpty(), 8.toPx().toFloat())
             productName1?.text = productList[0][0].name
             productPrice1?.text = productList[0][0].displayedPrice
             productRank1?.text = "1"
@@ -200,7 +200,7 @@ class ShopHomeReimagineTerlarisViewHolder(
                     )
                 )
             }
-            ImageHandler.loadImageRounded2(itemView.context, productImg2, productList[0][1].imageUrl.orEmpty(), 8.toPx().toFloat())
+            productImg2?.loadImageRounded(productList[0][1].imageUrl.orEmpty(), 8.toPx().toFloat())
             productName2?.text = productList[0][1].name
             productPrice2?.text = productList[0][1].displayedPrice
             productRank2?.text = "2"
@@ -226,7 +226,7 @@ class ShopHomeReimagineTerlarisViewHolder(
                     )
                 )
             }
-            ImageHandler.loadImageRounded2(itemView.context, productImg3, productList[0][2].imageUrl.orEmpty(), 8.toPx().toFloat())
+            productImg3?.loadImageRounded(productList[0][2].imageUrl.orEmpty(), 8.toPx().toFloat())
             productName3?.text = productList[0][2].name
             productPrice3?.text = productList[0][2].displayedPrice
             productRank3?.text = "3"

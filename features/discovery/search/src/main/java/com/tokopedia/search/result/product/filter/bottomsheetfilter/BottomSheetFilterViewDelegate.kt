@@ -76,7 +76,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 mapParameter = getSearchParameter()?.getSearchParameterHashMap(),
                 dynamicFilterModel = dynamicFilterModel,
                 callback = this,
-                isReimagine = reimagineRollence.search2Component().isReimagineQuickFilter(),
+                isReimagine = true,
             )
         }
         sortFilterBottomSheet?.setOnDismissListener {

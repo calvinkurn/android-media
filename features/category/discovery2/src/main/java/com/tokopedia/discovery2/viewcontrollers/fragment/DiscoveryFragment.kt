@@ -119,6 +119,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -642,10 +643,10 @@ open class DiscoveryFragment :
 
     private fun updateLastVisibleComponent() {
         if (lastVisibleComponent != null && (
-            lastVisibleComponent?.name ==
-                ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
-                ComponentsList.ProductCardSprintSale.componentName
-            )
+                lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardSprintSale.componentName
+                )
         ) {
             return
         }
@@ -655,11 +656,11 @@ open class DiscoveryFragment :
                 lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
 
                 if (lastVisibleComponent != null && (
-                    lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardSprintSaleItem.componentName ||
-                        lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
-                    )
+                        lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardSprintSaleItem.componentName ||
+                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
+                        )
                 ) {
                     lastVisibleComponent = com.tokopedia.discovery2.datamapper
                         .getComponent(
@@ -904,16 +905,10 @@ open class DiscoveryFragment :
         discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner) {
             if (it is Success) {
                 if (it.data.requestParams.isGeneralCartATC) {
-                    showToasterWithAction(
+                    showToaster(
                         message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
                         Toaster.LENGTH_LONG,
-                        type = Toaster.TYPE_NORMAL,
-                        actionText = getString(R.string.disco_lihat),
-                        clickListener = {
-                            context?.let { context ->
-                                RouteManager.route(context, ApplinkConst.CART)
-                            }
-                        }
+                        type = Toaster.TYPE_NORMAL
                     )
                     if (bmGmDataParam != null) {
                         analytics.trackEventProductBmGmATC(
@@ -1017,15 +1012,26 @@ open class DiscoveryFragment :
             )
         }
 
-        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (data, offerMessages) ->
+        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (data, bmGmTierData) ->
             discoveryAdapter.getViewModelAtPosition(data.parentPosition)
                 ?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
-                        discoveryBaseViewModel.changeTier(false, offerMessages)
+                        discoveryBaseViewModel.changeTier(
+                            false,
+                            BmGmTierData(
+                                offerMessages = bmGmTierData.offerMessages,
+                                flipTierImage = bmGmTierData.flipTierImage,
+                                flipTierWording = bmGmTierData.flipTierWording
+                            )
+                        )
                     } else if (discoveryBaseViewModel is SectionViewModel) {
                         discoveryBaseViewModel.notifyChildViewModel(
                             data.offerId,
-                            offerMessages,
+                            BmGmTierData(
+                                offerMessages = bmGmTierData.offerMessages,
+                                flipTierImage = bmGmTierData.flipTierImage,
+                                flipTierWording = bmGmTierData.flipTierWording
+                            ),
                             ComponentsList.ShopOfferHeroBrand
                         )
                     }
@@ -1652,41 +1658,41 @@ open class DiscoveryFragment :
 
     private fun removePaddingIfComponent() {
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    var pos = Int.MIN_VALUE
-                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
-                        if (componentsItem.name == ComponentsList.Tabs.componentName) {
-                            pos = index
-                        }
-                        if (index == pos + 1) {
-                            val i = pos + 1
-                            val firstVisibleItemPositions =
-                                staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
-                            val lastVisibleItemPositions =
-                                staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                var pos = Int.MIN_VALUE
+                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                    if (componentsItem.name == ComponentsList.Tabs.componentName) {
+                        pos = index
+                    }
+                    if (index == pos + 1) {
+                        val i = pos + 1
+                        val firstVisibleItemPositions =
+                            staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
+                        val lastVisibleItemPositions =
+                            staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
 
-                            if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
-                                val firstVisibleItemPosition =
-                                    firstVisibleItemPositions.minOrNull() ?: -1
-                                val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
+                        if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
+                            val firstVisibleItemPosition =
+                                firstVisibleItemPositions.minOrNull() ?: -1
+                            val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
 
-                                if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
-                                    if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
-                                        recyclerView.setPaddingToInnerRV(
-                                            0,
-                                            recyclerView.dpToPx(0).toInt(),
-                                            0,
-                                            0
-                                        )
-                                    }
+                            if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
+                                if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                                    recyclerView.setPaddingToInnerRV(
+                                        0,
+                                        recyclerView.dpToPx(0).toInt(),
+                                        0,
+                                        0
+                                    )
                                 }
                             }
                         }
                     }
-                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
-            })
+                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     fun scrollToComponentWithID(componentID: String) {
@@ -1926,6 +1932,10 @@ open class DiscoveryFragment :
         )
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
             if (bmGmDataParam != null && cartId.isNotBlankOrZero()) {
+                showToaster(
+                    atcMessage,
+                    type = Toaster.TYPE_NORMAL
+                )
                 getMiniCart(bmGmDataParam)
             }
         }
@@ -2421,6 +2431,7 @@ open class DiscoveryFragment :
                 AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = productId,
+                    dismissAfterTransaction = true,
                     pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                     extParams = AtcVariantHelper.generateExtParams(
                         mapOf(
