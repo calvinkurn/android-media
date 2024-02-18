@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -131,6 +132,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String GOFOOD_LINK = "https://gofood.link/";
     private static final String OTP_VERIFICATION_PREFIX = "/otp-verification";
     private static final String OTP_CODE = "otpCode";
+    private static final String URL_PARAM = "?url=";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -891,10 +893,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     smsBroadcastReceiver.register(getActivity(), otpCode -> {
                         String currentUrl = webView.getUrl();
                         if (currentUrl != null && currentUrl.contains(OTP_VERIFICATION_PREFIX)) {
-                            String newUrl = Uri.parse(url).buildUpon()
-                                    .appendQueryParameter("otpCode", otpCode).build().toString();
+                            String newUrl = Uri.parse(currentUrl).buildUpon()
+                                    .appendQueryParameter(OTP_CODE, otpCode).build().toString();
 
-                            webView.loadUrl(newUrl);
+                            RouteManager.route(getContext(), ApplinkConst.GOTO_KYC_WEBVIEW+URL_PARAM+newUrl);
+                            if (getActivity() != null) {
+                                getActivity().finish();
+                            }
                         }
                     });
                 });
