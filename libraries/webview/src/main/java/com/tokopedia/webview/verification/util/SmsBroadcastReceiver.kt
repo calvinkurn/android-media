@@ -34,9 +34,6 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
             when (status?.statusCode) {
                 CommonStatusCodes.SUCCESS -> {
                     val message = (extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as? String).orEmpty()
-//                    val subMessage = message.substringAfter("masuk:")
-//                    val otpDigit = Regex(REGEX_NUMERIC_PATTERN).find(message)?.value?.length.orZero()
-//                    val otp = subMessage.substring(0, OTP_COUNT)
                     val otp = findSixDigitNumber(message)
 
                     if(::listener.isInitialized && otp?.toIntOrNull() != null) {
@@ -51,15 +48,9 @@ class SmsBroadcastReceiver: BroadcastReceiver() {
         }
     }
 
-    fun findSixDigitNumber(input: String): String? {
+    private fun findSixDigitNumber(input: String): String? {
         val regex = Regex("\\b\\d{6}\\b")
         val matchResult = regex.find(input)
         return matchResult?.value
-    }
-
-    companion object {
-        /** */
-        private const val REGEX_NUMERIC_PATTERN = "^[\\d]*"
-        private const val OTP_COUNT = 6
     }
 }
