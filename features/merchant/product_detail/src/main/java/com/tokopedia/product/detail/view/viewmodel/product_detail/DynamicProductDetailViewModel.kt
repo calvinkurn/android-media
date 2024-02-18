@@ -6,7 +6,10 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.ProductType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -671,6 +674,19 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
+        val data = getDynamicProductInfoP1 ?: throw Exception()
+        AppLogAnalytics.sendConfirmCart(
+            TrackConfirmCart(
+                productId = data.parentProductId,
+                productCategory = data.basic.category.name,
+                productType = ProductType.AVAILABLE,
+                originalPrice = data.data.price.priceFmt,
+                salePrice = data.finalPrice.toString(),
+                skuId = data.basic.productID,
+                currency = "Rp",
+                addSkuNum = data.basic.minOrder, skuNumBefore = 0, skuNumAfter = 0
+            )
+        )
         val result = withContext(dispatcher.io) {
             addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
         }
@@ -725,6 +741,18 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccMultiRequestParams) {
+        val data = getDynamicProductInfoP1 ?: throw Exception()
+        AppLogAnalytics.sendConfirmSku(
+            TrackConfirmSku(
+                productId = data.parentProductId,
+                productCategory = data.basic.category.name,
+                productType = ProductType.AVAILABLE,
+                originalPrice = data.data.price.priceFmt,
+                salePrice = data.finalPrice.toString(),
+                skuId = data.basic.productID,
+                currency = "Rp",
+                false, false,"",  false)
+        )
         val result = withContext(dispatcher.io) {
             addToCartOccUseCase.get().setParams(atcParams).executeOnBackground()
                 .mapToAddToCartDataModel()
