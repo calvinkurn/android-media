@@ -31,6 +31,7 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
@@ -492,12 +493,12 @@ class AtcVariantViewModel @Inject constructor(
         val selectedChild = getVariantData()?.getChildByOptionId(
             getSelectedOptionIds()?.values.orEmpty().toList()
         )
-        val parentId = getVariantData()?.parentId.orEmpty()
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
         val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
         val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
             ?: selectedChild?.getFinalMinOrder() ?: 1
 
+        val parentId = getVariantData()?.parentId.orEmpty()
         if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
             AppLogAnalytics.sendConfirmCart(TrackConfirmCart(
                 productId = parentId,
@@ -507,7 +508,7 @@ class AtcVariantViewModel @Inject constructor(
                 salePrice = selectedChild?.priceFmt.orEmpty(),
                 skuId = selectedChild?.productId.orEmpty(),
                 currency = "Rp",
-                addSkuNum = 0, skuNumBefore = 0, skuNumAfter = 0
+                addSkuNum = selectedChild?.getFinalMinOrder().orZero(), skuNumBefore = 0, skuNumAfter = 0
             ))
         } else if (actionButton == ProductDetailCommonConstant.OCC_BUTTON) {
             AppLogAnalytics.sendConfirmSku(
