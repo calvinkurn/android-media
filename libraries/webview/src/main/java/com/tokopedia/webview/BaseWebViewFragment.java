@@ -29,10 +29,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -211,13 +209,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         if (getActivity() != null && isSmsRegistered) {
@@ -230,8 +221,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getContext());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        smsBroadcastReceiver = new SmsBroadcastReceiver();
-        smsRetriever = SmsRetriever.getClient(getContext());
         Bundle args = getArguments();
         if (args == null || !args.containsKey(KEY_URL)) {
             return;
@@ -886,6 +875,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         private void startSmsListener() {
             if (getContext() != null && !isSmsRegistered) {
+                smsBroadcastReceiver = new SmsBroadcastReceiver();
+                smsRetriever = SmsRetriever.getClient(getContext());
                 Task<Void> task = smsRetriever.startSmsRetriever();
                 task.addOnSuccessListener(aVoid -> {
                     isSmsRegistered = true;
