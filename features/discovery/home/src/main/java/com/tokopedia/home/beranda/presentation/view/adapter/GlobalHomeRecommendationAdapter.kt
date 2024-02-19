@@ -8,19 +8,19 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
-import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationTypeFactoryImpl
-import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationUtil.isFullSpan
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.EmptyStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.ErrorStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.LoadMoreStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.RetryButtonStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.ShimmeringStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.HeadlineTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.utils.ForYouRecommendationDiffUtil
-import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
+import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactoryImpl
+import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil.isFullSpan
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.EmptyStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.ErrorStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.LoadMoreStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.RetryButtonStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.ShimmeringStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.HeadlineTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.ForYouRecommendationDiffUtil
+import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 
 @RecomTemporary
 class GlobalHomeRecommendationAdapter(
@@ -56,7 +56,7 @@ class GlobalHomeRecommendationAdapter(
             is RetryButtonStateModel -> layout.isFullSpan = true
 
             is HeadlineTopAdsModel -> layout.isFullSpan = true
-            is HomeRecommendationModel -> layout.isFullSpan = item.isFullSpan()
+            is RecommendationCardModel -> layout.isFullSpan = item.isFullSpan()
         }
         holder.bind(getItem(position))
     }

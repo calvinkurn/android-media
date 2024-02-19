@@ -30,22 +30,27 @@
         app:tabRippleColor="@null"
         tools:visibility="visible"/>
 
-    <com.tokopedia.home_component.widget.RecommendationMegaTabLayout
+    <com.tokopedia.home_component.widget.tab.MegaTabLayout
         android:id="@+id/tab_recommendation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="46dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="8dp"
         android:clipToPadding="false"
         android:visibility="gone"
-        app:tabIndicatorHeight="0dp"
-        app:tabMode="scrollable"
         app:tabPaddingEnd="0dp"
         app:tabPaddingStart="0dp"
         app:tabPaddingBottom="0dp"
-        app:tabRippleColor="@null"
         tools:visibility="visible"/>
+
+    <View
+        android:id="@+id/megatab_stroke"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/Unify_NN50"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -56,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible"/>
+
         <View
             android:id="@+id/view_feed_shadow"
             android:layout_width="match_parent"

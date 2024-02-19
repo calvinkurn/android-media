@@ -6,13 +6,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.banner.BannerRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayWidgetModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
+import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 
 @RecomTemporary
 object ForYouDataMapper {
@@ -55,10 +55,10 @@ object ForYouDataMapper {
         )
     }
 
-    fun HomeRecommendationItemDataModel.toModel(): HomeRecommendationModel {
-        return HomeRecommendationModel(
+    fun HomeRecommendationItemDataModel.toModel(): RecommendationCardModel {
+        return RecommendationCardModel(
             productCardModel = productCardModel,
-            recommendationProductItem = HomeRecommendationModel.ProductItem(
+            recommendationProductItem = RecommendationCardModel.ProductItem(
                 id = recommendationProductItem.id,
                 name = recommendationProductItem.name,
                 imageUrl = recommendationProductItem.imageUrl,
@@ -66,7 +66,7 @@ object ForYouDataMapper {
                 priceInt = recommendationProductItem.priceInt,
                 freeOngkirIsActive = recommendationProductItem.freeOngkirIsActive,
                 labelGroup = recommendationProductItem.labelGroup.map {
-                    HomeRecommendationModel.ProductItem.LabelGroup(
+                    RecommendationCardModel.ProductItem.LabelGroup(
                         position = it.position,
                         title = it.title,
                         type = it.type,
@@ -88,12 +88,12 @@ object ForYouDataMapper {
         )
     }
 
-    fun HomeRecommendationPlayWidgetUiModel.toModel(): PlayWidgetModel {
-        return PlayWidgetModel(
+    fun HomeRecommendationPlayWidgetUiModel.toModel(): PlayCardModel {
+        return PlayCardModel(
             cardId = cardId,
             appLink = appLink,
             playVideoWidgetUiModel = playVideoWidgetUiModel,
-            playVideoTrackerUiModel = PlayWidgetModel.PlayVideoTrackerUiModel(
+            playVideoTrackerUiModel = PlayCardModel.PlayVideoTrackerUiModel(
                 videoType = playVideoTrackerUiModel.videoType,
                 partnerId = playVideoTrackerUiModel.partnerId,
                 recommendationType = playVideoTrackerUiModel.recommendationType,
@@ -105,8 +105,8 @@ object ForYouDataMapper {
         )
     }
 
-    fun RecomEntityCardUiModel.toModel(): RecomEntityModel {
-        return RecomEntityModel(
+    fun RecomEntityCardUiModel.toModel(): ContentCardModel {
+        return ContentCardModel(
             id = id,
             layoutCard = layoutCard,
             layoutItem = layoutItem,
@@ -116,7 +116,7 @@ object ForYouDataMapper {
             appLink = appLink,
             imageUrl = imageUrl,
             backgroundColor = backgroundColor,
-            labelState = RecomEntityModel.LabelState(
+            labelState = ContentCardModel.LabelState(
                 iconUrl = labelState.iconUrl,
                 title = labelState.title,
                 textColor = labelState.textColor

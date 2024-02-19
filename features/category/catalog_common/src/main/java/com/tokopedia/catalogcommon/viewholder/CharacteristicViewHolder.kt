@@ -28,7 +28,7 @@ class CharacteristicViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_item_characteristic
-        const val DIVIDER_COLOR = "#AAB4C8"
+        const val DIVIDER_COLOR = "AAB4C8"
         const val ALPHA_20_PERCENTAGE = 20
         const val HORIZONTAL_MARGIN = 6
     }
@@ -87,7 +87,7 @@ class CharacteristicViewHolder(
             Int.ZERO
         )
         view.layoutParams = layoutParam
-        view.setBackgroundColor(DIVIDER_COLOR.stringHexColorParseToInt(ALPHA_20_PERCENTAGE))
+        view.setBackgroundColor("#${DIVIDER_COLOR}".stringHexColorParseToInt(ALPHA_20_PERCENTAGE))
         return view
     }
 }

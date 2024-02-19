@@ -10,15 +10,15 @@ import com.tokopedia.home.databinding.ItemHomeRecommendationPlayWidgetBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
-import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
-import com.tokopedia.recommendation_widget_common.widget.foryou.play.PlayVideoWidgetManager
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 
 class HomeRecommendationPlayWidgetViewHolder(
     view: View,
     homeRecommendationPlayWidgetManager: PlayVideoWidgetManager,
     private val listener: GlobalRecomListener
-) : BaseForYouViewHolder<HomeRecommendationPlayWidgetUiModel>(
+) : BaseRecommendationViewHolder<HomeRecommendationPlayWidgetUiModel>(
     view,
     HomeRecommendationPlayWidgetUiModel::class.java
 ) {
@@ -56,11 +56,11 @@ class HomeRecommendationPlayWidgetViewHolder(
 
     private fun setHomePlayWidgetVideoClick(element: HomeRecommendationPlayWidgetUiModel) {
         binding.homeRecomPlayWidgetVideo.setOnClickListener {
-            listener.onPlayVideoWidgetClick(element.toModel(), bindingAdapterPosition)
+            listener.onPlayCardClicked(element.toModel(), bindingAdapterPosition)
         }
 
         itemView.setOnClickListener {
-            listener.onPlayVideoWidgetClick(element.toModel(), bindingAdapterPosition)
+            listener.onPlayCardClicked(element.toModel(), bindingAdapterPosition)
         }
     }
 
@@ -69,7 +69,7 @@ class HomeRecommendationPlayWidgetViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onPlayVideoWidgetImpress(element.toModel(), bindingAdapterPosition)
+                    listener.onPlayCardImpressed(element.toModel(), bindingAdapterPosition)
                 }
             }
         )

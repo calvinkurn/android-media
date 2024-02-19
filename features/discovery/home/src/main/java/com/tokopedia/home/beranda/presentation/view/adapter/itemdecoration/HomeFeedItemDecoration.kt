@@ -10,7 +10,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemListViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.entity.RecomEntityCardViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardViewHolder
 import com.tokopedia.home.R as homeR
 
 class HomeFeedItemDecoration : RecyclerView.ItemDecoration() {
@@ -78,7 +78,7 @@ class HomeFeedItemDecoration : RecyclerView.ItemDecoration() {
             when (adapter?.getItemViewType(viewPosition)) {
                 HomeRecommendationItemGridViewHolder.LAYOUT,
                 HomeRecommendationItemListViewHolder.LAYOUT,
-                RecomEntityCardViewHolder.LAYOUT,
+                ContentCardViewHolder.LAYOUT,
                 HomeBannerFeedViewHolder.LAYOUT,
                 HomeRecommendationBannerTopAdsOldViewHolder.LAYOUT,
                 HomeRecommendationBannerTopAdsViewHolder.LAYOUT,

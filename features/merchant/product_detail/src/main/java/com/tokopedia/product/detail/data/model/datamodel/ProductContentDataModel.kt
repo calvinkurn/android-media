@@ -5,6 +5,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Bl
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
+import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -105,7 +106,9 @@ data class ProductContentMainData(
     var stockWording: String = "",
     var isVariant: Boolean = false,
     var productName: String = "",
-    var isProductActive: Boolean = false
+    var isProductActive: Boolean = false,
+    var isShowPrice: Boolean = true,
+    var labelIcons: List<LabelIcons> = emptyList(),
 ) {
 
     val hasCampaign

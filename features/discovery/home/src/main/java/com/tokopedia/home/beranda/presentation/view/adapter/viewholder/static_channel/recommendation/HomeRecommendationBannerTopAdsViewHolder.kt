@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
 import com.tokopedia.utils.view.binding.viewBinding
@@ -21,7 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeRecommendationBannerTopAdsViewHolder(
     view: View,
     private val homeRecommendationListener: GlobalRecomListener
-) : BaseForYouViewHolder<HomeRecommendationBannerTopAdsUiModel>(
+) : BaseRecommendationViewHolder<HomeRecommendationBannerTopAdsUiModel>(
     view,
     HomeRecommendationBannerTopAdsUiModel::class.java
 ) {

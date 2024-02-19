@@ -2216,7 +2216,9 @@ class FeedFragment :
     }
 
     private fun updateArgumentsFromParentFragment() {
-        arguments?.putAll(parentFragment?.arguments)
+        parentFragment?.arguments?.let { parentArguments ->
+            arguments?.putAll(parentArguments)
+        }
     }
 
     private fun removeRefreshForRelevantPostArgument(isRemoveParent: Boolean) {

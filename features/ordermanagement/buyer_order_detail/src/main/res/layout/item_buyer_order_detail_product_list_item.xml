@@ -25,14 +25,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ViewStub
-            android:id="@+id/itemBomDetailAddonsViewStub"
+            android:id="@+id/layout_bom_detail_product_add_on"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginTop="8dp"
-            android:inflatedId="@+id/itemBomDetailAddonsViewStub"
-            android:layout="@layout/partial_item_buyer_order_detail_addons"
+            android:layout_marginBottom="16dp"
+            android:inflatedId="@+id/layout_bom_detail_product_add_on"
+            android:layout="@layout/partial_bmgm_add_on_summary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

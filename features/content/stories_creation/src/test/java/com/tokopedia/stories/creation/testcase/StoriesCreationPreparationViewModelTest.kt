@@ -71,6 +71,8 @@ class StoriesCreationPreparationViewModelTest {
             robot.storyId.assertEqualTo(mockStoryId)
             robot.selectedAccount.assertEqualTo(mockAccountList[0])
             robot.maxProductTag.assertEqualTo(mockConfig.maxProductTag)
+            robot.minVideoDuration.assertEqualTo(mockConfig.minVideoDuration)
+            robot.maxVideoDuration.assertEqualTo(mockConfig.maxVideoDuration)
             state.config.storiesId.assertEqualTo(mockStoryId)
             state.accountList.assertEqualTo(mockAccountListWithoutUgc)
 
@@ -234,6 +236,7 @@ class StoriesCreationPreparationViewModelTest {
                 submitAction(StoriesCreationAction.SetMedia(StoriesMedia(mockMediaFilePath, mockMediaType)))
             }
 
+            robot.mediaFilePath.assertEqualTo(mockMediaFilePath)
             state.media.filePath.assertEqualTo(mockMediaFilePath)
             state.media.type.assertEqualTo(mockMediaType)
         }
@@ -288,7 +291,7 @@ class StoriesCreationPreparationViewModelTest {
     }
 
     @Test
-    fun `storiesCreation_clickUpload_updateChannelFaiked`() {
+    fun `storiesCreation_clickUpload_updateChannelFailed`() {
         val mockConfig = configModelBuilder.build()
         val mockAccountList = accountModelBuilder.build()
         val mockMediaFilePath = "asdf"

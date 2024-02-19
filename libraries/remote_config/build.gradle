@@ -26,7 +26,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
