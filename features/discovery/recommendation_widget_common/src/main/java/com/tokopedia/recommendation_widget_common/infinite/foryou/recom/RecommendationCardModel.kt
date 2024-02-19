@@ -55,12 +55,24 @@ data class RecommendationCardModel(
         val trackerImageUrl: String = "",
         val clickUrl: String = "",
         val isWishlist: Boolean = false,
-        val wishListUrl: String = ""
+        val wishListUrl: String = "",
+        val shop: Shop = Shop(),
     ) {
         data class LabelGroup(
             val position: String = "",
             val title: String = "",
             val type: String = "",
+            val url: String = ""
+        )
+
+        data class Shop(
+            val applink: String = "",
+            val city: String = "",
+            val domain: String = "",
+            val id: String = "0",
+            val imageUrl: String = "",
+            val name: String = "",
+            val reputation: String = "",
             val url: String = ""
         )
     }
