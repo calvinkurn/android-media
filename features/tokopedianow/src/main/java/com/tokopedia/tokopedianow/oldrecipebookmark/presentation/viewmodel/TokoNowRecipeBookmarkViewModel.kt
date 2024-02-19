@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_PAGE
 import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_PER_PAGE
 import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.fragment.TokoNowRecipeBookmarkFragment.Companion.RESTORE_ADD_POSITION
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class TokoNowRecipeBookmarkViewModel @Inject constructor(
-    private val addressData: TokoNowLocalAddress,
+    private val addressData: LocalCacheModel,
     private val getRecipeBookmarksUseCase: GetRecipeBookmarksUseCase,
     private val removeRecipeBookmarkUseCase: RemoveRecipeBookmarkUseCase,
     private val addRecipeBookmarkUseCase: AddRecipeBookmarkUseCase,
@@ -54,7 +54,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         get() = _isOnScrollNotNeeded
 
     private suspend fun getRecipeBookmarks(page: Int): Triple<List<RecipeUiModel>, GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Header, Boolean> {
-        val warehouseId = addressData.getWarehouseId().toString()
+        val warehouseId = addressData.warehouse_id
 
         val response = getRecipeBookmarksUseCase.execute(
             warehouseId = warehouseId,
