@@ -19,5 +19,7 @@ data class ShareExPropertyResponseDto(
     @SerializedName("imageGeneratorPayload")
     val imageGeneratorPayload: ShareExPropertyImageGeneratorResponseDto? = null,
     @SerializedName("generateLinkProperties")
-    val generateLinkProperties: ShareExGenerateLinkPropertiesResponseDto = ShareExGenerateLinkPropertiesResponseDto()
+    val generateLinkProperties: ShareExGenerateLinkPropertiesResponseDto = ShareExGenerateLinkPropertiesResponseDto(),
+    @SerializedName("channel")
+    val channel: ShareExChannelResponseDto = ShareExChannelResponseDto()
 )

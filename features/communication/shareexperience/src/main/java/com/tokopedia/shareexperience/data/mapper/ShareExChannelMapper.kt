@@ -8,6 +8,7 @@ import android.os.Build
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shareexperience.data.dto.ShareExChannelResponseDto
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.ShareExTelephonyUtil
 import com.tokopedia.shareexperience.data.util.toArray
@@ -29,6 +30,42 @@ open class ShareExChannelMapper @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val userSession: UserSessionInterface
 ) {
+
+    fun mapToSocialMedialChannel(response: ShareExChannelResponseDto): ShareExChannelModel {
+        val socialMediaChannelList = generateSocialMediaChannel().listChannel
+        val filteredSocialMediaChannelList = socialMediaChannelList.filter { socialMediaItem ->
+            response.list.any { responseItem ->
+                socialMediaItem.channelEnum.id == responseItem.channelId
+            }
+        }
+        val sortedFilteredSocialMediaChannelList = filteredSocialMediaChannelList.sortedBy { socialMediaItem ->
+            response.list.indexOfFirst { responseItem ->
+                responseItem.channelId == socialMediaItem.channelEnum.id
+            }
+        }
+        return ShareExChannelModel(
+            description = response.title,
+            listChannel = sortedFilteredSocialMediaChannelList
+        )
+    }
+
+    fun mapToCommonChannel(response: ShareExChannelResponseDto): ShareExChannelModel {
+        val commonChannelList = generateDefaultChannel().listChannel
+        val filteredCommonChannelList = commonChannelList.filter { commonItem ->
+            response.list.any { responseItem ->
+                commonItem.channelEnum.id == responseItem.channelId
+            }
+        }
+        val sortedFilteredCommonChannelList = filteredCommonChannelList.sortedBy { commonItem ->
+            response.list.indexOfFirst { responseItem ->
+                responseItem.channelId == commonItem.channelEnum.id
+            }
+        }
+        return ShareExChannelModel(
+            description = response.title,
+            listChannel = sortedFilteredCommonChannelList
+        )
+    }
 
     open fun generateSocialMediaChannel(): ShareExChannelModel {
         var socialMediaChannelList = generateSocialMediaChannelList()

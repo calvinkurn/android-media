@@ -57,6 +57,14 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
                   customMetaTags
                   anMinVersion
                 }
+                channel {
+                  title
+                  list {
+                    id
+                    title
+                    imageResolution
+                    platform
+                  }
               }
             }
           }

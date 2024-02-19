@@ -9,7 +9,7 @@ package com.tokopedia.shareexperience.domain.model
 enum class ShareExChannelEnum(
     val appName: String,
     val label: String,
-    val id: Int,
+    val id: Long,
     val trackerName: String
 ) {
     WHATSAPP("WhatsApp", "whatsapp", 12, "WhatsApp"),

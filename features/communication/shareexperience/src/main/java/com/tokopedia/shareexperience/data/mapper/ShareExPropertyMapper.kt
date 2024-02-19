@@ -53,16 +53,16 @@ class ShareExPropertyMapper @Inject constructor(
                     feature = ShareExFeatureEnum.SHARE,
                     campaign = "" // will be changed later when user clicked channel
                 ),
-                imageGenerator = it.imageGeneratorPayload.mapToDomainModel()
+                imageGenerator = it.imageGeneratorPayload.mapToDomainModel(),
+                socialChannel = channelMapper.mapToSocialMedialChannel(it.channel),
+                commonChannel = channelMapper.mapToCommonChannel(it.channel)
             )
             listChip.add(it.chipTitle)
             listShareProperty.add(property)
         }
         val body = ShareExBottomSheetPageModel(
             listChip = listChip,
-            listShareProperty = listShareProperty,
-            socialChannel = channelMapper.generateSocialMediaChannel(),
-            commonChannel = channelMapper.generateDefaultChannel()
+            listShareProperty = listShareProperty
         )
         return ShareExBottomSheetModel(
             title = dto.bottomSheet.title,
@@ -81,8 +81,12 @@ class ShareExPropertyMapper @Inject constructor(
 
     fun mapDefault(): ShareExBottomSheetModel {
         val body = ShareExBottomSheetPageModel(
-            socialChannel = channelMapper.generateSocialMediaChannel(),
-            commonChannel = channelMapper.generateDefaultChannel()
+            listShareProperty = listOf(
+                ShareExPropertyModel(
+                    socialChannel = channelMapper.generateSocialMediaChannel(),
+                    commonChannel = channelMapper.generateDefaultChannel()
+                )
+            )
         )
         return ShareExBottomSheetModel(
             title = ShareExConstants.DefaultValue.DEFAULT_TITLE,
