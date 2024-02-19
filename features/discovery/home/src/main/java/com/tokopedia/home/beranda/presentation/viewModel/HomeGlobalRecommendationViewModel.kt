@@ -14,16 +14,16 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.recommendation_widget_common.widget.foryou.ForYouRecommendationVisitable
-import com.tokopedia.recommendation_widget_common.widget.foryou.recom.HomeRecommendationModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.EmptyStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.ErrorStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.LoadMoreStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.RetryButtonStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.state.model.ShimmeringStateModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.BannerOldTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.topads.model.HeadlineTopAdsModel
-import com.tokopedia.recommendation_widget_common.widget.foryou.utils.RecomTemporary
+import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.EmptyStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.ErrorStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.LoadMoreStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.RetryButtonStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.ShimmeringStateModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.HeadlineTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -495,10 +495,10 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
 
     private fun updateWishlistOldQuery(id: String, position: Int, isWishlisted: Boolean) {
         val homeRecomendationList =
-            _homeRecommendationLiveData.value?.homeRecommendations?.filterIsInstance<HomeRecommendationModel>()
+            _homeRecommendationLiveData.value?.homeRecommendations?.filterIsInstance<RecommendationCardModel>()
                 ?.toMutableList()
                 ?: mutableListOf()
-        var recommendationItem: HomeRecommendationModel? = null
+        var recommendationItem: RecommendationCardModel? = null
         var recommendationItemPosition: Int = -1
         if (homeRecomendationList.getOrNull(position)?.recommendationProductItem?.id == id) {
             recommendationItem = homeRecomendationList[position]
@@ -531,7 +531,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
             val homeRecommendationList =
                 homeRecommendationCardStateValue.data.homeRecommendations.toMutableList()
             val homeRecommendationItemList =
-                homeRecommendationList.filterIsInstance<HomeRecommendationModel>()
+                homeRecommendationList.filterIsInstance<RecommendationCardModel>()
 
             val recommendationItem =
                 homeRecommendationItemList.find { it.recommendationProductItem.id == id }

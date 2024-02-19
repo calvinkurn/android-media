@@ -7,7 +7,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationError
 import com.tokopedia.home.databinding.ItemHomeRecommendationErrorLayoutBinding
-import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException

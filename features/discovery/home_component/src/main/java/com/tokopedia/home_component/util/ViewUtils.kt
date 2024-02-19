@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
@@ -111,6 +113,15 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
         }
     } catch (_: Exception) {
     }
+}
+
+fun View.setGradientBackgroundIfAny(gradientColor: ArrayList<String>) {
+    if(gradientColor.isEmpty()) {
+        hide()
+        return
+    }
+    show()
+    setGradientBackground(gradientColor)
 }
 
 fun View.setGradientBackgroundRounded(colorArray: ArrayList<String>, cornerRadius: Float = DEFAULT_ROUNDED_CORNER) {

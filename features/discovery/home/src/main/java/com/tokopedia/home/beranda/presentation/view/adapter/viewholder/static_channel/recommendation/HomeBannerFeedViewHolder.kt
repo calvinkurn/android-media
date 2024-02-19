@@ -11,14 +11,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.databinding.HomeFeedBannerBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.recommendation_widget_common.widget.foryou.BaseForYouViewHolder
-import com.tokopedia.recommendation_widget_common.widget.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.topads.sdk.R as topadssdkR
 
 class HomeBannerFeedViewHolder(
     itemView: View,
     private val homeRecommendationListener: GlobalRecomListener
-) : BaseForYouViewHolder<BannerRecommendationDataModel>(
+) : BaseRecommendationViewHolder<BannerRecommendationDataModel>(
     itemView,
     BannerRecommendationDataModel::class.java
 ) {
@@ -48,7 +48,7 @@ class HomeBannerFeedViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    homeRecommendationListener.onBannerImpression(element.toModel())
+                    homeRecommendationListener.onBannerImpressed(element.toModel())
                 }
             }
         )

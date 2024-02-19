@@ -340,13 +340,17 @@ class BmsmWidgetTabFragment :
                 productBenefitImageFromOfferingInfo
             }
 
-            tpgTitleWidget.setTitle(offerMessage, upsellWording, defaultOfferMessage)
-            tpgSubTitleWidget.setUpsellingGwp(offerMessage)
-            tpgPdUpsellingWording.setUpsellingPd(offerMessage)
+            if (offerMessage.isEmpty() && !currentState.isWidgetOnInitialState) {
+                setViewState(VIEW_ERROR, Status.GIFT_OOS)
+            } else {
+                tpgTitleWidget.setTitle(offerMessage, upsellWording, defaultOfferMessage)
+                tpgSubTitleWidget.setUpsellingGwp(offerMessage)
+                tpgPdUpsellingWording.setUpsellingPd(offerMessage)
 
-            when (offerTypeId) {
-                OFFER_TYPE_PD -> setupPdHeader(offerMessage)
-                OFFER_TYPE_GWP -> setupGwpHeader(productGiftImages)
+                when (offerTypeId) {
+                    OFFER_TYPE_PD -> setupPdHeader(offerMessage)
+                    OFFER_TYPE_GWP -> setupGwpHeader(productGiftImages)
+                }
             }
             setupOlpNavigation()
         }
@@ -432,7 +436,20 @@ class BmsmWidgetTabFragment :
             flContentWrapper.gone()
             cardErrorState.gone()
             when (status) {
-                Status.GIFT_OOS,
+                Status.GIFT_OOS -> {
+                    loadingState.root.gone()
+                    cardGroup.visible()
+                    flContentWrapper.visible()
+                    cardErrorState.gone()
+                    groupStackedImg.gone()
+                    imgGiftItems.gone()
+                    imgGiftWhiteFrameBroder.gone()
+                    tpgSubTitleWidget.gone()
+                    tpgTitleWidget.apply {
+                        setWeight(Typography.REGULAR)
+                        text = context.getString(R.string.bmsm_widget_gift_oos_description)
+                    }
+                }
                 Status.OOS -> {
                     emptyPageLarge.apply {
                         visible()
