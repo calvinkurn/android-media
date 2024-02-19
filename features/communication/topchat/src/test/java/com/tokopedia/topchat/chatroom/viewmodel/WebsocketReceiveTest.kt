@@ -1,12 +1,15 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
+import app.cash.turbine.test
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.topchat.chatroom.responses.WebsocketResponses
+import com.tokopedia.topchat.chatroom.view.TopChatRoomAction
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.lang.IllegalStateException
@@ -512,5 +515,37 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(null, webSocketViewModel.unreadMsg.value)
+    }
+
+    @Test
+    fun `refresh chat room, chat room refreshed and ui state back to false`() {
+        runTest {
+            // Given
+            val responseText = WebsocketResponses.getRefreshEvent()
+            onConnectWebsocket {
+                it.onMessage(websocket, responseText)
+            }
+
+            webSocketViewModel.chatRoomUiState.test {
+                // When
+                webSocketViewModel.setupViewModelObserver()
+                webSocketViewModel.connectWebSocket()
+
+                // Then
+                skipItems(1) // initial value
+
+                val updatedValue = awaitItem() // got refresh event
+                assertEquals(true, updatedValue.isRefresh)
+
+                // When
+                webSocketViewModel.processAction(TopChatRoomAction.PageRefreshed)
+
+                // Then
+                val lastValue = awaitItem() // page refreshed
+                assertEquals(false, lastValue.isRefresh)
+
+                expectNoEvents()
+            }
+        }
     }
 }
