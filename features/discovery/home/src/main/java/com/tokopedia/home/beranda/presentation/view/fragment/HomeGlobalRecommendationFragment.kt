@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductShowAppLog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -28,6 +30,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.byteio.TrackRecommendationMapper.asShowClickTracker
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
@@ -408,6 +411,12 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
+        sendProductShowAppLog(
+            model.asShowClickTracker(
+                tabName = tabName,
+                tabPosition = tabIndex,
+            )
+        )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
@@ -455,6 +464,12 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
+        sendProductShowAppLog(
+            model.asShowClickTracker(
+                tabName = tabName,
+                tabPosition = tabIndex,
+            )
+        )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
