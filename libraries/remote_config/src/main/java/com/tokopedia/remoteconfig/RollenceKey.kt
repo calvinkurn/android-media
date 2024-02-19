@@ -24,6 +24,7 @@ object RollenceKey {
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
+    const val HOME_MEGATAB = "megatab_ff"
     const val HOME_MISSION_SIZE_KEY = "mission_px"
     const val HOME_MISSION_SIZE_CONTROL = "control_var"
     const val HOME_MISSION_SIZE_VARIANT = "exp_var"

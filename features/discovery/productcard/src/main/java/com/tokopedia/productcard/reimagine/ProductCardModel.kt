@@ -46,6 +46,15 @@ data class ProductCardModel(
     fun labelPreventiveBlock(): LabelGroupReimagine? =
         labelGroup(LABEL_PREVENTIVE_BLOCK)?.takeIf(LabelGroupReimagine::hasTitle)
 
+    fun labelOverlay1(): LabelGroupReimagine? =
+        labelGroup(LABEL_OVERLAY_1)?.takeIf(LabelGroupReimagine::hasImage)
+
+    fun labelOverlay2(): LabelGroupReimagine? =
+        labelGroup(LABEL_OVERLAY_2)?.takeIf(LabelGroupReimagine::hasImage)
+
+    fun labelOverlay3(): LabelGroupReimagine? =
+        labelGroup(LABEL_OVERLAY_3)?.takeIf(LabelGroupReimagine::hasImage)
+
     fun ribbon(): LabelGroupReimagine? =
         labelGroup(LABEL_REIMAGINE_RIBBON)?.takeIf(LabelGroupReimagine::hasTitle)
 

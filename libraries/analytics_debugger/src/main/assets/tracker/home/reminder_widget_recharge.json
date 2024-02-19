@@ -12,7 +12,7 @@
           "creative_url": ""
         }
       ],
-      "eventCategory": "homepage-digital",
+      "eventCategory": "homepage - digital",
       "event": "view_item",
       "eventAction": "impression on digital bills",
       "sessionIris": ".+",
@@ -29,7 +29,7 @@
           "creative_url": ""
         }
       ],
-      "eventCategory": "homepage-digital",
+      "eventCategory": "homepage - digital",
       "event": "select_content",
       "eventAction": "click on digital bills",
       "sessionIris": ".+",

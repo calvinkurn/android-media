@@ -13,6 +13,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
@@ -289,6 +290,18 @@ class ThanksPageDataViewModel @Inject constructor(
 
     fun addBottomContentWidget(visitable: Visitable<*>) {
         orderWidget(_bottomContentVisitableList.value.orEmpty() + visitable)
+    }
+
+    fun setTicker(listTicker: List<TickerData>) {
+        if (_bottomContentVisitableList.value?.first() is WaitingHeaderUiModel) {
+            val newHeaderVisitable = (_bottomContentVisitableList.value?.first() as WaitingHeaderUiModel).copy(
+                tickerData = listTicker
+            )
+            val newList = _bottomContentVisitableList.value?.toMutableList()
+            newList?.removeFirst()
+            newList?.add(0, newHeaderVisitable)
+            _bottomContentVisitableList.value = newList?.toList()
+        }
     }
 
     private fun orderWidget(visitableList: List<Visitable<*>>) {

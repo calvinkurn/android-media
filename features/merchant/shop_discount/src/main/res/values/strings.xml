@@ -34,7 +34,8 @@
     <string name="sd_total_product">%s Produk</string>
     <string name="sd_multi_select">Pilih Sekaligus</string>
     <string name="sd_create_discount">Buat Diskon</string>
-    <string name="sd_ticker_announcement_wording"><![CDATA[Cek info Diskon Toko selengkapnya <a href="http://tokopedia.com">di sini</a>]]></string>
+    <string name="sd_ticker_announcement_wording_title">Diskon mungkin berubah karena ada subsidi</string>
+    <string name="sd_ticker_announcement_wording"><![CDATA[Cek detail produkmu yang disubsidi melalui Tokopedia seller versi desktop. <a href="https://seller.tokopedia.com/edu/subsidi-diskon-toko">Pelajari di sini.</a>]]></string>
     <string name="sd_no_discount_title">Yuk, pasang Diskon Toko!</string>
     <string name="sd_no_discount_description">Kamu belum punya produk dengan Diskon Toko. Tambah produk dulu, lalu pasang diskonnya, ya.</string>
     <string name="sd_no_paused_discount_title">Produk Diskon Toko-mu dialokasikan ke campaign lain</string>
