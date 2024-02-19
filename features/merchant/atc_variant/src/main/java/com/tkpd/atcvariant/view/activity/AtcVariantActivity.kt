@@ -11,6 +11,7 @@ import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.analytics.byteio.IAppLogActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
@@ -22,7 +23,7 @@ import timber.log.Timber
 /**
  * Created by Yehezkiel on 05/05/21
  */
-class AtcVariantActivity : BaseSimpleActivity() {
+class AtcVariantActivity : BaseSimpleActivity(), IAppLogActivity {
     companion object {
         const val TOKO_NOW_EXTRA = "isTokoNow"
         const val PAGE_SOURCE_EXTRA = "pageSource"
@@ -108,5 +109,9 @@ class AtcVariantActivity : BaseSimpleActivity() {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
+    }
+
+    override fun getPageName(): String {
+        return "sku"
     }
 }

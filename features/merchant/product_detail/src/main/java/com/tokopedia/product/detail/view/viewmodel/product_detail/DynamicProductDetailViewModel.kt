@@ -682,8 +682,8 @@ class DynamicProductDetailViewModel @Inject constructor(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.name,
                 productType = ProductType.AVAILABLE,
-                originalPrice = data.data.price.slashPriceFmt,
-                salePrice = data.finalPrice.toString(),
+                originalPrice = data.data.price.value,
+                salePrice = data.finalPrice,
                 skuId = data.basic.productID,
                 addSkuNum = data.basic.minOrder,
             )
@@ -748,11 +748,14 @@ class DynamicProductDetailViewModel @Inject constructor(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.name,
                 productType = ProductType.AVAILABLE,
-                originalPrice = data.data.price.priceFmt,
-                salePrice = data.finalPrice.toString(),
+                originalPrice = data.data.price.value,
+                salePrice = data.finalPrice,
                 skuId = data.basic.productID,
-                currency = "Rp",
-                false, false,"",  false)
+                isSkuSelected = false,
+                isAddCartSelected = false,
+                qty = data.basic.minOrder.toString(),
+                isHaveAddress = false
+            )
         )
         val result = withContext(dispatcher.io) {
             addToCartOccUseCase.get().setParams(atcParams).executeOnBackground()
