@@ -51,7 +51,8 @@ data class CartShipmentAddressFormData(
     var coachmarkPlus: CheckoutCoachmarkPlusData = CheckoutCoachmarkPlusData(),
     var shipmentPlatformFee: ShipmentPlatformFeeData = ShipmentPlatformFeeData(),
     var listSummaryAddons: List<ShipmentSummaryAddOnData> = emptyList(),
-    var paymentLevelAddOnsPositions: List<Long> = emptyList()
+    var paymentLevelAddOnsPositions: List<Long> = emptyList(),
+    var additionalFeature: AdditionalFeature = AdditionalFeature()
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>

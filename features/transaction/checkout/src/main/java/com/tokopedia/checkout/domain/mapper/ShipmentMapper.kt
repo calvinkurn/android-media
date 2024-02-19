@@ -25,6 +25,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
 import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmBenefitProductModel
 import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmProductModel
 import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmTierProductModel
+import com.tokopedia.checkout.domain.model.cartshipmentform.AdditionalFeature
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
@@ -193,6 +194,7 @@ class ShipmentMapper @Inject constructor() {
             listSummaryAddons = mapSummaryAddOn(shipmentAddressFormDataResponse.listSummaryAddOns)
             paymentLevelAddOnsPositions =
                 mapPaymentLevelAddOns(shipmentAddressFormDataResponse.paymentLevelAddOns)
+            additionalFeature = mapAdditionalFeatures(shipmentAddressFormDataResponse.additionalFeatures)
         }
     }
 
@@ -1393,6 +1395,19 @@ class ShipmentMapper @Inject constructor() {
                 )
             })
         )
+    }
+
+    private fun mapAdditionalFeatures(additionalFeatures: List<String>): AdditionalFeature {
+        val additionalFeature = AdditionalFeature()
+        for (feature in additionalFeatures) {
+            if (feature.equals(AdditionalFeature.QTY_EDIT, ignoreCase = true)) {
+                additionalFeature.isEnableQtyEdit = true
+            }
+            if (feature.equals(AdditionalFeature.NOTE_EDIT, ignoreCase = true)) {
+                additionalFeature.isEnableNoteEdit = true
+            }
+        }
+        return additionalFeature
     }
 
     companion object {

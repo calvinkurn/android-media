@@ -255,41 +255,44 @@ class CheckoutProductViewHolder(
     }
 
     private fun renderProductNotesEdit(product: CheckoutProductModel) {
-        if (product.noteToSeller.isNotEmpty()) {
-            productBinding.icProductNotesEdit.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
-            productBinding.icProductNotesEdit.contentDescription =
-                binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_filled_content_desc)
+        if (product.enableNoteEdit) {
+            productBinding.dividerProductPriceNotes.isVisible = true
+            productBinding.icProductNotesEdit.isVisible = true
+            productBinding.tvProductNotesEdit.isVisible = true
+            if (product.noteToSeller.isNotEmpty()) {
+                productBinding.icProductNotesEdit.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
+                productBinding.icProductNotesEdit.contentDescription =
+                    binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_filled_content_desc)
+            } else {
+                productBinding.icProductNotesEdit.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
+                productBinding.icProductNotesEdit.contentDescription =
+                    binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_empty_content_desc)
+            }
+            productBinding.icProductNotesEdit.setOnClickListener {
+                onEditNote(product)
+            }
+            productBinding.tvProductNotesEdit.setOnClickListener {
+                onEditNote(product)
+            }
         } else {
-            productBinding.icProductNotesEdit.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
-            productBinding.icProductNotesEdit.contentDescription =
-                binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_empty_content_desc)
+            productBinding.dividerProductPriceNotes.isVisible = false
+            productBinding.icProductNotesEdit.isVisible = false
+            productBinding.tvProductNotesEdit.isVisible = false
         }
-        productBinding.icProductNotesEdit.setOnClickListener {
-            val cartNoteBottomSheet = CartNoteBottomSheet.newInstance(
-                CartNoteBottomSheetData(
-                    productName = product.name,
-                    productImage = product.imageUrl,
-                    variant = product.variant
-                )
+    }
+
+    private fun onEditNote(product: CheckoutProductModel) {
+        val cartNoteBottomSheet = CartNoteBottomSheet.newInstance(
+            CartNoteBottomSheetData(
+                productName = product.name,
+                productImage = product.imageUrl,
+                variant = product.variant
             )
-            cartNoteBottomSheet.setListener {
-                listener.onEditProductNote(it, bindingAdapterPosition)
-            }
-            cartNoteBottomSheet.show(listener.getHostFragmentManager(), CartNoteBottomSheet.TAG)
+        )
+        cartNoteBottomSheet.setListener {
+            listener.onEditProductNote(it, bindingAdapterPosition)
         }
-        productBinding.tvProductNotesEdit.setOnClickListener {
-            val cartNoteBottomSheet = CartNoteBottomSheet.newInstance(
-                CartNoteBottomSheetData(
-                    productName = product.name,
-                    productImage = product.imageUrl,
-                    variant = product.variant
-                )
-            )
-            cartNoteBottomSheet.setListener {
-                listener.onEditProductNote(it, bindingAdapterPosition)
-            }
-            cartNoteBottomSheet.show(listener.getHostFragmentManager(), CartNoteBottomSheet.TAG)
-        }
+        cartNoteBottomSheet.show(listener.getHostFragmentManager(), CartNoteBottomSheet.TAG)
     }
 
     private fun hideBundleViews() {

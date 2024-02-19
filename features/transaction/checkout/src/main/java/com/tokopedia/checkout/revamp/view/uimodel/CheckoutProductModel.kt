@@ -118,7 +118,11 @@ data class CheckoutProductModel(
     val isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
     var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
     val shopLocation: String = "",
-    val shouldShowGroupInfo: Boolean = false
+    val shouldShowGroupInfo: Boolean = false,
+
+    // additional feature
+    val enableNoteEdit: Boolean = false,
+    val enableQtyEdit: Boolean = false
 ) : CheckoutItem {
 
     val shouldShowBmgmInfoIcon: Boolean
