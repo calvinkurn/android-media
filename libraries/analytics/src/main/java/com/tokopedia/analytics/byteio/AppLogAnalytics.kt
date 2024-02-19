@@ -289,7 +289,7 @@ object AppLogAnalytics {
         })
     }
 
-    private fun JSONObject.addPage() {
+    internal fun JSONObject.addPage() {
         put("previous_page", previousPageName())
         put("page_name", currentPageName())
         put("source_page_type", sourcePageType?.str)
