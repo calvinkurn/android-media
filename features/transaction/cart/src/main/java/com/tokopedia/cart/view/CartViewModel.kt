@@ -13,8 +13,8 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
-import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
 import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
@@ -127,7 +127,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -561,7 +560,7 @@ class CartViewModel @Inject constructor(
         CartIdlingResource.decrement()
     }
 
-    fun processUpdateCartCounter() {
+    /*fun processUpdateCartCounter() {
         compositeSubscription.add(
             updateCartCounterUseCase.createObservable(RequestParams.create())
                 .subscribeOn(schedulers.io)
@@ -571,6 +570,16 @@ class CartViewModel @Inject constructor(
                     _globalEvent.value = CartGlobalEvent.CartCounterUpdated(it)
                 }
         )
+    }*/
+
+    fun processUpdateCartCounter() {
+        launchCatchError(block = {
+            val result = updateCartCounterUseCase(Unit)
+            println("++ result = $result")
+            _globalEvent.value = CartGlobalEvent.CartCounterUpdated(result)
+        }, onError = {
+                println("++ Throwable = ${it.message}")
+            })
     }
 
     fun getAllPromosApplied(lastApplyPromoData: LastApplyPromoData): List<String> {
