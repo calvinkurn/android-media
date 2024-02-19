@@ -1,5 +1,9 @@
-package com.tokopedia.home.beranda.presentation.view.helper
+@file:SuppressLint("DEPRECATION", "DeprecatedMethod")
 
+package com.tokopedia.recommendation_widget_common.infinite.foryou.play
+
+import android.annotation.SuppressLint
+import android.graphics.Rect
 import android.preference.PreferenceManager
 import android.view.View
 import androidx.lifecycle.Lifecycle
@@ -8,13 +12,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
-import com.tokopedia.play_common.util.extension.getVisiblePortion
-import com.tokopedia.play_common.util.extension.globalVisibleRect
+import kotlin.math.max
+import kotlin.math.min
 
-class HomeRecommendationVideoWidgetManager(
+class PlayVideoWidgetManager(
     private val recyclerView: RecyclerView?,
     private val lifecycleOwner: LifecycleOwner,
     private val config: ConfigVideoWidget = ConfigVideoWidget()
@@ -32,6 +38,18 @@ class HomeRecommendationVideoWidgetManager(
             setupVideoAutoplay(recyclerView, newState, layoutManager)
         }
     }
+
+    private val screenRect: Rect
+        get() {
+            return Rect(0, 0, getScreenWidth(), getScreenHeight())
+        }
+
+    private val View.globalVisibleRect: Rect
+        get() {
+            val rect = Rect()
+            getGlobalVisibleRect(rect)
+            return rect
+        }
 
     init {
         lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
@@ -60,7 +78,9 @@ class HomeRecommendationVideoWidgetManager(
         })
     }
 
-    fun bind(videoWidget: PlayVideoWidgetView) {
+    fun bind(videoWidget: PlayVideoWidgetView?) {
+        if (videoWidget == null) return
+
         widgets.add(videoWidget)
     }
 
@@ -140,7 +160,27 @@ class HomeRecommendationVideoWidgetManager(
         return visibleArea >= videoWidgetArea * config.visiblePercentageBeforeAutoplay
     }
 
+    private fun View.getVisiblePortion(boundsRect: Rect = screenRect): FloatArray {
+        val hitRect = this.globalVisibleRect
+        val visibleHeight = min(hitRect.bottom, boundsRect.bottom) - max(hitRect.top, boundsRect.top)
+        val visibleWidth = min(hitRect.right, boundsRect.right) - max(hitRect.left, boundsRect.left)
+        val visibleHeightPortion = if (height <= 0) {
+            0f
+        } else {
+            visibleHeight.toFloat() / height
+        }
+
+        val visibleWidthPortion = if (width <= 0) {
+            0f
+        } else {
+            visibleWidth.toFloat() / width
+        }
+
+        return floatArrayOf(visibleWidthPortion, visibleHeightPortion)
+    }
+
     data class ConfigVideoWidget(
         val visiblePercentageBeforeAutoplay: Float = 0.7f
     )
 }
+

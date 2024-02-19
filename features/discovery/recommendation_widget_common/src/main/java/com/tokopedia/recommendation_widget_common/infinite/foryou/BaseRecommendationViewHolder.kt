@@ -1,11 +1,12 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
+@file:Suppress("UNCHECKED_CAST")
+
+package com.tokopedia.recommendation_widget_common.infinite.foryou
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
-@Suppress("UNCHECKED_CAST")
-abstract class BaseRecommendationForYouViewHolder<T : Visitable<*>>(
+abstract class BaseRecommendationViewHolder <T : Visitable<*>>(
     view: View,
     private val typeClass: Class<T>
 ) : AbstractViewHolder<T>(view) {
@@ -19,7 +20,6 @@ abstract class BaseRecommendationForYouViewHolder<T : Visitable<*>>(
 
         bindPayload(newItem)
     }
-
 
     open fun bindPayload(newItem: T?) {}
 
@@ -41,3 +41,4 @@ abstract class BaseRecommendationForYouViewHolder<T : Visitable<*>>(
         return newItem
     }
 }
+
