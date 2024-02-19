@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -18,6 +19,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductClickAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductShowAppLog
 import com.tokopedia.applink.ApplinkConst
@@ -421,6 +425,7 @@ class HomeRecommendationFragment :
     }
 
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
+        Log.d("byteio2", "onProductCardImpressed: $position")
         sendProductShowAppLog(
             model.asShowClickTracker(
                 tabName = tabName,
@@ -568,6 +573,12 @@ class HomeRecommendationFragment :
     }
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
+        sendCardClickAppLog(
+            model.asShowClickTracker(
+                tabName = tabName,
+                tabPosition = tabIndex,
+            )
+        )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
                 model.topAdsImageViewModel,
@@ -592,6 +603,12 @@ class HomeRecommendationFragment :
     }
 
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
+        sendCardShowAppLog(
+            model.asShowClickTracker(
+                tabName = tabName,
+                tabPosition = tabIndex,
+            )
+        )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
                 model.topAdsImageViewModel,
@@ -610,6 +627,12 @@ class HomeRecommendationFragment :
     }
 
     override fun onContentCardImpressed(item: ContentCardModel, position: Int) {
+        sendCardShowAppLog(
+            item.asShowClickTracker(
+                tabName = tabName,
+                tabPosition = tabIndex,
+            )
+        )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressEntityCardTracking(
                 item,
@@ -620,6 +643,12 @@ class HomeRecommendationFragment :
     }
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
+        sendCardClickAppLog(
+            item.asShowClickTracker(
+                tabName = tabName,
+                tabPosition = tabIndex,
+            )
+        )
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
             position,
@@ -931,6 +960,7 @@ class HomeRecommendationFragment :
             tabName: String,
             sourceType: String
         ): HomeRecommendationFragment {
+            Log.d("byteio2", "newInstance: foryou lama $tabIndex")
             val homeFeedFragment = HomeRecommendationFragment()
             val bundle = Bundle()
             bundle.putInt(ARG_TAB_INDEX, tabIndex)

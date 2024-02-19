@@ -17,7 +17,10 @@ data class ContentCardModel(
     val appLink: String,
     val imageUrl: String,
     val backgroundColor: List<String>,
-    val labelState: LabelState
+    val labelState: LabelState,
+    val position: Int,
+    val isAds: Boolean,
+    val shopId: String,
 ) : ImpressHolder(), ForYouRecommendationVisitable {
 
     data class LabelState(

@@ -8,7 +8,9 @@ data class HomeRecommendationPlayWidgetUiModel(
     val cardId: String,
     val appLink: String,
     val playVideoWidgetUiModel: PlayVideoWidgetUiModel,
-    val playVideoTrackerUiModel: HomeRecommendationPlayVideoTrackerUiModel
+    val playVideoTrackerUiModel: HomeRecommendationPlayVideoTrackerUiModel,
+    val isAds: Boolean,
+    val shopId: String,
 ) : BaseHomeRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {

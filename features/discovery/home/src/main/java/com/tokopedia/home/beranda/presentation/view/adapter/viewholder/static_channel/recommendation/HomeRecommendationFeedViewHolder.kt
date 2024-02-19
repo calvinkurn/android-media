@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
+import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
@@ -69,6 +70,7 @@ class HomeRecommendationFeedViewHolder(
     }
 
     private fun initViewPager() {
+        Log.d("byteio", "initViewPager: ")
         binding.viewPagerHomeFeeds.show()
 
         homeFeedPagerAdapter = HomeFeedPagerAdapter(

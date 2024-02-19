@@ -114,6 +114,8 @@ object ForYouDataMapper {
                 layoutItem = playVideoTrackerUiModel.layoutItem,
                 categoryId = playVideoTrackerUiModel.categoryId,
             ),
+            isAds = isAds,
+            shopId = shopId,
         )
     }
 
@@ -133,6 +135,9 @@ object ForYouDataMapper {
                 title = labelState.title,
                 textColor = labelState.textColor
             ),
+            position = position,
+            isAds = isAds,
+            shopId = shopId,
         )
     }
 }

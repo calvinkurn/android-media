@@ -54,7 +54,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                 TYPE_RECOM_CARD -> {
                     if (getHomeRecommendationCard.layoutName != LAYOUT_NAME_LIST) {
                         homeRecommendationTypeFactoryImplList.add(
-                            mapToEntityCardRecommendationCard(card)
+                            mapToEntityCardRecommendationCard(card, index)
                         )
                     }
                 }
@@ -90,10 +90,8 @@ class HomeRecommendationCardMapper @Inject constructor(
                         recommendationPlayWidgetResponse?.let {
                             homeRecommendationTypeFactoryImplList.add(
                                 mapToHomeRecommendationPlayWidget(
-                                    cardId = card.id,
-                                    layoutCard = card.layout,
-                                    layoutTracker = card.layoutTracker,
-                                    playVideoWidgetResponse = it
+                                    card = card,
+                                    playVideoWidgetResponse = it,
                                 )
                             )
                         }
@@ -109,13 +107,11 @@ class HomeRecommendationCardMapper @Inject constructor(
     }
 
     private fun mapToHomeRecommendationPlayWidget(
-        cardId: String,
-        layoutCard: String,
-        layoutTracker: String,
-        playVideoWidgetResponse: PlayVideoWidgetResponse
+        card: RecommendationCard,
+        playVideoWidgetResponse: PlayVideoWidgetResponse,
     ): HomeRecommendationPlayWidgetUiModel {
         return HomeRecommendationPlayWidgetUiModel(
-            cardId = cardId,
+            cardId = card.id,
             appLink = playVideoWidgetResponse.link.applink,
             playVideoWidgetUiModel = PlayVideoWidgetUiModel(
                 id = playVideoWidgetResponse.id,
@@ -135,18 +131,21 @@ class HomeRecommendationCardMapper @Inject constructor(
                 partnerId = playVideoWidgetResponse.author.id,
                 playChannelId = playVideoWidgetResponse.contentOriginID,
                 recommendationType = playVideoWidgetResponse.recommendationType,
-                layoutCard = layoutCard,
-                layoutItem = layoutTracker,
+                layoutCard = card.layout,
+                layoutItem = card.layoutTracker,
                 categoryId = (
                     playVideoWidgetResponse.category.dominantL3.firstOrNull()
                         ?: ""
                     ).toString()
-            )
+            ),
+            isAds = card.isTopads,
+            shopId = card.shop.id,
         )
     }
 
     private fun mapToEntityCardRecommendationCard(
-        recommendationCard: RecommendationCard
+        recommendationCard: RecommendationCard,
+        index: Int,
     ): RecomEntityCardUiModel {
         return RecomEntityCardUiModel(
             id = recommendationCard.id,
@@ -162,7 +161,10 @@ class HomeRecommendationCardMapper @Inject constructor(
                 iconUrl = recommendationCard.label.imageUrl,
                 title = recommendationCard.label.title,
                 textColor = recommendationCard.label.textColor
-            )
+            ),
+            position = index,
+            isAds = recommendationCard.isTopads,
+            shopId = recommendationCard.shop.id,
         )
     }
 
