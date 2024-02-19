@@ -3,6 +3,7 @@ package com.tokopedia.analytics.byteio.recommendation
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogParam.CARD_NAME
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.EVENT_ORIGIN_FEATURE
 import com.tokopedia.analytics.byteio.AppLogParam.EVENT_ORIGIN_FEATURE_DEFAULT_VALUE
 import com.tokopedia.analytics.byteio.AppLogParam.GROUP_ID
@@ -51,6 +52,7 @@ object AppLogRecommendation {
             put(REQUEST_ID, model.requestId)
             put(SHOP_ID, model.shopId)
             put(REC_PARAMS, model.recParams)
+            put(ENTER_FROM, "homepage")
             addPage()
         }
     }
@@ -74,6 +76,7 @@ object AppLogRecommendation {
     private fun buildCardParams(model: AppLogRecommendationCardModel): JSONObject {
         return JSONObject().apply {
             EVENT_ORIGIN_FEATURE to EVENT_ORIGIN_FEATURE_DEFAULT_VALUE
+            ENTER_FROM to "homepage"
             CARD_NAME to model.cardName
             LIST_NAME to model.listName
             LIST_NUM to model.listNum

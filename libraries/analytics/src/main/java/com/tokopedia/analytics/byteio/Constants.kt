@@ -152,4 +152,6 @@ object AppLogParam {
     const val ENTRANCE_FORM = "entrance_form"
     const val ENTER_FROM = "enter_from"
     const val ITEM_ORDER = "item_order"
+    const val CARD_NAME = "card_name"
+    const val GROUP_ID = "group_id"
 }
