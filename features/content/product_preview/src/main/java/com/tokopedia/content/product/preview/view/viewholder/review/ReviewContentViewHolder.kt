@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.content.common.util.ContentAlphaAnimator
+import com.tokopedia.content.common.util.ContentItemComponentsAlphaAnimator
 import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.product.preview.R
@@ -68,8 +68,8 @@ class ReviewContentViewHolder(
         })
     }
 
-    private val alphaAnimator = ContentAlphaAnimator(object : ContentAlphaAnimator.Listener {
-        override fun onAnimateAlpha(animator: ContentAlphaAnimator, alpha: Float) {
+    private val alphaAnimator = ContentItemComponentsAlphaAnimator(object : ContentItemComponentsAlphaAnimator.Listener {
+        override fun onAnimateAlpha(animator: ContentItemComponentsAlphaAnimator, alpha: Float) {
             opacityViewList.forEach { it.alpha = alpha }
         }
     })

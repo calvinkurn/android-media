@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.util.ContentAlphaAnimator
+import com.tokopedia.content.common.util.ContentItemComponentsAlphaAnimator
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
@@ -59,8 +59,8 @@ class FeedPostImageViewHolder(
     private val dispatcher: CoroutineDispatchers
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
-    private val alphaAnimator = ContentAlphaAnimator(object : ContentAlphaAnimator.Listener {
-        override fun onAnimateAlpha(animator: ContentAlphaAnimator, alpha: Float) {
+    private val alphaAnimator = ContentItemComponentsAlphaAnimator(object : ContentItemComponentsAlphaAnimator.Listener {
+        override fun onAnimateAlpha(animator: ContentItemComponentsAlphaAnimator, alpha: Float) {
             opacityViewList.forEach { it.alpha = alpha }
         }
     })

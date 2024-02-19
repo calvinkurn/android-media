@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.content.common.util.ContentAlphaAnimator
+import com.tokopedia.content.common.util.ContentItemComponentsAlphaAnimator
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
@@ -37,8 +37,8 @@ class FeedPostLiveViewHolder(
     private val trackerMapper: MapperFeedModelToTrackerDataModel
 ) : AbstractViewHolder<FeedCardLivePreviewContentModel>(binding.root) {
 
-    private val alphaAnimator = ContentAlphaAnimator(object : ContentAlphaAnimator.Listener {
-        override fun onAnimateAlpha(animator: ContentAlphaAnimator, alpha: Float) {
+    private val alphaAnimator = ContentItemComponentsAlphaAnimator(object : ContentItemComponentsAlphaAnimator.Listener {
+        override fun onAnimateAlpha(animator: ContentItemComponentsAlphaAnimator, alpha: Float) {
             opacityViewList.forEach { it.alpha = alpha }
         }
     })

@@ -7,7 +7,7 @@ import androidx.annotation.FloatRange
 /**
  * Created by kenny.hadisaputra on 08/08/23
  */
-class ContentAlphaAnimator(
+class ContentItemComponentsAlphaAnimator(
     private val listener: Listener
 ) {
 
@@ -49,6 +49,6 @@ class ContentAlphaAnimator(
     }
 
     interface Listener {
-        fun onAnimateAlpha(animator: ContentAlphaAnimator, alpha: Float)
+        fun onAnimateAlpha(animator: ContentItemComponentsAlphaAnimator, alpha: Float)
     }
 }

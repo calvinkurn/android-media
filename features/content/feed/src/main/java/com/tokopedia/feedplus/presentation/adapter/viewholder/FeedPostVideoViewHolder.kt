@@ -9,7 +9,7 @@ import androidx.annotation.LayoutRes
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.content.common.ui.custom.player.ContentPlayerControl
-import com.tokopedia.content.common.util.ContentAlphaAnimator
+import com.tokopedia.content.common.util.ContentItemComponentsAlphaAnimator
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
@@ -53,8 +53,8 @@ class FeedPostVideoViewHolder(
     private val trackerMapper: MapperFeedModelToTrackerDataModel
 ) : AbstractViewHolder<FeedCardVideoContentModel>(binding.root) {
 
-    private val alphaAnimator = ContentAlphaAnimator(object : ContentAlphaAnimator.Listener {
-        override fun onAnimateAlpha(animator: ContentAlphaAnimator, alpha: Float) {
+    private val alphaAnimator = ContentItemComponentsAlphaAnimator(object : ContentItemComponentsAlphaAnimator.Listener {
+        override fun onAnimateAlpha(animator: ContentItemComponentsAlphaAnimator, alpha: Float) {
             opacityViewList.forEach { it.alpha = alpha }
         }
     })
