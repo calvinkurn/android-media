@@ -273,9 +273,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_SPECIAL_RELEASE_REVAMP -> {
                     createSpecialReleaseRevamp(channel, position)
                 }
-
                 DynamicHomeChannel.Channels.LAYOUT_SPECIAL_SHOP_FLASH_SALE -> {
                     createShopFlashSale(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_3_AUTO -> {
+                    createLego3Auto(channel, position)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_COUPON_WIDGET -> {
                     createCouponWidget(channel, position)
