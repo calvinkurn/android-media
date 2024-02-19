@@ -171,7 +171,7 @@ fun ProductTagItems(
             delay(5000L)
             needToBeShown = true
             if (highlightedProduct != null) {
-                impressHighlight.invoke(highlightedProduct)
+                impressHighlight(highlightedProduct)
             }
         })
 

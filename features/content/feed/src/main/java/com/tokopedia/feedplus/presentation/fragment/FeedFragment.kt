@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -2211,34 +2212,6 @@ class FeedFragment :
     private fun initAnalytic() {
         feedAnalytics = feedFactory.create(userSession, feedEntrySource)
     }
-
-    //TODO: for atc handle source atc from bottom sheet or highlight etc. For analytics purpose
-    override fun addToCartHighlight(product: FeedCardProductModel, campaign: FeedCardCampaignModel, position: Int) {
-        val taggedProduct = MapperProductsToXProducts.transform(product, campaign, ContentTaggedProductUiModel.SourceType.Organic)
-
-        if (!checkForFollowerBottomSheet(
-                currentTrackerData?.activityId ?: "",
-                position,
-                when (taggedProduct.campaign.status) {
-                    is ContentTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
-                    is ContentTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
-                    else -> FeedCardCampaignModel.NO
-                },
-                taggedProduct.campaign.isExclusiveForMember
-            ) {}
-        ) {
-            checkAddToCartAction(taggedProduct, FeedProductActionModel.Source.CardHighlight)
-        }
-    }
-
-    override fun onHighlightClick(product: FeedCardProductModel, position: Int) {
-        currentTrackerData?.let { data -> feedAnalytics?.sendClickProductHighlight(product, data) }
-        RouteManager.route(requireContext(), product.applink)
-    }
-
-    override fun onHighlightClose(trackerModel: FeedTrackerDataModel?) {
-        trackerModel?.let { data -> feedAnalytics?.closeProductHighlight(data) }
-    }
     private fun handleResume() {
         updateArgumentsFromParentFragment()
 
@@ -2295,8 +2268,36 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel?
     ) {
         if (trackerModel != null) {
+            currentTrackerData = trackerModel
             feedAnalytics?.impressProductHighlight(product, trackerModel)
         }
+    }
+
+    override fun addToCartHighlight(product: FeedCardProductModel, campaign: FeedCardCampaignModel, position: Int) {
+        val taggedProduct = MapperProductsToXProducts.transform(product, campaign, ContentTaggedProductUiModel.SourceType.Organic)
+
+        if (!checkForFollowerBottomSheet(
+                currentTrackerData?.activityId ?: "",
+                position,
+                when (taggedProduct.campaign.status) {
+                    is ContentTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is ContentTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    else -> FeedCardCampaignModel.NO
+                },
+                taggedProduct.campaign.isExclusiveForMember
+            ) {}
+        ) {
+            checkAddToCartAction(taggedProduct, FeedProductActionModel.Source.CardHighlight)
+        }
+    }
+
+    override fun onHighlightClick(product: FeedCardProductModel, position: Int) {
+        currentTrackerData?.let { data -> feedAnalytics?.sendClickProductHighlight(product, data) }
+        RouteManager.route(requireContext(), product.applink)
+    }
+
+    override fun onHighlightClose(trackerModel: FeedTrackerDataModel?) {
+        trackerModel?.let { data -> feedAnalytics?.closeProductHighlight(data) }
     }
 
     companion object {

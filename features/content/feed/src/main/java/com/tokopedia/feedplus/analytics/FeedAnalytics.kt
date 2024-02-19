@@ -3,6 +3,9 @@ package com.tokopedia.feedplus.analytics
 import android.os.Bundle
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.feedplus.analytics.FeedAnalytics.EnhanceEcommerce.ITEM_LIST_PRODUCT_HIGHLIGHT
+import com.tokopedia.feedplus.analytics.FeedAnalytics.EnhanceEcommerce.KEY_ITEMS
+import com.tokopedia.feedplus.analytics.FeedAnalytics.EnhanceEcommerce.KEY_ITEM_LIST
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
@@ -114,6 +117,7 @@ class FeedAnalytics @AssistedInject constructor(
         const val UNIFIED_FEED_CONTENT = "unified-feed-content"
         const val CONTENT_IN_UNIFIED_FEED = "content in unified feed"
         const val CAMPAIGN_POST_IN_UNIFIED_FEED = "campaign post in unified feed"
+        const val ITEM_LIST_PRODUCT_HIGHLIGHT = "/unified feed - product highlight"
     }
 
     fun eventPostImpression(
@@ -942,7 +946,8 @@ class FeedAnalytics @AssistedInject constructor(
             .setCurrentSite(CURRENT_SITE_MARKETPLACE)
             .setUserId(userId)
             .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
-            .setCustomProperty("items", getProductTrackerBundle(
+            .setCustomProperty(
+                KEY_ITEMS, getProductTrackerBundle(
                 shopId = product.shopId,
                 shopName = product.shopName,
                 cartId = "",
@@ -950,7 +955,7 @@ class FeedAnalytics @AssistedInject constructor(
                 productName = product.name,
                 productPrice = product.price
             ))
-            .setCustomProperty("items_list", "")
+            .setCustomProperty(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
             .build()
             .send()
     }
@@ -967,7 +972,7 @@ class FeedAnalytics @AssistedInject constructor(
             .setCurrentSite(CURRENT_SITE_MARKETPLACE)
             .setUserId(userId)
             .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
-            .setCustomProperty("items", getProductTrackerBundle(
+            .setCustomProperty(KEY_ITEMS, getProductTrackerBundle(
                 shopId = product.shopId,
                 shopName = product.shopName,
                 cartId = "",
@@ -975,7 +980,7 @@ class FeedAnalytics @AssistedInject constructor(
                 productName = product.name,
                 productPrice = product.price
             ))
-            .setCustomProperty("items_list", "")
+            .setCustomProperty(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
             .build()
             .send()
     }
@@ -983,7 +988,7 @@ class FeedAnalytics @AssistedInject constructor(
     fun atcFromProductHighlight(product: FeedProductActionModel, trackerModel: FeedTrackerDataModel) {
         val eventLabel = getEventLabel(trackerModel) + "- ${product.product.id}"
         Tracker.Builder()
-            .setEvent("add_to_cart")
+            .setEvent(Event.ADD_TO_CART)
             .setEventAction("click - keranjang button on card highlight")
             .setEventCategory(CATEGORY_UNIFIED_FEED)
             .setEventLabel(eventLabel)
@@ -992,7 +997,8 @@ class FeedAnalytics @AssistedInject constructor(
             .setCurrentSite(CURRENT_SITE_MARKETPLACE)
             .setUserId(userId)
             .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
-            .setCustomProperty("items", getProductTrackerBundle(
+            .setCustomProperty(
+                KEY_ITEMS, getProductTrackerBundle(
                 shopId = product.product.shop.id,
                 shopName = product.product.shop.name,
                 cartId = "",
@@ -1000,7 +1006,7 @@ class FeedAnalytics @AssistedInject constructor(
                 productName = product.product.title,
                 productPrice = product.product.finalPrice
             ))
-            .setCustomProperty("items_list", "")
+            .setCustomProperty(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
             .build()
             .send()
     }
@@ -1031,7 +1037,8 @@ class FeedAnalytics @AssistedInject constructor(
             .setCurrentSite(CURRENT_SITE_MARKETPLACE)
             .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
             .setUserId(userId)
-            .setCustomProperty("items", getProductTrackerBundle(
+            .setCustomProperty(
+                KEY_ITEMS, getProductTrackerBundle(
                 shopId = product.product.shop.id,
                 shopName = product.product.shop.name,
                 cartId = "",
@@ -1039,7 +1046,7 @@ class FeedAnalytics @AssistedInject constructor(
                 productName = product.product.title,
                 productPrice = product.product.finalPrice
             ))
-            .setCustomProperty("items_list", "")
+            .setCustomProperty(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
             .build()
             .send()
     }
