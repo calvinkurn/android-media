@@ -67,10 +67,10 @@ data class TrackConfirmCartResult(
     val originalPrice: String,
     val salePrice: String,
     val skuId: String,
-    val currency: String,
+    val currency: String = "Rp", // always IDR
     val addSkuNum: Int,
-    val skuNumBefore: Int,
-    val skuNumAfter: Int,
+    val skuNumBefore: Int = 0, // need development from BE
+    val skuNumAfter: Int = 0, // need development from BE
     val isSuccess: String,
     val failReason: String
 )

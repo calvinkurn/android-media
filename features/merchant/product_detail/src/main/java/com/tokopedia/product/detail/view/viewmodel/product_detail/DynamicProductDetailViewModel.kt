@@ -502,7 +502,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             productId = p1.parentProductId,
             productCategory = p1.basic.category.name,
             productType = ProductType.AVAILABLE, // todo
-            originalPrice = p1.data.price.priceFmt,
+            originalPrice = p1.data.price.priceFmt, // or slashedPrice?
             salePrice = p1.data.campaign.priceFmt
         )
     }

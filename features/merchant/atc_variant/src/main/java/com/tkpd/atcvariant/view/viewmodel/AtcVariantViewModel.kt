@@ -626,8 +626,9 @@ class AtcVariantViewModel @Inject constructor(
                 originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
                 salePrice = selectedChild?.priceFmt.orEmpty(),
                 skuId = selectedChild?.productId.orEmpty(),
-                currency = "Rp", addSkuNum = 0, skuNumBefore = 0,
-                skuNumAfter = 0, isSuccess = "", failReason = ""
+                addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
+                isSuccess = "",
+                failReason = ""
             )
         )
         if (result.isDataError()) {
