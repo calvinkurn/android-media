@@ -18,10 +18,10 @@ data class AppLogRecommendationProductModel (
     companion object {
         fun create(
             productId: String = "",
+            position: Int = 0,
             tabName: String = "",
             tabPosition: Int = 0,
             sourceModule: String = "",
-            trackId: String = "",
             isAd: Boolean = false,
             isUseCache: Boolean = false,
             recParams: String = "",
@@ -33,7 +33,7 @@ data class AppLogRecommendationProductModel (
                 listName = tabName,
                 listNum = tabPosition.inc(),
                 sourceModule = sourceModule,
-                trackId = trackId,
+                trackId = "${requestId}_${productId}_${position.inc()}",
                 isAd = if(isAd) 1 else 0,
                 isUseCache = if(isUseCache) 1 else 0,
                 recParams = recParams,
