@@ -9,6 +9,7 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
@@ -29,6 +30,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.library.subviewmodel.ParentSubViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -700,6 +702,19 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
 
         EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
+        AppLogAnalytics.sendConfirmCartResult(
+            TrackConfirmCartResult(
+                productId = data.parentProductId,
+                productCategory = data.basic.category.name,
+                productType = ProductType.AVAILABLE,
+                originalPrice = data.data.price.value,
+                salePrice = data.finalPrice,
+                skuId = data.basic.productID,
+                addSkuNum = data.basic.minOrder,
+                isSuccess = "",
+                failReason = ""
+            )
+        )
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
             if (errorMessage.isNotBlank()) {
