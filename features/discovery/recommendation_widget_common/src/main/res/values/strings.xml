@@ -9,6 +9,7 @@
     <string name="recom_lihat_semua">Lihat Semua</string>
     <string name="content_desc_arrow">content_desc_arrow</string>
     <string name="content_desc_banner">content_desc_banner</string>
+    <string name="content_desc_feed_banner">Feed Banner</string>
     <string name="text_other_recom">Rekomendasi Lainnya</string>
 
     <string name="content_desc_background_see_more">background see more</string>
@@ -31,4 +32,8 @@
     <string name="steal_the_look_right_item_ratio">109:105</string>
     <string name="steal_the_look_left_image_ratio">215:218</string>
     <string name="steal_the_look_right_image_ratio">1:1</string>
+
+    <string name="recom_card_empty_title">Tidak ada hasil</string>
+    <string name="recom_card_empty_description">Produk tidak ada untuk kategori ini</string>
+    <string name="recom_card_retry_button">Coba Lagi</string>
 </resources>

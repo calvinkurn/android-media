@@ -223,12 +223,12 @@
 /features/logistic/targetedticker/                      @tokopedia/android-minionbob-dev
 /features/promo/promo-usage/                            @tokopedia/android-minionbob-dev
 
-/features/media/mediauploader/			                @tokopedia/android-minionjerry-dev
-/features/media/medialoader/                            @tokopedia/android-minionjerry-dev
-/features/media/mediapicker/                            @tokopedia/android-minionjerry-dev
-/features/media/mediapicker-common/                     @tokopedia/android-minionjerry-dev
-/features/media/mediaeditor/                            @tokopedia/android-minionjerry-dev
-/features/media/universal-editor/                       @tokopedia/android-minionjerry-dev
+/features/media/mediauploader/			                @tokopedia/android-minionlance-dev
+/features/media/medialoader/                            @tokopedia/android-minionlance-dev
+/features/media/mediapicker/                            @tokopedia/android-minionlance-dev
+/features/media/mediapicker-common/                     @tokopedia/android-minionlance-dev
+/features/media/mediaeditor/                            @tokopedia/android-minionlance-dev
+/features/media/universal-editor/                       @tokopedia/android-minionlance-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionmark-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionmark-dev
