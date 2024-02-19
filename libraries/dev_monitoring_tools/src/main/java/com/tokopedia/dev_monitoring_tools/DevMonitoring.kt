@@ -1,8 +1,11 @@
 package com.tokopedia.dev_monitoring_tools
 
 import android.app.Application
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.github.anrwatchdog.ANRWatchDog
 import com.gu.toolargetool.TooLargeTool
 import com.tokopedia.config.GlobalConfig
@@ -28,6 +31,14 @@ class DevMonitoring(private var context: Context) {
     fun initCrashMonitoring() {
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+            clipboard?.let {
+                val clip = ClipData.newPlainText("TkpdCrashLog", Log.getStackTraceString(throwable))
+                it.setPrimaryClip(clip)
+                Toast.makeText(context, "Crash log copied to clipboard", Toast.LENGTH_SHORT).show()
+            } ?: run {
+                Toast.makeText(context, "Clipboard not available", Toast.LENGTH_SHORT).show()
+            }
             ServerLogger.log(Priority.P1, "DEV_CRASH", mapOf("journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize),
                     "error" to Log.getStackTraceString(throwable).replace("\n", "").replace("\t", " ")))
             exceptionHandler?.uncaughtException(thread, throwable)
