@@ -129,6 +129,21 @@ object EventName {
     const val CONFIRM_CART_RESULT = "tiktokec_confirm_cart_result"
 }
 
+object AppLogParam {
+    const val EVENT_ORIGIN_FEATURE = "EVENT_ORIGIN_FEATURE"
+    const val EVENT_ORIGIN_FEATURE_DEFAULT_VALUE = "TEMAI"
+    const val LIST_NAME = "list_name"
+    const val LIST_NUM = "list_num"
+    const val SOURCE_MODULE = "source_module"
+    const val TRACK_ID = "track_id"
+    const val PRODUCT_ID = "product_id"
+    const val PAGE_NAME = "page_name"
+    const val IS_AD = "is_ad"
+    const val IS_USE_CACHE = "is_use_cache"
+    const val REQUEST_ID = "request_id"
+    const val SHOP_ID = "shop_id"
+}
+
 object AppLogAnalytics {
 
     @JvmField
