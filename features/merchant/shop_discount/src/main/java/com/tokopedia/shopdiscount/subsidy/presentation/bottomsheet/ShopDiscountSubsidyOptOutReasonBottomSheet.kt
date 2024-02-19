@@ -170,7 +170,7 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
     private fun onSuccessDoOptOutSubsidy() {
         onDismissBottomSheetAfterFinishActionListener?.invoke(
             data,
-            "Produkmu berhasil keluar dari subsidi"
+            getString(R.string.sd_subsidy_opt_out_reason_success_message)
         )
         dismiss()
     }
