@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.collection.SparseArrayCompat;
@@ -17,7 +16,6 @@ import com.tokopedia.home.beranda.presentation.view.fragment.BaseRecommendationF
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 

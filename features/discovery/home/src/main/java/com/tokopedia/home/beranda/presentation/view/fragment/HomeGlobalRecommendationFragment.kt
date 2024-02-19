@@ -4,13 +4,11 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -23,7 +21,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -192,7 +189,6 @@ class HomeGlobalRecommendationFragment :
         initListeners()
         observeStateFlow()
         observeLiveData()
-        shouldToastShownInDebugMode()
     }
 
     override fun onPause() {
@@ -304,12 +300,6 @@ class HomeGlobalRecommendationFragment :
                     }
                 }
             }
-        }
-    }
-
-    private fun shouldToastShownInDebugMode() {
-        if (GlobalConfig.DEBUG) {
-            Toast.makeText(requireContext(), "For you global component", Toast.LENGTH_SHORT).show()
         }
     }
 
