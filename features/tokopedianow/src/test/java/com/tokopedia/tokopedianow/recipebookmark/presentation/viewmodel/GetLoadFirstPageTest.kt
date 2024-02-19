@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel
 
 import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.RecipeBookmarksMapper.mapResponseToUiModelList
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
-import com.tokopedia.tokopedianow.recipebookmark.ui.model.RecipeBookmarkEvent
+import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

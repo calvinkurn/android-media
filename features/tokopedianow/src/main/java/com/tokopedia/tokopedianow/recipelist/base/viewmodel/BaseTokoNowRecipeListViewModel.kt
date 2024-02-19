@@ -11,8 +11,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToDuration
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToIngredientIds
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToPortion
@@ -24,7 +24,6 @@ import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Compan
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_PORTION
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_SORT_BY
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TAG_ID
-import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TITLE
 import com.tokopedia.tokopedianow.recipelist.domain.usecase.GetRecipeListUseCase
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addEmptyStateItem
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addHeaderItem

@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel
 
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
-import com.tokopedia.tokopedianow.recipebookmark.ui.model.RecipeBookmarkEvent
+import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent
+import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.nest.components.NestLabel
@@ -12,7 +13,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 
 @Composable
-fun RecipeTagItem(data: TagUiModel = TagUiModel(tag = "", shouldFormatTag = false)) {
+fun RecipeTagItem(data: TagUiModel) {
     val tag = data.tag
     val shouldFormatTag = data.shouldFormatTag
 
@@ -27,4 +28,10 @@ fun RecipeTagItem(data: TagUiModel = TagUiModel(tag = "", shouldFormatTag = fals
         labelType = NestLabelType.HIGHLIGHT_LIGHT_GREY,
         labelText = text
     )
+}
+
+@Preview
+@Composable
+private fun RecipeTagItemPreview() {
+    RecipeTagItem(data = TagUiModel(tag = "Halal", shouldFormatTag = false))
 }

@@ -1,10 +1,10 @@
-package com.tokopedia.tokopedianow.seeallcategory.persentation.adapter.differ
+package com.tokopedia.tokopedianow.oldrecipebookmark.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeUiModel
 
-class SeeAllCategoryDiffer : BaseTokopediaNowDiffer() {
+class RecipeBookmarkDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
 

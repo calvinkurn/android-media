@@ -10,10 +10,9 @@ import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookma
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.GetRecipeBookmarksUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
-import com.tokopedia.tokopedianow.recipebookmark.persentation.viewmodel.TokoNowRecipeBookmarkViewModel
-import com.tokopedia.tokopedianow.recipebookmark.ui.model.RecipeBookmarkAction
-import com.tokopedia.tokopedianow.recipebookmark.ui.model.RecipeBookmarkState
+import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkAction
+import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkState
+import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.coEvery

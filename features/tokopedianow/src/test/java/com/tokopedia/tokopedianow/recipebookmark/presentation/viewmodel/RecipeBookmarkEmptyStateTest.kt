@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel
 
-import com.tokopedia.tokopedianow.recipebookmark.ui.model.RecipeBookmarkAction
-import com.tokopedia.tokopedianow.recipebookmark.ui.model.RecipeBookmarkEvent
+import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkAction
+import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test

@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.recipebookmark.analytics
 
 import android.os.Bundle
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
@@ -20,6 +19,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getDataLayer
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.hitCommonTracker
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics.ACTION.EVENT_ACTION_CLICK_BACK
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics.ACTION.EVENT_ACTION_CLICK_CANCEL_UNBOOKMARK
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics.ACTION.EVENT_ACTION_CLICK_RECIPE_CARD
@@ -43,7 +43,7 @@ import javax.inject.Inject
  */
 
 class RecipeBookmarkAnalytics @Inject constructor(
-    private val addressData: LocalCacheModel,
+    private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface
 ) {
     private object CATEGORY {
@@ -121,7 +121,7 @@ class RecipeBookmarkAnalytics @Inject constructor(
         recipeTitle: String,
         position: Int
     ) {
-        val warehouseId = addressData.warehouse_id
+        val warehouseId = addressData.getWarehouseId()
 
         val promotion = getPromotion(
             recipeId = recipeId,
@@ -145,7 +145,7 @@ class RecipeBookmarkAnalytics @Inject constructor(
         recipeTitle: String,
         position: Int
     ) {
-        val warehouseId = addressData.warehouse_id
+        val warehouseId = addressData.getWarehouseId()
 
         val promotion = getPromotion(
             recipeId = recipeId,
@@ -168,7 +168,7 @@ class RecipeBookmarkAnalytics @Inject constructor(
         recipeId: String,
         recipeTitle: String,
         position: Int,
-        warehouseId: String
+        warehouseId: Long
     ): Bundle {
         return Bundle().apply {
             putString(KEY_CREATIVE_NAME, "${recipeTitle}_${warehouseId}_${userSession.userId}")
