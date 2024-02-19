@@ -935,6 +935,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun onResultVariantBottomSheet(data: ProductVariantResult) {
+        viewModel.hasDoneAddToCart = true
         if (data.shouldRefreshPreviousPage) {
             productId = data.selectedProductId
             // donot run onresume
