@@ -1,0 +1,673 @@
+{
+  "universe_initial_state_unify": {
+    "data": [
+      {
+        "suggestion_id": "",
+        "feature_id": "top_campaign",
+        "feature_type": "curated_campaign",
+        "template": "title",
+        "url": "",
+        "applink": "",
+        "is_ads": false,
+        "image": {
+          "image_url": "",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "",
+        "feature_id": "recent_search",
+        "feature_type": "recent_search",
+        "template": "title",
+        "url": "",
+        "applink": "",
+        "is_ads": false,
+        "image": {
+          "image_url": "",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Terakhir dicari",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "keyword",
+        "template": "master",
+        "url": "/search?q=laptop&source=universe&st=product&srp_component_id=01.02.01.01",
+        "applink": "tokopedia://search?q=laptop&source=universe&st=product&srp_component_id=01.02.01.01",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/f86ebb9f-57f3-4c25-b4c9-00a2a644ba4f.png",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "laptop",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/845f9be9-d0d7-46ea-9c7d-d3333633f0e2.png"
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "01.02.01.01",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "keyword",
+        "template": "master",
+        "url": "/search?q=onong&source=universe&st=product&srp_component_id=01.02.01.02",
+        "applink": "tokopedia://search?q=onong&source=universe&st=product&srp_component_id=01.02.01.02",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/f86ebb9f-57f3-4c25-b4c9-00a2a644ba4f.png",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "onong",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/845f9be9-d0d7-46ea-9c7d-d3333633f0e2.png"
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "01.02.01.02",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "",
+        "feature_id": "recent_view",
+        "feature_type": "recent_view",
+        "template": "title",
+        "url": "",
+        "applink": "",
+        "is_ads": false,
+        "image": {
+          "image_url": "",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Terakhir dilihat",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "",
+        "feature_id": "popular_search",
+        "feature_type": "popular_search",
+        "template": "title",
+        "url": "",
+        "applink": "",
+        "is_ads": false,
+        "image": {
+          "image_url": "",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Paling populer",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "Refresh",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "",
+        "template": "master",
+        "url": "https://www.tokopedia.com/kohler-official?source=search-initial.05.02.01",
+        "applink": "tokopedia://shop/11890175?source=search-initial.05.02.01",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/pYncxN/2023/11/30/4dee037d-befb-4739-9519-12386ecb22e6.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Year End Offer",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "Discount up to 40% + Free Gift",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "thco0020708",
+          "component_id": "01.05.02.01",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "",
+        "template": "master",
+        "url": "/search?q=portable+monitor&source=universe&st=product&srp_component_id=01.05.02.02",
+        "applink": "tokopedia://search?q=portable+monitor&source=universe&st=product&srp_component_id=01.05.02.02",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/hDjmkQ/2023/2/28/c3ab354e-37ae-43cf-84b0-c6fe8e5ae803.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Portable Monitor",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "10 rb pencarian",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "01.05.02.02",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "",
+        "template": "master",
+        "url": "https://www.tokopedia.com/xiaomi?source=search-initial.05.02.03",
+        "applink": "tokopedia://shop/13518880?source=search-initial.05.02.03",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/pYncxN/2023/11/27/665ffefe-5f57-4166-bab5-4405deb3ebbc.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Promo Xiaomi Official Store",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "Xiaomi 12.12 Sale!",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "thco0020786",
+          "component_id": "01.05.02.03",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "",
+        "template": "master",
+        "url": "https://www.tokopedia.com/discovery/bazar-brand-pilihan?source=search-initial.05.02.04",
+        "applink": "tokopedia://discovery/bazar-brand-pilihan?source=search-initial.05.02.04",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/pYncxN/2023/11/28/4bf14770-9ebb-4c28-a87e-a16f7b08eccb.png",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Bazar Brand Pilihan",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "Promo Bundling Diskon s.d 70%",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "thco0020786",
+          "component_id": "01.05.02.04",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "",
+        "template": "master",
+        "url": "/search?q=samsung+note+10&source=universe&st=product&srp_component_id=01.05.02.05",
+        "applink": "tokopedia://search?q=samsung+note+10&source=universe&st=product&srp_component_id=01.05.02.05",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/product-1/2020/4/19/3967478/3967478_5a839627-a38e-4e96-8254-2f1912189e80_382_382.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Samsung Note 10",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "10.4 rb pencarian",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "01.05.02.05",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "",
+        "template": "master",
+        "url": "/search?q=vga+card&source=universe&st=product&srp_component_id=01.05.02.06",
+        "applink": "tokopedia://search?q=vga+card&source=universe&st=product&srp_component_id=01.05.02.06",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2022/3/29/d22fd7c3-5498-4b95-9cd2-9552ef263b7d.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Vga Card",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "10.8 rb pencarian",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "01.05.02.06",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "",
+        "feature_id": "popular_category",
+        "feature_type": "popular_search",
+        "template": "title",
+        "url": "",
+        "applink": "",
+        "is_ads": false,
+        "image": {
+          "image_url": "",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "Refresh",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "",
+        "template": "master",
+        "url": "https://www.tokopedia.com/p/fashion-wanita",
+        "applink": "tokopedia://discovery/clp_fashion-wanita_1758",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/26/82983e8b-899e-46fe-b31d-ed647a1cd9b4.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Fashion Wanita",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "01.06.03.01",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "0",
+        "feature_id": "",
+        "feature_type": "",
+        "template": "master",
+        "url": "https://www.tokopedia.com/p/rumah-tangga",
+        "applink": "tokopedia://discovery/clp_rumah-tangga_984",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/26/68ac6d6b-975c-48bc-9a57-4a7c249c3275.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Rumah Tangga",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "01.06.03.02",
+          "tracking_option": 0,
+          "tracker_url": ""
+        },
+        "flags": []
+      }
+    ],
+    "flags": [],
+    "header": {
+      "time_process": 4.318007,
+      "status_code": 0,
+      "message": "found"
+    },
+    "__typename": "SuggestionUnifyResponse"
+  }
+}

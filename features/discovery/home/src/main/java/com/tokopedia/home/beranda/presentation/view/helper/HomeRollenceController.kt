@@ -22,7 +22,6 @@ object HomeRollenceController {
         fetchAtfRollenceValue()
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
-        fetchGlobalComponentMigrationFallback()
         fetchHomeMegaTabRollenceValue()
         HomeComponentFeatureFlag.fetchMissionRollenceValue()
     }

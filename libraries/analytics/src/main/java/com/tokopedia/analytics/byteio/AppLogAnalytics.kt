@@ -6,6 +6,11 @@ import android.app.Application
 import android.util.Log
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
+import com.bytedance.frameworks.baselib.network.http.cronet.impl.TTNetDetectInfo
+import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
 import com.tokopedia.analyticsdebugger.cassava.Cassava
@@ -35,7 +40,7 @@ object AppLogAnalytics {
 
     // TODO check how to make this null again
     @JvmField
-    var sourcePageType: SourcePageType? = SourcePageType.TESTAPP_SOURCE // TODO: this is TEMPORARY
+    var sourcePageType: String = ""
 
     // TODO check how to make this null again
     @JvmField
@@ -44,6 +49,10 @@ object AppLogAnalytics {
     // TODO check how to make this null again
     @JvmField
     var globalRequestId: String? = null
+
+    // TODO check how to make this null again
+    @JvmField
+    var entranceForm: EntranceForm? = null
 
     private val lock = Any()
 
@@ -71,7 +80,7 @@ object AppLogAnalytics {
     }
 
     fun sendEnterPage(product: TrackProductDetail) {
-        if (sourcePageType == null) {
+        if (sourcePageType == "") {
             return
         }
         // TODO check if track id exist
@@ -159,10 +168,10 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addPage() {
-        put("previous_page", previousPageName())
-        put("page_name", currentPageName())
-        put("source_page_type", sourcePageType?.str)
-        put("entrance_form", EntranceForm.GRID_GOODS_CARD.str)
+        put(PREVIOUS_PAGE, previousPageName())
+        put(PAGE_NAME, currentPageName())
+        put(SOURCE_PAGE_TYPE, sourcePageType)
+        put(ENTRANCE_FORM, entranceForm)
     }
 
     private fun currentPageName(): String {
@@ -178,33 +187,12 @@ object AppLogAnalytics {
         }
     }
 
-    fun sendClickProduct(inputPageType: SourcePageType?, product: TrackProduct) {
-        if (sourcePageType == null && inputPageType != null) {
-            sourcePageType = inputPageType
-            //TODO Deeplink activity too
-        }
-        if (sourcePageType == null) {
-            return
-        }
-        send(EventName.PRODUCT_CLICK, JSONObject().also {
-            it.addPage()
-            it.put("product_id", product)
-            it.put("is_ad", if (product.isAd) "1" else "0")
-            val reqId = product.requestId ?: ""
-            globalRequestId = reqId
-            it.put("request_id", reqId)
-            val trackId = reqId + "_" + product.requestId + product.orderFrom1
-            it.put("track_id", trackId)
-            globalTrackId = trackId
-        })
-    }
-
     internal fun sendStayProductDetail(
         durationInMs: Long,
         product: TrackStayProductDetail,
         quitType: String
     ) {
-        if (sourcePageType == null) {
+        if (sourcePageType == "") {
             return
         }
         send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {

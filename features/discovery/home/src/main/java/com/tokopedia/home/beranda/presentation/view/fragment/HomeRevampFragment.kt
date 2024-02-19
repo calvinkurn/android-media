@@ -43,6 +43,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.GROUP_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.IMPR_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_POSITION
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_CONTENT
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITION
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -2028,13 +2038,7 @@ open class HomeRevampFragment :
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
             navToolbar?.setupSearchbar(
-                hints = listOf(
-                    HintData(
-                        data.placeholder ?: "",
-                        data.keyword
-                            ?: ""
-                    )
-                ),
+                hints = hints(data),
                 applink = if (data.keyword?.isEmpty() != false) {
                     ApplinkConstInternalDiscovery.AUTOCOMPLETE
                 } else {
@@ -2054,10 +2058,42 @@ open class HomeRevampFragment :
                         ?: startActivity(intent)
                 },
                 searchbarImpressionCallback = {},
-                shouldShowTransition = false
+                shouldShowTransition = false,
+                hintImpressionCallback = { hintData, index ->
+                    AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
+                },
+                hintClickCallback = { hintData, index ->
+                    AppLogSearch.eventTrendingWordsClick(appLogTrendingWords(index, hintData))
+                }
             )
         }
     }
+
+    private fun appLogTrendingWords(index: Int, hintData: HintData) =
+        AppLogSearch.TrendingWords(
+            index = index,
+            content = hintData.keyword,
+            groupId = "",
+            imprId = ""
+        )
+
+    private fun hints(data: SearchPlaceholder.Data): List<HintData> {
+        val placeholders =
+            data.placeholders
+                ?.filter { !it.placeholder.isNullOrBlank() && !it.keyword.isNullOrEmpty() }
+                ?: listOf()
+
+        return if (placeholders.isNotEmpty())
+            placeholders.map { hintData(it) }
+        else
+            listOf(hintData(data))
+    }
+
+    private fun hintData(placeholder: SearchPlaceholder.PlaceHolder) =
+        HintData(
+            placeholder.placeholder ?: "",
+            placeholder.keyword ?: ""
+        )
 
     private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {
         var hints = arrayListOf(HintData(data.placeholder ?: "", data.keyword ?: ""))
