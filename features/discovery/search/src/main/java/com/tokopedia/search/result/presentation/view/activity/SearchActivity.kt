@@ -31,6 +31,8 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PREVIOUS_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.ByteIOExtras.EXTRA_ENTER_FROM
+import com.tokopedia.discovery.common.constants.SearchConstant.ByteIOExtras.EXTRA_ENTER_METHOD
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.URLParser
@@ -118,6 +120,8 @@ class SearchActivity :
     private val searchViewModel: SearchViewModel? by viewModels { viewModelFactory }
     private var searchComponent: SearchComponent? = null
     private lateinit var searchParameter: SearchParameter // initialized in getExtrasFromIntent
+    private lateinit var enterFrom: String
+    private lateinit var enterMethod: String
 
     private val binding: SearchActivitySearchBinding? by viewBinding()
 
@@ -170,6 +174,8 @@ class SearchActivity :
 
     private fun getExtrasFromIntent(intent: Intent) {
         searchParameter = getSearchParameterFromIntentUri(intent)
+        enterFrom = intent.getStringExtra(EXTRA_ENTER_FROM) ?: ""
+        enterMethod = intent.getStringExtra(EXTRA_ENTER_METHOD) ?: ""
 
         if (searchParameter.getSearchQuery().isEmpty()) {
             // Should be safe to cast non-null type to nullable type
@@ -448,7 +454,9 @@ class SearchActivity :
                 searchFragmentTitles,
                 searchParameter,
                 classLoader,
-                supportFragmentManager.fragmentFactory
+                supportFragmentManager.fragmentFactory,
+                enterFrom,
+                enterMethod,
             )
         }
 
@@ -535,6 +543,8 @@ class SearchActivity :
         super.onSaveInstanceState(outState)
 
         outState.putParcelable(SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL, searchParameter)
+        outState.putString(EXTRA_ENTER_FROM, enterFrom)
+        outState.putString(EXTRA_ENTER_METHOD, enterMethod)
     }
 
     override fun showSearchInputView() {

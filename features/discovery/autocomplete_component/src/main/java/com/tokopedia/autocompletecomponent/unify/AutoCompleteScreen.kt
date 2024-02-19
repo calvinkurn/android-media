@@ -10,12 +10,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteEducationComponent
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteMasterComponent
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteTitleComponent
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.autocompletecomponent.util.AutoCompleteTemplateEnum
+import com.tokopedia.autocompletecomponent.util.routeManagerIntent
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.iris.Iris
@@ -96,11 +97,23 @@ private fun EvaluateNavigation(
     if (navigate != null) {
         LocalContext.current.apply {
             val modifiedApplink = getModifiedApplink(navigate.applink, SearchParameter())
-            RouteManager.route(this, modifiedApplink)
+            val intent = routeManagerIntent(
+                context = this@apply,
+                applink = modifiedApplink,
+                enterMethod = enterMethod(viewModel),
+            )
+            startActivity(intent)
         }
         viewModel.onNavigated()
     }
 }
+
+private fun enterMethod(viewModel: AutoCompleteViewModel) =
+    if (viewModel.isInitialState)
+        AppLogSearch.ParamValue.DEFAULT_SEARCH_KEYWORD
+    else if (viewModel.isSuggestion)
+        AppLogSearch.ParamValue.SEARCH_SUG
+    else ""
 
 @Composable
 private fun EvaluateActionReplace(

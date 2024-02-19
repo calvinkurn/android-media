@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.EVENT_ORIGIN_FEATURE
 import com.tokopedia.analytics.byteio.AppLogParam.EVENT_ORIGIN_FEATURE_DEFAULT_VALUE
@@ -204,6 +205,50 @@ object AppLogSearch {
 
     fun eventTrendingWordsClick(trendingWords: TrendingWords) {
         AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWords.toMap()))
+    }
+
+    data class Search(
+        val imprId: String,
+        val enterFrom: String,
+        val searchType: String,
+        val enterMethod: String,
+        val searchKeyword: String,
+        val durationMs: Long? = null,
+        val isSuccess: Boolean? = null,
+        val preSearchId: String? = null,
+        val ecSearchSessionId: String? = null,
+        val sugType: String? = null,
+        val newSugSessionId: String? = null,
+        val preClickId: String? = null,
+        val blankPageEnterFrom: String? = null,
+        val blankPageEnterMethod: String? = null,
+        val ecomSortChosen: String? = null,
+        val ecomFilterChosen: Map<String, Any>? = null,
+        val ecomFilterType: String? = null,
+    ) {
+        fun json() = JSONObject(buildMap {
+            put(IMPR_ID, imprId)
+            put(ENTER_FROM, enterFrom)
+            put(SEARCH_TYPE, searchType)
+            put(ENTER_METHOD, enterMethod)
+
+            durationMs?.let { put(DURATION, it) }
+            isSuccess?.let { put(IS_SUCCESS, it.intValue) }
+            preSearchId?.let { put(PRE_SEARCH_ID, it) }
+            ecSearchSessionId?.let { put(EC_SEARCH_SESSION_ID, it) }
+            sugType?.let { put(SUG_TYPE, it) }
+            newSugSessionId?.let { put(NEW_SUG_SESSION_ID, it) }
+            preClickId?.let { put(PRE_CLICK_ID, it) }
+            blankPageEnterFrom?.let { put(BLANKPAGE_ENTER_FROM, it) }
+            blankPageEnterMethod?.let { put(BLANKPAGE_ENTER_METHOD, it) }
+            ecomSortChosen?.let { put(ECOM_SORT_CHOSEN, it) }
+            ecomFilterChosen?.let { put(ECOM_FILTER_CHOSEN, it) }
+            ecomFilterType?.let { put(ECOM_FILTER_TYPE, it) }
+        })
+    }
+
+    fun eventSearch(search: Search) {
+        AppLogAnalytics.send(SEARCH, search.json())
     }
 
     sealed class EventSearch(val from: String) {

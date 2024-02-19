@@ -13,6 +13,12 @@ data class AutoCompleteState(
     val actionReplaceKeyword: String? = null
 ) {
 
+    val isInitialState: Boolean
+        get() = parameter[SearchApiConst.Q].isNullOrBlank()
+
+    val isSuggestion: Boolean
+        get() = !isInitialState
+
     fun updateParameter(parameter: Map<String, String>) = copy(parameter = parameter)
 
     fun updateResultList(resultData: UniverseSuggestionUnifyModel): AutoCompleteState {

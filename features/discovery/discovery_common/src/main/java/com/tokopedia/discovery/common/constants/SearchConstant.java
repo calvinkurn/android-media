@@ -203,4 +203,9 @@ public interface SearchConstant {
         String LIST_VIEW = "listview";
         String FIXED_GRID = "fixedgrid";
     }
+
+    interface ByteIOExtras {
+        String EXTRA_ENTER_FROM = "EXTRA_ENTER_FROM";
+        String EXTRA_ENTER_METHOD = "EXTRA_ENTER_METHOD";
+    }
 }

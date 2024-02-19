@@ -20,12 +20,16 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.ByteIOExtras.EXTRA_ENTER_FROM
+import com.tokopedia.discovery.common.constants.SearchConstant.ByteIOExtras.EXTRA_ENTER_METHOD
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -34,7 +38,6 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
-import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
@@ -162,9 +165,15 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val LABEL_POSITION_VIEW = "view"
 
-        fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
+        fun newInstance(
+            searchParameter: SearchParameter?,
+            enterFrom: String,
+            enterMethod: String
+        ): ProductListFragment {
             val args = Bundle().apply {
                 putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
+                putString(EXTRA_ENTER_FROM, enterFrom)
+                putString(EXTRA_ENTER_METHOD, enterMethod)
             }
 
             return ProductListFragment().apply {
@@ -253,6 +262,8 @@ class ProductListFragment: BaseDaggerFragment(),
     private var searchSortFilter: SortFilter? = null
     private var searchSortFilterReimagine: SortFilterReimagine? = null
     private var shimmeringView: LinearLayout? = null
+    private var enterFrom: String = ""
+    private var enterMethod: String = ""
 
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
@@ -283,15 +294,9 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loadDataFromArguments()
+        restoreInstanceState(savedInstanceState)
         initProductCardLifecycleObserver()
         initNetworkMonitor()
-    }
-
-    private fun loadDataFromArguments() {
-        arguments?.let {
-            copySearchParameter(it.getParcelable(EXTRA_SEARCH_PARAMETER))
-        }
     }
 
     private fun copySearchParameter(searchParameterToCopy: SearchParameter?) {
@@ -363,9 +368,11 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun restoreInstanceState(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) return
+        savedInstanceState ?: return
 
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER))
+        enterFrom = savedInstanceState.getString(EXTRA_ENTER_FROM) ?: ""
+        enterMethod = savedInstanceState.getString(EXTRA_ENTER_METHOD) ?: ""
     }
 
     private fun addDefaultSelectedSort() {
@@ -1268,7 +1275,11 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        savedInstanceState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
+        savedInstanceState.run {
+            putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
+            putString(EXTRA_ENTER_FROM, enterFrom)
+            putString(EXTRA_ENTER_METHOD, enterMethod)
+        }
     }
 
     override fun onDestroyView() {
@@ -1483,5 +1494,25 @@ class ProductListFragment: BaseDaggerFragment(),
         if(itemProduct == null) return
         presenter?.trackProductClick(itemProduct)
         presenter?.showBottomSheetInappropriate(itemProduct)
+    }
+
+    override fun sendTrackingByteIO(imprId: String) {
+        /**
+        PRE_SEARCH_ID to "", // TODO:: Previous Search ID, make similar to PREVIOUS_KEYWORD?
+        EC_SEARCH_SESSION_ID to "", // TODO:: Search Session ID. From FE? Need SharedPreferences to clear on Homepage
+         */
+
+        AppLogSearch.eventSearch(
+            AppLogSearch.Search(
+                imprId = imprId,
+                enterFrom = enterFrom,
+                searchType = GOODS_SEARCH,
+                enterMethod = enterMethod,
+                searchKeyword = queryKey,
+                durationMs = performanceMonitoring?.getPltPerformanceData()?.networkRequestDuration,
+                isSuccess = true,
+
+            )
+        )
     }
 }
