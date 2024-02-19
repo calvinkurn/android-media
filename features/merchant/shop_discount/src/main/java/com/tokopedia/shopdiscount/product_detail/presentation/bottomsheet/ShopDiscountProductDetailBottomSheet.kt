@@ -401,6 +401,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             ShopDiscountManageDiscountMode.UPDATE -> {
                 if (dataModel.isAllSelectedProductFullSubsidy()) {
                     showToaster(getString(R.string.sd_discount_deleted))
+                    showLoading()
                     CoroutineScope(Dispatchers.Main).launch {
                         delay(DELAY_SLASH_PRICE_OPT_OUT)
                         getProductListData()
