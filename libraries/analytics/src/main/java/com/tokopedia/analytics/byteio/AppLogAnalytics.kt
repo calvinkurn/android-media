@@ -6,7 +6,8 @@ import android.app.Application
 import android.util.Log
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
-import com.bytedance.frameworks.baselib.network.http.cronet.impl.TTNetDetectInfo
+import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
+import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
 import java.lang.ref.WeakReference
@@ -225,6 +226,7 @@ object AppLogAnalytics {
     }
 
     fun send(event: String, params: JSONObject) {
+        params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
         Cassava.save(params, event, "ByteIO")
         AppLog.onEventV3(event, params)
         Log.d(TAG, "sending event ($event), value: ${params.toString(2)} ")

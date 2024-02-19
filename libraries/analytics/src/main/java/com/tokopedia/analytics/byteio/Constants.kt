@@ -2,6 +2,12 @@ package com.tokopedia.analytics.byteio
 
 internal val TAG = "BYTEIO"
 
+object Constants {
+    const val EVENT_ORIGIN_FEATURE_KEY = "EVENT_ORIGIN_FEATURE"
+    const val EVENT_ORIGIN_FEATURE_VALUE = "TEMAI"
+}
+
+
 data class TrackProduct(
     val productId: String,
     val isAd: Boolean,
