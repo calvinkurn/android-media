@@ -1,0 +1,496 @@
+{
+  "universe_suggestion_unify": {
+    "data": [
+      {
+        "suggestion_id": "",
+        "feature_id": "keyword",
+        "feature_type": "",
+        "template": "master",
+        "url": "/search?q=asdasd&source=universe&st=product&navsource=home&srp_component_id=02.02.01.01",
+        "applink": "tokopedia://search?q=asdasd&source=universe&st=product&navsource=home&srp_component_id=02.02.01.01",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/06790bbe-99ae-44c7-9e12-7d8bb1e27c11.png",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "asdasd",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/d15b127d-5ac9-4fdc-b455-68a08f8acd0b.png"
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.02.01.01",
+          "tracking_option": 2,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "",
+        "feature_id": "keyword",
+        "feature_type": "",
+        "template": "master",
+        "url": "/search?q=asdasdasd&source=universe&st=product&navsource=home&srp_component_id=02.02.01.02",
+        "applink": "tokopedia://search?q=asdasdasd&source=universe&st=product&navsource=home&srp_component_id=02.02.01.02",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/06790bbe-99ae-44c7-9e12-7d8bb1e27c11.png",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "asdasdasd",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/d15b127d-5ac9-4fdc-b455-68a08f8acd0b.png"
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.02.01.02",
+          "tracking_option": 2,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "",
+        "feature_id": "keyword",
+        "feature_type": "",
+        "template": "master",
+        "url": "/search?q=asdrat+m10&source=universe&st=product&navsource=home&srp_component_id=02.02.01.03",
+        "applink": "tokopedia://search?q=asdrat+m10&source=universe&st=product&navsource=home&srp_component_id=02.02.01.03",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/06790bbe-99ae-44c7-9e12-7d8bb1e27c11.png",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "asdrat m10",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/d15b127d-5ac9-4fdc-b455-68a08f8acd0b.png"
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.02.01.03",
+          "tracking_option": 2,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "",
+        "feature_id": "keyword",
+        "feature_type": "",
+        "template": "master",
+        "url": "/search?q=asderma&source=universe&st=product&navsource=home&srp_component_id=02.02.01.04",
+        "applink": "tokopedia://search?q=asderma&source=universe&st=product&navsource=home&srp_component_id=02.02.01.04",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/06790bbe-99ae-44c7-9e12-7d8bb1e27c11.png",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "asderma",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/d15b127d-5ac9-4fdc-b455-68a08f8acd0b.png"
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.02.01.04",
+          "tracking_option": 2,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "",
+        "feature_id": "keyword",
+        "feature_type": "",
+        "template": "master",
+        "url": "/search?q=asdrat&source=universe&st=product&navsource=home&srp_component_id=02.02.01.05",
+        "applink": "tokopedia://search?q=asdrat&source=universe&st=product&navsource=home&srp_component_id=02.02.01.05",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/06790bbe-99ae-44c7-9e12-7d8bb1e27c11.png",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "asdrat",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": ""
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/d15b127d-5ac9-4fdc-b455-68a08f8acd0b.png"
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.02.01.05",
+          "tracking_option": 2,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "",
+        "feature_id": "",
+        "feature_type": "",
+        "template": "master",
+        "url": "",
+        "applink": "",
+        "is_ads": true,
+        "image": {
+          "image_url": "",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "",
+          "type": "",
+          "icon_image_url": ""
+        },
+        "subtitle": {
+          "text": "",
+          "icon_image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/73219520-a7b2-4289-ab74-1a6d9e5d5fcf.png"
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.11.02.01",
+          "tracking_option": 3,
+          "tracker_url": ""
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "15274229",
+        "feature_id": "shop",
+        "feature_type": "",
+        "template": "master",
+        "url": "/asdfghkell?source=universe&st=product",
+        "applink": "tokopedia://shop/15274229?source=universe&st=product",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/GAnVPX/2023/2/15/decdd741-f8f6-46c1-87db-b614c15ed676.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Asdfghkell",
+          "type": "",
+          "icon_image_url": "https://images.tokopedia.net/img/power_merchant_badge.png"
+        },
+        "subtitle": {
+          "text": "Jakarta",
+          "icon_image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/73219520-a7b2-4289-ab74-1a6d9e5d5fcf.png"
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.05.02.01",
+          "tracking_option": 2,
+          "tracker_url": "https://ace.tokopedia.com/tracker/v1?id=15274229&user_id=&device=android&unique_id=ffdad881a517b3b20a27e699e1228636&type=shop"
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "13226823",
+        "feature_id": "shop",
+        "feature_type": "",
+        "template": "master",
+        "url": "/asdermaaestheticjakarta?source=universe&st=product",
+        "applink": "tokopedia://shop/13226823?source=universe&st=product",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/GAnVPX/2022/2/7/0569f5ed-c334-4efe-925a-4b697b29bc44.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Asderma Jakarta",
+          "type": "",
+          "icon_image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png"
+        },
+        "subtitle": {
+          "text": "Jakarta",
+          "icon_image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/73219520-a7b2-4289-ab74-1a6d9e5d5fcf.png"
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.05.02.02",
+          "tracking_option": 2,
+          "tracker_url": "https://ace.tokopedia.com/tracker/v1?id=13226823&user_id=&device=android&unique_id=ffdad881a517b3b20a27e699e1228636&type=shop"
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "10772415",
+        "feature_id": "shop",
+        "feature_type": "",
+        "template": "master",
+        "url": "/asdansport?source=universe&st=product",
+        "applink": "tokopedia://shop/10772415?source=universe&st=product",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/GAnVPX/2021/2/16/af0b1aa8-cef7-45f2-88f4-3d6bae46dccb.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Asdan Sportwear",
+          "type": "",
+          "icon_image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png"
+        },
+        "subtitle": {
+          "text": "Kab. Bandung",
+          "icon_image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/73219520-a7b2-4289-ab74-1a6d9e5d5fcf.png"
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.05.02.03",
+          "tracking_option": 2,
+          "tracker_url": "https://ace.tokopedia.com/tracker/v1?id=10772415&user_id=&device=android&unique_id=ffdad881a517b3b20a27e699e1228636&type=shop"
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "16620480",
+        "feature_id": "shop",
+        "feature_type": "",
+        "template": "master",
+        "url": "/asdofga?source=universe&st=product",
+        "applink": "tokopedia://shop/16620480?source=universe&st=product",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/GAnVPX/2023/11/6/625b4926-d7bf-42f6-86a9-38bc7f6b3f49.png",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "Asdofga",
+          "type": "",
+          "icon_image_url": "https://images.tokopedia.net/img/power_merchant_badge.png"
+        },
+        "subtitle": {
+          "text": "Jakarta",
+          "icon_image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/73219520-a7b2-4289-ab74-1a6d9e5d5fcf.png"
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.05.02.04",
+          "tracking_option": 2,
+          "tracker_url": "https://ace.tokopedia.com/tracker/v1?id=16620480&user_id=&device=android&unique_id=ffdad881a517b3b20a27e699e1228636&type=shop"
+        },
+        "flags": []
+      },
+      {
+        "suggestion_id": "9898496",
+        "feature_id": "shop",
+        "feature_type": "",
+        "template": "master",
+        "url": "/asdr-shop?source=universe&st=product",
+        "applink": "tokopedia://shop/9898496?source=universe&st=product",
+        "is_ads": false,
+        "image": {
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/GAnVPX/2022/7/30/5461c489-f2e9-41fc-8321-49a8bfebea72.jpg",
+          "is_border": false,
+          "radius": "",
+          "icon_image_url": ""
+        },
+        "title": {
+          "text": "ASDR Shop",
+          "type": "",
+          "icon_image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png"
+        },
+        "subtitle": {
+          "text": "Tangerang",
+          "icon_image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/73219520-a7b2-4289-ab74-1a6d9e5d5fcf.png"
+        },
+        "label": {
+          "text": "",
+          "text_color": "",
+          "bg_color": ""
+        },
+        "cta": {
+          "action": "",
+          "image_url": ""
+        },
+        "product": {
+          "discount": "",
+          "original_price": ""
+        },
+        "tracking": {
+          "code": "",
+          "component_id": "02.05.02.05",
+          "tracking_option": 2,
+          "tracker_url": "https://ace.tokopedia.com/tracker/v1?id=9898496&user_id=&device=android&unique_id=ffdad881a517b3b20a27e699e1228636&type=shop"
+        },
+        "flags": []
+      }
+    ],
+    "flags": [],
+    "header": {
+      "time_process": 11.245372999999999,
+      "status_code": 0,
+      "message": "found"
+    }
+  }
+}

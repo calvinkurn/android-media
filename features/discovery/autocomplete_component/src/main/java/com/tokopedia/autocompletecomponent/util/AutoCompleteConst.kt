@@ -14,3 +14,8 @@ internal const val CPM_KEY_TEMPLATE = "template"
 internal const val CPM_TEMPLATE = "3"
 
 internal const val SCREEN_UNIVERSEARCH = "SCREEN_UNIVERSEARCH"
+
+internal const val ACTION_DELETE = "delete"
+internal const val ACTION_REPLACE = "replace"
+
+internal const val FEATURE_ID_RECENT_SEARCH = "recent_search"
