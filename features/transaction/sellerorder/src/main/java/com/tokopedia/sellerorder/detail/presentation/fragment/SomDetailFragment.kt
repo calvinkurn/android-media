@@ -54,6 +54,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -1222,14 +1223,6 @@ open class SomDetailFragment :
         // no op
     }
 
-    override fun onBmgmProductBenefitExpand(isExpand: Boolean, identifier: String) {
-        expandCollapseBmgmProductBenefit(identifier, isExpand)
-    }
-
-    override fun onBmgmProductBenefitClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
-        onClickProduct(addOn.orderDetailId.toLongOrZero())
-    }
-
     override fun onDetailIncomeClicked() {
         SomAnalytics.eventDetailIncomeClicked()
         val somDetailTransparencyFeeBottomSheet =
@@ -1732,7 +1725,12 @@ open class SomDetailFragment :
     }
 
     protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
-        return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
+        return SomDetailAdapterFactoryImpl(
+            actionListener = this,
+            addOnListener = AddOnListener(),
+            productBenefitListener = ProductBenefitListener(),
+            recyclerViewSharedPool = recyclerViewSharedPool
+        )
     }
 
     private fun expandCollapseAddOn(addOnIdentifier: String, isExpand: Boolean) {
@@ -1839,6 +1837,44 @@ open class SomDetailFragment :
                 onDismissListener = {}
                 dismissCoachMark()
             }
+        }
+    }
+
+    private inner class AddOnListener : BmgmAddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            clipboardManager.setPrimaryClip(ClipData.newPlainText(label, description))
+            showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
+        }
+
+        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            expandCollapseAddOn(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            SomNavigator.openAppLink(context, infoLink)
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            // noop, add on is not clickable
+        }
+    }
+
+    private inner class ProductBenefitListener : BmgmAddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            // noop, product benefit doesn't have copyable description
+        }
+
+        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            expandCollapseBmgmProductBenefit(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            // noop, product benefit doesn't have info link
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            onClickProduct(addOn.orderDetailId.toLongOrZero())
         }
     }
 }

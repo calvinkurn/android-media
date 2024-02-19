@@ -1,6 +1,7 @@
 package com.tokopedia.order_management_common.presentation.viewholder
 
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.View
+import android.view.ViewStub
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -40,17 +41,12 @@ class BmgmAddOnSummaryViewHolder(
 
     private fun setupLayout() {
         binding?.setupRecyclerviewRecycledViewPool()
-        binding?.setupRecyclerViewLayoutManager()
         binding?.setupRecyclerViewAdapter()
         binding?.setupRecyclerViewItemDecoration()
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerviewRecycledViewPool() {
         rvAddOn.setRecycledViewPool(recyclerViewSharedPool)
-    }
-
-    private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewLayoutManager() {
-        (rvAddOn.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewAdapter() {
@@ -164,5 +160,44 @@ class BmgmAddOnSummaryViewHolder(
 
     fun bind(addOnSummary: AddOnSummaryUiModel?) {
         setupAddOnSummary(addOnSummary)
+    }
+
+    interface Delegate {
+        fun registerAddOnSummaryDelegate(mediator: Mediator)
+        fun bindAddonSummary(addOnSummary: AddOnSummaryUiModel?)
+        interface Mediator {
+            fun getAddOnSummaryLayout(): View?
+            fun getRecycleViewSharedPool(): RecyclerView.RecycledViewPool?
+            fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener
+        }
+
+        class Impl : Delegate {
+
+            @Suppress("LateinitUsage")
+            private lateinit var viewHolder: BmgmAddOnSummaryViewHolder
+            @Suppress("LateinitUsage")
+            private lateinit var _mediator: Mediator
+
+            override fun registerAddOnSummaryDelegate(mediator: Mediator) {
+                _mediator = mediator
+            }
+
+            override fun bindAddonSummary(addOnSummary: AddOnSummaryUiModel?) {
+                var layout = _mediator.getAddOnSummaryLayout() ?: return
+                if (addOnSummary?.addonItemList?.isNotEmpty() == true) {
+                    if (layout is ViewStub) layout = layout.inflate() else layout.show()
+                    if (!::viewHolder.isInitialized) {
+                        viewHolder = BmgmAddOnSummaryViewHolder(
+                            bmgmAddOnListener = _mediator.getAddOnSummaryListener(),
+                            binding = PartialBmgmAddOnSummaryBinding.bind(layout),
+                            recyclerViewSharedPool = _mediator.getRecycleViewSharedPool()
+                        )
+                    }
+                    viewHolder.bind(addOnSummary)
+                } else {
+                    layout.hide()
+                }
+            }
+        }
     }
 }

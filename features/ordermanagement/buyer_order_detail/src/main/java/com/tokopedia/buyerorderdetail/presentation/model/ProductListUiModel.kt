@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoa
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 
@@ -67,6 +68,7 @@ data class ProductListUiModel(
         val totalPriceText: String,
         val isProcessing: Boolean = false,
         val addonsListUiModel: AddonsListUiModel? = null,
+        val addOnSummaryUiModel: AddOnSummaryUiModel? = null,
         val insurance: Insurance? = null,
         val isPof: Boolean = false,
         val shopId: String? = null,
