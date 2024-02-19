@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
+import com.tokopedia.autocompletecomponent.unify.AutoCompleteViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -18,4 +19,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SearchBarViewModel::class)
     internal abstract fun bindSearchBarViewModel(viewModel: SearchBarViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AutoCompleteViewModel::class)
+    internal abstract fun bindAutoCompleteViewModel(viewModel: AutoCompleteViewModel): ViewModel
 }

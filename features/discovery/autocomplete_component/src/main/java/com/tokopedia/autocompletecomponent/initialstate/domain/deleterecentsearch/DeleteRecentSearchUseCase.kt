@@ -1,9 +1,10 @@
 package com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch
 
 import android.text.TextUtils
+import android.util.Log
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnify
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
@@ -11,6 +12,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -24,8 +26,8 @@ open class DeleteRecentSearchUseCase(
         graphqlUseCase.addRequest(createGraphqlRequest(requestParams))
 
         return graphqlUseCase
-                .createObservable(RequestParams.EMPTY)
-                .map(::getIsSuccess)
+            .createObservable(RequestParams.EMPTY)
+            .map(::getIsSuccess)
     }
 
     protected open fun createGraphqlRequest(requestParams: RequestParams): GraphqlRequest =
@@ -85,10 +87,25 @@ open class DeleteRecentSearchUseCase(
             navSource: String
         ): RequestParams {
             val params = getParams(registrationId, userId, DELETE_ALL_FALSE, navSource)
-
+            Log.d("TAG", "getParams: ${item.title}, ${item.type}, ${item.productId}")
             params.putString(KEY_Q, item.title)
             params.putString(KEY_TYPE, item.type)
             params.putString(KEY_ITEM_ID, item.productId)
+
+            return params
+        }
+
+        fun getParams(
+            registrationId: String,
+            userId: String,
+            item: SuggestionUnify,
+            navSource: String
+        ): RequestParams {
+            val params = getParams(registrationId, userId, DELETE_ALL_FALSE, navSource)
+
+            params.putString(KEY_Q, item.title.text)
+            params.putString(KEY_TYPE, item.featureType)
+            params.putString(KEY_ITEM_ID, item.suggestionId)
 
             return params
         }
@@ -119,12 +136,12 @@ open class DeleteRecentSearchUseCase(
     }
 
     protected data class DeleteRecentSearchResponse(
-            @SerializedName("universe_delete_recent_search")
-            val data: DeleteRecentSearchUniverse = DeleteRecentSearchUniverse()
+        @SerializedName("universe_delete_recent_search")
+        val data: DeleteRecentSearchUniverse = DeleteRecentSearchUniverse()
     ) {
         data class DeleteRecentSearchUniverse(
-                @SerializedName("status")
-                val status: String = ""
+            @SerializedName("status")
+            val status: String = ""
         ) {
             val isSuccess: Boolean
                 get() = status.equals("success", true)
