@@ -28,7 +28,9 @@ class DataOccMultiResponse(
     @SerializedName("toaster_action")
     val toasterAction: ToasterAction = ToasterAction(),
     @SerializedName("out_of_service")
-    val outOfService: OutOfService = OutOfService()
+    val outOfService: OutOfService = OutOfService(),
+    @SerializedName("next_page")
+    val nextPage: Int = 0
 )
 
 class DetailOccMultiResponse(

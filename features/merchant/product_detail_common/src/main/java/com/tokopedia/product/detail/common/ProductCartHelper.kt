@@ -33,12 +33,13 @@ object ProductCartHelper {
         }
     }
 
-    fun validateOvo(activity: FragmentActivity?,
-                    result: AddToCartDataModel,
-                    parentProductId: String,
-                    userId: String,
-                    refreshPage: () -> Unit,
-                    onError: () -> Unit
+    fun validateOvo(
+        activity: FragmentActivity?,
+        result: AddToCartDataModel,
+        parentProductId: String,
+        userId: String,
+        refreshPage: () -> Unit,
+        onError: () -> Unit
     ) {
         if (result.data.refreshPrerequisitePage) {
             refreshPage.invoke()
@@ -47,18 +48,20 @@ object ProductCartHelper {
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            parentProductId
+                        parentProductId
                         }"
                         ProductTrackingCommon.eventActivationOvo(
-                                parentProductId,
-                                userId)
+                            parentProductId,
+                            userId
+                        )
                         RouteManager.route(it, applink)
                     }
                     ProductDetailCommonConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
                         val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
-                                parentProductId,
-                                userId,
-                                result.data.ovoValidationDataModel)
+                            parentProductId,
+                            userId,
+                            result.data.ovoValidationDataModel
+                        )
                         bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
                     }
                     else -> onError.invoke()
@@ -96,6 +99,11 @@ object ProductCartHelper {
         activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 
+    fun goToCheckout(activity: Activity) {
+        val intent = RouteManager.getIntent(activity.applicationContext, ApplinkConstInternalMarketplace.CHECKOUT)
+        activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+    }
+
     fun goToOneClickCheckout(activity: Activity) {
         val intent = RouteManager.getIntent(activity.applicationContext, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
@@ -108,5 +116,4 @@ object ProductCartHelper {
             activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
         }
     }
-
 }

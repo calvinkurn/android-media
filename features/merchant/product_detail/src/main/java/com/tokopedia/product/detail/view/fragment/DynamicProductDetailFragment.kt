@@ -92,7 +92,6 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -3292,7 +3291,11 @@ open class DynamicProductDetailFragment :
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
                 sendTrackingATC(cartId)
-                goToOneClickCheckout()
+                if (result.isOccNewCheckoutPage) {
+                    goToCheckout()
+                } else {
+                    goToOneClickCheckout()
+                }
             }
             ProductDetailCommonConstant.BUY_BUTTON -> {
                 sendTrackingATC(cartId)
@@ -3380,6 +3383,11 @@ open class DynamicProductDetailFragment :
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
+        startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+    }
+
+    private fun goToCheckout() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
         startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 

@@ -553,7 +553,11 @@ class AtcVariantBottomSheet :
             }
 
             ProductDetailCommonConstant.OCC_BUTTON -> {
-                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+                if (result.isOccNewCheckoutPage) {
+                    ProductCartHelper.goToCheckout(getAtcActivity())
+                } else {
+                    ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+                }
             }
 
             ProductDetailCommonConstant.BUY_BUTTON -> {
