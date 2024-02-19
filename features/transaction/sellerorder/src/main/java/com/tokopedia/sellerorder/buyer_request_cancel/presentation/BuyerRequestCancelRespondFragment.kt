@@ -61,10 +61,8 @@ class BuyerRequestCancelRespondFragment :
         ViewModelProvider(this, viewModelFactory)[BuyerRequestCancelRespondViewModel::class.java]
     }
 
-    private var bottomSheet: BuyerRequestCancelRespondBottomSheet? = null
-
     private var binding by autoClearedNullable<FragmentBuyerRequestCancelRespondBinding> {
-        bottomSheet?.clearViewBinding()
+        bottomSheetBuyerRequestCancelRespond?.clearViewBinding()
     }
 
     override fun onCreateView(
@@ -191,14 +189,11 @@ class BuyerRequestCancelRespondFragment :
     }
 
     private fun onSuccessRespond(message: String) {
-        activity?.setResult(
-            Activity.RESULT_OK,
-            Intent().apply {
-                putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_SUCCESS, true)
-                putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_MESSAGE, message)
-            }
-        )
-        bottomSheet?.dismiss()
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_SUCCESS, true)
+            putExtra(DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_RESULT_MESSAGE, message)
+        })
+        bottomSheetBuyerRequestCancelRespond?.dismiss()
     }
 
     private fun onErrorRespond(message: String, crashlyticsMessage: String) {
