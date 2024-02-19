@@ -6,9 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.EVENT_ORIGIN_FEATURE
 import com.tokopedia.analytics.byteio.AppLogParam.EVENT_ORIGIN_FEATURE_DEFAULT_VALUE
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
-import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
-import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.CHOOSE_SEARCH_FILTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.ENTER_SEARCH_BLANKPAGE
@@ -57,16 +55,14 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_TYPE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SHOP_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SUG_TYPE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.TOKEN_TYPE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.TRACK_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.VOLUME
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_CONTENT
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_NUM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITION
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CORRECT_WORD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
 import org.json.JSONObject
 
 object AppLogSearch {
@@ -81,6 +77,8 @@ object AppLogSearch {
         const val SEARCH_RESULT_SHOW = "search_result_show"
         const val SEARCH_RESULT_CLICK = "search_result_click"
         const val CHOOSE_SEARCH_FILTER = "choose_search_filter"
+        const val SEARCH_REVISE_WORD_SHOW = "search_revise_word_show"
+        const val SEARCH_REVISE_WORD_CLICK = "search_revise_word_click"
     }
 
     object ParamKey {
@@ -123,6 +121,7 @@ object AppLogSearch {
         const val ECOM_SORT_CHOSEN = "ecom_sort_chosen"
         const val ECOM_FILTER_CHOSEN = "ecom_filter_chosen"
         const val ECOM_FILTER_TYPE = "ecom_filter_type"
+        const val SEARCH_CORRECT_WORD = "search_correct_word"
 
         // Potentially can be in global constants
         const val VOLUME = "volume"
@@ -170,6 +169,7 @@ object AppLogSearch {
         const val FILTER_PANEL = "filter_panel"
         const val FILTER_GUID = "filter_guid" // TODO:: What is navigation filtering?
         const val FILTER_QUICK = "filter_quick"
+        const val CORRECT_WORD = "correct_word"
     }
 
     fun <K, V> eventShowSearch(vararg data: Pair<K, V>) {
@@ -204,8 +204,6 @@ object AppLogSearch {
             )
         )
     }
-
-    // /////////////// -- IJ -- /////////////
 
     fun <K, V> eventSearchFromInitialState() {
         AppLogAnalytics.send(
@@ -276,6 +274,20 @@ object AppLogSearch {
             )
         )
     }
+
+    fun <K, V> eventSearchFromTypoCorrection() {
+        AppLogAnalytics.send(
+            SEARCH,
+            JSONObject(
+                mapOf(
+                    ENTER_METHOD to CORRECT_WORD,
+                    SEARCH_KEYWORD to "", //TODO:: Keyword
+                )
+            )
+        )
+    }
+
+    // /////////////// -- IJ -- /////////////
 
     fun <K, V> eventEnterSearchBlankPage() {
         AppLogAnalytics.send(
@@ -445,14 +457,14 @@ object AppLogSearch {
     }
 
     fun <K, V> eventProductShow() {
-        AppLogAnalytics.send(EventName.PRODUCT_SHOW, tiktokEcommerce())
+        AppLogAnalytics.send(EventName.PRODUCT_SHOW, tiktokecJSON())
     }
 
     fun <K, V> eventProductClick() {
-        AppLogAnalytics.send(EventName.PRODUCT_CLICK, tiktokEcommerce())
+        AppLogAnalytics.send(EventName.PRODUCT_CLICK, tiktokecJSON())
     }
 
-    private fun tiktokEcommerce() = JSONObject(
+    private fun tiktokecJSON() = JSONObject(
         mapOf(
             EVENT_ORIGIN_FEATURE to EVENT_ORIGIN_FEATURE_DEFAULT_VALUE,
             SOURCE_MODULE to "", // TODO:: Is this search?
@@ -468,6 +480,12 @@ object AppLogSearch {
             SEARCH_ENTRANCE to HOMEPAGE,
             ENTER_FROM to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
             LIST_ITEM_ID to "",
+            ITEM_RANK to 0, // TODO:: item index in carousels
+            LIST_RESULT_TYPE to "",
+            SEARCH_KEYWORD to "",
+            TOKEN_TYPE to "",
+            RANK to 0, // TODO:: Item index in whole page
+            SHOP_ID to "",
         )
     ).apply {
         addPage()
