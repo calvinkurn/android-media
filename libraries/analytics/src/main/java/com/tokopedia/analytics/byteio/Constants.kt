@@ -38,7 +38,7 @@ data class TrackConfirmSku(
     val originalPrice: String,
     val salePrice: String,
     val skuId: String,
-    val currency: String,
+    val currency: String = "IDR",
     val isSkuSelected: Boolean,
     val isAddCartSelected: Boolean,
     val qty: String,
@@ -53,10 +53,10 @@ data class TrackConfirmCart(
     val originalPrice: String,
     val salePrice: String,
     val skuId: String,
-    val currency: String,
+    val currency: String = "IDR",
     val addSkuNum: Int,
-    val skuNumBefore: Int,
-    val skuNumAfter: Int
+    val skuNumBefore: Int = 0, // need development from BE
+    val skuNumAfter: Int = 0 // need development from BE
 )
 
 data class TrackConfirmCartResult(
@@ -67,7 +67,7 @@ data class TrackConfirmCartResult(
     val originalPrice: String,
     val salePrice: String,
     val skuId: String,
-    val currency: String = "Rp", // always IDR
+    val currency: String = "IDR",
     val addSkuNum: Int,
     val skuNumBefore: Int = 0, // need development from BE
     val skuNumAfter: Int = 0, // need development from BE

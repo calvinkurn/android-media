@@ -513,9 +513,11 @@ class DynamicProductDetailViewModel @Inject constructor(
             productId = p1.parentProductId,
             productCategory = p1.basic.category.name,
             productType = ProductType.AVAILABLE,
-            originalPrice = p1.data.price.priceFmt,
+            originalPrice = p1.data.price.slashPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
-            false, false, false // todo: TBD
+            isLoadData = false,
+            isSkuSelected = false,
+            isAddCartSelected = false // todo: TBD
         )
     }
 
@@ -680,11 +682,10 @@ class DynamicProductDetailViewModel @Inject constructor(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.name,
                 productType = ProductType.AVAILABLE,
-                originalPrice = data.data.price.priceFmt,
+                originalPrice = data.data.price.slashPriceFmt,
                 salePrice = data.finalPrice.toString(),
                 skuId = data.basic.productID,
-                currency = "Rp",
-                addSkuNum = data.basic.minOrder, skuNumBefore = 0, skuNumAfter = 0
+                addSkuNum = data.basic.minOrder,
             )
         )
         val result = withContext(dispatcher.io) {

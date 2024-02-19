@@ -500,27 +500,31 @@ class AtcVariantViewModel @Inject constructor(
 
         val parentId = getVariantData()?.parentId.orEmpty()
         if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
-            AppLogAnalytics.sendConfirmCart(TrackConfirmCart(
-                productId = parentId,
-                productCategory = categoryName,
-                productType = ProductType.AVAILABLE,
-                originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
-                salePrice = selectedChild?.priceFmt.orEmpty(),
-                skuId = selectedChild?.productId.orEmpty(),
-                currency = "Rp",
-                addSkuNum = selectedChild?.getFinalMinOrder().orZero(), skuNumBefore = 0, skuNumAfter = 0
-            ))
+            AppLogAnalytics.sendConfirmCart(
+                TrackConfirmCart(
+                    productId = parentId,
+                    productCategory = categoryName,
+                    productType = ProductType.AVAILABLE,
+                    originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
+                    salePrice = selectedChild?.priceFmt.orEmpty(),
+                    skuId = selectedChild?.productId.orEmpty(),
+                    addSkuNum = selectedChild?.getFinalMinOrder().orZero()
+                )
+            )
         } else if (actionButton == ProductDetailCommonConstant.OCC_BUTTON) {
             AppLogAnalytics.sendConfirmSku(
                 TrackConfirmSku(
-                productId = parentId,
-                productCategory = categoryName,
-                productType = ProductType.AVAILABLE,
-                originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
-                salePrice = selectedChild?.priceFmt.orEmpty(),
-                skuId = selectedChild?.productId.orEmpty(),
-                currency = "Rp",
-                false, false,"",  false)
+                    productId = parentId,
+                    productCategory = categoryName,
+                    productType = ProductType.AVAILABLE,
+                    originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
+                    salePrice = selectedChild?.priceFmt.orEmpty(),
+                    skuId = selectedChild?.productId.orEmpty(),
+                    isSkuSelected = false,
+                    isAddCartSelected = false,
+                    qty = "",
+                    isHaveAddress = false
+                )
             )
         }
 
