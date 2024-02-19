@@ -2060,30 +2060,22 @@ open class HomeRevampFragment :
                 searchbarImpressionCallback = {},
                 shouldShowTransition = false,
                 hintImpressionCallback = { hintData, index ->
-                    AppLogSearch.eventTrendingWordsShow(
-                        WORDS_SOURCE to SEARCH_BAR_OUTER,
-                        WORDS_POSITION to index,
-                        WORDS_CONTENT to hintData.keyword,
-                        SEARCH_POSITION to HOMEPAGE,
-                        SEARCH_ENTRANCE to HOMEPAGE,
-                        GROUP_ID to "", // TODO:: Group id from BE?
-                        IMPR_ID to "", // TODO:: Impr id from BE?
-                    )
+                    AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
                 },
                 hintClickCallback = { hintData, index ->
-                    AppLogSearch.eventTrendingWordsClick(
-                        WORDS_SOURCE to SEARCH_BAR_OUTER,
-                        WORDS_POSITION to index,
-                        WORDS_CONTENT to hintData.keyword,
-                        SEARCH_POSITION to HOMEPAGE,
-                        SEARCH_ENTRANCE to HOMEPAGE,
-                        GROUP_ID to "", // TODO:: Group id from BE
-                        IMPR_ID to "", // TODO:: Impr id from BE
-                    )
+                    AppLogSearch.eventTrendingWordsClick(appLogTrendingWords(index, hintData))
                 }
             )
         }
     }
+
+    private fun appLogTrendingWords(index: Int, hintData: HintData) =
+        AppLogSearch.TrendingWords(
+            index = index,
+            content = hintData.keyword,
+            groupId = "",
+            imprId = ""
+        )
 
     private fun hints(data: SearchPlaceholder.Data): List<HintData> {
         val placeholders =

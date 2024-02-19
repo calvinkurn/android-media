@@ -63,6 +63,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CORRECT_WORD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
 import org.json.JSONObject
 
 object AppLogSearch {
@@ -172,22 +173,42 @@ object AppLogSearch {
         const val CORRECT_WORD = "correct_word"
     }
 
-    fun <K, V> eventShowSearch(vararg data: Pair<K, V>) {
-        AppLogAnalytics.send(SHOW_SEARCH, JSONObject(mapOf(*data)))
+    fun eventShowSearch(currentPageName: String) {
+        AppLogAnalytics.send(SHOW_SEARCH, JSONObject(mapOf(
+            SEARCH_ENTRANCE to if (currentPageName == "/") HOMEPAGE else "",
+            ENTER_FROM to if (currentPageName == "/") HOMEPAGE else "",
+        )))
     }
 
-    fun <K, V> eventTrendingWordsShow(vararg data: Pair<K, V>) {
-        AppLogAnalytics.send(TRENDING_WORDS_SHOW, JSONObject(mapOf(*data)))
+    data class TrendingWords(
+        val index: Int,
+        val content: String,
+        val groupId: String,
+        val imprId: String,
+    ) {
+
+        fun toMap() = mapOf(
+            WORDS_SOURCE to SEARCH_BAR_OUTER,
+            WORDS_POSITION to index,
+            WORDS_CONTENT to content,
+            SEARCH_POSITION to HOMEPAGE,
+            SEARCH_ENTRANCE to HOMEPAGE,
+            GROUP_ID to groupId,
+            IMPR_ID to imprId,
+        )
     }
 
-    fun <K, V> eventTrendingWordsClick(vararg data: Pair<K, V>) {
-        AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(mapOf(*data)))
+    fun eventTrendingWordsShow(trendingWords: TrendingWords) {
+        AppLogAnalytics.send(TRENDING_WORDS_SHOW, JSONObject(trendingWords.toMap()))
     }
 
-    fun <K, V> eventSearchFromPlaceholder() {
-        AppLogAnalytics.send(
-            SEARCH,
-            JSONObject(
+    fun eventTrendingWordsClick(trendingWords: TrendingWords) {
+        AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWords.toMap()))
+    }
+
+    sealed class EventSearch(val from: String) {
+        class Placeholder: EventSearch(PLACEHOLDER) {
+            override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
                     ENTER_FROM to "", // TODO:: Homepage, otherwise EMPTY
@@ -202,13 +223,10 @@ object AppLogSearch {
                     EC_SEARCH_SESSION_ID to "", // TODO:: Search Session ID. From FE? Need SharedPreferences to clear on Homepage
                 )
             )
-        )
-    }
+        }
 
-    fun <K, V> eventSearchFromInitialState() {
-        AppLogAnalytics.send(
-            SEARCH,
-            JSONObject(
+        class InitialState: EventSearch(INITIAL_STATE) {
+            override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
                     ENTER_FROM to "", // TODO:: Homepage, otherwise EMPTY
@@ -223,13 +241,10 @@ object AppLogSearch {
                     EC_SEARCH_SESSION_ID to "", // TODO:: Search Session ID. From FE? Need SharedPreferences to clear on Homepage
                 )
             )
-        )
-    }
+        }
 
-    fun <K, V> eventSearchFromSuggestion() {
-        AppLogAnalytics.send(
-            SEARCH,
-            JSONObject(
+        class Suggestion: EventSearch(SUGGESTION) {
+            override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
                     ENTER_FROM to "", // TODO:: Homepage, otherwise EMPTY
@@ -247,13 +262,10 @@ object AppLogSearch {
                     BLANKPAGE_ENTER_METHOD to "", // TODO:: ENTER_METHOD of eventEnterSearchBlankPage(). Don't send this key if not from Initial State
                 )
             )
-        )
-    }
+        }
 
-    fun <K, V> eventSearchFromFilter() {
-        AppLogAnalytics.send(
-            SEARCH,
-            JSONObject(
+        class Filter: EventSearch(FILTER) {
+            override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
                     ENTER_FROM to "", // TODO:: Homepage, otherwise EMPTY
@@ -272,19 +284,37 @@ object AppLogSearch {
                     SEARCH_KEYWORD to "", // TODO:: Keyword
                 )
             )
-        )
-    }
+        }
 
-    fun <K, V> eventSearchFromTypoCorrection() {
-        AppLogAnalytics.send(
-            SEARCH,
-            JSONObject(
+        class TypoCorrection: EventSearch(TYPO_CORRECTION) {
+            override fun json() = JSONObject(
                 mapOf(
                     ENTER_METHOD to CORRECT_WORD,
                     SEARCH_KEYWORD to "", //TODO:: Keyword
                 )
             )
-        )
+        }
+
+        fun send() { AppLogAnalytics.send(SEARCH, json()) }
+
+        abstract fun json(): JSONObject
+
+        companion object {
+            const val PLACEHOLDER = "PLACEHOLDER"
+            const val INITIAL_STATE = "INITIAL_STATE"
+            const val SUGGESTION = "SUGGESTION"
+            const val FILTER = "FILTER"
+            const val TYPO_CORRECTION = "TYPO_CORRECTION"
+
+            fun create(from: String): EventSearch = when (from) {
+                PLACEHOLDER -> Placeholder()
+                INITIAL_STATE -> InitialState()
+                SUGGESTION -> Suggestion()
+                FILTER -> Filter()
+                TYPO_CORRECTION -> TypoCorrection()
+                else -> Placeholder()
+            }
+        }
     }
 
     // /////////////// -- IJ -- /////////////

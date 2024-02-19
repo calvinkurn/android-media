@@ -253,10 +253,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         configureToolbarContentTypeBasedOnAttribute()
 
         layoutSearch.addOnImpressionListener(ImpressHolder()) {
-            AppLogSearch.eventShowSearch(
-                SEARCH_ENTRANCE to if (toolbarPageName == "/") HOMEPAGE else "",
-                ENTER_FROM to if (toolbarPageName == "/") HOMEPAGE else "",
-            )
+            AppLogSearch.eventShowSearch(toolbarPageName)
         }
     }
 
