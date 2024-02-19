@@ -31,10 +31,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.coroutines.Fail
@@ -56,7 +55,7 @@ class RegisterInitialViewModel @Inject constructor(
     private val activateUserUseCase: ActivateUserUseCase,
     private val discoverUseCase: DiscoverUseCase,
     private val loginTokenUseCase: LoginTokenUseCase,
-    private val getProfileUseCase: GetProfileUseCase,
+    private val getProfileUseCase: GetUserInfoAndSaveSessionUseCase,
     private val tickerInfoUseCase: TickerInfoUseCase,
     private val dynamicBannerUseCase: DynamicBannerUseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
@@ -172,23 +171,29 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun getUserInfo() {
         idlingResourceProvider?.increment()
-        getProfileUseCase.execute(
-            GetProfileHelper(
-                userSession,
-                onSuccessGetUserInfo(),
-                onFailedGetUserInfo()
-            )
-        )
+        launch {
+            try {
+                val result = getProfileUseCase(Unit)
+                when (result) {
+                    is Success -> onSuccessGetUserInfo()
+                    is Fail -> onFailedGetUserInfo()
+                }
+            } catch (e: Exception) {
+            }
+        }
     }
 
     fun getUserInfoAfterAddPin() {
-        getProfileUseCase.execute(
-            GetProfileHelper(
-                userSession,
-                onSuccessGetUserInfoAfterAddPin(),
-                onFailedGetUserInfoAfterAddPin()
-            )
-        )
+        launch {
+            when (getProfileUseCase(Unit)) {
+                is Success -> {
+                    onSuccessGetUserInfoAfterAddPin()
+                }
+                is Fail -> {
+                    onFailedGetUserInfoAfterAddPin()
+                }
+            }
+        }
     }
 
     fun getTickerInfo() {
@@ -517,7 +522,6 @@ class RegisterInitialViewModel @Inject constructor(
         registerRequestUseCase.cancelJobs()
         registerCheckUseCase.cancelJobs()
         loginTokenUseCase.unsubscribe()
-        getProfileUseCase.unsubscribe()
     }
 
     override fun onCleared() {

@@ -32,11 +32,11 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.sessioncommon.util.GetProfileUtilsImpl
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -554,7 +554,7 @@ class RegisterInitialViewModelTest {
         val response = ProfilePojo(profileInfo = profileInfo)
 
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileHelper>().onSuccessGetProfile(response)
+            firstArg<GetProfileUtilsImpl>().onSuccessGetProfile(response)
         }
 
         viewModel.getUserInfo()
@@ -569,7 +569,7 @@ class RegisterInitialViewModelTest {
     fun `on Failed get user info`() {
         /* When */
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileHelper>().onErrorGetProfile(throwable)
+            firstArg<GetProfileUtilsImpl>().onErrorGetProfile(throwable)
         }
 
         viewModel.getUserInfo()
@@ -587,7 +587,7 @@ class RegisterInitialViewModelTest {
         val response = ProfilePojo(profileInfo = profileInfo)
 
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileHelper>().onSuccessGetProfile(response)
+            firstArg<GetProfileUtilsImpl>().onSuccessGetProfile(response)
         }
 
         viewModel.getUserInfoAfterAddPin()
@@ -602,7 +602,7 @@ class RegisterInitialViewModelTest {
     fun `on Failed get user info after add pin`() {
         /* When */
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileHelper>().onErrorGetProfile(throwable)
+            firstArg<GetProfileUtilsImpl>().onErrorGetProfile(throwable)
         }
 
         viewModel.getUserInfoAfterAddPin()

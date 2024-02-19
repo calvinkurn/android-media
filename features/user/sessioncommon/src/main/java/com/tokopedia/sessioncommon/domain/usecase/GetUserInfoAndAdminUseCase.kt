@@ -7,7 +7,7 @@ import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminResult
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
+import com.tokopedia.sessioncommon.util.GetProfileUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class GetUserInfoAndAdminUseCase @Inject constructor(
     private val userInfoUseCase: GetUserInfoAndSaveSessionUseCase,
     private val getAdminTypeUseCase: GetAdminTypeUseCase,
-    private val getProfileHelper: GetProfileHelper,
+    private val getProfileUtils: GetProfileUtils,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<Unit, AdminResult>(dispatchers.io) {
@@ -89,10 +89,10 @@ class GetUserInfoAndAdminUseCase @Inject constructor(
         return if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminActive) {
             AdminResult.AdminResultShowLocationPopup
         } else if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminRedirection) {
-            getProfileHelper.saveProfileData(userProfile)
+            getProfileUtils.saveProfileData(userProfile)
             AdminResult.AdminResultOnLocationAdminRedirection
         } else {
-            getProfileHelper.saveProfileData(userProfile)
+            getProfileUtils.saveProfileData(userProfile)
             AdminResult.AdminResultOnSuccessGetProfile(userProfile)
         }
     }

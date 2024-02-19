@@ -25,9 +25,9 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
+import com.tokopedia.sessioncommon.util.GetProfileUtilsImpl
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -469,7 +469,7 @@ class ShopCreationViewModelTest {
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
 
         coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileHelper>().onSuccessGetProfile.invoke(successGetUserInfoResponse)
+            firstArg<GetProfileUtilsImpl>().onSuccessGetProfile.invoke(successGetUserInfoResponse)
         }
 
         viewmodel.getUserInfo()
@@ -486,7 +486,7 @@ class ShopCreationViewModelTest {
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
 
         coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileHelper>().onErrorGetProfile.invoke(throwable)
+            firstArg<GetProfileUtilsImpl>().onErrorGetProfile.invoke(throwable)
         }
 
         viewmodel.getUserInfo()

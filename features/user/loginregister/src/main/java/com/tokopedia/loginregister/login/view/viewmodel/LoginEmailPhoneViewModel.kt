@@ -36,13 +36,13 @@ import com.tokopedia.sessioncommon.data.admin.AdminResult
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
+import com.tokopedia.sessioncommon.util.GetProfileUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -67,8 +67,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val gotoSeamlessHelper: GotoSeamlessHelper,
     private val gotoSeamlessPreference: GotoSeamlessPreference,
     private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers,
-    private val getProfileHelper: GetProfileHelper
+    dispatchers: CoroutineDispatchers,
+    private val getProfileUtils: GetProfileUtils
 ) : BaseViewModel(dispatchers.main) {
 
     private val mutableNavigateToGojekSeamless = SingleLiveEvent<Boolean>()
@@ -189,23 +189,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
-//        getProfileUseCase.execute(
-//            GetProfileSubscriber(
-//                userSession,
-//                { mutableProfileResponse.value = Success(it) },
-//                { mutableProfileResponse.value = Fail(it) },
-//                getAdminTypeUseCase = getAdminTypeUseCase,
-//                showLocationAdminPopUp = {
-//                    mutableShowLocationAdminPopUp.value = Success(true)
-//                },
-//                onLocationAdminRedirection = {
-//                    mutableAdminRedirection.value = Success(true)
-//                },
-//                showErrorGetAdminType = {
-//                    mutableShowLocationAdminPopUp.value = Fail(it)
-//                }
-//            )
-//        )
         launch {
             try {
                 val admin = getProfileAndAdmin(Unit)
@@ -220,33 +203,16 @@ class LoginEmailPhoneViewModel @Inject constructor(
                         mutableShowLocationAdminPopUp.value = Success(true)
                     }
                     is AdminResult.AdminResultOnErrorGetProfile -> {
-                        mutableProfileResponse.value = Fail(admin.e)
+                        mutableProfileResponse.value = Fail(admin.error)
                     }
                     is AdminResult.AdminResultOnErrorGetAdmin -> {
-                        mutableShowLocationAdminPopUp.value = Fail(admin.e)
+                        mutableShowLocationAdminPopUp.value = Fail(admin.error)
                     }
                 }
             } catch (e: Exception) {
                 mutableProfileResponse.value = Fail(e)
             }
         }
-//        launch(dispatchers.main) {
-//            try {
-//                val profile = getProfileUseCase(Unit)
-//                val isProfileValid = profile.profileInfo.userId.isNotBlank() &&
-//                    profile.profileInfo.userId != "0"
-//                if (isProfileValid) {
-//                    try {
-//                        val adminResponse = getAdminTypeUseCase(GET_ADMIN_TYPE_SOURCE)
-//                        onSuccessGetAdminType(adminResponse, profile)
-//                    } catch (e: Exception) {
-//                        mutableShowLocationAdminPopUp.value = Fail(e)
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                mutableProfileResponse.value = Fail(e)
-//            }
-//        }
     }
 
     private fun onSuccessGetAdminType(adminResponse: AdminTypeResponse, profile: ProfilePojo) {
@@ -284,10 +250,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
         if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminActive) {
             mutableShowLocationAdminPopUp.value = Success(true)
         } else if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminRedirection) {
-            getProfileHelper.saveProfileData(userProfile)
+            getProfileUtils.saveProfileData(userProfile)
             mutableAdminRedirection.value = Success(true)
         } else {
-            getProfileHelper.saveProfileData(userProfile)
+            getProfileUtils.saveProfileData(userProfile)
             mutableProfileResponse.value = Success(userProfile)
         }
     }

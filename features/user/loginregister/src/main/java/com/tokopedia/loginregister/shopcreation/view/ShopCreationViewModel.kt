@@ -25,13 +25,11 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import rx.Subscriber
 import javax.inject.Inject
@@ -47,10 +45,8 @@ open class ShopCreationViewModel @Inject constructor(
     private val getUserProfileCompletionUseCase: GetUserProfileCompletionUseCase,
     private val validateUserProfileUseCase: ValidateUserProfileUseCase,
     private val updateUserProfileUseCase: UpdateUserProfileUseCase,
-    private val getProfileUseCase: GetProfileUseCase,
+    private val getProfileUseCase: GetUserInfoAndSaveSessionUseCase,
     private val shopInfoUseCase: ShopInfoUseCase,
-    private val userSession: UserSessionInterface,
-    private val getProfileHelper: GetProfileHelper,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -221,11 +217,13 @@ open class ShopCreationViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.main) {
             try {
                 val profile = getProfileUseCase(Unit)
-                val isProfileValid = profile.profileInfo.userId.isNotBlank() &&
-                    profile.profileInfo.userId != "0"
-                if (isProfileValid) {
-                    getProfileHelper.saveProfileData(profile)
-                    _getUserInfoResponse.value = Success(profile.profileInfo)
+                when (profile) {
+                    is Success -> {
+                        _getUserInfoResponse.value = Success(profile.data.profileInfo)
+                    }
+                    is Fail -> {
+                        _getUserInfoResponse.value = Fail(profile.throwable)
+                    }
                 }
             } catch (e: Exception) {
                 _getUserInfoResponse.value = Fail(e)

@@ -19,11 +19,11 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileHelper
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
+import com.tokopedia.sessioncommon.util.GetProfileUtilsImpl
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -182,7 +182,7 @@ class LoginHelperViewModelTest {
         val response = ProfilePojo(profileInfo = profileInfo)
 
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileHelper>().onSuccessGetProfile(response)
+            firstArg<GetProfileUtilsImpl>().onSuccessGetProfile(response)
         }
 
         viewModel.processEvent(LoginHelperEvent.GetUserInfo)
@@ -193,7 +193,7 @@ class LoginHelperViewModelTest {
     @Test
     fun `on Failed get user info`() {
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileHelper>().onErrorGetProfile(throwable)
+            firstArg<GetProfileUtilsImpl>().onErrorGetProfile(throwable)
         }
 
         viewModel.processEvent(LoginHelperEvent.GetUserInfo)
@@ -205,7 +205,7 @@ class LoginHelperViewModelTest {
     @Test
     fun `on Show Location Admin Popup`() {
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileHelper>().showLocationAdminPopUp?.invoke()
+            firstArg<GetProfileUtilsImpl>().showLocationAdminPopUp?.invoke()
         }
 
         viewModel.processEvent(LoginHelperEvent.GetUserInfo)
@@ -217,7 +217,7 @@ class LoginHelperViewModelTest {
     @Test
     fun `on Admin Redirection`() {
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileHelper>().onLocationAdminRedirection?.invoke()
+            firstArg<GetProfileUtilsImpl>().onLocationAdminRedirection?.invoke()
         }
 
         viewModel.processEvent(LoginHelperEvent.GetUserInfo)
@@ -229,7 +229,7 @@ class LoginHelperViewModelTest {
     @Test
     fun `on Show Location Admin Popup Error`() {
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileHelper>().showErrorGetAdminType?.invoke(throwable)
+            firstArg<GetProfileUtilsImpl>().showErrorGetAdminType?.invoke(throwable)
         }
 
         viewModel.processEvent(LoginHelperEvent.GetUserInfo)
