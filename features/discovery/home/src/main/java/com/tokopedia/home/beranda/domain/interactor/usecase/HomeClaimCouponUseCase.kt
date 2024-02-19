@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home.beranda.data.mapper.ClaimCouponMapper
 import com.tokopedia.home.beranda.data.model.RedeemCouponModel
-import com.tokopedia.home.beranda.domain.model.RedeemCouponUiModel
+import com.tokopedia.home.beranda.domain.model.ClaimCouponUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
@@ -15,22 +15,22 @@ import javax.inject.Inject
 class HomeClaimCouponUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<String, RedeemCouponUiModel>(dispatchers.io) {
+) : CoroutineUseCase<String, ClaimCouponUiModel>(dispatchers.io) {
 
-    override suspend fun execute(params: String): RedeemCouponUiModel {
+    override suspend fun execute(params: String): ClaimCouponUiModel {
         return try {
             val catalogIdParam = createCatalogIdParam(params)
             val response: RedeemCouponModel = repository.request(gqlQuery(), catalogIdParam)
             val jsonMetaData = ClaimCouponMapper.extractMetaData(response.hachikoRedeem?.jsonMetaData())
 
-            RedeemCouponUiModel(
+            ClaimCouponUiModel(
                 isRedeemSucceed = response.hachikoRedeem != null,
                 redirectUrl = jsonMetaData.url,
                 redirectAppLink = jsonMetaData.appLink,
                 errorException = null
             )
         } catch (t: MessageErrorException) {
-            RedeemCouponUiModel(
+            ClaimCouponUiModel(
                 isRedeemSucceed = false,
                 redirectUrl = "",
                 redirectAppLink = "",
