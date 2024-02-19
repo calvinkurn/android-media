@@ -245,7 +245,7 @@ object MacroIntent {
             data = if (parameter.startsWith(internalDeeplink)) {
                 Uri.parse(parameter)
             } else {
-                Uri.parse("$internalDeeplink/9216437095/?layoutID=4")
+                Uri.parse("$internalDeeplink/6225772444/?layoutID=4")
             }
         }
     }
