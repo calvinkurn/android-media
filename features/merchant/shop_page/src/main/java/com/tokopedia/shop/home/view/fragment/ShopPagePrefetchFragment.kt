@@ -29,13 +29,12 @@ class ShopPagePrefetchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        stopMonitoringPltRenderPage()
+        stopTraceMonitoring()
     }
 
-    private fun stopMonitoringPltRenderPage() {
+    private fun stopTraceMonitoring() {
         (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                // shopPageActivity.stopMonitoringPltRenderPage(it)
                 shopPageActivity.stopTraceMonitoring(it)
             }
         }
