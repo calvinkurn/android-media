@@ -171,7 +171,7 @@ class BuyerReviewViewHolder(
 
         cardData = element
         carouselData = dataWidgetToCarouselData(element)
-        binding?.pcIndicator?.setMaximumIndicator(MAX_REVIEW_INDICATOR)
+        binding?.pcIndicator?.setMaximumDisplayedIndicator(MAX_REVIEW_INDICATOR)
         binding?.pcIndicator?.setIndicator(carouselData?.size.orZero())
         binding?.pcIndicator?.isVisible = carouselData?.isNotEmpty().orFalse()
         carouselBuyerReview?.apply {
