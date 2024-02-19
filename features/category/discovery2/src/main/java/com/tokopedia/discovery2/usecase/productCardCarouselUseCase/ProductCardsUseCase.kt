@@ -19,6 +19,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
@@ -276,7 +277,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }
+        if (ProductCardExperiment.isReimagine()) {
         queryParameterMap[PARAM_L_NAME] = VALUE_L_NAME_SRE
+        }
         return queryParameterMap
     }
 
