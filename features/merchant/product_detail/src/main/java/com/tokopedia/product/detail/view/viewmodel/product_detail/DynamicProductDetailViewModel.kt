@@ -501,8 +501,8 @@ class DynamicProductDetailViewModel @Inject constructor(
         return TrackProductDetail(
             productId = p1.parentProductId,
             productCategory = p1.basic.category.name,
-            productType = ProductType.AVAILABLE, // todo
-            originalPrice = p1.data.price.priceFmt, // or slashedPrice?
+            productType = p1.productType, // todo
+            originalPrice = p1.data.price.slashPriceFmt,
             salePrice = p1.data.campaign.priceFmt
         )
     }
@@ -512,7 +512,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         return TrackStayProductDetail(
             productId = p1.parentProductId,
             productCategory = p1.basic.category.name,
-            productType = ProductType.AVAILABLE,
+            productType = p1.productType,
             originalPrice = p1.data.price.slashPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
             isLoadData = false,

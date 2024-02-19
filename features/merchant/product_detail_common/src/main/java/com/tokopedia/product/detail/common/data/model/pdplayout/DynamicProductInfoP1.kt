@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 data class DynamicProductInfoP1(
     val basic: BasicInfo = BasicInfo(),
@@ -53,6 +56,15 @@ data class DynamicProductInfoP1(
 
     val isFromCache
         get() = cacheState.isFromCache
+
+    val productType: ProductType
+        get() {
+            return when {
+                basic.isActive() && getFinalStock().isNotBlankOrZero() -> ProductType.AVAILABLE
+                basic.isActive() && getFinalStock().isBlankOrZero() -> ProductType.SOLD_OUT // todo: mapping to enum
+                else -> ProductType.NOT_AVAILABLE
+            }
+        }
 
     fun getFinalStock(): String {
         return if (data.campaign.isActive) {
