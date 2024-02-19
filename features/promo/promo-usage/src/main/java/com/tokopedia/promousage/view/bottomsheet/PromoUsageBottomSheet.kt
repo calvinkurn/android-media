@@ -44,6 +44,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.promousage.R
+import com.tokopedia.promousage.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.databinding.PromoUsageBottomsheetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.di.PromoUsageModule
@@ -56,7 +57,6 @@ import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
-import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.util.extension.getErrorMessage
