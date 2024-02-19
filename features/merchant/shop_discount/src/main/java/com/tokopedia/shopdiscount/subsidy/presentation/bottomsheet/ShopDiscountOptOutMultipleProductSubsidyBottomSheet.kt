@@ -53,6 +53,8 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
     private var viewBinding by autoClearedNullable<LayoutBottomSheetShopDiscountChooseProductSubsidyToOptOutBinding>()
     private var onDismissBottomSheetAfterFinishActionListener: ((ShopDiscountManageProductSubsidyUiModel, String) -> Unit)? =
         null
+    private val textDescription: Typography?
+        get() = viewBinding?.textDescription
     private val rv: RecyclerView?
         get() = viewBinding?.rvSubsidyProductList
     private val checkboxSelectAllProduct: CheckboxUnify?
@@ -105,6 +107,7 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupBottomSheetTitleView()
+        setDescription(getDescription())
         setupRecyclerView()
         setupCheckboxSelectAllProduct()
         setupTextMultipleSelectProduct()
@@ -244,6 +247,20 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
                 dismiss()
             }
         }
+    }
+
+    private fun getDescription(): String {
+        return when (data.mode) {
+            ShopDiscountManageDiscountMode.UPDATE -> getString(R.string.sd_subsidy_multiple_product_opt_out_description_edit)
+            ShopDiscountManageDiscountMode.DELETE -> getString(R.string.sd_subsidy_multiple_product_opt_out_description_delete)
+            else -> {
+                ""
+            }
+        }
+    }
+
+    private fun setDescription(description: String) {
+        viewBinding?.textDescription?.text = description
     }
 
     private fun sendDismissOptOutMultipleProductBottomSheetTracker(dismissSource: String) {

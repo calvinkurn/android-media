@@ -190,8 +190,8 @@
     <string name="sd_subsidy_program_information_description_multi_warehouse"><![CDATA[Produkmu di beberapa lokasi mendapatkan diskon subsidi. Kamu bisa pelajari tentang subsidi lebih lanjut <a href="%1s">di sini</a>.]]></string>
     <string name="sd_subsidy_disable_edit_product_title">Ubah diskon</string>
     <string name="sd_subsidy_disable_delete_product_title">Hapus diskon</string>
-    <string name="sd_subsidy_disable_edit_product_desc">Produk yang sedang disubsidi tidak bisa diubah, kecuali kamu keluar dari subsidi dulu. Jika yang keluar adalah produk disubsidi penuh, maka diskonnya akan dihapus.</string>
-    <string name="sd_subsidy_disable_delete_product_desc">Produk yang sedang disubsidi tidak bisa langsung dihapus, kamu bisa keluar dulu dari subsidi jika kamu ingin hapus diskon.</string>
+    <string name="sd_subsidy_disable_edit_product_desc">Produk yang disubsidi tidak bisa langsung diubah, kamu bisa keluar dulu dari subsidi jika kamu ingin ubah diskon.</string>
+    <string name="sd_subsidy_disable_delete_product_desc">Produk yang disubsidi tidak bisa langsung dihapus, kamu bisa keluar dulu dari subsidi jika kamu ingin hapus diskon.</string>
     <string name="sd_subsidy_coach_mark_non_variant_desc">Produk ini sedang mendapat subsidi dari Tokopedia. Kamu bisa cek detailnya dengan klik icon informasi.</string>
     <string name="sd_subsidy_coach_mark_variant_desc">Ada varian produk yang dapat subsidi dari Tokopedia. Kamu bisa cek detailnya dengan klik icon informasi pada varian produk yang disubsidi.</string>
     <string name="sd_subsidy_single_product_opt_out_edit_mode_title">Ubah diskon</string>
@@ -225,7 +225,8 @@
     <string name="sd_subsidy_multi_wh_discount_single">%1s</string>
     <string name="sd_subsidy_multiple_product_opt_out_edit_mode_title">Ada diskon yang tidak bisa langsung diubah</string>
     <string name="sd_subsidy_multiple_product_opt_out_delete_mode_title">Yakin hapus produk dari Diskon Toko?</string>
-    <string name="sd_subsidy_multiple_product_opt_out_description">Produk yang sedang disubsidi tidak bisa diubah, kecuali kamu keluar dari subsidi dulu. Jika yang keluar adalah produk disubsidi penuh, maka diskonnya akan dihapus.</string>
+    <string name="sd_subsidy_multiple_product_opt_out_description_edit">Kamu tetap bisa langsung ubah produk non-subsidi, tapi untuk produk yang disubsidi kamu harus keluar dari subsidi dulu. Jika yang keluar adalah produk disubsidi penuh, maka diskonnya akan langsung dihapus.</string>
+    <string name="sd_subsidy_multiple_product_opt_out_description_delete">Kamu tetap bisa langsung hapus produk non-subsidi, tapi untuk produk yang disubsidi kamu bisa keluar dari subsidi dulu untuk hapus diskon.</string>
     <string name="sd_subsidy_multiple_product_opt_out_checkbox_default_label">Pilih produk yang ingin keluar subsidi</string>
     <string name="sd_subsidy_multiple_product_opt_out_checkbox_selected_label_format">%1d dari %2d produk</string>
     <string name="sd_subsidy_multiple_product_opt_out_button_label">Keluar dari Subsidi</string>
