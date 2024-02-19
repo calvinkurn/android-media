@@ -20,6 +20,7 @@
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_gift_image_loader_wrapper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -58,6 +59,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_title"
                 android:layout_width="150dp"
                 android:layout_height="12dp"
                 app:loader_corner_radius="8dp"

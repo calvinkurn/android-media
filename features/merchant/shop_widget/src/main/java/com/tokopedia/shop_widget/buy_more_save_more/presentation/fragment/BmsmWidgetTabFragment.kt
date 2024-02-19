@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginStart
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -418,7 +420,17 @@ class BmsmWidgetTabFragment :
         binding?.apply {
             when (viewState) {
                 VIEW_LOADING -> {
-                    loadingState.root.visible()
+                    loadingState.apply {
+                        root.visible()
+                        val isGwpWidget = offerTypeId == OFFER_TYPE_GWP
+                        clGiftImageLoaderWrapper.showWithCondition(isGwpWidget)
+                        if (!isGwpWidget) {
+                            val params = loaderTitle.layoutParams as MarginLayoutParams
+                            params.marginStart = 64
+                            loaderTitle.layoutParams = params
+                        }
+
+                    }
                     cardErrorState.gone()
                     flContentWrapper.gone()
                 }
