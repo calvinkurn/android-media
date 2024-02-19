@@ -399,12 +399,20 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             }
 
             ShopDiscountManageDiscountMode.UPDATE -> {
-                val selectedProductId = if (dataModel.getListProductIdVariant().size == Int.ONE) {
-                    dataModel.getListProductIdVariant().firstOrNull().orEmpty()
+                if (dataModel.isAllSelectedProductFullSubsidy()) {
+                    showToaster(getString(R.string.sd_discount_deleted))
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        getProductListData()
+                    }
                 } else {
-                    ""
+                    val selectedProductId = if (dataModel.getListProductIdVariant().size == Int.ONE) {
+                        dataModel.getListProductIdVariant().firstOrNull().orEmpty()
+                    } else {
+                        ""
+                    }
+                    updateProductDiscount(productParentId, productParentPosition, selectedProductId)
                 }
-                updateProductDiscount(productParentId, productParentPosition, selectedProductId)
             }
 
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {

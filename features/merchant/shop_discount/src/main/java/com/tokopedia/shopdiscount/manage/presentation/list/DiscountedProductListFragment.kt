@@ -857,10 +857,10 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 viewModel.deleteDiscount(discountStatusId, data.getListProductIdVariantNonSubsidy())
             }
             ShopDiscountManageDiscountMode.UPDATE -> {
-                if(data.isAllSelectedProductFullSubsidy()){
-                    binding?.recyclerView showToaster "Produk berhasil dihapus dari Diskon Toko"
+                if (data.isAllSelectedProductFullSubsidy()) {
+                    binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
                     loadInitialData()
-                }else {
+                } else {
                     val requestId = generateRequestId()
                     viewModel.setRequestId(requestId)
                     reserveProduct(requestId, data.getListProductParentIdWithNonSubsidyVariant())

@@ -386,9 +386,17 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                 viewModel.deleteDiscount(discountStatusId, dataModel.getListProductIdVariantNonSubsidy())
             }
             ShopDiscountManageDiscountMode.UPDATE -> {
-                val requestId = generateRequestId()
-                viewModel.setRequestId(requestId)
-                reserveProduct(requestId, dataModel.getListProductParentIdWithNonSubsidyVariant())
+                if (dataModel.isAllSelectedProductFullSubsidy()) {
+                    binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
+                    loadInitialData()
+                } else {
+                    val requestId = generateRequestId()
+                    viewModel.setRequestId(requestId)
+                    reserveProduct(
+                        requestId,
+                        dataModel.getListProductParentIdWithNonSubsidyVariant()
+                    )
+                }
             }
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
                 binding?.recyclerView showToaster optOutSuccessMessage
