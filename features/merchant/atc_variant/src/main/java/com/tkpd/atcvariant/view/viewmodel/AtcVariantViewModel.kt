@@ -522,7 +522,7 @@ class AtcVariantViewModel @Inject constructor(
                     skuId = selectedChild?.productId.orEmpty(),
                     isSkuSelected = false,
                     isAddCartSelected = false,
-                    qty = "",
+                    qty = selectedChild?.getFinalMinOrder().orZero().toString(),
                     isHaveAddress = false
                 )
             )
