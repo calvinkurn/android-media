@@ -13,6 +13,10 @@ data class ProductRecommendationVerticalDataModel(
     var recommendationItem: RecommendationItem? = null,
     var position: Int = -1
 ) : DynamicPdpDataModel {
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)

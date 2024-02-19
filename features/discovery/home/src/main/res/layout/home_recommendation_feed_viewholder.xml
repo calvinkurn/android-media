@@ -1,46 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_recommendation_feed_container"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/recom_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        />
+        android:layout_marginBottom="8dp" />
+
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
         android:id="@+id/tab_layout_home_feeds"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tab_home_feed_max_height"
-        app:tabRippleColor="@null"
-        app:tabPaddingStart="0dp"
-        app:tabPaddingEnd="0dp"
-        app:tabMode="scrollable"
-        app:tabMaxWidth="@dimen/tab_home_feed_width"
-        android:paddingHorizontal="16dp"
-        android:clipToPadding="false"
         android:layout_marginBottom="4dp"
-        android:visibility="visible"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        android:visibility="gone"
         app:tabIndicatorHeight="0dp"
-        />
+        app:tabMaxWidth="@dimen/tab_home_feed_width"
+        app:tabMode="scrollable"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp"
+        app:tabRippleColor="@null"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.home_component.widget.tab.MegaTabLayout
+        android:id="@+id/tab_recommendation"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp"
+        app:tabPaddingBottom="0dp"
+        tools:visibility="visible"/>
+
+    <View
+        android:id="@+id/megatab_stroke"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/Unify_NN50"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager_home_feeds"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible"/>
+
         <View
             android:id="@+id/view_feed_shadow"
-            android:visibility="invisible"
-            android:layout_gravity="top"
             android:layout_width="match_parent"
             android:layout_height="6dp"
-            android:background="@drawable/feed_bg_shadow_bottom"/>
+            android:layout_gravity="top"
+            android:background="@drawable/feed_bg_shadow_bottom"
+            android:visibility="invisible" />
     </FrameLayout>
 
 </LinearLayout>

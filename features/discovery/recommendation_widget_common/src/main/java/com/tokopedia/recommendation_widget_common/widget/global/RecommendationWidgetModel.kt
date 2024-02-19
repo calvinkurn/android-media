@@ -4,6 +4,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 data class RecommendationWidgetModel(
     val metadata: RecommendationWidgetMetadata = RecommendationWidgetMetadata(),
+    @Deprecated("Please use source for page-specific trackers.")
     val trackingModel: RecommendationWidgetTrackingModel = RecommendationWidgetTrackingModel(),
     val miniCart: RecommendationWidgetMiniCart = RecommendationWidgetMiniCart(),
     val source: RecommendationWidgetSource? = null,

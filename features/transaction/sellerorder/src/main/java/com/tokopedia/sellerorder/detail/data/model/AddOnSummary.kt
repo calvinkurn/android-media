@@ -75,6 +75,9 @@ data class AddOnSummary(
             @SerializedName("add_on_note")
             @Expose
             val addOnNote: AddOnNote? = null,
+            @SerializedName("info_link")
+            @Expose
+            val infoLink: String = "",
         ) {
             data class AddOnNote(
                 @SerializedName("from")
@@ -85,9 +88,13 @@ data class AddOnSummary(
                 val notes: String = "",
                 @SerializedName("to")
                 @Expose
-                val to: String = ""
+                val to: String = "",
+                @SerializedName("tips")
+                @Expose
+                val tips: String = ""
             ) {
-                fun isEmpty(): Boolean = from.isBlank() && to.isBlank() && notes.isBlank()
+                fun isEmpty(): Boolean =
+                    from.isBlank() && to.isBlank() && notes.isBlank() && tips.isBlank()
             }
         }
     }

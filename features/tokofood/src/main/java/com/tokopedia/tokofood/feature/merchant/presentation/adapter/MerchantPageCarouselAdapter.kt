@@ -10,7 +10,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantC
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder.OnCarouselItemClickListener
 
 class MerchantPageCarouselAdapter(
-        private val clickListener: OnCarouselItemClickListener
+    private var clickListener: OnCarouselItemClickListener?
 ) : RecyclerView.Adapter<MerchantCarouseItemViewHolder>() {
 
     private var carouselData: List<CarouselData> = listOf()
@@ -32,5 +32,9 @@ class MerchantPageCarouselAdapter(
     fun setCarouselData(carouselData: List<CarouselData>) {
         this.carouselData = carouselData
         notifyDataSetChanged()
+    }
+
+    fun removeListener() {
+        clickListener = null
     }
 }

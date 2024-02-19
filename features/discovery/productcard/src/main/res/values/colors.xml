@@ -43,6 +43,7 @@
     <color name="dms_static_light_RN100">#FFDBE2</color>
     <color name="dms_static_light_GN500">#00AA5B</color>
     <color name="dms_static_light_GN100">#C9FDE0</color>
+    <color name="dms_static_light_NN200">#D6DFEB</color>
 
     <color name="dms_stock_info_label_color">@color/Unify_N700_68</color>
     <color name="dms_label_assigned_value_gradient_end">#7ADBA5</color>

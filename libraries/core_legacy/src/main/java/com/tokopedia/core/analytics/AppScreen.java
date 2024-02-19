@@ -28,7 +28,6 @@ public final class AppScreen {
     public static final String SCREEN_RECOMMENDATION = "Recommendation page";
     public static final String DEALS_PAGE = "Deals page";
     public static final String SCREEN_SIMILAR_PRODUCT = "Similar Product";
-    public static final String SCREEN_DOWNLOAD_INVOICE = "Download invoice page";
     public static final String SCREEN_DEEP_LINK = "Deeplink page";
     public static final String SCREEN_SELLER_REP_HISTORY = "Reputation History";
     public static final String SCREEN_SELLER_SHOP_SCORE = "Shop Score";

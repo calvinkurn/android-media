@@ -14,7 +14,9 @@ import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.databinding.HomeComponentItemMissionWidgetClearBinding
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
+import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.home_component.util.loadImageRounded
+import com.tokopedia.home_component.util.overlay
 import com.tokopedia.home_component.viewholders.DynamicIconItemViewHolder
 import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -77,19 +79,27 @@ class MissionWidgetClearItemViewHolder(
     }
 
     private fun setLayoutParams(element: CarouselMissionWidgetDataModel) {
+        val imageLayoutParams = binding?.imageMissionWidget?.layoutParams
         val titleLayoutParams = binding?.titleMissionWidget?.layoutParams
         val subtitleLayoutParams = binding?.subtitleMissionWidget?.layoutParams
+        imageLayoutParams?.width = element.width
         titleLayoutParams?.height = element.titleHeight
         subtitleLayoutParams?.height = element.subtitleHeight
+        binding?.imageMissionWidget?.layoutParams = imageLayoutParams
         binding?.titleMissionWidget?.layoutParams = titleLayoutParams
         binding?.subtitleMissionWidget?.layoutParams = subtitleLayoutParams
     }
 
     private fun renderImage(imageUrl: String) {
-        binding?.imageMissionWidget?.loadImageRounded(
-            imageUrl, 
-            itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_mission_widget_clear_image_corner_radius)
-        )
+        binding?.imageMissionWidget?.apply {
+            loadImageRounded(
+                imageUrl,
+                itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_mission_widget_clear_image_corner_radius)
+            )
+            if(HomeComponentFeatureFlag.isMissionExpVariant()) {
+                overlay()
+            }
+        }
     }
 
     private fun renderText(element: CarouselMissionWidgetDataModel) {

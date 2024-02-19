@@ -3,7 +3,7 @@ package com.tokopedia.autocompletecomponent.initialstate.productline
 import android.graphics.Paint
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteProductListItemBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
@@ -60,7 +60,7 @@ class InitialStateProductLineViewHolder(
     private fun bindImage(item: BaseItemInitialStateSearch) {
         val context = itemView.context
         binding?.autocompleteProductImage?.let {
-            ImageHandler.loadImageRounded(context, it, item.imageUrl, context.resources.getDimension(R.dimen.autocomplete_product_initial_state_image_radius))
+            it?.loadImageRounded(item.imageUrl, context.resources.getDimension(R.dimen.autocomplete_product_initial_state_image_radius))
         }
     }
 
