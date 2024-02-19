@@ -54,7 +54,6 @@ class BuyerRequestCancelRespondBottomSheet(
                     primaryButtonText = getBuyerRequestCancellationRejectButton(statusCode),
                     secondaryButtonText = context.getString(R.string.som_buyer_cancellation_cancel_button),
                     primaryButtonClickAction = {
-                        dismiss()
                         when (statusCode) {
                             SomConsts.STATUS_CODE_ORDER_CREATED -> _listener?.onBuyerRequestCancelRespondAcceptOrder()
                             SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED,
@@ -141,7 +140,6 @@ class BuyerRequestCancelRespondBottomSheet(
             primaryButtonText = context.getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_button),
             secondaryButtonText = context.getString(R.string.som_buyer_cancellation_cancel_button),
             primaryButtonClickAction = {
-                dismiss()
                 _listener?.onBuyerRequestCancelRespondRejectOrder(reasonBuyer)
             }
         )
