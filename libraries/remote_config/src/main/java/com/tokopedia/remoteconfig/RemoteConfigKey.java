@@ -336,4 +336,7 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
 
+    public static final String ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW = "android_enable_pdp_recommendation_flow";
+    public static final String ANDROID_PDP_DEBOUNCE_TIME = "android_pdp_debounce_time";
+
 }

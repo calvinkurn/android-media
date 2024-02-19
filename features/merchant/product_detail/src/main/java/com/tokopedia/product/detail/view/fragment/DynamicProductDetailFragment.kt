@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
@@ -93,7 +92,6 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -274,6 +272,7 @@ import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ViewState
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommUiState
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
@@ -338,6 +337,7 @@ import com.tokopedia.universal_sharing.view.customview.ShareWidgetCallback
 import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
@@ -729,7 +729,7 @@ open class DynamicProductDetailFragment :
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
-        viewModel.onEvent(ProductRecommendationEvent.RefreshRecommendation)
+        viewModel.onRecommendationEvent(ProductRecommendationEvent.RefreshRecommendation)
         super.onSwipeRefresh()
     }
 
@@ -1902,7 +1902,7 @@ open class DynamicProductDetailFragment :
 
     override fun loadTopads(pageName: String, queryParam: String, thematicId: String) {
         val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-        viewModel.onEvent(
+        viewModel.onRecommendationEvent(
             ProductRecommendationEvent.LoadRecommendation(
                 pageName = pageName,
                 productId = p1.basic.productID,
@@ -1916,12 +1916,16 @@ open class DynamicProductDetailFragment :
 
     override fun loadViewToView(pageName: String, queryParam: String, thematicId: String) {
         val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-        viewModel.loadViewToView(
-            pageName = pageName,
-            productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow,
-            queryParam = queryParam,
-            thematicId = thematicId
+
+        viewModel.onRecommendationEvent(
+            ProductRecommendationEvent.LoadRecommendation(
+                pageName = pageName,
+                productId = p1.basic.productID,
+                isTokoNow = p1.basic.isTokoNow,
+                miniCart = null,
+                queryParam = queryParam,
+                thematicId = thematicId
+            )
         )
     }
 
@@ -3168,54 +3172,17 @@ open class DynamicProductDetailFragment :
 
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.resultData.collect {
-                it.forEach {
-                    val result = it.data
-                    when (result) {
-                        is ViewState.RenderSuccess -> {
-                            if (result.data.recommendationItemList.isNotEmpty()) {
-                                val enableComparisonWidget = remoteConfig.getBoolean(
-                                    RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET,
-                                    true
-                                )
-                                if (enableComparisonWidget) {
-                                    when (result.data.layoutType) {
-                                        RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
-                                            pdpUiUpdater?.updateComparisonBpcDataModel(
-                                                result.data,
-                                                viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
-                                            )
-                                        }
-
-                                        RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
-                                            pdpUiUpdater?.updateComparisonDataModel(result.data)
-                                        }
-
-                                        else -> {
-                                            pdpUiUpdater?.updateRecommendationData(result.data)
-                                        }
-                                    }
-                                } else {
-                                    pdpUiUpdater?.updateRecommendationData(result.data)
-                                }
-                            } else {
-                                // recomUiPageName used because there is possibilites gql recom return empty pagename
-                                pdpUiUpdater?.removeComponent(result.data.recomUiPageName)
-                            }
-                        }
-
-                        is ViewState.RenderFailure -> {
-                            pdpUiUpdater?.removeComponent(result.throwable.message ?: "")
-                            logException(result.throwable)
-                        }
-
-                        else -> {
-
-                        }
-                    }
-                }
-                updateUi()
+            viewModel.productListData.collect {
+                collectRecommendation(it)
             }
+        }
+
+        /**
+         * This is retained only for fallback and risk mitigation
+         * will be remove soon
+         */
+        viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
+            observeOldRecommendation(data)
         }
 
         viewLifecycleOwner.observe(viewModel.statusFilterTopAdsProduct) {
@@ -3231,29 +3198,98 @@ open class DynamicProductDetailFragment :
             pdpUiUpdater?.updateFilterRecommendationData(data)
             updateUi()
         }
-
-        observeViewToView()
     }
 
-    private fun observeViewToView() {
-        observe(viewModel.loadViewToView) { data ->
-            data.doSuccessOrFail({
-                if (it.data.recommendationItemList.size > 1) {
-                    pdpUiUpdater?.updateViewToViewData(
-                        it.data.copy(
-                            recommendationItemList = it.data.recommendationItemList
-                        )
-                    )
-                    updateUi()
-                } else {
-                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
-                    updateUi()
-                }
-            }, {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.VIEW_TO_VIEW)
+    /**
+     * This is retained only for fallback and risk mitigation
+     * will be remove soon
+     */
+    private fun observeOldRecommendation(result: Result<RecommendationWidget>) {
+        result.doSuccessOrFail({
+            if (it.data.recommendationItemList.isNotEmpty()) {
+                renderSuccessRecom(it.data)
                 updateUi()
-                logException(it)
-            })
+            } else {
+                // recomUiPageName used because there is possibilites gql recom return empty pagename
+                pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
+                updateUi()
+            }
+        }, {
+            renderFailureRecom(it)
+            updateUi()
+        })
+    }
+
+    private fun collectRecommendation(recomList: MutableList<ProductRecommUiState>) {
+        recomList.forEach {
+            val result = it.data
+            when (result) {
+                is ViewState.RenderSuccess -> {
+                    if (result.data.recommendationItemList.isNotEmpty()) {
+                        renderSuccessRecom(result.data)
+                    } else {
+                        // recomUiPageName used because there is possibilites gql recom return empty pagename
+                        pdpUiUpdater?.removeComponent(result.data.recomUiPageName)
+                    }
+                }
+
+                is ViewState.RenderFailure -> {
+                    renderFailureRecom(result.throwable)
+                }
+
+                else -> {
+
+                }
+            }
+        }
+        updateUi()
+    }
+
+    private fun renderFailureRecom(e: Throwable) {
+        pdpUiUpdater?.removeComponent(e.message ?: "")
+        logException(e)
+    }
+
+    private fun renderSuccessRecom(result: RecommendationWidget) {
+        val enableComparisonWidget = remoteConfig.getBoolean(
+            RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET,
+            true
+        )
+        if (enableComparisonWidget) {
+            when (result.layoutType) {
+                RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
+                    pdpUiUpdater?.updateComparisonBpcDataModel(
+                        result,
+                        viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
+                    )
+                }
+
+                RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
+                    pdpUiUpdater?.updateComparisonDataModel(result)
+                }
+
+                RecommendationTypeConst.TYPE_VIEW_TO_VIEW -> {
+                    renderViewToView(result)
+                }
+
+                else -> {
+                    pdpUiUpdater?.updateRecommendationData(result)
+                }
+            }
+        } else {
+            pdpUiUpdater?.updateRecommendationData(result)
+        }
+    }
+
+    private fun renderViewToView(result : RecommendationWidget) {
+        if (result.recommendationItemList.size > 1) {
+            pdpUiUpdater?.updateViewToViewData(
+                result.copy(
+                    recommendationItemList = result.recommendationItemList
+                )
+            )
+        } else {
+            pdpUiUpdater?.removeComponent(result.recomUiPageName)
         }
     }
 
