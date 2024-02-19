@@ -1655,6 +1655,7 @@ open class SomDetailFragment :
 
     protected open fun onSuccessRejectCancelOrder() {
         loadDetail()
+        bottomSheetManager?.bottomSheetBuyerRequestCancelRespond?.dismiss()
     }
 
     protected open fun onSuccessEditAwb() {
