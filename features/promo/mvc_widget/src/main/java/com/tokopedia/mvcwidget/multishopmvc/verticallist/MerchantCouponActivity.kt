@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,7 +20,8 @@ class MerchantCouponActivity : BaseSimpleActivity() , HasComponent<MvcComponent>
 
     override fun getComponent(): MvcComponent {
        return DaggerMvcComponent.builder()
-            .build()
+           .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+           .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

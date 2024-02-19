@@ -73,7 +73,7 @@ class SDUIViewHolder(
 
             override fun onViewClick(trackerPayload: JSONObject?) {
                 val element = element ?: return
-                listener.onClickDynamicOneLiner("", getComponentTrackData(element))
+                listener.onClickDynamicOneLiner("", "", component = getComponentTrackData(element))
             }
 
             override fun onViewVisible(trackerPayload: JSONObject?) {

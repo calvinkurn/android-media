@@ -2,6 +2,7 @@ package com.tokopedia.productcard.reimagine
 
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
+import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine
 
@@ -22,6 +23,7 @@ data class ProductCardModel(
     val isSafeProduct: Boolean = false,
     val isInBackground: Boolean = false,
     val nonVariant: NonVariant? = null,
+    val colorMode: ProductCardColor? = null 
 ) {
 
     fun labelBenefit(): LabelGroupReimagine? =
@@ -196,6 +198,7 @@ data class ProductCardModel(
                 stockInfo = StockInfo.from(productCardModel),
                 isInBackground = productCardModel.isInBackground,
                 nonVariant = NonVariant.from(productCardModel.nonVariant),
+                colorMode = productCardModel.colorMode,
             )
 
         private fun shopBadge(productCardModel: ProductCardModel) =
