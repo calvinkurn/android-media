@@ -240,10 +240,17 @@ open class ThankYouBaseFragment :
     private fun startAnimate() {
         if (!isV2Enabled) return
 
-        (activity as ThankYouPageActivity).globalNabToolbar.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
-        getBottomContentRecyclerView()?.animate()?.translationY(0f)?.setDuration(UnifyMotion.T5)?.start()
-        getBottomContentRecyclerView()?.alpha = 0f
-        getBottomContentRecyclerView()?.animate()?.alpha(1f)?.setDuration(UnifyMotion.T5)?.start()
+        if (context?.isDeviceAnimationDisabled() == true) {
+            (activity as ThankYouPageActivity).globalNabToolbar.alpha = 1f
+            getBottomContentRecyclerView()?.translationY = 0f
+            getBottomContentRecyclerView()?.alpha = 1f
+        } else {
+            (activity as ThankYouPageActivity).globalNabToolbar.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
+            getBottomContentRecyclerView()?.animate()?.translationY(0f)?.setDuration(UnifyMotion.T5)?.start()
+            getBottomContentRecyclerView()?.alpha = 0f
+            getBottomContentRecyclerView()?.animate()?.alpha(1f)?.setDuration(UnifyMotion.T5)?.start()
+        }
+
         getBottomContentRecyclerView()?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == InstantPaymentPage) {
@@ -433,6 +440,9 @@ open class ThankYouBaseFragment :
                 when (it) {
                     is Success -> {
                         setTopTickerData(it.data)
+                        if (isV2Enabled) {
+                            thanksPageDataViewModel.setTicker(it.data)
+                        }
                     }
                     is Fail -> getTopTickerView()?.gone()
                 }
@@ -1064,6 +1074,7 @@ open class ThankYouBaseFragment :
         const val TICKER_WARNING = "Warning"
         const val TICKER_INFO = "Info"
         const val TICKER_ERROR = "Error"
+        const val ANNOUNCEMENT = "Announcement"
 
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         const val ARG_IS_WIDGET_ORDERING_ENABLED = "arg_is_enabled_ordering_enabled"

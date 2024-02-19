@@ -34,7 +34,6 @@ object DeepLinkChecker {
     const val FIND = 9
     const val ETALASE = 10
     const val APPLINK = 11
-    const val INVOICE = 12
     const val ACCOUNTS = 13
     const val RECHARGE = 14
     const val BLOG = 15
