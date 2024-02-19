@@ -289,6 +289,10 @@ class DynamicProductDetailViewModel @Inject constructor(
      * for appLog stay-analytics to determine if the data is already loaded or not
      * */
     private var isLoadData: Boolean = false
+    /**
+     * for appLog stay-analytics to determine if the product is already added to cart
+     * */
+    private var isAddCart: Boolean = false
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -520,7 +524,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             originalPrice = p1.data.price.slashPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
             isLoadData = isLoadData,
-            isAddCartSelected = false // todo: TBD
+            isAddCartSelected = isAddCart
         )
     }
 
@@ -718,7 +722,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                     result.data.notes
                 )
             }
-
+            isAddCart = true
             _addToCartLiveData.value = result.asSuccess()
         }
     }
