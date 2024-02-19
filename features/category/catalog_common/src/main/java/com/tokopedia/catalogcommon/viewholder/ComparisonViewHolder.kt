@@ -1,5 +1,6 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -70,6 +71,7 @@ class ComparisonViewHolder(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun WidgetItemComparisonBinding.setupComparisonListItem(
         contents: List<ComparisonUiModel.ComparisonContent>
     ) {
