@@ -32,7 +32,7 @@ class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
         MacroInteration.basicFlingInteraction(
             MacroIntent.ProductDetail.PACKAGE_NAME,
             MacroIntent.ProductDetail.RECYCLER_VIEW_ID,
-            flingSpeed = 1500
+            flingSpeed = 4500
         )
     }
 
