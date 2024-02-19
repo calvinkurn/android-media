@@ -181,7 +181,7 @@ data class RatesParam(
 
     fun toRatesV3Param(): RatesV3Param = RatesV3Param(
         data = toOngkirRatesV3Input(),
-        metadata = RatesMetadata(cart_data)
+        metadata = RatesMetadata(cart_data, actionMetadata)
     )
 
     fun toRatesV3ApiParam(): RatesV3ApiParam = RatesV3ApiParam(
@@ -224,8 +224,7 @@ data class RatesParam(
             warehouse_id = warehouse_id,
             group_type = group_type,
             group_metadata = groupMetadata,
-            grouping_state = grouping_state,
-            action_metadata = actionMetadata
+            grouping_state = grouping_state
         )
     }
 

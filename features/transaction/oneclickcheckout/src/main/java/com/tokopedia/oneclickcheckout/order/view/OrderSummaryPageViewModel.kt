@@ -400,7 +400,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         product: OrderProduct,
         productIndex: Int,
         shouldReloadRates: Boolean = true,
-        shouldUpdateActionMetadata: Boolean = false
+        shouldUpdateActionMetadata: Boolean = true
     ) {
         orderCart.products[productIndex] = product
         if (shouldReloadRates) {
@@ -432,7 +432,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         }
     }
 
-    fun getRates(shouldUpdateActionMetadata: Boolean = false) {
+    fun getRates(shouldUpdateActionMetadata: Boolean = true) {
         launch(executorDispatchers.immediate) {
             orderShipment.value = orderShipment.value.copy(isLoading = true)
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
@@ -1682,7 +1682,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderCost,
                 orderShop.value.shopShipment,
                 orderShipment.value,
-                false
+                true
             ).first
         }
     }

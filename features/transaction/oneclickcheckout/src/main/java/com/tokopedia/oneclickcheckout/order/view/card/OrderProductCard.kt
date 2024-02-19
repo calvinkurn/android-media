@@ -342,7 +342,7 @@ class OrderProductCard(
                 // prevent multiple callback with same newValue
                 if (product.orderQuantity != newValue) {
                     product.orderQuantity = newValue
-                    listener.onProductChange(product, productIndex, shouldUpdateActionMetadata = true)
+                    listener.onProductChange(product, productIndex)
                     renderPrice()
                     renderProductInfo()
                 }
@@ -648,7 +648,7 @@ class OrderProductCard(
             product: OrderProduct,
             productIndex: Int,
             shouldReloadRates: Boolean = true,
-            shouldUpdateActionMetadata: Boolean = false
+            shouldUpdateActionMetadata: Boolean = true
         )
 
         fun forceUpdateCart()

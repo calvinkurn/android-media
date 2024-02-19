@@ -74,7 +74,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             .cartData(orderCart.cartData)
             .groupMetadata(orderCart.groupMetadata)
             .promoCode(orderShipment.promoCode)
-            .actionMetadata(if (shouldUpdateActionMetadata) generateActionMetadata(orderCart).toString() else "")
+            .actionMetadata(if (shouldUpdateActionMetadata) generateActionMetadata(orderCart) else "")
             .build()
             .apply {
                 occ = "1"
