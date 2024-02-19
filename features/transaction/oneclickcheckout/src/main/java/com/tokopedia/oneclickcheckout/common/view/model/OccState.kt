@@ -39,7 +39,7 @@ sealed class OccGlobalEvent {
     ) : OccGlobalEvent()
     data class PromoClashing(val notEligiblePromoHolderDataList: ArrayList<NotEligiblePromoHolderdata>) : OccGlobalEvent()
     data class AtcError(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
-    data class AtcSuccess(val message: String = "") : OccGlobalEvent()
+    data class AtcSuccess(val message: String = "", val shouldGoToCheckoutPage: Boolean = false) : OccGlobalEvent()
     data class Prompt(val prompt: OccPrompt) : OccGlobalEvent()
     data class ToasterAction(val toast: OccToasterAction) : OccGlobalEvent()
     data class ToasterInfo(val message: String) : OccGlobalEvent()

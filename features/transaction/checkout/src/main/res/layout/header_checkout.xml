@@ -9,7 +9,7 @@
         android:id="@+id/tv_checkout_header_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pengiriman"
+        android:text="@string/checkout_module_title_activity_checkout"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"

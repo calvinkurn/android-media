@@ -1,6 +1,10 @@
 package com.tokopedia.atc_common.domain.mapper
 
-import com.tokopedia.atc_common.data.model.response.atcexternal.*
+import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartExternalDataResponse
+import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartExternalGqlResponse
+import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartOccMultiExternalDataResponse
+import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartOccMultiExternalGqlResponse
+import com.tokopedia.atc_common.data.model.response.atcexternal.OccMultiExternalDataResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiCartData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
@@ -46,7 +50,8 @@ class AddToCartExternalDataMapper @Inject constructor() {
         return AddToCartOccMultiDataModel(
             errorMessage = response.response.errorMessage,
             status = response.response.status,
-            data = mapData(response.response.data)
+            data = mapData(response.response.data),
+            nextPage = response.response.data.nextPage
         )
     }
 
@@ -54,7 +59,7 @@ class AddToCartExternalDataMapper @Inject constructor() {
         return AddToCartOccMultiData(
             success = dataResponse.success,
             message = dataResponse.message,
-            cart = mapCartData(dataResponse.data)
+            cart = mapCartData(dataResponse.data),
         )
     }
 

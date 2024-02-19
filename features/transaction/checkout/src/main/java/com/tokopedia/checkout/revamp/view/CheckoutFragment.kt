@@ -425,11 +425,19 @@ class CheckoutFragment :
         viewModel.checkoutPageSource = checkoutPageSource
         observeData()
 
+        showAtcOccMessageIfAny()
         viewModel.loadSAF(
             skipUpdateOnboardingState = true,
             isReloadData = false,
             isReloadAfterPriceChangeHigher = false
         )
+    }
+
+    private fun showAtcOccMessageIfAny() {
+        val atcOccMessage = arguments?.getString(CheckoutConstant.EXTRA_ATC_OCC_MESSAGE)
+        if (!atcOccMessage.isNullOrBlank()) {
+            showToastNormal(atcOccMessage)
+        }
     }
 
     @SuppressLint("SetTextI18n")

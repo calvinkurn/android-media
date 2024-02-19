@@ -60,7 +60,8 @@ class AddToCartDataMapper @Inject constructor() {
         return AddToCartOccMultiDataModel(
             errorMessage = response.response.errorMessage,
             status = response.response.status,
-            data = mapAddToCartOccMultiData(response.response.data)
+            data = mapAddToCartOccMultiData(response.response.data),
+            nextPage = response.response.data.nextPage
         )
     }
 

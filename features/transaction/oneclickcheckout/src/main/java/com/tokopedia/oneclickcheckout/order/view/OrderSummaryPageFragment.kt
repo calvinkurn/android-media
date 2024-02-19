@@ -890,15 +890,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     handleAtcError(it)
                 }
                 is OccGlobalEvent.AtcSuccess -> {
-                    progressDialog?.dismiss()
-                    binding.loaderContent.animateGone()
-                    view?.let { v ->
-                        if (it.message.isNotBlank()) {
-                            Toaster.build(v, it.message).show()
+                    if (it.shouldGoToCheckoutPage) {
+                        goToCheckoutPage(it)
+                    } else {
+                        progressDialog?.dismiss()
+                        binding.loaderContent.animateGone()
+                        view?.let { v ->
+                            if (it.message.isNotBlank()) {
+                                Toaster.build(v, it.message).show()
+                            }
                         }
+                        setSourceFromPDP()
+                        refresh()
                     }
-                    setSourceFromPDP()
-                    refresh()
                 }
                 is OccGlobalEvent.Prompt -> {
                     progressDialog?.dismiss()
@@ -1261,6 +1265,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         binding.rvOrderSummaryPage.gone()
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateShow()
+    }
+
+    private fun goToCheckoutPage(atcSuccess: OccGlobalEvent.AtcSuccess) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+        intent.putExtra(CheckoutConstant.EXTRA_ATC_OCC_MESSAGE, atcSuccess.message)
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun atcOcc(productIds: String) {
