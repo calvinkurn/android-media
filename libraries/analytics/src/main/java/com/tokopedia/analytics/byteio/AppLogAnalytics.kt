@@ -180,8 +180,8 @@ object AppLogAnalytics {
             if(sourcePageType == SourcePageType.PRODUCT_CARD) currentPageName()
             else sourcePageType?.str
         )
-        put(ENTRANCE_FORM, entranceForm)
-        put(SOURCE_MODULE, sourceModule)
+        put(ENTRANCE_FORM, entranceForm?.str)
+        put(SOURCE_MODULE, sourceModule?.str)
     }
 
     private fun currentPageName(): String {
