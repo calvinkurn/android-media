@@ -61,7 +61,7 @@ data class DynamicProductInfoP1(
         get() {
             return when {
                 basic.isActive() && getFinalStock().isNotBlankOrZero() -> ProductType.AVAILABLE
-                basic.isActive() && getFinalStock().isBlankOrZero() -> ProductType.SOLD_OUT // todo: mapping to enum
+                basic.isActive() && getFinalStock().isBlankOrZero() -> ProductType.SOLD_OUT
                 else -> ProductType.NOT_AVAILABLE
             }
         }
