@@ -35,8 +35,8 @@ data class TrackConfirmSku(
     val productCategory: String,
 //    val entrance_info: TODO
     val productType: ProductType,
-    val originalPrice: String,
-    val salePrice: String,
+    val originalPrice: Double,
+    val salePrice: Double,
     val skuId: String,
     val currency: String = "IDR",
     val isSkuSelected: Boolean,
@@ -50,8 +50,8 @@ data class TrackConfirmCart(
     val productCategory: String,
 //    val entrance_info: TODO
     val productType: ProductType,
-    val originalPrice: String,
-    val salePrice: String,
+    val originalPrice: Double,
+    val salePrice: Double,
     val skuId: String,
     val currency: String = "IDR",
     val addSkuNum: Int,

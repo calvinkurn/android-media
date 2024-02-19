@@ -505,8 +505,8 @@ class AtcVariantViewModel @Inject constructor(
                     productId = parentId,
                     productCategory = categoryName,
                     productType = ProductType.AVAILABLE,
-                    originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
-                    salePrice = selectedChild?.priceFmt.orEmpty(),
+                    originalPrice = selectedChild?.campaign?.discountedPrice.orZero(),
+                    salePrice = selectedChild?.price.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
                     addSkuNum = selectedChild?.getFinalMinOrder().orZero()
                 )
@@ -517,8 +517,8 @@ class AtcVariantViewModel @Inject constructor(
                     productId = parentId,
                     productCategory = categoryName,
                     productType = ProductType.AVAILABLE,
-                    originalPrice = selectedChild?.slashPriceFmt.orEmpty(),
-                    salePrice = selectedChild?.priceFmt.orEmpty(),
+                    originalPrice = selectedChild?.campaign?.discountedPrice.orZero(),
+                    salePrice = selectedChild?.price.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
                     isSkuSelected = false,
                     isAddCartSelected = false,
