@@ -289,6 +289,33 @@ fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListen
     }
 }
 
+fun View.addOnImpression1pxListener(holder: ImpressHolder, onView: () -> Unit) {
+    addOnImpression1pxListener(
+        holder,
+        object : ViewHintListener {
+            override fun onViewHint() {
+                onView.invoke()
+            }
+        }
+    )
+}
+
+fun View.addOnImpression1pxListener(holder: ImpressHolder, listener: ViewHintListener) {
+    if (!holder.isInvoke) {
+        viewTreeObserver.addOnScrollChangedListener(
+            object : ViewTreeObserver.OnScrollChangedListener {
+                override fun onScrollChanged() {
+                    if (!holder.isInvoke && viewIsVisible1Pixel(this@addOnImpression1pxListener)) {
+                        listener.onViewHint()
+                        holder.invoke()
+                        viewTreeObserver.removeOnScrollChangedListener(this)
+                    }
+                }
+            }
+        )
+    }
+}
+
 fun View.isNotVisibleOnTheScreen(listener: ViewHintListener) {
     viewTreeObserver.addOnScrollChangedListener {
         if (getVisiblePercent(this@isNotVisibleOnTheScreen) == -1) {
