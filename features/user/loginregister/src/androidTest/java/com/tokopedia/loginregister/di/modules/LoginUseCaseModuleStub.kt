@@ -12,14 +12,11 @@ import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.stub.usecase.GetAdminTypeUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
-import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.LoginTokenUseCaseStub
-import com.tokopedia.loginregister.stub.usecase.LoginTokenV2UseCaseStub
-import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
+// import com.tokopedia.loginregister.stub.usecase.LoginTokenV2UseCaseStub
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
-import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -32,19 +29,19 @@ import dagger.Provides
 @Module
 class LoginUseCaseModuleStub {
 
-    @ActivityScope
-    @Provides
-    fun provideLoginTokenUseCaseV2(stub: LoginTokenV2UseCaseStub): LoginTokenV2UseCase = stub
+//    @ActivityScope
+//    @Provides
+//    fun provideLoginTokenUseCaseV2(stub: LoginTokenV2UseCaseStub): LoginTokenV2UseCase = stub
 
-    @ActivityScope
-    @Provides
-    fun provideLoginTokenUseCaseV2Stub(
-        @ApplicationContext graphqlRepository: GraphqlRepository,
-        userSessionInterface: UserSessionInterface
-    ): LoginTokenV2UseCaseStub {
-        val useCase = GraphqlUseCaseStub<LoginTokenPojoV2>(graphqlRepository)
-        return LoginTokenV2UseCaseStub(useCase, userSessionInterface)
-    }
+//    @ActivityScope
+//    @Provides
+//    fun provideLoginTokenUseCaseV2Stub(
+//        @ApplicationContext graphqlRepository: GraphqlRepository,
+//        userSessionInterface: UserSessionInterface
+//    ): LoginTokenV2UseCaseStub {
+//        val useCase = GraphqlUseCaseStub<LoginTokenPojoV2>(graphqlRepository)
+//        return LoginTokenV2UseCaseStub(useCase, userSessionInterface)
+//    }
 
     @Provides
     @ActivityScope

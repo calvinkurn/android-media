@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.login.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -324,7 +323,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
                     onSuccessLoginToken = {
                         mutableLoginBiometricResponse.value = Success(it)
                     },
-                    onErrorLoginToken = onFailedLoginBiometric(),
+                    onErrorLoginToken = {
+                        onFailedLoginBiometric(it)
+                    },
                     onShowPopupError = {
                         showPopup(it.popupError)
                     },
@@ -333,7 +334,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
                 )
             } catch (e: Exception) {
-                onFailedLoginBiometric()
+                onFailedLoginBiometric(e)
             }
         }
     }
@@ -348,11 +349,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
         )
     }
 
-    private fun onFailedLoginBiometric(): (Throwable) -> Unit {
-        return {
-            userSession.clearToken()
-            mutableLoginBiometricResponse.value = Fail(it)
-        }
+    private fun onFailedLoginBiometric(error: Throwable) {
+        userSession.clearToken()
+        mutableLoginBiometricResponse.value = Fail(error)
     }
 
     fun reloginAfterSQ(validateToken: String) {

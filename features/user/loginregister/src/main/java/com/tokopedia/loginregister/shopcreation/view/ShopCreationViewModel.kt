@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.shopcreation.view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -157,7 +156,7 @@ open class ShopCreationViewModel @Inject constructor(
     }
 
     fun registerPhoneAndName(phone: String, name: String) {
-        viewModelScope.launch {
+        launch {
             try {
                 val data = registerUseCase(RegisterUseCase.generateParamRegisterPhoneShopCreation(name, phone))
                 val registerInfo = data.register

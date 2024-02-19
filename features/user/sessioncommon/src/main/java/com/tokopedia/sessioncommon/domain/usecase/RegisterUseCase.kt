@@ -7,7 +7,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.sessioncommon.data.register.InputRegisterGqlParam
-import com.tokopedia.sessioncommon.data.register.RegisterGqlParam
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import com.tokopedia.sessioncommon.data.register.ShopCreationRegisterGqlParam
 import com.tokopedia.sessioncommon.util.TokenGenerator
@@ -28,18 +27,6 @@ class RegisterUseCase @Inject constructor(
         private val OS_TYPE_ANDROID: String = "1"
         private val REG_TYPE_PHONE: String = "phone"
         private val ACCOUNTS_TYPE_SELLER_ONBOARDING: String = "SellerOnboarding"
-
-        fun generateParamRegisterPhone(name: String, phoneNumber: String, token: String):
-            InputRegisterGqlParam {
-            return InputRegisterGqlParam(
-                input = RegisterGqlParam(
-                    phone = phoneNumber,
-                    fullname = name,
-                    osType = OS_TYPE_ANDROID,
-                    regType = REG_TYPE_PHONE
-                )
-            )
-        }
 
         fun generateParamRegisterPhoneShopCreation(name: String, phoneNumber: String):
             InputRegisterGqlParam {
