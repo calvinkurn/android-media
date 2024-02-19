@@ -10,6 +10,7 @@ import com.bytedance.frameworks.baselib.network.http.cronet.impl.TTNetDetectInfo
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
@@ -40,7 +41,7 @@ object AppLogAnalytics {
 
     // TODO check how to make this null again
     @JvmField
-    var sourcePageType: String = ""
+    var sourcePageType: SourcePageType? = null
 
     // TODO check how to make this null again
     @JvmField
@@ -53,6 +54,10 @@ object AppLogAnalytics {
     // TODO check how to make this null again
     @JvmField
     var entranceForm: EntranceForm? = null
+
+    // TODO check how to make this null again
+    @JvmField
+    var sourceModule: SourceModule? = null
 
     private val lock = Any()
 
@@ -80,7 +85,7 @@ object AppLogAnalytics {
     }
 
     fun sendEnterPage(product: TrackProductDetail) {
-        if (sourcePageType == "") {
+        if (sourcePageType == null) {
             return
         }
         // TODO check if track id exist
@@ -170,8 +175,13 @@ object AppLogAnalytics {
     internal fun JSONObject.addPage() {
         put(PREVIOUS_PAGE, previousPageName())
         put(PAGE_NAME, currentPageName())
-        put(SOURCE_PAGE_TYPE, sourcePageType)
+        put(
+            SOURCE_PAGE_TYPE,
+            if(sourcePageType == SourcePageType.PRODUCT_CARD) currentPageName()
+            else sourcePageType?.str
+        )
         put(ENTRANCE_FORM, entranceForm)
+        put(SOURCE_MODULE, sourceModule)
     }
 
     private fun currentPageName(): String {
@@ -192,7 +202,7 @@ object AppLogAnalytics {
         product: TrackStayProductDetail,
         quitType: String
     ) {
-        if (sourcePageType == "") {
+        if (sourcePageType == null) {
             return
         }
         send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
