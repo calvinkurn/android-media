@@ -285,6 +285,10 @@ class DynamicProductDetailViewModel @Inject constructor(
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
     val impressionHolders = mutableListOf<String>()
+    /**
+     * for appLog stay-analytics to determine if the data is already loaded or not
+     * */
+    private var isLoadData: Boolean = false
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -515,8 +519,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             productType = p1.productType,
             originalPrice = p1.data.price.slashPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
-            isLoadData = false,
-            isSkuSelected = false,
+            isLoadData = isLoadData,
             isAddCartSelected = false // todo: TBD
         )
     }
@@ -830,6 +833,8 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
 
         this@DynamicProductDetailViewModel._p2Other.postValue(p2OtherDeferred.await())
+
+        isLoadData = true
     }
 
     private fun getTopAdsImageViewData(productID: String) {

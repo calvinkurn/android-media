@@ -32,7 +32,7 @@ data class TrackStayProductDetail(
     val originalPrice: String,
     val salePrice: String,
     val isLoadData: Boolean,
-    val isSkuSelected: Boolean,
+    val isSkuSelected: Boolean = true, // always selected in case of P1 flow
     val isAddCartSelected: Boolean,
 )
 
