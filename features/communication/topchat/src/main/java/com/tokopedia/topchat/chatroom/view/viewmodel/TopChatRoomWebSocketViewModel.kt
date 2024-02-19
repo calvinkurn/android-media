@@ -143,14 +143,14 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
     private fun Flow<TopChatRoomAction>.process() {
         onEach {
             when (it) {
-                is TopChatRoomAction.RefreshPage -> {
-                    refreshChatRoom()
+                is TopChatRoomAction.PageRefreshed -> {
+                    onPageRefreshed()
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun refreshChatRoom() {
+    private fun onPageRefreshed() {
         _chatRoomUiState.update {
             it.copy(isRefresh = false)
         }
@@ -330,10 +330,8 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
     }
 
     private fun onReceiveRefreshRoomEvent(chat: ChatSocketPojo) {
-        if (chat.msgId == roomMetaData.msgId) {
-            _chatRoomUiState.update {
-                it.copy(isRefresh = true)
-            }
+        _chatRoomUiState.update {
+            it.copy(isRefresh = true)
         }
     }
 

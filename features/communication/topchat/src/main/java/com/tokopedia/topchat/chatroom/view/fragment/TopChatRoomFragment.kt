@@ -3230,7 +3230,7 @@ open class TopChatRoomFragment :
             if (it.isRefresh) {
                 loadInitialData()
                 resetItemList()
-                webSocketViewModel.processAction(TopChatRoomAction.RefreshPage)
+                webSocketViewModel.processAction(TopChatRoomAction.PageRefreshed)
             }
         }
     }
