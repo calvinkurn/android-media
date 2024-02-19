@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
+import com.tokopedia.content.common.util.WindowWidthSizeClass
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.people.R
@@ -30,7 +31,6 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.PlayVideoAdapter
-import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.LOADING
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_CONTENT
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_EMPTY
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_ERROR
@@ -47,12 +47,13 @@ import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.common.util.calculateWindowSizeClass
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 
 class UserProfileVideoFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -62,7 +63,19 @@ class UserProfileVideoFragment @Inject constructor(
 ) : TkpdBaseV4Fragment() {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(activity, GRID_SPAN_COUNT)
+        GridLayoutManager(
+            activity,
+            spanCount,
+        )
+    }
+
+    private val spanCount by lazyThreadSafetyNone {
+        when(activity?.calculateWindowSizeClass()?.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 2
+            WindowWidthSizeClass.Medium -> 3
+            WindowWidthSizeClass.Expanded -> 4
+            else -> GRID_SPAN_COUNT
+        }
     }
 
     private var _binding: UpFragmentVideoBinding? = null
@@ -175,17 +188,6 @@ class UserProfileVideoFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
-        return object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return when (mAdapter.getItemViewType(position)) {
-                    LOADING -> LOADING_SPAN
-                    else -> DATA_SPAN
-                }
-            }
-        }
     }
 
     private fun initObserver() {
@@ -328,20 +330,18 @@ class UserProfileVideoFragment @Inject constructor(
     }
 
     private fun setupPlayVideo() {
-        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
-
         binding.rvPost.layoutManager = gridLayoutManager
         if (binding.rvPost.itemDecorationCount == 0) {
             val spacing =
-                requireContext().resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl1)
-            binding.rvPost.addItemDecoration(GridSpacingItemDecoration(2, spacing, false))
+                requireContext().resources.getDimensionPixelOffset(unifyprinciplesR.dimen.spacing_lvl1)
+            binding.rvPost.addItemDecoration(GridSpacingItemDecoration(gridLayoutManager.spanCount, spacing, false))
         }
         binding.rvPost.adapter = mAdapter
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when(mAdapter.getItem(position)) {
-                    is PlayVideoAdapter.Model.Loading -> LOADING_SPAN
+                    is PlayVideoAdapter.Model.Loading -> spanCount
                     else -> DATA_SPAN
                 }
             }

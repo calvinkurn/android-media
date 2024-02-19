@@ -1369,7 +1369,6 @@ class UserProfileFragment @Inject constructor(
         const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
         const val REQUEST_CODE_EDIT_PROFILE = 2423
 
-        const val LOADING = -94567
         const val PAGE_CONTENT = 0
         const val PAGE_ERROR = 2
         const val PAGE_LOADING = 1
