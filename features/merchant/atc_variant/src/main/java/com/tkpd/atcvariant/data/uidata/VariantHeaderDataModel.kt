@@ -5,19 +5,20 @@ import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_IMAGE_ONLY
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRICE_ONLY
 import com.tkpd.atcvariant.view.adapter.AtcVariantTypeFactory
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
+import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
 
 /**
  * Created by Yehezkiel on 06/05/21
  */
 data class VariantHeaderDataModel(
-        val position: Long = 0,
-        val productImage: String = "",
-        val productId: String = "",
-        val listOfVariantTitle: List<String> = listOf(),
-        val isTokoCabang: Boolean = false,
-        val uspImageUrl: String = "",
-        val cashBackPercentage: Int = 0,
-        val headerData: ProductHeaderData = ProductHeaderData()
+    val position: Long = 0,
+    val productImage: String = "",
+    val productId: String = "",
+    val listOfVariantTitle: List<String> = listOf(),
+    val isTokoCabang: Boolean = false,
+    val uspImageUrl: String = "",
+    val cashBackPercentage: Int = 0,
+    val headerData: ProductHeaderData = ProductHeaderData()
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position
 
@@ -60,15 +61,16 @@ data class VariantHeaderDataModel(
 }
 
 data class ProductHeaderData(
-        val productMainPrice: String = "",
-        val productDiscountedPercentage: String = "",
-        val isCampaignActive: Boolean = false,
-        val productSlashPrice: String = "",
-        val productStockFmt: String = "",
-        val hideGimmick: Boolean = false
+    val productMainPrice: String = "",
+    val productDiscountedPercentage: String = "",
+    val isCampaignActive: Boolean = false,
+    val productSlashPrice: String = "",
+    val productStockFmt: String = "",
+    val hideGimmick: Boolean = false,
+    val promoPrice: PromoPriceUiModel? = null
 ) {
 
     val shouldShowDiscPercentage
         get() = productDiscountedPercentage.isNotBlank() &&
-            !productDiscountedPercentage.startsWith("0") // ex: 0 or 0%
+                !productDiscountedPercentage.startsWith("0") // ex: 0 or 0%
 }

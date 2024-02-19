@@ -26,8 +26,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstBmsm
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -61,6 +61,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
@@ -111,10 +112,10 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoItem
-import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -1372,7 +1373,7 @@ class CheckoutFragment :
                     arrayListOf()
                 for ((_, productName) in addOnBottomSheetModel.products) {
                     for (item in orderProducts) {
-                        if (productName.equals(item.name, ignoreCase = true)) {
+                        if (item is CheckoutProductModel && productName.equals(item.name, ignoreCase = true)) {
                             val product = GiftingProduct()
                             product.cartId = item.cartId.toString()
                             product.productId = item.productId.toString()
@@ -1405,15 +1406,17 @@ class CheckoutFragment :
                 val listProduct =
                     arrayListOf<GiftingProduct>()
                 for (cartItemModel in orderProducts) {
-                    val product = GiftingProduct()
-                    product.cartId = cartItemModel.cartId.toString()
-                    product.productId = cartItemModel.productId.toString()
-                    product.productName = cartItemModel.name
-                    product.productPrice = cartItemModel.price.toLong()
-                    product.productQuantity = cartItemModel.quantity
-                    product.productImageUrl = cartItemModel.imageUrl
-                    product.productParentId = cartItemModel.variantParentId
-                    listProduct.add(product)
+                    if (cartItemModel is CheckoutProductModel) {
+                        val product = GiftingProduct()
+                        product.cartId = cartItemModel.cartId.toString()
+                        product.productId = cartItemModel.productId.toString()
+                        product.productName = cartItemModel.name
+                        product.productPrice = cartItemModel.price.toLong()
+                        product.productQuantity = cartItemModel.quantity
+                        product.productImageUrl = cartItemModel.imageUrl
+                        product.productParentId = cartItemModel.variantParentId
+                        listProduct.add(product)
+                    }
                 }
 
                 val addOnDataList = arrayListOf<AddOnData>()
@@ -2238,7 +2241,7 @@ class CheckoutFragment :
             shopId,
             userSessionInterface.userId
         )
-        RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
+        RouteManager.route(context, ApplinkConstBmsm.BMGM_MINI_CART_DETAIL)
     }
 
     private fun onTriggerEpharmacyTracker(showErrorToaster: Boolean) {
@@ -2750,5 +2753,18 @@ class CheckoutFragment :
 
     override fun onSendImpressionDropshipWidgetAnalytics() {
         checkoutAnalyticsCourierSelection.eventViewDropshipWidget()
+    }
+
+    override fun onViewGwpBenefit(benefit: CheckoutProductBenefitModel) {
+        if (!benefit.hasTriggerImpression) {
+            benefit.hasTriggerImpression = true
+            checkoutAnalyticsCourierSelection.eventImpressionGwp(
+                benefit.offerId,
+                benefit.sumOfCheckoutProductsQuantity,
+                benefit.sumOfBenefitProductsQuantity,
+                benefit.shopId,
+                userSessionInterface.userId
+            )
+        }
     }
 }

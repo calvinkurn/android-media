@@ -1,6 +1,5 @@
 package com.tokopedia.minicart.v2
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -79,7 +78,7 @@ class MiniCartV2Widget @JvmOverloads constructor(
     }
 
     private fun initializeInjector() {
-        val baseAppComponent = (context as? Activity)?.application
+        val baseAppComponent = context?.applicationContext
         if (baseAppComponent is BaseMainApplication) {
             DaggerMiniCartWidgetComponent.builder()
                 .baseAppComponent(baseAppComponent.baseAppComponent)
@@ -141,7 +140,10 @@ class MiniCartV2Widget @JvmOverloads constructor(
         if (viewModel != null) return
         val lifecycleOwner = findViewTreeLifecycleOwner() ?: return
         val viewModelStoreOwner = findViewTreeViewModelStoreOwner() ?: return
-        viewModel = ViewModelProvider(viewModelStoreOwner, viewModelFactory)[MiniCartV2ViewModel::class.java]
+        viewModel = ViewModelProvider(
+            viewModelStoreOwner,
+            viewModelFactory
+        )[MiniCartV2ViewModel::class.java]
         observeGlobalEvent(lifecycleOwner)
         observeMiniCartLoadingState(lifecycleOwner)
         observeMiniCartWidgetUiModel(lifecycleOwner)
@@ -597,6 +599,10 @@ class MiniCartV2Widget @JvmOverloads constructor(
 
     fun showLoading() {
         viewModel?.updateMiniCartLoadingState(true)
+    }
+
+    fun dismissLoading() {
+        viewModel?.updateMiniCartLoadingState(false)
     }
 
     companion object {

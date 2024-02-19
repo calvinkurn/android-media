@@ -11,13 +11,12 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.search.result.domain.model.UserProfileDobModel
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
-import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.UserProfileDobModel
 import com.tokopedia.search.result.domain.usecase.InspirationCarouselQuery.createSearchInspirationCarouselRequest
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
@@ -61,7 +60,7 @@ class SearchProductFirstPageGqlUseCase(
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
         val query = getQueryFromParameters(searchProductParams)
-        val params = UrlParamUtils.generateUrlParamString(searchProductParams)
+        val params = UrlParamUtils.generateUrlParamString(searchProductParams) + sreParams()
         val headlineAdsParams = createHeadlineParams(
             requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
             HEADLINE_ITEM_VALUE_FIRST_PAGE,
@@ -130,9 +129,9 @@ class SearchProductFirstPageGqlUseCase(
         )
 
     private fun MutableList<GraphqlRequest>.addInspirationCarouselRequest(requestParams: RequestParams, params: String) {
-        if (!requestParams.isSkipInspirationCarousel()) {
-            add(createSearchInspirationCarouselRequest(params = params))
-        }
+        if (requestParams.isSkipInspirationCarousel()) return
+
+        add(createSearchInspirationCarouselRequest(params = params))
     }
 
     private fun MutableList<GraphqlRequest>.addInspirationWidgetRequest(requestParams: RequestParams, params: String) {
@@ -191,8 +190,7 @@ class SearchProductFirstPageGqlUseCase(
                 )
                 emitter.onNext(topAdsImageViewModelList)
                 emitter.onCompleted()
-            }
-            catch (throwable: Throwable) {
+            } catch (throwable: Throwable) {
                 searchLogger.logTDNError(throwable)
                 emitter.onNext(listOf())
             }
@@ -236,7 +234,6 @@ class SearchProductFirstPageGqlUseCase(
             add(createUserProfileDobRequest())
     }
 
-
     override fun unsubscribe() {
         super.unsubscribe()
 
@@ -262,7 +259,9 @@ class SearchProductFirstPageGqlUseCase(
                             total_data
                             val_max
                             val_min
-                            hex_color
+                            hex_color 
+                            image_url_active
+                            image_url_inactive
                             child {
                                 key
                                 value

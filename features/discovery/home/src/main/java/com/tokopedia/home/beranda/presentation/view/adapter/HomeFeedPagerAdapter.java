@@ -12,7 +12,12 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
+import com.tokopedia.home.beranda.presentation.view.fragment.BaseRecommendationFragment;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,22 +26,25 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
 
     private final RecyclerView.RecycledViewPool parentPool;
     private final HomeCategoryListener homeCategoryListener;
-    private final SparseArrayCompat<HomeRecommendationFragment> registeredFragments = new SparseArrayCompat<>();
+    private final SparseArrayCompat<BaseRecommendationFragment> registeredFragments = new SparseArrayCompat<>();
     private final HomeEggListener homeEggListener;
     private final HomeTabFeedListener homeTabFeedListener;
     private final List<RecommendationTabDataModel> recommendationTabDataModelList = new ArrayList<>();
+    private boolean shouldUseGlobalForYouComponent = false;
 
     public HomeFeedPagerAdapter(HomeCategoryListener homeCategoryListener,
                                 HomeEggListener homeEggListener,
                                 HomeTabFeedListener homeTabFeedListener,
                                 FragmentManager fragmentManager,
                                 List<RecommendationTabDataModel> recommendationTabDataModelList,
-                                RecyclerView.RecycledViewPool parentPool) {
+                                RecyclerView.RecycledViewPool parentPool,
+                                RemoteConfig remoteConfig) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
         this.parentPool = parentPool;
         this.homeCategoryListener = homeCategoryListener;
+        fetchRemoteConfig(remoteConfig);
         updateData(recommendationTabDataModelList);
     }
 
@@ -47,26 +55,50 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
+    private void fetchRemoteConfig(RemoteConfig remoteConfig) {
+        shouldUseGlobalForYouComponent = remoteConfig
+                .getBoolean(RemoteConfigKey.HOME_GLOBAL_COMPONENT_FALLBACK, false);
+    }
+
     @Override
     public Fragment getItem(int position) {
-        HomeRecommendationFragment homeFeedFragment = HomeRecommendationFragment.Companion.newInstance(
-                position,
-                Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
-                recommendationTabDataModelList.get(position).getName(),
-                recommendationTabDataModelList.get(position).getSourceType()
-        );
-        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
-        homeFeedFragment.setParentPool(parentPool);
-        return homeFeedFragment;
+        if (shouldUseGlobalForYouComponent && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
+            HomeGlobalRecommendationFragment homeFeedFragment = HomeGlobalRecommendationFragment.Companion.newInstance(
+                    position,
+                    Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
+                    recommendationTabDataModelList.get(position).getName(),
+                    recommendationTabDataModelList.get(position).getSourceType()
+            );
+            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+            homeFeedFragment.setParentPool(parentPool);
+            return homeFeedFragment;
+        } else {
+            HomeRecommendationFragment homeFeedFragment = HomeRecommendationFragment.Companion.newInstance(
+                    position,
+                    Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
+                    recommendationTabDataModelList.get(position).getName(),
+                    recommendationTabDataModelList.get(position).getSourceType()
+            );
+            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+            homeFeedFragment.setParentPool(parentPool);
+            return homeFeedFragment;
+        }
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        HomeRecommendationFragment homeFeedFragment = (HomeRecommendationFragment) o;
-        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
-        homeFeedFragment.setParentPool(parentPool);
-        registeredFragments.put(position, homeFeedFragment);
+        if (shouldUseGlobalForYouComponent && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
+            HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
+            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+            homeFeedFragment.setParentPool(parentPool);
+            registeredFragments.put(position, homeFeedFragment);
+        } else {
+            HomeRecommendationFragment homeFeedFragment = (HomeRecommendationFragment) o;
+            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+            homeFeedFragment.setParentPool(parentPool);
+            registeredFragments.put(position, homeFeedFragment);
+        }
         return o;
     }
 
@@ -76,7 +108,7 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
         super.destroyItem(container, position, object);
     }
 
-    public HomeRecommendationFragment getRegisteredFragment(int position) {
+    public BaseRecommendationFragment getRegisteredFragment(int position) {
         return registeredFragments.get(position);
     }
 

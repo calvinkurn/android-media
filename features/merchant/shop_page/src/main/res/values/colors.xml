@@ -33,6 +33,28 @@
     <color name="dms_clr_AAB4C8_25">#40AAB4C8</color>
     <color name="dms_clr_2E2F36_70">#B32E2F36</color>
     <color name="dms_clr_NN_900_light">#2E3137</color>
+    <color name="dms_static_white">#ffffff</color>
+    <color name="dms_static_black">#000000</color>
+
+    
+    <color name="dms_static_light_NN0_dark">#121212</color>
+    <color name="dms_static_light_NN100">#E4EBF5</color>
+    <color name="dms_static_light_NN950_44">#70212121</color>
+    <color name="dms_static_light_NN950_68">#AD212121</color>
+    <color name="dms_static_light_YN400">#FFA617</color>
+    <color name="dms_static_light_NN950_32">#52212121</color>
+    <color name="dms_static_light_YN500">#FF7F17</color>
+    <color name="dms_static_light_YN300">#FFC400</color>
+    <color name="dms_static_light_NN950_96">#F5212121</color>
+    <color name="dms_static_light_RN500">#F94D63</color>
+    <color name="dms_static_light_RN100">#FFDBE2</color>
+    <color name="dms_static_light_GN500">#00AA5B</color>
+    <color name="dms_static_light_GN100">#C9FDE0</color>
+
+    <color name="dms_static_dark_NN950_96">#F5F5F6FF</color>
+    <color name="dms_static_dark_NN950_44">#70F5F6FF</color>
+    <color name="dms_static_dark_NN950_68">#ADF5F6FF</color>
+    <color name="dms_static_dark_RN500">#FF425D</color>
     
     <!--Shop Info Reimagine-->
     <color name="dms_clr_Unify_NN0_70_light">#B3121212</color>

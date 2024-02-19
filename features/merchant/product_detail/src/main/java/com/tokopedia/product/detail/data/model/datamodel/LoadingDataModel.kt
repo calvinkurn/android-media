@@ -8,6 +8,10 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class LoadingDataModel(
     override val impressHolder: ImpressHolder = ImpressHolder()
 ) : DynamicPdpDataModel {
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override fun type(): String = ProductDetailConstant.PDP_VERTICAL_LOADING
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)

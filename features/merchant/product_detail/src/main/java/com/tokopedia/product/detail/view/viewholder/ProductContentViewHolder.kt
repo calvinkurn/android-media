@@ -5,7 +5,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
-import com.tokopedia.product.detail.databinding.ItemProductContentBinding
 import com.tokopedia.product.detail.view.fragment.partialview.PartialContentView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
@@ -22,7 +21,7 @@ class ProductContentViewHolder(
     }
 
     private val binding = ItemDynamicProductContentBinding.bind(view)
-    private val header = PartialContentView(view, listener)
+    private val header = PartialContentView(binding, listener)
 
     override fun bind(element: ProductContentDataModel) {
         initializeClickListener(element)
@@ -36,11 +35,10 @@ class ProductContentViewHolder(
             ) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            header.renderData(it, element.isNpl(), element.freeOngkirImgUrl, element.shouldShowCampaign)
+            header.renderData(it, element.isNpl, element.freeOngkirImgUrl)
         }
 
         header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-        header.renderTradein(element.showTradeIn())
         header.updateUniversalShareWidget(element.shouldShowShareWidget)
     }
 
@@ -51,13 +49,15 @@ class ProductContentViewHolder(
         }
 
         when (payloads[0] as Int) {
-            ProductContentDataModel.PAYLOAD_WISHLIST -> header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-            ProductContentDataModel.PAYLOAD_TRADEIN_BOE_SHARE -> {
-                header.renderTradein(element.showTradeIn())
+            ProductContentDataModel.PAYLOAD_WISHLIST -> header.updateWishlist(
+                element.isWishlisted,
+                listener.shouldShowWishlist()
+            )
 
+            ProductContentDataModel.PAYLOAD_BOE_SHARE -> {
                 header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
                 // only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
-                header.renderFreeOngkir(element.freeOngkirImgUrl)
+                header.renderFreeOngkir(element.freeOngkirImgUrl, element.data?.isShowPrice == true)
 
                 header.updateUniversalShareWidget(element.shouldShowShareWidget)
             }
@@ -73,17 +73,16 @@ class ProductContentViewHolder(
     }
 
     private fun initializeClickListener(element: ProductContentDataModel?) = with(binding) {
-        val itemProductContent = ItemProductContentBinding.bind(binding.root)
         val content = element ?: return@with
-
-        itemProductContent.tradeinHeaderContainer.setOnClickListener {
-            listener.txtTradeinClicked(getComponentTrackData(content))
-        }
-
-        itemProductContent.fabDetailPdp.apply {
+        fabDetailPdp.apply {
             setOnClickListener {
                 listener.onFabWishlistClicked(activeState, getComponentTrackData(content))
             }
         }
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        header.onViewRecycled()
     }
 }

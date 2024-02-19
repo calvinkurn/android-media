@@ -3,6 +3,7 @@ package com.tokopedia.productcard.test.utils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Space
+import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
@@ -74,10 +75,15 @@ private class ProductCardInPositionMatcher(
         R.id.productCardFooterLayoutContainer,
         R.id.productCardCardUnifyContainer,
         R.id.productCardConstraintLayout,
-        productcardtestR.id.productCardReimagineTestContainer,
+        R.id.productCardPriceContainer,
+        R.id.productCardOverlayContainer,
         productcardtestR.id.productCardReimagineTestDescription,
         productcardtestR.id.productCardReimagineGridCarouselView,
         productcardtestR.id.productCardReimagineGridView,
+        productcardtestR.id.productCardReimagineListView,
+        productcardtestR.id.productCardTestDivider,
+        productcardtestR.id.productCardReimagineListCarouselView,
+        productcardtestR.id.productCardContainerHeightCalculator,
     )
 
     private fun ViewGroup.getUncheckedChildren(): List<View> {
@@ -89,7 +95,8 @@ private class ProductCardInPositionMatcher(
                     // These layouts will always be shown
                     || productCardComponent.id in alwaysShownComponentId
                     // Ignore spaces, barriers, and not visible view helpers
-                    || (productCardComponent is Space)
+                    || productCardComponent is Space
+                    || productCardComponent is Group
             }
         }
     }

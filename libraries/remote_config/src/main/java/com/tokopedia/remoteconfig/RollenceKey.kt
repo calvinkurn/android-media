@@ -24,12 +24,11 @@ object RollenceKey {
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
+    const val HOME_MEGATAB = "megatab_ff"
+    const val HOME_MISSION_SIZE_KEY = "mission_px"
+    const val HOME_MISSION_SIZE_CONTROL = "control_var"
+    const val HOME_MISSION_SIZE_VARIANT = "exp_var"
     // end of home rollence section
-
-    // navigation rollence section
-    const val ME_PAGE_EXP = "GlobalMenuRV"
-    const val ME_PAGE_VARIANT = "Varian1"
-    // end of navigation rollence section
 
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
@@ -131,16 +130,7 @@ object RollenceKey {
     const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2_is"
     const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_1_ac"
     const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_2_ac"
-    const val SEARCH_2_COMPONENT = "search_2_component"
-    const val SEARCH_2_COMPONENT_CONTROL = "control_variant"
-    const val SEARCH_2_COMPONENT_CAROUSEL_VAR = "ads_crsl_var"
-    const val SEARCH_2_COMPONENT_QF_VAR = "ads_crsl_qf_var"
-    const val SEARCH_3_PRODUCT_CARD = "search_3_pc"
-    const val SEARCH_3_PRODUCT_CARD_CONTROL = "control_variant"
-    const val SEARCH_3_PRODUCT_CARD_VAR_1A = "var_1a"
-    const val SEARCH_3_PRODUCT_CARD_VAR_1B = "var_1b"
-    const val SEARCH_3_PRODUCT_CARD_VAR_2A = "var_2a"
-    const val SEARCH_3_PRODUCT_CARD_VAR_2B = "var_2b"
+    const val PRODUCT_CARD_SRE_2024 = "productcard_sre2024"
 
     const val ANDROID_INTERNAL_TEST = "android_internal"
 }

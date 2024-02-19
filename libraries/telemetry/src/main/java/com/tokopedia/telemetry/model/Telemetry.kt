@@ -50,42 +50,81 @@ class TelemetrySection(
         val df = DecimalFormat("#.###")
         df.roundingMode = RoundingMode.HALF_UP
 
-        val mapAccList: Array<FloatArray> = Array(accelList.size) {
-            FloatArray(4)
-        }
-        accelList.onEachIndexed { index, coord ->
-            mapAccList[index][0] = coord.diff.toFloat()
-            mapAccList[index][1] = df.format(coord.x).toFloat()
-            mapAccList[index][2] = df.format(coord.y).toFloat()
-            mapAccList[index][3] = df.format(coord.z).toFloat()
-        }
-
-        val mapGyroList: Array<FloatArray> = Array(gyroList.size) {
-            FloatArray(4)
-        }
-        gyroList.onEachIndexed { index, coord ->
-            mapGyroList[index][0] = coord.diff.toFloat()
-            mapGyroList[index][1] = df.format(coord.x).toFloat()
-            mapGyroList[index][2] = df.format(coord.y).toFloat()
-            mapGyroList[index][3] = df.format(coord.z).toFloat()
-        }
-
-        val mapTypeList: Array<IntArray> = Array(typingList.size) {
-            IntArray(2)
-        }
-        typingList.onEachIndexed { index, typing ->
-            mapTypeList[index][0] = typing.diff
-            mapTypeList[index][1] = typing.diffCount
+        val mapAccList: Array<FloatArray> = try {
+            if (accelList.size > 0) {
+                Array(accelList.size) {
+                    FloatArray(4)
+                }.also {
+                    accelList.onEachIndexed { index, coord ->
+                        it[index][0] = coord.diff.toFloat()
+                        it[index][1] = df.format(coord.x).toFloat()
+                        it[index][2] = df.format(coord.y).toFloat()
+                        it[index][3] = df.format(coord.z).toFloat()
+                    }
+                }
+            } else {
+                emptyArray()
+            }
+        } catch (e: Exception) {
+            emptyArray()
         }
 
-        val mapTouchList: Array<FloatArray> = Array(touchList.size) {
-            FloatArray(4)
+
+        val mapGyroList: Array<FloatArray> = try {
+            if (gyroList.size == 0) {
+                emptyArray()
+            } else {
+                Array(gyroList.size) {
+                    FloatArray(4)
+                }.also {
+                    gyroList.onEachIndexed { index, coord ->
+                        it[index][0] = coord.diff.toFloat()
+                        it[index][1] = df.format(coord.x).toFloat()
+                        it[index][2] = df.format(coord.y).toFloat()
+                        it[index][3] = df.format(coord.z).toFloat()
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            emptyArray()
         }
-        touchList.onEachIndexed { index, touch ->
-            mapTouchList[index][0] = touch.diff.toFloat()
-            mapTouchList[index][1] = df.format(touch.x).toFloat()
-            mapTouchList[index][2] = df.format(touch.y).toFloat()
-            mapTouchList[index][3] = touch.pressure
+
+
+        val mapTypeList: Array<IntArray> = try {
+            if (typingList.size == 0) {
+                emptyArray()
+            } else {
+                Array(typingList.size) {
+                    IntArray(2)
+                }.also {
+                    typingList.onEachIndexed { index, typing ->
+                        it[index][0] = typing.diff
+                        it[index][1] = typing.diffCount
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            emptyArray()
+        }
+
+
+        val mapTouchList: Array<FloatArray> = try {
+            if (touchList.size == 0) {
+                emptyArray()
+            } else {
+                Array(touchList.size) {
+                    FloatArray(4)
+                }.also {
+                    touchList.onEachIndexed { index, touch ->
+                        it[index][0] = touch.diff.toFloat()
+                        it[index][1] = df.format(touch.x).toFloat()
+                        it[index][2] = df.format(touch.y).toFloat()
+                        it[index][3] = touch.pressure
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            emptyArray()
         }
         val telemetryRaw = TelemetryRaw(
             startTime = this.startTime,
@@ -145,6 +184,13 @@ object Telemetry {
             ""
         } else {
             telemetrySectionList[0].eventName
+        }
+    }
+
+    @JvmStatic
+    fun removeTelemetry(telemetry: TelemetrySection) {
+        synchronized(lock) {
+            telemetrySectionList.remove(telemetry)
         }
     }
 
