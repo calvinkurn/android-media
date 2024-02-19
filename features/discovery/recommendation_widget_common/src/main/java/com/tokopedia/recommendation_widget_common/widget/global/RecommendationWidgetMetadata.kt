@@ -1,5 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam.Companion.X_SOURCE_DEFAULT_VALUE
+
 data class RecommendationWidgetMetadata(
     val pageSource: String = "",
     val pageType: String = "",
@@ -13,4 +15,5 @@ data class RecommendationWidgetMetadata(
     val device: String = "",
     val isTokonow: Boolean = false,
     val criteriaThematicIDs: List<String> = listOf(),
+    val xSource: String = X_SOURCE_DEFAULT_VALUE
 )
