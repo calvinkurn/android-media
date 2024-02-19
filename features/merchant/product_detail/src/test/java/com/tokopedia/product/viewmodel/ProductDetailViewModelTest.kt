@@ -28,7 +28,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Stock
@@ -51,8 +51,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofD
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
@@ -102,12 +102,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import rx.Observable
 
 @ExperimentalCoroutinesApi
-open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
+open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //region variable
     @Test
@@ -156,13 +155,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `update variable p1 with null`() {
         viewModel.updateDynamicProductInfoData(null)
-        Assert.assertNull(viewModel.getDynamicProductInfoP1)
+        Assert.assertNull(viewModel.getProductInfoP1)
     }
 
     @Test
     fun `on success update talk action`() {
-        viewModel.updateLastAction(DynamicProductDetailTalkGoToWriteDiscussion)
-        assertTrue(viewModel.talkLastAction is DynamicProductDetailTalkGoToWriteDiscussion)
+        viewModel.updateLastAction(ProductDetailTalkGoToWriteDiscussion)
+        assertTrue(viewModel.talkLastAction is ProductDetailTalkGoToWriteDiscussion)
     }
 
     @Test
@@ -219,8 +218,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `is shop owner true`() {
         val shopId = "123"
-        val getDynamicProductInfo = DynamicProductInfoP1(BasicInfo(shopID = shopId))
-        viewModel.getDynamicProductInfoP1 = getDynamicProductInfo
+        val getDynamicProductInfo = ProductInfoP1(BasicInfo(shopID = shopId))
+        viewModel.getProductInfoP1 = getDynamicProductInfo
 
         every {
             userSessionInterface.shopId
@@ -233,14 +232,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val isShopOwner = viewModel.isShopOwner()
 
         assertTrue(isShopOwner)
-        viewModel.getDynamicProductInfoP1 = null
+        viewModel.getProductInfoP1 = null
     }
 
     @Test
     fun `is shop owner false`() {
         val anotherShopId = "312"
-        val getDynamicProductInfo = DynamicProductInfoP1(BasicInfo(shopID = "123"))
-        viewModel.getDynamicProductInfoP1 = getDynamicProductInfo
+        val getDynamicProductInfo = ProductInfoP1(BasicInfo(shopID = "123"))
+        viewModel.getProductInfoP1 = getDynamicProductInfo
 
         every {
             userSessionInterface.shopId
@@ -253,7 +252,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val isShopOwner = viewModel.isShopOwner()
 
         assertFalse(isShopOwner)
-        viewModel.getDynamicProductInfoP1 = null
+        viewModel.getProductInfoP1 = null
     }
     //endregion
 
@@ -324,8 +323,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     //region getCartTypeByProductId
     @Test
     fun `get cart type by product id when data not null`() {
-        spykViewModel.getDynamicProductInfoP1 =
-            DynamicProductInfoP1(basic = BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 =
+            ProductInfoP1(basic = BasicInfo(productID = "123"))
         every {
             spykViewModel.p2Data.value?.cartRedirection
         } returns mapOf("123" to CartTypeData())
@@ -337,7 +336,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `get cart type by product id when data null`() {
-        spykViewModel.getDynamicProductInfoP1 = null
+        spykViewModel.getProductInfoP1 = null
         every {
             spykViewModel.p2Data.value?.cartRedirection
         } returns mapOf("321" to CartTypeData())
@@ -349,9 +348,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success update variable p1`() {
-        viewModel.updateDynamicProductInfoData(DynamicProductInfoP1())
+        viewModel.updateDynamicProductInfoData(ProductInfoP1())
 
-        Assert.assertNotNull(viewModel.getDynamicProductInfoP1)
+        Assert.assertNotNull(viewModel.getProductInfoP1)
     }
     // endregion
 
@@ -367,7 +366,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `hide floating button is false when p1 error`() = with(spykViewModel) {
-        getDynamicProductInfoP1 = null
+        getProductInfoP1 = null
         every { isShopOwner() } returns false
         every { p2Data.value } returns ProductInfoP2UiData()
         assertFalse(shouldHideFloatingButton())
@@ -375,7 +374,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `hide floating button is false when get pid in cartRedirection is error`() = with(spykViewModel) {
-        getDynamicProductInfoP1 = DynamicProductInfoP1(basic = BasicInfo(productID = "123"))
+        getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = "123"))
         every { isShopOwner() } returns false
         every { p2Data.value } returns ProductInfoP2UiData()
 
@@ -386,7 +385,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `hide floating button is false when shouldHideFloatingButtonInPdp return false`() = with(spykViewModel) {
         val pid = "123"
         val oneOverrideButton = listOf(AvailableButton())
-        getDynamicProductInfoP1 = DynamicProductInfoP1(basic = BasicInfo(productID = pid))
+        getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = pid))
 
         every { isShopOwner() } returns false
         // owner false, hide false, override empty
@@ -442,7 +441,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `hide floating button is true`() = with(spykViewModel) {
         val pid = "123"
-        getDynamicProductInfoP1 = DynamicProductInfoP1(basic = BasicInfo(productID = pid))
+        getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = pid))
         every { isShopOwner() } returns false
         every { p2Data.value } returns ProductInfoP2UiData(
             cartRedirection = mapOf(pid to CartTypeData(hideFloatingButton = true))
@@ -455,7 +454,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `get multi origin but p1 & p2 data not null`() {
         val expected = WarehouseInfo(id = "1")
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(basic = BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(basic = BasicInfo(productID = "123"))
         every { spykViewModel.p2Data.value } returns ProductInfoP2UiData(
             nearestWarehouseInfo = mapOf("123" to expected)
         )
@@ -465,14 +464,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `get multi origin but p1 data is null`() {
-        spykViewModel.getDynamicProductInfoP1 = null
+        spykViewModel.getProductInfoP1 = null
         val data = viewModel.getMultiOriginByProductId()
         assertTrue(data.id.isBlank())
     }
 
     @Test
     fun `get multi origin but p2 data not null`() {
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        spykViewModel.getProductInfoP1 = ProductInfoP1()
         every { spykViewModel.p2Data.value } returns null
 
         val data = spykViewModel.getMultiOriginByProductId()
@@ -482,7 +481,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `get multi origin but warehouse id unavailable`() {
         val expected = WarehouseInfo(id = "1")
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        spykViewModel.getProductInfoP1 = ProductInfoP1()
         every { spykViewModel.p2Data.value } returns ProductInfoP2UiData(
             nearestWarehouseInfo = mapOf("123" to expected)
         )
@@ -494,7 +493,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     //region getP2RatesEstimateByProductId
     @Test
     fun `get rates with success result`() {
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         every {
             spykViewModel.p2Data.value
         } returns ProductInfoP2UiData(
@@ -513,7 +512,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `get rates with null result`() {
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         every {
             spykViewModel.p2Data.value
         } returns ProductInfoP2UiData(
@@ -532,10 +531,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `getP2RatesEstimateByProductId resolved jacoco`() {
-        spykViewModel.getDynamicProductInfoP1 = null
+        spykViewModel.getProductInfoP1 = null
         Assert.assertNull(spykViewModel.getP2RatesEstimateDataByProductId())
 
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         every { spykViewModel.p2Data.value } returns null
         Assert.assertNull(spykViewModel.getP2RatesEstimateDataByProductId())
     }
@@ -544,7 +543,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     //region getP2ShipmentPlusByProductId
     @Test
     fun `get shipment plus by product id should return non-null when exist`() {
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         every {
             spykViewModel.p2Data.value
         } returns ProductInfoP2UiData(
@@ -562,7 +561,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `get shipment plus by product id should return null when not exist`() {
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         every {
             spykViewModel.p2Data.value
         } returns ProductInfoP2UiData(
@@ -582,7 +581,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     //region getP2RatesBottomSheetData
     @Test
     fun `get bottom sheet rates error with success result`() {
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         every {
             spykViewModel.p2Data.value
         } returns ProductInfoP2UiData(
@@ -601,7 +600,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `get bottom sheet rates error with null result`() {
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         every {
             spykViewModel.p2Data.value
         } returns ProductInfoP2UiData(
@@ -622,7 +621,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     //region getBebasOngkirDataByProductId
     @Test
     fun `get bebas ongkir data with success result`() {
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         val imageUrl = "gambar boe gan"
         val boType = 1
         every {
@@ -639,7 +638,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `get bebas ongkir data with null result`() {
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         val imageUrl = "gambar boe gan"
         val boType = 1
         every {
@@ -657,13 +656,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `getBebasOngkirDataByProductId resolved jacoco`() {
         // p1 is null
-        spykViewModel.getDynamicProductInfoP1 = null
+        spykViewModel.getProductInfoP1 = null
         var data = spykViewModel.getBebasOngkirDataByProductId()
         assertTrue(data.imageURL.isEmpty())
         assertTrue(data.boType == 0)
 
         // basic info is null
-        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        spykViewModel.getProductInfoP1 = ProductInfoP1(BasicInfo(productID = "123"))
         every { spykViewModel.p2Data.value } returns null
         data = spykViewModel.getBebasOngkirDataByProductId()
         assertTrue(data.imageURL.isEmpty())
@@ -1862,7 +1861,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val isVariant = true
         val stock = 10
 
-        val mockProductInfoP1 = DynamicProductInfoP1(
+        val mockProductInfoP1 = ProductInfoP1(
             basic = BasicInfo(
                 shopID = shopId,
                 productID = productId,
@@ -1923,7 +1922,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val isVariant = true
         val stock = 10
 
-        val mockProductInfoP1 = DynamicProductInfoP1(
+        val mockProductInfoP1 = ProductInfoP1(
             basic = BasicInfo(
                 shopID = shopId,
                 productID = productId,
@@ -2384,32 +2383,32 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `verify isWithList in getDynamicProductInfoP1 is true after add wishlist`() {
-        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        viewModel.getProductInfoP1 = ProductInfoP1()
         `verify add to wishlistv2 returns success`()
-        assertTrue(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orFalse())
+        assertTrue(viewModel.getProductInfoP1?.data?.isWishlist.orFalse())
     }
 
     @Test
     fun `verify wishlist value from p1 replace with previous value`() {
-        viewModel.getDynamicProductInfoP1 = null
+        viewModel.getProductInfoP1 = null
         `on success get product info non login`()
-        assertFalse(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orTrue())
+        assertFalse(viewModel.getProductInfoP1?.data?.isWishlist.orTrue())
 
-        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        viewModel.getProductInfoP1 = ProductInfoP1()
         `on success get product info non login`()
-        assertFalse(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orTrue())
+        assertFalse(viewModel.getProductInfoP1?.data?.isWishlist.orTrue())
 
-        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(
+        viewModel.getProductInfoP1 = ProductInfoP1(
             data = ComponentData(isWishlist = true)
         )
         `on success get product info non login`()
-        assertTrue(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orFalse())
+        assertTrue(viewModel.getProductInfoP1?.data?.isWishlist.orFalse())
 
-        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(
+        viewModel.getProductInfoP1 = ProductInfoP1(
             data = ComponentData(isWishlist = false)
         )
         `on success get product info non login`()
-        assertFalse(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orTrue())
+        assertFalse(viewModel.getProductInfoP1?.data?.isWishlist.orTrue())
     }
 
     @Test
@@ -2849,11 +2848,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `success get product detail data via mediator`() {
         val p2Expected = ProductInfoP2UiData()
-        val p1Expected = DynamicProductInfoP1()
+        val p1Expected = ProductInfoP1()
         val variantExpected = ProductVariant()
 
         every { spykViewModel.p2Data.value } returns p2Expected
-        spykViewModel.getDynamicProductInfoP1 = p1Expected
+        spykViewModel.getProductInfoP1 = p1Expected
         spykViewModel.variantData = variantExpected
 
         Assert.assertNotNull(spykViewModel.getP2())
