@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductMapper
 import com.tokopedia.shopdiscount.manage.data.mapper.UpdateDiscountRequestMapper
@@ -239,7 +240,7 @@ class DiscountedProductListViewModel @Inject constructor(
             val productDetailData = getProductDetailData(listProductId, status, true)
             val responseHeader = productDetailData.responseHeader
             if (!responseHeader.success) {
-                _manageProductSubsidyUiModelLiveData.postValue(Fail(Exception(responseHeader.errorMessages.firstOrNull().orEmpty())))
+                _manageProductSubsidyUiModelLiveData.postValue(Fail(MessageErrorException(responseHeader.errorMessages.firstOrNull().orEmpty())))
             } else {
                 val listProductDetailUiModel =
                     ShopDiscountProductDetailMapper.mapToShopDiscountProductDetailUiModel(

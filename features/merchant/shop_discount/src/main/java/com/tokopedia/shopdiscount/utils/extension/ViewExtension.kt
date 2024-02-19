@@ -12,7 +12,12 @@ import com.tokopedia.unifycomponents.Toaster
 
 infix fun View?.showError(throwable : Throwable) {
     val errorMessage = ErrorHandler.getErrorMessage(this?.context, throwable)
-    Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+    val cleanErrorMessage = try {
+        errorMessage.replace("\\.{2,}".toRegex(), ".")
+    } catch (e: Exception) {
+        errorMessage
+    }
+    Toaster.build(this ?: return, cleanErrorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
 }
 
 infix fun View?.showError(errorMessage : String) {
