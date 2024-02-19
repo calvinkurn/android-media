@@ -47,8 +47,7 @@ class ProductRecomWidgetViewHolder(
                     ),
                     adapterPosition = adapterPosition,
                     basicListener = this,
-                    tokonowListener = this,
-                    forceUseOldProductCard = true
+                    tokonowListener = this
                 )
             }
         }

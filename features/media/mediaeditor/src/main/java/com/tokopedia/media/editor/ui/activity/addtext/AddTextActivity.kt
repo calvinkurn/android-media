@@ -36,8 +36,6 @@ class AddTextActivity : BaseEditorActivity() {
     override fun initViewModel() {}
 
     override fun initBundle(savedInstanceState: Bundle?) {
-        setHeader(HEADER_TITLE, HEADER_ACTION)
-
         intent.getParcelableExtra<EditorDetailUiModel>(ADD_TEXT_PARAM)?.apply {
             this.resultUrl?.let { viewModel.setImageUrl(it) }
             this.addTextValue?.let { viewModel.textData = it }
@@ -45,12 +43,16 @@ class AddTextActivity : BaseEditorActivity() {
 
         intent.getIntExtra(ADD_TEXT_MODE, -1).apply {
             viewModel.setPageMode(this)
+            var headerTitle = HEADER_TITLE_ADD_TEXT
 
             if (this == TEXT_MODE) {
                 initObserverInput()
             } else {
+                headerTitle = HEADER_TITLE_MOVE_POSITION
                 hideHeaderAction()
             }
+
+            setHeader(headerTitle, HEADER_ACTION)
         }
     }
 
@@ -114,7 +116,8 @@ class AddTextActivity : BaseEditorActivity() {
 
         const val ADD_TEXT_REQUEST_CODE = 389
 
-        private const val HEADER_TITLE = "Tambah teks"
+        private const val HEADER_TITLE_ADD_TEXT = "Tambah Teks"
+        private const val HEADER_TITLE_MOVE_POSITION = "Ubah Posisi Teks"
         private const val HEADER_ACTION = "Simpan"
 
         const val TEXT_MODE = 0

@@ -360,6 +360,11 @@ internal class ListViewStrategy(
     private fun forceLightModeColor() {
         val context = context ?: return
 
+        cardViewProductCard?.cardBorderColor = ContextCompat.getColor(
+            context,
+            R.color.dms_static_white
+        )
+        cardViewProductCard?.cardType = CardUnify2.TYPE_BORDER_FROM_SHADOW
         cardViewProductCard?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_white))
         productName?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
         productPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
