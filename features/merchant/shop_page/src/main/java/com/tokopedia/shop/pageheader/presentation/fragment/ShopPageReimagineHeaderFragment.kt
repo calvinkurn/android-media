@@ -422,7 +422,6 @@ class ShopPageReimagineHeaderFragment :
     private var queryParamTab: String = ""
     private var shopPageHeaderP1Data: ShopPageHeaderP1HeaderData? = null
     private var isAlreadyGetShopPageP2Data: Boolean = false
-//    private var performanceMonitoringShopPrefetch: PerformanceMonitoring? = null
 
     private val storiesManager by storiesManager(StoriesEntryPoint.ShopPageReimagined) {
         setAnimationStrategy(OneTimeAnimationStrategy())
@@ -1257,7 +1256,6 @@ class ShopPageReimagineHeaderFragment :
             initViews(view)
 
             // Handle Shop Page Prefetch Data
-            // performanceMonitoringShopPrefetch = PerformanceMonitoring.start(ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1)
             startTraceMonitoring(ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1)
             handlePrefetchData()
         }
@@ -1314,9 +1312,6 @@ class ShopPageReimagineHeaderFragment :
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         tabLayout?.removeAllTabs()
         viewPagerAdapterHeader?.notifyDataSetChanged()
-
-//        performanceMonitoringShopPrefetch?.stopTrace()
-//        performanceMonitoringShopPrefetch = null
     }
 
     private fun getPrefetchData(): ShopPrefetchData? {
