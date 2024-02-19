@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.util.analytics.model
+package com.tokopedia.promousage.analytics.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

@@ -106,6 +106,16 @@ class LabelBenefitView: FrameLayout {
         invalidate()
     }
 
+    fun setCutoutFillColor(fillColor: String) {
+        circleCutoutFillPaint?.color = safeParseColor(fillColor, Color.TRANSPARENT)
+        invalidate()
+    }
+    
+    fun setCutoutFillColor(colorResId: Int) {
+        circleCutoutFillPaint?.color = ContextCompat.getColor(context, colorResId)
+        invalidate()
+    }
+    
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 

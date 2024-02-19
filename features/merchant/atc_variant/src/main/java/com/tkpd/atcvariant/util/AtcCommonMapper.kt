@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
+import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoPriceUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -381,7 +382,8 @@ object AtcCommonMapper {
             isCampaignActive = isCampaignActive,
             productSlashPrice = price.slashPriceFmt,
             productStockFmt = selectedChild?.stock?.stockFmt ?: "",
-            hideGimmick = selectedChild?.campaign?.hideGimmick.orFalse()
+            hideGimmick = selectedChild?.campaign?.hideGimmick.orFalse(),
+            promoPrice = selectedChild?.promoPrice?.mapIntoPromoPriceUiModel(price.slashPriceFmt)
         )
         return productImage to headerData
     }
