@@ -560,26 +560,11 @@ class CartViewModel @Inject constructor(
         CartIdlingResource.decrement()
     }
 
-    /*fun processUpdateCartCounter() {
-        compositeSubscription.add(
-            updateCartCounterUseCase.createObservable(RequestParams.create())
-                .subscribeOn(schedulers.io)
-                .unsubscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribe {
-                    _globalEvent.value = CartGlobalEvent.CartCounterUpdated(it)
-                }
-        )
-    }*/
-
     fun processUpdateCartCounter() {
         launchCatchError(block = {
             val result = updateCartCounterUseCase(Unit)
-            println("++ result = $result")
             _globalEvent.value = CartGlobalEvent.CartCounterUpdated(result)
-        }, onError = {
-                println("++ Throwable = ${it.message}")
-            })
+        }, onError = {})
     }
 
     fun getAllPromosApplied(lastApplyPromoData: LastApplyPromoData): List<String> {
