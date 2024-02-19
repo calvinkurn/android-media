@@ -26,15 +26,11 @@ class HomeClaimCouponUseCase @Inject constructor(
             ClaimCouponUiModel(
                 isRedeemSucceed = response.hachikoRedeem != null,
                 redirectUrl = jsonMetaData.url,
-                redirectAppLink = jsonMetaData.appLink,
-                errorException = null
+                redirectAppLink = jsonMetaData.appLink
             )
         } catch (t: MessageErrorException) {
             ClaimCouponUiModel(
-                isRedeemSucceed = false,
-                redirectUrl = "",
-                redirectAppLink = "",
-                errorException = null
+                errorException = t
             )
         }
     }
@@ -47,6 +43,7 @@ class HomeClaimCouponUseCase @Inject constructor(
                 ctaList {
                   url
                   applink
+                  jsonMetadata
                 }
               }
             }
