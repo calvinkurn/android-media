@@ -69,8 +69,7 @@ data class GetRecommendationRequestParam(
 
     private fun getProductCardReimagineVersion(): Int {
         val shouldReimagineEnabled = ProductCardExperiment.isReimagine()
-        val isQuantityEditor = pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)
-        return if (shouldReimagineEnabled && hasNewProductCardEnabled && isQuantityEditor.not()) {
+        return if (shouldReimagineEnabled && hasNewProductCardEnabled) {
             CARD_REIMAGINE_VERSION
         } else {
             CARD_REVERT_VERSION

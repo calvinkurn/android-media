@@ -11,9 +11,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.CategoryCarousel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.view.adapter.ProductCategoryCarouselAdapter
-import com.tokopedia.product.detail.view.fragment.partialview.PartialContentView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 
 /**

@@ -163,10 +163,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoItem
-import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.util.logger.PromoErrorException
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
@@ -1416,12 +1416,22 @@ class CartRevampFragment :
         )
         if (index >= 0) {
             val shopHeaderData = groupData.first()
+            var productSize = 0
             if (shopHeaderData is CartGroupHolderData) {
                 checkCartShopGroupTicker(shopHeaderData)
+                productSize = shopHeaderData.productUiModelList.size
                 onNeedToUpdateViewItem(index)
             }
-            onNeedToUpdateViewItem(itemPosition)
+            if (shouldUpdateAllProducts()) {
+                onNeedToUpdateMultipleViewItem(index + 1, productSize)
+            } else {
+                onNeedToUpdateViewItem(itemPosition)
+            }
         }
+    }
+
+    private fun shouldUpdateAllProducts(): Boolean {
+        return true
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
