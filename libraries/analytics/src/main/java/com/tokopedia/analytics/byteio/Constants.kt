@@ -106,13 +106,21 @@ object QuitType {
 
 
 enum class EntranceForm(val str: String) {
+    SEARCH_PURE_GOODS_CARD("search_pure_goods_card"),
+    SEARCH_VIDEO_GOODS_CARD("search_video_goods_card"),
+    SEARCH_SHOP_CARD_BIG("search_shop_card_big"),
+    SEARCH_SHOP_CARD_SMALL("search_shop_card_small"),
+    SEARCH_HORIZONTAL_GOODS_CARD("search_horizontal_goods_card"),
+    PURE_GOODS_CARD("pure_goods_card"),
+    DETAIL_GOODS_CARD("detail_goods_card"),
     HORIZONTAL_GOODS_CARD("horizontal_goods_card"),
-    GRID_GOODS_CARD("grid_goods_card")
+    APPEND_GOODS_CARD("append_goods_card"),
 }
 
 enum class SourcePageType(val str: String) {
-    HOME_FOR_YOU("mainPage_foryou"),
-    TESTAPP_SOURCE("testapp_source")
+    VIDEO("video"),
+    LIVE("live"),
+    PRODUCT_CARD("")
 }
 
 object EventName {
@@ -139,5 +147,9 @@ object AppLogParam {
     const val IS_USE_CACHE = "is_use_cache"
     const val REQUEST_ID = "request_id"
     const val SHOP_ID = "shop_id"
+    const val PREVIOUS_PAGE = "previous_page"
+    const val SOURCE_PAGE_TYPE = "source_page_type"
+    const val ENTRANCE_FORM = "entrance_form"
+    const val ENTER_FROM = "enter_from"
     const val ITEM_ORDER = "item_order"
 }
