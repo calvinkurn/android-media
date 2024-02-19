@@ -29,7 +29,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.InflateException;
@@ -133,7 +132,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
     private static final String GOFOOD_LINK = "https://gofood.link/";
-    private static final String OTP_VERIFICATION_PREFIX = "/otp-verification";
+    private static final String PAYLATER_OTP_VERIF_LINK = "paylater/acquisition/otp-verification";
     private static final String OTP_CODE = "otpCode";
     private static final String URL_PARAM = "?url=";
     private static final String OPEN_CONTACT_PICKER_APPLINK = "tokopedia://open-contact-picker";
@@ -751,7 +750,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (activityInstance instanceof BaseSimpleWebViewActivity) {
                 ((BaseSimpleWebViewActivity) activityInstance).updateToolbarVisibility(url);
             }
-            if (url.contains(OTP_VERIFICATION_PREFIX) && !url.contains(OTP_CODE)) {
+            if (url.contains(PAYLATER_OTP_VERIF_LINK) && !url.contains(OTP_CODE)) {
                 startSmsListener();
             } else {
                 if (getActivity() != null && isSmsRegistered) {
@@ -894,7 +893,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     if (getActivity() == null) return;
                     smsBroadcastReceiver.register(getActivity(), otpCode -> {
                         String currentUrl = webView.getUrl();
-                        if (currentUrl != null && currentUrl.contains(OTP_VERIFICATION_PREFIX)) {
+                        if (currentUrl != null && currentUrl.contains(PAYLATER_OTP_VERIF_LINK)) {
                             String newUrl = Uri.parse(currentUrl).buildUpon()
                                     .appendQueryParameter(OTP_CODE, otpCode).build().toString();
 
