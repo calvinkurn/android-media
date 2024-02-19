@@ -339,7 +339,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     if (index == position) {
                         reviewContentUiModel.copy(isScrolling = isScrolling)
                     } else {
-                        reviewContentUiModel
+                        reviewContentUiModel.copy(isScrolling = false)
                     }
                 }
             )
