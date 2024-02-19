@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.LayoutInflater
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
+import com.tokopedia.checkoutpayment.view.bottomsheet.PaymentFeeInfoBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -271,7 +272,7 @@ class OrderPriceSummaryBottomSheet {
             if (orderPaymentFee.showTooltip) {
                 imgPaymentFeeInfo.visible()
                 imgPaymentFeeInfo.setOnClickListener {
-                    TransactionFeeInfoBottomSheet().show(view, orderPaymentFee)
+                    PaymentFeeInfoBottomSheet().show(view, orderPaymentFee)
                 }
             } else {
                 imgPaymentFeeInfo.gone()

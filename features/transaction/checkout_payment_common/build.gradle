@@ -19,6 +19,7 @@ android {
     testNamespace 'com.tokopedia.checkoutpayment.test'
 
     buildFeatures {
+        viewBinding true
         compose true
     }
 
@@ -47,6 +48,7 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeConstraint
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.nestComponents
 
     implementation rootProject.ext.miscDependencies.coroutineCore
