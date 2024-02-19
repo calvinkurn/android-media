@@ -1914,8 +1914,8 @@ open class HomeRevampFragment :
         }
     }
 
-    override fun onCouponWidgetClaim(oldWidgetData: CouponWidgetDataModel, catalogId: String, couponPosition: Int) {
-        getHomeViewModel().onCouponClaim(oldWidgetData, catalogId, couponPosition)
+    override fun onCouponWidgetClaim(data: CouponWidgetDataModel, catalogId: String, couponPosition: Int) {
+        getHomeViewModel().onCouponClaim(data, catalogId, couponPosition)
     }
 
     override fun onChooseAddressServerDown() {

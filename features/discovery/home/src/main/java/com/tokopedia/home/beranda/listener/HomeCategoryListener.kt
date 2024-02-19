@@ -140,5 +140,5 @@ interface HomeCategoryListener {
 
     fun onLoginWidgetClick()
 
-    fun onCouponWidgetClaim(oldWidgetData: CouponWidgetDataModel, catalogId: String, couponPosition: Int)
+    fun onCouponWidgetClaim(data: CouponWidgetDataModel, catalogId: String, couponPosition: Int)
 }

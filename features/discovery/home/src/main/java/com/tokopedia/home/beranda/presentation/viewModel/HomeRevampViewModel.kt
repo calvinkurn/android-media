@@ -948,7 +948,7 @@ open class HomeRevampViewModel @Inject constructor(
         )
     }
 
-    fun onCouponClaim(oldWidgetData: CouponWidgetDataModel, catalogId: String, couponPosition: Int) {
+    fun onCouponClaim(data: CouponWidgetDataModel, catalogId: String, couponPosition: Int) {
         launch {
             val result = claimCouponUseCase.get().invoke(catalogId)
 
@@ -959,7 +959,7 @@ open class HomeRevampViewModel @Inject constructor(
                 }
 
                 findWidget<CouponWidgetDataModel>(
-                    predicate = { it.visitableId() == oldWidgetData.visitableId() },
+                    predicate = { it.visitableId() == data.visitableId() },
                     actionOnFound = { model, position ->
                         val updatedCoupons = model.coupons.toMutableList().apply {
                             val coupon = this[couponPosition]

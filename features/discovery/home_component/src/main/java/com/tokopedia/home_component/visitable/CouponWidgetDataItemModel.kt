@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.visitable
 
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
+import com.tokopedia.home_component.model.TrackingAttributionModel
 
 data class CouponWidgetDataItemModel(
     val trackerModel: CouponTrackerModel,
@@ -10,7 +11,8 @@ data class CouponWidgetDataItemModel(
 
 data class CouponTrackerModel(
     val gridId: String,
-    val attribution: String
+    val attribution: String,
+    val trackingAttributionModel: TrackingAttributionModel
 )
 
 sealed class CouponCtaState(val model: Data?) {

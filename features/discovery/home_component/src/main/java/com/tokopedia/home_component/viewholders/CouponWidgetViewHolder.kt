@@ -61,7 +61,6 @@ class CouponWidgetViewHolder constructor(
         itemView.addOnImpressionListener(element, object : ViewHintListener {
             override fun onViewHint() {
                 listener.impressionTrack(
-                    model = element.channelModel,
                     position = bindingAdapterPosition,
                     coupons = element.coupons
                 )

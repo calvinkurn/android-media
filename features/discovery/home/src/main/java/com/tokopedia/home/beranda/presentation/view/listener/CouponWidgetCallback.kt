@@ -11,39 +11,37 @@ import java.util.HashMap
 
 class CouponWidgetCallback(val listener: HomeCategoryListener) : CouponWidgetListener {
 
-    override fun ctaClick(oldWidgetData: CouponWidgetDataModel, state: CouponCtaState, position: Int) {
+    override fun ctaClick(data: CouponWidgetDataModel, state: CouponCtaState, position: Int) {
         when(state) {
             is CouponCtaState.Claim -> {
                 if (state.data.catalogId.isEmpty()) return
-                listener.onCouponWidgetClaim(oldWidgetData, state.data.catalogId, position)
+                listener.onCouponWidgetClaim(data, state.data.catalogId, position)
             }
             is CouponCtaState.Redirect -> {
-                val actionLink = state.data.appLink.ifEmpty { state.data.url }
+                val actionLink = state.data.url.ifEmpty { state.data.appLink }
                 listener.onDynamicChannelClicked(actionLink)
             }
             is CouponCtaState.OutOfStock -> Unit
         }
     }
 
-    override fun ctaClickTrack(state: CouponCtaState, position: Int) {
-//        listener.sendEETracking(
-//            CouponWidgetTracker.ctaClick(
-//                userId = listener.userId,
-//                channelId = model.trackingAttributionModel.channelId,
-//                bannerId = model.trackingAttributionModel.bannerId,
-//                headerName = model.trackingAttributionModel.headerName,
-//                position = position
-//            ) as HashMap<String, Any>
-//        )
+    override fun ctaClickTrack(data: CouponWidgetDataItemModel, position: Int) {
+        listener.sendEETracking(
+            CouponWidgetTracker.ctaClick(
+                position = position,
+                coupon = data,
+                userId = listener.userId,
+                model = data.trackerModel.trackingAttributionModel,
+            ) as HashMap<String, Any>
+        )
     }
 
-    override fun impressionTrack(model: ChannelModel, position: Int, coupons: List<CouponWidgetDataItemModel>) {
-        listener.sendEETracking(
+    override fun impressionTrack(position: Int, coupons: List<CouponWidgetDataItemModel>) {
+        listener.putEEToTrackingQueue(
             CouponWidgetTracker.impress(
                 position = position,
                 coupons = coupons,
-                userId = listener.userId,
-                model = model.trackingAttributionModel,
+                userId = listener.userId
             ) as HashMap<String, Any>
         )
     }

@@ -20,7 +20,7 @@ class SingleCouponWidgetViewHolder constructor(
     private val binding: LayoutCouponWidgetSingleBinding? by viewBinding()
 
     fun onBind(oldWidgetData: CouponWidgetDataModel, model: CouponWidgetDataItemModel) {
-        val state = ButtonStateHandler(oldWidgetData, model.button, bindingAdapterPosition, listener)
+        val state = ButtonStateHandler(oldWidgetData, model, bindingAdapterPosition, listener)
 
         binding?.couponView?.setState(state)
         binding?.couponView?.setModel(model.coupon as AutomateCouponModel.List)

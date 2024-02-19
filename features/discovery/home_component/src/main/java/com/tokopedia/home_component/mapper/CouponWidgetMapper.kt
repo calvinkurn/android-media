@@ -6,6 +6,7 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.TimeLimit
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.LabelGroup
+import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.visitable.CouponCtaState
 import com.tokopedia.home_component.visitable.CouponTrackerModel
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
@@ -24,17 +25,22 @@ object CouponWidgetMapper {
             backgroundGradientColor = model.channelBanner.gradientColor,
             coupons = model.channelGrids
                 .take(MAX_COUPON_SIZE)
-                .newMapToAutomationCouponWidgetModel()
+                .mapToAutomationCouponWidgetModel(
+                    model.trackingAttributionModel
+                )
         )
     }
 
-    private fun List<ChannelGrid>.newMapToAutomationCouponWidgetModel(): List<CouponWidgetDataItemModel> {
+    private fun List<ChannelGrid>.mapToAutomationCouponWidgetModel(
+        trackingAttributionModel: TrackingAttributionModel
+    ): List<CouponWidgetDataItemModel> {
         return mapIndexed { index, channelGrid ->
             val labelGroupMap = channelGrid.labelGroup.associateBy { it.position }
 
             val couponTrackerModel = CouponTrackerModel(
                 gridId = channelGrid.id,
-                attribution = channelGrid.attribution
+                attribution = channelGrid.attribution,
+                trackingAttributionModel = trackingAttributionModel
             )
 
             if (size == 1) return@mapIndexed labelGroupMap.single(couponTrackerModel)
@@ -64,29 +70,29 @@ object CouponWidgetMapper {
 
     private fun Map<String, LabelGroup>.toSingleCouponWidget() =
         AutomateCouponModel.List(
-            type = toText(LabelGroupConst.benefitType),
-            benefit = toText(LabelGroupConst.benefitValue),
-            tnc = toText(LabelGroupConst.tncText),
-            backgroundUrl = toUrl(LabelGroupConst.backgroundImage),
+            type = toDynamicText(LabelGroupConst.benefitType),
+            benefit = toDynamicText(LabelGroupConst.benefitValue),
+            tnc = toDynamicText(LabelGroupConst.tncText),
+            backgroundUrl = extractUrl(LabelGroupConst.backgroundImage),
             timeLimit = TimeLimit.Timer(
-                prefix = toText(LabelGroupConst.expiredText),
+                prefix = toDynamicText(LabelGroupConst.expiredText),
                 endDate = (get(LabelGroupConst.expiredTextUnix)
                     ?.title
                     .toLongOrZero() * 1000)
                     .toDate()
             ),
-            iconUrl = toUrl(LabelGroupConst.iconImage),
+            iconUrl = extractUrl(LabelGroupConst.iconImage),
             shopName = null,
             badgeText = null,
         )
 
     private fun Map<String, LabelGroup>.toGridCouponWidget() =
         AutomateCouponModel.Grid(
-            type = toText(LabelGroupConst.benefitType),
-            benefit = toText(LabelGroupConst.benefitValue),
-            tnc = toText(LabelGroupConst.tncText),
-            backgroundUrl = toUrl(LabelGroupConst.backgroundImage),
-            iconUrl = toUrl(LabelGroupConst.iconImage),
+            type = toDynamicText(LabelGroupConst.benefitType),
+            benefit = toDynamicText(LabelGroupConst.benefitValue),
+            tnc = toDynamicText(LabelGroupConst.tncText),
+            backgroundUrl = extractUrl(LabelGroupConst.backgroundImage),
+            iconUrl = extractUrl(LabelGroupConst.iconImage),
             shopName = null,
             badgeText = null,
         )
@@ -105,13 +111,14 @@ object CouponWidgetMapper {
         }
     }
 
-    private fun Map<String, LabelGroup>.toText(position: String): DynamicColorText {
+    private fun Map<String, LabelGroup>.toDynamicText(position: String): DynamicColorText {
         val label = get(position) ?: return DynamicColorText("", "")
         val textColor = label.styles.firstOrNull { it.key == LabelGroupStyle.TEXT_COLOR }
+
         return DynamicColorText(label.title, textColor?.value ?: "")
     }
 
-    private fun Map<String, LabelGroup>.toUrl(position: String): String {
+    private fun Map<String, LabelGroup>.extractUrl(position: String): String {
         return get(position)?.url ?: ""
     }
 
