@@ -8,14 +8,17 @@ import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import dagger.Component
 
 @ProductDetailScope
-@Component(modules = [
-    ProductDetailModule::class,
-    ViewModelModule::class,
-    GqlRawQueryModule::class,
-    ProductDetailUserModule::class,
-    ProductDetailFragmentModule::class,
-    ProductDetailDevModule::class],
-        dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+        ProductDetailModule::class,
+        ViewModelModule::class,
+        GqlRawQueryModule::class,
+        ProductDetailUserModule::class,
+        ProductDetailFragmentModule::class,
+        ProductDetailDevModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
+)
 interface ProductDetailComponent {
 
     fun inject(activity: ProductDetailActivity)

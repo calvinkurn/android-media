@@ -21,7 +21,7 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(ProductDetailViewModel::class)
-    internal abstract fun provideDynamicPdpViewModel(viewModel: ProductDetailViewModel): ViewModel
+    internal abstract fun bindPdpViewModel(viewModel: ProductDetailViewModel): ViewModel
 
     @Binds
     @IntoMap

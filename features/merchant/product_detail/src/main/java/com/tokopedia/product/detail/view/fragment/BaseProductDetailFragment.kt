@@ -34,7 +34,6 @@ import com.tokopedia.product.detail.data.util.CenterLayoutManagerTablet
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_LEFT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_RIGHT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.TABLET_TYPE
-import com.tokopedia.product.detail.databinding.DynamicProductDetailFragmentBinding
 import com.tokopedia.product.detail.databinding.ProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -99,7 +98,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DynamicProductDetailFragmentBinding.inflate(inflater, container, false)
+        binding = ProductDetailFragmentBinding.inflate(inflater, container, false)
         getProductDetailActivity()?.getBlocksPerformanceMonitoring()
             ?.addViewPerformanceBlocks(binding?.pdpNavtoolbar)
         return binding?.root
