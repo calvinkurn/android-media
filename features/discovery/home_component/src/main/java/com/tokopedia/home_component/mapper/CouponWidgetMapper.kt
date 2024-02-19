@@ -64,42 +64,43 @@ object CouponWidgetMapper {
 
     private fun Map<String, LabelGroup>.toSingleCouponWidget() =
         AutomateCouponModel.List(
-            type = toText("benefit-type"),
-            benefit = toText("benefit-value"),
-            tnc = toText("tnc-text"),
-            backgroundUrl = toUrl("background-image"),
+            type = toText(LabelGroupConst.benefitType),
+            benefit = toText(LabelGroupConst.benefitValue),
+            tnc = toText(LabelGroupConst.tncText),
+            backgroundUrl = toUrl(LabelGroupConst.backgroundImage),
             timeLimit = TimeLimit.Timer(
-                prefix = toText("expired-text"),
-                endDate = (toText("expired-time-unix").value
+                prefix = toText(LabelGroupConst.expiredText),
+                endDate = (get(LabelGroupConst.expiredTextUnix)
+                    ?.title
                     .toLongOrZero() * 1000)
                     .toDate()
             ),
-            iconUrl = toUrl("icon-image"),
+            iconUrl = toUrl(LabelGroupConst.iconImage),
             shopName = null,
             badgeText = null,
         )
 
     private fun Map<String, LabelGroup>.toGridCouponWidget() =
         AutomateCouponModel.Grid(
-            type = toText("benefit-type"),
-            benefit = toText("benefit-value"),
-            tnc = toText("tnc-text"),
-            backgroundUrl = toUrl("background-image"),
-            iconUrl = toUrl("icon-image"),
+            type = toText(LabelGroupConst.benefitType),
+            benefit = toText(LabelGroupConst.benefitValue),
+            tnc = toText(LabelGroupConst.tncText),
+            backgroundUrl = toUrl(LabelGroupConst.backgroundImage),
+            iconUrl = toUrl(LabelGroupConst.iconImage),
             shopName = null,
             badgeText = null,
         )
 
     private fun Map<String, LabelGroup>.getCtaState(): CouponCtaState {
         val data = CouponCtaState.Data(
-            catalogId = get("catalog-id")?.title ?: "",
-            url = get("cta-redirect-url")?.url ?: "",
-            appLink = get("cta-redirect-applink")?.url ?: ""
+            catalogId = get(LabelGroupConst.catalogId)?.title ?: "",
+            url = get(LabelGroupConst.ctaRedirectUrl)?.url ?: "",
+            appLink = get(LabelGroupConst.ctaRedirectAppLink)?.url ?: ""
         )
 
-        return when (get("cta-text")?.type) {
-            "claim" -> CouponCtaState.Claim(data)
-            "redirect" -> CouponCtaState.Redirect(data)
+        return when (get(LabelGroupConst.ctaText)?.type) {
+            LabelGroupConst.ctaClaim -> CouponCtaState.Claim(data)
+            LabelGroupConst.ctaRedirect -> CouponCtaState.Redirect(data)
             else -> CouponCtaState.OutOfStock
         }
     }
@@ -112,5 +113,28 @@ object CouponWidgetMapper {
 
     private fun Map<String, LabelGroup>.toUrl(position: String): String {
         return get(position)?.url ?: ""
+    }
+
+    internal object LabelGroupConst {
+        // Common
+        const val benefitType = "benefit-type"
+        const val benefitValue = "benefit-value"
+        const val tncText = "tnc-text"
+        const val expiredText = "expired-text"
+        const val expiredTextUnix = "expired-time-unix"
+        const val backgroundImage = "background-image"
+        const val iconImage = "icon-image"
+
+        // Coupon
+        const val catalogId = "catalog-id"
+
+        // CTA
+        const val ctaText = "cta-text"
+        const val ctaRedirectUrl = "cta-redirect-url"
+        const val ctaRedirectAppLink = "cta-redirect-applink"
+
+        // CTA: Type
+        const val ctaClaim = "claim"
+        const val ctaRedirect = "redirect"
     }
 }
