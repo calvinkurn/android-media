@@ -11,7 +11,6 @@ import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
@@ -273,6 +272,35 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                             uri
                           }
                         }
+                      }
+                      addon_summary {
+                        addons {
+                          order_id
+                          id
+                          level
+                          name
+                          price_str
+                          subtotal_price
+                          subtotal_price_str
+                          quantity
+                          type
+                          image_url
+                          metadata {
+                            info_link
+                            add_on_note {
+                              from
+                              to
+                              notes
+                              short_notes
+                              tips
+                            }
+                          }
+                          create_time
+                        }
+                        total
+                        total_price
+                        total_price_str
+                        total_quantity
                       }
                     }
                   }

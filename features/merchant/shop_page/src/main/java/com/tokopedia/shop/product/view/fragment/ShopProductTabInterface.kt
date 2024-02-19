@@ -9,4 +9,5 @@ interface ShopProductTabInterface {
 
     fun getPatternColorType(): String
 
+    fun getBackgroundColor(): String
 }
