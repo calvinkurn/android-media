@@ -221,7 +221,7 @@ private fun shopSectionHeight(context: Context?, productCardModel: ProductCardMo
     else 0
 
 private fun addToCartHeight(context: Context?, productCardModel: ProductCardModel): Int =
-    if (productCardModel.hasAddToCart)
+    if (productCardModel.showAddToCartButton() || productCardModel.useQuantityEditor())
         context.getPixel(productcardR.dimen.product_card_reimagine_button_atc_margin_top)
             .plus(context.getPixel(productcardR.dimen.product_card_reimagine_button_atc_height))
     else 0

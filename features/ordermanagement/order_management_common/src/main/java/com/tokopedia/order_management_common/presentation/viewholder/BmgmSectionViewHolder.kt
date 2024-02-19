@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.constants.OrderManagementConstants
@@ -28,6 +27,7 @@ import com.tokopedia.order_management_common.R as order_management_commonR
 class BmgmSectionViewHolder(
     view: View?,
     private val listener: Listener,
+    private val productBenefitListener: BmgmAddOnViewHolder.Listener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : AbstractViewHolder<ProductBmgmSectionUiModel>(view),
     ProductBmgmItemAdapter.ViewHolder.Listener {
@@ -39,15 +39,13 @@ class BmgmSectionViewHolder(
         private const val ITEM_DECORATION_HORIZONTAL_MARGIN = 16
     }
 
-    private val productBenefitListener by lazyThreadSafetyNone { ProductBenefitListener() }
-
     private val bmgmItemAdapter = ProductBmgmItemAdapter(this, recyclerViewSharedPool)
 
     private val binding = ItemOrderProductBmgmSectionBinding.bind(itemView)
 
-    private var addOnSummaryViewHolder: BmgmAddOnSummaryViewHolder? = null
+    private var productBenefitViewHolder: BmgmAddOnSummaryViewHolder? = null
 
-    private var partialBmgmAddonSummaryBinding: PartialBmgmAddOnSummaryBinding? = null
+    private var productBenefitBinding: PartialBmgmAddOnSummaryBinding? = null
 
     init {
         setupBundleAdapter()
@@ -66,10 +64,10 @@ class BmgmSectionViewHolder(
         val addonsViewStub: View = itemView.findViewById(R.id.itemBmgmProductBenefitViewStub)
         if (productBenefits != null) {
             if (addonsViewStub is ViewStub) {
-                partialBmgmAddonSummaryBinding = PartialBmgmAddOnSummaryBinding.bind(addonsViewStub.inflate())
+                productBenefitBinding = PartialBmgmAddOnSummaryBinding.bind(addonsViewStub.inflate())
             }
-            addOnSummaryViewHolder =
-                partialBmgmAddonSummaryBinding?.let {
+            productBenefitViewHolder =
+                productBenefitBinding?.let {
                     BmgmAddOnSummaryViewHolder(
                         bmgmAddOnListener = productBenefitListener,
                         binding = it,
@@ -79,7 +77,7 @@ class BmgmSectionViewHolder(
                         recyclerViewSharedPool = null
                     )
                 }
-            addOnSummaryViewHolder?.bind(productBenefits)
+            productBenefitViewHolder?.bind(productBenefits)
             binding.dividerProductBenefit.show()
         } else {
             if (addonsViewStub !is ViewStub) addonsViewStub.gone()
@@ -204,24 +202,6 @@ class BmgmSectionViewHolder(
         binding.tvOrderBmgmPriceMoreInfoLabel.text = totalPriceReductionInfoText
     }
 
-    private inner class ProductBenefitListener : BmgmAddOnViewHolder.Listener {
-        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
-            // noop
-        }
-
-        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
-            listener.onBmgmProductBenefitExpand(isExpand, addOnsIdentifier)
-        }
-
-        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
-            // noop
-        }
-
-        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
-            listener.onBmgmProductBenefitClicked(addOn)
-        }
-    }
-
     interface Listener {
         fun onAddOnsInfoLinkClicked(infoLink: String, type: String)
         fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
@@ -231,7 +211,5 @@ class BmgmSectionViewHolder(
         fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
-        fun onBmgmProductBenefitExpand(isExpand:Boolean, identifier: String)
-        fun onBmgmProductBenefitClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel)
     }
 }

@@ -30,7 +30,7 @@ class BulletsView(context: Context, attributeSet: AttributeSet) : LinearLayout(c
             val textView = Typography(context)
             textView.setType(Typography.PARAGRAPH_3)
             textView.text = HtmlLinkHelper(context, it).spannedString
-            textView.setPadding(if (textArr.size > 1) 8.toPx() else 0, 0, 0, 0)
+            textView.setPadding(if (textArr.size > 1) 8.toPx() else 0, 0, 0, 4.toPx())
             parent.addView(textView)
             addView(parent)
         }

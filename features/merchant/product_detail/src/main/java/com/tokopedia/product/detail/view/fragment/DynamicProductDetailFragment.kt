@@ -147,6 +147,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
+import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoExternalAutoApply
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -350,6 +351,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
@@ -649,6 +651,28 @@ open class DynamicProductDetailFragment :
         }
 
         setPDPDebugMode()
+    }
+
+    private fun onClickDynamicOneLinerPromo() {
+        val mvcData = viewModel.getP2()?.merchantVoucherSummary ?: return
+        val p1 = viewModel.getDynamicProductInfoP1 ?: return
+        goToMvc(
+            shopId = p1.basic.shopID,
+            productId = p1.basic.productID,
+            mvcAdditionalData = mvcData.additionalData
+        )
+    }
+
+    private fun goToMvc(shopId: String, productId: String, mvcAdditionalData: String) {
+        val mContext = context ?: return
+        val intent = TransParentActivity.getIntent(
+            context = mContext,
+            shopId = shopId,
+            source = MvcSource.PDP,
+            productId = productId,
+            additionalParamJson = mvcAdditionalData
+        )
+        mvcLauncher.launch(intent)
     }
 
     private fun getPrefetchData(): ProductDetailPrefetch.Data? {
@@ -2078,15 +2102,11 @@ open class DynamicProductDetailFragment :
         @MvcSource source: Int,
         uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
     ) {
-        val mContext = context ?: return
-        val intent = TransParentActivity.getIntent(
-            context = mContext,
+        goToMvc(
             shopId = uiModel.shopId,
-            source = source,
             productId = uiModel.productIdMVC,
-            additionalParamJson = uiModel.additionalData
+            mvcAdditionalData = uiModel.additionalData
         )
-        mvcLauncher.launch(intent)
     }
 
     override fun isOwner(): Boolean = viewModel.isShopOwner()
@@ -2700,14 +2720,23 @@ open class DynamicProductDetailFragment :
         }
         pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
 
-        pdpUiUpdater?.updateNotifyMeAndContent(
-            selectedChild?.productId.toString(),
-            viewModel.getP2()?.upcomingCampaigns,
-            boeData.imageURL
+        pdpUiUpdater?.updatePromoPriceWithP2(
+            productId = selectedChild?.productId.toString(),
+            promoPriceStyle = viewModel.p2Data.value?.promoPriceStyle,
+            freeOngkirImgUrl = boeData.imageURL,
+            promoCodes = updatedDynamicProductInfo?.data?.promoPrice?.promoCodes ?: listOf()
         )
+
+        pdpUiUpdater?.updateNotifyMeAndContent(
+            productId = selectedChild?.productId.toString(),
+            upcomingData = viewModel.getP2()?.upcomingCampaigns,
+            freeOngkirImgUrl = boeData.imageURL
+        )
+
         pdpUiUpdater?.updateTradeInRibbon(
             isEligible = viewModel.getP2()?.validateTradeIn?.isEligible.orFalse()
         )
+
         val selectedTicker = viewModel.p2Data.value?.getTickerByProductId(productId ?: "")
         pdpUiUpdater?.updateTicker(selectedTicker)
 
@@ -3316,9 +3345,13 @@ open class DynamicProductDetailFragment :
     }
 
     private fun goToOneClickCheckout() {
-        val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-        startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+        val p1 = viewModel.getDynamicProductInfoP1 ?: return
+        val selectedPromoCodes = p1.data.promoPrice.promoCodes.mapIntoPromoExternalAutoApply()
+
+        ProductCartHelper.goToOneClickCheckoutWithAutoApplyPromo(
+            (context as ProductDetailActivity),
+            ArrayList(selectedPromoCodes)
+        )
     }
 
     private fun sendTrackingATC(cartId: String) {
@@ -6249,8 +6282,17 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    override fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel) {
+    override fun onClickDynamicOneLiner(
+        title: String,
+        url: String,
+        component: ComponentTrackDataModel
+    ) {
         val commonTracker = generateCommonTracker() ?: return
+        if (component.componentName == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_PROMO) {
+            onClickDynamicOneLinerPromo()
+        } else {
+            goToApplink(url)
+        }
         DynamicOneLinerTracking.onClickDynamicOneliner(
             title,
             commonTracker,
