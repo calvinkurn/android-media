@@ -65,6 +65,7 @@ class ShareExGetSharePropertiesQuery : GqlQueryInterface {
                     imageResolution
                     platform
                   }
+                }
               }
             }
           }
