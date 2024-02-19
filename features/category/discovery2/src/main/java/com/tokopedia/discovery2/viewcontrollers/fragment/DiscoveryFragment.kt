@@ -1932,6 +1932,10 @@ open class DiscoveryFragment :
         )
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
             if (bmGmDataParam != null && cartId.isNotBlankOrZero()) {
+                showToaster(
+                    atcMessage,
+                    type = Toaster.TYPE_NORMAL
+                )
                 getMiniCart(bmGmDataParam)
             }
         }
@@ -2427,6 +2431,7 @@ open class DiscoveryFragment :
                 AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = productId,
+                    dismissAfterTransaction = true,
                     pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                     extParams = AtcVariantHelper.generateExtParams(
                         mapOf(

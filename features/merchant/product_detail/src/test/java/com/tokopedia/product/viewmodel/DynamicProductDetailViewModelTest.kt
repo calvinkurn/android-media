@@ -1364,6 +1364,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
         assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
         assertTrue(p1Result.count { it.name() == ProductDetailConstant.AR_BUTTON } == 1)
+        assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRICE } == 1)
     }
 
     private fun `co verify p1 success`() {
@@ -1565,6 +1566,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO })
         assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT })
         assertTrue(p1Result.none { it.name() == ProductDetailConstant.ORDER_PRIORITY })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRICE })
 
         assertTrue(p1Result.any { it.name() == ProductDetailConstant.MEDIA })
         assertTrue(p1Result.any { it.name() == ProductDetailConstant.TICKER_INFO })

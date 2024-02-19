@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
 import com.tokopedia.product.detail.data.model.gwp.GWPData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
+import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
@@ -186,7 +187,11 @@ data class ProductInfoP2Data(
 
     @SerializedName("gwp")
     @Expose
-    val gwp: GWPData = GWPData()
+    val gwp: GWPData = GWPData(),
+
+    @SerializedName("promoPriceStyle")
+    @Expose
+    val promoPriceStyle: List<PromoPriceStyle> = listOf()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -231,5 +236,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     bottomSheetEdu = bottomSheetEdu.asUiModel(),
     dynamicOneLiner = dynamicOneLiner,
     bmgm = bmgm,
-    gwp = gwp
+    gwp = gwp,
+    promoPriceStyle = promoPriceStyle
 )

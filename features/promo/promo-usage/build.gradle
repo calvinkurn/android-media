@@ -35,6 +35,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.fragmentKtx
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
@@ -60,6 +61,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     testImplementation rootProject.ext.testDependencies.archCoreTesting
