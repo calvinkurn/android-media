@@ -21,13 +21,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.UiState
@@ -49,6 +50,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.Shop
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -134,6 +136,20 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    override fun getFragmentPage(): Fragment = this@TokoNowShoppingListFragment
+
+    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
+
+    override fun refreshLayoutPage() {  }
+
+    override fun getScrollState(adapterPosition: Int): Parcelable? = null
+
+    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) { }
+
+    override fun onChooseAddressWidgetRemoved() { }
+
+    override fun onClickChooseAddressWidgetTracker() { }
+
     /**
      * -- private function section --
      */
@@ -144,11 +160,6 @@ class TokoNowShoppingListFragment :
             .shoppingListModule(ShoppingListModule(requireContext()))
             .build()
             .inject(this)
-    }
-
-    private fun FragmentTokopedianowShoppingListBinding.loadFirstPage() {
-        setHeaderModel(navToolbar.context)
-        viewModel.loadLayout()
     }
 
     private fun setHeaderModel(context: Context) {
@@ -164,6 +175,72 @@ class TokoNowShoppingListFragment :
                 endColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN400)
             )
         )
+    }
+
+    private suspend fun collectUiState(
+        binding: FragmentTokopedianowShoppingListBinding
+    ) {
+        viewModel.uiState.collect { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    val layout = uiState.data?.layout
+                    if (!layout.isNullOrEmpty()) {
+                        adapter.submitList(layout)
+                    }
+                }
+                is UiState.Error -> {
+                    val layout = uiState.data?.layout
+                    if (!layout.isNullOrEmpty()) {
+                        adapter.submitList(layout)
+                    }
+                }
+                is UiState.Empty -> {
+                    val layout = uiState.data?.layout
+                    if (!layout.isNullOrEmpty()) {
+                        adapter.submitList(layout)
+                    }
+                }
+                is UiState.Success -> {
+                    if (uiState.data.layout.isNotEmpty()) {
+                        adapter.submitList(uiState.data.layout)
+                    }
+
+                    if (uiState.data.isRequiredToScrollUp) {
+                        binding.rvShoppingList.scrollToPosition(Int.ZERO)
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun collectScrollState(
+        binding: FragmentTokopedianowShoppingListBinding
+    ) {
+        viewModel.isOnScrollNotNeeded.collect { isNotNeededToScroll ->
+            if (isNotNeededToScroll) binding.rvShoppingList.removeOnScrollListener(loadMoreListener)
+        }
+    }
+
+    /**
+     * Create a new coroutine in the [lifecycleScope]. [repeatOnLifecycle] launches the block in a new coroutine
+     * every time the lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
+     */
+    private fun FragmentTokopedianowShoppingListBinding.collectStateFlow() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                /**
+                 * Because [collect] is a suspend function, need different coroutines to collect multiple flows in parallel.
+                 * The suspending function suspends until the Flow terminates.
+                 */
+                launch { collectUiState(this@collectStateFlow) }
+                launch { collectScrollState(this@collectStateFlow) }
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowShoppingListBinding.loadFirstPage() {
+        setHeaderModel(navToolbar.context)
+        viewModel.loadLayout()
     }
 
     private fun FragmentTokopedianowShoppingListBinding.setupRecyclerView() {
@@ -190,47 +267,9 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun FragmentTokopedianowShoppingListBinding.collectStateFlow() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    when (uiState) {
-                        is UiState.Loading -> {
-                            if (!uiState.data.isNullOrEmpty()) {
-                                adapter.submitList(uiState.data)
-                            }
-                        }
-                        is UiState.Error -> {
-                            if (!uiState.data.isNullOrEmpty()) {
-                                adapter.submitList(uiState.data)
-                            }
-                        }
-                        is UiState.Empty -> {
-                            if (!uiState.data.isNullOrEmpty()) {
-                                adapter.submitList(uiState.data)
-                            }
-                        }
-                        is UiState.Success -> {
-                            adapter.submitList(uiState.data)
-                        }
-                    }
-                }
-            }
-        }
-
-        viewModel.isOnScrollNotNeeded.observe(viewLifecycleOwner) {
-            rvShoppingList.removeOnScrollListener(loadMoreListener)
-        }
-    }
-
     private fun FragmentTokopedianowShoppingListBinding.setupOnScrollListener() {
         val callback = createNavRecyclerViewOnScrollCallback(navToolbar)
         rvShoppingList.addOnScrollListener(callback)
-    }
-
-    private fun getNavToolbarHeight(navToolbar: NavToolbar): Int {
-        val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_height).orZero()
-        return if (navToolbar.height.isZero()) defaultHeight else navToolbar.height
     }
 
     private fun IconBuilder.addNavGlobal(): IconBuilder = addIcon(
@@ -244,16 +283,6 @@ class TokoNowShoppingListFragment :
         disableRouteManager = false,
         disableDefaultGtmTracker = true
     ) { /* nothing to do */ }
-
-    /**
-     * -- internal function section --
-     */
-
-    internal fun switchToDarkStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToDarkToolbar()
-
-    internal fun switchToLightStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToLightToolbar()
-
-    internal fun NavToolbar.setBackButtonColor(color: Int) = setCustomBackButton(color = ContextCompat.getColor(context, color))
 
     /**
      * -- callback function section --
@@ -278,7 +307,7 @@ class TokoNowShoppingListFragment :
         val transitionRange = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
         return NavRecyclerViewScrollListener(
             navToolbar = navToolbar,
-            startTransitionPixel = getNavToolbarHeight(navToolbar) - transitionRange - transitionRange,
+            startTransitionPixel = NavToolbarExt.getFullToolbarHeight(navToolbar.context) - transitionRange - transitionRange,
             toolbarTransitionRangePixel = transitionRange,
             navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                 override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
@@ -333,17 +362,13 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    override fun getFragmentPage(): Fragment = this@TokoNowShoppingListFragment
+    /**
+     * -- internal function section --
+     */
 
-    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
+    internal fun switchToDarkStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToDarkToolbar()
 
-    override fun refreshLayoutPage() {  }
+    internal fun switchToLightStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToLightToolbar()
 
-    override fun getScrollState(adapterPosition: Int): Parcelable? = null
-
-    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) { }
-
-    override fun onChooseAddressWidgetRemoved() { }
-
-    override fun onClickChooseAddressWidgetTracker() { }
+    internal fun NavToolbar.setBackButtonColor(color: Int) = setCustomBackButton(color = ContextCompat.getColor(context, color))
 }

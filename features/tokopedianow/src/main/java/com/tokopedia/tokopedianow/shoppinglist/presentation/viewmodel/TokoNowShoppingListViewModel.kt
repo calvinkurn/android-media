@@ -33,9 +33,9 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeLoadMore
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeRetry
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LoadMoreDataModel
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -73,22 +73,22 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
     private val layout: MutableList<Visitable<*>> = arrayListOf()
 
-    private val _isOnScrollNotNeeded: SingleLiveEvent<Unit> = SingleLiveEvent()
-    private val _uiState: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(
+    private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _uiState: MutableStateFlow<UiState<LayoutModel>> = MutableStateFlow(
         UiState.Loading(
-            data = layout.addShimmeringPage()
+            data = LayoutModel(
+                layout = layout.addShimmeringPage()
+            )
         )
     )
 
-    private var needToLoadMoreData: LoadMoreDataModel = LoadMoreDataModel(
-        isNeededToLoadMore = true
-    )
+    private var pageCounter: Int = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
     private var job: Job? = null
 
+    val isOnScrollNotNeeded
+        get() = _isOnScrollNotNeeded.asStateFlow()
     val uiState
         get() = _uiState.asStateFlow()
-    val isOnScrollNotNeeded
-        get() = _isOnScrollNotNeeded
 
     var headerModel: HeaderModel = HeaderModel()
 
@@ -108,8 +108,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 addProductInCartSection()
                 addProductRecommendationSection()
 
-                _uiState.value = UiState.Success(
-                    layout.toMutableList()
+                collectCurrentLayout(
+                    isRequiredToScrollUp = true
                 )
             },
             onError = {
@@ -141,11 +141,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
         layout.addProductInCartWidget()
     }
 
-    private suspend fun getProductRecommendationDeferred(
-        pageNumber: Int
-    ): Deferred<RecommendationWidget> = async {
+    private suspend fun getProductRecommendationDeferred(): Deferred<RecommendationWidget> = async {
         val param = GetRecommendationRequestParam(
-            pageNumber = pageNumber,
+            pageNumber = pageCounter,
             userId = userSession.userId.toIntSafely(),
             pageName = PRODUCT_RECOMMENDATION_PAGE_NAME,
             xDevice = X_DEVICE_RECOMMENDATION_PARAM,
@@ -156,72 +154,77 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     private suspend fun addProductRecommendationSection() {
-        val productRecommendation = getProductRecommendationDeferred(
-            pageNumber = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
-        ).await()
+        val productRecommendation = getProductRecommendationDeferred().await()
 
         if (productRecommendation.recommendationItemList.isNotEmpty()) {
-            layout.addDivider()
-            layout.addTitle(title = productRecommendation.title)
-            layout.addRecommendedProducts(productRecommendation)
+            layout
+                .addDivider()
+                .addTitle(title = productRecommendation.title)
+                .addRecommendedProducts(productRecommendation)
 
-            if (productRecommendation.hasNext) layout.addLoadMore()
+            if (productRecommendation.hasNext) {
+                layout.addLoadMore()
+                pageCounter++
+            } else {
+                _isOnScrollNotNeeded.value = true
+            }
+        } else {
+            _isOnScrollNotNeeded.value = true
         }
-
-        needToLoadMoreData = needToLoadMoreData.copy(
-            isNeededToLoadMore = productRecommendation.hasNext,
-            counter = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER.inc()
-        )
     }
 
     fun switchRetryToLoadMore() {
-        layout.removeRetry()
-        layout.addLoadMore()
+        layout
+            .removeRetry()
+            .addLoadMore()
 
-        _uiState.value = UiState.Success(
-            layout.toMutableList()
-        )
+        collectCurrentLayout()
     }
 
     fun loadMoreProductRecommendation(
         isLastVisibleLoadingMore: Boolean
     ) {
-        when {
-            !needToLoadMoreData.isNeededToLoadMore -> _isOnScrollNotNeeded.value = Unit
-            isLastVisibleLoadingMore && job?.isCompleted.orFalse() -> {
-                job = launchCatchError(
-                    block = {
-                        val productRecommendation = getProductRecommendationDeferred(
-                            pageNumber = needToLoadMoreData.counter
-                        ).await()
+        if (isLastVisibleLoadingMore && job?.isCompleted.orFalse()) {
+            job = launchCatchError(
+                block = {
+                    val productRecommendation = getProductRecommendationDeferred().await()
 
-                        layout.removeLoadMore()
+                    layout.removeLoadMore()
 
-                        if (productRecommendation.recommendationItemList.isNotEmpty()) {
-                            layout.addRecommendedProducts(productRecommendation)
+                    if (productRecommendation.recommendationItemList.isNotEmpty()) {
+                        layout.addRecommendedProducts(productRecommendation)
 
-                            if (productRecommendation.hasNext) layout.addLoadMore()
+                        if (productRecommendation.hasNext) {
+                            layout.addLoadMore()
+                            pageCounter++
+                        } else {
+                            _isOnScrollNotNeeded.value = true
                         }
-
-                        _uiState.value = UiState.Success(
-                            layout.toMutableList()
-                        )
-
-                        needToLoadMoreData = needToLoadMoreData.copy(
-                            isNeededToLoadMore = productRecommendation.hasNext,
-                            counter = needToLoadMoreData.counter.inc()
-                        )
-                    },
-                    onError = {
-                        layout.removeLoadMore()
-                        layout.addRetry()
-
-                        _uiState.value = UiState.Success(
-                            layout.toMutableList()
-                        )
+                    } else {
+                        _isOnScrollNotNeeded.value = true
                     }
-                )
-            }
+
+                    collectCurrentLayout()
+                },
+                onError = {
+                    layout
+                        .removeLoadMore()
+                        .addRetry()
+
+                    collectCurrentLayout()
+                }
+            )
         }
+    }
+
+    private fun collectCurrentLayout(
+        isRequiredToScrollUp: Boolean = false
+    ) {
+        _uiState.value = UiState.Success(
+            data = LayoutModel(
+                layout = layout.toList(),
+                isRequiredToScrollUp = isRequiredToScrollUp
+            )
+        )
     }
 }

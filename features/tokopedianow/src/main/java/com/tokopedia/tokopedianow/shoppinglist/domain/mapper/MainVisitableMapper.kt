@@ -24,8 +24,7 @@ object MainVisitableMapper {
      * -- Header Section --
      */
 
-    fun MutableList<Visitable<*>>.addShimmeringPage(
-    ): MutableList<Visitable<*>> {
+    fun MutableList<Visitable<*>>.addShimmeringPage(): MutableList<Visitable<*>> {
         val newList = arrayListOf(
             TokoNowThematicHeaderUiModel(
                 state = LOADING
@@ -81,20 +80,24 @@ object MainVisitableMapper {
         )
     }
 
-    fun MutableList<Visitable<*>>.addLoadMore() {
+    fun MutableList<Visitable<*>>.addLoadMore(): MutableList<Visitable<*>> {
         add(LoadingMoreModel())
+        return this
     }
 
-    fun MutableList<Visitable<*>>.removeLoadMore() {
+    fun MutableList<Visitable<*>>.removeLoadMore(): MutableList<Visitable<*>> {
         removeFirst { it is LoadingMoreModel }
+        return this
     }
 
-    fun MutableList<Visitable<*>>.addRetry() {
+    fun MutableList<Visitable<*>>.addRetry(): MutableList<Visitable<*>> {
         add(ShoppingListRetryUiModel())
+        return this
     }
 
-    fun MutableList<Visitable<*>>.removeRetry() {
+    fun MutableList<Visitable<*>>.removeRetry(): MutableList<Visitable<*>> {
         removeFirst { it is ShoppingListRetryUiModel }
+        return this
     }
 
     fun MutableList<Visitable<*>>.addWishlistProducts() {
@@ -190,18 +193,20 @@ object MainVisitableMapper {
         addAll(list)
     }
 
-    fun MutableList<Visitable<*>>.addDivider() {
+    fun MutableList<Visitable<*>>.addDivider(): MutableList<Visitable<*>> {
         add(TokoNowDividerUiModel())
+        return this
     }
 
     fun MutableList<Visitable<*>>.addTitle(
         title: String
-    ) {
+    ): MutableList<Visitable<*>> {
         add(
             TokoNowTitleUiModel(
                 title = title
             )
         )
+        return this
     }
 
     fun MutableList<Visitable<*>>.addEmptyStockProducts() {
