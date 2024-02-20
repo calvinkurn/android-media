@@ -290,8 +290,7 @@ open class HomeAccountUserFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val label = getLabelProfileManagement()
-        homeAccountAnalytic.sendViewOnAkunSayaPageEvent(label)
+        homeAccountAnalytic.sendViewOnAkunSayaPageEvent()
 
         binding?.homeAccountUserToolbar?.let {
             it.setIcon(
@@ -369,17 +368,8 @@ open class HomeAccountUserFragment :
         }
     }
 
-    private fun getLabelProfileManagement(): String {
-        return if (DeeplinkMapperUser.isProfileManagementM2Activated()) {
-            AccountConstants.Analytics.Label.LABEL_M2
-        } else {
-            AccountConstants.Analytics.Label.LABEL_EMPTY
-        }
-    }
-
     override fun onProfileClicked() {
-        val label = getLabelProfileManagement()
-        homeAccountAnalytic.eventClickProfile(label)
+        homeAccountAnalytic.eventClickProfile()
     }
 
     override fun onIconWarningClicked(profile: ProfileDataView) {
@@ -387,8 +377,7 @@ open class HomeAccountUserFragment :
     }
 
     override fun onEditProfileClicked() {
-        val label = getLabelProfileManagement()
-        homeAccountAnalytic.eventClickProfile(label)
+        homeAccountAnalytic.eventClickProfile()
         goToEditProfile()
     }
 

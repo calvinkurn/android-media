@@ -265,12 +265,11 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4103
     // Tracker ID: 45930
-    fun sendViewOnAkunSayaPageEvent (eventLabel: String) {
+    fun sendViewOnAkunSayaPageEvent () {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_ON_ACCOUNT_SAYA_PAGE)
             .setEventCategory(CATEGORY_ACCOUNT_BUYER)
-            .setEventLabel(eventLabel)
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_45930)
             .setBusinessUnit(USER_PLATFORM_UNIT)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE_SITE)
@@ -278,13 +277,13 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
             .send()
     }
 
-    fun eventClickProfile(label: String) {
+    fun eventClickProfile() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
             CATEGORY_ACCOUNT_BUYER,
             ACTION_CLICK_PROFILE,
-            label
+            ""
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
