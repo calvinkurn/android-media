@@ -382,7 +382,8 @@ class PromoUsageViewModel @Inject constructor(
     fun loadPromoListWithPreSelectedGopayLaterPromo(
         promoRequest: PromoRequest? = null,
         chosenAddress: ChosenAddress? = null,
-        attemptedPromoCode: String = ""
+        attemptedPromoCode: String = "",
+        autoApplyImpressionTrackerEnable: Boolean = false
     ) {
         _promoPageUiState.postValue(PromoPageUiState.Initial)
         loadPromoList(
@@ -405,17 +406,18 @@ class PromoUsageViewModel @Inject constructor(
                         } as? PromoItem
                 } as? PromoItem
                 if (gopayLaterPromo != null) {
-                    autoApplyTracker(gopayLaterPromo)
+                    autoApplyTracker(gopayLaterPromo, autoApplyImpressionTrackerEnable)
                     onClickPromo(gopayLaterPromo)
                 }
             }
         }
     }
 
-    private fun autoApplyTracker(gopayItem: PromoItem) {
+    private fun autoApplyTracker(gopayItem: PromoItem, autoApplyImpressionTrackerEnable: Boolean) {
         if (gopayItem.state is PromoItemState.Normal &&
             gopayItem.isPromoGopayLater &&
-            !gopayItem.isPromoCtaRegisterGopayLater
+            !gopayItem.isPromoCtaRegisterGopayLater &&
+            autoApplyImpressionTrackerEnable
         ) {
             _autoApplyAction.postValue(gopayItem)
         }

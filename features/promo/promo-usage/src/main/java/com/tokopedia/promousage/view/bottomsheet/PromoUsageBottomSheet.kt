@@ -86,7 +86,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
@@ -203,7 +206,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 arguments?.getParcelable<ChosenAddress>(BUNDLE_KEY_CHOSEN_ADDRESS)
             viewModel.loadPromoListWithPreSelectedGopayLaterPromo(
                 promoRequest = promoRequest,
-                chosenAddress = chosenAddress
+                chosenAddress = chosenAddress,
+                autoApplyImpressionTrackerEnable = getEnableSendAutoApplyTracker()
             )
         }
     private var loaderDialog: LoaderDialog? = null
@@ -1246,6 +1250,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         )
 
         fun onClearPromoFailed(throwable: Throwable)
+    }
+
+    private fun getEnableSendAutoApplyTracker(): Boolean {
+        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context?.applicationContext)
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_AUTO_APPLY_PROMO_TRACKER, false)
     }
 
     // region Tracker
