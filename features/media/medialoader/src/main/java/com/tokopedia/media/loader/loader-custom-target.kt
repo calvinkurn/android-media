@@ -45,7 +45,7 @@ fun String.getBitmapImageUrl(
 
 fun String.getBitmapFromUrl(
     context: Context,
-    timeout: Long = 10_000, // 10 sec
+    timeout: Long = 2500, // 2.5 sec
     properties: Properties.() -> Unit = {}
 ): Bitmap? {
     return MediaLoaderTarget.loadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
@@ -87,6 +87,34 @@ fun View.loadImageBackground(
                 this.background = it.toDrawable(this.resources)
             }
         )
+    )
+}
+
+fun Int.loadResource(
+    context: Context,
+    properties: Properties.() -> Unit = {},
+    target: MediaBitmapEmptyTarget<Bitmap> = MediaBitmapEmptyTarget()
+) {
+    MediaLoaderTarget.loadImage(
+        context,
+        Properties()
+            .apply(properties)
+            .setSource(this),
+        target
+    )
+}
+
+fun Bitmap.loadResource(
+    context: Context,
+    properties: Properties.() -> Unit = {},
+    target: MediaBitmapEmptyTarget<Bitmap> = MediaBitmapEmptyTarget()
+) {
+    MediaLoaderTarget.loadImage(
+        context,
+        Properties()
+            .apply(properties)
+            .setSource(this),
+        target
     )
 }
 

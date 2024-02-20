@@ -62,3 +62,10 @@ internal fun GlideRequest<Bitmap>.transition(properties: Properties): GlideReque
     }
     return this
 }
+
+internal fun GlideRequest<Bitmap>.timeout(properties: Properties): GlideRequest<Bitmap> {
+    properties.timeoutMS?.let {
+        this.timeout(it)
+    }
+    return this
+}

@@ -18,6 +18,7 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.media.loader.utils.transition
 import com.tokopedia.media.loader.utils.mediaLoad
+import com.tokopedia.media.loader.utils.timeout
 import java.util.concurrent.TimeUnit
 
 object MediaLoaderTarget {
@@ -62,6 +63,7 @@ object MediaLoaderTarget {
             .commonOptions(properties)
             .dynamicPlaceHolder(context, properties)
             .thumbnail(setThumbnailUrl(context, properties))
+            .timeout(properties)
             .listener(
                 MediaListenerBuilder(
                     context,

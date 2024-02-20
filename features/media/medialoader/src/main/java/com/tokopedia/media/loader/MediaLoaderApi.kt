@@ -17,6 +17,7 @@ import com.tokopedia.media.loader.utils.delayInto
 import com.tokopedia.media.loader.utils.isValidUrl
 import com.tokopedia.media.loader.utils.loadLookup
 import com.tokopedia.media.loader.utils.mediaLoad
+import com.tokopedia.media.loader.utils.timeout
 import com.tokopedia.media.loader.utils.transition
 
 internal object MediaLoaderApi {
@@ -58,6 +59,7 @@ internal object MediaLoaderApi {
             .dynamicPlaceHolder(context, properties)
             .thumbnail(setThumbnailUrl(context, properties))
             .transition(properties)
+            .timeout(properties)
             .listener(
                 MediaListenerBuilder<Bitmap>(
                     context,

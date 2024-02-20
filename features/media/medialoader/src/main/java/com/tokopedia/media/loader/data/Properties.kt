@@ -43,7 +43,8 @@ data class Properties(
     internal var userId: String = "",
     internal var shouldTrackNetwork: Boolean = false,
     internal var isForceClearHeaderCache: Boolean = false,
-    internal var setNetworkResponse: NetworkResponseListener? = null
+    internal var setNetworkResponse: NetworkResponseListener? = null,
+    internal var timeoutMS: Int? = null
 ) {
 
     /*
@@ -261,6 +262,8 @@ data class Properties(
     // accessToken and userId used to load the secure image using [loadSecureImage]
     fun userSessionAccessToken(token: String) = apply { this.accessToken = token }
     fun userId(userId: String) = apply { this.userId = userId }
+
+    fun setTimeout(timeoutMS: Int) = apply { this.timeoutMS = timeoutMS }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
