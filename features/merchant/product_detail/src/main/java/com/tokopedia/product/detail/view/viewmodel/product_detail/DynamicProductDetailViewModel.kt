@@ -520,6 +520,10 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     fun getStayAnalyticsData(): TrackStayProductDetail {
         val p1 = getDynamicProductInfoP1
+        val mainCount = mainPhotoViewed.count()
+        mainPhotoViewed.clear()
+        val skuCount = skuPhotoViewed.count()
+        skuPhotoViewed.clear()
         return TrackStayProductDetail(
             productId = p1?.parentProductId.orEmpty(),
             productCategory = p1?.basic?.category?.name.orEmpty(),
@@ -528,8 +532,8 @@ class DynamicProductDetailViewModel @Inject constructor(
             salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
             isSingleSku = p1?.data?.variant?.isVariant != true,
-            mainPhotoViewCount = mainPhotoViewed.count(),
-            skuPhotoViewCount = skuPhotoViewed.count(),
+            mainPhotoViewCount = mainCount,
+            skuPhotoViewCount = skuCount,
             isAddCartSelected = hasDoneAddToCart
         )
     }
