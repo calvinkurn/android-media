@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -37,11 +36,9 @@ interface ActionListener {
 
     fun onWishlistImpression()
 
-    fun onRecentViewProductClicked(productId: String)
+    fun onRecentViewProductClicked(position: Int, recommendationItem: RecommendationItem)
 
-    fun onRecentViewProductClicked(recommendationItem: RecommendationItem)
-
-    fun onRecentViewImpression()
+    fun onRecentViewImpression(recommendationItems: List<RecommendationItem>)
 
     fun onRecommendationProductClicked(recommendationItem: RecommendationItem)
 
@@ -64,11 +61,12 @@ interface ActionListener {
     fun scrollToClickedExpandedProduct(index: Int, offset: Int)
 
     fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
+
     fun onToggleUnavailableItemAccordion()
 
     fun onDisabledCartItemProductClicked(cartItemHolderData: CartItemHolderData)
 
-    fun onRecentViewProductImpression(element: CartRecentViewItemHolderData)
+    fun onRecentViewProductImpression(position: Int, recommendationItem: RecommendationItem)
 
     fun onGlobalDeleteClicked()
 

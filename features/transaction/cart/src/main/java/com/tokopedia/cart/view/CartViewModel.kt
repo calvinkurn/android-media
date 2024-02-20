@@ -50,7 +50,6 @@ import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
 import com.tokopedia.cart.view.uimodel.CartModel
 import com.tokopedia.cart.view.uimodel.CartMutableLiveData
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectedAmountHolderData
@@ -124,7 +123,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
@@ -421,9 +419,9 @@ class CartViewModel @Inject constructor(
 
     fun hasReachAllShopItems(data: Any): Boolean {
         return data is CartRecentViewHolderData ||
-                data is CartWishlistHolderData ||
-                data is CartTopAdsHeadlineData ||
-                data is CartRecommendationItemHolderData
+            data is CartWishlistHolderData ||
+            data is CartTopAdsHeadlineData ||
+            data is CartRecommendationItemHolderData
     }
 
     fun processToUpdateAndReloadCartData(
@@ -969,8 +967,8 @@ class CartViewModel @Inject constructor(
                 recommendationWidgetMetadata = RecommendationWidgetMetadata(
                     pageNumber = 1,
                     pageName = PAGE_NAME_RECENT_VIEW,
-//                    xSource = RECENT_VIEW_XSOURCE,
-                    productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
+                    xSource = RECENT_VIEW_XSOURCE,
+                    productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value)
                 )
             )
             cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
@@ -1032,7 +1030,8 @@ class CartViewModel @Inject constructor(
                         xSource = "recom_widget",
                         pageName = "cart",
                         productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
-                        queryParam = ""
+                        queryParam = "",
+                        hasNewProductCardEnabled = true
                     )
                 )
                 withContext(dispatchers.main) {
@@ -1296,13 +1295,13 @@ class CartViewModel @Inject constructor(
     }
 
     fun generateRecentViewDataImpressionAnalytics(
-        cartRecentViewItemHolderDataList: List<CartRecentViewItemHolderData>,
+        recommendationItems: List<RecommendationItem>,
         isEmptyCart: Boolean
     ): Map<String, Any> {
         val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
-            for ((position, cartRecentViewItemHolderData) in cartRecentViewItemHolderDataList.withIndex()) {
+            for ((position, recommendationItem) in recommendationItems.withIndex()) {
                 val enhancedECommerceProductCartMapData = getProductRecentViewImpressionMapData(
-                    cartRecentViewItemHolderData,
+                    recommendationItem,
                     isEmptyCart,
                     position
                 )
@@ -1315,14 +1314,14 @@ class CartViewModel @Inject constructor(
     }
 
     private fun getProductRecentViewImpressionMapData(
-        recentViewItemHolderData: CartRecentViewItemHolderData,
+        recommendationItem: RecommendationItem,
         isEmptyCart: Boolean,
         position: Int
     ): EnhancedECommerceProductCartMapData {
         return EnhancedECommerceProductCartMapData().apply {
-            setProductID(recentViewItemHolderData.id)
-            setProductName(recentViewItemHolderData.name)
-            setPrice(recentViewItemHolderData.price.replace(REGEX_NUMBER, ""))
+            setProductID(recommendationItem.productId.toString())
+            setProductName(recommendationItem.name)
+            setPrice(recommendationItem.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -1544,9 +1543,9 @@ class CartViewModel @Inject constructor(
             productPrice = productModel.price
             quantity = productModel.minOrder
             externalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
-        } else if (productModel is CartRecentViewItemHolderData) {
-            productId = productModel.id.toLongOrZero()
-            shopId = productModel.shopId.toIntOrZero()
+        } else if (productModel is RecommendationItem) {
+            productId = productModel.productId.toString().toLongOrZero()
+            shopId = productModel.shopId.toString().toIntOrZero()
             productName = productModel.name
             productPrice = productModel.price
             quantity = productModel.minOrder
@@ -1662,7 +1661,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun generateAddToCartEnhanceEcommerceDataLayer(
-        cartRecentViewItemHolderData: CartRecentViewItemHolderData,
+        recommendationItem: RecommendationItem,
         addToCartDataResponseModel: AddToCartDataModel,
         isCartEmpty: Boolean
     ): Map<String, Any> {
@@ -1671,13 +1670,13 @@ class CartViewModel @Inject constructor(
             setList(if (isCartEmpty) EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART else EnhancedECommerceActionField.LIST_RECENT_VIEW)
         }
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductName(cartRecentViewItemHolderData.name)
-            setProductID(cartRecentViewItemHolderData.id)
-            setPrice(cartRecentViewItemHolderData.price)
-            setQty(cartRecentViewItemHolderData.minOrder)
-            setDimension52(cartRecentViewItemHolderData.shopId)
-            setDimension57(cartRecentViewItemHolderData.shopName)
-            setDimension59(cartRecentViewItemHolderData.shopType)
+            setProductName(recommendationItem.name)
+            setProductID(recommendationItem.productId.toString())
+            setPrice(recommendationItem.price)
+            setQty(recommendationItem.minOrder)
+            setDimension52(recommendationItem.shopId.toString())
+            setDimension57(recommendationItem.shopName)
+            setDimension59(recommendationItem.shopType)
             setDimension77(addToCartDataResponseModel.data.cartId)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategoryId("")
@@ -1760,13 +1759,13 @@ class CartViewModel @Inject constructor(
     }
 
     fun generateRecentViewProductClickEmptyCartDataLayer(
-        cartRecentViewItemHolderData: CartRecentViewItemHolderData,
+        recommendationItem: RecommendationItem,
         position: Int
     ): Map<String, Any> {
         val enhancedECommerceProductData = EnhancedECommerceProductData().apply {
-            setProductID(cartRecentViewItemHolderData.id)
-            setProductName(cartRecentViewItemHolderData.name)
-            setPrice(cartRecentViewItemHolderData.price.replace(REGEX_NUMBER, ""))
+            setProductID(recommendationItem.productId.toString())
+            setProductName(recommendationItem.name)
+            setPrice(recommendationItem.price.replace(REGEX_NUMBER, ""))
             setBrand(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setPosition(position.toString())
@@ -1805,7 +1804,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun generateRecentViewProductClickDataLayer(
-        cartRecentViewItemHolderData: CartRecentViewItemHolderData,
+        recommendationItem: RecommendationItem,
         position: Int
     ): Map<String, Any> {
         val stringObjectMap = HashMap<String, Any>()
@@ -1813,9 +1812,9 @@ class CartViewModel @Inject constructor(
             setList(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
         }
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductName(cartRecentViewItemHolderData.name)
-            setProductID(cartRecentViewItemHolderData.id)
-            setPrice(cartRecentViewItemHolderData.price.replace(REGEX_NUMBER, ""))
+            setProductName(recommendationItem.name)
+            setProductID(recommendationItem.productId.toString())
+            setPrice(recommendationItem.price.replace(REGEX_NUMBER, ""))
             setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -2349,7 +2348,7 @@ class CartViewModel @Inject constructor(
         val hasCheckedBundleProduct = cartGroupHolderData.productUiModelList
             .any { it.isSelected && it.isBundlingItem && it.bundleIds.isNotEmpty() }
         return cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
-                hasCheckedProductWithBundle && !hasCheckedBundleProduct
+            hasCheckedProductWithBundle && !hasCheckedBundleProduct
     }
 
     fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
@@ -2533,7 +2532,7 @@ class CartViewModel @Inject constructor(
                 ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
                 ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
                 ConstantTransactionAnalytics.Key.DIMENSION40 to
-                        ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
+                    ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
                 ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
                 ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
             )
@@ -2667,24 +2666,6 @@ class CartViewModel @Inject constructor(
                 break@outerloop
             }
         }
-    }
-
-    fun updateRecentViewData(productId: String, isWishlist: Boolean) {
-//        outerloop@ for (any in cartDataList.value) {
-//            if (any is CartRecentViewHolderData) {
-//                val recentViews = any.recentViewList
-//                for (data in recentViews) {
-//                    if (data.id == productId) {
-//                        data.isWishlist = isWishlist
-//                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(
-//                            recentViews.indexOf(data)
-//                        )
-//                        break@outerloop
-//                    }
-//                }
-//                break@outerloop
-//            }
-//        }
     }
 
     fun removeWishlist(productId: String) {

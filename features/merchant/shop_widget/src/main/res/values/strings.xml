@@ -37,4 +37,5 @@
     <string name="bmsm_widget_text_see_all">Lihat Semua</string>
     <string name="bmsm_widget_oos_product_title">Barang promosi sudah habis</string>
     <string name="bmsm_widget_oos_product_description">Kamu tetap bisa cek barang lain atau promosi di toko ini.</string>
+    <string name="bmsm_widget_gift_oos_description">Hadiah promosi ini habis, tapi kamu tetap bisa belanja barang di bawah ini</string>
 </resources>

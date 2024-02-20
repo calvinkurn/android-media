@@ -7,6 +7,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.VoucherOrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
@@ -18,6 +19,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 
 object LastApplyMapper {
+
+    private const val TYPE_PROMO_MV = "mv"
 
     fun mapPromo(promo: PromoSAFResponse): OrderPromo {
         return OrderPromo(
@@ -98,6 +101,37 @@ object LastApplyMapper {
         return PromoCheckoutErrorDefault(
             promo.errorDefault.title,
             promo.errorDefault.description
+        )
+    }
+
+    fun mapPromoExternalAutoApply(
+        promoAutoApply: ArrayList<PromoExternalAutoApply>,
+        promoSaf: PromoSAFResponse,
+        uniqueId: String
+    ): OrderPromo {
+        return OrderPromo(
+            lastApply = mapExternalPromoAsLastApply(promoAutoApply, promoSaf, uniqueId),
+            promoErrorDefault = mapPromoErrorDefault(promoSaf)
+        )
+    }
+
+    private fun mapExternalPromoAsLastApply(
+        listPromoAutoApply: ArrayList<PromoExternalAutoApply>,
+        promoSaf: PromoSAFResponse,
+        uniqueId: String
+    ): LastApplyUiModel {
+        val (listGlobalVoucher, listMerchantVoucher) = listPromoAutoApply.partition { it.type != TYPE_PROMO_MV }
+
+        return LastApplyUiModel(
+            codes = listGlobalVoucher.map { it.code },
+            userGroupMetadata = promoSaf.lastApply.data.userGroupMetadata,
+            voucherOrders = listMerchantVoucher.map {
+                LastApplyVoucherOrdersItemUiModel(
+                    code = it.code,
+                    uniqueId = uniqueId,
+                    type = TYPE_PROMO_MV
+                )
+            }
         )
     }
 }

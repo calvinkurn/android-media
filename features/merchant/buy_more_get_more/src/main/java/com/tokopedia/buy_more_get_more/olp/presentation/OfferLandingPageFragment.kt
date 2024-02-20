@@ -848,6 +848,11 @@ class OfferLandingPageFragment :
             setViewState(VIEW_ERROR, Status.OFFER_ENDED)
             return
         }
+        tracker.sendClickHadiahEntryEvent(
+            offerId = currentState.offerIds.firstOrNull().toString(),
+            warehouseId = currentState.warehouseIds.toSafeString(),
+            shopId = currentState.shopData.shopId.toString()
+        )
         viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
     }
 

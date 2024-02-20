@@ -7,6 +7,6 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
  */
 
 data class CartRecentViewHolderData(
-//    var hasSentImpressionAnalytics: Boolean = false,
+    var hasSentImpressionAnalytics: Boolean = false,
     val recommendationWidgetMetadata: RecommendationWidgetMetadata = RecommendationWidgetMetadata(),
 )

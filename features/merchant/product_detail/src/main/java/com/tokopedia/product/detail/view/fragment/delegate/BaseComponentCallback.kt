@@ -31,6 +31,9 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
     protected val queueTracker
         get() = mediator.queueTracker
 
+    protected val childFragmentManager
+        get() = mediator.rootView.childFragmentManager
+
     val impressionHolders
         get() = viewModel.impressionHolders
 

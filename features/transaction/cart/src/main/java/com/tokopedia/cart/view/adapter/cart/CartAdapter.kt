@@ -20,7 +20,6 @@ import com.tokopedia.cart.databinding.ItemGroupRevampBinding
 import com.tokopedia.cart.databinding.ItemSelectedAmountBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.diffutil.CartDiffUtilCallback
-import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.customview.CartViewBinderHelper
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
@@ -75,7 +74,6 @@ class CartAdapter(
     private var compositeSubscription = CompositeSubscription()
 
     var cartWishlistAdapter: CartWishlistAdapter? = null
-    private var cartRecentViewAdapter: CartRecentViewAdapter? = null
 
     private var plusCoachMark: CoachMark2? = null
     private var mainCoachMark: CartMainCoachMarkUiModel = CartMainCoachMarkUiModel()
@@ -315,7 +313,6 @@ class CartAdapter(
             CartRecentViewViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartRecentViewHolderData
                 (holder as CartRecentViewViewHolder).bind(data)
-                cartRecentViewAdapter = holder.recentViewAdapter
             }
 
             CartWishlistViewHolder.LAYOUT -> {

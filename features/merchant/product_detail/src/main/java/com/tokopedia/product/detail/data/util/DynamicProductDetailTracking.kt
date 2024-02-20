@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_SHARE_AFFILIATE_ICON
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_SHARE_REGULER
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionAction
@@ -20,7 +21,6 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
@@ -1609,6 +1609,8 @@ object DynamicProductDetailTracking {
             val dimension113 = if (affiliateUniqueId.isNotBlank()) "$affiliateUniqueId - $uuid" else ""
             val dimension120 = "$buyerDistrictId - $sellerDistrictId"
 
+            val dimension72 = generateDimension72Price(productInfo)
+
             val categoryFormatted = TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail)
 
             arrayListOf(
@@ -1635,9 +1637,24 @@ object DynamicProductDetailTracking {
                     dimension113 = dimension113,
                     dimension120 = dimension120,
                     dimension137 = offerId,
+                    dimension72 = dimension72,
                     index = 1
                 )
             )
+        }
+
+        private fun generateDimension72Price(productInfo: DynamicProductInfoP1?): String {
+            val data = productInfo?.data ?:  ComponentData()
+            val slashPrice = data.price.slashPriceFmt
+            val defaultPrice = data.price.priceFmt
+
+            val couponPrice = productInfo?.data?.promoPrice?.promoPriceFmt.orEmpty().run {
+                ifEmpty {
+                    "null"
+                }
+            }
+
+            return "default_price:$defaultPrice; slash_price:$slashPrice; coupon_price:$couponPrice;"
         }
 
         private val generateProductViewBundle = { irisSessionId: String, trackerListName: String?,
