@@ -25,6 +25,7 @@ class OwocAddonsViewHolder(
     }
 
     override fun bind(element: OwocAddonsListUiModel?) {
+        registerAddOnSummaryDelegate(this)
         bindAddonSummary(element?.addOnSummaryUiModel)
     }
 
@@ -33,7 +34,10 @@ class OwocAddonsViewHolder(
             if (it is Pair<*, *>) {
                 val (oldItem, newItem) = it
                 if (oldItem is OwocAddonsListUiModel && newItem is OwocAddonsListUiModel) {
-                    if (oldItem != newItem) bindAddonSummary(element?.addOnSummaryUiModel)
+                    if (oldItem != newItem) {
+                        registerAddOnSummaryDelegate(this)
+                        bindAddonSummary(element?.addOnSummaryUiModel)
+                    }
                     return
                 }
             }
