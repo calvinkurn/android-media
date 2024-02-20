@@ -2,6 +2,7 @@ package com.tokopedia.media.loader
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.view.View
 import androidx.core.graphics.drawable.toDrawable
 import com.tokopedia.media.loader.data.Properties
@@ -10,6 +11,8 @@ import com.tokopedia.media.loader.utils.MediaTarget
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+
+private const val DEFAULT_TIMEOUT_MS = 2_500L // 2.5 sec
 
 fun String.getBitmapImageUrl(
     context: Context,
@@ -45,7 +48,15 @@ fun String.getBitmapImageUrl(
 
 fun String.getBitmapFromUrl(
     context: Context,
-    timeout: Long = 2500, // 2.5 sec
+    timeout: Long = DEFAULT_TIMEOUT_MS,
+    properties: Properties.() -> Unit = {}
+): Bitmap? {
+    return MediaLoaderTarget.loadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
+}
+
+fun Uri.getBitmapFromUrl(
+    context: Context,
+    timeout: Long = DEFAULT_TIMEOUT_MS,
     properties: Properties.() -> Unit = {}
 ): Bitmap? {
     return MediaLoaderTarget.loadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
