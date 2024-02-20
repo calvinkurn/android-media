@@ -6,6 +6,7 @@ import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepos
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_KEY
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.productTab
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
@@ -47,6 +48,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -122,6 +124,26 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 _reviewContentState.value.reviewContent[_reviewPosition.value]
             }
         }
+    private val currentTabPosition = MutableStateFlow(-1)
+    private val currentProductMediaPosition: Int
+        get() {
+            val position = _productMediaState.value.productMedia.indexOfFirst { it.selected }
+            return if (position < 0) 0 else position
+        }
+    private val currentReviewMediaPosition: Int
+        get() {
+            val position = currentReview.medias.indexOfFirst { it.selected }
+            return if (position < 0) 0 else position
+        }
+    private val currentProductMediaSize: Int
+        get() {
+            return _productMediaState.value.productMedia.size
+        }
+    private val currentReviewMediaSize: Int
+        get() {
+            return currentReview.medias.size
+        }
+    private var isAutoHorizontalScrollStarted = false
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
@@ -136,7 +158,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
             is ReviewMediaSelected -> handleReviewMediaSelected(action.position)
-            is TabSelected -> handleTabSelected(action.position)
+            is TabSelected -> handleTabSelected(action.position, action.isScrolling)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
             is ProductAction -> addToChart(action.model)
             is Navigate -> handleNavigate(action.appLink)
@@ -163,6 +185,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun updateProductMainDataSource(source: ProductSourceData) {
         _productMediaState.update { it.copy(productMedia = source.productSourceList) }
+        if (!isAutoHorizontalScrollStarted) handleAutoHorizontalScrollContent()
     }
 
     private fun updateTabProductSource(source: ProductSourceData) {
@@ -224,23 +247,16 @@ class ProductPreviewViewModel @AssistedInject constructor(
         updateReviewContentScrollingState(position, isScrolling)
     }
 
-    private fun handleReviewMediaSelected(position: Int) {
-        val currentPos = currentReview.medias.indexOfFirst { it.selected }
-        if (currentPos < 0 || currentPos == position) return
-
+    private fun handleReviewMediaSelected(mediaPosition: Int) {
         _reviewContentState.update { reviewUiModel ->
             reviewUiModel.copy(
                 reviewContent = reviewUiModel.reviewContent.mapIndexed { indexContent, reviewContent ->
                     if (indexContent == _reviewPosition.value) {
                         reviewContent.copy(
                             medias = reviewContent.medias.mapIndexed { indexMedia, reviewMedia ->
-                                reviewMedia.copy(selected = indexMedia == position)
+                                reviewMedia.copy(selected = indexMedia == mediaPosition)
                             },
-                            mediaSelectedPosition = if (indexContent == position) {
-                                indexContent
-                            } else {
-                                reviewContent.mediaSelectedPosition
-                            }
+                            mediaSelectedPosition = mediaPosition
                         )
                     } else {
                         reviewContent
@@ -252,8 +268,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
         emitTrackAllHorizontalScrollEvent()
     }
 
-    private fun handleTabSelected(position: Int) {
-        emitTrackAllHorizontalScrollEvent()
+    private fun handleTabSelected(position: Int, isScrolling: Boolean) {
+        currentTabPosition.value = position
+        if (isScrolling) emitTrackAllHorizontalScrollEvent()
     }
 
     private fun handleFetchReviewByIds() {
@@ -263,13 +280,13 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val ids = listOf(reviewSourceId)
             val response = repo.getReviewByIds(ids = ids)
             _reviewContentState.update { review ->
-                val reviewList = response.reviewContent.mapIndexed { index, review ->
-                    if (index == 0 && review.reviewId == reviewSourceId) {
-                        review.copy(
+                val reviewList = response.reviewContent.mapIndexed { index, reviewContent ->
+                    if (index == 0 && reviewContent.reviewId == reviewSourceId) {
+                        reviewContent.copy(
                             mediaSelectedPosition = getMediaSourcePosition(response.reviewContent)
                         )
                     } else {
-                        review
+                        reviewContent
                     }
                 }
                 review.copy(
@@ -278,6 +295,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 )
             }
 
+            if (!isAutoHorizontalScrollStarted) handleAutoHorizontalScrollContent()
             handleFetchReview(isRefresh = false, page = 1)
         }, onError = {
                 _reviewContentState.update { review ->
@@ -309,6 +327,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
             _reviewContentState.update { review ->
                 review.copy(reviewContent = newList, reviewPaging = response.reviewPaging)
             }
+
+            if (!isAutoHorizontalScrollStarted) handleAutoHorizontalScrollContent()
         }) {
             _reviewContentState.update { review ->
                 review.copy(
@@ -318,6 +338,42 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 )
             }
         }
+    }
+
+    private fun handleAutoHorizontalScrollContent() {
+        isAutoHorizontalScrollStarted = true
+        val loop = true // add state that will control auto scroll
+        viewModelScope.launchCatchError(block = {
+            val tabData = _tabContentState.value.tabs
+            while (loop) {
+                delay(DELAY_3SECOND)
+
+                if (tabData[currentTabPosition.value].key == TAB_PRODUCT_KEY) {
+                    if (currentProductMediaPosition.plus(1) < currentProductMediaSize) {
+                        val position = currentProductMediaPosition.plus(1)
+                        handleProductMediaSelected(position)
+                    } else {
+                        val position = 0
+                        handleProductMediaSelected(position)
+                    }
+                } else {
+                    if (currentReviewMediaSize < 2) return@launchCatchError
+                    if (currentReviewMediaPosition.plus(1) < currentReviewMediaSize) {
+                        val position = currentReviewMediaPosition.plus(1)
+                        handleReviewMediaSelected(position)
+                    } else {
+                        val position = 0
+                        handleReviewMediaSelected(position)
+                    }
+                }
+            }
+        }) { _ ->
+            // disable autoscroll
+        }
+    }
+
+    companion object {
+        const val DELAY_3SECOND = 3000L
     }
 
     private fun emitTrackAllHorizontalScrollEvent() {

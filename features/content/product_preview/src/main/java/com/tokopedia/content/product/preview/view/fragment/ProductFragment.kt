@@ -114,7 +114,8 @@ class ProductFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        setupObservers()
+
+        observeData()
     }
 
     private fun setupViews() {
@@ -140,7 +141,7 @@ class ProductFragment @Inject constructor(
         }
     }
 
-    private fun setupObservers() {
+    private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, currState) ->
                 renderMedia(
@@ -168,6 +169,10 @@ class ProductFragment @Inject constructor(
             val autoScrollPosition = getSelectedItemPosition(state)
             binding.rvMediaProduct.scrollToPosition(autoScrollPosition)
             autoScrollFirstOpenMedia = false
+        } else {
+            val autoScrollPosition = state.indexOfFirst { it.selected }
+            val exactPosition = if (autoScrollPosition < 0) 0 else autoScrollPosition
+            binding.rvMediaProduct.smoothScrollToPosition(exactPosition)
         }
     }
 
@@ -183,6 +188,10 @@ class ProductFragment @Inject constructor(
         if (autoScrollFirstOpenThumbnail) {
             binding.rvThumbnailProduct.scrollToPosition(position)
             autoScrollFirstOpenThumbnail = false
+        } else {
+            val autoScrollPosition = state.indexOfFirst { it.selected }
+            val exactPosition = if (autoScrollPosition < 0) 0 else autoScrollPosition
+            binding.rvMediaProduct.smoothScrollToPosition(exactPosition)
         }
 
         if (state[position].variantName.isEmpty()) {

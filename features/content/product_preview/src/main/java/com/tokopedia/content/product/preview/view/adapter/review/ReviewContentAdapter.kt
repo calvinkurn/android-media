@@ -5,6 +5,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter.Payload.Like
+import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter.Payload.MediaDataChanged
+import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter.Payload.ScrollingChanged
+import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter.Payload.WatchMode
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
@@ -45,23 +49,13 @@ class ReviewContentAdapter(
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position)
         } else {
+            val viewHolder = (holder as ReviewContentViewHolder)
             payloads.forEach {
                 when (val payload = it) {
-                    is Payload.Like -> {
-                        (holder as ReviewContentViewHolder).bindLike(payload.state)
-                    }
-
-                    is Payload.WatchMode -> {
-                        (holder as ReviewContentViewHolder).bindWatchMode(payload.isWatchMode)
-                    }
-
-                    is Payload.MediaDataChanged -> {
-                        (holder as ReviewContentViewHolder).bindMediaDataChanged(payload.mediaData)
-                    }
-
-                    is Payload.ScrollingChanged -> {
-                        (holder as ReviewContentViewHolder).bindScrolling(payload.isScrolling)
-                    }
+                    is Like -> viewHolder.bindLike(payload.state)
+                    is WatchMode -> viewHolder.bindWatchMode(payload.isWatchMode)
+                    is MediaDataChanged -> viewHolder.bindMediaDataChanged(payload.mediaData)
+                    is ScrollingChanged -> viewHolder.bindScrolling(payload.isScrolling)
                 }
             }
         }
@@ -107,10 +101,10 @@ class ReviewContentAdapter(
             newItem: ReviewContentUiModel
         ): Any? {
             return when {
-                oldItem.likeState != newItem.likeState -> Payload.Like(newItem.likeState)
-                oldItem.isWatchMode != newItem.isWatchMode -> Payload.WatchMode(newItem.isWatchMode)
-                oldItem.medias != newItem.medias -> Payload.MediaDataChanged(newItem.medias)
-                oldItem.isScrolling != newItem.isScrolling -> Payload.ScrollingChanged(newItem.isScrolling)
+                oldItem.likeState != newItem.likeState -> Like(newItem.likeState)
+                oldItem.isWatchMode != newItem.isWatchMode -> WatchMode(newItem.isWatchMode)
+                oldItem.medias != newItem.medias -> MediaDataChanged(newItem.medias)
+                oldItem.isScrolling != newItem.isScrolling -> ScrollingChanged(newItem.isScrolling)
                 else -> super.getChangePayload(oldItem, newItem)
             }
         }

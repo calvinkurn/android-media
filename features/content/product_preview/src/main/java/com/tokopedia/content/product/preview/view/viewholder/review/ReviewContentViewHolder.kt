@@ -164,6 +164,10 @@ class ReviewContentViewHolder(
 
     fun bindMediaDataChanged(mediaData: List<ReviewMediaUiModel>) {
         reviewMediaAdapter.submitList(mediaData)
+
+        val position = mediaData.indexOfFirst { it.selected }
+        val exactPosition = if (position < 0) 0 else position
+        scrollTo(exactPosition)
     }
 
     private fun bindMedia(
@@ -339,6 +343,11 @@ class ReviewContentViewHolder(
     ) = with(binding.pcReviewContent) {
         setIndicator(mediaSize)
         setCurrentIndicator(mediaSelectedPosition)
+    }
+
+    private fun scrollTo(position: Int) {
+        binding.rvReviewMedia.smoothScrollToPosition(position)
+        binding.pcReviewContent.setCurrentIndicator(position)
     }
 
     override fun onImpressedImage() {

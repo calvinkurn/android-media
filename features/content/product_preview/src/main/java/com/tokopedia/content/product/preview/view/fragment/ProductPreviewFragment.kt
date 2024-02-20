@@ -173,6 +173,7 @@ class ProductPreviewFragment @Inject constructor(
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             updateSelectedTabView(position)
+            viewModel.onAction(ProductPreviewAction.TabSelected(position, false))
         }
 
         override fun onPageScrollStateChanged(state: Int) {
@@ -180,7 +181,7 @@ class ProductPreviewFragment @Inject constructor(
             if (state != SCROLL_STATE_IDLE) return
 
             val position = binding.vpProductPreview.currentItem
-            viewModel.onAction(ProductPreviewAction.TabSelected(position))
+            viewModel.onAction(ProductPreviewAction.TabSelected(position, true))
         }
     }
 
