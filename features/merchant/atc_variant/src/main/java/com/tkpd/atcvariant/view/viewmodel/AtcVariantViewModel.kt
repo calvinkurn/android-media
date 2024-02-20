@@ -520,9 +520,7 @@ class AtcVariantViewModel @Inject constructor(
                     originalPrice = selectedChild?.campaign?.originalPrice.orZero(),
                     salePrice = selectedChild?.price.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
-                    isSkuSelected = false,
                     isSingleSku = false, // always false in atc variant
-                    isAddCartSelected = false,
                     qty = selectedChild?.getFinalMinOrder().orZero().toString(),
                     isHaveAddress = false
                 )
