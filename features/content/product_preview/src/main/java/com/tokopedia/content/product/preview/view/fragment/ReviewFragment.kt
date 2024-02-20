@@ -102,10 +102,7 @@ class ReviewFragment @Inject constructor(
                         val position = getCurrentPosition()
                         viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, true))
                     }
-                    else -> {
-//                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(false))
-                        super.onScrollStateChanged(recyclerView, newState)
-                    }
+                    else -> super.onScrollStateChanged(recyclerView, newState)
                 }
             }
         }
