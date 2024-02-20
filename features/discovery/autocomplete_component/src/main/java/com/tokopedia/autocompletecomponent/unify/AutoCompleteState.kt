@@ -26,6 +26,9 @@ data class AutoCompleteState(
         val dimension90 = Dimension90Utils.getDimension90(parameter)
         val searchTerm = parameter.getOrElse(SearchApiConst.Q) { "" }
 
+        // AppLog Logic
+        var masterIndex = -1
+
         // Ads Logic
         val firstAdsId = resultData.cpmModel.data.getOrNull(0)?.cpm?.cpmShop?.id
         val secondAdsId = resultData.cpmModel.data.getOrNull(1)?.cpm?.cpmShop?.id
@@ -68,10 +71,14 @@ data class AutoCompleteState(
                 } else {
                     it
                 }
+            if (domainModel.isMasterTemplate()) {
+                masterIndex += 1
+            }
             AutoCompleteUnifyDataView(
                 domainModel,
                 searchTerm = searchTerm,
-                dimension90 = dimension90
+                dimension90 = dimension90,
+                appLogIndex = masterIndex
             )
         }
         return copy(resultList = mappedResultList)

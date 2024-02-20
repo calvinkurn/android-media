@@ -16,8 +16,8 @@ import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteM
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteTitleComponent
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.autocompletecomponent.util.AutoCompleteTemplateEnum
-import com.tokopedia.autocompletecomponent.util.routeManagerIntent
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
+import com.tokopedia.autocompletecomponent.util.routeManagerIntent
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.iris.Iris
 import com.tokopedia.nest.principles.utils.tag
@@ -57,6 +57,9 @@ internal fun AutoCompleteScreen(
                 LaunchedEffect(key1 = !item.impressionHolder.impressed, block = {
                     item.impressionHolder.impressed = true
                     item.impress(iris)
+                    if (item.domainModel.isMasterTemplate()) {
+                        viewModel.trackTrendingWordsShow(item)
+                    }
                 })
                 when (item.domainModel.template) {
                     AutoCompleteTemplateEnum.Master.toString() -> {

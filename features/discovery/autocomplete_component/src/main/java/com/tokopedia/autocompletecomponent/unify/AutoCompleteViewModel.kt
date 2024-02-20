@@ -92,11 +92,7 @@ internal class AutoCompleteViewModel @Inject constructor(
 
     private fun updateAppLogData(imprId: String? = null, needNewSessionId: Boolean = false) {
         val currentAppLogData = stateValue.appLogData
-        val newImprId = if (imprId != null) {
-            imprId
-        } else {
-            currentAppLogData.imprId
-        }
+        val newImprId = imprId ?: currentAppLogData.imprId
         val newSessionId = if (needNewSessionId) {
             System.currentTimeMillis()
         } else {
@@ -138,17 +134,37 @@ internal class AutoCompleteViewModel @Inject constructor(
         trackTrendingShow()
     }
 
-    private fun trackTrendingShow() {
+    fun trackTrendingShow() {
         val appLogData = stateValue.appLogData
         AppLogSearch.eventTrendingShow(
             AppLogSearch.TrendingShow(
                 searchPosition = appLogData.enterFrom,
                 searchEntrance = appLogData.searchEntrance,
-                imprId = "", //TODO milhamj
+                imprId = "", // TODO milhamj: wait from BE
                 newSugSessionId = appLogData.newSugSessionId,
                 rawQuery = currentQuery,
                 enterMethod = appLogData.enterMethod,
-                wordsNum = stateValue.resultList.size
+                wordsNum = stateValue.resultList.filter {
+                    it.domainModel.isMasterTemplate()
+                }.size
+            )
+        )
+    }
+
+    fun trackTrendingWordsShow(item: AutoCompleteUnifyDataView) {
+        val appLogData = stateValue.appLogData
+        AppLogSearch.eventTrendingWordsShowSuggestion(
+            AppLogSearch.TrendingWordsShow(
+                searchPosition = appLogData.enterFrom,
+                searchEntrance = appLogData.searchEntrance,
+                groupId = "", // TODO milhamj: wait from BE
+                imprId = "", // TODO milhamj: wait from BE
+                newSugSessionId = appLogData.newSugSessionId,
+                rawQuery = currentQuery,
+                enterMethod = appLogData.enterMethod,
+                sugType = "",
+                wordsContent = item.domainModel.title.text,
+                wordsPosition = item.appLogIndex
             )
         )
     }

@@ -404,11 +404,11 @@ object AppLogSearch {
                 SEARCH_POSITION to searchPosition,
                 SEARCH_ENTRANCE to searchEntrance,
                 IMPR_ID to imprId, // TODO:: Request ID from Suggestion GQL BE
-                NEW_SUG_SESSION_ID to newSugSessionId, // TODO:: Reset every time query is entirely deleted. System.currentTimeMillis()
-                rawQuery to RAW_QUERY, // TODO:: Query from user
+                NEW_SUG_SESSION_ID to newSugSessionId,
+                RAW_QUERY to rawQuery,
                 ENTER_METHOD to enterMethod,
                 WORDS_SOURCE to wordSource,
-                WORDS_NUM to wordsNum, // TODO:: Total number of all suggestion
+                WORDS_NUM to wordsNum,
             )
         )
     }
@@ -420,24 +420,40 @@ object AppLogSearch {
         )
     }
 
-    fun <K, V> eventTrendingWordsShowSuggestion() {
+    data class TrendingWordsShow(
+        val searchPosition: String,
+        val searchEntrance: String,
+        val groupId: String,
+        val imprId: String,
+        val newSugSessionId: Long,
+        val rawQuery: String,
+        val enterMethod: String,
+        val sugType: String,
+        val wordsContent: String,
+        val wordsPosition: Int,
+        val wordSource: String = SUG,
+    ) {
+        fun json() = JSONObject(
+            mapOf(
+                SEARCH_POSITION to searchPosition,
+                SEARCH_ENTRANCE to searchEntrance,
+                GROUP_ID to groupId, // TODO:: Group ID
+                IMPR_ID to imprId, // TODO:: Request ID from Suggestion GQL BE
+                NEW_SUG_SESSION_ID to newSugSessionId,
+                RAW_QUERY to rawQuery,
+                ENTER_METHOD to enterMethod,
+                SUG_TYPE to sugType, // TODO:: CAMPAIGN || PRODUCT || STORE.
+                WORDS_CONTENT to wordsContent,
+                WORDS_POSITION to wordsPosition,
+                WORDS_SOURCE to wordSource
+            )
+        )
+    }
+
+    fun eventTrendingWordsShowSuggestion(trendingWordsShow: TrendingWordsShow) {
         AppLogAnalytics.send(
             TRENDING_WORDS_SHOW,
-            JSONObject(
-                mapOf(
-                    WORDS_SOURCE to "", //TODO:: SUG
-                    WORDS_POSITION to 0, // TODO:: Index of Suggestion words
-                    WORDS_CONTENT to "", // TODO:: Words content
-                    SEARCH_POSITION to "", // TODO:: HOMEPAGE || GOODS_SEARCH || STORE_SEARCH.
-                    SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. Other pages = ""
-                    GROUP_ID to "", // TODO:: Group ID
-                    IMPR_ID to "", // TODO:: Request ID
-                    RAW_QUERY to "", // TODO:: Raw Query
-                    NEW_SUG_SESSION_ID to "", // TODO::  Reset every time query is entirely deleted. System.currentTimeMillis()
-                    SUG_TYPE to "", // TODO:: CAMPAIGN || PRODUCT || STORE.
-                    ENTER_METHOD to "", // TODO:: "ENTER (from home to Initial State to Suggestion) || CLICK_SEARCH_BAR (from SRP)
-                )
-            )
+            trendingWordsShow.json()
         )
     }
 
