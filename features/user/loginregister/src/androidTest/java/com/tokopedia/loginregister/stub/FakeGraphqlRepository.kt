@@ -14,6 +14,7 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
+import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -25,6 +26,7 @@ class FakeGraphqlRepository : GraphqlRepository {
 
     var registerCheckConfig: Config = Config.Default
     var discoverConfig: Config = Config.Default
+    var loginConfig: Config = Config.Default
     var profileConfig: Config = Config.Default
 
     override suspend fun response(
@@ -91,6 +93,19 @@ class FakeGraphqlRepository : GraphqlRepository {
 
             "ticker" -> {
                 GqlMockUtil.createSuccessResponse(TickerInfoData(TickersInfoPojo(listOf())))
+            }
+
+            "login_token_v2" -> {
+                return when (loginConfig) {
+                    is Config.Default -> {
+                        GqlMockUtil.createSuccessResponse(LoginTokenPojoV2())
+                    }
+                    is Config.WithResponse -> {
+                        GqlMockUtil.createSuccessResponse((loginConfig as Config.WithResponse).response as LoginTokenPojoV2)
+                    } else -> {
+                        GqlMockUtil.createSuccessResponse(LoginTokenPojoV2())
+                    }
+                }
             }
 
             "getAdminType" -> {

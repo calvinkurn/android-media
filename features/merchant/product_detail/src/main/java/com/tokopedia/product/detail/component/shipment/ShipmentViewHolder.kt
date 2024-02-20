@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.databinding.ViewShipmentInfoBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentLoadingBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentPlusBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentSuccessBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -29,7 +29,7 @@ import com.tokopedia.unifycomponents.toPx
 
 class ShipmentViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ShipmentUiModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_shipment

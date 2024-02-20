@@ -261,22 +261,22 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private fun checkCreditCardRegisteredForRBA(context: Context) {
         val paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
-        if (paymentType == CashOnDelivery) {
+        if (paymentType == CashOnDelivery || thanksPageData.whitelistedRBA) {
             return
         }
+
         if (::dialogUnify.isInitialized)
             dialogUnify.cancel()
-        if (!thanksPageData.whitelistedRBA)
-            dialogUnify = DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
-                    imageType = DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.thank_single_authentication))
-                setDescription(getString(R.string.thank_enable_single_authentication_easy))
-                setPrimaryCTAText(getString(R.string.thank_activate_it))
-                setSecondaryCTAText(getString(R.string.thank_next_time))
-                setPrimaryCTAClickListener { enableSingleAuthentication() }
-                setSecondaryCTAClickListener { dialogUnify.cancel() }
-                show()
-            }
+        dialogUnify = DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
+            imageType = DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.thank_single_authentication))
+            setDescription(getString(R.string.thank_enable_single_authentication_easy))
+            setPrimaryCTAText(getString(R.string.thank_activate_it))
+            setSecondaryCTAText(getString(R.string.thank_next_time))
+            setPrimaryCTAClickListener { enableSingleAuthentication() }
+            setSecondaryCTAClickListener { dialogUnify.cancel() }
+            show()
+        }
     }
 
     private fun enableSingleAuthentication() {

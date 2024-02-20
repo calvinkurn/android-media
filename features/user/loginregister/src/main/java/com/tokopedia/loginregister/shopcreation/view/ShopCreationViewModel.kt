@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.shopcreation.data.RegisterCheckData
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
@@ -24,14 +23,13 @@ import com.tokopedia.loginregister.shopcreation.domain.ValidateUserProfileUseCas
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
-import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
-import rx.Subscriber
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -135,6 +133,7 @@ open class ShopCreationViewModel @Inject constructor(
                     it.errors.isNotEmpty() && it.errors[0].isNotEmpty() -> {
                         Fail(MessageErrorException(it.errors[0]))
                     }
+
                     else -> {
                         Success(it)
                     }
@@ -156,16 +155,11 @@ open class ShopCreationViewModel @Inject constructor(
     }
 
     fun registerPhoneAndName(phone: String, name: String) {
-        registerUseCase.execute(
-            RegisterUseCase.generateParamRegisterPhoneShopCreation(name, phone),
-            object :
-                Subscriber<GraphqlResponse>() {
-
-                override fun onNext(graphqlResponse: GraphqlResponse?) {
-                    graphqlResponse?.run {
-                        val registerPojo = graphqlResponse
-                            .getData<RegisterPojo>(RegisterPojo::class.java)
-                        val registerInfo = registerPojo.register
+        launch {
+            try {
+                val data = registerUseCase(
+            RegisterUseCase.generateParamRegisterPhoneShopCreation(name, phone))
+                        val registerInfo = data.register
                         when {
                             registerInfo.accessToken.isNotEmpty() &&
                                 registerInfo.refreshToken.isNotEmpty() &&
@@ -181,17 +175,11 @@ open class ShopCreationViewModel @Inject constructor(
                             }
                         }
                     }
-                }
-
-                override fun onCompleted() {}
-
-                override fun onError(e: Throwable?) {
-                    if (e != null) {
+                catch (e: Exception) {
                         _registerPhoneAndName.postValue(Fail(e))
                     }
                 }
-            }
-        )
+
     }
 
     fun getUserProfile() {
@@ -229,14 +217,5 @@ open class ShopCreationViewModel @Inject constructor(
                 _getUserInfoResponse.value = Fail(e)
             }
         }
-    }
-
-    fun clearBackgroundTask() {
-        registerUseCase.unsubscribe()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        clearBackgroundTask()
     }
 }

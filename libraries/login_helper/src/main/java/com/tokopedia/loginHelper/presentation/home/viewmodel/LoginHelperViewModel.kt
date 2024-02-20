@@ -24,6 +24,7 @@ import com.tokopedia.loginHelper.util.exception.ShowLocationAdminPopupException
 import com.tokopedia.loginHelper.util.exception.ShowPopupErrorException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
+import com.tokopedia.sessioncommon.data.model.LoginTokenV2GqlParam
 import com.tokopedia.sessioncommon.data.admin.AdminResult
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
@@ -126,8 +127,14 @@ class LoginHelperViewModel @Inject constructor(
                 if (useHash) {
                     finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
                 }
-                loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
-                val tokenResult = loginTokenV2UseCase.executeOnBackground()
+                val tokenResult = loginTokenV2UseCase(
+                    LoginTokenV2GqlParam(
+                        grantType = TYPE_PASSWORD,
+                        username = email,
+                        password = finalPassword,
+                        hash = keyData.hash
+                    )
+                )
                 LoginV2Mapper(userSession).map(
                     tokenResult.loginToken,
                     onSuccessLoginToken = {
@@ -328,6 +335,9 @@ class LoginHelperViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        loginTokenV2UseCase.cancelJobs()
+    }
+
+    companion object {
+        private val TYPE_PASSWORD: String = "password"
     }
 }

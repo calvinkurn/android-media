@@ -17,6 +17,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
+import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -1400,4 +1401,42 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verify { addToWishlistV2UseCase.setParams(productId, "") }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
+
+    //region promo price
+    @Test
+    fun `render initial variant with promo price and change variant into non promo price`() {
+        `render initial variant with given parent id and hit gql non tokonow`()
+        val visitablesData = (viewModel.initialData.value as Success).data
+
+        assertPromoPrice(
+            visitablesData,
+            PromoPriceUiModel(
+                priceAdditionalFmt = "Harga tanpa kupon: <b>Rp9.000.000</b>",
+                promoPriceFmt = "Rp9.000.000",
+                promoSubtitle = "Diskon 200rb & cashback 300rb",
+                slashPriceFmt = "Rp1.000",
+                separatorColor = "#separatorColor",
+                mainTextColor = "#mainTextColor",
+                cardBackgroundColor = "#backgroundColor",
+                mainIconUrl = "iconURL",
+                boIconUrl = "",
+                superGraphicIconUrl = "image.png",
+                applink = "applink",
+                bottomSheetParam = ""
+            )
+        )
+
+
+        val warnaId = "121018"
+        val merahId = "254081"
+
+        viewModel.onVariantClicked(true, warnaId, merahId, "image variant", 1)
+
+        val visitablesDataAfterChangeVariant = (viewModel.initialData.value as Success).data
+        assertPromoPrice(
+            visitablesDataAfterChangeVariant,
+            null
+        )
+    }
+    //endregion
 }

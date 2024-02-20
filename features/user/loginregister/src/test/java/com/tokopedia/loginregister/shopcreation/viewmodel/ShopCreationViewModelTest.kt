@@ -45,7 +45,6 @@ import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
 
 /**
  * Created by Ade Fulki on 18/01/21.
@@ -324,11 +323,7 @@ class ShopCreationViewModelTest {
 
         viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
 
-        every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
-
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
-        }
+        coEvery { registerUseCase(any()) } returns successRegisterPhoneAndNameResponse
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -347,9 +342,7 @@ class ShopCreationViewModelTest {
 
         every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
 
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
-        }
+        coEvery { registerUseCase(any()) } returns successRegisterPhoneAndNameResponse
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -369,9 +362,7 @@ class ShopCreationViewModelTest {
 
         every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
 
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
-        }
+        coEvery { registerUseCase(any()) } returns successRegisterPhoneAndNameResponse
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -382,9 +373,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed register phone and name`() {
         viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onError(throwable)
-        }
+        coEvery { registerUseCase(any()) } throws throwable
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -393,18 +382,6 @@ class ShopCreationViewModelTest {
 
         val result = viewmodel.registerPhoneAndName.value as Fail
         assertEquals(throwable, result.throwable)
-    }
-
-    @Test
-    fun `on complete register phone and name`() {
-        viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onCompleted()
-        }
-
-        viewmodel.registerPhoneAndName("", "")
-
-        verify(exactly = 0) { registerPhoneAndNameObserver.onChanged(any<Fail>()) }
     }
 
     @Test
@@ -494,14 +471,6 @@ class ShopCreationViewModelTest {
         assertEquals(throwable, result.throwable)
     }
 
-    @Test
-    fun `clear background task`() {
-        viewmodel.clearBackgroundTask()
-        verify {
-            registerUseCase.unsubscribe()
-        }
-    }
-
     companion object {
         private val successAddNameResponse: UserProfileUpdatePojo = FileUtil.parse(
             "/success_add_name_response.json",
@@ -535,7 +504,7 @@ class ShopCreationViewModelTest {
             "/success_register_phone_and_name_response.json",
             RegisterPojo::class.java
         )
-        private val throwable = Throwable()
+        private val throwable = Exception()
         private val errors = listOf("errors")
     }
 }
