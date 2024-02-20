@@ -29,6 +29,7 @@ class ReviewContentAdapter(
                     mediaViewPool = mediaViewPool
                 )
             }
+
             else -> super.createViewHolder(parent, viewType)
         }
     }
@@ -49,11 +50,17 @@ class ReviewContentAdapter(
                     is Payload.Like -> {
                         (holder as ReviewContentViewHolder).bindLike(payload.state)
                     }
+
                     is Payload.WatchMode -> {
                         (holder as ReviewContentViewHolder).bindWatchMode(payload.isWatchMode)
                     }
+
                     is Payload.MediaDataChanged -> {
                         (holder as ReviewContentViewHolder).bindMediaDataChanged(payload.mediaData)
+                    }
+
+                    is Payload.ScrollingChanged -> {
+                        (holder as ReviewContentViewHolder).bindScrolling(payload.isScrolling)
                     }
                 }
             }
@@ -77,6 +84,7 @@ class ReviewContentAdapter(
         data class Like(val state: ReviewLikeUiState) : Payload
         data class WatchMode(val isWatchMode: Boolean) : Payload
         data class MediaDataChanged(val mediaData: List<ReviewMediaUiModel>) : Payload
+        data class ScrollingChanged(val isScrolling: Boolean) : Payload
     }
 
     internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewContentUiModel>() {
@@ -102,6 +110,7 @@ class ReviewContentAdapter(
                 oldItem.likeState != newItem.likeState -> Payload.Like(newItem.likeState)
                 oldItem.isWatchMode != newItem.isWatchMode -> Payload.WatchMode(newItem.isWatchMode)
                 oldItem.medias != newItem.medias -> Payload.MediaDataChanged(newItem.medias)
+                oldItem.isScrolling != newItem.isScrolling -> Payload.ScrollingChanged(newItem.isScrolling)
                 else -> super.getChangePayload(oldItem, newItem)
             }
         }

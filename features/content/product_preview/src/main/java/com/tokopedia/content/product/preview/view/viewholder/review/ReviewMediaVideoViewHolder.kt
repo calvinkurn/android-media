@@ -53,6 +53,25 @@ class ReviewMediaVideoViewHolder(
         binding.playerVideo.player = mVideoPlayer?.exoPlayer
         binding.playerControl.player = mVideoPlayer?.exoPlayer
 
+        videoPlayerListener()
+        playerControlListener()
+    }
+
+    private fun videoPlayerListener() {
+        mVideoPlayer?.setVideoListener(object : ProductPreviewExoPlayer.VideoStateListener {
+            override fun onBuffering() {
+                showLoading()
+                binding.iconPlay.hide()
+            }
+
+            override fun onVideoReadyToPlay(isPlaying: Boolean) {
+                hideLoading()
+                binding.iconPlay.showWithCondition(!isPlaying)
+            }
+        })
+    }
+
+    private fun playerControlListener() {
         binding.playerControl.setListener(object : ProductPreviewPlayerControl.Listener {
             override fun onScrubbing(
                 view: PlayerControlView,
@@ -72,17 +91,6 @@ class ReviewMediaVideoViewHolder(
             ) {
                 productPreviewVideoListener.onStopScrubbing()
                 binding.videoTimeView.hide()
-            }
-        })
-        mVideoPlayer?.setVideoListener(object : ProductPreviewExoPlayer.VideoStateListener {
-            override fun onBuffering() {
-                showLoading()
-                binding.iconPlay.hide()
-            }
-
-            override fun onVideoReadyToPlay(isPlaying: Boolean) {
-                hideLoading()
-                binding.iconPlay.showWithCondition(!isPlaying)
             }
         })
     }

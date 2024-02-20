@@ -27,6 +27,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentScrolling
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewMediaSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
@@ -133,6 +134,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ToggleReviewWatchMode -> handleReviewWatchMode()
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
+            is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
             is ReviewMediaSelected -> handleReviewMediaSelected(action.position)
             is TabSelected -> handleTabSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
@@ -216,6 +218,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
         _reviewPosition.value = position
         updateReviewToUnWatchMode()
+    }
+
+    private fun handleReviewContentScrolling(position: Int, isScrolling: Boolean) {
+        updateReviewContentScrollingState(position, isScrolling)
     }
 
     private fun handleReviewMediaSelected(position: Int) {
@@ -323,6 +329,20 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun emitTrackReviewNextVerticalScrollEvent() {
         viewModelScope.launch {
             _uiEvent.emit(ProductPreviewEvent.TrackReviewNextVerticalScroll)
+        }
+    }
+
+    private fun updateReviewContentScrollingState(position: Int, isScrolling: Boolean) {
+        _reviewContentState.update { data ->
+            data.copy(
+                reviewContent = data.reviewContent.mapIndexed { index, reviewContentUiModel ->
+                    if (index == position) {
+                        reviewContentUiModel.copy(isScrolling = isScrolling)
+                    } else {
+                        reviewContentUiModel.copy(isScrolling = false)
+                    }
+                }
+            )
         }
     }
 

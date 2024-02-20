@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -80,6 +81,10 @@ class ReviewFragment @Inject constructor(
 
     private val snapHelper = PagerSnapHelper()
 
+    private val layoutManagerContent by lazyThreadSafetyNone {
+        LinearLayoutManager(requireContext(), VERTICAL, false)
+    }
+
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvReview.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -87,10 +92,18 @@ class ReviewFragment @Inject constructor(
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState != RecyclerView.SCROLL_STATE_IDLE) return
-                val index = getCurrentPosition()
-                viewModel.onAction(ProductPreviewAction.ReviewContentSelected(index))
+                when (newState) {
+                    RecyclerView.SCROLL_STATE_IDLE -> {
+                        val position = getCurrentPosition()
+                        viewModel.onAction(ProductPreviewAction.ReviewContentSelected(position))
+                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, false))
+                    }
+                    RecyclerView.SCROLL_STATE_DRAGGING -> {
+                        val position = getCurrentPosition()
+                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, true))
+                    }
+                    else -> super.onScrollStateChanged(recyclerView, newState)
+                }
             }
         }
     }
@@ -144,6 +157,7 @@ class ReviewFragment @Inject constructor(
 
     private fun setupView() {
         binding.rvReview.adapter = reviewAdapter
+        binding.rvReview.layoutManager = layoutManagerContent
         snapHelper.attachToRecyclerView(binding.rvReview)
         binding.rvReview.removeOnScrollListener(scrollListener)
         binding.rvReview.addOnScrollListener(scrollListener)

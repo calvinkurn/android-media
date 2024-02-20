@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.common.util.ContentItemComponentsAlphaAnimator
 import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.product.preview.R
@@ -66,6 +67,21 @@ class ReviewContentViewHolder(
             }
         })
     }
+
+    private val alphaAnimator = ContentItemComponentsAlphaAnimator(object : ContentItemComponentsAlphaAnimator.Listener {
+        override fun onAnimateAlpha(animator: ContentItemComponentsAlphaAnimator, alpha: Float) {
+            opacityViewList.forEach { it.alpha = alpha }
+        }
+    })
+
+    private val opacityViewList = listOf(
+        binding.layoutAuthorReview.root,
+        binding.layoutLikeReview.root,
+        binding.ivReviewMenu,
+        binding.ivReviewStar,
+        binding.tvReviewDescription,
+        binding.tvReviewDetails
+    )
 
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -119,12 +135,17 @@ class ReviewContentViewHolder(
     }
 
     fun bind(item: ReviewContentUiModel) {
+        bindScrolling(item.isScrolling)
         bindWatchMode(item.isWatchMode)
         bindMedia(item.medias, item.mediaSelectedPosition)
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
         setupTap(item)
+    }
+
+    fun bindScrolling(isScrolling: Boolean) {
+        onScrolling(isScrolling)
     }
 
     fun onRecycled() {
@@ -163,6 +184,15 @@ class ReviewContentViewHolder(
 
         setupPageControlMedia(media.size, mediaSelectedPosition)
         scrollToPosition(mediaSelectedPosition)
+    }
+
+    private fun onScrolling(isScrolling: Boolean) {
+        val startAlpha = opacityViewList.first().alpha
+        if (isScrolling) {
+            alphaAnimator.animateToAlpha(startAlpha)
+        } else {
+            alphaAnimator.animateToOpaque(startAlpha)
+        }
     }
 
     private fun onMediaRecycled() = with(binding.rvReviewMedia) {
@@ -286,19 +316,21 @@ class ReviewContentViewHolder(
             val videoUrl = data.url
 
             val instance = videoPlayerManager.occupy(
-                String.format(
-                    REVIEW_CONTENT_VIDEO_KEY_REF,
-                    videoUrl
-                )
+                String.format(REVIEW_CONTENT_VIDEO_KEY_REF, videoUrl)
             )
             val videoPlayer = mVideoPlayer ?: instance
             mVideoPlayer = videoPlayer
-            mVideoPlayer?.start(
-                videoUrl = videoUrl,
-                isMute = false,
-                playWhenReady = false
-            )
+
+            onStartVideoPlayer(videoUrl)
         }
+    }
+
+    private fun onStartVideoPlayer(videoUrl: String) {
+        mVideoPlayer?.start(
+            videoUrl = videoUrl,
+            isMute = false,
+            playWhenReady = false
+        )
     }
 
     private fun setupPageControlMedia(
