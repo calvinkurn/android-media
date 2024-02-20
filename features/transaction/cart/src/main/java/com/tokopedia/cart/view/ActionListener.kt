@@ -6,21 +6,14 @@ import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-
-/**
- * Created by Irfan Khoirul on 2019-05-29.
- */
 
 interface ActionListener {
 
     fun getFragment(): Fragment
 
     fun onClickShopNow()
-
-    fun getDefaultCartErrorMessage(): String
 
     fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean)
 
@@ -30,31 +23,15 @@ interface ActionListener {
 
     fun onCartShopGroupTickerClicked(cartGroupHolderData: CartGroupHolderData)
 
-    fun onCartShopGroupTickerRefreshClicked(index: Int, cartShopBottomHolderData: CartShopBottomHolderData)
+    fun onCartShopGroupTickerRefreshClicked(index: Int, cartGroupHolderData: CartGroupHolderData)
 
     fun onViewCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 
     fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 
-    fun onCartDataEnableToCheckout()
-
-    fun onCartDataDisableToCheckout()
-
     fun onShowAllItem(appLink: String)
 
-    fun onAddLastSeenToWishlist(productId: String)
-
-    fun onAddWishlistToWishlist(productId: String)
-
-    fun onAddRecommendationToWishlist(productId: String)
-
-    fun onRemoveDisabledItemFromWishlist(productId: String)
-
-    fun onRemoveLastSeenFromWishlist(productId: String)
-
     fun onRemoveWishlistFromWishlist(productId: String)
-
-    fun onRemoveRecommendationFromWishlist(productId: String)
 
     fun onWishlistProductClicked(productId: String)
 
@@ -85,26 +62,15 @@ interface ActionListener {
     fun scrollToClickedExpandedProduct(index: Int, offset: Int)
 
     fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
+    fun onToggleUnavailableItemAccordion()
 
     fun onDisabledCartItemProductClicked(cartItemHolderData: CartItemHolderData)
 
     fun onRecentViewProductImpression(element: CartRecentViewItemHolderData)
 
-    fun onGlobalCheckboxCheckedChange(isChecked: Boolean, isCheckUncheckDirectAction: Boolean)
-
     fun onGlobalDeleteClicked()
 
-    fun onNeedToGoneLocalizingAddressWidget()
-
-    fun onLocalizingAddressUpdatedFromWidget()
-
     fun onClickAddOnCart(productId: String, addOnId: String)
-
-    fun onClickEpharmacyInfoCart(
-        enablerLabel: String,
-        shopId: String,
-        productUiModelList: MutableList<CartItemHolderData>
-    )
 
     fun addOnImpression(productId: String)
 
@@ -113,4 +79,6 @@ interface ActionListener {
     fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData)
 
     fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>)
+
+    fun onChangeAddressClicked()
 }

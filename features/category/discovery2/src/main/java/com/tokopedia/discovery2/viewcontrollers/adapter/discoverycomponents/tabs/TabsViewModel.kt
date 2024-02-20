@@ -24,6 +24,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setTabIcons: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val setTabImage: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private var shouldAddSpace = MutableLiveData<Boolean>()
 
     @JvmField
@@ -39,12 +40,15 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     private fun updateTabItems() {
         components.getComponentsItem()?.let {
             it as ArrayList<ComponentsItem>
-            if (components.name == ComponentNames.TabsIcon.componentName) {
-                setTabIcons.value = it
-            } else if (isPlainTab()) {
-                setUnifyTabs.value = it
-            } else {
-                setColorTabs.value = it
+
+            val isIconTabs = components.name == ComponentNames.TabsIcon.componentName
+            val isImageTabs = components.name == ComponentNames.TabsImage.componentName
+
+            when {
+                isIconTabs -> setTabIcons.value = it
+                isImageTabs -> setTabImage.value = it
+                isPlainTab() -> setUnifyTabs.value = it
+                else -> setColorTabs.value = it
             }
         }
     }
@@ -79,6 +83,10 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     fun getIconTabLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return setTabIcons
+    }
+
+    fun getImageTabLiveData(): LiveData<ArrayList<ComponentsItem>> {
+        return setTabImage
     }
 
     fun getTabMargin(): LiveData<Boolean> {

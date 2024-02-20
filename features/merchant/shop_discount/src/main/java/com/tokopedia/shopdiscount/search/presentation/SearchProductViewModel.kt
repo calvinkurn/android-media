@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
+import com.tokopedia.shopdiscount.common.entity.ShopDiscountErrorCode
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductMapper
 import com.tokopedia.shopdiscount.manage.data.mapper.UpdateDiscountRequestMapper
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
@@ -106,9 +108,12 @@ class SearchProductViewModel @Inject constructor(
                 )
                 deleteDiscountUseCase.executeOnBackground()
             }
-
-            _deleteDiscount.value = Success(result.doSlashPriceStop.responseHeader.success)
-
+            val responseHeaderData = result.doSlashPriceStop.responseHeader
+            if (!responseHeaderData.success && responseHeaderData.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
+                _deleteDiscount.value = Fail(MessageErrorException(responseHeaderData.errorMessages.firstOrNull().orEmpty()))
+            } else {
+                _deleteDiscount.value = Success(responseHeaderData.success)
+            }
         }, onError = {
             _deleteDiscount.value = Fail(it)
         })
@@ -121,10 +126,12 @@ class SearchProductViewModel @Inject constructor(
                 reserveProductUseCase.setParams(request)
                 reserveProductUseCase.executeOnBackground()
             }
-
-            _reserveProduct.value =
-                Success(result.doSlashPriceProductReservation.responseHeader.success)
-
+            val responseHeaderData = result.doSlashPriceProductReservation.responseHeader
+            if (!responseHeaderData.success && responseHeaderData.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
+                _reserveProduct.value = Fail(MessageErrorException(responseHeaderData.errorMessages.firstOrNull().orEmpty()))
+            } else {
+                _reserveProduct.value = Success(responseHeaderData.success)
+            }
         }, onError = {
             _reserveProduct.value = Fail(it)
         })

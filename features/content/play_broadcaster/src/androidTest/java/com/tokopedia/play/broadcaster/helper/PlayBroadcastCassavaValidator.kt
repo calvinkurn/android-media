@@ -35,5 +35,10 @@ class PlayBroadcastCassavaValidator private constructor(
             cassavaTestRule = cassavaTestRule,
             analyticFile = "tracker/content/playbroadcaster/play_broadcaster_beautification_analytic.json"
         )
+
+        fun buildForInterspersingVideo(cassavaTestRule: CassavaTestRule) = PlayBroadcastCassavaValidator(
+            cassavaTestRule = cassavaTestRule,
+            analyticFile = "tracker/content/playbroadcaster/play_shorts_interspersing.json"
+        )
     }
 }

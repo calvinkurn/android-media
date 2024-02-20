@@ -13,9 +13,14 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.CASHBACK_STACKED
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.CASH_BACK_OVO_POINT
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.TOTAL_DISCOUNT
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper.mapShopFlashSaleItemList
@@ -55,6 +60,7 @@ import javax.inject.Inject
 
 class ThanksPageDataViewModel @Inject constructor(
     private val thanksPageDataUseCase: ThanksPageDataUseCase,
+    private val thanksPageDataV2UseCase: ThanksPageDataV2UseCase,
     private val thanksPageMapperUseCase: ThanksPageMapperUseCase,
     private val gyroEngineRequestUseCase: GyroEngineRequestUseCase,
     private val fetchWalletBalanceUseCase: FetchWalletBalanceUseCase,
@@ -107,8 +113,17 @@ class ThanksPageDataViewModel @Inject constructor(
             orderWidget(_bottomContentVisitableList.value.orEmpty())
         }
 
-    fun getThanksPageData(paymentId: String, merchant: String) {
+    fun getThanksPageData(paymentId: String, merchant: String, isV2Enabled: Boolean) {
         thanksPageDataUseCase.cancelJobs()
+        if (isV2Enabled) {
+            thanksPageDataV2UseCase.getThankPageData(
+                ::onThanksPageDataSuccess,
+                ::onThanksPageDataError,
+                paymentId,
+                merchant
+            )
+            return
+        }
         thanksPageDataUseCase.getThankPageData(
             ::onThanksPageDataSuccess,
             ::onThanksPageDataError,
@@ -193,9 +208,20 @@ class ThanksPageDataViewModel @Inject constructor(
     private fun getWidgetOrder(featureEngineData: FeatureEngineData?): List<String> {
         val featureEngineWidgetOrder = FeatureRecommendationMapper.getWidgetOrder(featureEngineData)
         return if (featureEngineWidgetOrder.isNotEmpty()) {
-            featureEngineWidgetOrder.replace(" ", "").split(",")
+            val defaultList = arrayListOf(
+                InstantHeaderUiModel.TAG,
+                WaitingHeaderUiModel.TAG,
+                ProcessingHeaderUiModel.TAG,
+                DividerUiModel.TAG,
+            )
+            val newList = featureEngineWidgetOrder.replace(" ", "").split(",")
+            defaultList + newList
         } else {
             arrayListOf(
+                InstantHeaderUiModel.TAG,
+                WaitingHeaderUiModel.TAG,
+                ProcessingHeaderUiModel.TAG,
+                DividerUiModel.TAG,
                 TopAdsRequestParams.TAG,
                 GyroRecommendationWidgetModel.TAG,
                 MarketplaceRecommendationWidgetModel.TAG,
@@ -264,6 +290,18 @@ class ThanksPageDataViewModel @Inject constructor(
 
     fun addBottomContentWidget(visitable: Visitable<*>) {
         orderWidget(_bottomContentVisitableList.value.orEmpty() + visitable)
+    }
+
+    fun setTicker(listTicker: List<TickerData>) {
+        if (_bottomContentVisitableList.value?.first() is WaitingHeaderUiModel) {
+            val newHeaderVisitable = (_bottomContentVisitableList.value?.first() as WaitingHeaderUiModel).copy(
+                tickerData = listTicker
+            )
+            val newList = _bottomContentVisitableList.value?.toMutableList()
+            newList?.removeFirst()
+            newList?.add(0, newHeaderVisitable)
+            _bottomContentVisitableList.value = newList?.toList()
+        }
     }
 
     private fun orderWidget(visitableList: List<Visitable<*>>) {

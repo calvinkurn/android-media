@@ -4,7 +4,8 @@ import android.content.Context
 import android.graphics.Paint
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalnavwidget.databinding.GlobalNavWidgetCardItemLayoutBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -41,13 +42,13 @@ internal class GlobalNavWidgetCardViewHolder(
         val backgroundUrl = if (item.imageUrl.isNotEmpty()) item.imageUrl else item.backgroundUrl
 
         binding?.globalNavCardItemBackground?.let {
-            ImageHandler.loadImageFitCenter(context, it, backgroundUrl)
+            it?.loadImageFitCenter(backgroundUrl)
         }
 
         val shouldShowLogo = item.imageUrl.isEmpty() && item.logoUrl.isNotEmpty()
 
         binding?.globalNavCardItemLogo?.shouldShowWithAction(shouldShowLogo) {
-            ImageHandler.loadImageFitCenter(context, it, item.logoUrl)
+            it?.loadImageFitCenter(item.logoUrl)
         }
     }
 

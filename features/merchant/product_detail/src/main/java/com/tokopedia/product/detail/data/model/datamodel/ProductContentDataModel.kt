@@ -5,11 +5,12 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Bl
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
+import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 
 /**
  * Created by Yehezkiel on 06/05/20
@@ -22,40 +23,21 @@ data class ProductContentDataModel(
     var freeOngkirImgUrl: String = "",
 
     // Ribbon Data
-    var shouldShowTradein: Boolean = false,
-
-    // Upcoming Data
-    var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel(),
-    var shouldShowCampaign: Boolean = false,
-    var shouldShowShareWidget: Boolean = false,
+    var isNpl: Boolean = false,
+    var shouldShowShareWidget: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         { false },
         "ProductContentDataModel"
     ) {
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
 
     override fun type(): String = type
-
-    fun isNpl(): Boolean {
-        return upcomingNplData.upcomingType.isNotEmpty()
-    }
-
-    fun showTradeIn(): Boolean {
-        return shouldShowTradein && !campaignWillShowRibbon()
-    }
-
-    private fun campaignWillShowRibbon(): Boolean {
-        val identifier = data?.campaign?.campaignIdentifier ?: return false
-        return when (identifier) {
-            CampaignRibbon.FLASH_SALE, CampaignRibbon.NEW_USER, CampaignRibbon.NPL, CampaignRibbon.THEMATIC_CAMPAIGN -> true
-            CampaignRibbon.SLASH_PRICE -> data?.campaign?.shouldShowRibbonCampaign == true || data?.thematicCampaign?.campaignName?.isNotEmpty() == true // if ribbon slash price appear, return true
-            else -> false
-        }
-    }
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
@@ -64,8 +46,7 @@ data class ProductContentDataModel(
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductContentDataModel) {
             data?.hashCode() == newData.data?.hashCode() &&
-                shouldShowTradein == newData.shouldShowTradein &&
-                upcomingNplData.hashCode() == newData.upcomingNplData.hashCode() &&
+                isNpl == newData.isNpl &&
                 isWishlisted == newData.isWishlisted &&
                 freeOngkirImgUrl == newData.freeOngkirImgUrl &&
                 data?.thematicCampaign?.campaignName == newData.data?.thematicCampaign?.campaignName
@@ -79,20 +60,17 @@ data class ProductContentDataModel(
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
-
         return if (newData is ProductContentDataModel) {
-            if (data?.hashCode() != newData.data?.hashCode() ||
-                upcomingNplData.hashCode() != newData.upcomingNplData.hashCode()
-            ) {
+            if (data?.hashCode() != newData.data?.hashCode() || isNpl != newData.isNpl) {
                 // Update the whole component
                 return null
             }
 
             val bundle = Bundle()
-            if (shouldShowTradein != newData.shouldShowTradein ||
-                freeOngkirImgUrl != newData.freeOngkirImgUrl ||
-                shouldShowShareWidget != newData.shouldShowShareWidget) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_TRADEIN_BOE_SHARE)
+            if (freeOngkirImgUrl != newData.freeOngkirImgUrl ||
+                shouldShowShareWidget != newData.shouldShowShareWidget
+            ) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_BOE_SHARE)
                 return bundle
             }
 
@@ -110,12 +88,16 @@ data class ProductContentDataModel(
         return data == null
     }
 
-    companion object{
+    companion object {
         const val PAYLOAD_WISHLIST = 1
-        const val PAYLOAD_TRADEIN_BOE_SHARE = 421321
+        const val PAYLOAD_BOE_SHARE = 421321
     }
 }
 
+/**
+ * Render Priority
+ * https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2465759286/PDP+Campaign+Component#3.-Render-Priority
+ */
 data class ProductContentMainData(
     var campaign: CampaignModular = CampaignModular(),
     var thematicCampaign: ThematicCampaign = ThematicCampaign(),
@@ -124,5 +106,23 @@ data class ProductContentMainData(
     var stockWording: String = "",
     var isVariant: Boolean = false,
     var productName: String = "",
-    var isProductActive: Boolean = false
-)
+    var isProductActive: Boolean = false,
+    var isShowPrice: Boolean = true,
+    var labelIcons: List<LabelIcons> = emptyList(),
+) {
+
+    val hasCampaign
+        get() = campaign.campaignIdentifier != CampaignRibbon.NO_CAMPAIGN
+
+    val hasThematicCampaign
+        get() = hasCampaign && campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN
+
+    val hasOngoingCampaign: Boolean
+        get() {
+            if (!hasCampaign) return false
+            if (campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN) return false
+            if (campaign.campaignIdentifier == CampaignRibbon.NEW_FLASH_SALE_CAMPAIGN) return true
+            // for campaign id 1,2,3,4 need check end time under 1 day
+            return campaign.shouldShowRibbonCampaign
+        }
+}

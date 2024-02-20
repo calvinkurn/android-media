@@ -323,6 +323,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                     }
                 }
                 is Fail -> {
+                    dismissLoaderDialog()
                     binding?.btnManage?.isLoading = false
                     binding?.root showError it.throwable
                 }

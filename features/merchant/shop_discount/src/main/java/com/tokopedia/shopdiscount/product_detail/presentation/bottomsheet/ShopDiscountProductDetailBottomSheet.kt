@@ -20,6 +20,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.common.entity.ShopDiscountErrorCode
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountProductDetailBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageActivity
@@ -177,12 +178,18 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             when (it) {
                 is Success -> {
                     if (!it.data.responseHeader.success) {
-                        val errorMessage = ErrorHandler.getErrorMessage(context, null)
-                        showToasterError(errorMessage)
+                        updateProductList()
+                        if (it.data.responseHeader.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
+                            showToasterError(it.data.responseHeader.errorMessages.firstOrNull().orEmpty())
+                        } else {
+                            val errorMessage = ErrorHandler.getErrorMessage(context, null)
+                            showToasterError(errorMessage)
+                        }
                     } else {
                         deleteProductFromList(it.data.productId)
                     }
                 }
+
                 is Fail -> {
                     updateProductList()
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
@@ -215,8 +222,12 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             when (it) {
                 is Success -> {
                     if (!it.data.responseHeader.success) {
-                        val errorMessage = ErrorHandler.getErrorMessage(context, null)
-                        showToasterError(errorMessage)
+                        if (it.data.responseHeader.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
+                            showToasterError(it.data.responseHeader.errorMessages.firstOrNull().orEmpty())
+                        } else {
+                            val errorMessage = ErrorHandler.getErrorMessage(context, null)
+                            showToasterError(errorMessage)
+                        }
                     } else {
                         redirectToManageDiscountPage(it.data)
                     }

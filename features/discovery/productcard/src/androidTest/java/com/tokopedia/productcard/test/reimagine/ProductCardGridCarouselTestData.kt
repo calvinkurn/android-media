@@ -1,19 +1,15 @@
 package com.tokopedia.productcard.test.reimagine
 
 import android.view.View
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
-import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_RIBBON
 import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
-import com.tokopedia.productcard.utils.LIGHT_GREEN
+import com.tokopedia.productcard.test.utils.productVideoUrl
 import com.tokopedia.productcard.utils.RED
 import com.tokopedia.productcard.utils.TEXT_DARK_GREY
 import com.tokopedia.productcard.utils.WORDING_SEGERA_HABIS
@@ -21,83 +17,13 @@ import org.hamcrest.Matcher
 
 internal val productCardReimagineCarouselGridTestData =
     productCardReimagineTestData + listOf(
-        twoLineProductName(),
-        atc(),
         stockInfoTersedia(),
         stockInfoSegeraHabis(),
-        ribbonAndSlashedPriceInline(),
-        bmsm(),
-        benefitPriorityOverBMSM(),
-        imageBlurred(),
-        imageBlurredWithStock(),
-        itemInBackground(),
-        itemInBackgroundHasRibbonAndSlashedPriceInline(),
+        blur(),
+        blurWithStockInfo(),
+        overlayWithStockInfo(),
+        itemInBackgroundHasStockInfo(),
     )
-
-private fun twoLineProductName(): ProductCardReimagineMatcher {
-    val model = ProductCardModel(
-        imageUrl = productImageUrl,
-        name = longProductName,
-        price = "Rp79.000",
-        hasMultilineName = true,
-    )
-
-    val matcher = mapOf<Int, Matcher<View?>>(
-        R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
-        R.id.productCardPrice to isDisplayedWithText(model.price),
-    )
-
-    return Triple(model, matcher, "Two line product name")
-}
-
-private fun atc(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = labelGroupBenefit()
-    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_CREDIBILITY,
-        title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
-    )
-    val shopBadge = ProductCardModel.ShopBadge(
-        imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name paling panjang",
-    )
-    val model = ProductCardModel(
-        imageUrl = productImageUrl,
-        name = longProductName,
-        price = "Rp79.000",
-        slashedPrice = "Rp100.000",
-        discountPercentage = 10,
-        labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel),
-        rating = "4.5",
-        shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
-        hasAddToCart = true,
-    )
-
-    val matcher = mapOf<Int, Matcher<View?>>(
-        R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
-        R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
-        R.id.productCardCredibility to isDisplayed(),
-        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
-        R.id.productCardRatingIcon to isDisplayed(),
-        R.id.productCardRating to isDisplayedWithText(model.rating),
-        R.id.productCardRatingDots to isDisplayed(),
-        R.id.productCardShopSection to isDisplayed(),
-        R.id.productCardShopBadge to isDisplayed(),
-        R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
-        R.id.productCardAddToCart to isDisplayed(),
-    )
-
-    return Triple(model, matcher, "ATC")
-}
 
 private fun stockInfoTersedia(): ProductCardReimagineMatcher {
     val stockInfo = ProductCardModel.StockInfo(
@@ -126,9 +52,6 @@ private fun stockInfoTersedia(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         stockInfo = stockInfo
     )
 
@@ -138,7 +61,8 @@ private fun stockInfoTersedia(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -147,7 +71,6 @@ private fun stockInfoTersedia(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
         R.id.productCardStockInfoBar to isDisplayed(),
@@ -183,9 +106,6 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         stockInfo = stockInfo
     )
 
@@ -195,7 +115,8 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -204,7 +125,6 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
         R.id.productCardStockInfoBar to isDisplayed(),
@@ -213,120 +133,7 @@ private fun stockInfoSegeraHabis(): ProductCardReimagineMatcher {
     return Triple(model, matcher, "Stock Info Segera Habis")
 }
 
-private fun ribbonAndSlashedPriceInline(): ProductCardReimagineMatcher {
-    val stockInfo = ProductCardModel.StockInfo(
-        percentage = 90,
-        label = WORDING_SEGERA_HABIS
-    )
-    val reimagineBenefitLabel = labelGroupBenefit()
-    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_CREDIBILITY,
-        title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
-    )
-    val reimagineRibbon = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_RIBBON,
-        title = "20%",
-        type = RED,
-    )
-    val shopBadge = ProductCardModel.ShopBadge(
-        imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name",
-    )
-    val model = ProductCardModel(
-        imageUrl = productImageUrl,
-        name = longProductName,
-        price = "Rp79.000",
-        slashedPrice = "Rp100.000",
-        discountPercentage = 10,
-        labelGroupList = listOf(
-            reimagineBenefitLabel,
-            reimagineCredibilityLabel,
-            reimagineRibbon
-        ),
-        rating = "4.5",
-        shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
-        stockInfo = stockInfo
-    )
-
-    val matcher = mapOf<Int, Matcher<View?>>(
-        R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
-        R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPriceInline to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscountInline to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
-        R.id.productCardCredibility to isDisplayed(),
-        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
-        R.id.productCardRatingIcon to isDisplayed(),
-        R.id.productCardRating to isDisplayedWithText(model.rating),
-        R.id.productCardRatingDots to isDisplayed(),
-        R.id.productCardShopSection to isDisplayed(),
-        R.id.productCardShopBadge to isDisplayed(),
-        R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
-        R.id.productCardStockInfoBackground to isDisplayed(),
-        R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
-        R.id.productCardStockInfoBar to isDisplayed(),
-        R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
-        R.id.productCardRibbonArch to isDisplayed(),
-        R.id.productCardRibbonBackground to isDisplayed(),
-    )
-
-    return Triple(model, matcher, "Ribbon & Slashed Price Inline")
-}
-
-private fun bmsm(): ProductCardReimagineMatcher {
-    val reimagineProductOffers = labelGroupProductOffers()
-    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_CREDIBILITY,
-        title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
-    )
-    val shopBadge = ProductCardModel.ShopBadge(
-        imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name paling panjang",
-    )
-    val model = ProductCardModel(
-        imageUrl = productImageUrl,
-        name = longProductName,
-        price = "Rp79.000",
-        slashedPrice = "Rp100.000",
-        discountPercentage = 10,
-        labelGroupList = listOf(reimagineCredibilityLabel, reimagineProductOffers),
-        rating = "4.5",
-        shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
-    )
-
-    val matcher = mapOf<Int, Matcher<View?>>(
-        R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
-        R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBMSM to isDisplayedWithText(reimagineProductOffers.title),
-        R.id.productCardCredibility to isDisplayed(),
-        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
-        R.id.productCardRatingIcon to isDisplayed(),
-        R.id.productCardRating to isDisplayedWithText(model.rating),
-        R.id.productCardRatingDots to isDisplayed(),
-        R.id.productCardShopSection to isDisplayed(),
-        R.id.productCardShopBadge to isDisplayed(),
-        R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
-    )
-
-    return Triple(model, matcher, "BMSM / Product Offers")
-}
-
-private fun benefitPriorityOverBMSM(): ProductCardReimagineMatcher {
-    val reimagineProductOffers = labelGroupProductOffers()
+private fun blur(): ProductCardReimagineMatcher {
     val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
@@ -336,62 +143,6 @@ private fun benefitPriorityOverBMSM(): ProductCardReimagineMatcher {
     val shopBadge = ProductCardModel.ShopBadge(
         imageUrl = officialStoreBadgeImageUrl,
         title = "Shop Name paling panjang",
-    )
-    val model = ProductCardModel(
-        imageUrl = productImageUrl,
-        name = longProductName,
-        price = "Rp79.000",
-        slashedPrice = "Rp100.000",
-        discountPercentage = 10,
-        labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel, reimagineProductOffers),
-        rating = "4.5",
-        shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
-    )
-
-    val matcher = mapOf<Int, Matcher<View?>>(
-        R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
-        R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
-        R.id.productCardCredibility to isDisplayed(),
-        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
-        R.id.productCardRatingIcon to isDisplayed(),
-        R.id.productCardRating to isDisplayedWithText(model.rating),
-        R.id.productCardRatingDots to isDisplayed(),
-        R.id.productCardShopSection to isDisplayed(),
-        R.id.productCardShopBadge to isDisplayed(),
-        R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
-    )
-
-    return Triple(model, matcher, "Benefit prioritized over BMSM")
-}
-
-private fun imageBlurred(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
-    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_CREDIBILITY,
-        title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
-    )
-    val shopBadge = ProductCardModel.ShopBadge(
-        imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name paling panjang",
-    )
-
-    val reimagineRibbon = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_RIBBON,
-        title = "20%",
-        type = RED,
     )
 
     val model = ProductCardModel(
@@ -402,24 +153,25 @@ private fun imageBlurred(): ProductCardReimagineMatcher {
         discountPercentage = 10,
         isAds = true,
         labelGroupList = listOf(
-            reimagineRibbon,
             reimagineBenefitLabel,
             reimagineCredibilityLabel,
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
-        isSafeProduct = true
+        isSafeProduct = true,
+        videoUrl = productVideoUrl,
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
         R.id.productCardImage to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(""),
         R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPriceInline to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscountInline to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -428,28 +180,19 @@ private fun imageBlurred(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
+
         R.id.productCardSafeDivider to isDisplayed(),
         R.id.productCardSafeIcon to isDisplayed(),
         R.id.productCardSafeTitle to isDisplayed(),
         R.id.productCardSafeDescription to isDisplayed(),
         R.id.productCardSafeCheckInfo to isDisplayed(),
-        R.id.productCardSafeContainer to ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
-        R.id.productCardSafeNameBackground to isDisplayed(),
-        R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
-        R.id.productCardRibbonArch to isDisplayed(),
-        R.id.productCardRibbonBackground to isDisplayed(),
     )
 
-    return Triple(model, matcher, "Image is blurred")
+    return Triple(model, matcher, "Blur")
 }
 
-private fun imageBlurredWithStock(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
+private fun blurWithStockInfo(): ProductCardReimagineMatcher {
+    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -460,11 +203,7 @@ private fun imageBlurredWithStock(): ProductCardReimagineMatcher {
         title = "Shop Name paling panjang",
     )
 
-    val reimagineRibbon = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_RIBBON,
-        title = "20%",
-        type = RED,
-    )
+    val reimagineRibbon = labelGroupRibbon(RED)
 
     val stockInfo = ProductCardModel.StockInfo(
         percentage = 40,
@@ -485,19 +224,18 @@ private fun imageBlurredWithStock(): ProductCardReimagineMatcher {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         isSafeProduct = true,
         stockInfo = stockInfo
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
         R.id.productCardImage to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(""),
         R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPriceInline to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscountInline to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -506,28 +244,27 @@ private fun imageBlurredWithStock(): ProductCardReimagineMatcher {
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
+
         R.id.productCardSafeDivider to isDisplayed(),
         R.id.productCardSafeIcon to isDisplayed(),
         R.id.productCardSafeTitle to isDisplayed(),
         R.id.productCardSafeDescription to isDisplayed(),
         R.id.productCardSafeCheckInfo to isDisplayed(),
-        R.id.productCardSafeContainer to ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
-        R.id.productCardSafeNameBackground to isDisplayed(),
+
+        R.id.productCardRibbon to isDisplayed(),
         R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
-        R.id.productCardRibbonArch to isDisplayed(),
-        R.id.productCardRibbonBackground to isDisplayed(),
+        R.id.productCardRibbonSlip to isDisplayed(),
+
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
         R.id.productCardStockInfoBar to isDisplayed(),
     )
 
-    return Triple(model, matcher, "Image is blurred")
+    return Triple(model, matcher, "Blur with stock info")
 }
 
-private fun itemInBackground(): ProductCardReimagineMatcher {
+private fun overlayWithStockInfo(): ProductCardReimagineMatcher {
     val reimagineProductOffers = labelGroupProductOffers()
-    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
         title = "10 rb+ terjual",
@@ -537,6 +274,10 @@ private fun itemInBackground(): ProductCardReimagineMatcher {
         imageUrl = officialStoreBadgeImageUrl,
         title = "Shop Name paling panjang",
     )
+    val stockInfo = ProductCardModel.StockInfo(
+        percentage = 40,
+        label = "Tersedia"
+    )
     val model = ProductCardModel(
         imageUrl = productImageUrl,
         name = longProductName,
@@ -544,41 +285,44 @@ private fun itemInBackground(): ProductCardReimagineMatcher {
         slashedPrice = "Rp100.000",
         discountPercentage = 10,
         labelGroupList = listOf(
-            reimagineBenefitLabel,
-            reimagineCredibilityLabel,
             reimagineProductOffers,
+            reimagineCredibilityLabel,
+            labelGroupOverlay1(),
+            labelGroupOverlay2(),
+            labelGroupOverlay3(),
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
-        isInBackground = true
+        stockInfo = stockInfo,
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
         R.id.productCardImage to isDisplayed(),
+        R.id.productCardOverlay1 to isDisplayed(),
+        R.id.productCardOverlay2 to isDisplayed(),
+        R.id.productCardOverlay3 to isDisplayed(),
         R.id.productCardName to isDisplayedWithText(model.name),
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardLabelOffer to isDisplayedWithText(reimagineProductOffers.title),
         R.id.productCardCredibility to isDisplayed(),
-        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
         R.id.productCardRating to isDisplayedWithText(model.rating),
         R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
-        R.id.productCardOutline to isDisplayed(),
-        )
+        R.id.productCardStockInfoBackground to isDisplayed(),
+        R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
+        R.id.productCardStockInfoBar to isDisplayed(),
+    )
 
-    return Triple(model, matcher, "Item In Background")
+    return Triple(model, matcher, "Label Overlay with Stock Info")
 }
 
-private fun itemInBackgroundHasRibbonAndSlashedPriceInline(): ProductCardReimagineMatcher {
+private fun itemInBackgroundHasStockInfo(): ProductCardReimagineMatcher {
     val stockInfo = ProductCardModel.StockInfo(
         percentage = 90,
         label = WORDING_SEGERA_HABIS
@@ -589,11 +333,7 @@ private fun itemInBackgroundHasRibbonAndSlashedPriceInline(): ProductCardReimagi
         title = "10 rb+ terjual",
         type = TEXT_DARK_GREY,
     )
-    val reimagineRibbon = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_RIBBON,
-        title = "20%",
-        type = RED,
-    )
+    val reimagineRibbon = labelGroupRibbon(RED)
     val shopBadge = ProductCardModel.ShopBadge(
         imageUrl = officialStoreBadgeImageUrl,
         title = "Shop Name",
@@ -611,9 +351,6 @@ private fun itemInBackgroundHasRibbonAndSlashedPriceInline(): ProductCardReimagi
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
         stockInfo = stockInfo,
         isInBackground = true
     )
@@ -622,9 +359,10 @@ private fun itemInBackgroundHasRibbonAndSlashedPriceInline(): ProductCardReimagi
         R.id.productCardImage to isDisplayed(),
         R.id.productCardName to isDisplayedWithText(model.name),
         R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPriceInline to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscountInline to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -633,15 +371,17 @@ private fun itemInBackgroundHasRibbonAndSlashedPriceInline(): ProductCardReimagi
         R.id.productCardShopSection to isDisplayed(),
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
         R.id.productCardStockInfoBar to isDisplayed(),
         R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
-        R.id.productCardRibbonArch to isDisplayed(),
-        R.id.productCardRibbonBackground to isDisplayed(),
+
+        R.id.productCardRibbon to isDisplayed(),
+        R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
+        R.id.productCardRibbonSlip to isDisplayed(),
+
         R.id.productCardOutline to isDisplayed(),
     )
 
-    return Triple(model, matcher, "Item in Background, Slashed Price Inline")
+    return Triple(model, matcher, "Item in Background + Stock Info")
 }

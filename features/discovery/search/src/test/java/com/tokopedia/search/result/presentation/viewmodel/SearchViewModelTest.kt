@@ -4,6 +4,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.search.result.SearchState
 import com.tokopedia.search.result.SearchViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import io.mockk.mockk
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -11,10 +12,11 @@ import org.junit.Test
 internal class SearchViewModelTest {
 
     private fun SearchViewModel(
-        searchState: SearchState = SearchState(),
+        searchState: SearchState = SearchState()
     ) = SearchViewModel(
         searchState,
-        CoroutineTestDispatchersProvider
+        CoroutineTestDispatchersProvider,
+        mockk()
     )
 
     private val SearchViewModel.stateValue
