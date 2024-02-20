@@ -61,6 +61,14 @@ class GetProductInfoP2DataUseCase @Inject constructor(
               Message
               DevMessage
             }
+            promoPriceStyle {
+              iconURL
+              productID
+              color
+              background
+              superGraphicURL
+              separatorColor
+            }
             ppGetItemDetailPage{
               program{
                 protectionAvailable
@@ -631,6 +639,35 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 }
                 contents {
                   imageUrl
+                }
+                loadMoreText
+                productIDs
+                offerID
+              }
+            }
+            gwp {
+              separator
+              data {
+                backgroundColor
+                titleColor
+                iconUrl
+                title
+                action {
+                  type
+                  link
+                }
+                cards {
+                  title
+                  productName
+                  subtitle
+                  action {
+                    type
+                    link
+                  }
+                  contents {
+                    imageUrl
+                    loadMoreText
+                  }
                 }
                 loadMoreText
                 productIDs

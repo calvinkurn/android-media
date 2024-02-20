@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.FooterPofBinding
-import com.tokopedia.sellerorder.orderextension.presentation.model.StringRes
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.PofFooterUiState
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiEvent
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -153,7 +153,7 @@ class WidgetPofFooter @JvmOverloads constructor(
 
     private fun setupTitle(title: StringRes, show: Boolean) {
         binding.tvPofFooterTitle.showIfWithBlock(show) {
-            text = title.getStringWithDefaultValue(context)
+            text = title.getString(context)
         }
         binding.loaderTvPofFooterTitle.showWithCondition(!show)
     }
@@ -161,7 +161,7 @@ class WidgetPofFooter @JvmOverloads constructor(
     private fun setupPrice(price: StringRes, show: Boolean, showButton: Boolean) {
         updateConstraints(showButton)
         binding.tvPofFooterPrice.showIfWithBlock(show) {
-            text = price.getStringWithDefaultValue(context)
+            text = price.getString(context)
         }
         binding.loaderTvPofFooterPrice.showWithCondition(!show)
     }
@@ -201,7 +201,7 @@ class WidgetPofFooter @JvmOverloads constructor(
 
     private fun setupButton(buttonData: PofFooterUiState.SendPofButtonData) {
         binding.btnPofFooter.showIfWithBlock(buttonData.show) {
-            text = buttonData.buttonText.getStringWithDefaultValue(context)
+            text = buttonData.buttonText.getString(context)
             isLoading = buttonData.isButtonLoading
             isEnabled = buttonData.isButtonEnabled
             setOnClickListener { listener?.onEvent(buttonData.eventData) }

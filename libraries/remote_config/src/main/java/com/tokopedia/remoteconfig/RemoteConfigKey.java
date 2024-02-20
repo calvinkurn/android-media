@@ -276,6 +276,8 @@ public class RemoteConfigKey {
 
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 
+    public static final String HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom";
+
     public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
     public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
     public static final String APP_CONTENT_CREATION_STORIES_CONFIG = "android_app_content_creation_stories_config";
@@ -324,10 +326,16 @@ public class RemoteConfigKey {
 
     public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
 
+    public static final String ANDROID_ENABLE_THANKYOUPAGE_V2 = "android_enable_new_thankyoupage";
+
     public static final String ANDROID_PDP_THEMATIC_CAMPAIGN_COMPOSE_ENABLE = "android_pdp_thematic_campaign_compose";
 
     public static final String ANDROID_PDP_UPCOMING_CAMPAIGN_COMPOSE_ENABLE = "android_pdp_upcoming_campaign_compose";
 
     public static final String ANDROID_PDP_ENABLE_TABLET_MODE = "android_pdp_enable_tablet_mode";
+
+    public static final String ANDROID_ENABLE_SDUI_CAMPAIGN_WIDGET_HOME = "android_home_enable_sdui";
+
+    public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
 
 }

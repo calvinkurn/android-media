@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemPofFullyFulfilledProductListHeaderBinding
-import com.tokopedia.sellerorder.orderextension.presentation.model.StringRes
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.model.PofFullyFulfilledProductListHeaderUiModel
 
 class PofFullyFulfilledProductListHeaderViewHolder(
@@ -26,6 +26,6 @@ class PofFullyFulfilledProductListHeaderViewHolder(
     }
 
     private fun setupText(text: StringRes) {
-        binding.tvPofProductListHeaderFullyFulfilled.text = text.getStringWithDefaultValue(binding.root.context)
+        binding.tvPofProductListHeaderFullyFulfilled.text = text.getString(binding.root.context)
     }
 }

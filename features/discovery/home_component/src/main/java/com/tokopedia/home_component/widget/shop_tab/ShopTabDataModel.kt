@@ -8,7 +8,8 @@ data class ShopTabDataModel(
     val imageUrl: String = "",
     val badgesUrl: String = "",
     val isActivated: Boolean = false,
-): ImpressHolder() {
+    val useGradientBackground: Boolean = true
+) : ImpressHolder() {
     companion object {
         const val PAYLOAD_ACTIVATED = "isActivatedChange"
     }

@@ -2,28 +2,30 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.databinding.PartialItemOwocAddonsBinding
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocRecyclerviewPoolListener
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.R as order_management_commonR
 
-class OwocAddonsViewHolder(itemView: View) : AbstractViewHolder<OwocAddonsListUiModel>(itemView) {
+class OwocAddonsViewHolder(
+    itemView: View,
+    private val recyclerviewPoolListener: OwocRecyclerviewPoolListener
+) : AbstractViewHolder<OwocAddonsListUiModel>(itemView),
+    BmgmAddOnViewHolder.Listener,
+    BmgmAddOnSummaryViewHolder.Delegate.Mediator,
+    BmgmAddOnSummaryViewHolder.Delegate by BmgmAddOnSummaryViewHolder.Delegate.Impl() {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_owoc_addons_section
+        val LAYOUT = order_management_commonR.layout.item_buyer_order_detail_addon_order_level
     }
 
-    private val partialItemOwocAddonsBinding =
-        PartialItemOwocAddonsBinding.bind(this.itemView.findViewById(R.id.owocAddonLayout))
-
-    private var owocPartialProductAddonViewHolder: OwocPartialProductAddonViewHolder? = null
-
     override fun bind(element: OwocAddonsListUiModel?) {
-        if (element == null) return
-        owocPartialProductAddonViewHolder =
-            OwocPartialProductAddonViewHolder(partialItemOwocAddonsBinding)
-        owocPartialProductAddonViewHolder?.bindViews(element)
+        bindAddonSummary(element?.addOnSummaryUiModel)
     }
 
     override fun bind(element: OwocAddonsListUiModel?, payloads: MutableList<Any>) {
@@ -31,15 +33,34 @@ class OwocAddonsViewHolder(itemView: View) : AbstractViewHolder<OwocAddonsListUi
             if (it is Pair<*, *>) {
                 val (oldItem, newItem) = it
                 if (oldItem is OwocAddonsListUiModel && newItem is OwocAddonsListUiModel) {
-                    if (oldItem != newItem) {
-                        newItem?.let { owocAddonListUiModel ->
-                            owocPartialProductAddonViewHolder?.bindViews(owocAddonListUiModel)
-                        }
-                    }
+                    if (oldItem != newItem) bindAddonSummary(element?.addOnSummaryUiModel)
                     return
                 }
             }
         }
         super.bind(element, payloads)
+    }
+
+    override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+    }
+
+    override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+    }
+
+    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+    }
+
+    override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
+
+    override fun getAddOnSummaryLayout(): View? {
+        return itemView.findViewById(order_management_commonR.id.itemAddonsOrderViewStub)
+    }
+
+    override fun getRecycleViewSharedPool(): RecyclerView.RecycledViewPool? {
+        return recyclerviewPoolListener.parentPool
+    }
+
+    override fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener {
+        return this
     }
 }
