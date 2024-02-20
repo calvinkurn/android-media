@@ -40,7 +40,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.domain.GetMiniCartWidgetUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -57,7 +56,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.util.*
-import kotlin.collections.HashMap
 
 class DiscoveryViewModelTest {
 

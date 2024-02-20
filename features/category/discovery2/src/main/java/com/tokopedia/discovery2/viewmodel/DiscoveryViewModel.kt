@@ -74,15 +74,12 @@ import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSourceValue
 import com.tokopedia.minicart.domain.GetMiniCartParam
