@@ -13,5 +13,7 @@ data class ShareExChannelItemModel(
     val icon: Int = 0,
     val mimeType: ShareExMimeTypeEnum,
     val packageName: String,
-    val actionIntent: String = Intent.ACTION_SEND
+    val actionIntent: String = Intent.ACTION_SEND,
+    val platform: String = "",
+    val imageResolution: String = ""
 ) : Parcelable

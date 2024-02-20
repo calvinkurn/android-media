@@ -54,7 +54,7 @@ class ShareExPropertyMapper @Inject constructor(
                     campaign = "" // will be changed later when user clicked channel
                 ),
                 imageGenerator = it.imageGeneratorPayload.mapToDomainModel(),
-                socialChannel = channelMapper.mapToSocialMedialChannel(it.channel),
+                socialChannel = channelMapper.mapToSocialMediaChannel(it.channel),
                 commonChannel = channelMapper.mapToCommonChannel(it.channel)
             )
             listChip.add(it.chipTitle)

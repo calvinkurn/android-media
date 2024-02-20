@@ -10,7 +10,7 @@ data class ShareExChannelListItemResponseDto(
     val title: String = "",
 
     @SerializedName("imageResolution")
-    val imageResolution: String = "",
+    val imageResolution: String = "", // Square, Horizontal, Vertical
 
     @SerializedName("platform")
     val platform: String = ""

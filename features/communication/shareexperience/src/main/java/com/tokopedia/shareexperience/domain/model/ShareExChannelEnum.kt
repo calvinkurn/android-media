@@ -1,11 +1,13 @@
 package com.tokopedia.shareexperience.domain.model
 
 /**
- * App Name for sorting
- * Label for Short Link
- * Id for Affiliate Link, 0 means not defined (others but not lainnya)
- * Tracker name for trackers only
+ * This is the hardcoded channel data, the purpose is for the static values and default view
+ ** App Name for sorting
+ ** Label for Short Link
+ ** Id for Affiliate Link
+ ** Tracker name for trackers only
  *
+ *  affiliate id
  *    "others":   0,
  *    "facebook": 1,
  *    "goplay":   2,
