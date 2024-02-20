@@ -1,6 +1,5 @@
 package com.tokopedia.stories.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -307,7 +306,6 @@ class StoriesViewModel @AssistedInject constructor(
                 }
             )
         }
-        setupOnboard()
     }
 
     private fun handleSelectGroup(position: Int, showAnimation: Boolean) {
@@ -363,6 +361,7 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleContentIsLoaded() {
         updateDetailData(event = if (mIsPageSelected) RESUME else PAUSE, isSameContent = true)
         checkAndHitTrackActivity()
+        setupOnboard()
 
         if (mGroupPos != mGroupSize - 1 || mDetailPos != mDetailSize - 1) return
         viewModelScope.launch {
@@ -792,7 +791,8 @@ class StoriesViewModel @AssistedInject constructor(
     private fun setupOnboard() {
         if (!sharedPref.hasVisit()) {
             viewModelScope.launch {
-                _storiesEvent.tryEmit(StoriesUiEvent.OnboardShown)
+                handleOnPauseStories()
+                _storiesEvent.emit(StoriesUiEvent.OnboardShown)
             }
             sharedPref.setHasVisit(true)
         }
