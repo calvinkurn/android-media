@@ -1115,7 +1115,6 @@ class WishlistCollectionFragment :
             )
         }
         WishlistAnalytics.impressionEmptyWishlistRecommendation(trackingQueue, recommendationItem, position)
-        AppLogRecommendation.sendProductShowAppLog(recommendationItem.asTrackingModel())
     }
 
     override fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int) {
