@@ -212,7 +212,7 @@ open class ShareExChannelMapper @Inject constructor(
             ShareExChannelItemModel(
                 channelEnum = ShareExChannelEnum.X_TWITTER,
                 title = resourceProvider.getXTwitterChannelTitle(),
-                icon = IconUnify.TWITTER,
+                icon = IconUnify.TWITTER, //TODO: CHANGE TO X WHEN ICON READY
                 mimeType = ShareExMimeTypeEnum.IMAGE,
                 packageName = ShareExConstants.PackageName.TWITTER
             )
