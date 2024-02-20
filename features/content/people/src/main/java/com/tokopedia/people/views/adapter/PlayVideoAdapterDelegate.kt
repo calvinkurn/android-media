@@ -71,4 +71,20 @@ class PlayVideoAdapterDelegate private constructor() {
             return PlayVideoViewHolder.Loading.create(parent)
         }
     }
+
+    class Shimmer : TypedAdapterDelegate<PlayVideoAdapter.Model.Shimmer, PlayVideoAdapter.Model, PlayVideoViewHolder.Shimmer>
+        (contentCommonR.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: PlayVideoAdapter.Model.Shimmer,
+            holder: PlayVideoViewHolder.Shimmer
+        ) {}
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): PlayVideoViewHolder.Shimmer {
+            return PlayVideoViewHolder.Shimmer.create(parent)
+        }
+    }
 }

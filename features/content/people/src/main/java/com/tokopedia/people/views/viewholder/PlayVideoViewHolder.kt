@@ -3,9 +3,8 @@ package com.tokopedia.people.views.viewholder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.people.databinding.ItemUserProfileVideoShimmerBinding
 import com.tokopedia.people.databinding.UpItemUserPostChannelBinding
 import com.tokopedia.people.databinding.UpItemUserPostLoadingBinding
 import com.tokopedia.people.databinding.UpItemUserPostTranscodeBinding
@@ -123,6 +122,23 @@ class PlayVideoViewHolder private constructor() {
                 parent: ViewGroup,
             ) = Loading(
                 UpItemUserPostLoadingBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+        }
+    }
+
+    class Shimmer(
+        binding: ItemUserProfileVideoShimmerBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        companion object {
+            fun create(
+                parent: ViewGroup,
+            ) = Shimmer(
+                ItemUserProfileVideoShimmerBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

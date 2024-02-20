@@ -74,7 +74,7 @@ class UserProfileVideoFragment @Inject constructor(
             WindowWidthSizeClass.Compact -> 2
             WindowWidthSizeClass.Medium -> 3
             WindowWidthSizeClass.Expanded -> 4
-            else -> GRID_SPAN_COUNT
+            else -> DEFAULT_SPAN_COUNT
         }
     }
 
@@ -299,8 +299,14 @@ class UserProfileVideoFragment @Inject constructor(
 
         when(curr.status) {
             UserPlayVideoUiModel.Status.Loading -> {
-                if(curr.items.isEmpty())
-                    binding.userVideoContainer.displayedChild = PAGE_LOADING
+                if (curr.items.isEmpty()) {
+                    binding.userVideoContainer.displayedChild = PAGE_CONTENT
+                    mAdapter.setItemsAndAnimateChanges(
+                        List(4) {
+                            PlayVideoAdapter.Model.Shimmer
+                        }
+                    )
+                }
             }
             UserPlayVideoUiModel.Status.Success -> {
                 if(curr.items.isEmpty()) {
@@ -342,7 +348,7 @@ class UserProfileVideoFragment @Inject constructor(
             override fun getSpanSize(position: Int): Int {
                 return when(mAdapter.getItem(position)) {
                     is PlayVideoAdapter.Model.Loading -> spanCount
-                    else -> DATA_SPAN
+                    else -> 1
                 }
             }
         }
@@ -393,9 +399,7 @@ class UserProfileVideoFragment @Inject constructor(
         private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val TAG = "UserProfileVideoFragment"
-        private const val GRID_SPAN_COUNT = 2
-        private const val LOADING_SPAN = 2
-        private const val DATA_SPAN = 1
+        private const val DEFAULT_SPAN_COUNT = 2
 
         fun getFragment(
             fragmentManager: FragmentManager,
