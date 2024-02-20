@@ -2,6 +2,8 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
@@ -516,5 +518,7 @@ object AppLogSearch {
         )
     ).apply {
         addPage()
+        addSourceModule()
+        addSourcePageType()
     }
 }

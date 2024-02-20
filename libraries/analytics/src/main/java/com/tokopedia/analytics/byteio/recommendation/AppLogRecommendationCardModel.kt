@@ -1,6 +1,9 @@
 package com.tokopedia.analytics.byteio.recommendation
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
 import org.json.JSONObject
 
@@ -36,6 +39,9 @@ data class AppLogRecommendationCardModel (
         put(AppLogRecommendationConst.REC_PARAMS, recParams)
         put(AppLogParam.GROUP_ID, groupId)
         addPage()
+        addEntranceForm()
+        addSourcePageType()
+        addSourceModule()
     }
 
     companion object {
