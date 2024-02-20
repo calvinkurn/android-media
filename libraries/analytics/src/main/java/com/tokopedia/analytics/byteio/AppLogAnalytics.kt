@@ -92,6 +92,9 @@ object AppLogAnalytics {
 
         send(EventName.ENTER_PRODUCT_DETAIL, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -100,17 +103,6 @@ object AppLogAnalytics {
             it.put("sale_price", product.salePrice)
             it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
             it.put("track_id", globalTrackId)
-        })
-    }
-
-    fun sendProductImpression(product: TrackProduct) {
-        send(EventName.PRODUCT_SHOW, JSONObject().also {
-            it.addPage()
-            it.put("product_id", product)
-            it.put("is_ad", if (product.isAd) "1" else "0")
-            val reqId = product.requestId ?: ""
-            it.put("request_id", reqId)
-            it.put("track_id", reqId + "_" + product.requestId + product.orderFrom1)
         })
     }
 
@@ -136,6 +128,9 @@ object AppLogAnalytics {
     fun sendConfirmCart(product: TrackConfirmCart) {
         send(EventName.CONFIRM_CART, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -155,6 +150,9 @@ object AppLogAnalytics {
     fun sendConfirmCartResult(product: TrackConfirmCartResult) {
         send(EventName.CONFIRM_CART_RESULT, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -176,12 +174,21 @@ object AppLogAnalytics {
     internal fun JSONObject.addPage() {
         put(PREVIOUS_PAGE, previousPageName())
         put(PAGE_NAME, currentPageName())
+    }
+
+    internal fun JSONObject.addEntranceForm() {
+        put(ENTRANCE_FORM, entranceForm?.str)
+    }
+
+    internal fun JSONObject.addSourcePageType() {
         put(
             SOURCE_PAGE_TYPE,
             if(sourcePageType == SourcePageType.PRODUCT_CARD) currentPageName()
             else sourcePageType?.str
         )
-        put(ENTRANCE_FORM, entranceForm?.str)
+    }
+
+    internal fun JSONObject.addSourceModule() {
         put(SOURCE_MODULE, sourceModule?.str)
     }
 
@@ -208,6 +215,9 @@ object AppLogAnalytics {
         }
         send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addSourceModule()
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", quitType)

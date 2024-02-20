@@ -1,5 +1,12 @@
 package com.tokopedia.analytics.byteio.recommendation
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
+import com.tokopedia.analytics.byteio.AppLogParam
+import org.json.JSONObject
+
 /**
  * Byte.io tracking model
  */
@@ -17,6 +24,26 @@ data class AppLogRecommendationCardModel (
     val shopId: String,
     val groupId: String,
 ) {
+
+    fun toJson() = JSONObject().apply {
+        put(AppLogParam.CARD_NAME, cardName)
+        put(AppLogParam.LIST_NAME, listName)
+        put(AppLogParam.LIST_NUM, listNum)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        put(AppLogParam.TRACK_ID, trackId)
+        put(AppLogParam.PRODUCT_ID, productId)
+        put(AppLogParam.IS_AD, isAd)
+        put(AppLogParam.IS_USE_CACHE, isUseCache)
+        put(AppLogParam.REQUEST_ID, requestId)
+        put(AppLogParam.SHOP_ID, shopId)
+        put(AppLogRecommendationConst.REC_PARAMS, recParams)
+        put(AppLogParam.GROUP_ID, groupId)
+        addPage()
+        addEntranceForm()
+        addSourcePageType()
+        addSourceModule()
+    }
+
     companion object {
         fun create(
             cardName: String = "",
