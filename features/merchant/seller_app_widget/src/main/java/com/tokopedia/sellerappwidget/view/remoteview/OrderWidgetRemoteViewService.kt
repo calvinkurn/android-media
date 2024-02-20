@@ -11,6 +11,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.pxToDp
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
@@ -76,14 +78,13 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
 
                 val px46 = context.pxToDp(46).toInt()
                 val radius = context.pxToDp(6).toInt()
-                val builder = Glide.with(context)
-                    .asBitmap()
-                    .load(item.product?.picture)
-                    .transform(CenterCrop(), RoundedCorners(radius))
-                val futureTarget = builder.submit(px46, px46)
 
                 try {
-                    setImageViewBitmap(R.id.imgSawOrderItemProduct, futureTarget.get())
+                    val bitmapResult = item.product?.picture?.getBitmapFromUrl(context) {
+                        transforms(listOf(CenterCrop(), RoundedCorners(radius)))
+                        overrideSize(Resize(px46, px46))
+                    }
+                    setImageViewBitmap(R.id.imgSawOrderItemProduct, bitmapResult)
                 } catch (e: Exception) {
                     Timber.i(e)
                 }

@@ -1,19 +1,17 @@
 package com.tokopedia.mvc.presentation.bottomsheet.displayvoucher
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.media.loader.loadResource
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetCouponDisplayBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -96,21 +94,13 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
 
         viewModel.couponImage.observe(viewLifecycleOwner) {
             binding?.apply {
-                Glide.with(voucherImage.context)
-                    .asBitmap()
-                    .load(it)
-                    .placeholder(-1)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                        }
-
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
-                        ) {
-                            voucherImage.setImageBitmap(resource)
-                        }
-                    })
+                it.loadResource(voucherImage.context, {
+                    setPlaceHolder(-1)
+                }, target = MediaBitmapEmptyTarget(
+                    onReady = {
+                        voucherImage.setImageBitmap(it)
+                    }
+                ))
                 voucherLoader.hide()
             }
             when (currentVoucherSize) {

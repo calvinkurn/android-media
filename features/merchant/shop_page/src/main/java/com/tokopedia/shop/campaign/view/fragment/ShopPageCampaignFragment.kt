@@ -16,9 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -35,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
@@ -381,16 +379,10 @@ class ShopPageCampaignFragment :
                 setImageHeightPercentage(this)
                 val patternUrl = listPatternImage.getOrNull(Int.ZERO).orEmpty()
                 shouldShowWithAction(patternUrl.isNotEmpty()) {}
-                Glide.with(context)
-                    .load(listPatternImage.getOrNull(Int.ZERO))
-                    .apply(RequestOptions().override(Target.SIZE_ORIGINAL))
-                    .override(Target.SIZE_ORIGINAL)
-                    .transform(
-                        CropTopImageByHeightPercentageTransformation(
-                            PATTERN_CROP_TOP_PERCENTAGE
-                        )
-                    )
-                    .into(this)
+
+                this.loadImage(listPatternImage.getOrNull(Int.ZERO)) {
+                    transform(CropTopImageByHeightPercentageTransformation(PATTERN_CROP_TOP_PERCENTAGE))
+                }
             }
         }
     }
