@@ -8,21 +8,29 @@ import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_SECTION
 import com.tokopedia.discovery2.data.gqlraw.SECTION_QUERY_NAME
 
-class SectionGQLRepository : BaseRepository(),SectionRepository {
+private const val SRE_IDENTIFIER = "l_name"
+class SectionGQLRepository : BaseRepository(), SectionRepository {
     override suspend fun getComponents(
         pageIdentifier: String,
         sectionId: String,
-        filterQueryString:String
+        filterQueryString: String
     ): List<ComponentsItem> {
-        val dataResponse = (getGQLData(GQL_SECTION,
-            DataResponse::class.java, getQueryMap(pageIdentifier, sectionId,filterQueryString),
-            SECTION_QUERY_NAME) as DataResponse).data
+        val dataResponse = (
+            getGQLData(
+                GQL_SECTION,
+                DataResponse::class.java,
+                getQueryMap(pageIdentifier, sectionId, filterQueryString),
+                SECTION_QUERY_NAME
+            ) as DataResponse
+            ).data
         return dataResponse.components
     }
 
-    private fun getQueryMap(pageIdentifier: String,
-                            sectionId: String,
-                            queryString: String): Map<String,Any> {
+    private fun getQueryMap(
+        pageIdentifier: String,
+        sectionId: String,
+        queryString: String
+    ): Map<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap[Utils.IDENTIFIER] = pageIdentifier
         queryParameterMap[Utils.DEVICE] = Utils.DEVICE_VALUE

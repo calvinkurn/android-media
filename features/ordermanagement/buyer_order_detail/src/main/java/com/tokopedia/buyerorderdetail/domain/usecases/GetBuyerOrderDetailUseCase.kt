@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
@@ -9,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
@@ -23,6 +25,18 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
         emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
     }.catch {
         emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
+    }.onCompletion {
+        logCompletionBreadcrumb(params, it)
+    }
+
+    private fun logCompletionBreadcrumb(params: GetBuyerOrderDetailParams, throwable: Throwable?) {
+        runCatching {
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Success: $params")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Error: ${throwable.stackTraceToString()}")
+            }
+        }
     }
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {
@@ -259,6 +273,35 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                           }
                         }
                       }
+                      addon_summary {
+                        addons {
+                          order_id
+                          id
+                          level
+                          name
+                          price_str
+                          subtotal_price
+                          subtotal_price_str
+                          quantity
+                          type
+                          image_url
+                          metadata {
+                            info_link
+                            add_on_note {
+                              from
+                              to
+                              notes
+                              short_notes
+                              tips
+                            }
+                          }
+                          create_time
+                        }
+                        total
+                        total_price
+                        total_price_str
+                        total_quantity
+                      }
                     }
                   }
                   non_bundles {
@@ -306,11 +349,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         type
                         image_url
                         metadata {
+                          info_link
                           add_on_note {
                             from
                             to
                             notes
                             short_notes
+                            tips
                           }
                         }
                         create_time
@@ -378,11 +423,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                             type
                             image_url
                             metadata {
+                              info_link
                               add_on_note {
                                 from
                                 to
                                 notes
                                 short_notes
+                                tips
                               }
                             }
                             create_time
@@ -445,6 +492,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                         }
                       }
                       addon_summary {
+                        total_price_str
                         addons {
                           id
                           name
@@ -454,18 +502,32 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                           type
                           image_url
                           metadata {
+                            info_link
                             add_on_note {
                               is_custom_note
                               from
                               to
                               notes
                               short_notes
+                              tips
                             }
                           }
                         }
                       }
                       flags {
                         is_ppp
+                      }
+                    }
+                    product_benefit {
+                      label
+                      icon_url
+                      order_detail {
+                        order_detail_id
+                        product_id
+                        product_name
+                        thumbnail
+                        quantity
+                        total_price_text
                       }
                     }
                   }
@@ -487,11 +549,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       type
                       image_url
                       metadata {
+                        info_link
                         add_on_note {
                           from
                           to
                           notes
                           short_notes
+                          tips
                         }
                       }
                     }

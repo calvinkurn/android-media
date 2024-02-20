@@ -358,6 +358,11 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             actual.position shouldBe expected.position
             actual.type shouldBe expected.type
             actual.imageUrl shouldBe expected.url
+
+            actual.styleList.listShouldBe(expected.styleList) { actualStyle, expectedStyle ->
+                actualStyle.key shouldBe expectedStyle.key
+                actualStyle.value shouldBe expectedStyle.value
+            }
         }
 
         freeOngkirDataView.imageUrl shouldBe otherRelatedProduct.freeShipping.url

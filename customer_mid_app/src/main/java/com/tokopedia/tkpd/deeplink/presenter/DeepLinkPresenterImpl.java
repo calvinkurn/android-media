@@ -25,7 +25,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow;
 import com.tokopedia.applink.travel.DeeplinkMapperTravel;
@@ -236,10 +235,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.SIMILAR_PRODUCT:
                     openSimilarProduct(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_SIMILAR_PRODUCT;
-                    break;
-                case DeepLinkChecker.INVOICE:
-                    openInvoice(uriData);
-                    screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                     break;
                 case DeepLinkChecker.HOTEL:
                     openHotel(uriData, defaultBundle);
@@ -532,14 +527,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void login(Uri uriData) {
         Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
-        context.startActivity(intent);
-        context.finish();
-    }
-
-    private void openInvoice(Uri uriData) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.INVOICE);
-        intent.putExtra(KEY_URL, uriData.toString());
-        intent.putExtra(KEY_TITLE, "Invoice");
         context.startActivity(intent);
         context.finish();
     }

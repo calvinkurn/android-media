@@ -83,7 +83,7 @@ import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.customview.BottomMenu;
-import com.tokopedia.navigation.presentation.customview.HomeForYouMenu;
+import com.tokopedia.navigation.presentation.customview.IconJumper;
 import com.tokopedia.navigation.presentation.customview.IBottomClickListener;
 import com.tokopedia.navigation.presentation.customview.IBottomHomeForYouClickListener;
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar;
@@ -940,13 +940,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        if (bottomNavigation != null) {
-            if (notification.getHaveNewFeed()) {
-                Intent intent = new Intent(BROADCAST_FEED);
-                intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-            }
-        }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }
@@ -1390,36 +1383,45 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     public void populateBottomNavigationView() {
-        BottomMenu homeOrForYouMenu;
-        if (HomeRollenceController.isIconJumper()) {
-            homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.home),
-                    new HomeForYouMenu(
-                            getResources().getString(R.string.home),
-                            getResources().getString(R.string.for_you),
-                            R.drawable.ic_bottom_nav_home_active,
-                            R.drawable.ic_bottom_nav_home_for_you_active,
-                            R.raw.bottom_nav_home,
-                            R.raw.bottom_nav_thumb_idle,
-                            R.raw.bottom_nav_home_to_thumb,
-                            R.raw.bottom_nav_thumb_to_home
-                    ),
-                    R.raw.bottom_nav_home,
-                    R.raw.bottom_nav_home_to_enabled,
-                    R.raw.bottom_nav_home_dark,
-                    R.raw.bottom_nav_home_to_enabled_dark,
-                    R.drawable.ic_bottom_nav_home_for_you_active,
-                    R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f,
-                    1f);
-        } else {
-            homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), null, R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f);
-        }
-        menu.add(homeOrForYouMenu);
+        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), getIconJumper(), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), null, R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), null, R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), null, R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), null, R.raw.bottom_nav_transaction, R.raw.bottom_nav_transaction_to_enabled, R.raw.bottom_nav_transaction_dark, R.raw.bottom_nav_transaction_to_enabled_dark, R.drawable.ic_bottom_nav_uoh_active, R.drawable.ic_bottom_nav_uoh_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         bottomNavigation.setMenu(menu);
         handleAppLinkBottomNavigation(true);
+    }
+
+    private IconJumper getIconJumper() {
+        if(HomeRollenceController.isIconJumper()) {
+            if(HomeRollenceController.isIconJumperSRE()) {
+                return getSREIconJumper();
+            } else {
+                return getForYouIconJumper();
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private IconJumper getForYouIconJumper() {
+        return new IconJumper(
+                getResources().getString(R.string.for_you),
+                R.drawable.ic_bottom_nav_home_for_you_active,
+                R.raw.bottom_nav_home_to_thumb,
+                R.raw.bottom_nav_thumb_idle,
+                R.raw.bottom_nav_thumb_to_home
+        );
+    }
+
+    private IconJumper getSREIconJumper() {
+        return new IconJumper(
+                getResources().getString(R.string.for_you),
+                R.drawable.ic_bottom_nav_home_sre,
+                R.raw.bottom_nav_home_to_sre,
+                R.raw.bottom_nav_sre_idle,
+                R.raw.bottom_nav_sre_to_home
+        );
     }
 
     private void gotoNewUserZonePage() {

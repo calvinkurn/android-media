@@ -9,8 +9,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.reimagine.ProductCardGridView
 import com.tokopedia.productcard.reimagine.ProductCardModel
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.test.R as productcardtestR
 
@@ -40,7 +42,8 @@ class ProductCardGridActivityTest: AppCompatActivity() {
             val view = LayoutInflater.from(parent.context)
                 .inflate(
                     productcardtestR.layout.product_card_reimagine_grid_item_test_layout,
-                    null
+                    parent,
+                    false,
                 )
 
             return ViewHolder(view)
@@ -70,12 +73,29 @@ class ProductCardGridActivityTest: AppCompatActivity() {
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
-            testDescription?.text = description
+            setBackgroundContainer(productCardModel, itemView)
+
+            testDescription?.text = "$bindingAdapterPosition $description"
 
             productCardView?.run {
                 setProductModel(productCardModel)
                 setOnClickListener { toast("Click") }
                 setThreeDotsClickListener { toast("Three dots click") }
+                setAddToCartOnClickListener { toast("Click ATC") }
+                setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+                    override fun onQuantityChanged(quantity: Int) {
+                        toast("Quantity editor $quantity")
+                    }
+                })
+            }
+        }
+
+        private fun setBackgroundContainer(productCardModel: ProductCardModel, view: View) {
+            val contextResource = view.context
+            if(productCardModel.isInBackground) {
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_GN100))
+            } else {
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_NN0))
             }
         }
 

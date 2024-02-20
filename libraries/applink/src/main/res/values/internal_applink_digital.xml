@@ -36,8 +36,6 @@
     <string name="path_digital_search_number" translatable="false">/searchnumber</string>
     <string name="path_digital_favorite_number" translatable="false">/favoritenumber</string>
 
-    <string name="path_camera_ocr" translatable="false">/ocr</string>
-
     <string name="path_deals_home" translatable="false">/deals</string>
     <string name="path_deals_detail" translatable="false">/deals/{slug}</string>
     <string name="path_deals_brand_detail" translatable="false">/deals/brand/.*</string>

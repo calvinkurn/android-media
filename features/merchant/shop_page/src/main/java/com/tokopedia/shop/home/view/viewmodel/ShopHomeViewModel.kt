@@ -48,7 +48,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
-import com.tokopedia.shop.common.constant.ShopPageConstant.LABEL_GROUP_INTEGRITY_POSITION_VALUE
+import com.tokopedia.shop.common.constant.ShopPageConstant.LABEL_TITLE_PRODUCT_SOLD_COUNT
 import com.tokopedia.shop.common.constant.ShopPageConstant.RequestParamValue.PAGE_NAME_SHOP_COMPARISON_WIDGET
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.*
@@ -345,12 +345,13 @@ class ShopHomeViewModel @Inject constructor(
     fun addProductToCartOcc(
         product: ShopHomeProductUiModel,
         shopId: String,
+        shopName: String,
         onSuccessAddToCartOcc: (dataModelAtc: DataModel) -> Unit,
         onErrorAddToCartOcc: (exception: Throwable) -> Unit
     ) {
         launchCatchError(block = {
             val addToCartOccSubmitData = withContext(dispatcherProvider.io) {
-                submitAddProductToCartOcc(shopId, product)
+                submitAddProductToCartOcc(shopId, shopName, product)
             }
             if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCartOcc(addToCartOccSubmitData.data)
@@ -539,13 +540,14 @@ class ShopHomeViewModel @Inject constructor(
         return addToCartUseCaseRx.createObservable(requestParams).toBlocking().first()
     }
 
-    private suspend fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
+    private suspend fun submitAddProductToCartOcc(shopId: String, shopName: String, product: ShopHomeProductUiModel): AddToCartDataModel {
         return addToCartOccUseCase.setParams(
             AddToCartOccMultiRequestParams(
                 carts = listOf(
                     AddToCartOccMultiCartParam(
                         productId = product.id,
                         shopId = shopId,
+                        shopName = shopName,
                         quantity = product.minimumOrder.toString(),
                         productName = product.name,
                         price = product.displayedPrice
@@ -877,7 +879,6 @@ class ShopHomeViewModel @Inject constructor(
         listWidgetLayout: List<ShopPageWidgetUiModel>,
         shopId: String,
         widgetUserAddressLocalData: LocalCacheModel,
-        isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean,
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
@@ -901,7 +902,6 @@ class ShopHomeViewModel @Inject constructor(
                 responseWidgetContent.listWidget,
                 ShopUtil.isMyShop(shopId, userSessionShopId),
                 isLogin,
-                isThematicWidgetShown,
                 isEnableDirectPurchase,
                 shopId,
                 listWidgetLayout,
@@ -1501,7 +1501,12 @@ class ShopHomeViewModel @Inject constructor(
                                 isVariant = it.isVariant,
                                 minimumOrder = it.minimumOrder,
                                 stock = it.stock,
-                                label = it.labelGroupList.firstOrNull { it.position == LABEL_GROUP_INTEGRITY_POSITION_VALUE }?.title.orEmpty()
+                                label = it.labelGroupList.firstOrNull {
+                                    it.title.contains(
+                                        other = LABEL_TITLE_PRODUCT_SOLD_COUNT,
+                                        ignoreCase = true
+                                    )
+                                }?.title.orEmpty()
                             )
                         }
                         etalase.lastTimeStampProductListCaptured = System.currentTimeMillis()

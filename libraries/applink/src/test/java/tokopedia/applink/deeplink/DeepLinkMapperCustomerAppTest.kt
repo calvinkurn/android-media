@@ -34,7 +34,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 161
-        const val SIZE_PATH = 270
+        const val SIZE_PATH = 271
     }
 
     override fun setup() {
@@ -1500,6 +1500,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check tipping driver appLink then should return tokopedia internal tipping driver in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/tipping?order_id=123456"
+        val appLink = UriUtil.buildUriAppendParam(ApplinkConst.TIPPING_DRIVER, mapOf("order_id" to "123456"))
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check share address appLink then should return tokopedia internal logistic manage address in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/manageaddress/"
         val appLink = UriUtil.buildUri(ApplinkConst.SHARE_ADDRESS)
@@ -1925,6 +1933,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check play shorts appLink then should return tokopedia internal play shorts in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play-shorts"
+        assertEqualsDeepLinkMapper(ApplinkConst.PLAY_SHORTS, expectedDeepLink)
+    }
+
+    @Test
     fun `check add name profile appLink then should return tokopedia internal add name profile in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/manage-name"
         assertEqualsDeepLinkMapper(ApplinkConst.ADD_NAME_PROFILE, expectedDeepLink)
@@ -1950,21 +1964,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check privacy center appLink then should return tokopedia internal privacy center in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/privacy-center"
-
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
-        } returns DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER
-
-        assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
-    }
-
-    @Test
-    fun `check privacy center appLink then should return tokopedia internal home navigation in customerapp`() {
-        val expectedDeepLink = ApplinkConsInternalHome.HOME_NAVIGATION
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
-        } returns ""
-
         assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
     }
 
@@ -3244,7 +3243,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check appLink for feed relevant post in customerapp`() {
+    fun `check appLink for feed relevant post in customerapp with content as host`() {
         val postId = "12345"
         val source = "detail-play"
 
@@ -3260,7 +3259,28 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         }
 
         assertEqualsDeepLinkMapper("tokopedia://content/$postId?source=$source", expectedDeepLink)
-        assertEqualsDeepLinkMapper("tokopedia://feed/$postId?source=$source", expectedDeepLink)
+    }
+
+    @Test
+    fun `check appLink for feed relevant post in customerapp with feed as host`() {
+        val postId = "12345"
+        val source = "detail-play"
+
+        val expectedDeepLink = buildString {
+            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append("?")
+            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("&")
+            append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME}=$source")
+            append("&")
+            append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID}=$postId")
+            append("&")
+            append("${ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST}=true")
+            append("&source=$source") // automatically added
+        }
+
+        val feedRelevantPostApplink = UriUtil.buildUri(ApplinkConst.FEED_RELEVANT_POST, postId)
+        assertEqualsDeepLinkMapper("$feedRelevantPostApplink&source=$source", expectedDeepLink)
     }
 
     @Test
@@ -3275,6 +3295,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check feed browse appLink then should return tokopedia internal feed browse in customerapp`() {
         val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_FEED}/browse"
         assertEqualsDeepLinkMapper("tokopedia://feed/browse", expectedDeepLink)
+    }
+
+    @Test
+    fun `check category inspiration appLink then should return tokopedia internal category inspiration in customerapp`() {
+        val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_FEED}/browse/inspirational"
+        assertEqualsDeepLinkMapper("tokopedia://feed/browse/inspirational", expectedDeepLink)
     }
 
     @Test

@@ -15,7 +15,6 @@ import com.tokopedia.applink.DeepLinkChecker.FLIGHT
 import com.tokopedia.applink.DeepLinkChecker.HOT
 import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
-import com.tokopedia.applink.DeepLinkChecker.INVOICE
 import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR
 import com.tokopedia.applink.DeepLinkChecker.NATIVE_THANK_YOU
 import com.tokopedia.applink.DeepLinkChecker.NOW_HOME
@@ -53,7 +52,6 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 2, mapOf(0 to "promo")) to PROMO_DETAIL)
         add(Pattern(GT, 0, mapOf(0 to "promo")) to PROMO_LIST)
         add(Pattern(GT, 0, mapOf(0 to "sale")) to SALE)
-        add(Pattern(EQ, 1, mapOf(0 to "invoice.pl")) to INVOICE)
         add(Pattern(GT, 0, mapOf(0 to "blog")) to BLOG)
         add(Pattern(GT, 0, mapOf(0 to "category")) to CATEGORY)
         add(Pattern(GT, 0, mapOf(0 to "epharmacy")) to EPHARMACY)

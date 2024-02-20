@@ -139,6 +139,7 @@ data class InspirationCarouselDataView(
             val trackingOption: Int = 0,
             val stockBarDataView: StockBarDataView = StockBarDataView(),
             val warehouseID: String = "",
+            val categoryID: String = "",
         ): ImpressHolder(),
             Visitable<InspirationCarouselOptionTypeFactory> {
 

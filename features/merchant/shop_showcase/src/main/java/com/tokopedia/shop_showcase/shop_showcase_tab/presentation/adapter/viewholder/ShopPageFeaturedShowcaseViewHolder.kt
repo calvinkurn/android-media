@@ -30,7 +30,7 @@ class ShopPageFeaturedShowcaseViewHolder(
         private const val MARGIN_DP_10 = 10.0f
     }
 
-    private val viewBinding : ItemShopFeaturedShowcaseBinding? by viewBinding()
+    private val viewBinding: ItemShopFeaturedShowcaseBinding? by viewBinding()
     private var ivShowcaseImg: ImageUnify? = null
     private var tvShowcaseName: Typography? = null
 
@@ -40,7 +40,6 @@ class ShopPageFeaturedShowcaseViewHolder(
     }
 
     fun bind(list: List<FeaturedShowcaseUiModel>) {
-
         val element = list[adapterPosition]
 
         tvShowcaseName?.text = element.name
@@ -63,14 +62,14 @@ class ShopPageFeaturedShowcaseViewHolder(
 
         // featured showcase item impressed listener
         ivShowcaseImg?.addOnImpressionListener(
-                holder = element,
-                listener = object : ViewHintListener {
-                    override fun onViewHint() {
-                        listener.onFeaturedShowcaseImpressed(element, adapterPosition)
-                    }
+            holder = element,
+            listener = object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onFeaturedShowcaseImpressed(element, adapterPosition)
                 }
+            }
         )
-        
+
         handleColorSchema(shouldForceToLightMode)
     }
 
@@ -80,9 +79,9 @@ class ShopPageFeaturedShowcaseViewHolder(
                 viewBinding?.container?.context ?: return,
                 R.color.dms_clr_Unify_NN0_0_light
             )
-            
+
             viewBinding?.container?.setCardBackgroundColor(cardBackgroundColor)
-            
+
             val showcaseTextColor = MethodChecker.getColor(
                 viewBinding?.container?.context ?: return,
                 unifyprinciplesR.color.Unify_Static_Black
@@ -90,11 +89,11 @@ class ShopPageFeaturedShowcaseViewHolder(
             viewBinding?.tvShowcaseName?.setTextColor(showcaseTextColor)
         }
     }
-    
+
     private fun setItemMargin(position: Int, list: List<FeaturedShowcaseUiModel>) {
         val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
         )
         if (position == 0) {
             // set margin for first featured showcase item

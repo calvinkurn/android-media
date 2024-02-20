@@ -3,18 +3,21 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.extension.disableDirectPurchaseCapability
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductCardSmallGridBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -30,7 +33,7 @@ open class ShopHomeProductViewHolder(
     private val viewBinding: ItemShopHomeProductCardSmallGridBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
     protected var shopHomeProductViewModel: ShopHomeProductUiModel? = null
-
+    
     init {
         findViews()
     }
@@ -46,14 +49,19 @@ open class ShopHomeProductViewHolder(
 
     override fun bind(shopHomeProductViewModel: ShopHomeProductUiModel) {
         this.shopHomeProductViewModel = shopHomeProductViewModel
+
         val productCardModel = ShopPageHomeMapper.mapToProductCardModel(
             isHasAddToCartButton = false,
             hasThreeDots = isShowTripleDot,
             shopHomeProductViewModel = shopHomeProductViewModel,
             isWideContent = false,
             productRating = shopHomeProductViewModel.averageRating,
-            forceLightModeColor = shopHomeListener.isOverrideTheme()
-        )
+            forceLightModeColor = shopHomeListener.isOverrideTheme(),
+            patternColorType = shopHomeListener.getPatternColorType(),
+            backgroundColor = shopHomeListener.getBackgroundColor(),
+            isDeviceOnDarkModeTheme = productCard?.context?.isDarkMode().orFalse()
+        ).disableDirectPurchaseCapability()
+
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)
     }
