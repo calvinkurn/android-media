@@ -68,6 +68,7 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                       voucher_status_formatted
                       voucher_discount_type_formatted
                       voucher_discount_amt_formatted
+                      voucher_discount_amt_decimal_formatted
                       voucher_discount_amt_max_formatted
                       voucher_minimum_amt
                       remaning_quota

@@ -726,8 +726,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         else -> {
                             tpgVoucherNominalLabel.text =
                                 getString(R.string.smvc_percentage_discount_label)
-                            tpgVoucherNominal.text =
-                                data.voucherDiscountAmount.getPercentFormatted()
+                            tpgVoucherNominal.text = data.voucherDiscountAmountDecimalFormatted
                         }
                     }
                 }

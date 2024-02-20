@@ -42,6 +42,7 @@ data class VoucherDetailData(
     val voucherStatusFormatted: String = "",
     val voucherDiscountTypeFormatted: String = "",
     val voucherDiscountAmountFormatted: String = "",
+    val voucherDiscountAmountDecimalFormatted: String = "",
     val voucherDiscountAmountMaxFormatted: String = "",
     val remainingQuota: Long = 0,
     val tnc: String = "",

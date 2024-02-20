@@ -56,6 +56,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 voucherStatusFormatted = voucherStatusFormatted,
                 voucherDiscountTypeFormatted = voucherDiscountTypeFormatted,
                 voucherDiscountAmountFormatted = voucherDiscountAmountFormatted,
+                voucherDiscountAmountDecimalFormatted = voucherDiscountAmountDecimalFormatted,
                 voucherDiscountAmountMaxFormatted = voucherDiscountAmountMaxFormatted,
                 remainingQuota = remainingQuota,
                 tnc = tnc,

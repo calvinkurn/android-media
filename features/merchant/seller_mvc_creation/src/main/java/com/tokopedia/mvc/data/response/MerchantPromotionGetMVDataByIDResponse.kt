@@ -74,6 +74,8 @@ data class MerchantPromotionGetMVDataByIDResponse(
             val voucherDiscountTypeFormatted: String = "",
             @SerializedName("voucher_discount_amt_formatted")
             val voucherDiscountAmountFormatted: String = "",
+            @SerializedName("voucher_discount_amt_decimal_formatted")
+            val voucherDiscountAmountDecimalFormatted: String = "",
             @SerializedName("voucher_discount_amt_max_formatted")
             val voucherDiscountAmountMaxFormatted: String = "",
             @SerializedName("remaning_quota")
