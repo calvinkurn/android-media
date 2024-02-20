@@ -105,27 +105,10 @@ object AppLogAnalytics {
         })
     }
 
-    fun sendProductImpression(product: TrackProduct) {
-        send(EventName.PRODUCT_SHOW, JSONObject().also {
-            it.addPage()
-            it.addEntranceForm()
-            it.addSourcePageType()
-            it.addSourceModule()
-            it.put("product_id", product)
-            it.put("is_ad", if (product.isAd) "1" else "0")
-            val reqId = product.requestId ?: ""
-            it.put("request_id", reqId)
-            it.put("track_id", reqId + "_" + product.requestId + product.orderFrom1)
-        })
-    }
-
     @SuppressLint("PII Data Exposure")
     fun sendConfirmSku(product: TrackConfirmSku) {
         send(EventName.CONFIRM_SKU, JSONObject().also {
             it.addPage()
-            it.addEntranceForm()
-            it.addSourcePageType()
-            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
