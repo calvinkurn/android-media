@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -26,10 +27,19 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.lifecycle.get
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
+import com.tokopedia.play.widget.liveindicator.di.DaggerPlayWidgetLiveIndicatorComponent
+import com.tokopedia.play.widget.liveindicator.di.PlayWidgetLiveIndicatorComponent
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -47,12 +57,71 @@ class PlayWidgetLiveIndicatorView : AbstractComposeView {
         defStyleAttr
     )
 
+    private val componentFactory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return DaggerPlayWidgetLiveIndicatorComponent.builder()
+                .baseAppComponent(
+                    (context.applicationContext as BaseMainApplication).baseAppComponent
+                ).build() as T
+        }
+    }
+
+    private var mComponent: PlayWidgetLiveIndicatorComponent? = null
+
+    private var mModel: Model? = null
+
+    init {
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                mComponent = createComponent()
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                mComponent = null
+            }
+        })
+
+        addImpressionListener {
+            analytic { impressLiveBadge(it.channelId, it.productId, it.shopId) }
+        }
+        setOnClickListener(null)
+    }
+
     @Composable
     override fun Content() {
         NestTheme {
             PlayWidgetLiveIndicator()
         }
     }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        val onClickListener = OnClickListener { view ->
+            analytic { clickLiveBadge(it.channelId, it.productId, it.shopId) }
+            l?.onClick(view)
+        }
+        super.setOnClickListener(onClickListener)
+    }
+
+    fun setModel(model: Model) {
+        mModel = model
+    }
+
+    private fun createComponent(): PlayWidgetLiveIndicatorComponent {
+        val owner = findViewTreeViewModelStoreOwner() ?: error("VM Store Owner not found")
+        return ViewModelProvider(owner, componentFactory).get()
+    }
+
+    private fun analytic(onAnalytic: PlayWidgetLiveIndicatorAnalytic.(Model) -> Unit) {
+        val model = mModel ?: return
+        mComponent?.getAnalytic()?.onAnalytic(model)
+    }
+
+    data class Model(
+        val channelId: String,
+        val productId: String,
+        val shopId: String,
+    )
 }
 
 @Composable
