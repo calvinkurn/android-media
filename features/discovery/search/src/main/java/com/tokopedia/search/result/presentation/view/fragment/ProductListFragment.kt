@@ -294,7 +294,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        restoreInstanceState(savedInstanceState)
+        restoreInstanceState(arguments)
         initProductCardLifecycleObserver()
         initNetworkMonitor()
     }
