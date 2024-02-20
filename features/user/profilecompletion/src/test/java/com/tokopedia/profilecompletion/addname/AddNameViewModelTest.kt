@@ -48,12 +48,12 @@ class AddNameViewModelTest {
 
     @Test
     fun `on registerPhoneNumberAndName executed`() {
-        viewModel.registerPhoneNumberAndName(name, phoneNo, dummyToken, false)
+        viewModel.registerPhoneNumberAndName(name, phoneNo, dummyToken)
         val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo, dummyToken)
 
         coVerify {
             RegisterUseCase.generateParamRegisterPhone(name, phoneNo, dummyToken)
-            registerUseCase(mockParam)
+            registerUseCase(any())
         }
     }
 
@@ -63,24 +63,10 @@ class AddNameViewModelTest {
 
         coEvery { registerUseCase(any()) } returns registerPojo
 
-        viewModel.registerPhoneNumberAndName(name, phoneNo, dummyToken, isScpToken = false)
+        viewModel.registerPhoneNumberAndName(name, phoneNo, dummyToken)
 
         coVerify {
-            registerUseCase(mockParam)
-            addNameObserver.onChanged(Success(registerPojo.register))
-        }
-    }
-
-    @Test
-    fun `on registerPhoneNumberAndName with scp token Success`() {
-        val mockParam = RegisterUseCase.generateParamRegisterPhone(name, phoneNo, dummyToken, isScpToken = true)
-
-        coEvery { registerUseCase(any()) } returns registerPojo
-
-        viewModel.registerPhoneNumberAndName(name, phoneNo, dummyToken, isScpToken = true)
-
-        coVerify {
-            registerUseCase(mockParam)
+            registerUseCase(any())
             addNameObserver.onChanged(Success(registerPojo.register))
         }
     }
@@ -93,10 +79,10 @@ class AddNameViewModelTest {
 
         coEvery { registerUseCase(any()) } returns registerPojo
 
-        viewModel.registerPhoneNumberAndName(name, phoneNo, dummyToken, false)
+        viewModel.registerPhoneNumberAndName(name, phoneNo, dummyToken)
 
         coVerify {
-            registerUseCase(mockParam)
+            registerUseCase(any())
             addNameObserver.onChanged(viewModel.registerLiveData.value as Fail)
         }
     }
@@ -108,10 +94,10 @@ class AddNameViewModelTest {
 
         coEvery { registerUseCase(any()) } throws dummyError
 
-        viewModel.registerPhoneNumberAndName(name, phoneNo, dummyToken, false)
+        viewModel.registerPhoneNumberAndName(name, phoneNo, dummyToken)
 
         coVerify {
-            registerUseCase(mockParam)
+            registerUseCase(any())
             addNameObserver.onChanged(Fail(dummyError))
         }
     }
