@@ -16,9 +16,6 @@ data class LiveIndicatorData(
     @SerializedName("channelID")
     @Expose
     val channelID: String = "",
-    @SerializedName("mediaURL")
-    @Expose
-    val mediaURL: String = "",
     @SerializedName("applink")
     @Expose
     val appLink: String = ""

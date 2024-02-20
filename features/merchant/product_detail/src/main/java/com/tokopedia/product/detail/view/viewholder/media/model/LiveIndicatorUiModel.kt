@@ -10,13 +10,11 @@ import com.tokopedia.product.detail.common.data.model.media.LiveIndicatorData
 data class LiveIndicatorUiModel(
     val isLive: Boolean = false,
     val channelID: String = "",
-    val mediaURL: String = "",
     val appLink: String = ""
 )
 
 fun LiveIndicatorData.asUiModel() = LiveIndicatorUiModel(
     isLive = isLive,
     channelID = channelID,
-    mediaURL = mediaURL,
     appLink = appLink
 )

@@ -141,7 +141,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       liveIndicator {
                         isLive
                         channelID
-                        mediaURL
                         applink
                       }
                       videos {
