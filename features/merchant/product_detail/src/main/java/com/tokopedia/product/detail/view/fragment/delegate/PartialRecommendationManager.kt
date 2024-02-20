@@ -27,7 +27,7 @@ import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 class PartialRecommendationManager(
     val mediator: PdpComponentCallbackMediator
-) {
+) : PartialRecommendationManagerListener {
     private val lifeCycleManager = object : DefaultLifecycleObserver {
         override fun onCreate(owner: LifecycleOwner) {
             super.onCreate(owner)
@@ -46,17 +46,17 @@ class PartialRecommendationManager(
     private val remoteConfig: RemoteConfig
         get() = mediator.pdpRemoteConfig
 
-    fun init() {
+    override fun init() {
         context?.asLifecycleOwner()?.let {
             configureLifecycle(it)
         }
     }
 
-    fun loadRecommendation(
+    override fun loadRecommendation(
         pageName: String,
         queryParam: String,
         thematicId: String,
-        isViewToView: Boolean = false
+        isViewToView: Boolean
     ) {
         val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         val miniCart = if (isViewToView) null else viewModel.p2Data.value?.miniCart
@@ -205,4 +205,14 @@ class PartialRecommendationManager(
             lifecycleOwner.lifecycle.addObserver(lifeCycleManager)
         }
     }
+}
+
+interface PartialRecommendationManagerListener {
+    fun init()
+    fun loadRecommendation(
+        pageName: String,
+        queryParam: String,
+        thematicId: String,
+        isViewToView: Boolean = false
+    )
 }

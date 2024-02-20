@@ -22,7 +22,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVe
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.product.detail.view.fragment.delegate.PartialRecommendationManager
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
@@ -40,7 +39,6 @@ import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiM
 class ProductDetailAdapter(
     asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel>,
     private val listener: DynamicProductDetailListener?,
-    private val recommendationManager: PartialRecommendationManager,
     private val adapterTypeFactory: DynamicProductDetailAdapterFactory
 ) :
     ListAdapter<DynamicPdpDataModel, AbstractViewHolder<*>>(asyncDifferConfig) {
@@ -92,7 +90,7 @@ class ProductDetailAdapter(
             (dataModel as? ProductRecommendationDataModel)?.recomWidgetData == null
         ) {
             val recommData = dataModel as? ProductRecommendationDataModel
-            recommendationManager.loadRecommendation(
+            listener?.loadTopads(
                 pageName = recommData?.name.orEmpty(),
                 queryParam = recommData?.queryParam.orEmpty(),
                 thematicId = recommData?.thematicId.orEmpty()
@@ -104,7 +102,7 @@ class ProductDetailAdapter(
             (dataModel as? ProductRecomWidgetDataModel)?.recomWidgetData == null
         ) {
             val recommData = dataModel as? ProductRecomWidgetDataModel
-            recommendationManager.loadRecommendation(
+            listener?.loadTopads(
                 pageName = recommData?.name.orEmpty(),
                 queryParam = recommData?.queryParam.orEmpty(),
                 thematicId = recommData?.thematicId.orEmpty()
@@ -116,11 +114,10 @@ class ProductDetailAdapter(
             (dataModel as? ViewToViewWidgetDataModel)?.recomWidgetData == null
         ) {
             val recommData = dataModel as? ViewToViewWidgetDataModel
-            recommendationManager.loadRecommendation(
+            listener?.loadViewToView(
                 pageName = recommData?.name.orEmpty(),
                 queryParam = recommData?.queryParam.orEmpty(),
-                thematicId = recommData?.thematicId.orEmpty(),
-                isViewToView = true
+                thematicId = recommData?.thematicId.orEmpty()
             )
         }
 

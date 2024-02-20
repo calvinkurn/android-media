@@ -271,8 +271,6 @@ import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.Pro
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
-import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ViewState
-import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommUiState
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
@@ -288,7 +286,6 @@ import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
 import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
@@ -337,7 +334,6 @@ import com.tokopedia.universal_sharing.view.customview.ShareWidgetCallback
 import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
@@ -354,7 +350,6 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
@@ -1907,31 +1902,19 @@ open class DynamicProductDetailFragment :
     }
 
     override fun loadTopads(pageName: String, queryParam: String, thematicId: String) {
-        val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-        viewModel.onRecommendationEvent(
-            ProductRecommendationEvent.LoadRecommendation(
-                pageName = pageName,
-                productId = p1.basic.productID,
-                isTokoNow = p1.basic.isTokoNow,
-                miniCart = viewModel.p2Data.value?.miniCart,
-                queryParam = queryParam,
-                thematicId = thematicId
-            )
+        productRecomm.loadRecommendation(
+            pageName = pageName,
+            queryParam = queryParam,
+            thematicId = thematicId
         )
     }
 
     override fun loadViewToView(pageName: String, queryParam: String, thematicId: String) {
-        val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-
-        viewModel.onRecommendationEvent(
-            ProductRecommendationEvent.LoadRecommendation(
-                pageName = pageName,
-                productId = p1.basic.productID,
-                isTokoNow = p1.basic.isTokoNow,
-                miniCart = null,
-                queryParam = queryParam,
-                thematicId = thematicId
-            )
+        productRecomm.loadRecommendation(
+            pageName = pageName,
+            queryParam = queryParam,
+            thematicId = thematicId,
+            isViewToView = true
         )
     }
 
