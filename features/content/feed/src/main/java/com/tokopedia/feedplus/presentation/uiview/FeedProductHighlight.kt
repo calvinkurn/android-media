@@ -166,15 +166,15 @@ fun ProductTagItems(
     var needToBeShown by remember { mutableStateOf(false) }
     val highlightedProduct = products.firstOrNull { it.isHighlight }
 
-    Column {
-        LaunchedEffect(key1 = key, block = {
-            delay(5000L)
-            needToBeShown = true
-            if (highlightedProduct != null) {
-                impressHighlight(highlightedProduct)
-            }
-        })
+    LaunchedEffect(key1 = key, block = {
+        delay(5000L)
+        needToBeShown = true
+        if (highlightedProduct != null) {
+            impressHighlight(highlightedProduct)
+        }
+    })
 
+    Column {
         FeedProductLabel(
             products = products,
             totalProducts = totalProducts,
