@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_auto_top_up_credit_title"
+        android:layout_width="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_height="wrap_content"
+        android:text="@string/auto_top_top_up_credit_title"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_auto_top_up_credit_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constrainedWidth="true"
+        tools:text="Rp50.000"
+        android:layout_marginTop="4dp"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_auto_top_up_credit_bonus_value"
+        app:layout_constraintTop_toBottomOf="@id/tv_auto_top_up_credit_title"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_auto_top_up_credit_bonus_value"
+        android:layout_width="0dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="16dp"
+        android:layout_height="wrap_content"
+        tools:text="(Bonus Rp3.250)"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@id/tv_auto_top_up_credit_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_auto_top_up_credit_value"
+        app:layout_constraintTop_toTopOf="@id/tv_auto_top_up_credit_value"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_auto_top_up_frequency_title"
+        android:layout_width="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:text="@string/auto_top_top_up_credit_frequency"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_auto_top_up_credit_value"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_auto_top_up_frequency_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:layout_marginTop="4dp"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Maks. 6 kali/hari"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="@id/tv_auto_top_up_frequency_title"
+        app:layout_constraintEnd_toEndOf="@id/tv_auto_top_up_frequency_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_auto_top_up_frequency_title"/>
+    
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_auto_top_up_confirmation"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_auto_top_up_frequency_value"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_auto_top_up_detail_information_title"
+        android:layout_width="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:text="@string/auto_top_up_confirmation_detail_information_title"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_auto_top_up_confirmation"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_auto_top_up_detail_information_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:layout_marginTop="4dp"
+        app:typographyType="display_2"
+        android:text="@string/auto_top_up_confirmation_detail_information_desc"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="@id/tv_auto_top_up_detail_information_title"
+        app:layout_constraintEnd_toEndOf="@id/tv_auto_top_up_detail_information_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_auto_top_up_detail_information_title"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_auto_top_up_detail_information"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_auto_top_up_detail_information_desc"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_auto_top_up_confirmation_subtotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/auto_top_up_confirmation_subtotal"
+        app:typographyType="display_2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_auto_top_up_detail_information"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_auto_top_up_confirmation_subtotal"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_name="INFORMATION"
+        android:layout_marginStart="4dp"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:layout_constraintStart_toEndOf="@id/tv_auto_top_up_confirmation_subtotal"
+        app:layout_constraintTop_toTopOf="@id/tv_auto_top_up_confirmation_subtotal"
+        app:layout_constraintBottom_toBottomOf="@id/tv_auto_top_up_confirmation_subtotal"
+        />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_auto_top_up_confirmation_button"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_auto_top_up_confirmation"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_auto_top_up_confirmation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="12dp"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"
+        android:text="@string/auto_top_up_confirmation_button_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
