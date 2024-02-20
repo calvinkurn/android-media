@@ -41,12 +41,14 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.domain.GetMiniCartWidgetUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -62,7 +64,7 @@ class DiscoveryViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
     private lateinit var discoveryDataUseCase: DiscoveryDataUseCase
-    private lateinit var getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase
+    private lateinit var getMiniCartListSimplifiedUseCase: GetMiniCartWidgetUseCase
     private lateinit var addToCartUseCase: AddToCartUseCase
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
@@ -874,7 +876,7 @@ class DiscoveryViewModelTest {
 
         viewModel.getMiniCartTokonow(shopIds, "2")
 
-        verify { getMiniCartListSimplifiedUseCase.setParams(any(), any()) }
+        coVerify { getMiniCartListSimplifiedUseCase.invoke(any()) }
     }
 
     /**************************** test for getScrollDepth() *******************************************/
@@ -982,6 +984,7 @@ class DiscoveryViewModelTest {
         verify { discoveryDataUseCase.clearPage(any()) }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     @Throws(Exception::class)
     fun tearDown() {
