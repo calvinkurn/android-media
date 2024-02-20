@@ -183,7 +183,7 @@ object AppLogAnalytics {
     internal fun JSONObject.addSourcePageType() {
         put(
             SOURCE_PAGE_TYPE,
-            if(sourcePageType == SourcePageType.PRODUCT_CARD) currentPageName()
+            if(sourcePageType == SourcePageType.PRODUCT_CARD) previousPageName()
             else sourcePageType?.str
         )
     }
