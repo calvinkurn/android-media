@@ -40,6 +40,7 @@ class GetVoucherListMapper @Inject constructor() {
                 discountUsingPercent = it.discountTypeFormatted == DISCOUNT_TYPE_PERCENT,
                 discountAmt = it.discountAmt,
                 discountAmtFormatted = it.discountAmtFormatted,
+                discountAmtDecimalFormatted = it.discountAmtDecimalFormatted,
                 discountAmtMax = it.discountAmtMax,
                 minimumAmt = it.voucherMinimumAmt,
                 quota = it.voucherQuota,
