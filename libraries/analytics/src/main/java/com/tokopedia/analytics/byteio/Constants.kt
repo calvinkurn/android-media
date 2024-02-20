@@ -86,6 +86,13 @@ data class TrackConfirmCartResult(
     val cartItemId: String,
 )
 
+data class SubmitOrderResult(
+    val isSuccess: Boolean,
+    val failReason: String,
+    val shippingPrice: Double,
+    val discountedShippingPrice: Double,
+)
+
 
 enum class ProductType(val type: Int) {
     AVAILABLE(1),

@@ -510,7 +510,7 @@ class DynamicProductDetailViewModel @Inject constructor(
 
         return TrackProductDetail(
             productId = p1.parentProductId,
-            productCategory = p1.basic.category.name,
+            productCategory = p1.basic.category.detail.firstOrNull()?.name.orEmpty(),
             productType = p1.productType,
             originalPrice = p1.data.price.slashPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
@@ -526,7 +526,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         skuPhotoViewed.clear()
         return TrackStayProductDetail(
             productId = p1?.parentProductId.orEmpty(),
-            productCategory = p1?.basic?.category?.name.orEmpty(),
+            productCategory = p1?.basic?.category?.detail?.firstOrNull()?.name.orEmpty(),
             productType = p1?.productType ?: ProductType.NOT_AVAILABLE,
             originalPrice = p1?.data?.price?.slashPriceFmt.orEmpty(),
             salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
@@ -697,7 +697,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         AppLogAnalytics.sendConfirmCart(
             TrackConfirmCart(
                 productId = data.parentProductId,
-                productCategory = data.basic.category.name,
+                productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
                 productType = ProductType.AVAILABLE,
                 originalPrice = data.data.price.value,
                 salePrice = data.finalPrice,
@@ -713,7 +713,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         AppLogAnalytics.sendConfirmCartResult(
             TrackConfirmCartResult(
                 productId = data.parentProductId,
-                productCategory = data.basic.category.name,
+                productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
                 productType = ProductType.AVAILABLE,
                 originalPrice = data.data.price.value,
                 salePrice = data.finalPrice,
@@ -722,7 +722,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 isSuccess = false, // todo
                 failReason = "",
                 buttonType = -1, // todo
-                cartItemId = "",
+                cartItemId = result.data.cartId,
             )
         )
         if (result.isStatusError()) {
@@ -778,7 +778,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         AppLogAnalytics.sendConfirmSku(
             TrackConfirmSku(
                 productId = data.parentProductId,
-                productCategory = data.basic.category.name,
+                productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
                 productType = ProductType.AVAILABLE,
                 originalPrice = data.data.price.value,
                 salePrice = data.finalPrice,

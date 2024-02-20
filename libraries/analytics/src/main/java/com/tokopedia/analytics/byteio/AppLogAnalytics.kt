@@ -174,6 +174,15 @@ object AppLogAnalytics {
         })
     }
 
+    fun sendSubmitOrderResult(model: SubmitOrderResult) {
+        send(EventName.SUBMIT_ORDER_RESULT, JSONObject().also {
+            it.addPage()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addSourceModule()
+        })
+    }
+
     internal fun JSONObject.addPage() {
         put(PREVIOUS_PAGE, previousPageName())
         put(PAGE_NAME, currentPageName())
