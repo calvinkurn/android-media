@@ -93,6 +93,89 @@
             "canonicalIdentifier": "2151123756",
             "customMetaTags": "",
             "anMinVersion": ""
+          },
+          "channel": {
+            "title": "Mau bagikan lewat mana?",
+            "list": [
+              {
+                "id": 12,
+                "title": "WhatsApp",
+                "imageResolution": "square",
+                "platform": "wa"
+              },
+              {
+                "id": 8,
+                "title": "Telegram",
+                "imageResolution": "square",
+                "platform": "telegram"
+              },
+              {
+                "id": 17,
+                "title": "IG Story",
+                "imageResolution": "vertical",
+                "platform": "ig-story"
+              },
+              {
+                "id": 16,
+                "title": "IG Feed",
+                "imageResolution": "square",
+                "platform": "ig-feed"
+              },
+              {
+                "id": 21,
+                "title": "IG DM",
+                "imageResolution": "square",
+                "platform": "ig-feed"
+              },
+              {
+                "id": 4,
+                "title": "Line",
+                "imageResolution": "horizontal",
+                "platform": "line"
+              },
+              {
+                "id": 15,
+                "title": "FB Story",
+                "imageResolution": "vertical",
+                "platform": "fb-story"
+              },
+              {
+                "id": 14,
+                "title": "FB Feed",
+                "imageResolution": "horizontal",
+                "platform": "fb-feed"
+              },
+              {
+                "id": 10,
+                "title": "Twitter",
+                "imageResolution": "horizontal",
+                "platform": "twitter"
+              },
+              {
+                "id": 18,
+                "title": "Salin Link",
+                "imageResolution": "horizontal",
+                "platform": "wa"
+              },
+              {
+                "id": 6,
+                "title": "SMS",
+                "imageResolution": "horizontal",
+                "platform": "wa"
+              },
+              {
+                "id": 19,
+                "title": "E-mail",
+                "imageResolution": "horizontal",
+                "platform": "wa"
+              },
+              {
+                "id": 20,
+                "title": "Lainnya",
+                "imageResolution": "horizontal",
+                "platform": "wa"
+              }
+            ]
           }
         }
       ]
