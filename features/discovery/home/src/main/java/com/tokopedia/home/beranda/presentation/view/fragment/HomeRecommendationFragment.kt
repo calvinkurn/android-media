@@ -19,10 +19,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation123.sendCardClickAppLog
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation123.sendCardShowAppLog
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation123.sendProductClickAppLog
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation123.sendProductShowAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductClickAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductShowAppLog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -33,7 +34,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.byteio.TrackRecommendationMapper.asShowClickTracker
+import com.tokopedia.home.analytics.byteio.TrackRecommendationMapper.asTrackerModel
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistNonLogin
@@ -153,6 +154,8 @@ class HomeRecommendationFragment :
 
     private var startY = 0.0F
     private var startX = 0.0F
+
+    private val hasTrackEnterPage = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -290,6 +293,7 @@ class HomeRecommendationFragment :
                             is HomeRecommendationCardState.Success -> {
                                 adapter.submitList(it.data.homeRecommendations) {
                                     updateScrollEndlessListener(it.data.isHasNextPage)
+                                    trackEnterPage()
                                 }
                             }
 
@@ -317,6 +321,11 @@ class HomeRecommendationFragment :
                 }
             }
         }
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun updateScrollEndlessListener(hasNextPage: Boolean) {
@@ -426,7 +435,7 @@ class HomeRecommendationFragment :
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
         Log.d("byteio2", "onProductCardImpressed: $position")
         sendProductShowAppLog(
-            model.asShowClickTracker(
+            model.asTrackerModel(
                 tabName = tabName,
                 tabPosition = tabIndex
             )
@@ -479,7 +488,7 @@ class HomeRecommendationFragment :
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
         sendProductClickAppLog(
-            model.asShowClickTracker(
+            model.asTrackerModel(
                 tabName = tabName,
                 tabPosition = tabIndex
             )
@@ -573,7 +582,7 @@ class HomeRecommendationFragment :
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         sendCardClickAppLog(
-            model.asShowClickTracker(
+            model.asTrackerModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
             )
@@ -603,7 +612,7 @@ class HomeRecommendationFragment :
 
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
         sendCardShowAppLog(
-            model.asShowClickTracker(
+            model.asTrackerModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
             )
@@ -627,7 +636,7 @@ class HomeRecommendationFragment :
 
     override fun onContentCardImpressed(item: ContentCardModel, position: Int) {
         sendCardShowAppLog(
-            item.asShowClickTracker(
+            item.asTrackerModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
             )
@@ -643,7 +652,7 @@ class HomeRecommendationFragment :
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
         sendCardClickAppLog(
-            item.asShowClickTracker(
+            item.asTrackerModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
             )

@@ -128,9 +128,27 @@ enum class SourcePageType(val str: String) {
     PRODUCT_CARD("")
 }
 
+enum class EnterMethod(val str: String) {
+    CLICK_TAB("click_tab"),
+    SWITCH_TAB("switch_tab"),
+    CLICK_BUBBLE("click_bubble"),
+    CLICK_PUSH("click_push"),
+    CLICK_WHATSAPP("click_whatsapp"),
+    CLICK_INBOX("click_inbox"),
+    CLICK_NO_ANCHOR_VIDEO_BUTTON("click_no_anchor_video_button"),
+    CLICK_NO_ANCHOR_VIDEO_PIC("click_no_anchor_video_pic"),
+    CLICK_VIEW_ORDER("click_view_order"),
+    CLICK_PLACE_ORDER("click_place_order"),
+    CLICK_VIDEO_GUIDE("click_video_guide"),
+    CLICK_TT_TASK_PAGE_MALL_BROWSE_TASK("click_tt_task_page_mall_browse_task"),
+    CLICK_TT_TASK_PAGE_COUPON_POPUP("click_tt_task_page_coupon_popup"),
+    OTHER("other")
+}
+
 object EventName {
     const val PRODUCT_SHOW = "tiktokec_product_show"
     const val PRODUCT_CLICK = "tiktokec_product_click"
+    const val ENTER_PAGE = "tiktokec_enter_page"
     const val CARD_SHOW = "tiktokec_card_show"
     const val CARD_CLICK = "tiktokec_card_click"
     const val ENTER_PRODUCT_DETAIL = "tiktokec_enter_product_detail"
