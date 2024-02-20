@@ -29,20 +29,6 @@ import dagger.Provides
 @Module
 class LoginUseCaseModuleStub {
 
-//    @ActivityScope
-//    @Provides
-//    fun provideLoginTokenUseCaseV2(stub: LoginTokenV2UseCaseStub): LoginTokenV2UseCase = stub
-
-//    @ActivityScope
-//    @Provides
-//    fun provideLoginTokenUseCaseV2Stub(
-//        @ApplicationContext graphqlRepository: GraphqlRepository,
-//        userSessionInterface: UserSessionInterface
-//    ): LoginTokenV2UseCaseStub {
-//        val useCase = GraphqlUseCaseStub<LoginTokenPojoV2>(graphqlRepository)
-//        return LoginTokenV2UseCaseStub(useCase, userSessionInterface)
-//    }
-
     @Provides
     @ActivityScope
     fun provideGetAdminTypeUseCase(
