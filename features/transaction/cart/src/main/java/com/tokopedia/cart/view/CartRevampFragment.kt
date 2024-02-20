@@ -74,6 +74,7 @@ import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheetListener
 import com.tokopedia.cart.view.bottomsheet.CartNoteBottomSheet
 import com.tokopedia.cart.view.bottomsheet.CartOnBoardingBottomSheet
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
+import com.tokopedia.cart.view.compose.CartBuyAgainFloatingButtonView
 import com.tokopedia.cart.view.compoundview.CartToolbarListener
 import com.tokopedia.cart.view.customview.CartViewBinderHelper
 import com.tokopedia.cart.view.decorator.CartItemDecoration
@@ -84,6 +85,7 @@ import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
+import com.tokopedia.cart.view.pref.CartPreferences
 import com.tokopedia.cart.view.pref.CartOnBoardingPreferences
 import com.tokopedia.cart.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cart.view.uimodel.AddToCartEvent
@@ -361,6 +363,10 @@ class CartRevampFragment :
     }
     private val swipeToDeleteOnBoardingFlow: MutableSharedFlow<Boolean> = MutableSharedFlow()
 
+    private val cartPreferences: CartPreferences by lazy {
+        CartPreferences(requireContext())
+    }
+
     private var enablePromoEntryPointNewInterface: Boolean = false
 
     companion object {
@@ -385,10 +391,10 @@ class CartRevampFragment :
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
         const val HEIGHT_DIFF_CONSTRAINT = 100
-        const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
-        const val DELAY_SHOW_SELECTED_AMOUNT_AFTER_SCROLL = 750L
-        const val PROMO_ANIMATION_DURATION = 500L
-        const val SELECTED_AMOUNT_ANIMATION_DURATION = 500L
+        const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 100L
+        const val DELAY_SHOW_SELECTED_AMOUNT_AFTER_SCROLL = 100L
+        const val PROMO_ANIMATION_DURATION = 400L
+        const val SELECTED_AMOUNT_ANIMATION_DURATION = 400L
         const val COACHMARK_VISIBLE_DELAY_DURATION = 500L
         const val DELAY_SHOW_SWIPE_TO_DELETE_ONBOARDING = 1000L
         const val DELAY_CHECK_BOX_GLOBAL = 500L
@@ -555,6 +561,19 @@ class CartRevampFragment :
         initVM()
         initCoachMark()
         binding?.rvCart?.setViewBinderHelper(binderHelper)
+
+        if (cartPreferences.hasClickedBuyAgainFloatingButton()) {
+            binding?.fabBuyAgain?.visible()
+        } else {
+            binding?.fabBuyAgain?.setContent {
+                CartBuyAgainFloatingButtonView(
+                    onClick = {
+                        cartPreferences.setHasClickedBuyAgainFloatingButton()
+                    }
+                )
+            }
+            binding?.fabBuyAgain?.gone()
+        }
     }
 
     override fun getFragment(): Fragment {

@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/rl_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -59,7 +59,7 @@
                     android:id="@+id/rv_cart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/bottom_layout"
+                    app:layout_constraintBottom_toTopOf="@id/bottom_layout"
                     android:clipToPadding="false"
                     android:paddingBottom="48dp" />
 
@@ -67,7 +67,7 @@
                     android:id="@+id/rl_top_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:visibility="gone">
 
                     <include
@@ -88,7 +88,7 @@
                     android:id="@+id/ll_promo_checkout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@id/bottom_layout"
+                    app:layout_constraintBottom_toTopOf="@id/bottom_layout"
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -141,14 +141,14 @@
                     android:id="@+id/bottom_layout_shadow"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_above="@+id/bottom_layout"
+                    app:layout_constraintBottom_toTopOf="@id/bottom_layout"
                     android:background="@color/Unify_NN50" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/bottom_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     android:background="@color/Unify_Background"
                     android:orientation="vertical"
                     android:paddingVertical="12dp"
@@ -239,7 +239,27 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </RelativeLayout>
+<!--                <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify-->
+<!--                    android:id="@+id/fab_buy_again"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:fbType="group"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/ll_promo_checkout"-->
+<!--                    />-->
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/fab_buy_again"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/ll_promo_checkout"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/ll_network_error_view"
