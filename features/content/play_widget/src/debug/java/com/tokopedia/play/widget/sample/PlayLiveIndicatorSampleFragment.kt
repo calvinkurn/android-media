@@ -26,8 +26,8 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.indicatorView.setModel(
-            PlayWidgetLiveIndicatorView.Model("channel_id", "product_id", "shop_id")
+        binding.indicatorView.setAnalyticModel(
+            PlayWidgetLiveIndicatorView.AnalyticModel("channel_id", "product_id", "shop_id")
         )
         binding.thumbnailView.setAnalyticModel(
             PlayWidgetLiveThumbnailView.AnalyticModel("channel_id", "product_id", "shop_id")

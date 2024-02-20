@@ -70,7 +70,7 @@ class PlayWidgetLiveIndicatorView : AbstractComposeView {
 
     private var mComponent: PlayWidgetLiveIndicatorComponent? = null
 
-    private var mModel: Model? = null
+    private var mAnalyticModel: AnalyticModel? = null
 
     init {
         addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -104,8 +104,8 @@ class PlayWidgetLiveIndicatorView : AbstractComposeView {
         super.setOnClickListener(onClickListener)
     }
 
-    fun setModel(model: Model) {
-        mModel = model
+    fun setAnalyticModel(model: AnalyticModel) {
+        mAnalyticModel = model
     }
 
     private fun createComponent(): PlayWidgetLiveIndicatorComponent {
@@ -113,12 +113,12 @@ class PlayWidgetLiveIndicatorView : AbstractComposeView {
         return ViewModelProvider(owner, componentFactory).get()
     }
 
-    private fun analytic(onAnalytic: PlayWidgetLiveIndicatorAnalytic.(Model) -> Unit) {
-        val model = mModel ?: return
+    private fun analytic(onAnalytic: PlayWidgetLiveIndicatorAnalytic.(AnalyticModel) -> Unit) {
+        val model = mAnalyticModel ?: return
         mComponent?.getAnalytic()?.onAnalytic(model)
     }
 
-    data class Model(
+    data class AnalyticModel(
         val channelId: String,
         val productId: String,
         val shopId: String,
