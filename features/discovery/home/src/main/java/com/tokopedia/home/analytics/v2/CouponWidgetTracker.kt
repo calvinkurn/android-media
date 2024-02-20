@@ -31,14 +31,16 @@ object CouponWidgetTracker : BaseTracking() {
             CurrentSite.KEY, CurrentSite.DEFAULT,
             TrackerConstant.USERID, userId,
             Ecommerce.KEY, DataLayer.mapOf(
-                PROMOTIONS, coupons.mapIndexed { index, coupon ->
-                    DataLayer.mapOf(
-                        "creative_name", coupon.trackerModel.attribution,
-                        "creative_slot", (position + 1).toString(),
-                        "id", "${model.channelId}_${model.bannerId}_${model.categoryId}_${model.persoType}",
-                        "name", "/ - p${index} - coupon widget - banner - ${coupon.trackerModel.gridId} - ${model.headerName}",
-                    )
-                }
+                Event.PROMO_VIEW, DataLayer.mapOf(
+                    PROMOTIONS, coupons.mapIndexed { index, coupon ->
+                        DataLayer.mapOf(
+                            "creative_name", coupon.trackerModel.attribution,
+                            "creative_slot", (position + 1).toString(),
+                            "id", "${model.channelId}_${model.bannerId}_${model.categoryId}_${model.persoType}",
+                            "name", "/ - p${index} - coupon widget - banner - ${coupon.trackerModel.gridId} - ${model.headerName}",
+                        )
+                    }
+                )
             )
         )
     }
@@ -52,8 +54,8 @@ object CouponWidgetTracker : BaseTracking() {
         coupon: CouponWidgetDataItemModel
     ): Map<String, Any?> {
         val actionName = when (coupon.button) {
-            is CouponCtaState.Claim -> "claim coupon"
-            is CouponCtaState.Redirect -> "mulai belanja"
+            is CouponCtaState.Claim -> "claim"
+            is CouponCtaState.Redirect -> "redirect"
             else -> ""
         }
 
@@ -68,12 +70,14 @@ object CouponWidgetTracker : BaseTracking() {
             CurrentSite.KEY, CurrentSite.DEFAULT,
             TrackerConstant.USERID, userId,
             Ecommerce.KEY, DataLayer.mapOf(
-                PROMOTIONS, listOf(
-                    DataLayer.mapOf(
-                        "creative_name", coupon.trackerModel.attribution,
-                        "creative_slot", (position + 1).toString(),
-                        "id", "${model.channelId}_${model.bannerId}_${model.categoryId}_${model.persoType}",
-                        "name", "/ - p${model.parentPosition} - coupon widget - banner - ${coupon.trackerModel.gridId} - ${model.headerName}",
+                Event.PROMO_CLICK, DataLayer.mapOf(
+                    PROMOTIONS, listOf(
+                        DataLayer.mapOf(
+                            "creative_name", coupon.trackerModel.attribution,
+                            "creative_slot", (position + 1).toString(),
+                            "id", "${model.channelId}_${model.bannerId}_${model.categoryId}_${model.persoType}",
+                            "name", "/ - p${model.parentPosition} - coupon widget - banner - ${coupon.trackerModel.gridId} - ${model.headerName}",
+                        )
                     )
                 )
             )
