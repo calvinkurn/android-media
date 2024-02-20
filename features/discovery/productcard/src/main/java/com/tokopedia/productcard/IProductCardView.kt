@@ -7,6 +7,8 @@ import com.tokopedia.video_widget.VideoPlayerController
 
 interface IProductCardView {
 
+    val additionalMarginStart: Int
+
     fun setProductModel(productCardModel: ProductCardModel)
 
     fun getCardMaxElevation(): Float

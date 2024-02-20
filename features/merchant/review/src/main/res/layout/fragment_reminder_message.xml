@@ -151,7 +151,7 @@
                                     android:id="@+id/image_sample_item"
                                     android:layout_width="36dp"
                                     android:layout_height="36dp"
-                                    android:background="@drawable/bg_round_corner_solid_grey"
+                                    android:background="@drawable/bg_rounded_solid_grey"
                                     android:backgroundTint="@color/Unify_NN600_68"
                                     app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />

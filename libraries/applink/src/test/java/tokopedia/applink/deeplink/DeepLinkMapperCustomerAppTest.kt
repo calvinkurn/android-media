@@ -34,7 +34,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 161
-        const val SIZE_PATH = 270
+        const val SIZE_PATH = 271
     }
 
     override fun setup() {
@@ -1496,6 +1496,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/pod/123456?image_id=22222"
         val appLink = UriUtil.buildUri(ApplinkConst.ORDER_POD, "123456?image_id=22222")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tipping driver appLink then should return tokopedia internal tipping driver in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/tipping?order_id=123456"
+        val appLink = UriUtil.buildUriAppendParam(ApplinkConst.TIPPING_DRIVER, mapOf("order_id" to "123456"))
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 

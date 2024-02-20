@@ -14,6 +14,13 @@ const val CART_REVAMP_V4_QUERY =
                   content
                 }
               }
+              onboarding_bottomsheet {
+                type
+                title
+                description
+                button_text
+                image_url
+              }
               errors
               popup_error_message
               pop_up_message
@@ -216,6 +223,7 @@ const val CART_REVAMP_V4_QUERY =
                         cart_detail_type
                         bmgm {
                             offer_id
+                            offer_type_id
                             offer_name
                             offer_icon
                             offer_message
@@ -226,6 +234,8 @@ const val CART_REVAMP_V4_QUERY =
                             tier_product {
                                 tier_id
                                 tier_name
+                                benefit_wording
+                                action_wording
                                 tier_message
                                 tier_discount_text
                                 tier_discount_amount
@@ -238,6 +248,13 @@ const val CART_REVAMP_V4_QUERY =
                                     price_before_benefit
                                     price_after_benefit
                                     cart_id
+                                }
+                                products_benefit {
+                                    product_id
+                                    product_name
+                                    quantity
+                                    product_cache_image_url
+                                    stock
                                 }
                             }
                         }

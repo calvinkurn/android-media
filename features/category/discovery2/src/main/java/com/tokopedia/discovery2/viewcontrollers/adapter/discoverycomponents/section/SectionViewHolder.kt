@@ -14,8 +14,10 @@ import com.tokopedia.discovery2.R.dimen.festive_section_min_height
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.model.NotifyPayload
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
@@ -129,10 +131,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             imageUrl,
             listener = object : ImageLoaderStateListener {
                 override fun successLoad(view: ImageView) {
-                    val minHeight = view?.context?.getMinHeight()
-                    minHeight?.moreThanContainerHeight {
-                        festiveForeground.setLayoutHeight(festiveContainer.measuredHeight)
-                    }
+                    festiveForeground.minimumHeight = 0
                 }
 
                 override fun failedLoad(view: ImageView) {
@@ -149,10 +148,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             imageUrl,
             listener = object : ImageLoaderStateListener {
                 override fun successLoad(view: ImageView) {
-                    val minHeight = view?.context?.getMinHeight()
-                    minHeight?.moreThanContainerHeight {
-                        festiveBackground.setLayoutHeight(festiveContainer.measuredHeight)
-                    }
+                    festiveBackground.minimumHeight = 0
                 }
 
                 override fun failedLoad(view: ImageView) {
@@ -160,14 +156,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                 }
             }
         )
-    }
-
-    private fun Int?.moreThanContainerHeight(action: () -> Unit) {
-        this?.run {
-            if (festiveContainer.measuredHeight < this) {
-                action.invoke()
-            }
-        }
     }
 
     private fun Context?.getMinHeight(): Int? {
@@ -192,12 +180,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             layout(0, 0, 0, 0)
             minimumHeight = minHeight
         }
-    }
-
-    private fun AppCompatImageView.setLayoutHeight(height: Int) {
-        if (layoutParams.height == height) return
-
-        layoutParams.height = height
     }
 
     private fun addComponentView(item: ComponentsItem) {
@@ -235,11 +217,24 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                             val isFound = notifyShopHeroComponent(viewModel, payload)
                             if (isFound) return@loop
                         }
+                        ComponentsList.FlashSaleTokoTab -> {
+                            notifyFSTTargetedComponent()
+                            return@loop
+                        }
                         else -> return@loop
                     }
                 }
             }
         }
+    }
+
+    private fun notifyFSTTargetedComponent() {
+        val carouselView = festiveContainer.children
+            .map { it as? CustomViewCreator }
+            .filterNotNull()
+            .find { it.viewModel is ProductCardCarouselViewModel }
+
+        (carouselView?.viewModel as? ProductCardCarouselViewModel)?.fetchProductCarouselData()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -251,8 +246,11 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         val uniqueId = childViewModel.component.properties?.header?.offerId
         if (uniqueId == payload.identifier) {
-            val offerMessages = payload.data as? List<String> ?: emptyList()
-            childViewModel.changeTier(false, offerMessages)
+            val bmGmTierData = payload.data as? BmGmTierData
+            childViewModel.changeTier(
+                false,
+                bmGmTierData
+            )
 
             return true
         }

@@ -7,7 +7,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Bl
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 data class ProductMediaDataModel(
@@ -30,6 +30,9 @@ data class ProductMediaDataModel(
         const val VIDEO_TYPE = "video"
         const val IMAGE_TYPE = "image"
     }
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     fun isMediaContainsVideo(): Boolean = listOfMedia.any { it.type == VIDEO_TYPE }
 
@@ -63,7 +66,7 @@ data class ProductMediaDataModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -89,7 +92,12 @@ data class ProductMediaDataModel(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
                     ProductDetailConstant.PAYLOAD_MEDIA_UPDATE
                 )
-            } else if (newData.variantOptionIdScrollAnchor.isNotEmpty() && variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
+            } else if (newData.variantOptionIdScrollAnchor.isEmpty()) {
+                bundle.putInt(
+                    ProductDetailConstant.DIFFUTIL_PAYLOAD,
+                    ProductDetailConstant.PAYLOAD_DO_NOTHING
+                )
+            } else if (variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
                 bundle.putInt(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
                     ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT

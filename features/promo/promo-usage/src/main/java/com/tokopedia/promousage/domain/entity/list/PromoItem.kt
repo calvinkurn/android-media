@@ -1,5 +1,6 @@
 package com.tokopedia.promousage.domain.entity.list
 
+import com.tokopedia.promousage.analytics.model.ImpressHolder
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
@@ -7,7 +8,6 @@ import com.tokopedia.promousage.domain.entity.PromoItemClashingInfo
 import com.tokopedia.promousage.domain.entity.PromoItemCta
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
-import com.tokopedia.promousage.util.analytics.model.ImpressHolder
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.util.composite.DelegatePayload
 import kotlinx.parcelize.Parcelize
