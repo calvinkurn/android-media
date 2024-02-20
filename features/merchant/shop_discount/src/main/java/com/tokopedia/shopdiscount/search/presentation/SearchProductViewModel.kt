@@ -177,14 +177,13 @@ class SearchProductViewModel @Inject constructor(
 
     private suspend fun getProductDetailData(
         listProductId: List<String>,
-        status: Int,
-        isValidateSizeVariant: Boolean = false
+        status: Int
     ): GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail {
         getSlashPriceProductDetailUseCase.setParams(
             ShopDiscountProductDetailMapper.getGetSlashPriceProductDetailRequestData(
                 listProductId,
                 status,
-                isValidateSizeVariant
+                true
             )
         )
         return getSlashPriceProductDetailUseCase.executeOnBackground().getSlashPriceProductDetail
