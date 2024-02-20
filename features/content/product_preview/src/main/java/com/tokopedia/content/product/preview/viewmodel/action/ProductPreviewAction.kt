@@ -15,6 +15,8 @@ sealed interface ProductPreviewAction {
     object LikeFromResult : ProductPreviewAction
     object ToggleReviewWatchMode : ProductPreviewAction
     object FetchReviewByIds : ProductPreviewAction
+    object ProductTabNotIdle : ProductPreviewAction
+    object ReviewTabNotIdle : ProductPreviewAction
     data class ProductMediaSelected(val position: Int) : ProductPreviewAction
     data class ReviewContentSelected(val position: Int) : ProductPreviewAction
     data class ReviewContentScrolling(val position: Int, val isScrolling: Boolean) : ProductPreviewAction

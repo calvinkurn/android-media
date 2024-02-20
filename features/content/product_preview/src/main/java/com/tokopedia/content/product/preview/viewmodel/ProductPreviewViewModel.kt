@@ -28,9 +28,11 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductTabNotIdle
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentScrolling
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewMediaSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewTabNotIdle
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.TabSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ToggleReviewWatchMode
@@ -143,7 +145,18 @@ class ProductPreviewViewModel @AssistedInject constructor(
         get() {
             return currentReview.medias.size
         }
-    private var isAutoHorizontalScrollStarted = false
+    private var isAutoHorizontalScrollProductMediaInitialize = false
+    private var isAutoHorizontalScrollReviewMediaInitialize = false
+    private val isEnableAutoHorizontalScrollProductMedia: Boolean
+        get() {
+            return _productTabIdle.value
+        }
+    private val isEnableAutoHorizontalScrollReviewMedia: Boolean
+        get() {
+            return _reviewTabIdle.value
+        }
+    private val _productTabIdle = MutableStateFlow(true)
+    private val _reviewTabIdle = MutableStateFlow(true)
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
@@ -154,6 +167,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
             LikeFromResult -> handleLikeFromResult()
             FetchReviewByIds -> handleFetchReviewByIds()
             ToggleReviewWatchMode -> handleReviewWatchMode()
+            ProductTabNotIdle -> handleProductTabNotIdle()
+            ReviewTabNotIdle -> handleReviewTabNotIdle()
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
@@ -185,7 +200,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun updateProductMainDataSource(source: ProductSourceData) {
         _productMediaState.update { it.copy(productMedia = source.productSourceList) }
-        if (!isAutoHorizontalScrollStarted) handleAutoHorizontalScrollContent()
+        if (!isAutoHorizontalScrollProductMediaInitialize) handleAutoHorizontalScrollProductMedia()
     }
 
     private fun updateTabProductSource(source: ProductSourceData) {
@@ -218,6 +233,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 UnknownSource -> _uiEvent.emit(UnknownSourceData)
             }
         }) { _uiEvent.emit(UnknownSourceData) }
+    }
+
+    private fun handleProductTabNotIdle() {
+        _productTabIdle.value = false
+    }
+
+    private fun handleReviewTabNotIdle() {
+        _reviewTabIdle.value = true
     }
 
     private fun handleProductMediaSelected(position: Int) {
@@ -295,7 +318,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 )
             }
 
-            if (!isAutoHorizontalScrollStarted) handleAutoHorizontalScrollContent()
+            if (!isAutoHorizontalScrollProductMediaInitialize) handleAutoHorizontalScrollReviewMedia()
             handleFetchReview(isRefresh = false, page = 1)
         }, onError = {
                 _reviewContentState.update { review ->
@@ -328,7 +351,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 review.copy(reviewContent = newList, reviewPaging = response.reviewPaging)
             }
 
-            if (!isAutoHorizontalScrollStarted) handleAutoHorizontalScrollContent()
+            if (!isAutoHorizontalScrollProductMediaInitialize) handleAutoHorizontalScrollReviewMedia()
         }) {
             _reviewContentState.update { review ->
                 review.copy(
@@ -340,12 +363,42 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleAutoHorizontalScrollContent() {
-        isAutoHorizontalScrollStarted = true
-        val loop = true // add state that will control auto scroll
+    private fun handleAutoHorizontalScrollProductMedia() {
+        isAutoHorizontalScrollProductMediaInitialize = true
         viewModelScope.launchCatchError(block = {
             val tabData = _tabContentState.value.tabs
-            while (loop) {
+            while (isEnableAutoHorizontalScrollProductMedia) {
+                delay(DELAY_3SECOND)
+
+                if (tabData[currentTabPosition.value].key == TAB_PRODUCT_KEY) {
+                    if (currentProductMediaPosition.plus(1) < currentProductMediaSize) {
+                        val position = currentProductMediaPosition.plus(1)
+                        handleProductMediaSelected(position)
+                    } else {
+                        val position = 0
+                        handleProductMediaSelected(position)
+                    }
+                } else {
+                    if (currentReviewMediaSize < 2) return@launchCatchError
+                    if (currentReviewMediaPosition.plus(1) < currentReviewMediaSize) {
+                        val position = currentReviewMediaPosition.plus(1)
+                        handleReviewMediaSelected(position)
+                    } else {
+                        val position = 0
+                        handleReviewMediaSelected(position)
+                    }
+                }
+            }
+        }) { _ ->
+            // disable autoscroll
+        }
+    }
+
+    private fun handleAutoHorizontalScrollReviewMedia() {
+        isAutoHorizontalScrollReviewMediaInitialize = true
+        viewModelScope.launchCatchError(block = {
+            val tabData = _tabContentState.value.tabs
+            while (isEnableAutoHorizontalScrollReviewMedia) {
                 delay(DELAY_3SECOND)
 
                 if (tabData[currentTabPosition.value].key == TAB_PRODUCT_KEY) {
