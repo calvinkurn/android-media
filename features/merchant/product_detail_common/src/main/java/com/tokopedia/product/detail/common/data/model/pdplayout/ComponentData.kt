@@ -56,12 +56,18 @@ data class ComponentData(
     val isTradeIn: Boolean = false,
     @SerializedName("isWishlist")
     val isWishlist: Boolean = false,
+
+    // region media
     @SerializedName("media")
     val media: List<Media> = listOf(),
     @SerializedName("recommendation")
     val productMediaRecomBasicInfo: ProductMediaRecomBasicInfo = ProductMediaRecomBasicInfo(),
     @SerializedName("containerType")
     val containerType: String = "",
+    @SerializedName("videos")
+    val youtubeVideos: List<YoutubeVideo> = listOf(),
+    // endregion
+
     @SerializedName("name")
     val name: String = "",
     @SerializedName("parentName")
@@ -76,8 +82,6 @@ data class ComponentData(
     val stock: Stock = Stock(),
     @SerializedName("variant")
     val variant: VariantBasic = VariantBasic(),
-    @SerializedName("videos")
-    val youtubeVideos: List<YoutubeVideo> = listOf(),
     @SerializedName("wholesale")
     val wholesale: List<Wholesale>? = null,
     @SerializedName("preorder")
