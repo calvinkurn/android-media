@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -29,6 +28,7 @@ import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycReviewResultListene
 import com.tokopedia.gopay.kyc.utils.ReviewCancelDialog
 import com.tokopedia.gopay.kyc.viewmodel.GoPayKycImageUploadViewModel
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_gopay_review_layout.*
@@ -107,7 +107,11 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
     }
 
     private fun setImageFromFile(filePath: String, imageview: ImageView) {
-        context?.let { Glide.with(it).load(File(filePath)).fitCenter().into(imageview) }
+        context?.let {
+            imageview.loadImage(filePath){
+                fitCenter()
+            }
+        }
     }
 
     private fun setImagePathInViewModel() {
