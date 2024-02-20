@@ -259,11 +259,11 @@ class SearchActivity :
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + autoCompleteParamsString()
 
         val intent = RouteManager.getIntent(this, applink)
-        intent.putExtra(EXTRA_ENTER_METHOD, CLICK_SEARCH_BAR)
+        intent.putExtra("enter_method", CLICK_SEARCH_BAR) // TODO milhamj
         if (searchViewModel?.activeTabPosition == 0) {
-            intent.putExtra(EXTRA_ENTER_FROM, GOODS_SEARCH)
+            intent.putExtra("enter_from", GOODS_SEARCH) // TODO milhamj
         } else if (searchViewModel?.activeTabPosition == 1) {
-            intent.putExtra(EXTRA_ENTER_FROM, STORE_SEARCH)
+            intent.putExtra("enter_from", STORE_SEARCH) // TODO milhamj
         }
     }
 
