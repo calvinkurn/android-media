@@ -3,7 +3,7 @@ package com.tokopedia.sdui.extention
 import android.content.Context
 import android.graphics.Typeface
 import com.tokopedia.unifyprinciples.getTypeface
-import com.yandex.div.font.DivTypefaceProvider
+import com.yandex.div.core.font.DivTypefaceProvider
 
 class TypeFaceProvider constructor(
     private val context: Context

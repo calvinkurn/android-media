@@ -50,6 +50,10 @@ class CrackCouponHandler(
             }, {
                 handleCouponError(slug, direction)
                 hidePopupAnimationAndCoupons()
+            },{
+                createErrorState(it)
+                handleCouponError(slug, direction)
+                hidePopupAnimationAndCoupons()
             }, slug)
         } catch (e: Exception) {
             ServerLogger.log(
@@ -114,6 +118,17 @@ class CrackCouponHandler(
         }
         setCloseButtonMargin()
         animationPopupGtmTracker.sendErrorImpressionEvent(scratchCardId)
+    }
+
+    private fun createErrorState(gamiScratchCardCrack: GamiScratchCardCrack) {
+        gamiScratchCardCrack.resultStatus?.let {
+            with(binding) {
+                tvErrorCode.text = it.code
+                tvErrorCode.visible()
+                tvErrorMsg.text = it.message?.get(0)
+                tvErrorReason.text = it.reason
+            }
+        }
     }
 
     private fun hidePopupAnimationAndCoupons() {

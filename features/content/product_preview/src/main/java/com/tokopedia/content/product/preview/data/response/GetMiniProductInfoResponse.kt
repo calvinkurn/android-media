@@ -24,6 +24,9 @@ data class GetMiniProductInfoResponse(
 
         @SerializedName("buttonState")
         val buttonState: String = "",
+
+        @SerializedName("categoryTree")
+        val categoryTree: List<CategoryTree> = emptyList()
     )
 
     data class Product(
@@ -34,7 +37,7 @@ data class GetMiniProductInfoResponse(
         @SerializedName("priceFmt")
         val priceFmt: String = "",
         @SerializedName("stock")
-        val stock: Int = 0,
+        val stock: Int = 0
     )
 
     data class Campaign(
@@ -43,7 +46,7 @@ data class GetMiniProductInfoResponse(
         @SerializedName("discountPercentage")
         val discountPercentage: Int = 0,
         @SerializedName("discountedPrice")
-        val discountedPrice: Double = 0.0,
+        val discountedPrice: Double = 0.0
     )
 
     data class Shop(
@@ -52,6 +55,15 @@ data class GetMiniProductInfoResponse(
         @SerializedName("name")
         val name: String = "",
         @SerializedName("isTokoNow")
-        val isTokoNow: Boolean = false,
+        val isTokoNow: Boolean = false
+    )
+
+    data class CategoryTree(
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("name")
+        val name: String = "",
+        @SerializedName("title")
+        val title: String = ""
     )
 }

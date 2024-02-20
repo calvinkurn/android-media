@@ -69,7 +69,6 @@ class ProductMiniInfoUseCase @Inject constructor(
                       id
                       name
                       title
-                      breadcrumbURL
                     }
                   }
             }

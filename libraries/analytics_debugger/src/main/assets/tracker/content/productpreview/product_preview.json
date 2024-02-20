@@ -1,0 +1,216 @@
+{
+  "readme": "Unified Content Viewing Experience in PDP (Fullscreen View)",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickContent",
+      "eventAction": "scroll - swipe left right content",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49587",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "openScreen",
+      "trackerId": "49588",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "(true|false)",
+      "productId": ".*",
+      "screenName": "/unified view pdp - .* - .*",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - add to cart media fullscreen",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".* - .*",
+      "trackerId": "49589",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "add_to_cart",
+      "eventAction": "click - add to cart media fullscreen",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49590",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "category_id": ".* / .* / .*",
+          "item_category": ".* / .* / .*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*",
+          "shop_id": ".*",
+          "shop_name": ".*"
+        }
+      ],
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - content thumbnail",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49594",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - image content",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49598",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - ingatkan saya",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49600",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - ingatkan saya",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49601",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "scroll - swipe up down ulasan tab",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49602",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - account name",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".* - .*",
+      "trackerId": "49603",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - three dots",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49605",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - back button to pdp",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49606",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - variant bottomsheet atc entry point",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49607",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - laporkan ulasan",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".* - .*",
+      "trackerId": "49650",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - mode nonton",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".*",
+      "trackerId": "49651",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - pause play button",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".* - .*",
+      "trackerId": "49845",
+      "businessUnit": ".*",
+      "currentSite": ".*",
+      "productId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - submit report ulasan",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".* - .*",
+      "trackerId": "49850",
+      "businessUnit": ".*",
+      "currentSite": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - like button",
+      "eventCategory": "unified view pdp",
+      "eventLabel": ".* - .*",
+      "trackerId": "49851",
+      "businessUnit": ".*",
+      "currentSite": ".*",
+      "productId": ".*",
+      "userId": ".*"
+    }
+  ]
+}

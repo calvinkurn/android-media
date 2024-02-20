@@ -13,20 +13,22 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.preview.analytics.ProductPreviewAnalytics
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.utils.PRODUCT_FRAGMENT_TAG
-import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter
-import com.tokopedia.content.product.preview.view.adapter.product.ProductIndicatorAdapter
-import com.tokopedia.content.product.preview.view.components.items.ProductIndicatorItemDecoration
+import com.tokopedia.content.product.preview.view.adapter.product.ProductMediaAdapter
+import com.tokopedia.content.product.preview.view.adapter.product.ProductThumbnailAdapter
+import com.tokopedia.content.product.preview.view.components.items.ProductThumbnailItemDecoration
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
-import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
+import com.tokopedia.content.product.preview.view.listener.MediaImageListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
+import com.tokopedia.content.product.preview.view.listener.ProductThumbnailListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -35,7 +37,11 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
-class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPreviewVideoListener {
+class ProductFragment @Inject constructor(
+    private val analyticsFactory: ProductPreviewAnalytics.Factory
+) : TkpdBaseV4Fragment(),
+    ProductPreviewVideoListener,
+    MediaImageListener {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
@@ -43,14 +49,18 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
     private val binding: FragmentProductBinding
         get() = _binding!!
 
-    private var snapHelperContent = PagerSnapHelper()
+    private val analytics: ProductPreviewAnalytics by lazyThreadSafetyNone {
+        analyticsFactory.create(viewModel.productPreviewSource.productId)
+    }
+
+    private var snapHelperMedia = PagerSnapHelper()
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
 
-    private val layoutManagerContent by lazyThreadSafetyNone {
+    private val layoutManagerMedia by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
     }
 
-    private val layoutManagerIndicator by lazyThreadSafetyNone {
+    private val layoutManagerThumbnail by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
     }
 
@@ -58,35 +68,37 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
         ProductPreviewVideoPlayerManager(requireContext())
     }
 
-    private val productContentAdapter by lazyThreadSafetyNone {
-        ProductContentAdapter(
-            productPreviewVideoListener = this
+    private val productMediaAdapter by lazyThreadSafetyNone {
+        ProductMediaAdapter(
+            productPreviewVideoListener = this,
+            mediaImageLister = this
         )
     }
 
-    private val productIndicatorAdapter by lazyThreadSafetyNone {
-        ProductIndicatorAdapter(
-            productIndicatorListener = object :
-                ProductIndicatorListener {
-                override fun onClickProductIndicator(position: Int) {
+    private val productThumbnailAdapter by lazyThreadSafetyNone {
+        ProductThumbnailAdapter(
+            productThumbnailListener = object :
+                ProductThumbnailListener {
+                override fun onClickProductThumbnail(position: Int) {
+                    analytics.onClickThumbnailProduct()
                     scrollTo(position)
-                    viewModel.onAction(ProductSelected(position))
+                    viewModel.onAction(ProductMediaSelected(position))
                 }
             }
         )
     }
 
-    private val contentScrollListener = object : RecyclerView.OnScrollListener() {
+    private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
-            val position = getContentCurrentPosition()
+            val position = getMediaCurrentPosition()
             scrollTo(position)
-            viewModel.onAction(ProductSelected(position))
+            viewModel.onAction(ProductMediaSelected(position))
         }
     }
 
-    private var autoScrollFirstOpenContent = true
-    private var autoScrollFirstOpenIndicator = true
+    private var autoScrollFirstOpenMedia = true
+    private var autoScrollFirstOpenThumbnail = true
 
     override fun getScreenName() = PRODUCT_FRAGMENT_TAG
 
@@ -106,75 +118,75 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
     }
 
     private fun setupViews() {
-        setupProductContentViews()
-        setupProductIndicatorViews()
+        setupProductMediaViews()
+        setupProductThumbnailViews()
     }
 
-    private fun setupProductContentViews() = with(binding.rvContentProduct) {
-        adapter = productContentAdapter
-        layoutManager = layoutManagerContent
-        snapHelperContent.attachToRecyclerView(this)
-        removeOnScrollListener(contentScrollListener)
-        addOnScrollListener(contentScrollListener)
+    private fun setupProductMediaViews() = with(binding.rvMediaProduct) {
+        adapter = productMediaAdapter
+        layoutManager = layoutManagerMedia
+        snapHelperMedia.attachToRecyclerView(this)
+        removeOnScrollListener(mediaScrollListener)
+        addOnScrollListener(mediaScrollListener)
         itemAnimator = null
     }
 
-    private fun setupProductIndicatorViews() = with(binding.rvIndicatorProduct) {
-        adapter = productIndicatorAdapter
-        layoutManager = layoutManagerIndicator
+    private fun setupProductThumbnailViews() = with(binding.rvThumbnailProduct) {
+        adapter = productThumbnailAdapter
+        layoutManager = layoutManagerThumbnail
         itemAnimator = null
         if (itemDecorationCount == 0) {
-            addItemDecoration(ProductIndicatorItemDecoration(requireContext()))
+            addItemDecoration(ProductThumbnailItemDecoration(requireContext()))
         }
     }
 
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, currState) ->
-                renderContent(
-                    prevState?.productUiModel?.productList,
-                    currState.productUiModel.productList
+                renderMedia(
+                    prevState?.productUiModel?.productMedia,
+                    currState.productUiModel.productMedia
                 )
-                renderIndicator(
-                    prevState?.productUiModel?.productList,
-                    currState.productUiModel.productList
+                renderThumbnail(
+                    prevState?.productUiModel?.productMedia,
+                    currState.productUiModel.productMedia
                 )
             }
         }
     }
 
-    private fun renderContent(
-        prev: List<ProductContentUiModel>?,
-        state: List<ProductContentUiModel>
+    private fun renderMedia(
+        prev: List<ProductMediaUiModel>?,
+        state: List<ProductMediaUiModel>
     ) {
         if (prev == state) return
 
         prepareVideoPlayerIfNeeded(state)
 
-        productContentAdapter.submitList(state)
-        if (autoScrollFirstOpenContent) {
+        productMediaAdapter.submitList(state)
+        if (autoScrollFirstOpenMedia) {
             val autoScrollPosition = getSelectedItemPosition(state)
-            binding.rvContentProduct.scrollToPosition(autoScrollPosition)
-            autoScrollFirstOpenContent = false
+            binding.rvMediaProduct.scrollToPosition(autoScrollPosition)
+            autoScrollFirstOpenMedia = false
         }
     }
 
-    private fun renderIndicator(
-        prev: List<ProductContentUiModel>?,
-        state: List<ProductContentUiModel>
+    private fun renderThumbnail(
+        prev: List<ProductMediaUiModel>?,
+        state: List<ProductMediaUiModel>
     ) {
         if (prev == state) return
 
         val position = getSelectedItemPosition(state)
 
-        productIndicatorAdapter.submitList(state)
-        if (autoScrollFirstOpenIndicator) {
-            binding.rvIndicatorProduct.scrollToPosition(position)
-            autoScrollFirstOpenIndicator = false
+        productThumbnailAdapter.submitList(state)
+        if (autoScrollFirstOpenThumbnail) {
+            binding.rvThumbnailProduct.scrollToPosition(position)
+            autoScrollFirstOpenThumbnail = false
         }
 
         if (state[position].variantName.isEmpty()) {
-            binding.tvIndicatorLabel.apply {
+            binding.tvThumbnailLabel.apply {
                 visible()
                 text = String.format(
                     getString(contentproductpreviewR.string.text_label_place_holder_empty_variant),
@@ -183,7 +195,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
                 )
             }
         } else {
-            binding.tvIndicatorLabel.apply {
+            binding.tvThumbnailLabel.apply {
                 visible()
                 text = String.format(
                     getString(contentproductpreviewR.string.text_label_place_holder),
@@ -195,7 +207,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
         }
     }
 
-    private fun prepareVideoPlayerIfNeeded(state: List<ProductContentUiModel>) {
+    private fun prepareVideoPlayerIfNeeded(state: List<ProductMediaUiModel>) {
         if (mVideoPlayer != null) return
 
         val videoPosition = state.indexOfFirst { it.type == MediaType.Video }
@@ -221,20 +233,29 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
         mVideoPlayer?.seekDurationTo(data.videoLastDuration)
     }
 
-    private fun getSelectedItemPosition(state: List<ProductContentUiModel>): Int {
+    private fun getSelectedItemPosition(state: List<ProductMediaUiModel>): Int {
         val selectedData = state.firstOrNull { it.selected } ?: return 0
         return state.indexOf(selectedData)
     }
 
-    private fun getContentCurrentPosition(): Int {
-        val snappedView = snapHelperContent.findSnapView(layoutManagerContent)
+    private fun getMediaCurrentPosition(): Int {
+        val snappedView = snapHelperMedia.findSnapView(layoutManagerMedia)
             ?: return RecyclerView.NO_POSITION
-        return binding.rvContentProduct.getChildAdapterPosition(snappedView)
+        val position = binding.rvMediaProduct.getChildAdapterPosition(snappedView)
+        return if (position < 0) 0 else position
     }
 
     private fun scrollTo(position: Int) {
-        binding.rvContentProduct.smoothScrollToPosition(position)
-        binding.rvIndicatorProduct.smoothScrollToPosition(position)
+        binding.rvMediaProduct.smoothScrollToPosition(position)
+        binding.rvThumbnailProduct.smoothScrollToPosition(position)
+    }
+
+    override fun onImpressedImage() {
+        analytics.onImpressImage()
+    }
+
+    override fun onImpressedVideo() {
+        analytics.onImpressVideo()
     }
 
     override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
@@ -250,18 +271,18 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment(), ProductPrevi
     }
 
     override fun onScrubbing() {
-        binding.tvIndicatorLabel.hide()
-        binding.rvIndicatorProduct.hide()
+        binding.tvThumbnailLabel.hide()
+        binding.rvThumbnailProduct.hide()
     }
 
     override fun onStopScrubbing() {
-        binding.tvIndicatorLabel.show()
-        binding.rvIndicatorProduct.show()
+        binding.tvThumbnailLabel.show()
+        binding.rvThumbnailProduct.show()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.rvContentProduct.removeOnScrollListener(contentScrollListener)
+        binding.rvMediaProduct.removeOnScrollListener(mediaScrollListener)
         videoPlayerManager.releaseAll()
         _binding = null
     }

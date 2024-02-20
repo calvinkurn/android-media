@@ -92,7 +92,12 @@ data class ProductMediaDataModel(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
                     ProductDetailConstant.PAYLOAD_MEDIA_UPDATE
                 )
-            } else if (newData.variantOptionIdScrollAnchor.isNotEmpty() && variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
+            } else if (newData.variantOptionIdScrollAnchor.isEmpty()) {
+                bundle.putInt(
+                    ProductDetailConstant.DIFFUTIL_PAYLOAD,
+                    ProductDetailConstant.PAYLOAD_DO_NOTHING
+                )
+            } else if (variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
                 bundle.putInt(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
                     ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT
