@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.NORMAL_SEARCH
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -67,6 +68,7 @@ import com.tokopedia.autocompletecomponent.util.getTrackingSearchQuery
 import com.tokopedia.autocompletecomponent.util.getWithDefault
 import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.autocompletecomponent.util.removeKeys
+import com.tokopedia.autocompletecomponent.util.routeManagerIntent
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
@@ -558,7 +560,13 @@ open class BaseAutoCompleteActivity :
     }
 
     private fun moveToSearchPage(applink: String) {
-        RouteManager.route(this, applink)
+        startActivity(
+            routeManagerIntent(
+                context = this,
+                applink = applink,
+                enterMethod = NORMAL_SEARCH,
+            )
+        )
         finish()
     }
 

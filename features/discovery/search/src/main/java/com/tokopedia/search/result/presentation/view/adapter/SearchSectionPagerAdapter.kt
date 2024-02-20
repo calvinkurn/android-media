@@ -18,6 +18,8 @@ internal class SearchSectionPagerAdapter(
     private val searchParameter: SearchParameter,
     private val classLoader: ClassLoader,
     private val fragmentFactory: FragmentFactory,
+    private val enterFrom: String,
+    private val enterMethod: String
 ) : FragmentStatePagerAdapter(fragmentManager), SearchViewPagerAdapter {
 
     private var productListFragment: ProductListFragment? = null
@@ -34,7 +36,7 @@ internal class SearchSectionPagerAdapter(
     }
 
     private fun createProductFragment(): ProductListFragment {
-        return ProductListFragment.newInstance(searchParameter)
+        return ProductListFragment.newInstance(searchParameter, enterFrom, enterMethod)
     }
 
     private fun createShopFragment(): ShopListFragment {

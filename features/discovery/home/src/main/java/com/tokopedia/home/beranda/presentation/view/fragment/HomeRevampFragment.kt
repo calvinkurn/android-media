@@ -53,6 +53,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITIO
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
+import com.tokopedia.discovery.common.constants.SearchConstant.ByteIOExtras.EXTRA_ENTER_FROM
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -2051,7 +2052,9 @@ open class HomeRevampFragment :
                         HOME_SOURCE,
                         data.keyword.safeEncodeUtf8(),
                         isFirstInstall().toString()
-                    )
+                    ).apply {
+                        putExtra(EXTRA_ENTER_FROM, HOMEPAGE)
+                    }
 
                     navToolbarMicroInteraction
                         ?.animate(intent, ::startActivity)
