@@ -7,7 +7,6 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
@@ -29,9 +28,9 @@ import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopFestivityRvItemDecoration(
-    context: Context,
-    bodyBackgroundHexColor: String,
-    isOverrideTheme: Boolean
+    private val context: Context,
+    private val bodyBackgroundHexColor: String,
+    private val isOverrideTheme: Boolean
 ) : RecyclerView.ItemDecoration() {
 
     companion object {
@@ -40,6 +39,7 @@ class ShopFestivityRvItemDecoration(
     }
     private var backgroundDrawableWhite: Drawable? = null
     private val deviceWidth by lazy { getScreenWidth() }
+    private val defaultBackgroundColor by lazy { MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0) }
 
     init {
         val bgColor = if (isOverrideTheme) {
@@ -144,41 +144,35 @@ class ShopFestivityRvItemDecoration(
     private fun drawOverlayColorBehindRecyclerViewItem(child: View, canvas: Canvas) {
         val bounds = Rect()
         child.getHitRect(bounds)
-
+        
         bounds.top = bounds.top - child.marginTop
         bounds.left = 0
         bounds.right = deviceWidth
         bounds.bottom = bounds.bottom + child.marginBottom
 
+        val backgroundColor = when {
+            isOverrideTheme && bodyBackgroundHexColor.isNotEmpty() -> {
+                ShopUtil.parseColorOrFallback(
+                    hexColor = bodyBackgroundHexColor,
+                    fallbackColor = defaultBackgroundColor
+                )
+            }
+            isOverrideTheme && bodyBackgroundHexColor.isEmpty() -> defaultBackgroundColor
+            else -> defaultBackgroundColor
+        }
+        
         val paint = Paint().apply { 
-            color = ContextCompat.getColor(child.context, unifyprinciplesR.color.Unify_NN0) 
+            color = backgroundColor 
         }
         
         canvas.drawRect(bounds, paint)
     }
-    
+
     private fun drawWhiteBackgroundFromLeftParentToRightParent(child: View, parent: RecyclerView, canvas: Canvas) {
         val top = child.top - child.marginTop
         val right = parent.right
         val bottom = child.bottom + child.marginBottom
         val left = parent.left
-        backgroundDrawableWhite?.setBounds(left, top, right, bottom)
-        backgroundDrawableWhite?.draw(canvas)
-    }
-
-    private fun drawWhiteBackgroundFromLeftChildToRightChild(child: View, parent: RecyclerView, canvas: Canvas) {
-        val top = child.top - child.marginTop
-        val right = if (child.right + parent.paddingRight == parent.right) {
-            child.right + parent.paddingRight
-        } else {
-            child.right
-        }
-        val bottom = child.bottom + child.marginBottom
-        val left = if (child.left - parent.paddingLeft == parent.left) {
-            child.left - parent.paddingLeft
-        } else {
-            child.left
-        }
         backgroundDrawableWhite?.setBounds(left, top, right, bottom)
         backgroundDrawableWhite?.draw(canvas)
     }
