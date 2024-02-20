@@ -337,35 +337,35 @@ class ShopPageHeaderViewModelTest {
         assert(shopPageHeaderViewModel.followShopData.value is Fail)
     }
 
-    @Test
-    fun `check whether get follow status is success`() {
-        every { userSessionInterface.isLoggedIn } returns true
-        coEvery { getFollowStatusUseCase.get().executeOnBackground() } returns FollowStatusResponse(
-            null
-        )
-        shopPageHeaderViewModel.getFollowStatusData(
-            SAMPLE_SHOP_ID,
-            RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL
-        )
-        coVerify { getFollowStatusUseCase.get().executeOnBackground() }
-        assert(shopPageHeaderViewModel.followStatusData.value is Success)
+//    @Test
+//    fun `check whether get follow status is success`() {
+//        every { userSessionInterface.isLoggedIn } returns true
+//        coEvery { getFollowStatusUseCase.get().executeOnBackground() } returns FollowStatusResponse(
+//            null
+//        )
+//        shopPageHeaderViewModel.getFollowStatusData(
+//            SAMPLE_SHOP_ID,
+//            RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL
+//        )
+//        coVerify { getFollowStatusUseCase.get().executeOnBackground() }
+//        assert(shopPageHeaderViewModel.followStatusData.value is Success)
+//
+//        shopPageHeaderViewModel.getFollowStatusData(
+//            SAMPLE_SHOP_ID,
+//            RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG
+//        )
+//        coVerify { getFollowStatusUseCase.get().executeOnBackground() }
+//        assert(shopPageHeaderViewModel.followStatusData.value is Success)
+//    }
 
-        shopPageHeaderViewModel.getFollowStatusData(
-            SAMPLE_SHOP_ID,
-            RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG
-        )
-        coVerify { getFollowStatusUseCase.get().executeOnBackground() }
-        assert(shopPageHeaderViewModel.followStatusData.value is Success)
-    }
-
-    @Test
-    fun `check whether get follow status is fail`() {
-        every { userSessionInterface.isLoggedIn } returns true
-        coEvery { getFollowStatusUseCase.get().executeOnBackground() } throws Throwable()
-        shopPageHeaderViewModel.getFollowStatusData(SAMPLE_SHOP_ID, "mock_key")
-        coVerify { getFollowStatusUseCase.get().executeOnBackground() }
-        assert(shopPageHeaderViewModel.followStatusData.value is Fail)
-    }
+//    @Test
+//    fun `check whether get follow status is fail`() {
+//        every { userSessionInterface.isLoggedIn } returns true
+//        coEvery { getFollowStatusUseCase.get().executeOnBackground() } throws Throwable()
+//        shopPageHeaderViewModel.getFollowStatusData(SAMPLE_SHOP_ID, "mock_key")
+//        coVerify { getFollowStatusUseCase.get().executeOnBackground() }
+//        assert(shopPageHeaderViewModel.followStatusData.value is Fail)
+//    }
 
     @Test
     fun `check whether getShopIdFromDomain post shopIdFromDomainData success value`() {

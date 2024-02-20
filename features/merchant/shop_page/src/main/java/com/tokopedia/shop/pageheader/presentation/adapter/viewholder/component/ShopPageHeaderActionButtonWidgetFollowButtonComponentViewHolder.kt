@@ -59,31 +59,10 @@ class ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder(
     }
 
     override fun bind(model: ShopPageHeaderActionWidgetFollowButtonComponentUiModel) {
-        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         val isFollowing = model.isFollowing
         buttonFollow?.apply {
             if(ShopUtil.isFoldable){
                 buttonFollow.buttonSize = UnifyButton.Size.SMALL
-            }
-            when (shopFollowButtonVariantType) {
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD -> {
-                    // existing/old variant type follow button
-                    buttonSize = UnifyButton.Size.MICRO
-                    buttonVariant = UnifyButton.Variant.GHOST
-                    buttonType = UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
-                }
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL -> {
-                    // new variant type follow button micro size
-                    buttonSize = UnifyButton.Size.MICRO
-                    buttonVariant = UnifyButton.Variant.GHOST.takeIf { isFollowing } ?: UnifyButton.Variant.FILLED
-                    buttonType = UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
-                }
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG -> {
-                    // new variant type follow button small size
-                    buttonSize = UnifyButton.Size.SMALL
-                    buttonVariant = UnifyButton.Variant.GHOST.takeIf { isFollowing } ?: UnifyButton.Variant.FILLED
-                    buttonType = UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
-                }
             }
             val isShowLoading = model.isButtonLoading
             isLoading = isShowLoading
