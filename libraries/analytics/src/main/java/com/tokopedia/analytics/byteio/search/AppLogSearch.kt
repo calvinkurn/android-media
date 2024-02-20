@@ -371,8 +371,8 @@ object AppLogSearch {
             ENTER_SEARCH_BLANKPAGE,
             JSONObject(
                 mapOf(
-                    SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. Other page empty
-                    ENTER_FROM to "", // TODO:: HOMEPAGE || GOODS_SEARCH || STORE_SEARCH.
+                    SEARCH_ENTRANCE to search_entrance,
+                    ENTER_FROM to enter_from,
                     ENTER_METHOD to ENTER
                 )
             )
