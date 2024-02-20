@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEARCH_BAR
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -264,6 +265,7 @@ class SearchActivity :
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + autoCompleteParamsString()
 
         val intent = RouteManager.getIntent(this, applink)
+        intent.putExtra(EXTRA_ENTER_METHOD, CLICK_SEARCH_BAR)
         if (searchViewModel?.activeTabPosition == 0) {
             intent.putExtra(EXTRA_ENTER_FROM, GOODS_SEARCH)
         } else if (searchViewModel?.activeTabPosition == 1) {

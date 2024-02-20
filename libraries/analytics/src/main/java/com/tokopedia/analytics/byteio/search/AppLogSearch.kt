@@ -64,6 +64,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SUG
 import org.json.JSONObject
 
 object AppLogSearch {
@@ -156,12 +157,15 @@ object AppLogSearch {
         const val SHOP_BIG = "shop_big"
         const val GOODS_COLLECT = "goods_collect"
         const val CLICK_MORE_BUTTON = "click_more_button" //"Click three dots on the product card"
-        const val CLICK_FAVORITE_BUTTON = "click_favourite_button" // "Click on the three dots of the product card to add to favorites"
-        const val CLICK_MORE_FINDALIKE = "click_more_findalike" //"Click on the three points of the product card to find similarities"
+        const val CLICK_FAVORITE_BUTTON =
+            "click_favourite_button" // "Click on the three dots of the product card to add to favorites"
+        const val CLICK_MORE_FINDALIKE =
+            "click_more_findalike" //"Click on the three points of the product card to find similarities"
         const val CLICK_BACK = "click_back" //"Top back button"
         const val CLICK_SHOPPING_CART = "click_shopping_cart" // "Click on shopping cart"
         const val CLICK_SETTING = "click_setting" // "Click Settings"
-        const val CLICK_SHOP_NAME = "click_shop_name" // "Click on the name of the shop to go to the shop homepage" (Shop Ads)
+        const val CLICK_SHOP_NAME =
+            "click_shop_name" // "Click on the name of the shop to go to the shop homepage" (Shop Ads)
         const val SORT_RELEVANCE = "sort_relevance"
         const val SORT_REVIEW = "sort_review"
         const val SORT_PRICE_ASC = "sort_price_asc"
@@ -174,10 +178,14 @@ object AppLogSearch {
     }
 
     fun eventShowSearch(currentPageName: String) {
-        AppLogAnalytics.send(SHOW_SEARCH, JSONObject(mapOf(
-            SEARCH_ENTRANCE to if (currentPageName == "/") HOMEPAGE else "",
-            ENTER_FROM to if (currentPageName == "/") HOMEPAGE else "",
-        )))
+        AppLogAnalytics.send(
+            SHOW_SEARCH, JSONObject(
+                mapOf(
+                    SEARCH_ENTRANCE to if (currentPageName == "/") HOMEPAGE else "",
+                    ENTER_FROM to if (currentPageName == "/") HOMEPAGE else "",
+                )
+            )
+        )
     }
 
     data class TrendingWords(
@@ -251,7 +259,7 @@ object AppLogSearch {
     }
 
     sealed class EventSearch(val from: String) {
-        class Placeholder: EventSearch(PLACEHOLDER) {
+        class Placeholder : EventSearch(PLACEHOLDER) {
             override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
@@ -269,7 +277,7 @@ object AppLogSearch {
             )
         }
 
-        class InitialState: EventSearch(INITIAL_STATE) {
+        class InitialState : EventSearch(INITIAL_STATE) {
             override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
@@ -287,7 +295,7 @@ object AppLogSearch {
             )
         }
 
-        class Suggestion: EventSearch(SUGGESTION) {
+        class Suggestion : EventSearch(SUGGESTION) {
             override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
@@ -308,7 +316,7 @@ object AppLogSearch {
             )
         }
 
-        class Filter: EventSearch(FILTER) {
+        class Filter : EventSearch(FILTER) {
             override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
@@ -330,7 +338,7 @@ object AppLogSearch {
             )
         }
 
-        class TypoCorrection: EventSearch(TYPO_CORRECTION) {
+        class TypoCorrection : EventSearch(TYPO_CORRECTION) {
             override fun json() = JSONObject(
                 mapOf(
                     ENTER_METHOD to CORRECT_WORD,
@@ -339,7 +347,9 @@ object AppLogSearch {
             )
         }
 
-        fun send() { AppLogAnalytics.send(SEARCH, json()) }
+        fun send() {
+            AppLogAnalytics.send(SEARCH, json())
+        }
 
         abstract fun json(): JSONObject
 
@@ -364,36 +374,49 @@ object AppLogSearch {
     // /////////////// -- IJ -- /////////////
 
     fun eventEnterSearchBlankPage(
-        search_entrance: String,
-        enter_from: String
+        enterFrom: String,
+        searchEntrance: String
     ) {
         AppLogAnalytics.send(
             ENTER_SEARCH_BLANKPAGE,
             JSONObject(
                 mapOf(
-                    SEARCH_ENTRANCE to search_entrance,
-                    ENTER_FROM to enter_from,
-                    ENTER_METHOD to ENTER
+                    ENTER_FROM to enterFrom,
+                    ENTER_METHOD to ENTER,
+                    SEARCH_ENTRANCE to searchEntrance
                 )
             )
         )
     }
 
-    fun <K, V> eventTrendingShow() {
+    data class TrendingShow(
+        val searchPosition: String,
+        val searchEntrance: String,
+        val imprId: String,
+        val newSugSessionId: Long,
+        val rawQuery: String,
+        val enterMethod: String,
+        val wordsNum: Int,
+        val wordSource: String = SUG,
+    ) {
+        fun json() = JSONObject(
+            mapOf(
+                SEARCH_POSITION to searchPosition,
+                SEARCH_ENTRANCE to searchEntrance,
+                IMPR_ID to imprId, // TODO:: Request ID from Suggestion GQL BE
+                NEW_SUG_SESSION_ID to newSugSessionId, // TODO:: Reset every time query is entirely deleted. System.currentTimeMillis()
+                rawQuery to RAW_QUERY, // TODO:: Query from user
+                ENTER_METHOD to enterMethod,
+                WORDS_SOURCE to wordSource,
+                WORDS_NUM to wordsNum, // TODO:: Total number of all suggestion
+            )
+        )
+    }
+
+    fun eventTrendingShow(trendingShow: TrendingShow) {
         AppLogAnalytics.send(
             TRENDING_SHOW,
-            JSONObject(
-                mapOf(
-                    WORDS_SOURCE to "", // TODO:: SUG
-                    WORDS_NUM to 0, // TODO:: Total number of all suggestion
-                    SEARCH_POSITION to "", // TODO:: HOMEPAGE || GOODS_SEARCH || STORE_SEARCH.
-                    SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. Other page = ""
-                    IMPR_ID to "", // TODO:: Request ID from Suggestion GQL BE
-                    RAW_QUERY to "", // TODO:: Query from user
-                    NEW_SUG_SESSION_ID to "", // TODO:: Reset every time query is entirely deleted. System.currentTimeMillis()
-                    ENTER_METHOD to "", // TODO:: "ENTER (from home to Initial State to Suggestion) || CLICK_SEARCH_BAR (from SRP)
-                )
-            )
+            trendingShow.json()
         )
     }
 
@@ -438,7 +461,6 @@ object AppLogSearch {
             )
         )
     }
-
 
 
     // /////////////// -- IJ -- /////////////

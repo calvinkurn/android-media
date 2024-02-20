@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.unify
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.autocompletecomponent.initialstate.DELETE_RECENT_SEARCH_USE_CASE
 import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocompletecomponent.unify.domain.AutoCompleteUnifyRequestUtil
@@ -53,6 +54,9 @@ internal class AutoCompleteViewModel @Inject constructor(
     val isSuggestion
         get() = stateValue.isSuggestion
 
+    val currentQuery
+        get() = stateValue.parameter[SearchApiConst.Q] ?: ""
+
     fun onScreenInitialized() {
         actOnParameter()
     }
@@ -60,6 +64,17 @@ internal class AutoCompleteViewModel @Inject constructor(
     fun onScreenUpdateParameter(updatedParameter: Map<String, String>) {
         _stateFlow.value = stateValue.updateParameter(updatedParameter)
         actOnParameter()
+    }
+
+    fun initAppLogData(enterFrom: String, enterMethod: String, searchEntrance: String) {
+        val currentAppLogData = stateValue.appLogData
+        _stateFlow.value = stateValue.copy(
+            appLogData = currentAppLogData.copy(
+                enterFrom = enterFrom,
+                enterMethod = enterMethod,
+                searchEntrance = searchEntrance
+            )
+        )
     }
 
     private fun actOnParameter() {
@@ -71,7 +86,25 @@ internal class AutoCompleteViewModel @Inject constructor(
             getSuggestionStateData(parameter)
             return
         }
+        updateAppLogData(needNewSessionId = true)
         getInitialStateData(parameter)
+    }
+
+    private fun updateAppLogData(imprId: String? = null, needNewSessionId: Boolean = false) {
+        val currentAppLogData = stateValue.appLogData
+        val newImprId = if (imprId != null) {
+            imprId
+        } else {
+            currentAppLogData.imprId
+        }
+        val newSessionId = if (needNewSessionId) {
+            System.currentTimeMillis()
+        } else {
+            currentAppLogData.newSugSessionId
+        }
+        _stateFlow.value = stateValue.copy(
+            appLogData = AutoCompleteAppLogData(imprId = newImprId, newSugSessionId = newSessionId)
+        )
     }
 
     fun parameterIsMps(parameter: Map<String, String> = stateValue.parameter) =
@@ -102,6 +135,30 @@ internal class AutoCompleteViewModel @Inject constructor(
 
     private fun onGetStateDataSuccessful(model: UniverseSuggestionUnifyModel) {
         _stateFlow.value = stateValue.updateResultList(model)
+        trackTrendingShow()
+    }
+
+    private fun trackTrendingShow() {
+        val appLogData = stateValue.appLogData
+        AppLogSearch.eventTrendingShow(
+            AppLogSearch.TrendingShow(
+                searchPosition = appLogData.enterFrom,
+                searchEntrance = appLogData.searchEntrance,
+                imprId = "", //TODO milhamj
+                newSugSessionId = appLogData.newSugSessionId,
+                rawQuery = currentQuery,
+                enterMethod = appLogData.enterMethod,
+                wordsNum = stateValue.resultList.size
+            )
+        )
+    }
+
+    fun trackSearchEnterBlankPage() {
+        val appLogData = stateValue.appLogData
+        AppLogSearch.eventEnterSearchBlankPage(
+            enterFrom = appLogData.enterFrom,
+            searchEntrance = appLogData.searchEntrance
+        )
     }
 
     private fun onGetDataError(throwable: Throwable) {

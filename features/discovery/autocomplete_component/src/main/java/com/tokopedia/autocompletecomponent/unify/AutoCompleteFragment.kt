@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -41,24 +41,34 @@ class AutoCompleteFragment @Inject constructor(
                 AutoCompleteScreen(viewModel, iris, (activity as? AutoCompleteListener))
             }
         }
+        initAppLogData()
         viewModel.onScreenInitialized()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //TODO milhamj make it pretty
+        viewModel.trackSearchEnterBlankPage()
+    }
+
+    fun updateParameter(parameter: Map<String, String>) {
+        viewModel.onScreenUpdateParameter(parameter)
+    }
+
+    private fun initAppLogData() {
         val intent: Intent = context?.getActivityFromContext()?.intent ?: return
-        val enterFrom = intent.getStringExtra(SearchConstant.ByteIOExtras.EXTRA_ENTER_FROM) ?: ""
+        val enterFrom = intent.getStringExtra(
+            SearchConstant.ByteIOExtras.EXTRA_ENTER_FROM
+        ) ?: ""
         val searchEntrance = if (enterFrom == HOMEPAGE) {
             HOMEPAGE
         } else {
             ""
         }
-        AppLogSearch.eventEnterSearchBlankPage(searchEntrance, enterFrom)
-    }
-
-    fun updateParameter(parameter: Map<String, String>) {
-        viewModel.onScreenUpdateParameter(parameter)
+        val enterMethod = intent.getStringExtra(
+            SearchConstant.ByteIOExtras.EXTRA_ENTER_METHOD
+        ) ?: ENTER
+        viewModel.initAppLogData(enterFrom, enterMethod, searchEntrance)
     }
 
     companion object {

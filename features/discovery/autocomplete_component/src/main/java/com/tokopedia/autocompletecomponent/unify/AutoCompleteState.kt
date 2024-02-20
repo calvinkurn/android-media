@@ -10,6 +10,7 @@ data class AutoCompleteState(
     val parameter: Map<String, String> = emptyMap(),
     val resultList: List<AutoCompleteUnifyDataView> = listOf(),
     val navigate: AutoCompleteNavigate? = null,
+    val appLogData: AutoCompleteAppLogData = AutoCompleteAppLogData(),
     val actionReplaceKeyword: String? = null
 ) {
 
