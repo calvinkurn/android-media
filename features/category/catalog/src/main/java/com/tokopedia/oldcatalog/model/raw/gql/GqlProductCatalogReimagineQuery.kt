@@ -437,6 +437,91 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
               maxFmt
             }
           }
+          style {
+            isHidden
+            isSticky
+          }
+        }
+        ... on CatalogCompTopSellerCard {
+          topSeller {
+            productID
+            warehouseID
+            isVariant
+            stock {
+              soldPercentage
+              isHidden
+              wording
+            }
+            shop {
+              id
+              name
+              city
+              badge
+              stats {
+                chatEta
+                orderProcessEta
+              }
+            }
+            price {
+              text
+              original
+            }
+            credibility {
+              rating
+              sold
+              ratingCount
+            }
+            mediaUrl {
+              image300
+            }
+            delivery {
+              eta
+            }
+            additionalService {
+              name
+            }
+            paymentOption {
+              iconUrl
+              title
+              desc
+            }
+            labelGroups {
+              position
+              title
+              url
+              styles {
+                key
+                value
+              }
+            }
+          }
+          style {
+            isHidden
+          }
+        }
+        ... on CatalogCompTopSellerHanging {
+          topSeller {
+            productID
+            warehouseID
+            isVariant
+            shop {
+              id
+              name
+              badge
+            }
+            price {
+              text
+              original
+            }
+            credibility {
+              rating
+              sold
+            }
+          }
+          style {
+            isHidden
+            isSticky
+          }
         }
         ... on CatalogCompReviewBuyer {
           section {

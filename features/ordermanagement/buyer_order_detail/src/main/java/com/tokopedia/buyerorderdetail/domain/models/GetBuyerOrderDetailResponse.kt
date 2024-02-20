@@ -782,7 +782,11 @@ data class GetBuyerOrderDetailResponse(
 
                         @Expose
                         @SerializedName("price_text")
-                        val priceText: String = ""
+                        val priceText: String = "",
+
+                        @SerializedName("addon_summary")
+                        @Expose
+                        val addonSummary: AddonSummary? = AddonSummary()
                     )
                 }
 

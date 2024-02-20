@@ -126,7 +126,7 @@ class ContentCardViewModelTest {
 //        Assert.assertTrue(viewModel.contentCardList.value is Fail)
 //        Assert.assertEquals(
 //            "Empty Data",
-//            (viewModel.contentCardList.value as Fail).throwable.message.toString()
+//            (viewModel.contentCardList.value as Fail).throwable.message
 //        )
 //    }
 
@@ -147,14 +147,14 @@ class ContentCardViewModelTest {
 //                componentId,
 //                PAGE_ENDPOINT
 //            )
-//        } returns true
+//        } returns false
 //
 //        viewModel.loadContentCard()
 //
 //        Assert.assertTrue(viewModel.contentCardList.value is Fail)
 //        Assert.assertEquals(
 //            "Empty Data",
-//            (viewModel.contentCardList.value as Fail).throwable.message.toString()
+//            (viewModel.contentCardList.value as Fail).throwable.message
 //        )
 //    }
 }

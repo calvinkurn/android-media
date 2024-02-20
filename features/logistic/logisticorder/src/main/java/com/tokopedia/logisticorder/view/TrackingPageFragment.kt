@@ -38,6 +38,8 @@ import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
+import com.tokopedia.logisticorder.utils.TippingConstant.PARAM_ORDER_ID
+import com.tokopedia.logisticorder.utils.TippingConstant.PARAM_REF_NUM
 import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TIPPING
@@ -45,9 +47,9 @@ import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.utils.isHypen
 import com.tokopedia.logisticorder.utils.toHyphenIfEmptyOrNull
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
-import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -79,6 +81,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
         private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
         private const val ICON_OPEN_TIPPING_GOJEK = TokopediaImageUrl.ICON_OPEN_TIPPING_GOJEK
+        private const val COMPOSE_TRACKING_PAGE_KEY = "android_tracking_page_compose_enable"
 
         fun createFragment(
             orderId: String?,
@@ -149,8 +152,24 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkRemoteConfig()
         initObserver()
         fetchData()
+    }
+
+    fun checkRemoteConfig() {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        if (remoteConfig.getBoolean(COMPOSE_TRACKING_PAGE_KEY)) {
+            val intent = Intent(requireContext(), TrackingPageComposeActivity::class.java).apply {
+                putExtra(ARGUMENTS_ORDER_ID, mOrderId)
+                putExtra(ARGUMENTS_CALLER, mCaller)
+                putExtra(ARGUMENTS_GROUP_TYPE, mGroupType)
+                putExtra(ARGUMENTS_TRACKING_URL, mTrackingUrl)
+                putExtra(ARGUMENTS_ORDER_TX_ID, mOrderTxId)
+            }
+            startActivity(intent)
+            activity?.finish()
+        }
     }
 
     override fun onDestroyView() {
@@ -213,7 +232,11 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         mOrderId?.let { orderId ->
             viewModel.getTrackingData(orderId, mOrderTxId, mGroupType)
 
-            if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
+            if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals(
+                    "seller",
+                    ignoreCase = true
+                )
+            ) {
                 viewModel.retryAvailability(orderId)
             }
         }
@@ -390,7 +413,10 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             btnTipping.setOnClickListener {
                 when (tippingData.status) {
                     SUCCESS_PAYMENT, SUCCESS_TIPPING, OPEN -> {
-                        DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
+                        RouteManager.route(
+                            context,
+                            "${ApplinkConstInternalLogistic.TIPPING_DRIVER}?$PARAM_ORDER_ID=$mOrderId&$PARAM_REF_NUM=${data.trackOrder.shippingRefNum}"
+                        )
                     }
 
                     WAITING_PAYMENT -> {

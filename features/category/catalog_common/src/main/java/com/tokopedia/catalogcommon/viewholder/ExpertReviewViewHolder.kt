@@ -1,6 +1,8 @@
 package com.tokopedia.catalogcommon.viewholder
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -79,7 +81,6 @@ class ExpertReviewViewHolder(
             activeIndex = Int.ZERO
             onceCreateCarousel = true
         }
-
     }
 
     private fun playVideoYoutube(videoLink: String) {
@@ -123,6 +124,10 @@ class ExpertReviewViewHolder(
                 element.styleIconPlay.iconColor
             )
         )
-        view.clLayout.setBackgroundResource(element.backgroundColor)
+        val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)
+        if (drawable is GradientDrawable) {
+            drawable.setColor(Color.parseColor("#${element.backgroundColor}"))
+            view.clLayout.background = drawable
+        }
     }
 }
