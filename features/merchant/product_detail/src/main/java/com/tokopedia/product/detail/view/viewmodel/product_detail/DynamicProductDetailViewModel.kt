@@ -287,14 +287,14 @@ class DynamicProductDetailViewModel @Inject constructor(
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
     val impressionHolders = mutableListOf<String>()
+
     /**
-     * for appLog stay-analytics to determine if the data is already loaded or not
+     * These variable are for storing appLog stay-analytics data
      * */
     private var isLoadData: Boolean = false
-    /**
-     * for appLog stay-analytics to determine if the product is already added to cart
-     * */
     var hasDoneAddToCart: Boolean = false
+    var mainPhotoViewed: MutableSet<Int> = mutableSetOf()
+    var skuPhotoViewed: MutableSet<Int> = mutableSetOf()
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -528,6 +528,8 @@ class DynamicProductDetailViewModel @Inject constructor(
             salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
             isSingleSku = p1?.data?.variant?.isVariant != true,
+            mainPhotoViewCount = mainPhotoViewed.count(),
+            skuPhotoViewCount = skuPhotoViewed.count(),
             isAddCartSelected = hasDoneAddToCart
         )
     }

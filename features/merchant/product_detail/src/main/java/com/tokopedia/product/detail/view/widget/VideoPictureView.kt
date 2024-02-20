@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -144,8 +145,9 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun onMediaPageSelected(position: Int) {
+        val selected = videoPictureAdapter?.currentList?.getOrNull(position)
+        mListener?.onMediaViewed(position, selected?.variantOptionId.orEmpty().isNotBlankOrZero())
         if (pagerSelectedLastPosition != position) {
-            val selected = videoPictureAdapter?.currentList?.getOrNull(position)
 
             if (selected != null) {
                 val url = if (selected.isVideoType()) {

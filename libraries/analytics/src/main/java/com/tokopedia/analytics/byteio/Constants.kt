@@ -34,6 +34,8 @@ data class TrackStayProductDetail(
     val salePrice: String,
     val isLoadData: Boolean,
     val isSingleSku: Boolean,
+    val mainPhotoViewCount: Int,
+    val skuPhotoViewCount: Int,
     val isSkuSelected: Boolean = true, // always selected in case of P1 flow
     val isAddCartSelected: Boolean,
 )
