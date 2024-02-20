@@ -678,6 +678,53 @@ class ProductListViewModelTest {
     }
 
     @Test
+    fun `When get product detail data for opt out subsidy products response is not success with empty error message, then result should fail`() {
+        //Given
+        coEvery {
+            getSlashPriceProductDetailUseCase.executeOnBackground()
+        } returns GetSlashPriceProductDetailResponse(
+            GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail(
+                responseHeader = ResponseHeader(
+                    success = false
+                )
+            )
+        )
+        //When
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf("123", "456"),
+            DISCOUNT_STATUS_ID_ONGOING,
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
+        )
+
+        //Then
+        assert(viewModel.manageProductSubsidyUiModelLiveData.value is Fail)
+    }
+
+    @Test
+    fun `When get product detail data for opt out subsidy products response is not success with error message, then result should fail`() {
+        //Given
+        coEvery {
+            getSlashPriceProductDetailUseCase.executeOnBackground()
+        } returns GetSlashPriceProductDetailResponse(
+            GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail(
+                responseHeader = ResponseHeader(
+                    success = false,
+                    errorMessages = listOf("Server error")
+                )
+            )
+        )
+        //When
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf("123", "456"),
+            DISCOUNT_STATUS_ID_ONGOING,
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
+        )
+
+        //Then
+        assert(viewModel.manageProductSubsidyUiModelLiveData.value is Fail)
+    }
+
+    @Test
     fun `When get product detail data for opt out subsidy products error, then result should fail`() {
         //Given
         val error = MessageErrorException("Server error")
