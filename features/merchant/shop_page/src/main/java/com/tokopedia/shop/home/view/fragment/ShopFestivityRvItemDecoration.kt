@@ -19,11 +19,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
-import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -43,18 +39,24 @@ class ShopFestivityRvItemDecoration(
     private val defaultBackgroundColor by lazy { MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0) }
 
     init {
-        val bgColor = if (isOverrideTheme) {
-            ShopUtil.parseColorFromHexString(bodyBackgroundHexColor)
-        } else {
-            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
+        val backgroundColor = when {
+            isOverrideTheme && bodyBackgroundHexColor.isNotEmpty() -> {
+                ShopUtil.parseColorOrFallback(
+                    hexColor = bodyBackgroundHexColor,
+                    fallbackColor = defaultBackgroundColor
+                )
+            }
+            isOverrideTheme && bodyBackgroundHexColor.isEmpty() -> defaultBackgroundColor
+            else -> defaultBackgroundColor
         }
+        
         (
             MethodChecker.getDrawable(
                 context,
                 R.drawable.bg_festivity_widget_background_white
             ) as? GradientDrawable
             )?.let {
-            it.setColor(bgColor)
+            it.setColor(backgroundColor)
             backgroundDrawableWhite = it
         }
     }
@@ -86,15 +88,6 @@ class ShopFestivityRvItemDecoration(
                             if (!widgetUiModel.isFestivity) {
                                 drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
                             }
-                        }
-                        is ShopHomeProductEtalaseTitleUiModel -> {
-                            drawOverlayColorBehindRecyclerViewItem(it, canvas)
-                        }
-                        is ShopProductSortFilterUiModel -> {
-                            drawOverlayColorBehindRecyclerViewItem(it, canvas)
-                        }
-                        is ShopHomeProductChangeGridSectionUiModel -> {
-                            drawOverlayColorBehindRecyclerViewItem(it, canvas)
                         }
                         is ShopHomeProductUiModel -> {
                             drawOverlayColorBehindRecyclerViewItem(it, canvas)
