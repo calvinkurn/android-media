@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import com.github.anrwatchdog.ANRWatchDog
@@ -31,17 +32,13 @@ class DevMonitoring(private var context: Context) {
     fun initCrashMonitoring() {
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-            clipboard?.let {
-                val clip = ClipData.newPlainText("TkpdCrashLog", Log.getStackTraceString(throwable))
-                it.setPrimaryClip(clip)
-                Toast.makeText(context, "Crash log copied to clipboard", Toast.LENGTH_SHORT).show()
-            } ?: run {
-                Toast.makeText(context, "Clipboard not available", Toast.LENGTH_SHORT).show()
-            }
             ServerLogger.log(Priority.P1, "DEV_CRASH", mapOf("journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize),
                     "error" to Log.getStackTraceString(throwable).replace("\n", "").replace("\t", " ")))
-            exceptionHandler?.uncaughtException(thread, throwable)
+            if (isCopyCrashToClipboardEnabled()) {
+                testCrash()
+            } else {
+                exceptionHandler?.uncaughtException(thread, throwable)
+            }
         }
     }
 
@@ -60,5 +57,36 @@ class DevMonitoring(private var context: Context) {
         } else {
             // no-op
         }
+    }
+
+    private fun testCrash() {
+        val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { tr, throwable ->
+            val ctx = context
+            val clipboard =
+                ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+            clipboard?.let {
+                val clip = ClipData.newPlainText("TkpdCrashLog", Log.getStackTraceString(throwable))
+                it.setPrimaryClip(clip)
+            }
+            Thread {
+                Looper.prepare()
+                Toast.makeText(context, "App crashed. Stacktrace copied to clipboard.", Toast.LENGTH_LONG).show()
+                Looper.loop()
+            }.start()
+
+            // Allow some time for the Toast to be shown
+            try {
+                Thread.sleep(30000)
+                exceptionHandler?.uncaughtException(tr, throwable)
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun isCopyCrashToClipboardEnabled(): Boolean {
+        val isRemoteConfigFtEnabled = true
+        return GlobalConfig.DEBUG && isRemoteConfigFtEnabled
     }
 }
