@@ -219,6 +219,7 @@ object AppLogAnalytics {
             it.put("original_price", product.originalPrice)
             it.put("sale_price", product.salePrice)
             it.put("track_id", globalTrackId)
+            it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
             it.put("is_sku_selected", product.isSkuSelected)
             it.put("is_add_cart", product.isAddCartSelected)
         })

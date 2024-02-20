@@ -514,7 +514,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             productType = p1.productType,
             originalPrice = p1.data.price.slashPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
-            isSingleSku = false // todo
+            isSingleSku = p1.data.variant.isVariant.not()
         )
     }
 
@@ -527,6 +527,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             originalPrice = p1?.data?.price?.slashPriceFmt.orEmpty(),
             salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
+            isSingleSku = p1?.data?.variant?.isVariant != true,
             isAddCartSelected = hasDoneAddToCart
         )
     }
