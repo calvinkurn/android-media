@@ -11,14 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteEducationComponent
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteMasterComponent
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteTitleComponent
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.autocompletecomponent.util.AutoCompleteTemplateEnum
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
-import com.tokopedia.autocompletecomponent.util.routeManagerIntent
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.iris.Iris
 import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.track.TrackApp
@@ -96,13 +95,12 @@ private fun EvaluateNavigation(
 ) {
     if (navigate != null) {
         LocalContext.current.apply {
-            val modifiedApplink = getModifiedApplink(navigate.applink, SearchParameter())
-            val intent = routeManagerIntent(
-                context = this@apply,
-                applink = modifiedApplink,
-                enterMethod = enterMethod(viewModel),
+            val modifiedApplink = getModifiedApplink(
+                navigate.applink,
+                viewModel.stateValue.parameter,
+                enterMethod(viewModel),
             )
-            startActivity(intent)
+            RouteManager.route(this, modifiedApplink)
         }
         viewModel.onNavigated()
     }

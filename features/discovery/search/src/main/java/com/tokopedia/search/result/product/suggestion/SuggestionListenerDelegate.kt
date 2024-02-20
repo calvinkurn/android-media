@@ -3,7 +3,6 @@ package com.tokopedia.search.result.product.suggestion
 import android.content.Context
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.discovery.common.constants.SearchConstant.ByteIOExtras.EXTRA_ENTER_METHOD
 import com.tokopedia.iris.Iris
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
@@ -31,10 +30,11 @@ class SuggestionListenerDelegate(
 
     private fun performNewProductSearch(queryParams: String) {
         val applinkToSearchResult = ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + queryParams
-        val modifiedApplinkToSearchResult = applinkModifier.modifyApplink(applinkToSearchResult)
+        val modifiedApplinkToSearchResult = applinkModifier.modifyApplink(
+            applinkToSearchResult,
+            AppLogSearch.ParamValue.CORRECT_WORD,
+        )
 
-        openApplinkWithExtras(context, modifiedApplinkToSearchResult) {
-            putExtra(EXTRA_ENTER_METHOD, AppLogSearch.ParamValue.CORRECT_WORD)
-        }
+        openApplink(context, modifiedApplinkToSearchResult)
     }
 }

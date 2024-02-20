@@ -541,6 +541,9 @@ object AppLogSearch {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, tiktokecJSON())
     }
 
+    //TODO:: Update source_module to null
+    //TODO:: Update source_page_type to goods_search
+    //TODO:: Update entrance_form 
     private fun tiktokecJSON() = JSONObject(
         mapOf(
             EVENT_ORIGIN_FEATURE to EVENT_ORIGIN_FEATURE_DEFAULT_VALUE,

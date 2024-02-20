@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.initialstate.analytics.InitialStateTracking
 import com.tokopedia.autocompletecomponent.initialstate.chips.InitialStateChipListener
@@ -36,7 +36,6 @@ import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
 import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
-import com.tokopedia.autocompletecomponent.util.routeManagerIntent
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search1InstAuto
@@ -214,13 +213,8 @@ class InitialStateFragment:
         byteIOEnterMethod: String,
     ) {
         activity?.let {
-            val modifiedApplink = getModifiedApplink(applink, searchParameter)
-            val intent = routeManagerIntent(
-                context = it,
-                applink = modifiedApplink,
-                enterMethod = byteIOEnterMethod,
-            )
-            startActivity(intent)
+            val modifiedApplink = getModifiedApplink(applink, searchParameter, byteIOEnterMethod)
+            RouteManager.route(it, modifiedApplink)
         }
     }
 

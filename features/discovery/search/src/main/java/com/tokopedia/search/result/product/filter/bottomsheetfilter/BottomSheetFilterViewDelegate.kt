@@ -19,13 +19,13 @@ import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
-import com.tokopedia.search.result.product.byteio.ByteIODataHolder
 import com.tokopedia.search.result.product.filter.analytics.SearchSortFilterTracking
 import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.componentIdMap
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.search.utils.enterMethodMap
 import com.tokopedia.search.utils.manualFilterToggleMap
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -43,7 +43,6 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val screenNameProvider: ScreenNameProvider,
     private val userSessionInterface: UserSessionInterface,
     private val reimagineRollence: ReimagineRollence,
-    private val byteIODataHolder: ByteIODataHolder,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -135,7 +134,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
             val parameter = filterController.getParameter() +
                 sortParam +
                 manualFilterToggleMap() +
-                componentIdMap(SearchSortFilterTracking.SORT_COMPONENT_ID)
+                componentIdMap(SearchSortFilterTracking.SORT_COMPONENT_ID) +
+                enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
             applyParameter(parameter)
         }
@@ -153,8 +153,6 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         optionList?.firstOrNull { it.inputState.toBoolean() } as? Sort
 
     private fun applyParameter(parameter: Map<String, String>) {
-        byteIODataHolder.updateEnterMethod(AppLogSearch.ParamValue.TAB_SEARCH)
-
         parameterListener.refreshSearchParameter(parameter)
 
         lastFilterListener.updateLastFilter()
@@ -190,7 +188,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         val parameter = applySortFilterModel.mapParameter +
             manualFilterToggleMap() +
-            componentIdMap(SearchSortFilterTracking.FILTER_COMPONENT_ID)
+            componentIdMap(SearchSortFilterTracking.FILTER_COMPONENT_ID) +
+            enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
         applyParameter(parameter)
     }
