@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent.unify
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +11,12 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.iris.Iris
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import javax.inject.Inject
 
 class AutoCompleteFragment @Inject constructor(
@@ -36,11 +40,33 @@ class AutoCompleteFragment @Inject constructor(
                 AutoCompleteScreen(viewModel, iris, (activity as? AutoCompleteListener))
             }
         }
+        initAppLogData()
         viewModel.onScreenInitialized()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.trackSearchEnterBlankPage()
     }
 
     fun updateParameter(parameter: Map<String, String>) {
         viewModel.onScreenUpdateParameter(parameter)
+    }
+
+    private fun initAppLogData() {
+        val intent: Intent = context?.getActivityFromContext()?.intent ?: return
+        val enterFrom = intent.getStringExtra(
+            "enter_from"
+        ) ?: "" //TODO milhamj
+        val searchEntrance = if (enterFrom == HOMEPAGE) {
+            HOMEPAGE
+        } else {
+            ""
+        }
+        val enterMethod = intent.getStringExtra(
+            "enter_method"
+        ) ?: ENTER //TODO milhamj
+        viewModel.initAppLogData(enterFrom, enterMethod, searchEntrance)
     }
 
     companion object {

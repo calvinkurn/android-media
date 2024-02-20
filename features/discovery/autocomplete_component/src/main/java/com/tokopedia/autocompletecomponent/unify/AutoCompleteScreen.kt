@@ -56,6 +56,9 @@ internal fun AutoCompleteScreen(
                 LaunchedEffect(key1 = !item.impressionHolder.impressed, block = {
                     item.impressionHolder.impressed = true
                     item.impress(iris)
+                    if (item.domainModel.isMasterTemplate()) {
+                        viewModel.trackTrendingWordsShow(item)
+                    }
                 })
                 when (item.domainModel.template) {
                     AutoCompleteTemplateEnum.Master.toString() -> {
