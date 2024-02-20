@@ -30,7 +30,7 @@ import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodS
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
-import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
@@ -175,8 +175,8 @@ class RegisterInitialViewModel @Inject constructor(
             try {
                 val result = getProfileUseCase(Unit)
                 when (result) {
-                    is Success -> onSuccessGetUserInfo()
-                    is Fail -> onFailedGetUserInfo()
+                    is Success -> onSuccessGetUserInfo(result.data.profileInfo)
+                    is Fail -> onFailedGetUserInfo(result.throwable)
                 }
             } catch (e: Exception) {
             }
@@ -185,12 +185,12 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun getUserInfoAfterAddPin() {
         launch {
-            when (getProfileUseCase(Unit)) {
+            when (val response = getProfileUseCase(Unit)) {
                 is Success -> {
-                    onSuccessGetUserInfoAfterAddPin()
+                    mutableGetUserInfoAfterAddPinResponse.value = Success(ProfileInfoData(response.data.profileInfo))
                 }
                 is Fail -> {
-                    onFailedGetUserInfoAfterAddPin()
+                    mutableGetUserInfoAfterAddPinResponse.value = Fail(response.throwable)
                 }
             }
         }
@@ -383,30 +383,14 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
-        return {
-            mutableGetUserInfoResponse.value = Success(ProfileInfoData(it.profileInfo))
-            idlingResourceProvider?.decrement()
-        }
+    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo) {
+        mutableGetUserInfoResponse.value = Success(ProfileInfoData(profileInfo))
+        idlingResourceProvider?.decrement()
     }
 
-    private fun onFailedGetUserInfo(): (Throwable) -> Unit {
-        return {
-            mutableGetUserInfoResponse.value = Fail(it)
-            idlingResourceProvider?.decrement()
-        }
-    }
-
-    private fun onSuccessGetUserInfoAfterAddPin(): (ProfilePojo) -> Unit {
-        return {
-            mutableGetUserInfoAfterAddPinResponse.value = Success(ProfileInfoData(it.profileInfo))
-        }
-    }
-
-    private fun onFailedGetUserInfoAfterAddPin(): (Throwable) -> Unit {
-        return {
-            mutableGetUserInfoAfterAddPinResponse.value = Fail(it)
-        }
+    private fun onFailedGetUserInfo(throwable: Throwable) {
+        mutableGetUserInfoResponse.value = Fail(throwable)
+        idlingResourceProvider?.decrement()
     }
 
     private fun onSuccessGetTickerInfo(): (List<TickerInfoPojo>) -> Unit {

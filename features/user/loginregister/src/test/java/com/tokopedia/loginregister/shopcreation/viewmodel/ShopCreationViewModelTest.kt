@@ -25,9 +25,8 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
-import com.tokopedia.sessioncommon.util.GetProfileUtilsImpl
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -35,6 +34,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
@@ -73,7 +73,7 @@ class ShopCreationViewModelTest {
     lateinit var updateUserProfileUseCase: UpdateUserProfileUseCase
 
     @RelaxedMockK
-    lateinit var getProfileUseCase: GetProfileUseCase
+    lateinit var getProfileUseCase: GetUserInfoAndSaveSessionUseCase
 
     @RelaxedMockK
     lateinit var shopInfoUseCase: ShopInfoUseCase
@@ -122,7 +122,6 @@ class ShopCreationViewModelTest {
             updateUserProfileUseCase,
             getProfileUseCase,
             shopInfoUseCase,
-            userSession,
             CoroutineTestDispatchersProvider
         )
     }
@@ -466,15 +465,14 @@ class ShopCreationViewModelTest {
 
     @Test
     fun `Success get user info`() {
+        // When
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileUtilsImpl>().onSuccessGetProfile.invoke(successGetUserInfoResponse)
-        }
+        val response = Success(successGetUserInfoResponse)
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewmodel.getUserInfo()
 
-        verify { getUserInfoObserver.onChanged(any<Success<ProfileInfo>>()) }
+        coVerify { getUserInfoObserver.onChanged(any<Success<ProfileInfo>>()) }
         assert(viewmodel.getUserInfoResponse.value is Success)
 
         val result = viewmodel.getUserInfoResponse.value as Success<ProfileInfo>
@@ -484,10 +482,8 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed get user info`() {
         viewmodel.getUserInfoResponse.observeForever(getUserInfoObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileUtilsImpl>().onErrorGetProfile.invoke(throwable)
-        }
+        val response = Fail(throwable)
+        coEvery { getProfileUseCase(Unit) } returns response
 
         viewmodel.getUserInfo()
 
@@ -503,7 +499,6 @@ class ShopCreationViewModelTest {
         viewmodel.clearBackgroundTask()
         verify {
             registerUseCase.unsubscribe()
-            getProfileUseCase.unsubscribe()
         }
     }
 

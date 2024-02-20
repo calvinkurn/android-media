@@ -15,6 +15,7 @@ import com.tokopedia.loginregister.common.Event
 import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.annotations.CassavaTest
@@ -26,7 +27,7 @@ import org.junit.runner.RunWith
 @CassavaTest
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class RegisterInitialTest: RegisterInitialBase() {
+class RegisterInitialTest : RegisterInitialBase() {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -35,10 +36,10 @@ class RegisterInitialTest: RegisterInitialBase() {
 
     @Test
     fun check_register_email_success_tracker() {
-        //Given
+        // Given
         isDefaultRegisterCheck = false
         val data = RegisterCheckData(
-            isExist = false ,
+            isExist = false,
             isPending = false,
             userID = "0",
             registerType = "email",
@@ -48,29 +49,29 @@ class RegisterInitialTest: RegisterInitialBase() {
 
         val profileInfo = ProfileInfo(userId = "123456", fullName = "Kelvin Saputra")
         val profilePojo = ProfilePojo(profileInfo)
-        getProfileUseCaseStub.response = profilePojo
+        fakeGraphqlRepository.profileConfig = Config.WithResponse(profilePojo)
 
-        //When
+        // When
         runTest {
             checkRegisterEmail()
         }
 
-        //Then
+        // Then
         validate(cassavaTestRule, getAnalyticValidatorListSuccess())
     }
 
     @Test
     fun check_register_email_failed_tracker() {
-        //Given
+        // Given
         isDefaultRegisterCheck = false
         registerCheckUseCase.isError = true
 
-        //When
+        // When
         runTest {
             checkRegisterEmail()
         }
 
-        //Then
+        // Then
         validate(cassavaTestRule, getAnalyticValidatorListFailed())
     }
 
@@ -78,11 +79,11 @@ class RegisterInitialTest: RegisterInitialBase() {
         Thread.sleep(1000)
 
         onView(ViewMatchers.withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
-                .perform(replaceText(""))
-                .perform(typeText(emailNotRegistered))
+            .perform(replaceText(""))
+            .perform(typeText(emailNotRegistered))
 
         onView(withId(R.id.register_btn))
-                .perform(click())
+            .perform(click())
     }
 
     private fun getAnalyticValidatorListSuccess(): List<Map<String, String>> {

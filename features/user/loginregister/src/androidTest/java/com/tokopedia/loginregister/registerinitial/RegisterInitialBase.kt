@@ -17,7 +17,6 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import org.junit.After
@@ -43,9 +42,6 @@ open class RegisterInitialBase : LoginRegisterBase() {
 
     @Inject
     lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
-
-    @Inject
-    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
 
     @Inject
     lateinit var fakeGraphqlRepository: FakeGraphqlRepository

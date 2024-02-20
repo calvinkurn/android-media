@@ -28,7 +28,6 @@ import com.tokopedia.sessioncommon.data.admin.AdminResult
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -49,8 +48,7 @@ class LoginHelperViewModel @Inject constructor(
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val userSession: UserSessionInterface,
-    private val getProfileUseCase: GetUserInfoAndAdminUseCase,
-    private val getAdminTypeUseCase: GetAdminTypeUseCase
+    private val getProfileUseCase: GetUserInfoAndAdminUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(LoginHelperUiState())

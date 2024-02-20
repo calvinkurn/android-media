@@ -14,6 +14,9 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
+import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import timber.log.Timber
@@ -22,6 +25,7 @@ class FakeGraphqlRepository : GraphqlRepository {
 
     var registerCheckConfig: Config = Config.Default
     var discoverConfig: Config = Config.Default
+    var profileConfig: Config = Config.Default
 
     override suspend fun response(
         requests: List<GraphqlRequest>,
@@ -87,6 +91,33 @@ class FakeGraphqlRepository : GraphqlRepository {
 
             "ticker" -> {
                 GqlMockUtil.createSuccessResponse(TickerInfoData(TickersInfoPojo(listOf())))
+            }
+
+            "getAdminType" -> {
+                GqlMockUtil.createSuccessResponse(AdminTypeResponse())
+            }
+
+            "profile" -> {
+                val profilePojo = ProfilePojo(
+                    profileInfo = ProfileInfo(
+                        userId = "123456",
+                        fullName = "Testing User",
+                        firstName = "Testing",
+                        email = "testinguser@email.com",
+                        birthday = "2020-11-11",
+                        gender = "male",
+                        isPhoneVerified = true,
+                        profilePicture = "",
+                        isCreatedPassword = true,
+                        isLoggedIn = true
+                    )
+                )
+                when (profileConfig) {
+                    is Config.Default -> GqlMockUtil.createSuccessResponse(profilePojo)
+
+                    is Config.WithResponse -> GqlMockUtil.createSuccessResponse((profileConfig as Config.WithResponse).response)
+                    else -> GqlMockUtil.createSuccessResponse(profilePojo)
+                }
             }
 
             else -> {

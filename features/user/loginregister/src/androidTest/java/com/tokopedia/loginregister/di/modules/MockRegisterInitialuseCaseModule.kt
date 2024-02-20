@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.di.modules
 
-import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -9,7 +8,6 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
 import dagger.Module
 import dagger.Provides
@@ -35,14 +33,6 @@ class MockRegisterInitialuseCaseModule {
     @ActivityScope
     fun provideMockRegisterCheckUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCaseStub<RegisterCheckPojo> {
         return GraphqlUseCaseStub(graphqlRepository)
-    }
-
-    @Provides
-    fun provideGetProfileUseCaseStub(
-        resources: Resources,
-        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
-    ): GetProfileUseCaseStub {
-        return GetProfileUseCaseStub(resources, graphqlUseCase)
     }
 
     @ActivityScope
