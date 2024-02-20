@@ -48,7 +48,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
-import com.tokopedia.shop.common.constant.ShopPageConstant.LABEL_GROUP_INTEGRITY_POSITION_VALUE
+import com.tokopedia.shop.common.constant.ShopPageConstant.LABEL_TITLE_PRODUCT_SOLD_COUNT
 import com.tokopedia.shop.common.constant.ShopPageConstant.RequestParamValue.PAGE_NAME_SHOP_COMPARISON_WIDGET
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.*
@@ -1501,7 +1501,12 @@ class ShopHomeViewModel @Inject constructor(
                                 isVariant = it.isVariant,
                                 minimumOrder = it.minimumOrder,
                                 stock = it.stock,
-                                label = it.labelGroupList.firstOrNull { it.position == LABEL_GROUP_INTEGRITY_POSITION_VALUE }?.title.orEmpty()
+                                label = it.labelGroupList.firstOrNull {
+                                    it.title.contains(
+                                        other = LABEL_TITLE_PRODUCT_SOLD_COUNT,
+                                        ignoreCase = true
+                                    )
+                                }?.title.orEmpty()
                             )
                         }
                         etalase.lastTimeStampProductListCaptured = System.currentTimeMillis()

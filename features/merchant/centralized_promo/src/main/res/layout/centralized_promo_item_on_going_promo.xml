@@ -35,7 +35,7 @@
             app:typographyType="heading_6"
             tools:text="Broadcast Chat" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ivCaret"
             android:layout_width="18dp"
             android:layout_height="18dp"
@@ -45,7 +45,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvOnGoingPromoTitle"
-            app:srcCompat="@drawable/ic_arrow_right_grey"
+            app:icon_name="CHEVRON_RIGHT"
+            app:icon_color_light_enable="@color/Unify_Static_White_96"
             android:contentDescription="@string/centralized_promo_content_desc_button_lihat_detail_promo" />
 
         <View

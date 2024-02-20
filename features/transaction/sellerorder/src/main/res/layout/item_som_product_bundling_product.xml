@@ -57,4 +57,15 @@
         app:layout_constraintTop_toBottomOf="@+id/imgSomBundleProduct"
         app:typographyType="body_3"
         tools:text="Coba dibuat lebih keren nanti kotak nya yah.. jangan penyok" />
+
+    <ViewStub
+        android:id="@+id/layoutProductBundleAddOn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:inflatedId="@+id/layoutProductBundleAddOn"
+        android:layout="@layout/partial_bmgm_add_on_summary"
+        app:layout_constraintTop_toBottomOf="@id/tvSomBundleNotes" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
