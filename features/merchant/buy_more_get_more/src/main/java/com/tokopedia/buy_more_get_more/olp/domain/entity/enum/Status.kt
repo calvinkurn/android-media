@@ -5,5 +5,6 @@ enum class Status(val code: Long) {
     OFFER_ENDED(802),
     OOS(803),
     NO_CONNECTION(804),
+    GIFT_OOS(805),
     SUCCESS(200)
 }

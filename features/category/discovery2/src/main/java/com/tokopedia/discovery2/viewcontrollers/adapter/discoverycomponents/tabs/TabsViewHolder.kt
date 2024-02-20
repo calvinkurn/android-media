@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
@@ -189,6 +189,60 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     }
             }
 
+            tabsViewModel.getImageTabLiveData().observe(
+                fragment.viewLifecycleOwner
+            ) {
+                isParentUnifyTab = false
+                tabsHolder.getUnifyTabLayout()
+                    .setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
+                tabsHolder.getUnifyTabLayout().apply {
+                    layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height =
+                        tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_60)
+                    tabMode = TabLayout.MODE_SCROLLABLE
+                    removeAllTabs()
+                }
+                var selectedPosition = 0
+                it.forEachIndexed { index, tabItem ->
+                    if (tabItem.data?.isNotEmpty() == true) {
+                        val isSelected = tabItem.data?.firstOrNull()?.isSelected ?: false
+                        if (isSelected) {
+                            selectedPosition = index
+                        }
+
+                        val tab = tabsHolder.tabLayout.newTab()
+                        ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
+                        tab.customView = CustomViewCreator.getCustomViewObject(
+                            itemView.context,
+                            ComponentsList.TabsImageItem,
+                            tabItem,
+                            fragment
+                        )
+                        tabsHolder.tabLayout.addTab(
+                            tab,
+                            isSelected
+                        )
+                    }
+                }
+
+                scrollToCurrentTabPosition(
+                    selectedPosition = selectedPosition,
+                    isFromCategory = tabsViewModel.isFromCategory()
+                )
+
+                tabsHolder.viewTreeObserver
+                    .addOnGlobalLayoutListener {
+                        fragment.activity?.let { _ ->
+                            if (selectedPosition >= 0 && tabsViewModel.isFromCategory()) {
+                                tabsHolder.gone()
+                                tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                                tabsHandler.postDelayed(tabsRunnable, DELAY_400)
+                                selectedPosition = -1
+                            }
+                        }
+                    }
+            }
+
             tabsViewModel.getTabMargin().observe(fragment.viewLifecycleOwner) {
                 if (!tabsViewModel.isFromCategory()) {
                     if (it) {
@@ -262,13 +316,12 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         tabsViewModel?.getSyncPageLiveData()?.observe(
-            fragment.viewLifecycleOwner,
-            Observer { needReSync ->
-                if (needReSync) {
-                    (fragment as DiscoveryFragment).reSync()
-                }
+            fragment.viewLifecycleOwner
+        ) { needReSync ->
+            if (needReSync) {
+                (fragment as DiscoveryFragment).reSync()
             }
-        )
+        }
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
@@ -307,14 +360,19 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tab: TabLayout.Tab,
         isCurrentTabSelected: Boolean
     ) {
-        if (tabsViewModel.components.name == ComponentsList.Tabs.componentName) {
-            ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(
-                isCurrentTabSelected
-            )
-        } else if (tabsViewModel.components.name == ComponentsList.TabsIcon.componentName) {
-            ((tab.customView as CustomViewCreator).viewModel as TabsItemIconViewModel).setSelectionTabItem(
-                isCurrentTabSelected
-            )
+        when (tabsViewModel.components.name) {
+            ComponentsList.Tabs.componentName -> {
+                ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel)
+                    .setSelectionTabItem(isCurrentTabSelected)
+            }
+            ComponentsList.TabsIcon.componentName -> {
+                ((tab.customView as CustomViewCreator).viewModel as TabsItemIconViewModel)
+                    .setSelectionTabItem(isCurrentTabSelected)
+            }
+            ComponentsList.TabsImage.componentName -> {
+                ((tab.customView as CustomViewCreator).viewModel as TabsItemImageViewModel)
+                    .setSelectionTabItem(isCurrentTabSelected)
+            }
         }
     }
 
@@ -325,7 +383,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private fun TabsViewModel.switchThematicHeaderData(
         tabPosition: Int
     ) {
-        if (isPlainTab()) {
+        if (isPlainTab() || components.name == ComponentNames.TabsImage.componentName) {
             mFragment.setTabPosition(tabPosition)
         }
     }

@@ -22,7 +22,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
-import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -260,10 +259,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.refreshUserShopData()
     }
 
-    override fun onErrorBuListClicked(position: Int) {
-        viewModel.refreshBuListData()
-    }
-
     override fun onErrorTransactionListClicked(position: Int) {
         viewModel.refreshTransactionListData()
     }
@@ -343,10 +338,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
     }
 
-    @MePage(MePage.Widget.WISHLIST)
-    override fun onErrorWishlistClicked() {
-    }
-
     override fun onWishlistCardClicked(wishlistModel: NavWishlistModel, position: Int) {
         TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position, pageSource, pageSourcePath)
         RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, wishlistModel.id)
@@ -386,7 +377,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         )
     }
 
-    @MePage(MePage.Widget.REVIEW)
     override fun onErrorReviewClicked() {
     }
 

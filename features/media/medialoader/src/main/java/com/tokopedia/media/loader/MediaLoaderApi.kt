@@ -6,6 +6,9 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.media.loader.data.IMAGE_SOURCE_EMPTY_STRING
+import com.tokopedia.media.loader.data.IMAGE_SOURCE_NULL
+import com.tokopedia.media.loader.data.MediaException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.listener.MediaListenerBuilder
@@ -26,12 +29,15 @@ internal object MediaLoaderApi {
 
         // handling empty url
         if (properties.data is String && source.toString().isEmpty()) {
+            imageView.setImageDrawable(getDrawable(context, properties.error))
+            properties.loaderListener?.onFailed(getErrorException(IMAGE_SOURCE_EMPTY_STRING))
             return
         }
 
         // if the data source is null, the image will be render the error drawable
         if (properties.data == null) {
             imageView.setImageDrawable(getDrawable(context, properties.error))
+            properties.loaderListener?.onFailed(getErrorException(IMAGE_SOURCE_NULL))
             return
         }
 
@@ -99,4 +105,7 @@ internal object MediaLoaderApi {
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
     }
 
+    private fun getErrorException(msg: String): MediaException {
+        return MediaException(msg)
+    }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.model
 
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactory
 
@@ -13,10 +14,15 @@ data class ProductBundleUiModel(
     val bundleName: String = "",
     val bundlePrice: String = "",
     val bundleSubTotal: String = "",
-    val orderDetail: List<SomDetailOrder.GetSomDetail.Details.Product>
+    val products: List<ProductUiModel>
 ) : BaseProductUiModel {
 
     override fun type(typeFactory: SomDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    data class ProductUiModel(
+        val detail: SomDetailOrder.GetSomDetail.Details.Product,
+        val addOnSummaryUiModel: AddOnSummaryUiModel? = null,
+    )
 }

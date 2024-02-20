@@ -1,26 +1,31 @@
 package com.tokopedia.order_management_common.presentation.viewholder
 
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.View
+import android.view.ViewStub
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.factory.AddOnAdapterFactory
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
+import com.tokopedia.order_management_common.util.rotateBackIcon
+import com.tokopedia.order_management_common.util.rotateIcon
+import com.tokopedia.order_management_common.util.runSafely
 import com.tokopedia.unifycomponents.toPx
 
 class BmgmAddOnSummaryViewHolder(
-    bmgmAddOnListener: BmgmAddOnViewHolder.Listener,
+    private val bmgmAddOnListener: BmgmAddOnViewHolder.Listener,
     private val binding: PartialBmgmAddOnSummaryBinding?,
-    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool?
 ) {
 
     companion object {
@@ -36,17 +41,12 @@ class BmgmAddOnSummaryViewHolder(
 
     private fun setupLayout() {
         binding?.setupRecyclerviewRecycledViewPool()
-        binding?.setupRecyclerViewLayoutManager()
         binding?.setupRecyclerViewAdapter()
         binding?.setupRecyclerViewItemDecoration()
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerviewRecycledViewPool() {
         rvAddOn.setRecycledViewPool(recyclerViewSharedPool)
-    }
-
-    private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewLayoutManager() {
-        (rvAddOn.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewAdapter() {
@@ -56,14 +56,8 @@ class BmgmAddOnSummaryViewHolder(
 
     private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewItemDecoration() {
         if (rvAddOn.itemDecorationCount.isZero()) {
-            val dividerDrawable = try {
-                MethodChecker.getDrawable(
-                    root.context,
-                    R.drawable.om_detail_add_on_dash_divider
-                )
-            } catch (t: Throwable) {
-                FirebaseCrashlytics.getInstance().recordException(t)
-                null
+            val dividerDrawable = runSafely {
+                MethodChecker.getDrawable(root.context, R.drawable.ic_dash_divider)
             }
             rvAddOn.addItemDecoration(
                 RecyclerViewItemDivider(
@@ -82,27 +76,128 @@ class BmgmAddOnSummaryViewHolder(
             } else {
                 root.show()
                 setupAddOnSummaryIcon(element.addonsLogoUrl)
-                setupAddOnSummaryLabel(element.addonsTitle)
-                if (element.addonItemList.isNotEmpty()) {
-                    setupAddOnSummaryAddOns(element.addonItemList)
+                setupAddOnSummaryLabel(
+                    element.addonsTitle,
+                    element.isExpand,
+                    element.totalPriceText
+                )
+                setupAddOnSummaryAddOns(element.addonItemList)
+
+                if (element.canExpandCollapse) {
+                    root.setOnClickListener {
+                        element.isExpand = !element.isExpand
+                        bmgmAddOnListener.onAddOnsBmgmExpand(element.isExpand, element.addOnIdentifier)
+                        setupChevronExpandable(
+                            isExpand = element.isExpand,
+                            totalPriceFmt = element.totalPriceText,
+                            canExpandCollapse = true
+                        )
+                    }
+                } else {
+                    root.setOnClickListener(null)
                 }
+
+                setupChevronExpandable(
+                    isExpand = element.isExpand,
+                    totalPriceFmt = element.totalPriceText,
+                    canExpandCollapse = element.canExpandCollapse
+                )
             }
         }
+    }
+
+    private fun PartialBmgmAddOnSummaryBinding.setupChevronExpandable(
+        isExpand: Boolean,
+        totalPriceFmt: StringRes,
+        canExpandCollapse: Boolean
+    ) {
+        if (isExpand) {
+            expandView(canExpandCollapse)
+        } else {
+            collapseView(totalPriceFmt)
+        }
+    }
+
+    private fun PartialBmgmAddOnSummaryBinding.expandView(canExpandCollapse: Boolean) {
+        tvBomDetailBmgmAddonsTotalPrice.hide()
+        rvAddOn.show()
+        icBomDetailBmgmAddonsIconArrowDown.showIfWithBlock(canExpandCollapse) { rotateBackIcon() }
+    }
+
+    private fun PartialBmgmAddOnSummaryBinding.collapseView(totalPriceFmt: StringRes) {
+        val totalPriceText = totalPriceFmt.getString(root.context)
+        tvBomDetailBmgmAddonsTotalPrice.showIfWithBlock(totalPriceText.isNotEmpty()) {
+            text = totalPriceText
+        }
+        rvAddOn.hide()
+        icBomDetailBmgmAddonsIconArrowDown.rotateIcon()
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryIcon(icon: String) {
         ivAddOnSummary.loadImage(icon)
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryLabel(label: String) {
+    private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryLabel(
+        label: String,
+        isExpand: Boolean,
+        totalPriceFmt: StringRes
+    ) {
         tvAddOnLabel.text = label
+
+        if (!isExpand) {
+            tvBomDetailBmgmAddonsTotalPrice.show()
+            tvBomDetailBmgmAddonsTotalPrice.text = totalPriceFmt.getString(root.context)
+        } else {
+            tvBomDetailBmgmAddonsTotalPrice.hide()
+        }
     }
 
     private fun setupAddOnSummaryAddOns(addons: List<AddOnSummaryUiModel.AddonItemUiModel>) {
-        adapter.setElements(addons)
+        binding?.rvAddOn?.showIfWithBlock(addons.isNotEmpty()) {
+            this@BmgmAddOnSummaryViewHolder.adapter.setElements(addons)
+        }
     }
 
     fun bind(addOnSummary: AddOnSummaryUiModel?) {
         setupAddOnSummary(addOnSummary)
+    }
+
+    interface Delegate {
+        fun registerAddOnSummaryDelegate(mediator: Mediator)
+        fun bindAddonSummary(addOnSummary: AddOnSummaryUiModel?)
+        interface Mediator {
+            fun getAddOnSummaryLayout(): View?
+            fun getRecycleViewSharedPool(): RecyclerView.RecycledViewPool?
+            fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener
+        }
+
+        class Impl : Delegate {
+
+            @Suppress("LateinitUsage")
+            private lateinit var viewHolder: BmgmAddOnSummaryViewHolder
+            @Suppress("LateinitUsage")
+            private lateinit var _mediator: Mediator
+
+            override fun registerAddOnSummaryDelegate(mediator: Mediator) {
+                _mediator = mediator
+            }
+
+            override fun bindAddonSummary(addOnSummary: AddOnSummaryUiModel?) {
+                var layout = _mediator.getAddOnSummaryLayout() ?: return
+                if (addOnSummary?.addonItemList?.isNotEmpty() == true) {
+                    if (layout is ViewStub) layout = layout.inflate() else layout.show()
+                    if (!::viewHolder.isInitialized) {
+                        viewHolder = BmgmAddOnSummaryViewHolder(
+                            bmgmAddOnListener = _mediator.getAddOnSummaryListener(),
+                            binding = PartialBmgmAddOnSummaryBinding.bind(layout),
+                            recyclerViewSharedPool = _mediator.getRecycleViewSharedPool()
+                        )
+                    }
+                    viewHolder.bind(addOnSummary)
+                } else {
+                    layout.hide()
+                }
+            }
+        }
     }
 }

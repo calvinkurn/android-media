@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.tracking
 
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit
 import com.tokopedia.product.detail.tracking.TrackingConstant.Item
 import com.tokopedia.product.detail.tracking.TrackingConstant.Value
@@ -15,7 +15,7 @@ object ProductDetailNavigationTracking {
     private const val ITEM_NAME = "pdp navbar"
 
     fun impressNavigation(
-        productInfo: DynamicProductInfoP1,
+        productInfo: ProductInfoP1,
         userId: String,
         data: ProductDetailNavigationTracker,
         trackingQueue: TrackingQueue
@@ -55,7 +55,7 @@ object ProductDetailNavigationTracking {
     }
 
     fun clickNavigation(
-        productInfo: DynamicProductInfoP1,
+        productInfo: ProductInfoP1,
         userId: String,
         data: ProductDetailNavigationTracker
     ) {

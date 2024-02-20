@@ -4,16 +4,17 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.inbox.universalinbox.util.Result
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.withContext
-import timber.log.Timber
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
-import com.tokopedia.inbox.universalinbox.util.Result as Result
 
 class UniversalInboxGetProductRecommendationUseCase @Inject constructor(
     @ApplicationContext context: Context,
@@ -21,45 +22,14 @@ class UniversalInboxGetProductRecommendationUseCase @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : GetRecommendationUseCase(context, graphqlRepository) {
 
-    private val productRecommendationFlow = MutableStateFlow<Result<RecommendationWidget>>(
-        Result.Loading
-    )
-
-    private var lastSuccessfulRecommendationWidget = RecommendationWidget()
-
-    fun observe(): Flow<Result<RecommendationWidget>> = productRecommendationFlow.asStateFlow()
-
-    suspend fun fetchProductRecommendation(inputParameter: GetRecommendationRequestParam) {
-        withContext(dispatchers.io) {
-            productRecommendationFlow.emit(Result.Loading)
-            try {
-                val response = getData(inputParameter).first() // only need first
-                updateFlowState(inputParameter.pageNumber, response)
-            } catch (throwable: Throwable) {
-                Timber.d(throwable)
-                productRecommendationFlow.emit(Result.Error(throwable))
-            }
+    suspend fun fetchProductRecommendation(inputParameter: GetRecommendationRequestParam): Flow<Result<RecommendationWidget>> {
+        return flow {
+            val response = getData(inputParameter).first() // only need first
+            emit(response)
         }
-    }
-
-    private suspend fun updateFlowState(
-        page: Int,
-        response: RecommendationWidget
-    ) {
-        lastSuccessfulRecommendationWidget = if (page <= 1) { // if first page, reset
-            response
-        } else {
-            val updatedList = lastSuccessfulRecommendationWidget.recommendationItemList +
-                response.recommendationItemList
-            lastSuccessfulRecommendationWidget.copy(
-                title = response.title,
-                recommendationItemList = updatedList
-            )
-        }
-        productRecommendationFlow.emit(Result.Success(lastSuccessfulRecommendationWidget))
-    }
-
-    fun reset() {
-        lastSuccessfulRecommendationWidget = RecommendationWidget()
+            .map<RecommendationWidget, Result<RecommendationWidget>> { Result.Success(it) }
+            .onStart { emit(Result.Loading) }
+            .catch { emit(Result.Error(it)) }
+            .flowOn(dispatchers.io)
     }
 }

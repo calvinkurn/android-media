@@ -5,7 +5,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Bl
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.AnimatedInfos
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 
 data class ProductMerchantVoucherSummaryDataModel(
     val type: String = "",
@@ -16,6 +16,9 @@ data class ProductMerchantVoucherSummaryDataModel(
         isFinishedLoading = { false },
         customBlocksName = "ProductMerchantVoucherSummaryDataModel"
     ) {
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     data class UiModel(
         val animatedInfo: List<AnimatedInfos> = listOf(),
@@ -29,7 +32,7 @@ data class ProductMerchantVoucherSummaryDataModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 

@@ -33,4 +33,7 @@ sealed class MainEditorEvent {
     data class ExportMedia(val canvasTextBitmap: Bitmap, val imageBitmap: Bitmap? = null) : MainEditorEvent()
     data class InputTextResult(val model: InputTextModel) : MainEditorEvent()
     data class PlacementImageResult(val model: ImagePlacementModel?) : MainEditorEvent()
+
+    // Run cache clear checker
+    object CacheClearChecker : MainEditorEvent()
 }

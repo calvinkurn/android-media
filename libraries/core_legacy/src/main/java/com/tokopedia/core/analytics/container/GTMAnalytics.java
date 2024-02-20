@@ -114,6 +114,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
     private static final String ANDROID_GA_EVENT_LOGGING = "android_ga_event_logging";
+    private static final String ANDROID_CACHE_CLIENT_ID = "android_cache_client_id";
     private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
     private static long gtmSizeThresholdLog = 0;
     private static final String EMBRACE_BREADCRUMB_FORMAT = "%s, %s";
@@ -782,6 +783,27 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public String getClientIDString() {
+        if (remoteConfig.getBoolean(ANDROID_CACHE_CLIENT_ID, false)) {
+            return getClientIDStringCache();
+        } else {
+            return getClientIDStringLegacy();
+        }
+    }
+
+    public String getClientIDStringLegacy() {
+        try {
+            if (TextUtils.isEmpty(clientIdString)) {
+                Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+                clientIdString = GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+            }
+            return clientIdString;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "NO_GA_ID";
+        }
+    }
+
+    public String getClientIDStringCache() {
         if (needGetGAId()) {
             String clientIdFromLib = getClientIdFromLib();
             if (isClientIdValid(clientIdFromLib)) {

@@ -67,17 +67,18 @@
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icDescriptionCtaArrow"
                 android:layout_width="16dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
                 android:visibility="invisible"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_name="CHEVRON_RIGHT"
                 app:layout_constraintBottom_toBottomOf="@+id/tvDescriptionCta"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvDescriptionCta"
-                app:srcCompat="@drawable/ic_arrow_right_default" />
+                app:layout_constraintTop_toTopOf="@+id/tvDescriptionCta" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>

@@ -3,7 +3,8 @@ package com.tokopedia.editor.data.repository
 import android.graphics.Bitmap
 import com.tokopedia.editor.analytics.EditorLogger
 import com.tokopedia.editor.data.model.CanvasSize
-import com.tokopedia.utils.image.ImageProcessingUtil.getTokopediaPhotoPath
+import com.tokopedia.editor.util.getEditorCacheFolderPath
+import com.tokopedia.utils.file.FileUtil
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -50,18 +51,22 @@ class ImageSaveRepositoryImpl @Inject constructor() : ImageSaveRepository {
     }
 
     override fun saveBitmap(bitmap: Bitmap): String {
-        val file = getTokopediaPhotoPath(compressFormat, DEFAULT_CACHE_FOLDER)
+        val file = createOutputFile()
         return saveBitmap(bitmap, file.path)
     }
 
     override fun saveBitmap(bitmap: Bitmap, size: CanvasSize): String {
-        val file = getTokopediaPhotoPath(compressFormat, DEFAULT_CACHE_FOLDER)
+        val file = createOutputFile()
         val newBitmap = Bitmap.createScaledBitmap(bitmap, size.width, size.height, true)
         return saveBitmap(newBitmap, file.path)
     }
 
+    private fun createOutputFile(): File {
+        return File(getEditorCacheFolderPath() + FileUtil.generateUniqueFileName() + PNG_EXT)
+    }
+
     companion object {
-        private const val DEFAULT_CACHE_FOLDER = "Tokopedia/"
+        private const val PNG_EXT = ".png"
 
         private const val IMAGE_QUALITY = 100
     }

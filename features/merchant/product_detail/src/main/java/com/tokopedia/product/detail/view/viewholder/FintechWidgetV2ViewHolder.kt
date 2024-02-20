@@ -10,10 +10,10 @@ import com.tokopedia.pdp.fintech.view.PdpFintechWidgetV2
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
-class FintechWidgetV2ViewHolder(val view: View, val  listener: DynamicProductDetailListener)
-    : AbstractViewHolder<FintechWidgetV2DataModel>(view), ProductUpdateListner {
+class FintechWidgetV2ViewHolder(val view: View, val listener: ProductDetailListener) :
+    AbstractViewHolder<FintechWidgetV2DataModel>(view), ProductUpdateListner {
 
     companion object {
         val LAYOUT = R.layout.fintech_widget_v2_layout

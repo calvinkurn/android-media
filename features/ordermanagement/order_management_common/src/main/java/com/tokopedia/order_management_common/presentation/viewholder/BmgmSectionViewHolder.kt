@@ -1,19 +1,25 @@
 package com.tokopedia.order_management_common.presentation.viewholder
 
 import android.view.View
+import android.view.ViewStub
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.constants.OrderManagementConstants
 import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmSectionBinding
+import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.adapter.ProductBmgmItemAdapter
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
+import com.tokopedia.order_management_common.util.runSafely
+import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.order_management_common.R as order_management_commonR
@@ -21,7 +27,8 @@ import com.tokopedia.order_management_common.R as order_management_commonR
 class BmgmSectionViewHolder(
     view: View?,
     private val listener: Listener,
-    recyclerViewSharedPool: RecyclerView.RecycledViewPool
+    private val productBenefitListener: BmgmAddOnViewHolder.Listener,
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : AbstractViewHolder<ProductBmgmSectionUiModel>(view),
     ProductBmgmItemAdapter.ViewHolder.Listener {
 
@@ -36,6 +43,10 @@ class BmgmSectionViewHolder(
 
     private val binding = ItemOrderProductBmgmSectionBinding.bind(itemView)
 
+    private var productBenefitViewHolder: BmgmAddOnSummaryViewHolder? = null
+
+    private var productBenefitBinding: PartialBmgmAddOnSummaryBinding? = null
+
     init {
         setupBundleAdapter()
     }
@@ -45,6 +56,33 @@ class BmgmSectionViewHolder(
         setupBmgmItems(element.bmgmItemList)
         setupBmgmTotalPrice(element.totalPriceText)
         setupBmgmTotalPriceReductionInfo(element.totalPriceReductionInfoText)
+        binding.containerParentBmgm.setupCardDarkMode()
+        setupProductBenefit(element.productBenefits)
+    }
+
+    private fun setupProductBenefit(productBenefits: AddOnSummaryUiModel?) {
+        val addonsViewStub: View = itemView.findViewById(R.id.itemBmgmProductBenefitViewStub)
+        if (productBenefits != null) {
+            if (addonsViewStub is ViewStub) {
+                productBenefitBinding = PartialBmgmAddOnSummaryBinding.bind(addonsViewStub.inflate())
+            }
+            productBenefitViewHolder =
+                productBenefitBinding?.let {
+                    BmgmAddOnSummaryViewHolder(
+                        bmgmAddOnListener = productBenefitListener,
+                        binding = it,
+                        // don't pass recyclerViewSharedPool here for now because current
+                        // recyclerViewSharedPool might contain BmgmAddOnViewHolder for AddOn so we
+                        // can't share it with BmgmAddOnViewHolder for GWP
+                        recyclerViewSharedPool = null
+                    )
+                }
+            productBenefitViewHolder?.bind(productBenefits)
+            binding.dividerProductBenefit.show()
+        } else {
+            if (addonsViewStub !is ViewStub) addonsViewStub.gone()
+            binding.dividerProductBenefit.gone()
+        }
     }
 
     override fun bind(
@@ -67,10 +105,21 @@ class BmgmSectionViewHolder(
                     if (oldItem.totalPriceReductionInfoText != newItem.totalPriceReductionInfoText) {
                         setupBmgmTotalPriceReductionInfo(newItem.totalPriceReductionInfoText)
                     }
+                    if (oldItem.productBenefits != newItem.productBenefits) {
+                        setupProductBenefit(newItem.productBenefits)
+                    }
                     return
                 }
             }
         }
+    }
+
+    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+        listener.onAddOnsInfoLinkClicked(infoLink, type)
+    }
+
+    override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
+        listener.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
     }
 
     override fun onCopyAddOnDescription(label: String, description: CharSequence) {
@@ -121,14 +170,8 @@ class BmgmSectionViewHolder(
     private fun setupRecyclerViewItemDecoration() {
         binding.rvOrderBmgm.run {
             if (itemDecorationCount.isZero()) {
-                val dividerDrawable = try {
-                    MethodChecker.getDrawable(
-                        context,
-                        R.drawable.om_detail_add_on_solid_divider
-                    )
-                } catch (t: Throwable) {
-                    FirebaseCrashlytics.getInstance().recordException(t)
-                    null
+                val dividerDrawable = runSafely {
+                    MethodChecker.getDrawable(context, R.drawable.om_detail_add_on_dash_divider)
                 }
                 addItemDecoration(
                     RecyclerViewItemDivider(
@@ -160,6 +203,8 @@ class BmgmSectionViewHolder(
     }
 
     interface Listener {
+        fun onAddOnsInfoLinkClicked(infoLink: String, type: String)
+        fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
         fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)

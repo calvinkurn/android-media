@@ -9,7 +9,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.ITEM_CATEGORY_BUILDER
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.KEY_UNDEFINED
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.tracking.TrackingConstant
@@ -37,7 +37,7 @@ object TrackingUtil {
 
     @SuppressLint("VisibleForTests")
     fun createCommonImpressionTracker(
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         componentTrackDataModel: ComponentTrackDataModel,
         userId: String,
         lcaWarehouseId: String,
@@ -96,7 +96,7 @@ object TrackingUtil {
         return mapEvent as HashMap<String, Any>?
     }
 
-    fun generateLayoutValue(productInfo: DynamicProductInfoP1?) =
+    fun generateLayoutValue(productInfo: ProductInfoP1?) =
         "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
 
     fun getTradeInString(isTradein: Boolean, isDiagnosed: Boolean): String {
@@ -109,13 +109,13 @@ object TrackingUtil {
         }
     }
 
-    fun getProductFirstImageUrl(productInfo: DynamicProductInfoP1?): String {
+    fun getProductFirstImageUrl(productInfo: ProductInfoP1?): String {
         return productInfo?.data?.media?.filter {
             it.type == "image"
         }?.firstOrNull()?.uRLOriginal ?: ""
     }
 
-    fun getProductViewLabel(productInfo: DynamicProductInfoP1?): String {
+    fun getProductViewLabel(productInfo: ProductInfoP1?): String {
         return "${productInfo?.shopTypeString ?: ""} - ${productInfo?.basic?.shopName ?: ""} - ${productInfo?.data?.name ?: ""}"
     }
 
@@ -127,7 +127,11 @@ object TrackingUtil {
         }
     }
 
-    fun createLinkerData(productInfo: DynamicProductInfoP1, userId: String?, description: String): LinkerData {
+    fun createLinkerData(
+        productInfo: ProductInfoP1,
+        userId: String?,
+        description: String
+    ): LinkerData {
         val linkerData = LinkerData()
         linkerData.id = productInfo.basic.productID
         linkerData.price = productInfo.data.price.value.toString()
@@ -139,7 +143,7 @@ object TrackingUtil {
         return linkerData
     }
 
-    fun createLinkerDataForViewItem(productInfo: DynamicProductInfoP1, userId: String?): LinkerData {
+    fun createLinkerDataForViewItem(productInfo: ProductInfoP1, userId: String?): LinkerData {
         val linkerData = LinkerData()
         linkerData.shopId = productInfo.basic.shopID
         linkerData.shopName = productInfo.basic.shopName
@@ -175,7 +179,7 @@ object TrackingUtil {
 
     fun addComponentTracker(
         mapEvent: MutableMap<String, Any>,
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         componentTrackDataModel: ComponentTrackDataModel?,
         elementName: String
     ) {
@@ -184,7 +188,7 @@ object TrackingUtil {
     }
 
     fun getComponentTracker(
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         componentTrackDataModel: ComponentTrackDataModel?,
         elementName: String
     ): Map<String, Any> {
@@ -200,7 +204,7 @@ object TrackingUtil {
     }
 
     fun addClickEvent(
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         trackDataModel: ComponentTrackDataModel?,
         action: String,
         trackerId: String = "",
