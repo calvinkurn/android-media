@@ -121,7 +121,7 @@ fun sendVerticalScrollTrack(scrollOffset: Float, glideTrackObject: GlideTrackObj
 
 fun sendVerticalScrollEnd(scrollOffset: Float, glideTrackObject: GlideTrackObject) {
     val recObject = glideTrackObject.recommendedTriggerObject ?: return
-    AppLogAnalytics.send(EventName.GLIDE_PAGE, JSONObject().also {
+    AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
         it.addPage()
         it.put(AppLogParam.ENTER_FROM, "") //TODO
         it.put(AppLogParam.GLIDE_TYPE, if (scrollOffset > 0) "more" else "less")
@@ -139,7 +139,7 @@ fun sendVerticalScrollEnd(scrollOffset: Float, glideTrackObject: GlideTrackObjec
 }
 
 fun sendHorizontalScrollTrack(scrollOffset: Float, slideTrackObject: SlideTrackObject) {
-    AppLogAnalytics.send(EventName.GLIDE_PAGE, JSONObject().also {
+    AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject().also {
         it.addPage()
         it.put(AppLogParam.ENTER_FROM, "") //TODO
         it.put(AppLogParam.SLIDE_TYPE, if (scrollOffset > 0) "show_right" else "show_left")

@@ -160,7 +160,8 @@ object EventName {
 
     // https://bytedance.sg.larkoffice.com/docx/MSiydFty1o0xIYxUe4LltuRHgue
     const val GLIDE_PAGE = "tiktokec_glide_page"
-    const val RECOMMENDATION_TRIGGER = "tiktokec_rec_trigger"
+    const val REC_TRIGGER = "tiktokec_rec_trigger"
+    const val SLIDE_BAR = "tiktokec_slide_bar"
 }
 
 object ActionType {
