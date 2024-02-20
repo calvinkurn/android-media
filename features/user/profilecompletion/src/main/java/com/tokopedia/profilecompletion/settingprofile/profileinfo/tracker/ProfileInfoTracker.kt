@@ -401,6 +401,7 @@ class ProfileInfoTracker @Inject constructor() {
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_ON_INFO_PROFILE_PAGE)
             .setEventCategory(CATEGORY_INFO_PROFILE)
+            .setEventLabel("")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_45929)
             .setBusinessUnit(BUSSINESS_UNIT)
             .setCurrentSite(CURRENT_SITE)

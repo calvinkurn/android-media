@@ -270,6 +270,7 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_ON_ACCOUNT_SAYA_PAGE)
             .setEventCategory(CATEGORY_ACCOUNT_BUYER)
+            .setEventLabel("")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_45930)
             .setBusinessUnit(USER_PLATFORM_UNIT)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE_SITE)
