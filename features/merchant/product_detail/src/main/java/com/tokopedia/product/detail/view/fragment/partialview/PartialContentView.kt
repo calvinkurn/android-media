@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 import com.tokopedia.product.detail.view.widget.productNameDelegate
 import com.tokopedia.unifycomponents.toPx
@@ -25,7 +25,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  */
 class PartialContentView(
     private val binding: ItemDynamicProductContentBinding,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) {
 
     private val context = binding.root.context

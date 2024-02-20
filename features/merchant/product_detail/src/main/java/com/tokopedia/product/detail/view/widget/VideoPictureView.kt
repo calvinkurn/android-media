@@ -20,7 +20,7 @@ import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -33,7 +33,7 @@ class VideoPictureView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
-    private var mListener: DynamicProductDetailListener? = null
+    private var mListener: ProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
     private var binding: WidgetVideoPictureBinding =
         WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
@@ -47,7 +47,7 @@ class VideoPictureView @JvmOverloads constructor(
 
     fun setup(
         media: List<MediaDataModel>,
-        listener: DynamicProductDetailListener?,
+        listener: ProductDetailListener?,
         componentTrackDataModel: ComponentTrackDataModel?,
         initialScrollPosition: Int,
         containerType: MediaContainerType,

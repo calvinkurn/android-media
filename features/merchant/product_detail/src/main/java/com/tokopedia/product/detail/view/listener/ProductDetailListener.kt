@@ -10,11 +10,10 @@ import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
@@ -39,14 +38,14 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.user.session.UserSessionInterface
 
-interface DynamicProductDetailListener {
+interface ProductDetailListener {
     fun refreshPage()
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
     fun getParentViewModelStoreOwner(): ViewModelStore
     fun getParentLifeCyclerOwner(): LifecycleOwner
     fun getRemoteConfigInstance(): RemoteConfig?
-    fun getProductInfo(): DynamicProductInfoP1?
+    fun getProductInfo(): ProductInfoP1?
     fun getTrackingQueueInstance(): TrackingQueue
     fun getUserSession(): UserSessionInterface
     fun getStoriesWidgetManager(): StoriesWidgetManager

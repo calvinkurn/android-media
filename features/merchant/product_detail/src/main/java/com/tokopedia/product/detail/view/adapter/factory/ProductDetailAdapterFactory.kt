@@ -11,7 +11,6 @@ import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataMode
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
@@ -28,7 +27,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
@@ -49,10 +47,12 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
-import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
+import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
 
-interface DynamicProductDetailAdapterFactory {
+interface ProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewUiModel): Int
     fun type(data: ProductDiscussionMostHelpfulDataModel): Int
     fun type(data: ProductGeneralInfoDataModel): Int
