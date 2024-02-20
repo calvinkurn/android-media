@@ -29,13 +29,16 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
         binding.indicatorView.setModel(
             PlayWidgetLiveIndicatorView.Model("channel_id", "product_id", "shop_id")
         )
+        binding.thumbnailView.setAnalyticModel(
+            PlayWidgetLiveThumbnailView.AnalyticModel("channel_id", "product_id", "shop_id")
+        )
 
         binding.thumbnailView.setListener(PlayWidgetLiveThumbnailView.DefaultListener())
 
         binding.indicatorView.setOnClickListener {
             binding.thumbnailView.playUrl(
                 "https://live-stream.tokopedia.net/live/v0.2/play_20240206070033_bfa3a284-c482-11ee-adc4-42010a294937/live/abr.m3u8",
-                5.seconds
+                50.seconds
             )
         }
     }

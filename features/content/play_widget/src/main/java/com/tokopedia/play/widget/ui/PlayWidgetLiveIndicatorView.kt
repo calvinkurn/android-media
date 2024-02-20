@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.OnClickListener
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat

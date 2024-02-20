@@ -1,22 +1,18 @@
 package com.tokopedia.play.widget.ui
 
-import android.animation.Animator
 import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
-import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,9 +20,10 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,16 +41,20 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.transition.Transition
-import androidx.transition.TransitionValues
-import androidx.transition.Visibility
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.lifecycle.get
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.widget.databinding.ViewLiveThumbnailPlayerBinding
+import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
+import com.tokopedia.play.widget.liveindicator.di.DaggerPlayWidgetLiveIndicatorComponent
+import com.tokopedia.play.widget.liveindicator.di.PlayWidgetLiveIndicatorComponent
 import com.tokopedia.play.widget.player.VideoPlayer
+import com.tokopedia.play_common.util.addImpressionListener
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -61,6 +62,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import com.tokopedia.play.widget.R as playwidgetR
 
+private typealias OnClickedHandler = () -> Unit
 class PlayWidgetLiveThumbnailView : AbstractComposeView {
 
     constructor(context: Context, attrs: AttributeSet?) : super(
@@ -75,6 +77,20 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
         defStyleAttr
     )
 
+    private val componentFactory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return DaggerPlayWidgetLiveIndicatorComponent.builder()
+                .baseAppComponent(
+                    (context.applicationContext as BaseMainApplication).baseAppComponent
+                ).build() as T
+        }
+    }
+
+    private var mComponent: PlayWidgetLiveIndicatorComponent? = null
+
+    private var mAnalyticModel: AnalyticModel? = null
+
     private var mListener: Listener? = null
 
     private val videoPlayer = VideoPlayer(context).apply {
@@ -83,15 +99,27 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
 
     private val transitionState = MutableTransitionState(visibility == View.VISIBLE)
 
+    private var mOnClicked by mutableStateOf({})
+
     private fun onAnimateVisibilityFinished(isVisible: Boolean) {
         showWithCondition(isVisible)
     }
 
-    @Composable
-    override fun Content() {
-        NestTheme {
-            PlayWidgetLiveThumbnail(videoPlayer.player, transitionState, ::onAnimateVisibilityFinished)
+    init {
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                mComponent = createComponent()
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                mComponent = null
+            }
+        })
+
+        addImpressionListener {
+            analytic { impressLiveThumbnail(it.channelId, it.productId, it.shopId) }
         }
+        setOnClickListener(null)
     }
 
     init {
@@ -105,7 +133,7 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
                     mListener?.onPreviewStarted(this@PlayWidgetLiveThumbnailView)
                 } else if (isIdleOrEnded) {
                     run {
-                        if (mIsIdleOrEnded == isIdleOrEnded) return@run
+                        if (mIsIdleOrEnded) return@run
                         mListener?.onPreviewEnded(this@PlayWidgetLiveThumbnailView)
                     }
                 }
@@ -113,6 +141,39 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
                 mIsIdleOrEnded = isIdleOrEnded
             }
         })
+    }
+
+    @Composable
+    override fun Content() {
+        NestTheme {
+            PlayWidgetLiveThumbnail(
+                videoPlayer.player,
+                transitionState,
+                ::onAnimateVisibilityFinished,
+                mOnClicked,
+            )
+        }
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        mOnClicked = {
+            analytic { clickLiveThumbnail(it.channelId, it.productId, it.shopId) }
+            l?.onClick(this)
+        }
+    }
+
+    fun setAnalyticModel(model: AnalyticModel) {
+        mAnalyticModel = model
+    }
+
+    private fun createComponent(): PlayWidgetLiveIndicatorComponent {
+        val owner = findViewTreeViewModelStoreOwner() ?: error("VM Store Owner not found")
+        return ViewModelProvider(owner, componentFactory).get()
+    }
+
+    private fun analytic(onAnalytic: PlayWidgetLiveIndicatorAnalytic.(AnalyticModel) -> Unit) {
+        val model = mAnalyticModel ?: return
+        mComponent?.getAnalytic()?.onAnalytic(model)
     }
 
     override fun onDetachedFromWindow() {
@@ -160,6 +221,12 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
             view.hideAnimated()
         }
     }
+
+    data class AnalyticModel(
+        val channelId: String,
+        val productId: String,
+        val shopId: String,
+    )
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -168,6 +235,7 @@ private fun PlayWidgetLiveThumbnail(
     player: Player,
     state: MutableTransitionState<Boolean>,
     onAnimateVisibilityFinished: (Boolean) -> Unit,
+    onClickedHandler: OnClickedHandler,
 ) {
     val bgColor = colorResource(id = playwidgetR.color.play_widget_live_thumbnail_dms_bg)
 
@@ -220,6 +288,7 @@ private fun PlayWidgetLiveThumbnail(
                         }
                     }
                 }
+                .clickable(onClick = onClickedHandler)
         ) {
             PlayWidgetLivePlayer(
                 player,
@@ -238,13 +307,15 @@ private fun PlayWidgetLivePlayer(
     player: Player,
     modifier: Modifier = Modifier
 ) {
-    AndroidView(factory = {
-        ViewLiveThumbnailPlayerBinding.inflate(
-            LayoutInflater.from(it)
-        ).root.apply {
-            this@apply.player = player
-        }
-    }, modifier = modifier) {
+    AndroidView(
+        factory = {
+            ViewLiveThumbnailPlayerBinding.inflate(
+                LayoutInflater.from(it)
+            ).root.apply {
+                this@apply.player = player
+            }
+        }, modifier = modifier
+    ) {
 
     }
 }
@@ -255,6 +326,7 @@ private fun PlayWidgetLiveThumbnailPreview() {
     PlayWidgetLiveThumbnail(
         VideoPlayer(LocalContext.current).player,
         MutableTransitionState(false),
+        {},
         {}
     )
 }
