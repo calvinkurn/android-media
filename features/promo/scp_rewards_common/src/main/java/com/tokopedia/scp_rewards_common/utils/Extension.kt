@@ -12,15 +12,11 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -113,20 +109,16 @@ fun ImageUnify.loadImageOrFallback(imageUrl: String?, fallback: Int = 0, onFallb
 
 suspend fun Context.downloadImage(url: String?) =
     suspendCancellableCoroutine<Bitmap?> { cont ->
-        Glide.with(this)
-            .asBitmap()
-            .load(url)
-            .listener(object : RequestListener<Bitmap> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+        url?.getBitmapFromUrl(this, properties = {
+            listener(
+                onError = {
                     cont.cancel()
-                    return false
+                },
+                onSuccess = { bitmap, _ ->
+                    cont.resumeWith(Result.success(bitmap))
                 }
-
-                override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    cont.resumeWith(Result.success(resource))
-                    return true
-                }
-            }).submit()
+            )
+        })
     }
 
 fun launchWeblink(context: Context, webLink: String) {

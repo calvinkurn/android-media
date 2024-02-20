@@ -11,11 +11,14 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.scp_rewards_touchpoints.R
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -108,20 +111,11 @@ class ScpCouponView @JvmOverloads constructor(
 
     fun setImageUrl(url: String) {
         initLoading()
-        Glide.with(context)
-            .asDrawable()
-            .load(url)
-            .into(object : CustomTarget<Drawable>() {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    clearLoading()
-                    setImageDrawable(resource)
-                }
 
-                override fun onLoadCleared(placeholder: Drawable?) {}
-            })
+        url.getBitmapImageUrl(context, {}) {
+            clearLoading()
+            setImageDrawable(it.toDrawable(resources))
+        }
     }
 
     private fun initLoading() {
