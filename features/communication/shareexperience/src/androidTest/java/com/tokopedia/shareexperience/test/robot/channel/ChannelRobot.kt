@@ -29,4 +29,11 @@ object ChannelRobot {
             .perform(smoothScrollTo(position))
         Thread.sleep(300)
     }
+
+    fun scrollCommonToPosition(position: Int) {
+        onView(withId(R.id.shareex_rv_channel_common))
+            .perform(waitForLayout())
+            .perform(smoothScrollTo(position))
+        Thread.sleep(300)
+    }
 }
