@@ -179,12 +179,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                 is Success -> {
                     if (!it.data.responseHeader.success) {
                         updateProductList()
-                        if (it.data.responseHeader.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
-                            showToasterError(it.data.responseHeader.errorMessages.firstOrNull().orEmpty())
-                        } else {
-                            val errorMessage = ErrorHandler.getErrorMessage(context, null)
-                            showToasterError(errorMessage)
-                        }
+                        showToasterError(it.data.responseHeader.errorMessages.firstOrNull().orEmpty())
                     } else {
                         deleteProductFromList(it.data.productId)
                     }
@@ -222,12 +217,9 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             when (it) {
                 is Success -> {
                     if (!it.data.responseHeader.success) {
-                        if (it.data.responseHeader.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
-                            showToasterError(it.data.responseHeader.errorMessages.firstOrNull().orEmpty())
-                        } else {
-                            val errorMessage = ErrorHandler.getErrorMessage(context, null)
-                            showToasterError(errorMessage)
-                        }
+                        showToasterError(
+                            it.data.responseHeader.errorMessages.firstOrNull().orEmpty()
+                        )
                     } else {
                         redirectToManageDiscountPage(it.data)
                     }

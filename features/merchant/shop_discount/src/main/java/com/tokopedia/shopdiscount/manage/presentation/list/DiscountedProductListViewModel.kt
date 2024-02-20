@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
-import com.tokopedia.shopdiscount.common.entity.ShopDiscountErrorCode
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductMapper
 import com.tokopedia.shopdiscount.manage.data.mapper.UpdateDiscountRequestMapper
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
@@ -105,7 +104,7 @@ class DiscountedProductListViewModel @Inject constructor(
                 deleteDiscountUseCase.executeOnBackground()
             }
             val responseHeaderData = result.doSlashPriceStop.responseHeader
-            if (!responseHeaderData.success && responseHeaderData.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
+            if (!responseHeaderData.success) {
                 _deleteDiscount.value = Fail(MessageErrorException(responseHeaderData.errorMessages.firstOrNull().orEmpty()))
             } else {
                 _deleteDiscount.value = Success(responseHeaderData.success)
@@ -123,7 +122,7 @@ class DiscountedProductListViewModel @Inject constructor(
                 reserveProductUseCase.executeOnBackground()
             }
             val responseHeaderData = result.doSlashPriceProductReservation.responseHeader
-            if (!responseHeaderData.success && responseHeaderData.errorCode == ShopDiscountErrorCode.SUBSIDY_ERROR.code) {
+            if (!responseHeaderData.success) {
                 _reserveProduct.value = Fail(MessageErrorException(responseHeaderData.errorMessages.firstOrNull().orEmpty()))
             } else {
                 _reserveProduct.value = Success(responseHeaderData.success)
