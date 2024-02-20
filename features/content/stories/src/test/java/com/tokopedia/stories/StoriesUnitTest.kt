@@ -69,7 +69,8 @@ class StoriesUnitTest {
         dispatchers = testDispatcher,
         args = args,
         repository = mockRepository,
-        userSession = mockUserSession
+        userSession = mockUserSession,
+        sharedPref = mockSharedPref
     )
 
     @Test
@@ -430,6 +431,29 @@ class StoriesUnitTest {
     }
 
     @Test
+    fun `when stories is loaded user never visit emit onboard`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
+        every { mockSharedPref.hasVisit() } returns false
+
+
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.setTrackActivity(selectedGroup)
+
+                val actualDetail = robot.getViewModel().mDetail
+                actualDetail.isContentLoaded.assertTrue()
+            }
+            event.last().assertEqualTo(StoriesUiEvent.OnboardShown)
+        }
+    }
+
+    @Test
     fun `when has seen all stories`() {
         val selectedGroup = 2
         val selectedDetail = 2
@@ -473,6 +497,7 @@ class StoriesUnitTest {
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
         coEvery { mockRepository.setStoriesTrackActivity(any()) } throws expectedThrowable
+        every { mockSharedPref.hasVisit() } returns true
 
         getStoriesRobot().use { robot ->
             val event = robot.recordEvent {
