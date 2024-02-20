@@ -635,8 +635,15 @@ open class DynamicProductDetailFragment :
     override val recyclerViewPool: RecyclerView.RecycledViewPool?
         get() = getRecyclerView()?.recycledViewPool
 
+    override val fragmentLifecycleOwner: LifecycleOwner
+        get() = viewLifecycleOwner
+
+    override val pdpRemoteConfig: RemoteConfig
+        get() = remoteConfig
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        productRecomm.init()
         if (prefetchCacheId.isEmpty()) showLoading()
         initBtnAction()
 
@@ -748,7 +755,6 @@ open class DynamicProductDetailFragment :
         observeP2Login()
         observeToggleFavourite()
         observeToggleNotifyMe()
-        observeRecommendationProduct()
         observeAddToCart()
         observeOnThumbnailVariantSelected()
         observeATCRecomData()
@@ -3170,129 +3176,6 @@ open class DynamicProductDetailFragment :
         view?.showToasterSuccess(if (isNplFollowerType) getString(productdetailcommonR.string.merchant_product_detail_success_follow_shop_npl) else message)
     }
 
-    private fun observeRecommendationProduct() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.productListData.collect {
-                collectRecommendation(it)
-            }
-        }
-
-        /**
-         * This is retained only for fallback and risk mitigation
-         * will be remove soon
-         */
-        viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
-            observeOldRecommendation(data)
-        }
-
-        viewLifecycleOwner.observe(viewModel.statusFilterTopAdsProduct) {
-            if (it is Fail) {
-                view?.showToasterError(
-                    context?.getString(R.string.recom_filter_chip_click_error_network).orEmpty(),
-                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-                )
-            }
-        }
-
-        viewLifecycleOwner.observe(viewModel.filterTopAdsProduct) { data ->
-            pdpUiUpdater?.updateFilterRecommendationData(data)
-            updateUi()
-        }
-    }
-
-    /**
-     * This is retained only for fallback and risk mitigation
-     * will be remove soon
-     */
-    private fun observeOldRecommendation(result: Result<RecommendationWidget>) {
-        result.doSuccessOrFail({
-            if (it.data.recommendationItemList.isNotEmpty()) {
-                renderSuccessRecom(it.data)
-                updateUi()
-            } else {
-                // recomUiPageName used because there is possibilites gql recom return empty pagename
-                pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
-                updateUi()
-            }
-        }, {
-            renderFailureRecom(it)
-            updateUi()
-        })
-    }
-
-    private fun collectRecommendation(recomList: MutableList<ProductRecommUiState>) {
-        recomList.forEach {
-            val result = it.data
-            when (result) {
-                is ViewState.RenderSuccess -> {
-                    if (result.data.recommendationItemList.isNotEmpty()) {
-                        renderSuccessRecom(result.data)
-                    } else {
-                        // recomUiPageName used because there is possibilites gql recom return empty pagename
-                        pdpUiUpdater?.removeComponent(result.data.recomUiPageName)
-                    }
-                }
-
-                is ViewState.RenderFailure -> {
-                    renderFailureRecom(result.throwable)
-                }
-
-                else -> {
-
-                }
-            }
-        }
-        updateUi()
-    }
-
-    private fun renderFailureRecom(e: Throwable) {
-        pdpUiUpdater?.removeComponent(e.message ?: "")
-        logException(e)
-    }
-
-    private fun renderSuccessRecom(result: RecommendationWidget) {
-        val enableComparisonWidget = remoteConfig.getBoolean(
-            RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET,
-            true
-        )
-        if (enableComparisonWidget) {
-            when (result.layoutType) {
-                RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
-                    pdpUiUpdater?.updateComparisonBpcDataModel(
-                        result,
-                        viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
-                    )
-                }
-
-                RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
-                    pdpUiUpdater?.updateComparisonDataModel(result)
-                }
-
-                RecommendationTypeConst.TYPE_VIEW_TO_VIEW -> {
-                    renderViewToView(result)
-                }
-
-                else -> {
-                    pdpUiUpdater?.updateRecommendationData(result)
-                }
-            }
-        } else {
-            pdpUiUpdater?.updateRecommendationData(result)
-        }
-    }
-
-    private fun renderViewToView(result : RecommendationWidget) {
-        if (result.recommendationItemList.size > 1) {
-            pdpUiUpdater?.updateViewToViewData(
-                result.copy(
-                    recommendationItemList = result.recommendationItemList
-                )
-            )
-        } else {
-            pdpUiUpdater?.removeComponent(result.recomUiPageName)
-        }
-    }
-
     /**
      * When Vertical Recommendation Exists, will attach endless scroll listener
      * otherwise, the listener will be remove from recyclerView
@@ -3476,7 +3359,7 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun updateUi() {
+    override fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
 
         val finalData = if (isTabletMode()) {
@@ -3715,7 +3598,7 @@ open class DynamicProductDetailFragment :
         goToShipmentErrorAddressOrChat(Int.ZERO)
     }
 
-    private fun logException(t: Throwable) {
+    override fun logException(t: Throwable) {
         if (!BuildConfig.DEBUG) {
             val errorMessage = String.format(
                 getString(R.string.on_error_p1_string_builder),

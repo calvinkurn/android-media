@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVe
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.fragment.delegate.PartialRecommendationManager
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
@@ -39,6 +40,7 @@ import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiM
 class ProductDetailAdapter(
     asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel>,
     private val listener: DynamicProductDetailListener?,
+    private val recommendationManager: PartialRecommendationManager,
     private val adapterTypeFactory: DynamicProductDetailAdapterFactory
 ) :
     ListAdapter<DynamicPdpDataModel, AbstractViewHolder<*>>(asyncDifferConfig) {
@@ -55,7 +57,11 @@ class ProductDetailAdapter(
         bind(holder as AbstractViewHolder<DynamicPdpDataModel>, getItem(position))
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: AbstractViewHolder<*>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
         if (payloads.isNotEmpty()) {
             bind(holder as AbstractViewHolder<DynamicPdpDataModel>, getItem(position), payloads)
         } else {
@@ -86,7 +92,7 @@ class ProductDetailAdapter(
             (dataModel as? ProductRecommendationDataModel)?.recomWidgetData == null
         ) {
             val recommData = dataModel as? ProductRecommendationDataModel
-            listener?.loadTopads(
+            recommendationManager.loadRecommendation(
                 pageName = recommData?.name.orEmpty(),
                 queryParam = recommData?.queryParam.orEmpty(),
                 thematicId = recommData?.thematicId.orEmpty()
@@ -98,7 +104,7 @@ class ProductDetailAdapter(
             (dataModel as? ProductRecomWidgetDataModel)?.recomWidgetData == null
         ) {
             val recommData = dataModel as? ProductRecomWidgetDataModel
-            listener?.loadTopads(
+            recommendationManager.loadRecommendation(
                 pageName = recommData?.name.orEmpty(),
                 queryParam = recommData?.queryParam.orEmpty(),
                 thematicId = recommData?.thematicId.orEmpty()
@@ -110,10 +116,11 @@ class ProductDetailAdapter(
             (dataModel as? ViewToViewWidgetDataModel)?.recomWidgetData == null
         ) {
             val recommData = dataModel as? ViewToViewWidgetDataModel
-            listener?.loadViewToView(
+            recommendationManager.loadRecommendation(
                 pageName = recommData?.name.orEmpty(),
                 queryParam = recommData?.queryParam.orEmpty(),
-                thematicId = recommData?.thematicId.orEmpty()
+                thematicId = recommData?.thematicId.orEmpty(),
+                isViewToView = true
             )
         }
 
@@ -157,8 +164,13 @@ class ProductDetailAdapter(
         holder.bind(item)
     }
 
-    fun bind(holder: AbstractViewHolder<DynamicPdpDataModel>, item: DynamicPdpDataModel, payloads: MutableList<Any>) {
-        val payloadInt = (payloads.firstOrNull() as? Bundle)?.getInt(ProductDetailConstant.DIFFUTIL_PAYLOAD)
+    fun bind(
+        holder: AbstractViewHolder<DynamicPdpDataModel>,
+        item: DynamicPdpDataModel,
+        payloads: MutableList<Any>
+    ) {
+        val payloadInt =
+            (payloads.firstOrNull() as? Bundle)?.getInt(ProductDetailConstant.DIFFUTIL_PAYLOAD)
         if (payloads.isNotEmpty() && payloads.firstOrNull() != null && payloadInt != null) {
             holder.bind(item, listOf(payloadInt))
         } else {

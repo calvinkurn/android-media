@@ -287,12 +287,6 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel
     )
 
-    /**
-     * ProductRecom
-     */
-    fun loadTopads(pageName: String, queryParam: String, thematicId: String)
-    fun loadViewToView(pageName: String, queryParam: String, thematicId: String)
-
     fun loadPlayWidget()
 
     /**
