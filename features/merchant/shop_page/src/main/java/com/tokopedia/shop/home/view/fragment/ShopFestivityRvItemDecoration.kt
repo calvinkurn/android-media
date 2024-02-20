@@ -74,14 +74,9 @@ class ShopFestivityRvItemDecoration(
                     val widgetPosition = parent.getChildAdapterPosition(it)
                     val adapterData = adapter?.data
                     when (val widgetUiModel = adapterData?.getOrNull(widgetPosition)) {
-                        is ShopHomeCarousellProductUiModel -> {
-                            if (!widgetUiModel.isFestivity) {
-                                drawOverlayColorBehindRecyclerViewItem(it, canvas)
-                            }
-                        }
                         is BaseShopHomeWidgetUiModel -> {
                             if (!widgetUiModel.isFestivity) {
-                                drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
+                                drawOverlayColorBehindRecyclerViewItem(it, canvas)
                             }
                         }
                         is ThematicWidgetUiModel -> {
