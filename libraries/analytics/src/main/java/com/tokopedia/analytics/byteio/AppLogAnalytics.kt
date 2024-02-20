@@ -117,6 +117,7 @@ object AppLogAnalytics {
             it.put("original_price_value", product.originalPrice)
             it.put("sale_price_value", product.salePrice)
             it.put("sku_id", product.skuId)
+            it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
             it.put("currency", product.currency)
             it.put("quantity", product.qty)
             it.put("is_have_address", (if (product.isHaveAddress) 1 else 0))

@@ -777,6 +777,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 originalPrice = data.data.price.value,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
+                isSingleSku = data.isProductVariant(),
                 isSkuSelected = false,
                 isAddCartSelected = false,
                 qty = data.basic.minOrder.toString(),

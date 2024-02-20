@@ -49,6 +49,7 @@ data class TrackConfirmSku(
     val salePrice: Double,
     val skuId: String,
     val currency: String = "IDR",
+    val isSingleSku: Boolean,
     val isSkuSelected: Boolean,
     val isAddCartSelected: Boolean,
     val qty: String,
