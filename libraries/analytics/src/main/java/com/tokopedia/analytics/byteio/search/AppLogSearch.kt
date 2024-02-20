@@ -3,9 +3,9 @@ package com.tokopedia.analytics.byteio.search
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
-import com.tokopedia.analytics.byteio.AppLogParam.EVENT_ORIGIN_FEATURE
-import com.tokopedia.analytics.byteio.AppLogParam.EVENT_ORIGIN_FEATURE_DEFAULT_VALUE
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.EventName
@@ -543,10 +543,9 @@ object AppLogSearch {
 
     //TODO:: Update source_module to null
     //TODO:: Update source_page_type to goods_search
-    //TODO:: Update entrance_form 
+    //TODO:: Update entrance_form
     private fun tiktokecJSON() = JSONObject(
         mapOf(
-            EVENT_ORIGIN_FEATURE to EVENT_ORIGIN_FEATURE_DEFAULT_VALUE,
             SOURCE_MODULE to "", // TODO:: Is this search?
             ITEM_ORDER to 0, // TODO:: Product Position from 1
             VOLUME to 0, // TODO:: Count sold of product
@@ -569,5 +568,7 @@ object AppLogSearch {
         )
     ).apply {
         addPage()
+        addSourceModule()
+        addSourcePageType()
     }
 }

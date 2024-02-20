@@ -2,9 +2,6 @@ package com.tokopedia.recommendation_widget_common.infinite.foryou.play
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.EventName
-import com.tokopedia.analytics.byteio.TrackProduct
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
@@ -61,7 +58,6 @@ class PlayCardViewHolder constructor(
             object : ViewHintListener {
                 override fun onViewHint() {
                     listener.onPlayCardImpressed(element, bindingAdapterPosition)
-                    AppLogAnalytics.sendProductImpression(TrackProduct("1", false, 1, ""))
                 }
             }
         )

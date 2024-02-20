@@ -101,7 +101,19 @@ data class RecommendationCard(
             trackerImageUrl = trackerImageUrl,
             clickUrl = clickUrl,
             isWishlist = isWishlist,
-            wishListUrl = wishlistUrl
+            wishListUrl = wishlistUrl,
+            shop = shop.let {
+                HomeRecommendationItemDataModel.HomeRecommendationProductItem.Shop(
+                    id = it.id,
+                    applink = it.applink,
+                    city = it.city,
+                    domain = it.domain,
+                    imageUrl = it.imageUrl,
+                    name = it.name,
+                    reputation = it.reputation,
+                    url = it.url,
+                )
+            },
         )
     }
 

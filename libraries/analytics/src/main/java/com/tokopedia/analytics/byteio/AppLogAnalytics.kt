@@ -10,6 +10,7 @@ import com.bytedance.frameworks.baselib.network.http.cronet.impl.TTNetDetectInfo
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
@@ -40,7 +41,7 @@ object AppLogAnalytics {
 
     // TODO check how to make this null again
     @JvmField
-    var sourcePageType: String = ""
+    var sourcePageType: SourcePageType? = null
 
     // TODO check how to make this null again
     @JvmField
@@ -53,6 +54,10 @@ object AppLogAnalytics {
     // TODO check how to make this null again
     @JvmField
     var entranceForm: EntranceForm? = null
+
+    // TODO check how to make this null again
+    @JvmField
+    var sourceModule: SourceModule? = null
 
     private val lock = Any()
 
@@ -83,13 +88,16 @@ object AppLogAnalytics {
         get() = if (this) 1 else 0
 
     fun sendEnterPage(product: TrackProductDetail) {
-        if (sourcePageType == "") {
+        if (sourcePageType == null) {
             return
         }
         // TODO check if track id exist
 
         send(EventName.ENTER_PRODUCT_DETAIL, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -97,17 +105,6 @@ object AppLogAnalytics {
             it.put("original_price", product.originalPrice)
             it.put("sale_price", product.salePrice)
             it.put("track_id", globalTrackId)
-        })
-    }
-
-    fun sendProductImpression(product: TrackProduct) {
-        send(EventName.PRODUCT_SHOW, JSONObject().also {
-            it.addPage()
-            it.put("product_id", product)
-            it.put("is_ad", if (product.isAd) "1" else "0")
-            val reqId = product.requestId ?: ""
-            it.put("request_id", reqId)
-            it.put("track_id", reqId + "_" + product.requestId + product.orderFrom1)
         })
     }
 
@@ -133,6 +130,9 @@ object AppLogAnalytics {
     fun sendConfirmCart(product: TrackConfirmCart) {
         send(EventName.CONFIRM_CART, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -152,6 +152,9 @@ object AppLogAnalytics {
     fun sendConfirmCartResult(product: TrackConfirmCartResult) {
         send(EventName.CONFIRM_CART_RESULT, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -173,8 +176,22 @@ object AppLogAnalytics {
     internal fun JSONObject.addPage() {
         put(PREVIOUS_PAGE, previousPageName())
         put(PAGE_NAME, currentPageName())
-        put(SOURCE_PAGE_TYPE, sourcePageType)
-        put(ENTRANCE_FORM, entranceForm)
+    }
+
+    internal fun JSONObject.addEntranceForm() {
+        put(ENTRANCE_FORM, entranceForm?.str)
+    }
+
+    internal fun JSONObject.addSourcePageType() {
+        put(
+            SOURCE_PAGE_TYPE,
+            if(sourcePageType == SourcePageType.PRODUCT_CARD) previousPageName()
+            else sourcePageType?.str
+        )
+    }
+
+    internal fun JSONObject.addSourceModule() {
+        put(SOURCE_MODULE, sourceModule?.str)
     }
 
     private fun currentPageName(): String {
@@ -195,11 +212,14 @@ object AppLogAnalytics {
         product: TrackStayProductDetail,
         quitType: String
     ) {
-        if (sourcePageType == "") {
+        if (sourcePageType == null) {
             return
         }
         send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addSourceModule()
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", quitType)

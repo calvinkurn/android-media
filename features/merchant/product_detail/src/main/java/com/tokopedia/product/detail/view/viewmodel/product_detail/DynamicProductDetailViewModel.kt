@@ -9,6 +9,7 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
@@ -29,6 +30,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.library.subviewmodel.ParentSubViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -285,6 +287,14 @@ class DynamicProductDetailViewModel @Inject constructor(
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
     val impressionHolders = mutableListOf<String>()
+    /**
+     * for appLog stay-analytics to determine if the data is already loaded or not
+     * */
+    private var isLoadData: Boolean = false
+    /**
+     * for appLog stay-analytics to determine if the product is already added to cart
+     * */
+    var hasDoneAddToCart: Boolean = false
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -515,9 +525,8 @@ class DynamicProductDetailViewModel @Inject constructor(
             productType = p1.productType,
             originalPrice = p1.data.price.slashPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
-            isLoadData = false,
-            isSkuSelected = false,
-            isAddCartSelected = false // todo: TBD
+            isLoadData = isLoadData,
+            isAddCartSelected = hasDoneAddToCart
         )
     }
 
@@ -693,6 +702,19 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
 
         EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
+        AppLogAnalytics.sendConfirmCartResult(
+            TrackConfirmCartResult(
+                productId = data.parentProductId,
+                productCategory = data.basic.category.name,
+                productType = ProductType.AVAILABLE,
+                originalPrice = data.data.price.value,
+                salePrice = data.finalPrice,
+                skuId = data.basic.productID,
+                addSkuNum = data.basic.minOrder,
+                isSuccess = "",
+                failReason = ""
+            )
+        )
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
             if (errorMessage.isNotBlank()) {
@@ -715,7 +737,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                     result.data.notes
                 )
             }
-
+            hasDoneAddToCart = true
             _addToCartLiveData.value = result.asSuccess()
         }
     }
@@ -830,6 +852,8 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
 
         this@DynamicProductDetailViewModel._p2Other.postValue(p2OtherDeferred.await())
+
+        isLoadData = true
     }
 
     private fun getTopAdsImageViewData(productID: String) {

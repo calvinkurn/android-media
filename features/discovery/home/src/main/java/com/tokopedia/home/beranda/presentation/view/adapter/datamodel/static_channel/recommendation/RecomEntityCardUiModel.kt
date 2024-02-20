@@ -13,7 +13,10 @@ data class RecomEntityCardUiModel(
     val appLink: String,
     val imageUrl: String,
     val backgroundColor: List<String>,
-    val labelState: LabelState
+    val labelState: LabelState,
+    val position: Int,
+    val isAds: Boolean,
+    val shopId: String,
 ) : BaseHomeRecommendationVisitable, ImpressHolder() {
     data class LabelState(
         val iconUrl: String,
