@@ -171,7 +171,7 @@ fun ProductTagItems(
     var needToBeShown by remember { mutableStateOf(false) }
     val highlightedProduct = products.firstOrNull { it.isHighlight }
 
-    LaunchedEffect(key1 = key, block = {
+    LaunchedEffect(key1 = key, key2 = highlightedProduct, block = {
         delay(5000L)
         needToBeShown = true
         if (highlightedProduct != null) {

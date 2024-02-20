@@ -48,6 +48,7 @@ import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.util.extension.changeConstraint
 import kotlinx.coroutines.*
 import kotlin.math.abs
+import kotlin.random.Random
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -704,7 +705,7 @@ class FeedPostImageViewHolder(
             ProductTagItems(
                 products = products,
                 totalProducts = totalProducts,
-                key = id,
+                key = "$id${Random.nextInt(0, 100)}",
                 onProductLabelClick = {
                     mData?.let { element ->
                         listener.onProductTagViewClicked(
