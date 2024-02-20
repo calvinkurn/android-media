@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
 import android.graphics.Bitmap
-import com.bumptech.glide.Glide
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import java.io.File
@@ -12,7 +13,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.concurrent.CancellationException
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 const val PNG_QUALITY = 95
@@ -33,12 +33,10 @@ abstract class CMInAppImageDownloader(val cmInApp: CMInApp) {
 
     private fun downloadImage(context: Context, url: String, imageSizeAndTimeout: ImageSizeAndTimeout): Bitmap? {
         try {
-            return Glide.with(context)
-                    .asBitmap()
-                    .load(url)
-                    .override(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
-                    .submit(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
-                    .get(imageSizeAndTimeout.seconds, TimeUnit.SECONDS)
+            val timeOutMillis = imageSizeAndTimeout.seconds * 1000
+            return url.getBitmapFromUrl(context, timeOutMillis) {
+                overrideSize(Resize(imageSizeAndTimeout.width, imageSizeAndTimeout.height))
+            }
         } catch (e: CancellationException) {
         } catch (e: ExecutionException) {
         } catch (e: InterruptedException) {
