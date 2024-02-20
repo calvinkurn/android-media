@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getDrawableChecker
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.ItemCampaignBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.R as productdetailR
 
 class OngoingCampaignViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<OngoingCampaignUiModel>(view) {
 
     companion object {
