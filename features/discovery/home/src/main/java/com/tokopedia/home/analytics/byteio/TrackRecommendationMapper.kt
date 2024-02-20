@@ -1,6 +1,5 @@
 package com.tokopedia.home.analytics.byteio
 
-import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
@@ -9,7 +8,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.Recommen
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 
 object TrackRecommendationMapper {
-    fun RecommendationCardModel.asShowClickTracker(
+    fun RecommendationCardModel.asTrackerModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
@@ -27,7 +26,7 @@ object TrackRecommendationMapper {
         )
     }
 
-    fun BannerTopAdsModel.asShowClickTracker(
+    fun BannerTopAdsModel.asTrackerModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
@@ -45,7 +44,7 @@ object TrackRecommendationMapper {
         )
     }
 
-    fun ContentCardModel.asShowClickTracker(
+    fun ContentCardModel.asTrackerModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
@@ -63,7 +62,7 @@ object TrackRecommendationMapper {
         )
     }
 
-    fun PlayCardModel.asShowClickTracker(
+    fun PlayCardModel.asTrackerModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
