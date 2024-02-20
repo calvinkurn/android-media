@@ -19,6 +19,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
@@ -71,6 +72,11 @@ class ShopFestivityRvItemDecoration(
                     val widgetPosition = parent.getChildAdapterPosition(it)
                     val adapterData = adapter?.data
                     when (val widgetUiModel = adapterData?.getOrNull(widgetPosition)) {
+                        is ShopHomeCarousellProductUiModel -> {
+                            if (!widgetUiModel.isFestivity) {
+                                drawOverlayColorBehindRecyclerViewItem(it, canvas)
+                            }
+                        }
                         is BaseShopHomeWidgetUiModel -> {
                             if (!widgetUiModel.isFestivity) {
                                 drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
