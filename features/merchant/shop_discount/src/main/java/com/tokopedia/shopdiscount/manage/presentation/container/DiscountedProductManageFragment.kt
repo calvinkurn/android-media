@@ -165,7 +165,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
             val remoteTickers = tickers.map { remoteTicker ->
                 TickerData(
                     title = remoteTicker.title,
-                    description = remoteTicker.description,
+                    description = remoteTicker.description + " <a href='${remoteTicker.actionAppUrl}'>${remoteTicker.actionLabel}</a>",
                     isFromHtml = true,
                     type = ShopDiscountTickerUtil.getTickerType(remoteTicker.type)
                 )
