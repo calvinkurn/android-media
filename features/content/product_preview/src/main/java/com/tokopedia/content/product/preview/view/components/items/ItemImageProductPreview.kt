@@ -19,15 +19,7 @@ fun ItemImageProductPreview(imageUrl: String) {
     var scale by remember { mutableStateOf(DEFAULT_SCALING) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     val state = rememberTransformableState { zoomChange, offsetChange, _ ->
-        scale *= if (scale < DEFAULT_SCALING) {
-            if (zoomChange < DEFAULT_SCALING) {
-                DEFAULT_SCALING
-            } else {
-                zoomChange
-            }
-        } else {
-            zoomChange
-        }
+        scale *= zoomChange
         offset += offsetChange
     }
 
@@ -39,10 +31,8 @@ fun ItemImageProductPreview(imageUrl: String) {
             ),
             modifier = Modifier
                 .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offset.x,
-                    translationY = offset.y
+                    scaleX = if (scale < DEFAULT_SCALING) DEFAULT_SCALING else scale,
+                    scaleY = if (scale < DEFAULT_SCALING) DEFAULT_SCALING else scale
                 )
                 .transformable(state)
         )
