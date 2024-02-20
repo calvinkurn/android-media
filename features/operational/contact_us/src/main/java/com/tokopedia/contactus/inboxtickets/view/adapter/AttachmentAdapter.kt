@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.contactus.R
@@ -14,7 +13,9 @@ import com.tokopedia.contactus.inboxtickets.domain.AttachmentItem
 import com.tokopedia.contactus.inboxtickets.view.adapter.AttachmentAdapter.AttachmentViewHolder
 import com.tokopedia.contactus.inboxtickets.view.listeners.AttachmentListener
 import com.tokopedia.contactus.utils.CommonConstant.INDEX_ZERO
+import com.tokopedia.media.loader.loadImage
 import java.io.File
+import com.tokopedia.abstraction.R as abstractionR
 
 private const val HEADER_USER_ID_KEY = "X-TKPD-UserId"
 private const val HEADER_CASE_ID_KEY = "X-TKPD-CaseId"
@@ -78,13 +79,11 @@ class AttachmentAdapter constructor(
 
         private fun loadImage(url: String) {
             if (itemView.context != null) {
-                Glide.with(itemView.context)
-                    .load(getUrl(url))
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
-                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-                    .into(ivAttachment)
+                ivAttachment.loadImage(getUrl(url)) {
+                    fitCenter()
+                    setPlaceHolder(abstractionR.drawable.loading_page)
+                    setErrorDrawable(abstractionR.drawable.error_drawable)
+                }
             }
         }
 
