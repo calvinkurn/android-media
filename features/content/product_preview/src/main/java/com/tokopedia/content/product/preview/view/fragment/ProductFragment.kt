@@ -28,6 +28,7 @@ import com.tokopedia.content.product.preview.view.listener.ProductThumbnailListe
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -113,9 +114,15 @@ class ProductFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializeProductMainData()
+
         setupViews()
 
         observeData()
+    }
+
+    private fun initializeProductMainData() {
+        viewModel.onAction(InitializeProductMainData)
     }
 
     private fun setupViews() {

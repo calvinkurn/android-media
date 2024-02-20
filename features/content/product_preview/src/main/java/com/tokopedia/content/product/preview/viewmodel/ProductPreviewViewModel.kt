@@ -7,6 +7,7 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_KEY
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_KEY
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.productTab
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
@@ -21,6 +22,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchMiniInfo
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReview
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReviewByIds
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Like
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.LikeFromResult
@@ -145,15 +147,30 @@ class ProductPreviewViewModel @AssistedInject constructor(
         get() {
             return currentReview.medias.size
         }
+    private val currentTabKey: String
+        get() {
+            val tabPosition = if (currentTabPosition.value < 0) 0 else currentTabPosition.value
+            return _tabContentState.value.tabs[tabPosition].key
+        }
+
     private var isAutoHorizontalScrollProductMediaInitialize = false
     private var isAutoHorizontalScrollReviewMediaInitialize = false
     private val isEnableAutoHorizontalScrollProductMedia: Boolean
         get() {
-            return _productTabIdle.value
+            return (
+                _productTabIdle.value &&
+                    currentTabKey == TAB_PRODUCT_KEY &&
+                    isAutoHorizontalScrollProductMediaInitialize
+                )
         }
-    private val isEnableAutoHorizontalScrollReviewMedia: Boolean
+    private val enableAutoHorizontalScrollReviewMedia: Boolean
         get() {
-            return _reviewTabIdle.value
+            return (
+                _reviewTabIdle.value &&
+                    currentTabKey == TAB_REVIEW_KEY &&
+                    isAutoHorizontalScrollReviewMediaInitialize &&
+                    currentReviewMediaSize > 1
+                )
         }
     private val _productTabIdle = MutableStateFlow(true)
     private val _reviewTabIdle = MutableStateFlow(true)
@@ -162,6 +179,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         when (action) {
             CheckInitialSource -> handleCheckInitialSource()
             FetchMiniInfo -> handleFetchMiniInfo()
+            InitializeProductMainData -> handleInitializeProductMainData()
             InitializeReviewMainData -> handleInitializeReviewMainData()
             ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
             LikeFromResult -> handleLikeFromResult()
@@ -186,21 +204,13 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun handleCheckInitialSource() {
         viewModelScope.launchCatchError(block = {
             when (val source = productPreviewSource.source) {
-                is ProductSourceData -> {
-                    updateProductMainDataSource(source)
-                    updateTabProductSource(source)
-                }
+                is ProductSourceData -> updateTabProductSource(source)
                 is ReviewSourceData -> updateTabReviewSource()
                 else -> error("Unknown Source Data")
             }
         }) {
             _uiEvent.emit(UnknownSourceData)
         }
-    }
-
-    private fun updateProductMainDataSource(source: ProductSourceData) {
-        _productMediaState.update { it.copy(productMedia = source.productSourceList) }
-        if (!isAutoHorizontalScrollProductMediaInitialize) handleAutoHorizontalScrollProductMedia()
     }
 
     private fun updateTabProductSource(source: ProductSourceData) {
@@ -223,6 +233,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }) {
             _uiEvent.emit(ProductPreviewEvent.FailFetchMiniInfo(it))
         }
+    }
+
+    private fun handleInitializeProductMainData() {
+        val source = productPreviewSource.source as? ProductSourceData ?: return
+        _productMediaState.update { it.copy(productMedia = source.productSourceList) }
+        if (!isAutoHorizontalScrollProductMediaInitialize) handleAutoHorizontalScrollProductMedia()
     }
 
     private fun handleInitializeReviewMainData() {
@@ -268,6 +284,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun handleReviewContentScrolling(position: Int, isScrolling: Boolean) {
         updateReviewContentScrollingState(position, isScrolling)
+        emitTrackAllHorizontalScrollEvent()
+        if (!isAutoHorizontalScrollReviewMediaInitialize) handleAutoHorizontalScrollReviewMedia()
     }
 
     private fun handleReviewMediaSelected(mediaPosition: Int) {
@@ -287,8 +305,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 }
             )
         }
-
-        emitTrackAllHorizontalScrollEvent()
     }
 
     private fun handleTabSelected(position: Int, isScrolling: Boolean) {
@@ -318,7 +334,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 )
             }
 
-            if (!isAutoHorizontalScrollProductMediaInitialize) handleAutoHorizontalScrollReviewMedia()
+            if (!isAutoHorizontalScrollReviewMediaInitialize) handleAutoHorizontalScrollReviewMedia()
             handleFetchReview(isRefresh = false, page = 1)
         }, onError = {
                 _reviewContentState.update { review ->
@@ -351,7 +367,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 review.copy(reviewContent = newList, reviewPaging = response.reviewPaging)
             }
 
-            if (!isAutoHorizontalScrollProductMediaInitialize) handleAutoHorizontalScrollReviewMedia()
+            if (!isAutoHorizontalScrollReviewMediaInitialize) handleAutoHorizontalScrollReviewMedia()
         }) {
             _reviewContentState.update { review ->
                 review.copy(
@@ -366,62 +382,38 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun handleAutoHorizontalScrollProductMedia() {
         isAutoHorizontalScrollProductMediaInitialize = true
         viewModelScope.launchCatchError(block = {
-            val tabData = _tabContentState.value.tabs
             while (isEnableAutoHorizontalScrollProductMedia) {
                 delay(DELAY_3SECOND)
 
-                if (tabData[currentTabPosition.value].key == TAB_PRODUCT_KEY) {
-                    if (currentProductMediaPosition.plus(1) < currentProductMediaSize) {
-                        val position = currentProductMediaPosition.plus(1)
-                        handleProductMediaSelected(position)
-                    } else {
-                        val position = 0
-                        handleProductMediaSelected(position)
-                    }
+                if (currentProductMediaPosition.plus(1) < currentProductMediaSize) {
+                    val position = currentProductMediaPosition.plus(1)
+                    handleProductMediaSelected(position)
                 } else {
-                    if (currentReviewMediaSize < 2) return@launchCatchError
-                    if (currentReviewMediaPosition.plus(1) < currentReviewMediaSize) {
-                        val position = currentReviewMediaPosition.plus(1)
-                        handleReviewMediaSelected(position)
-                    } else {
-                        val position = 0
-                        handleReviewMediaSelected(position)
-                    }
+                    val position = 0
+                    handleProductMediaSelected(position)
                 }
             }
         }) { _ ->
-            // disable autoscroll
+            isAutoHorizontalScrollProductMediaInitialize = false
         }
     }
 
     private fun handleAutoHorizontalScrollReviewMedia() {
         isAutoHorizontalScrollReviewMediaInitialize = true
         viewModelScope.launchCatchError(block = {
-            val tabData = _tabContentState.value.tabs
-            while (isEnableAutoHorizontalScrollReviewMedia) {
+            while (enableAutoHorizontalScrollReviewMedia) {
                 delay(DELAY_3SECOND)
-
-                if (tabData[currentTabPosition.value].key == TAB_PRODUCT_KEY) {
-                    if (currentProductMediaPosition.plus(1) < currentProductMediaSize) {
-                        val position = currentProductMediaPosition.plus(1)
-                        handleProductMediaSelected(position)
-                    } else {
-                        val position = 0
-                        handleProductMediaSelected(position)
-                    }
+                if (currentReviewMediaSize < 2) return@launchCatchError
+                if (currentReviewMediaPosition.plus(1) < currentReviewMediaSize) {
+                    val position = currentReviewMediaPosition.plus(1)
+                    handleReviewMediaSelected(position)
                 } else {
-                    if (currentReviewMediaSize < 2) return@launchCatchError
-                    if (currentReviewMediaPosition.plus(1) < currentReviewMediaSize) {
-                        val position = currentReviewMediaPosition.plus(1)
-                        handleReviewMediaSelected(position)
-                    } else {
-                        val position = 0
-                        handleReviewMediaSelected(position)
-                    }
+                    val position = 0
+                    handleReviewMediaSelected(position)
                 }
             }
         }) { _ ->
-            // disable autoscroll
+            isAutoHorizontalScrollReviewMediaInitialize = false
         }
     }
 
