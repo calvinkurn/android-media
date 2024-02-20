@@ -936,79 +936,72 @@ class FeedAnalytics @AssistedInject constructor(
 
     fun impressProductHighlight(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel) {
         val eventLabel = getEventLabel(trackerModel) + "- ${product.id}"
-        Tracker.Builder()
-            .setEvent(Event.VIEW_ITEM_LIST)
-            .setEventAction("view - product card highlight")
-            .setEventCategory(CATEGORY_UNIFIED_FEED)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(KEY_TRACKER_ID, "49770")
-            .setBusinessUnit(BUSINESS_UNIT_CONTENT)
-            .setCurrentSite(CURRENT_SITE_MARKETPLACE)
-            .setUserId(userId)
-            .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
-            .setCustomProperty(
-                KEY_ITEMS, getProductTrackerBundle(
+        val bundle = generateGeneralTrackerBundleData(
+            eventName = Event.VIEW_ITEM_LIST,
+            eventAction = "view - product card highlight",
+            eventCategory = CATEGORY_UNIFIED_FEED,
+            eventLabel = eventLabel,
+            trackerId = "49770"
+        ).also { bundle ->
+            bundle.putString(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
+            bundle.putParcelableArrayList(KEY_ITEMS, arrayListOf(
+                getProductTrackerBundle(
                 shopId = product.shopId,
                 shopName = product.shopName,
                 cartId = "",
                 productId = product.id,
                 productName = product.name,
                 productPrice = product.price
-            ))
-            .setCustomProperty(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
-            .build()
-            .send()
+            )))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
     }
 
     fun sendClickProductHighlight(product: FeedCardProductModel, trackerModel: FeedTrackerDataModel) {
         val eventLabel = getEventLabel(trackerModel) + "- ${product.id}"
-        Tracker.Builder()
-            .setEvent(Event.SELECT_CONTENT)
-            .setEventAction("click - product on card highlight")
-            .setEventCategory(CATEGORY_UNIFIED_FEED)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(KEY_TRACKER_ID, "49771")
-            .setBusinessUnit(BUSINESS_UNIT_CONTENT)
-            .setCurrentSite(CURRENT_SITE_MARKETPLACE)
-            .setUserId(userId)
-            .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
-            .setCustomProperty(KEY_ITEMS, getProductTrackerBundle(
-                shopId = product.shopId,
-                shopName = product.shopName,
-                cartId = "",
-                productId = product.id,
-                productName = product.name,
-                productPrice = product.price
-            ))
-            .setCustomProperty(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
-            .build()
-            .send()
+
+        val bundle = generateGeneralTrackerBundleData(
+            eventName = Event.SELECT_CONTENT,
+            eventAction = "click - product on card highlight",
+            eventCategory = CATEGORY_UNIFIED_FEED,
+            eventLabel = eventLabel,
+            trackerId = "49771"
+        ).also { bundle ->
+            bundle.putString(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
+            bundle.putParcelableArrayList(KEY_ITEMS, arrayListOf(
+                getProductTrackerBundle(
+                    shopId = product.shopId,
+                    shopName = product.shopName,
+                    cartId = "",
+                    productId = product.id,
+                    productName = product.name,
+                    productPrice = product.price
+                )))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
     }
 
     fun atcFromProductHighlight(product: FeedProductActionModel, trackerModel: FeedTrackerDataModel) {
         val eventLabel = getEventLabel(trackerModel) + "- ${product.product.id}"
-        Tracker.Builder()
-            .setEvent(Event.ADD_TO_CART)
-            .setEventAction("click - keranjang button on card highlight")
-            .setEventCategory(CATEGORY_UNIFIED_FEED)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(KEY_TRACKER_ID, "49772")
-            .setBusinessUnit(BUSINESS_UNIT_CONTENT)
-            .setCurrentSite(CURRENT_SITE_MARKETPLACE)
-            .setUserId(userId)
-            .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
-            .setCustomProperty(
-                KEY_ITEMS, getProductTrackerBundle(
-                shopId = product.product.shop.id,
-                shopName = product.product.shop.name,
-                cartId = "",
-                productId = product.product.id,
-                productName = product.product.title,
-                productPrice = product.product.finalPrice
-            ))
-            .setCustomProperty(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
-            .build()
-            .send()
+        val bundle = generateGeneralTrackerBundleData(
+            eventName = Event.ADD_TO_CART,
+            eventAction = "click - keranjang button on card highlight",
+            eventCategory = CATEGORY_UNIFIED_FEED,
+            eventLabel = eventLabel,
+            trackerId = "49772"
+        ).also { bundle ->
+            bundle.putString(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
+            bundle.putParcelableArrayList(KEY_ITEMS, arrayListOf(
+                getProductTrackerBundle(
+                    shopId = product.product.shop.id,
+                    shopName = product.product.shop.name,
+                    cartId = product.cartId,
+                    productId = product.product.id,
+                    productName = product.product.title,
+                    productPrice = product.product.finalPrice
+                )))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
     }
     fun closeProductHighlight(trackerModel: FeedTrackerDataModel) {
         val eventLabel =" ${getPrefix(trackerModel.tabType)} - ${entrySource.entryPoint} - ${trackerModel.authorType.name.lowercase()} - ${trackerModel.authorId}"
@@ -1027,28 +1020,26 @@ class FeedAnalytics @AssistedInject constructor(
     }
 
     fun atcFromProductHighlightWithVariant(product: FeedProductActionModel, trackerModel: FeedTrackerDataModel) {
-        Tracker.Builder()
-            .setEvent(Event.CLICK_CONTENT)
-            .setEventAction("click - keranjang button on card highlight bottomsheet")
-            .setEventCategory(CATEGORY_UNIFIED_FEED)
-            .setEventLabel(getEventLabel(trackerModel))
-            .setCustomProperty(KEY_TRACKER_ID, "49891")
-            .setBusinessUnit(BUSINESS_UNIT_CONTENT)
-            .setCurrentSite(CURRENT_SITE_MARKETPLACE)
-            .setCustomProperty(KEY_PAGE_SOURCE, pageSource)
-            .setUserId(userId)
-            .setCustomProperty(
-                KEY_ITEMS, getProductTrackerBundle(
-                shopId = product.product.shop.id,
-                shopName = product.product.shop.name,
-                cartId = "",
-                productId = product.product.id,
-                productName = product.product.title,
-                productPrice = product.product.finalPrice
-            ))
-            .setCustomProperty(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
-            .build()
-            .send()
+        val eventLabel = getEventLabel(trackerModel) + "- ${product.product.id}"
+        val bundle = generateGeneralTrackerBundleData(
+            eventName = Event.CLICK_CONTENT,
+            eventAction = "click - keranjang button on card highlight bottomsheet",
+            eventCategory = CATEGORY_UNIFIED_FEED,
+            eventLabel = eventLabel,
+            trackerId = "49891"
+        ).also { bundle ->
+            bundle.putString(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
+            bundle.putParcelableArrayList(KEY_ITEMS, arrayListOf(
+                getProductTrackerBundle(
+                    shopId = product.product.shop.id,
+                    shopName = product.product.shop.name,
+                    cartId = product.cartId,
+                    productId = product.product.id,
+                    productName = product.product.title,
+                    productPrice = product.product.finalPrice
+                )))
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
     }
 
     companion object {
