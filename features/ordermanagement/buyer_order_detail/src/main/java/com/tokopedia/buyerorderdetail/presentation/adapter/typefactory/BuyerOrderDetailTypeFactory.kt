@@ -36,7 +36,6 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThickDivid
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDashedDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
@@ -110,7 +109,7 @@ open class BuyerOrderDetailTypeFactory(
             DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
             PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, buyerOrderDetailBindRecomWidgetListener)
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
-            AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent, productViewListener, navigator)
+            AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent, addOnListener)
             OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator, orderResolutionListener)
             PlatformFeeInfoViewHolder.LAYOUT -> PlatformFeeInfoViewHolder(parent, navigator)
             OrderInsuranceViewHolder.LAYOUT -> OrderInsuranceViewHolder(parent, navigator)
@@ -201,7 +200,7 @@ open class BuyerOrderDetailTypeFactory(
         return DriverTippingInfoViewHolder.LAYOUT
     }
 
-    fun type(addonsListUiModel: AddonsListUiModel): Int {
+    fun type(orderLevelAddOn: ProductListUiModel.OrderLevelAddOn): Int {
         return AddonsViewHolder.LAYOUT
     }
 

@@ -1193,14 +1193,6 @@ open class BuyerOrderDetailFragment :
         navigator.openAppLink(infoLink, false)
     }
 
-    override fun onAddOnsInfoClickedNonBundle(infoLink: String, type: String) {
-        onAddOnsInfoLinkClicked(infoLink, type)
-    }
-
-    override fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean) {
-        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
-    }
-
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()

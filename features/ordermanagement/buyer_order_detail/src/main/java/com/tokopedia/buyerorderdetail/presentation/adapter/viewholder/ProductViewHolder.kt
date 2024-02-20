@@ -6,13 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
-import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAddonsBinding
-import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imageassets.utils.loadProductImage
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
