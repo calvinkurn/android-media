@@ -61,6 +61,7 @@ import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
+import com.tokopedia.autocompletecomponent.util.addEnterMethodNormalSearch
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
 import com.tokopedia.autocompletecomponent.util.getSearchQuery
 import com.tokopedia.autocompletecomponent.util.getTrackingSearchQuery
@@ -522,6 +523,7 @@ open class BaseAutoCompleteActivity :
             addComponentId()
             addQueryIfEmpty()
             removeKeys(BASE_SRP_APPLINK, HINT, PLACEHOLDER)
+            addEnterMethodNormalSearch()
         }
 
         return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(modifiedParameter)}"

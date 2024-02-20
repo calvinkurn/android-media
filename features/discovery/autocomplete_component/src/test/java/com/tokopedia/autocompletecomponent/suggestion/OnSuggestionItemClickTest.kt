@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker.SuggestionTrackerUseCase
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineDataDataView
@@ -53,7 +54,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
     private fun `then verify view interaction is correct`(item: BaseSuggestionDataView) {
         verifyOrder {
-            suggestionView.onClickSuggestion(item.applink)
+            suggestionView.onClickSuggestion(item.applink, AppLogSearch.ParamValue.SEARCH_SUG)
         }
     }
 
@@ -376,6 +377,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
                 childItem.applink,
                 suggestionPresenter.getSearchParameter(),
                 suggestionPresenter.getActiveKeyword(),
+                AppLogSearch.ParamValue.SUG_RECOM,
             )
             suggestionView.finish()
         }

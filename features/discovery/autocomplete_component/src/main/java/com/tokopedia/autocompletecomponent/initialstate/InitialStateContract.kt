@@ -29,7 +29,7 @@ interface InitialStateContract {
 
         fun onSeeMoreRecentSearchImpressed(userId: String)
 
-        fun route(applink: String, searchParameter: Map<String, String>)
+        fun route(applink: String, searchParameter: Map<String, String>, byteIOEnterMethod: String)
 
         fun finish()
 
