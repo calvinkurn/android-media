@@ -3,10 +3,10 @@ package com.tokopedia.media.editor.data.repository
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.utils.LOAD_IMAGE_FAILED
 import com.tokopedia.media.editor.utils.newRelicLog
+import com.tokopedia.media.loader.getBitmapFromUrl
 import javax.inject.Inject
 
 interface BitmapConverterRepository {
@@ -19,11 +19,7 @@ class BitmapConverterRepositoryImpl @Inject constructor(
 
     override fun uriToBitmap(uri: Uri): Bitmap? {
         return try {
-            Glide.with(context)
-                .asBitmap()
-                .load(uri.path)
-                .submit()
-                .get()
+            uri.path?.getBitmapFromUrl(context)
         } catch (e: Exception) {
             newRelicLog(
                 mapOf(
