@@ -419,9 +419,9 @@ class CartViewModel @Inject constructor(
 
     fun hasReachAllShopItems(data: Any): Boolean {
         return data is CartRecentViewHolderData ||
-                data is CartWishlistHolderData ||
-                data is CartTopAdsHeadlineData ||
-                data is CartRecommendationItemHolderData
+            data is CartWishlistHolderData ||
+            data is CartTopAdsHeadlineData ||
+            data is CartRecommendationItemHolderData
     }
 
     fun processToUpdateAndReloadCartData(
@@ -968,7 +968,7 @@ class CartViewModel @Inject constructor(
                     pageNumber = 1,
                     pageName = PAGE_NAME_RECENT_VIEW,
                     xSource = RECENT_VIEW_XSOURCE,
-                    productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
+                    productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value)
                 )
             )
             cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
@@ -2348,7 +2348,7 @@ class CartViewModel @Inject constructor(
         val hasCheckedBundleProduct = cartGroupHolderData.productUiModelList
             .any { it.isSelected && it.isBundlingItem && it.bundleIds.isNotEmpty() }
         return cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
-                hasCheckedProductWithBundle && !hasCheckedBundleProduct
+            hasCheckedProductWithBundle && !hasCheckedBundleProduct
     }
 
     fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
@@ -2532,7 +2532,7 @@ class CartViewModel @Inject constructor(
                 ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
                 ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
                 ConstantTransactionAnalytics.Key.DIMENSION40 to
-                        ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
+                    ConstantTransactionAnalytics.EventLabel.CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME,
                 ConstantTransactionAnalytics.Key.ITEM_ID to it.productId,
                 ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
             )
@@ -2666,24 +2666,6 @@ class CartViewModel @Inject constructor(
                 break@outerloop
             }
         }
-    }
-
-    fun updateRecentViewData(productId: String, isWishlist: Boolean) {
-//        outerloop@ for (any in cartDataList.value) {
-//            if (any is CartRecentViewHolderData) {
-//                val recentViews = any.recentViewList
-//                for (data in recentViews) {
-//                    if (data.id == productId) {
-//                        data.isWishlist = isWishlist
-//                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(
-//                            recentViews.indexOf(data)
-//                        )
-//                        break@outerloop
-//                    }
-//                }
-//                break@outerloop
-//            }
-//        }
     }
 
     fun removeWishlist(productId: String) {

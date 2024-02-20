@@ -3642,7 +3642,6 @@ class CartRevampFragment :
         showToastMessageRed(errorMessage)
         viewModel.updateWishlistDataByProductId(productId, true)
         viewModel.updateWishlistHolderData(productId, true)
-        viewModel.updateRecentViewData(productId, true)
     }
 
     private fun onSuccessRemoveWishlistV2(
@@ -3656,7 +3655,6 @@ class CartRevampFragment :
         }
         viewModel.updateWishlistHolderData(productId, false)
         viewModel.removeWishlist(productId)
-        viewModel.updateRecentViewData(productId, false)
     }
 
     private fun onUndoDeleteCartDataSuccess() {
