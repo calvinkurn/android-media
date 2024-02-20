@@ -14,7 +14,10 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst.INTERNAL_CONTENT_DETAIL
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.content.common.util.WindowWidthSizeClass
+import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.UserFeedPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
@@ -45,7 +48,16 @@ class UserProfileFeedFragment @Inject constructor(
     private var nextCursor: String = ""
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(activity, GRID_SPAN_COUNT)
+        GridLayoutManager(activity, spanCount)
+    }
+
+    private val spanCount by lazyThreadSafetyNone {
+        when(activity?.calculateWindowSizeClass()?.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 3
+            WindowWidthSizeClass.Medium -> 4
+            WindowWidthSizeClass.Expanded -> 5
+            else -> 3
+        }
     }
 
     private val mAdapter: UserFeedPostsBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -101,7 +113,7 @@ class UserProfileFeedFragment @Inject constructor(
         binding.rvFeed.layoutManager = gridLayoutManager
         if (binding.rvFeed.itemDecorationCount == 0) {
             val spacing = requireContext().resources.getDimensionPixelOffset(contentCommonR.dimen.content_common_space_1)
-            binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(GRID_SPAN_COUNT, spacing, false))
+            binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, false))
         }
         binding.rvFeed.adapter = mAdapter
     }
@@ -110,15 +122,15 @@ class UserProfileFeedFragment @Inject constructor(
         return object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (mAdapter.getItem(position)) {
-                    is UserFeedPostsBaseAdapter.Model.Loading -> LOADING_SPAN
-                    else -> DATA_SPAN
+                    is UserFeedPostsBaseAdapter.Model.Loading -> spanCount
+                    else -> 1
                 }
             }
         }
     }
 
     private fun fetchFeedsPosts() {
-        binding.userFeedContainer.displayedChild = UserProfileFragment.PAGE_LOADING
+        showShimmer()
         viewModel.submitAction(UserProfileAction.LoadFeedPosts())
     }
 
@@ -170,6 +182,15 @@ class UserProfileFeedFragment @Inject constructor(
             if (binding.rvFeed.isComputingLayout.not()) mAdapter.setItemsAndAnimateChanges(model)
             binding.userFeedContainer.displayedChild = PAGE_CONTENT
         }
+    }
+
+    private fun showShimmer() {
+        binding.userFeedContainer.displayedChild = UserProfileFragment.PAGE_CONTENT
+        mAdapter.setItemsAndAnimateChanges(
+            List(spanCount * 2) {
+                UserFeedPostsBaseAdapter.Model.Shimmer
+            }
+        )
     }
 
     override fun onFeedPostsClick(
@@ -255,9 +276,6 @@ class UserProfileFeedFragment @Inject constructor(
         private const val KEY_VISITED_USER_ID = "visited_user_id"
         private const val KEY_VISITED_USER_ENCRYPTED_ID = "visited_user_encrypted_id"
         private const val VAL_ENTRY_POINT = "user_profile"
-        private const val GRID_SPAN_COUNT = 3
-        private const val LOADING_SPAN = 3
-        private const val DATA_SPAN = 1
         private const val REQUEST_CODE_TO_CDP = 1234
         private const val ACTION_TO_REFRESH = "action_to_refresh"
 
