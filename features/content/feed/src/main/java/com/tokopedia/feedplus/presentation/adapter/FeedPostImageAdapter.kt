@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.databinding.ItemFeedPostImageBinding
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import kotlinx.coroutines.withContext
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -67,18 +68,19 @@ class FeedPostImageAdapter(
         fun bind(url: String) {
             lifecycleOwner.lifecycleScope.launchCatchError(block = {
                 val bitmap = withContext(dispatcher.io) {
-                    Glide.with(binding.root.context).asBitmap()
-                        .load(url)
-                        .submit()
-                        .get()
+                    url.getBitmapFromUrl(binding.root.context)
                 }
-                imageBlurUtil.blurredView(
-                    src = bitmap,
-                    view = binding.bgImgFeedPost,
-                    repeatCount = BLUR_REPETITION
-                )
-                binding.bgImgFeedPost.alpha = BG_ALPHA
-                binding.imgFeedPost.setImageBitmap(bitmap)
+
+                bitmap?.let {
+                    imageBlurUtil.blurredView(
+                        src = it,
+                        view = binding.bgImgFeedPost,
+                        repeatCount = BLUR_REPETITION
+                    )
+
+                    binding.bgImgFeedPost.alpha = BG_ALPHA
+                    binding.imgFeedPost.setImageBitmap(bitmap)
+                }
             }) {
                 binding.bgImgFeedPost.setBackgroundColor(MethodChecker.getColor(binding.root.context, unifyprinciplesR.color.Unify_Static_Black))
                 binding.imgFeedPost.setImageResource(unifycomponentsR.drawable.ic_broken_image)

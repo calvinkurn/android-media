@@ -14,7 +14,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -58,39 +61,20 @@ suspend fun Context.getBitmapFromUrl(
     size: Size? = null,
     cacheStrategy: DiskCacheStrategy = DiskCacheStrategy.NONE,
 ): Bitmap? = suspendCancellableCoroutine { cont ->
-    Glide.with(this)
-        .asBitmap()
-        .load(url)
-        .diskCacheStrategy(cacheStrategy)
-        .listener(object : RequestListener<Bitmap> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                isFirstResource: Boolean
-            ): Boolean {
+    url.getBitmapFromUrl(this, properties = {
+        size?.let {
+            overrideSize(Resize(size.width, size.height))
+        }
+        setCacheStrategy(MediaCacheStrategy.Companion.mapTo(cacheStrategy))
+        listener(
+            onSuccess = { bitmap, _ ->
+                cont.resume(bitmap)
+            },
+            onError = {
                 cont.resume(null)
-                return false
             }
-
-            override fun onResourceReady(
-                resource: Bitmap?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                cont.resume(resource)
-                return false
-            }
-        }).let {
-            if (size != null) {
-                it.apply(
-                    RequestOptions()
-                        .override(size.width, size.height)
-                )
-            } else it
-        }.submit()
+        )
+    })
 }
 
 fun View.setGradientAnimBackground(colorArray: List<String>) {
