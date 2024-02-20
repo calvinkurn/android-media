@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.performance.perf.*
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -43,17 +44,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.analytics.byteio.search.AppLogSearch
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.GROUP_ID
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.IMPR_ID
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_POSITION
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_CONTENT
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITION
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
-import com.tokopedia.discovery.common.constants.SearchConstant.ByteIOExtras.EXTRA_ENTER_FROM
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -2052,9 +2042,7 @@ open class HomeRevampFragment :
                         HOME_SOURCE,
                         data.keyword.safeEncodeUtf8(),
                         isFirstInstall().toString()
-                    ).apply {
-                        putExtra(EXTRA_ENTER_FROM, HOMEPAGE)
-                    }
+                    )
 
                     navToolbarMicroInteraction
                         ?.animate(intent, ::startActivity)

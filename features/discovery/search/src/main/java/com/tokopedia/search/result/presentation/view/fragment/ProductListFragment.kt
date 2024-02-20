@@ -28,8 +28,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.constants.SearchConstant.ByteIOExtras.EXTRA_ENTER_FROM
-import com.tokopedia.discovery.common.constants.SearchConstant.ByteIOExtras.EXTRA_ENTER_METHOD
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -123,6 +121,7 @@ import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.componentIdMap
 import com.tokopedia.search.utils.decodeQueryParameter
+import com.tokopedia.search.utils.enterMethodMap
 import com.tokopedia.search.utils.manualFilterToggleMap
 import com.tokopedia.search.utils.originFilterMap
 import com.tokopedia.search.utils.removeQuickFilterElevation
@@ -165,15 +164,9 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val LABEL_POSITION_VIEW = "view"
 
-        fun newInstance(
-            searchParameter: SearchParameter?,
-            enterFrom: String,
-            enterMethod: String
-        ): ProductListFragment {
+        fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
                 putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
-                putString(EXTRA_ENTER_FROM, enterFrom)
-                putString(EXTRA_ENTER_METHOD, enterMethod)
             }
 
             return ProductListFragment().apply {
@@ -262,8 +255,10 @@ class ProductListFragment: BaseDaggerFragment(),
     private var searchSortFilter: SortFilter? = null
     private var searchSortFilterReimagine: SortFilterReimagine? = null
     private var shimmeringView: LinearLayout? = null
-    private var enterFrom: String = ""
-    private var enterMethod: String = ""
+    private val enterFrom: String
+        get() =
+            if (navsource == SearchApiConst.HOME) AppLogSearch.ParamValue.HOMEPAGE
+            else ""
 
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
@@ -294,9 +289,15 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        restoreInstanceState(arguments)
+        loadDataFromArguments()
         initProductCardLifecycleObserver()
         initNetworkMonitor()
+    }
+
+    private fun loadDataFromArguments() {
+        arguments?.let {
+            copySearchParameter(it.getParcelable(EXTRA_SEARCH_PARAMETER))
+        }
     }
 
     private fun copySearchParameter(searchParameterToCopy: SearchParameter?) {
@@ -368,11 +369,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun restoreInstanceState(savedInstanceState: Bundle?) {
-        savedInstanceState ?: return
+        if (savedInstanceState == null) return
 
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER))
-        enterFrom = savedInstanceState.getString(EXTRA_ENTER_FROM) ?: ""
-        enterMethod = savedInstanceState.getString(EXTRA_ENTER_METHOD) ?: ""
     }
 
     private fun addDefaultSelectedSort() {
@@ -569,6 +568,13 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun getSearchParameter(): SearchParameter? {
         return searchParameter
     }
+
+    private val navsource: String
+        get() = searchParameter?.get(SearchApiConst.NAVSOURCE) ?: ""
+
+    private val enterMethod: String
+        get() = searchParameter?.get(SearchApiConst.ENTER_METHOD) ?: ""
+
     //endregion
 
     //region onAttach
@@ -1064,7 +1070,8 @@ class ProductListFragment: BaseDaggerFragment(),
         val queryParams = filterController.getParameter() +
             originFilterMap() +
             componentIdMap(SearchSortFilterTracking.QUICK_FILTER_COMPONENT_ID) +
-            manualFilterToggleMap()
+            manualFilterToggleMap() +
+            enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
         refreshSearchParameter(queryParams)
 
@@ -1275,11 +1282,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        savedInstanceState.run {
-            putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
-            putString(EXTRA_ENTER_FROM, enterFrom)
-            putString(EXTRA_ENTER_METHOD, enterMethod)
-        }
+        savedInstanceState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
     }
 
     override fun onDestroyView() {
@@ -1497,10 +1500,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTrackingByteIO(imprId: String) {
-        /**
-        PRE_SEARCH_ID to "", // TODO:: Previous Search ID, make similar to PREVIOUS_KEYWORD?
-        EC_SEARCH_SESSION_ID to "", // TODO:: Search Session ID. From FE? Need SharedPreferences to clear on Homepage
-         */
+        val durationMs: Long? = performanceMonitoring?.getPltPerformanceData()?.let {
+            it.startPageDuration + it.networkRequestDuration
+        }
 
         AppLogSearch.eventSearch(
             AppLogSearch.Search(
@@ -1509,9 +1511,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 searchType = GOODS_SEARCH,
                 enterMethod = enterMethod,
                 searchKeyword = queryKey,
-                durationMs = performanceMonitoring?.getPltPerformanceData()?.networkRequestDuration,
+                durationMs = durationMs,
                 isSuccess = true,
-
             )
         )
     }

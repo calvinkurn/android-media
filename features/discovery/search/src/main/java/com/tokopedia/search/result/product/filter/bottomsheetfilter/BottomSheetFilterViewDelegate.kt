@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -24,6 +25,7 @@ import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.componentIdMap
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.search.utils.enterMethodMap
 import com.tokopedia.search.utils.manualFilterToggleMap
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -132,7 +134,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
             val parameter = filterController.getParameter() +
                 sortParam +
                 manualFilterToggleMap() +
-                componentIdMap(SearchSortFilterTracking.SORT_COMPONENT_ID)
+                componentIdMap(SearchSortFilterTracking.SORT_COMPONENT_ID) +
+                enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
             applyParameter(parameter)
         }
@@ -185,7 +188,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         val parameter = applySortFilterModel.mapParameter +
             manualFilterToggleMap() +
-            componentIdMap(SearchSortFilterTracking.FILTER_COMPONENT_ID)
+            componentIdMap(SearchSortFilterTracking.FILTER_COMPONENT_ID) +
+            enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
         applyParameter(parameter)
     }

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
@@ -27,7 +27,6 @@ import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
-import com.tokopedia.autocompletecomponent.util.routeManagerIntent
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -248,15 +247,16 @@ class SuggestionFragment :
         applink: String,
         searchParameter: Map<String, String>,
         activeKeyword: SearchBarKeyword,
+        byteIOEnterMethod: String,
     ) {
         activity?.let {
-            val modifiedApplink = getModifiedApplink(applink, searchParameter, activeKeyword)
-            val intent = routeManagerIntent(
-                context = it,
-                applink = modifiedApplink,
-                enterMethod = AppLogSearch.ParamValue.SEARCH_SUG,
+            val modifiedApplink = getModifiedApplink(
+                applink,
+                searchParameter,
+                byteIOEnterMethod,
+                activeKeyword,
             )
-            startActivity(intent)
+            RouteManager.route(it, modifiedApplink)
         }
     }
 

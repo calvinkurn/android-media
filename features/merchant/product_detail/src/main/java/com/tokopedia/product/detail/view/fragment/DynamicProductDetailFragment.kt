@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
@@ -2212,6 +2213,14 @@ open class DynamicProductDetailFragment :
             trackData = componentTrackDataModel
         )
         selectThumbVariantByMedia(variantOptionId = variantOptionId)
+    }
+
+    override fun onMediaViewed(position: Int, isVariantPhoto: Boolean) {
+        if (isVariantPhoto) {
+            viewModel.skuPhotoViewed.add(position)
+        } else {
+            viewModel.mainPhotoViewed.add(position)
+        }
     }
 
     private fun addSwipePictureTracker(

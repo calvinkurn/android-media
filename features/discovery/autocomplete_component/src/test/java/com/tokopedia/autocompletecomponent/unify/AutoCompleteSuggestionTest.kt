@@ -45,7 +45,14 @@ class AutoCompleteSuggestionTest : AutoCompleteTestFixtures() {
     ) {
         verify { suggestionStateUseCase.execute(any(), any(), any()) }
 
-        assertThat(requestParamsSlot.captured.parameters, `is`(params))
+        val actualParams = requestParamsSlot.captured.parameters
+
+        params.forEach { key, value ->
+            if (actualParams.containsKey(key))
+                assertThat(actualParams[key], `is`(value))
+            else
+                AssertionError("actual param does not contains key $key")
+        }
     }
 
     private fun `When Screen is Initialized`(

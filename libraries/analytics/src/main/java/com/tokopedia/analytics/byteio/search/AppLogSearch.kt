@@ -3,6 +3,8 @@ package com.tokopedia.analytics.byteio.search
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
@@ -150,6 +152,7 @@ object AppLogSearch {
         const val SEARCH_SUG = "search_sug"
         const val NORMAL_SEARCH = "normal_search"
         const val SUG_RECOM = "sug_recom"
+        const val TAB_SEARCH = "tab_search"
         const val GOODS = "goods"
         const val VIDEO_GOODS = "video_goods"
         const val SHOP = "shop"
@@ -238,6 +241,7 @@ object AppLogSearch {
             put(ENTER_FROM, enterFrom)
             put(SEARCH_TYPE, searchType)
             put(ENTER_METHOD, enterMethod)
+            put(SEARCH_KEYWORD, searchKeyword)
 
             durationMs?.let { put(DURATION, it) }
             isSuccess?.let { put(IS_SUCCESS, it.intValue) }
@@ -579,6 +583,9 @@ object AppLogSearch {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, tiktokecJSON())
     }
 
+    //TODO:: Update source_module to null
+    //TODO:: Update source_page_type to goods_search
+    //TODO:: Update entrance_form
     private fun tiktokecJSON() = JSONObject(
         mapOf(
             SOURCE_MODULE to "", // TODO:: Is this search?
@@ -603,5 +610,7 @@ object AppLogSearch {
         )
     ).apply {
         addPage()
+        addSourceModule()
+        addSourcePageType()
     }
 }
