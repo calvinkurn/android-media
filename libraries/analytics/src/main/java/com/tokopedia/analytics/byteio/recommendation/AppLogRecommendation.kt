@@ -23,7 +23,7 @@ import org.json.JSONObject
 /**
  * Byte.io tracking
  */
-object AppLogRecommendation123 {
+object AppLogRecommendation {
 
     private fun buildProductParams(model: AppLogRecommendationProductModel): JSONObject {
         return JSONObject().apply {

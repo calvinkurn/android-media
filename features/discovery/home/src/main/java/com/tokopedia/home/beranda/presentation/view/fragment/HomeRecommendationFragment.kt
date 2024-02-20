@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation123.sendCardClickAppLog
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation123.sendCardShowAppLog
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation123.sendProductClickAppLog
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation123.sendProductShowAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductClickAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductShowAppLog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
