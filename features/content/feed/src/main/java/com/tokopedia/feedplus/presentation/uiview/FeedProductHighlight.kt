@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,25 +19,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
-import com.tokopedia.nest.components.ButtonSize
-import com.tokopedia.nest.components.ButtonVariant
-import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.delay
 import com.tokopedia.unifycomponents.R as unifycomponentsR
-import com.tokopedia.feedplus.R
 
 /**
  * @author by astidhiyaa on 22/01/24
@@ -49,6 +50,8 @@ fun FeedProductHighlight(
     onAtcClick: (FeedCardProductModel) -> Unit,
     onProductClick: (FeedCardProductModel) -> Unit,
 ) {
+    val ctx = LocalContext.current
+
     NestTheme(darkTheme = false) {
         AnimatedVisibility(
             visible = isVisible,
@@ -104,18 +107,20 @@ fun FeedProductHighlight(
                     })
 
                 //Button ATC
-                NestButton(
-                    text = stringResource(id = R.string.feed_product_highlight_atc),
-                    variant = ButtonVariant.FILLED,
-                    size = ButtonSize.SMALL,
-                    trailingIcon = unifycomponentsR.drawable.iconunify_cart,
-                    onClick = { onAtcClick(product) },
-                    modifier = Modifier
-                        .constrainAs(btnAtc) {
-                            width = Dimension.fillToConstraints
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        })
+                AndroidView(factory = {
+                    UnifyButton(it).apply {
+                        text = ctx.getText(R.string.feed_product_highlight_atc)
+                        buttonVariant = UnifyButton.Variant.FILLED
+                        buttonSize = UnifyButton.Size.SMALL
+                        setDrawable(MethodChecker.getDrawable(ctx, unifycomponentsR.drawable.iconunify_cart), UnifyButton.DrawablePosition.RIGHT)
+                        setOnClickListener { onAtcClick(product) }
+                    }
+                }, modifier = Modifier
+                    .wrapContentWidth()
+                    .constrainAs(btnAtc) {
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                    }) {}
                 
                 //Close Button: close show label again
                 NestIcon(iconId = IconUnify.CLOSE,
