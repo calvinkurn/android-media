@@ -506,13 +506,15 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     fun getProductDetailTrack(): TrackProductDetail? {
         val p1 = getDynamicProductInfoP1 ?: return null
+        val p2 = p2Data.value ?: return null
 
         return TrackProductDetail(
             productId = p1.parentProductId,
             productCategory = p1.basic.category.name,
             productType = p1.productType,
             originalPrice = p1.data.price.slashPriceFmt,
-            salePrice = p1.data.campaign.priceFmt
+            salePrice = p1.data.campaign.priceFmt,
+            isSingleSku = false // todo
         )
     }
 

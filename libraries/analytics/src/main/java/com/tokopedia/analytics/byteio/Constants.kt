@@ -22,6 +22,7 @@ data class TrackProductDetail(
     val productType: ProductType,
     val originalPrice: String,
     val salePrice: String,
+    val isSingleSku: Boolean,
 )
 
 data class TrackStayProductDetail(
