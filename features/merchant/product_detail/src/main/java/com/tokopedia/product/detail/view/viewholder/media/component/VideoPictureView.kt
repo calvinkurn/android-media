@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget
+package com.tokopedia.product.detail.view.viewholder.media.component
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -30,18 +29,17 @@ class VideoPictureView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
     private var mListener: ProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
     private var binding: WidgetVideoPictureBinding =
-        WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
+        WidgetVideoPictureBinding.inflate(LayoutInflater.from(context), this, true)
     private var pagerSelectedLastPosition = 0
     private var previouslyPrefetch = false
 
     init {
-        addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
     }
 
@@ -67,6 +65,7 @@ class VideoPictureView @JvmOverloads constructor(
         setupRecommendationLabel(recommendation = recommendation)
         setupRecommendationLabelListener(position = pagerSelectedLastPosition)
         shouldShowRecommendationLabel(position = pagerSelectedLastPosition)
+        shouldShowLiveIndicator(position = pagerSelectedLastPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
 
         previouslyPrefetch = isPrefetch
@@ -236,6 +235,14 @@ class VideoPictureView @JvmOverloads constructor(
             binding.txtAnimLabelRecommendation.showView()
         } else {
             binding.txtAnimLabelRecommendation.hideView()
+        }
+    }
+
+    private fun shouldShowLiveIndicator(position: Int) = with(binding) {
+        val shouldShow = videoPictureAdapter?.isPicture(position) == true
+
+        liveIndicator(shouldShow = shouldShow) {
+
         }
     }
 

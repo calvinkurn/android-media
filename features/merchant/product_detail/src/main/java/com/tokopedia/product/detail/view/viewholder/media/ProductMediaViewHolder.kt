@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewholder
+package com.tokopedia.product.detail.view.viewholder.media
 
 import android.view.View
 import com.tokopedia.product.detail.R
@@ -7,6 +7,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicProductMediaBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 
 /**
  * Created by Yehezkiel on 04/05/20
