@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.iris.Iris
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
@@ -47,7 +46,6 @@ class AutoCompleteFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //TODO milhamj make it pretty
         viewModel.trackSearchEnterBlankPage()
     }
 
@@ -58,16 +56,16 @@ class AutoCompleteFragment @Inject constructor(
     private fun initAppLogData() {
         val intent: Intent = context?.getActivityFromContext()?.intent ?: return
         val enterFrom = intent.getStringExtra(
-            SearchConstant.ByteIOExtras.EXTRA_ENTER_FROM
-        ) ?: ""
+            "enter_from"
+        ) ?: "" //TODO milhamj
         val searchEntrance = if (enterFrom == HOMEPAGE) {
             HOMEPAGE
         } else {
             ""
         }
         val enterMethod = intent.getStringExtra(
-            SearchConstant.ByteIOExtras.EXTRA_ENTER_METHOD
-        ) ?: ENTER
+            "enter_method"
+        ) ?: ENTER //TODO milhamj
         viewModel.initAppLogData(enterFrom, enterMethod, searchEntrance)
     }
 

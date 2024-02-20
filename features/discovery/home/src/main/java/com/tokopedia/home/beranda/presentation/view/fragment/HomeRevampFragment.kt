@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.performance.perf.*
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -2043,6 +2044,7 @@ open class HomeRevampFragment :
                         data.keyword.safeEncodeUtf8(),
                         isFirstInstall().toString()
                     )
+                    intent.putExtra("enter_from", HOMEPAGE)
 
                     navToolbarMicroInteraction
                         ?.animate(intent, ::startActivity)
