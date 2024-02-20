@@ -14,9 +14,9 @@ import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.media.Media
+import com.tokopedia.product.detail.common.data.model.media.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.PromoCodesResponse
 import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoListPromoIdsString
 import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoPriceUiModel

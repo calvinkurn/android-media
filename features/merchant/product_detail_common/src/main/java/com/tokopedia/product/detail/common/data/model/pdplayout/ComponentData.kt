@@ -3,11 +3,14 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.media.LiveIndicatorData
+import com.tokopedia.product.detail.common.data.model.media.Media
+import com.tokopedia.product.detail.common.data.model.media.ProductMediaRecomBasicInfo
+import com.tokopedia.product.detail.common.data.model.media.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.product.Cashback
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.common.data.model.product.VariantBasic
-import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
@@ -66,6 +69,9 @@ data class ComponentData(
     val containerType: String = "",
     @SerializedName("videos")
     val youtubeVideos: List<YoutubeVideo> = listOf(),
+    @SerializedName("liveIndicator")
+    @Expose
+    val liveIndicator: LiveIndicatorData = LiveIndicatorData(),
     // endregion
 
     @SerializedName("name")

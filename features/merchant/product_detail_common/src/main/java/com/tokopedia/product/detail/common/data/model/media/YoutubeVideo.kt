@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.common.data.model.product
+package com.tokopedia.product.detail.common.data.model.media
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
