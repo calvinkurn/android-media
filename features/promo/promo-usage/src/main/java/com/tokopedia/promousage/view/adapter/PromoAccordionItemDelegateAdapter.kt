@@ -19,7 +19,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class PromoAccordionItemDelegateAdapter(
     private val onClickPromo: (PromoItem) -> Unit,
-    private val onImpressionPromo: (PromoItem) -> Unit,
+    private val onImpressionPromo: (PromoItem) -> Unit
 ) : DelegateAdapter<PromoItem, PromoAccordionItemDelegateAdapter.ViewHolder>(
     PromoItem::class.java
 ) {

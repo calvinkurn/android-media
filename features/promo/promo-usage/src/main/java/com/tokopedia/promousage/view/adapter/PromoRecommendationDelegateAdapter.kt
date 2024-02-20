@@ -42,7 +42,7 @@ internal class PromoRecommendationDelegateAdapter(
     private val onClickPromo: (PromoItem) -> Unit,
     private val onImpressionPromo: (PromoItem) -> Unit,
     private val onRecommendationAnimationEnd: () -> Unit,
-    private val onClickClose: () -> Unit,
+    private val onClickClose: () -> Unit
 ) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
     PromoRecommendationItem::class.java
 ) {
