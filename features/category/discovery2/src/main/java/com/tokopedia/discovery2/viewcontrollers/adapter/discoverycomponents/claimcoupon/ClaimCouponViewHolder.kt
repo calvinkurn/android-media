@@ -29,6 +29,8 @@ class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun addShimmer(isDouble: Boolean) {
+        if (claimCouponViewModel?.components?.isBackgroundPresent == true) return
+
         val height = if (isDouble) {
             200
         } else {

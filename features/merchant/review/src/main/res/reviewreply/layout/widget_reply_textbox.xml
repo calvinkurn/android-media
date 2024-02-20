@@ -60,7 +60,7 @@
             android:textColor="@color/Unify_NN950_96"
             android:textColorHint="@color/Unify_NN950_44"
             android:layout_toStartOf="@+id/replySendButton"
-            android:background="@drawable/bg_rounded_chat_input"
+            android:background="@drawable/bg_rounded_input"
             android:hint="@string/reply_editText_placeholder"
             android:inputType="textMultiLine"
             android:maxLines="4"

@@ -168,6 +168,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerVi
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.remoteconfig.RemoteConfig
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -210,7 +211,8 @@ class HomeAdapterFactory(
     private val specialReleaseRevampListener: SpecialReleaseRevampListener,
     private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
     private val couponWidgetListener: CouponWidgetListener,
-    private val homeThematicUtil: HomeThematicUtil
+    private val homeThematicUtil: HomeThematicUtil,
+    private val remoteConfig: RemoteConfig
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -485,7 +487,7 @@ class HomeAdapterFactory(
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
-            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener, cardInteraction = true)
+            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, remoteConfig, listener, cardInteraction = true)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener, cardInteraction = true)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener, cardInteraction = true)

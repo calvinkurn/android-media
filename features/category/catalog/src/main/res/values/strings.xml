@@ -73,4 +73,5 @@
     <string name="catalog_keep_back">Tetap Kembali</string>
     <string name="catalog_switching_catalong_not_found">Katalog tidak ditemukan</string>
     <string name="catalog_switching_catalong_not_found_sub_title">Coba gunakan kata kunci lain, ya.</string>
+    <string name="catalog_text_lainnya">Lainnya</string>
 </resources>

@@ -131,6 +131,7 @@ fun createHomeViewModel(
     todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
     homeThematicUseCase: ThematicUseCase = mockk(relaxed = true),
     homeClaimCouponUseCase: HomeClaimCouponUseCase = mockk(relaxed = true),
+    remoteConfig: RemoteConfig = mockk(relaxed = true)
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return spyk(
@@ -161,7 +162,8 @@ fun createHomeViewModel(
             homeAtfUseCase = { homeAtfUseCase },
             todoWidgetRepository = { todoWidgetRepository },
             homeThematicUseCase = { homeThematicUseCase },
-            claimCouponUseCase = { homeClaimCouponUseCase }
+            claimCouponUseCase = { homeClaimCouponUseCase },
+            remoteConfig = { remoteConfig }
         ),
         recordPrivateCalls = true
     )

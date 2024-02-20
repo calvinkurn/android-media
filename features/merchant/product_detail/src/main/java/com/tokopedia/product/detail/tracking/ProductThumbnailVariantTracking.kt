@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.tracking
 
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
@@ -16,7 +16,7 @@ object ProductThumbnailVariantTracking {
 
     fun onItemClicked(
         trackingQueue: TrackingQueue?,
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         singleVariant: ProductSingleVariantDataModel?,
         variantId: String,
         variantKey: String,
@@ -51,7 +51,7 @@ object ProductThumbnailVariantTracking {
         singleVariant: ProductSingleVariantDataModel?,
         data: VariantOptionWithAttribute,
         position: Int,
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         userId: String
     ) {
         val action = "impression - product media variant thumbnail with image"

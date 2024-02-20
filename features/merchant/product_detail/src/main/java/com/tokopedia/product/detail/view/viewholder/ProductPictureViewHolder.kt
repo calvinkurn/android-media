@@ -15,7 +15,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.databinding.PdpPictureViewHolderBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 
 /**
@@ -23,7 +23,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
  */
 class ProductPictureViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener?,
+    private val listener: ProductDetailListener?,
     private val componentTrackDataModel: ComponentTrackDataModel?,
     private val containerType: MediaContainerType
 ) : AbstractViewHolder<MediaDataModel>(view) {

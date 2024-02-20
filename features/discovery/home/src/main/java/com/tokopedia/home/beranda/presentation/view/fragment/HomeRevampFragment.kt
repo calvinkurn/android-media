@@ -1611,7 +1611,8 @@ open class HomeRevampFragment :
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
             CouponWidgetCallback(this),
-            getThematicUtil()
+            getThematicUtil(),
+            getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
