@@ -76,7 +76,7 @@ class CartService @Inject constructor(
             )
     }
 
-    private fun addToCart(
+    fun addToCart(
         productId: String,
         shopId: String,
         updatedQuantity: Int,
@@ -143,6 +143,22 @@ class CartService @Inject constructor(
                 }
             },
             onError = onError,
+        )
+    }
+
+    fun directAddToCart(
+        productId: String,
+        shopId: String,
+        minOrder: Int,
+        onSuccessAddToCart: (AddToCartDataModel) -> Unit,
+        onErrorAddToCart: (Throwable) -> Unit
+    ) {
+        addToCartUseCase.setParams(AddToCartRequestParams(productId, shopId, minOrder))
+        addToCartUseCase.execute(
+            onSuccess = { atcResponse ->
+                    onSuccessAddToCart(atcResponse)
+            },
+            onError = onErrorAddToCart,
         )
     }
 }

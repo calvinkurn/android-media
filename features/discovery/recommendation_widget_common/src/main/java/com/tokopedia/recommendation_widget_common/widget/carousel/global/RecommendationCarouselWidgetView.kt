@@ -81,9 +81,26 @@ class RecommendationCarouselWidgetView :
             carouselProductCardOnItemClickListener = itemClickListener(model),
             carouselSeeMoreClickListener = seeMoreClickListener(model),
             carouselProductCardOnItemATCNonVariantClickListener = itemAddToCartNonVariantListener(model),
+            carouselProductCardOnItemAddToCartListener = itemAddToCartListener(model),
             finishCalculate = ::finishCalculateCarouselHeight
         )
     }
+
+    private fun itemAddToCartListener(model: RecommendationCarouselModel) =
+        object : CarouselProductCardListener.OnItemAddToCartListener {
+            override fun onItemAddToCart(
+                productCardModel: ProductCardModel,
+                carouselProductCardPosition: Int
+            ) {
+                val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
+                recommendationWidgetViewModel?.onDirectAddToCart(
+                    model,
+                    productRecommendation,
+                    productRecommendation.minOrder
+                )
+            }
+
+        }
 
     private fun itemImpressionListener(model: RecommendationCarouselModel) =
         object : CarouselProductCardListener.OnItemImpressedListener {
