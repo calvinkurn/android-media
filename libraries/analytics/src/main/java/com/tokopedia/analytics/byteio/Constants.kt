@@ -96,6 +96,7 @@ object PageName {
     const val SEARCH_RESULT = "search_result"
     const val CART = "cart"
     const val SHOP = "shop"
+    const val SKU = "sku"
 }
 
 object QuitType {
