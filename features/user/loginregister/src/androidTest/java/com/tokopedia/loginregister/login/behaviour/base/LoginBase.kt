@@ -33,7 +33,6 @@ import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.LoginTokenUseCaseStub
-import com.tokopedia.loginregister.stub.usecase.LoginTokenV2UseCaseStub
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -41,6 +40,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
+import com.tokopedia.header.R as headerR
 
 open class LoginBase : LoginRegisterBase() {
 
@@ -53,9 +53,6 @@ open class LoginBase : LoginRegisterBase() {
 
     @Inject
     lateinit var fakeRepo: FakeGraphqlRepository
-
-    @Inject
-    lateinit var loginTokenV2UseCaseStub: LoginTokenV2UseCaseStub
 
     @Inject
     lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
@@ -101,7 +98,7 @@ open class LoginBase : LoginRegisterBase() {
     }
 
     fun clickTopRegister() {
-        val viewInteraction = onView(withId(com.tokopedia.header.R.id.actionTextID)).check(matches(isDisplayed()))
+        val viewInteraction = onView(withId(headerR.id.actionTextID)).check(matches(isDisplayed()))
         viewInteraction.perform(click())
     }
 

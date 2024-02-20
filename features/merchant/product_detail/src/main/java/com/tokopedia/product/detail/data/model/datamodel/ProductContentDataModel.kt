@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 
 /**
@@ -39,7 +39,7 @@ data class ProductContentDataModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 

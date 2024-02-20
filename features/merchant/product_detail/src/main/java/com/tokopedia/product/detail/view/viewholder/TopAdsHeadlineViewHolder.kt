@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.databinding.PdpItemTopadsHeadlineInboxBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -37,7 +37,7 @@ const val PRODUCT_ID = "product_id"
 class TopAdsHeadlineViewHolder(
     val view: View,
     val userId: String,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : AbstractViewHolder<TopadsHeadlineUiModel>(view) {
 
     private val binding = PdpItemTopadsHeadlineInboxBinding.bind(view)

@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
-data class DynamicProductInfoP1(
+data class ProductInfoP1(
     val basic: BasicInfo = BasicInfo(),
     val data: ComponentData = ComponentData(),
     val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),

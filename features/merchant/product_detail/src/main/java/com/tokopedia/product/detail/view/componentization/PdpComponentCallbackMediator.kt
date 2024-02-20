@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.componentization
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.view.util.PdpUiUpdater
-import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
@@ -15,7 +15,7 @@ interface PdpComponentCallbackMediator : ComponentCallbackMediator {
 
     val rootView: Fragment
 
-    val pdpViewModel: DynamicProductDetailViewModel
+    val pdpViewModel: ProductDetailViewModel
 
     val uiUpdater: PdpUiUpdater?
 
