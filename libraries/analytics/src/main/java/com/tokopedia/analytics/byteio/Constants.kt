@@ -91,6 +91,18 @@ data class SubmitOrderResult(
     val failReason: String,
     val shippingPrice: Double,
     val discountedShippingPrice: Double,
+    val totalPayment: Double,
+    val discountedAmount: Double,
+    val totalTax: Double,
+    val summaryInfo: String,
+    val currency: String = "IDR",
+    val deliveryInfo: String,
+    val payType: String,
+    val cartItemId: String,
+    val skuId: String,
+    val orderId: String,
+    val comboId: String,
+    val productId: String
 )
 
 
