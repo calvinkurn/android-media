@@ -157,24 +157,42 @@ object EventName {
     const val CONFIRM_CART = "tiktokec_confirm_cart"
     const val CONFIRM_CART_RESULT = "tiktokec_confirm_cart_result"
     const val SUBMIT_ORDER_RESULT = "tiktokec_submit_order_result"
+
+    // https://bytedance.sg.larkoffice.com/docx/MSiydFty1o0xIYxUe4LltuRHgue
+    const val GLIDE_PAGE = "tiktokec_glide_page"
+    const val RECOMMENDATION_TRIGGER = "tiktokec_rec_trigger"
 }
 
+object ActionType {
+    const val GLIDE = "glide"
+    const val CLICK_CARD = "click_card"
+    const val SWITCH_TAB = "switch_tab"
+}
+
+
 object AppLogParam {
-    const val LIST_NAME = "list_name"
-    const val LIST_NUM = "list_num"
-    const val SOURCE_MODULE = "source_module"
-    const val TRACK_ID = "track_id"
-    const val PRODUCT_ID = "product_id"
-    const val PAGE_NAME = "page_name"
+    const val ACTION_TYPE = "action_type"
+    const val BAR_NAME = "bar_name"
+    const val CARD_NAME = "card_name"
+    const val ENTER_FROM = "enter_from"
+    const val ENTRANCE_FORM = "entrance_form"
+    const val GLIDE_DISTANCE = "glide_distance"
+    const val GLIDE_TYPE = "glide_type"
+    const val GROUP_ID = "group_id"
     const val IS_AD = "is_ad"
     const val IS_USE_CACHE = "is_use_cache"
-    const val REQUEST_ID = "request_id"
-    const val SHOP_ID = "shop_id"
-    const val PREVIOUS_PAGE = "previous_page"
-    const val SOURCE_PAGE_TYPE = "source_page_type"
-    const val ENTRANCE_FORM = "entrance_form"
-    const val ENTER_FROM = "enter_from"
     const val ITEM_ORDER = "item_order"
-    const val CARD_NAME = "card_name"
-    const val GROUP_ID = "group_id"
+    const val LIST_NAME = "list_name"
+    const val LIST_NUM = "list_num"
+    const val MODULE_NAME = "module_name"
+    const val PAGE_NAME = "page_name"
+    const val PREVIOUS_PAGE = "previous_page"
+    const val PRODUCT_ID = "product_id"
+    const val REQUEST_ID = "request_id"
+    const val REC_SESSION_ID = "req_session_id"
+    const val SHOP_ID = "shop_id"
+    const val SLIDE_TYPE = "slide_type"
+    const val SOURCE_MODULE = "source_module"
+    const val SOURCE_PAGE_TYPE = "source_page_type"
+    const val TRACK_ID = "track_id"
 }
