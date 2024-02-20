@@ -4,20 +4,46 @@ import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnify
 import com.tokopedia.autocompletecomponent.unify.domain.model.UniverseSuggestionUnifyModel
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 
 data class AutoCompleteState(
-    val parameter: Map<String, String> = emptyMap(),
+    val parameter: Map<String, String> = mapOf(),
     val resultList: List<AutoCompleteUnifyDataView> = listOf(),
     val navigate: AutoCompleteNavigate? = null,
-    val actionReplaceKeyword: String? = null
+    val actionReplaceKeyword: String? = null,
+    val searchParameter: SearchParameter? = null
 ) {
+    constructor(
+        searchParameter: SearchParameter,
+        resultList: List<AutoCompleteUnifyDataView> = listOf(),
+        navigate: AutoCompleteNavigate? = null,
+        actionReplaceKeyword: String? = null
+    ) : this(
+        searchParameter.getSearchParameterMap().mapValues { it.value.toString() },
+        resultList,
+        navigate,
+        actionReplaceKeyword,
+        searchParameter
+    )
 
-    fun updateParameter(parameter: Map<String, String>) = copy(parameter = parameter)
+    fun updateParameter(parameterMap: Map<String, String>) =
+        copy(
+            searchParameter = searchParameter?.let {
+                SearchParameter(
+                    it,
+                    parameterMap
+                )
+            },
+            parameter = parameterMap
+        )
+
+    fun getParameterMap(): Map<String, String> = parameter
 
     fun updateResultList(resultData: UniverseSuggestionUnifyModel): AutoCompleteState {
-        val dimension90 = Dimension90Utils.getDimension90(parameter)
-        val searchTerm = parameter.getOrElse(SearchApiConst.Q) { "" }
+        val parameterMap = getParameterMap()
+        val dimension90 = Dimension90Utils.getDimension90(parameterMap)
+        val searchTerm = parameterMap.getOrElse(SearchApiConst.Q) { "" }.toString()
 
         // Ads Logic
         val firstAdsId = resultData.cpmModel.data.getOrNull(0)?.cpm?.cpmShop?.id
@@ -70,9 +96,13 @@ data class AutoCompleteState(
         return copy(resultList = mappedResultList)
     }
 
-    fun updateResultList(resultList: List<AutoCompleteUnifyDataView>) = copy(resultList = resultList)
+    fun updateResultList(resultList: List<AutoCompleteUnifyDataView>) =
+        copy(resultList = resultList)
 
     fun updateNavigate(navigate: AutoCompleteNavigate?) = copy(navigate = navigate)
 
     fun updateReplaceKeyword(keyword: String?) = copy(actionReplaceKeyword = keyword)
+    fun parameterIsMps() = parameter[SearchApiConst.ACTIVE_TAB] == SearchApiConst.ACTIVE_TAB_MPS
+    fun parameterStateIsSuggestions(): Boolean =
+        parameter[SearchApiConst.Q].isNullOrBlank().not()
 }

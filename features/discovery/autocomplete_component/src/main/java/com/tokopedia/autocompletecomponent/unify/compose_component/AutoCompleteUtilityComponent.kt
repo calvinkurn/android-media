@@ -174,6 +174,17 @@ private fun AutoCompleteTitle(
             Spacer(Modifier.width(4.dp))
         }
 
+        if (title.iconImageUrl.isNotBlank()) {
+            NestImage(
+                source = ImageSource.Remote(
+                    source = title.iconImageUrl
+                ),
+                modifier = Modifier
+                    .size(16.dp)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+        }
+
         val annotatedTitle = getAnnotatedTitle(
             title = title,
             searchTerm = searchTerm
@@ -264,10 +275,24 @@ private fun setSearchQueryStartIndexInKeyword(titleText: String, searchTerm: Str
 
 @Composable
 private fun AutoCompleteSubtitle(subtitle: SuggestionUnifyTitle) {
-    NestTypography(
-        text = subtitle.text,
-        textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
-    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (subtitle.iconImageUrl.isNotBlank()) {
+            NestImage(
+                source = ImageSource.Remote(
+                    source = subtitle.iconImageUrl
+                ),
+                modifier = Modifier
+                    .size(16.dp)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+        }
+        NestTypography(
+            text = subtitle.text,
+            textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
+        )
+    }
 }
 
 @Composable
@@ -277,7 +302,7 @@ internal fun AutoCompleteRightIconCta(item: SuggestionUnifyCta, onItemClicked: (
             source = item.imageUrl
         ),
         modifier = Modifier
-            .width(16.dp)
+            .size(32.dp)
             .clip(CircleShape)
             .clickable {
                 onItemClicked()
@@ -309,7 +334,10 @@ internal fun AutoCompleteRightLabel(item: SuggestionUnifyLabel, onItemClicked: (
 }
 
 @Composable
-internal fun AutocompleteRightLabelEducation(item: SuggestionUnifyLabel, onItemClicked: () -> Unit = {}) {
+internal fun AutocompleteRightLabelEducation(
+    item: SuggestionUnifyLabel,
+    onItemClicked: () -> Unit = {}
+) {
     val textColor: Color = if (item.textColor.isNotBlank()) {
         Color(android.graphics.Color.parseColor(item.textColor))
     } else {
@@ -323,7 +351,10 @@ internal fun AutocompleteRightLabelEducation(item: SuggestionUnifyLabel, onItemC
     }
     NestTypography(
         text = item.text,
-        textStyle = NestTheme.typography.display2.copy(color = textColor, fontWeight = FontWeight.ExtraBold),
+        textStyle = NestTheme.typography.display2.copy(
+            color = textColor,
+            fontWeight = FontWeight.ExtraBold
+        ),
         modifier = Modifier.clickable {
             onItemClicked()
         }

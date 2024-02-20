@@ -57,24 +57,16 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     private fun actOnParameter() {
-        val parameter = stateValue.parameter
-        if (parameterIsMps() && !parameterStateIsSuggestions()) {
+        val parameter = stateValue.getParameterMap()
+        if (stateValue.parameterIsMps() && !stateValue.parameterStateIsSuggestions()) {
             return
         }
-        if (parameterStateIsSuggestions(parameter)) {
+        if (stateValue.parameterStateIsSuggestions()) {
             getSuggestionStateData(parameter)
             return
         }
         getInitialStateData(parameter)
     }
-
-    fun parameterIsMps(parameter: Map<String, String> = stateValue.parameter) =
-        parameter.containsKey(SearchApiConst.Q1) || parameter.containsKey(SearchApiConst.Q2) || parameter.containsKey(
-            SearchApiConst.Q3
-        )
-
-    private fun parameterStateIsSuggestions(parameter: Map<String, String> = stateValue.parameter) =
-        parameter[SearchApiConst.Q].isNullOrBlank().not()
 
     private fun getSuggestionStateData(parameter: Map<String, String>) {
         val requestParams = getParamsMainQuery(parameter, userSession)
@@ -102,7 +94,7 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     fun onAutoCompleteItemClick(item: AutoCompleteUnifyDataView) {
-        _stateFlow.value = stateValue.updateNavigate(AutoCompleteNavigate(item.domainModel.applink))
+        _stateFlow.value = stateValue.updateNavigate(AutoCompleteNavigate(item.domainModel.applink, stateValue.searchParameter))
     }
 
     fun onNavigated() {
@@ -205,7 +197,7 @@ internal class AutoCompleteViewModel @Inject constructor(
         _stateFlow.value = stateValue.updateResultList(resultList)
     }
 
-    private fun getNavSource() = stateValue.parameter[SearchApiConst.NAVSOURCE] ?: ""
+    private fun getNavSource() = stateValue.getParameterMap()[SearchApiConst.NAVSOURCE] ?: ""
 
     @SuppressLint("PII Data Exposure")
     private fun getParamsMainQuery(

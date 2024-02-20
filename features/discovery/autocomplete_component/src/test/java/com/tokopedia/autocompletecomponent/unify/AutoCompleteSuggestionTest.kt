@@ -35,8 +35,9 @@ class AutoCompleteSuggestionTest : AutoCompleteTestFixtures() {
         )
 
         `When Screen is Initialized`(viewModel)
-
-        `Then Verify Use Case is Called with correct parameter`(requestParamsSlot, parameters)
+        parameters.forEach {
+            assertThat(requestParamsSlot.captured.parameters[it.key], `is`(it.value))
+        }
     }
 
     private fun `Then Verify Use Case is Called with correct parameter`(

@@ -17,7 +17,6 @@ import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteT
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.autocompletecomponent.util.AutoCompleteTemplateEnum
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.iris.Iris
 import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.track.TrackApp
@@ -95,7 +94,7 @@ private fun EvaluateNavigation(
 ) {
     if (navigate != null) {
         LocalContext.current.apply {
-            val modifiedApplink = getModifiedApplink(navigate.applink, SearchParameter())
+            val modifiedApplink = getModifiedApplink(navigate.applink, navigate.searchParameter)
             RouteManager.route(this, modifiedApplink)
         }
         viewModel.onNavigated()
