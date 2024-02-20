@@ -60,6 +60,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_NUM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITION
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CORRECT_WORD
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
@@ -362,14 +363,17 @@ object AppLogSearch {
 
     // /////////////// -- IJ -- /////////////
 
-    fun <K, V> eventEnterSearchBlankPage() {
+    fun eventEnterSearchBlankPage(
+        search_entrance: String,
+        enter_from: String
+    ) {
         AppLogAnalytics.send(
             ENTER_SEARCH_BLANKPAGE,
             JSONObject(
                 mapOf(
                     SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. Other page empty
                     ENTER_FROM to "", // TODO:: HOMEPAGE || GOODS_SEARCH || STORE_SEARCH.
-                    ENTER_METHOD to "", // TODO:: ENTER
+                    ENTER_METHOD to ENTER
                 )
             )
         )
