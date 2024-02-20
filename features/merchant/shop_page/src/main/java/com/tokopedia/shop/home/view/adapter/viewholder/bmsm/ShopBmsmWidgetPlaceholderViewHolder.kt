@@ -18,6 +18,7 @@ class ShopBmsmWidgetPlaceholderViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_bmsm_widget_placeholder
+        private const val PD_WIDGET_TITLE_LOADER_LEFT_MARGIN = 64
     }
 
     private val binding: ItemBmsmWidgetPlaceholderBinding? by viewBinding()
@@ -31,7 +32,7 @@ class ShopBmsmWidgetPlaceholderViewHolder(
 
             if (!isGwpWidget) {
                 val params = loaderTitle.layoutParams as ViewGroup.MarginLayoutParams
-                params.marginStart = 64
+                params.marginStart = PD_WIDGET_TITLE_LOADER_LEFT_MARGIN
                 loaderTitle.layoutParams = params
             }
         }

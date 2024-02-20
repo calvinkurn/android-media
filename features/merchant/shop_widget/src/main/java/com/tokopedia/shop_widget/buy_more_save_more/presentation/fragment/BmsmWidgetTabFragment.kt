@@ -94,6 +94,7 @@ class BmsmWidgetTabFragment :
         private const val imageAlphaValue = 128
         private const val OFFER_TYPE_GWP = 2
         private const val OFFER_TYPE_PD = 1
+        private const val PD_WIDGET_TITLE_LOADER_LEFT_MARGIN = 64
 
         @JvmStatic
         fun newInstance(
@@ -426,7 +427,7 @@ class BmsmWidgetTabFragment :
                         clGiftImageLoaderWrapper.showWithCondition(isGwpWidget)
                         if (!isGwpWidget) {
                             val params = loaderTitle.layoutParams as MarginLayoutParams
-                            params.marginStart = 64
+                            params.marginStart = PD_WIDGET_TITLE_LOADER_LEFT_MARGIN
                             loaderTitle.layoutParams = params
                         }
 
