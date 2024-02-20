@@ -150,6 +150,7 @@ fun sendHorizontalScrollTrack(scrollOffset: Float, slideTrackObject: SlideTrackO
 }
 
 /**
+ * event: tiktokec_rec_trigger & tiktokec_glide_page
  * Add track listener after success fetching data from BE.
  * If we are sure this is not recommendation product, leave recommendedTriggerObject as null
  */
@@ -158,6 +159,7 @@ fun RecyclerView.addVerticalTrackListener(glideTrackObject: GlideTrackObject) {
 }
 
 /**
+ * event: tiktokec_slide_bar
  * Add track listener after success fetching data from BE.
  */
 fun RecyclerView.addHorizontalTrackListener(slideTrackObject: SlideTrackObject) {
