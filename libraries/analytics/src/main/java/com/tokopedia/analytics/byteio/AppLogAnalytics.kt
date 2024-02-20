@@ -79,8 +79,8 @@ object AppLogAnalytics {
         }
     }
 
-    fun sendEnterPage(product: TrackProductDetail) {
-        if (sourcePageType == "") {
+    fun sendEnterPage(product: TrackProductDetail?) {
+        if (sourcePageType == "" || product == null) {
             return
         }
         // TODO check if track id exist

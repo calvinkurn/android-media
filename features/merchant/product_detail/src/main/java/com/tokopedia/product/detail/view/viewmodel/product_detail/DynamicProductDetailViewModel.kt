@@ -504,9 +504,8 @@ class DynamicProductDetailViewModel @Inject constructor(
         return p2.bebasOngkir.boImages.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
     }
 
-    fun getProductDetailTrack(): TrackProductDetail {
-        val p1 = getDynamicProductInfoP1 ?: throw Exception()
-        val p2 = p2Data.value ?: throw Exception()
+    fun getProductDetailTrack(): TrackProductDetail? {
+        val p1 = getDynamicProductInfoP1 ?: return null
 
         return TrackProductDetail(
             productId = p1.parentProductId,
@@ -518,13 +517,13 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun getStayAnalyticsData(): TrackStayProductDetail {
-        val p1 = getDynamicProductInfoP1 ?: throw Exception("P1 is not available")
+        val p1 = getDynamicProductInfoP1
         return TrackStayProductDetail(
-            productId = p1.parentProductId,
-            productCategory = p1.basic.category.name,
-            productType = p1.productType,
-            originalPrice = p1.data.price.slashPriceFmt,
-            salePrice = p1.data.campaign.priceFmt,
+            productId = p1?.parentProductId.orEmpty(),
+            productCategory = p1?.basic?.category?.name.orEmpty(),
+            productType = p1?.productType ?: ProductType.NOT_AVAILABLE,
+            originalPrice = p1?.data?.price?.slashPriceFmt.orEmpty(),
+            salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
             isAddCartSelected = hasDoneAddToCart
         )
