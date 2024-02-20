@@ -26,7 +26,7 @@ object MediaLoaderTarget {
     fun <T : View> loadImage(context: Context, properties: Properties, target: MediaTarget<T>) {
         if (target is ImageView && properties.data == null) {
             // if the data source is null, the image will be render the error drawable
-            target.setImageDrawable(AppCompatResources.getDrawable(context, properties.error))
+            target.setImageDrawable(properties.getErrorDrawable(context))
             return
         }
 

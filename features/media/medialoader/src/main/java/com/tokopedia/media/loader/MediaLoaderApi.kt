@@ -31,14 +31,14 @@ internal object MediaLoaderApi {
 
         // handling empty url
         if (properties.data is String && source.toString().isEmpty()) {
-            imageView.setImageDrawable(getDrawable(context, properties.error))
+            imageView.setImageDrawable(properties.getErrorDrawable(context))
             properties.loaderListener?.onFailed(getErrorException(IMAGE_SOURCE_EMPTY_STRING))
             return
         }
 
         // if the data source is null, the image will be render the error drawable
         if (properties.data == null) {
-            imageView.setImageDrawable(getDrawable(context, properties.error))
+            imageView.setImageDrawable(properties.getErrorDrawable(context))
             properties.loaderListener?.onFailed(getErrorException(IMAGE_SOURCE_NULL))
             return
         }

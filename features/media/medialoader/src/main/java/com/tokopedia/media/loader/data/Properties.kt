@@ -1,7 +1,9 @@
 package com.tokopedia.media.loader.data
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.TransitionOptions
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
@@ -25,6 +27,7 @@ data class Properties(
     internal var roundedRadius: Float = 0f,
     internal var signatureKey: Key? = null,
     internal var error: Int = ERROR_RES_UNIFY,
+    internal var drawableError: Drawable? = null,
     internal var placeHolder: Int = 0,
     internal var drawablePlaceHolder: Drawable? = null,
     internal var isCache: Boolean = true,
@@ -139,9 +142,14 @@ data class Properties(
         this.signatureKey = key
     }
 
-    // set custom error drawable
+    // set custom error resource
     fun setErrorDrawable(resourceId: Int) = apply {
         this.error = resourceId
+    }
+
+    // set custom error drawable
+    fun setErrorDrawable(drawable: Drawable) = apply {
+        this.drawableError = drawable
     }
 
     // set custom placeholder via asset ref
@@ -264,6 +272,22 @@ data class Properties(
     fun userId(userId: String) = apply { this.userId = userId }
 
     fun setTimeout(timeoutMS: Int) = apply { this.timeoutMS = timeoutMS }
+
+    fun getPlaceholderDrawable(context: Context): Drawable? {
+        return if (drawablePlaceHolder == null) {
+            AppCompatResources.getDrawable(context, placeHolder)
+        } else {
+            drawablePlaceHolder
+        }
+    }
+
+    fun getErrorDrawable(context: Context): Drawable? {
+        return if (drawableError == null) {
+            AppCompatResources.getDrawable(context, error)
+        } else {
+            drawableError
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
