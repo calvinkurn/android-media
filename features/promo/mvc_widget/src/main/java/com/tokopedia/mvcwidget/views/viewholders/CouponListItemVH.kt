@@ -8,10 +8,10 @@ import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.MvcCouponListItem
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.trackers.MvcSource
@@ -122,10 +122,9 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         override fun onBindViewHolder(holder: ListItemImageVH, position: Int) {
             if (!urlList[position].isNullOrEmpty()) {
-                Glide.with(holder.image)
-                    .load(urlList[position])
-                    .dontAnimate()
-                    .into(holder.image)
+                holder.image.loadImage(urlList[position]) {
+                    isAnimate(false)
+                }
             }
         }
     }
