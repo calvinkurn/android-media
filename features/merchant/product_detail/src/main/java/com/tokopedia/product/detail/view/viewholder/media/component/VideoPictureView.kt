@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.media.model.LiveIndicatorUiModel
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -50,6 +51,7 @@ class VideoPictureView @JvmOverloads constructor(
         initialScrollPosition: Int,
         containerType: MediaContainerType,
         recommendation: ProductMediaRecomData,
+        liveIndicator: LiveIndicatorUiModel,
         isPrefetch: Boolean
     ) {
         this.mListener = listener
@@ -241,9 +243,9 @@ class VideoPictureView @JvmOverloads constructor(
     private fun shouldShowLiveIndicator(position: Int) = with(binding) {
         val shouldShow = videoPictureAdapter?.isPicture(position) == true
 
-        liveIndicator(shouldShow = shouldShow) {
+        /*liveIndicator(shouldShow = shouldShow) {
 
-        }
+        }*/
     }
 
     companion object {

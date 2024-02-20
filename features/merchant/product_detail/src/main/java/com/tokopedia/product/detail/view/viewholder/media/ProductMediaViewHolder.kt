@@ -79,6 +79,7 @@ class ProductMediaViewHolder(
             initialScrollPosition = scrollPosition,
             containerType = element.containerType,
             recommendation = element.recommendation,
+            liveIndicator = element.liveIndicator,
             isPrefetch = element.isPrefetch
         )
 

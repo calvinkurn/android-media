@@ -8,6 +8,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Lo
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.viewholder.media.model.LiveIndicatorUiModel
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 data class ProductMediaDataModel(
@@ -20,6 +21,7 @@ data class ProductMediaDataModel(
     var shouldAnimateLabel: Boolean = true,
     var containerType: MediaContainerType = MediaContainerType.Square,
     var recommendation: ProductMediaRecomData = ProductMediaRecomData(),
+    var liveIndicator: LiveIndicatorUiModel = LiveIndicatorUiModel(),
     var isPrefetch: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
@@ -74,7 +76,8 @@ data class ProductMediaDataModel(
         return if (newData is ProductMediaDataModel) {
             listOfMedia.hashCode() == newData.listOfMedia.hashCode() &&
                 initialScrollPosition == newData.initialScrollPosition &&
-                variantOptionIdScrollAnchor == newData.variantOptionIdScrollAnchor
+                variantOptionIdScrollAnchor == newData.variantOptionIdScrollAnchor &&
+                liveIndicator == newData.liveIndicator
         } else {
             false
         }
