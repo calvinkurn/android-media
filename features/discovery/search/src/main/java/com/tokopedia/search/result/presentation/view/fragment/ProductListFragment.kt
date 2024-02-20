@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -34,7 +36,6 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
-import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
@@ -120,6 +121,7 @@ import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.componentIdMap
 import com.tokopedia.search.utils.decodeQueryParameter
+import com.tokopedia.search.utils.enterMethodMap
 import com.tokopedia.search.utils.manualFilterToggleMap
 import com.tokopedia.search.utils.originFilterMap
 import com.tokopedia.search.utils.removeQuickFilterElevation
@@ -253,6 +255,10 @@ class ProductListFragment: BaseDaggerFragment(),
     private var searchSortFilter: SortFilter? = null
     private var searchSortFilterReimagine: SortFilterReimagine? = null
     private var shimmeringView: LinearLayout? = null
+    private val enterFrom: String
+        get() =
+            if (navsource == SearchApiConst.HOME) AppLogSearch.ParamValue.HOMEPAGE
+            else ""
 
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
@@ -562,6 +568,13 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun getSearchParameter(): SearchParameter? {
         return searchParameter
     }
+
+    private val navsource: String
+        get() = searchParameter?.get(SearchApiConst.NAVSOURCE) ?: ""
+
+    private val enterMethod: String
+        get() = searchParameter?.get(SearchApiConst.ENTER_METHOD) ?: ""
+
     //endregion
 
     //region onAttach
@@ -1057,7 +1070,8 @@ class ProductListFragment: BaseDaggerFragment(),
         val queryParams = filterController.getParameter() +
             originFilterMap() +
             componentIdMap(SearchSortFilterTracking.QUICK_FILTER_COMPONENT_ID) +
-            manualFilterToggleMap()
+            manualFilterToggleMap() +
+            enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
         refreshSearchParameter(queryParams)
 
@@ -1483,5 +1497,23 @@ class ProductListFragment: BaseDaggerFragment(),
         if(itemProduct == null) return
         presenter?.trackProductClick(itemProduct)
         presenter?.showBottomSheetInappropriate(itemProduct)
+    }
+
+    override fun sendTrackingByteIO(imprId: String) {
+        val durationMs: Long? = performanceMonitoring?.getPltPerformanceData()?.let {
+            it.startPageDuration + it.networkRequestDuration
+        }
+
+        AppLogSearch.eventSearch(
+            AppLogSearch.Search(
+                imprId = imprId,
+                enterFrom = enterFrom,
+                searchType = GOODS_SEARCH,
+                enterMethod = enterMethod,
+                searchKeyword = queryKey,
+                durationMs = durationMs,
+                isSuccess = true,
+            )
+        )
     }
 }

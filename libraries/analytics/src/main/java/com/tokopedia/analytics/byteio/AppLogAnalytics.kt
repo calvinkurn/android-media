@@ -84,6 +84,9 @@ object AppLogAnalytics {
         }
     }
 
+    internal val Boolean.intValue
+        get() = if (this) 1 else 0
+
     fun sendEnterPage(product: TrackProductDetail?) {
         if (sourcePageType == null || product == null) {
             return

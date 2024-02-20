@@ -32,7 +32,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search1InstAuto
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -248,9 +247,15 @@ class SuggestionFragment :
         applink: String,
         searchParameter: Map<String, String>,
         activeKeyword: SearchBarKeyword,
+        byteIOEnterMethod: String,
     ) {
         activity?.let {
-            val modifiedApplink = getModifiedApplink(applink, searchParameter, activeKeyword)
+            val modifiedApplink = getModifiedApplink(
+                applink,
+                searchParameter,
+                byteIOEnterMethod,
+                activeKeyword,
+            )
             RouteManager.route(it, modifiedApplink)
         }
     }

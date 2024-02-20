@@ -99,6 +99,7 @@ interface SuggestionContract {
             applink: String,
             searchParameter: Map<String, String>,
             activeKeyword: SearchBarKeyword,
+            byteIOEnterMethod: String,
         )
 
         fun applySuggestionToSelectedKeyword(

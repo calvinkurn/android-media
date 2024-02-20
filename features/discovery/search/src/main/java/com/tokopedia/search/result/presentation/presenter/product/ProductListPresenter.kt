@@ -1208,6 +1208,7 @@ class ProductListPresenter @Inject constructor(
                 externalReference = externalReference
             )
         )
+        view.sendTrackingByteIO("") //TODO:: IMPR_ID from BE
     }
 
     private fun createGeneralSearchTrackingEventCategory() =

@@ -448,7 +448,7 @@ class SearchActivity :
                 searchFragmentTitles,
                 searchParameter,
                 classLoader,
-                supportFragmentManager.fragmentFactory
+                supportFragmentManager.fragmentFactory,
             )
         }
 

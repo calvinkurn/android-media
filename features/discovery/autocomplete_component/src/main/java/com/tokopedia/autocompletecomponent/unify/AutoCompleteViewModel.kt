@@ -47,6 +47,12 @@ internal class AutoCompleteViewModel @Inject constructor(
     val stateValue
         get() = stateFlow.value
 
+    val isInitialState
+        get() = stateValue.isInitialState
+
+    val isSuggestion
+        get() = stateValue.isSuggestion
+
     fun onScreenInitialized() {
         actOnParameter()
     }
