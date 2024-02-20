@@ -148,6 +148,7 @@ enum class EnterMethod(val str: String) {
 object EventName {
     const val PRODUCT_SHOW = "tiktokec_product_show"
     const val PRODUCT_CLICK = "tiktokec_product_click"
+    const val ENTER_PAGE = "tiktokec_enter_page"
     const val CARD_SHOW = "tiktokec_card_show"
     const val CARD_CLICK = "tiktokec_card_click"
     const val ENTER_PRODUCT_DETAIL = "tiktokec_enter_product_detail"

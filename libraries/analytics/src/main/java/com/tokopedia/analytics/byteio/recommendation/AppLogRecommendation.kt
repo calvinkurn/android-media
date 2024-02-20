@@ -1,13 +1,16 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.SourceModule
 import com.tokopedia.analytics.byteio.SourcePageType
+import org.json.JSONObject
 
 /**
- * Byte.io tracking
+ * Byte.io recommendation tracking
+ * https://bytedance.sg.larkoffice.com/docx/MSiydFty1o0xIYxUe4LltuRHgue
  */
 object AppLogRecommendation {
 
@@ -34,5 +37,15 @@ object AppLogRecommendation {
         AppLogAnalytics.sourcePageType = SourcePageType.PRODUCT_CARD
         AppLogAnalytics.entranceForm = EntranceForm.PURE_GOODS_CARD
         AppLogAnalytics.send(EventName.CARD_CLICK, model.toJson())
+    }
+
+    fun sendEnterPageAppLog() {
+        AppLogAnalytics.send(
+            EventName.ENTER_PAGE,
+            JSONObject().apply {
+                //TODO enter_from, enter_method
+                addPage()
+            }
+        )
     }
 }

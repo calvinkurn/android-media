@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductClickAppLog
@@ -153,6 +154,8 @@ class HomeRecommendationFragment :
 
     private var startY = 0.0F
     private var startX = 0.0F
+
+    private val hasTrackEnterPage = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -290,6 +293,7 @@ class HomeRecommendationFragment :
                             is HomeRecommendationCardState.Success -> {
                                 adapter.submitList(it.data.homeRecommendations) {
                                     updateScrollEndlessListener(it.data.isHasNextPage)
+                                    trackEnterPage()
                                 }
                             }
 
@@ -317,6 +321,11 @@ class HomeRecommendationFragment :
                 }
             }
         }
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun updateScrollEndlessListener(hasNextPage: Boolean) {
