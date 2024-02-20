@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.autocompletecomponent.initialstate.chips.InitialStateChipWidgetTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.chips.convertToInitialStateChipWidgetDataView
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignDataView
@@ -654,7 +655,7 @@ class InitialStatePresenter @Inject constructor(
         trackEventItemClicked(item)
         val view = view ?: return
 
-        view.route(item.applink, searchParameter)
+        view.route(item.applink, searchParameter, byteIOEnterMethod(item))
         view.finish()
     }
 
@@ -674,6 +675,12 @@ class InitialStatePresenter @Inject constructor(
                 )
         }
     }
+
+    private fun byteIOEnterMethod(item: BaseItemInitialStateSearch) =
+        when (item.type) {
+            TYPE_SHOP -> ""
+            else -> AppLogSearch.ParamValue.SEARCH_HISTORY
+        }
 
     private fun getRecentShopLabelForTracking(item: BaseItemInitialStateSearch): String {
         return getShopIdFromApplink(item.applink) + " - keyword: " + item.title
@@ -730,7 +737,7 @@ class InitialStatePresenter @Inject constructor(
         if (isTokoNow()) trackEventClickTokoNowDynamicSectionItem(item)
         else trackEventClickDynamicSectionItem(item)
 
-        view?.route(item.applink, searchParameter)
+        view?.route(item.applink, searchParameter, "")
         view?.finish()
     }
 
@@ -763,7 +770,7 @@ class InitialStatePresenter @Inject constructor(
             baseItemInitialState.campaignCode
         )
 
-        view.route(baseItemInitialState.applink, searchParameter)
+        view.route(baseItemInitialState.applink, searchParameter, "")
         view.finish()
     }
 
@@ -772,7 +779,7 @@ class InitialStatePresenter @Inject constructor(
         val label = "po: ${item.position} - applink: ${item.applink}"
         view.trackEventClickRecentView(item, label)
 
-        view.route(item.applink, searchParameter)
+        view.route(item.applink, searchParameter, "")
         view.finish()
     }
 
@@ -781,7 +788,7 @@ class InitialStatePresenter @Inject constructor(
         val label = "po: ${item.position} - applink: ${item.applink}"
         view.trackEventClickProductLine(item, getUserId(), label)
 
-        view.route(item.applink, searchParameter)
+        view.route(item.applink, searchParameter, "")
         view.finish()
     }
 
@@ -790,7 +797,7 @@ class InitialStatePresenter @Inject constructor(
         val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
         view.trackEventClickChip(getUserId(), label, item, item.featureId, item.dimension90)
 
-        view.route(item.applink, searchParameter)
+        view.route(item.applink, searchParameter, AppLogSearch.ParamValue.RECOM_SEARCH)
         view.finish()
     }
 
@@ -798,7 +805,7 @@ class InitialStatePresenter @Inject constructor(
         val view = view ?: return
         view.trackEventClickSearchBarEducation(item)
 
-        view.route(item.applink, searchParameter)
+        view.route(item.applink, searchParameter, "")
         view.finish()
     }
 

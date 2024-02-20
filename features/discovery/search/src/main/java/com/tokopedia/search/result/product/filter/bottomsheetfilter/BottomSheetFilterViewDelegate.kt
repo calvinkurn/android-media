@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -18,6 +19,7 @@ import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
+import com.tokopedia.search.result.product.byteio.ByteIODataHolder
 import com.tokopedia.search.result.product.filter.analytics.SearchSortFilterTracking
 import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.utils.FragmentProvider
@@ -41,6 +43,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val screenNameProvider: ScreenNameProvider,
     private val userSessionInterface: UserSessionInterface,
     private val reimagineRollence: ReimagineRollence,
+    private val byteIODataHolder: ByteIODataHolder,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -150,6 +153,8 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         optionList?.firstOrNull { it.inputState.toBoolean() } as? Sort
 
     private fun applyParameter(parameter: Map<String, String>) {
+        byteIODataHolder.updateEnterMethod(AppLogSearch.ParamValue.TAB_SEARCH)
+
         parameterListener.refreshSearchParameter(parameter)
 
         lastFilterListener.updateLastFilter()

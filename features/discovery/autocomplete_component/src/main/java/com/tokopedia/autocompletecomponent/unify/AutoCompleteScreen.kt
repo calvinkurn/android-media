@@ -16,8 +16,8 @@ import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteM
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteTitleComponent
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.autocompletecomponent.util.AutoCompleteTemplateEnum
-import com.tokopedia.autocompletecomponent.util.routeManagerIntent
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
+import com.tokopedia.autocompletecomponent.util.routeManagerIntent
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.iris.Iris
 import com.tokopedia.nest.principles.utils.tag
@@ -110,7 +110,7 @@ private fun EvaluateNavigation(
 
 private fun enterMethod(viewModel: AutoCompleteViewModel) =
     if (viewModel.isInitialState)
-        AppLogSearch.ParamValue.DEFAULT_SEARCH_KEYWORD
+        AppLogSearch.ParamValue.SEARCH_HISTORY
     else if (viewModel.isSuggestion)
         AppLogSearch.ParamValue.SEARCH_SUG
     else ""

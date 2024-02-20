@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordConstants
 import com.tokopedia.autocompletecomponent.suggestion.chips.convertToSuggestionChipWidgetDataView
@@ -391,7 +392,7 @@ class SuggestionPresenter @Inject constructor(
                 trackSuggestionShopAds(item)
 
                 view?.dropKeyBoard()
-                view?.route(item.applink, searchParameter, activeKeyword)
+                view?.route(item.applink, searchParameter, activeKeyword, AppLogSearch.ParamValue.SEARCH_SUG)
                 view?.finish()
             }
             else -> {
@@ -648,7 +649,7 @@ class SuggestionPresenter @Inject constructor(
         trackEventTopShopClicked(cardData)
 
         view?.dropKeyBoard()
-        view?.route(cardData.applink, searchParameter, activeKeyword)
+        view?.route(cardData.applink, searchParameter, activeKeyword, AppLogSearch.ParamValue.SEARCH_SUG)
         view?.finish()
     }
 
@@ -683,7 +684,7 @@ class SuggestionPresenter @Inject constructor(
         view?.trackClickChip(label, item.dimension90, item)
 
         view?.dropKeyBoard()
-        view?.route(item.applink, searchParameter, activeKeyword)
+        view?.route(item.applink, searchParameter, activeKeyword, AppLogSearch.ParamValue.SUG_RECOM)
         view?.finish()
     }
 

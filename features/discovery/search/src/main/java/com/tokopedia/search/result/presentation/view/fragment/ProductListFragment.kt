@@ -87,6 +87,7 @@ import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheet
 import com.tokopedia.search.result.product.addtocart.analytics.AddToCartTracking
 import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchListenerDelegate
+import com.tokopedia.search.result.product.byteio.ByteIODataHolder
 import com.tokopedia.search.result.product.changeview.ChangeView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
@@ -252,6 +253,10 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var reimagineRollence: ReimagineRollence
 
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var byteIODataHolder: ByteIODataHolder
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -263,7 +268,8 @@ class ProductListFragment: BaseDaggerFragment(),
     private var searchSortFilterReimagine: SortFilterReimagine? = null
     private var shimmeringView: LinearLayout? = null
     private var enterFrom: String = ""
-    private var enterMethod: String = ""
+    private val enterMethod: String
+        get() = byteIODataHolder.enterMethod
 
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
@@ -372,7 +378,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER))
         enterFrom = savedInstanceState.getString(EXTRA_ENTER_FROM) ?: ""
-        enterMethod = savedInstanceState.getString(EXTRA_ENTER_METHOD) ?: ""
+        byteIODataHolder.updateEnterMethod(savedInstanceState.getString(EXTRA_ENTER_METHOD))
     }
 
     private fun addDefaultSelectedSort() {
@@ -1068,6 +1074,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
         refreshSearchParameter(queryParams)
 
+        byteIODataHolder.updateEnterMethod(AppLogSearch.ParamValue.TAB_SEARCH)
+
         lastFilterListenerDelegate.updateLastFilter()
 
         reloadData()
@@ -1497,10 +1505,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTrackingByteIO(imprId: String) {
-        /**
-        PRE_SEARCH_ID to "", // TODO:: Previous Search ID, make similar to PREVIOUS_KEYWORD?
-        EC_SEARCH_SESSION_ID to "", // TODO:: Search Session ID. From FE? Need SharedPreferences to clear on Homepage
-         */
+        val durationMs: Long? = performanceMonitoring?.getPltPerformanceData()?.let {
+            it.startPageDuration + it.networkRequestDuration
+        }
 
         AppLogSearch.eventSearch(
             AppLogSearch.Search(
@@ -1509,9 +1516,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 searchType = GOODS_SEARCH,
                 enterMethod = enterMethod,
                 searchKeyword = queryKey,
-                durationMs = performanceMonitoring?.getPltPerformanceData()?.networkRequestDuration,
+                durationMs = durationMs,
                 isSuccess = true,
-
             )
         )
     }

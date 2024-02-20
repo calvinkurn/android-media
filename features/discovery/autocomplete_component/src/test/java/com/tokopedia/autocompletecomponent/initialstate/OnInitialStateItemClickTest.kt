@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent.initialstate
 
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.autocompletecomponent.initialstate.chips.InitialStateChipWidgetDataView
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocompletecomponent.initialstate.data.InitialStateUniverse
@@ -58,7 +59,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     private fun InitialStateContract.View.onClickRecentSearch(item: BaseItemInitialStateSearch) {
         verifyOrder {
             trackEventClickRecentSearch(item, getItemEventLabelForTracking(item))
-            route(item.applink, initialStatePresenter.getSearchParameter())
+            route(item.applink, initialStatePresenter.getSearchParameter(), AppLogSearch.ParamValue.SEARCH_HISTORY)
             finish()
         }
     }
@@ -90,7 +91,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     private fun InitialStateContract.View.onClickRecentShop(item: BaseItemInitialStateSearch) {
         verifyOrder {
             trackEventClickRecentShop(item, getRecentShopLabelForTracking(item), any())
-            route(item.applink, initialStatePresenter.getSearchParameter())
+            route(item.applink, initialStatePresenter.getSearchParameter(), "")
             finish()
         }
     }
@@ -170,7 +171,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
                 item.featureId,
                 item.dimension90
             )
-            route(item.applink, initialStatePresenter.getSearchParameter())
+            route(item.applink, initialStatePresenter.getSearchParameter(), "")
             finish()
         }
     }
@@ -205,7 +206,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
                 baseItemInitialState.type,
                 baseItemInitialState.campaignCode
             )
-            route(baseItemInitialState.applink, initialStatePresenter.getSearchParameter())
+            route(baseItemInitialState.applink, initialStatePresenter.getSearchParameter(), "")
             finish()
         }
     }
@@ -233,7 +234,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         verifyOrder {
             trackEventClickRecentView(item, expectedLabel)
-            route(item.applink, initialStatePresenter.getSearchParameter())
+            route(item.applink, initialStatePresenter.getSearchParameter(), "")
             finish()
         }
     }
@@ -262,7 +263,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         verifyOrder {
             trackEventClickProductLine(item, userId, expectedLabel)
-            route(item.applink, initialStatePresenter.getSearchParameter())
+            route(item.applink, initialStatePresenter.getSearchParameter(), "")
             finish()
         }
     }
@@ -345,7 +346,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         val expectedLabel = "value: ${item.title} - title: ${item.header} - po: 1"
         verifyOrder {
             trackEventClickChip(any(), expectedLabel, item, item.featureId, item.dimension90)
-            route(item.applink, initialStatePresenter.getSearchParameter())
+            route(item.applink, initialStatePresenter.getSearchParameter(), AppLogSearch.ParamValue.RECOM_SEARCH)
             finish()
         }
     }
@@ -367,7 +368,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     private fun `Then verify searchbar education track`(item: BaseItemInitialStateSearch) {
         verify {
             initialStateView.trackEventClickSearchBarEducation(item)
-            initialStateView.route(item.applink, initialStatePresenter.getSearchParameter())
+            initialStateView.route(item.applink, initialStatePresenter.getSearchParameter(), "")
             initialStateView.finish()
         }
     }

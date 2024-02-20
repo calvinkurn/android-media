@@ -150,6 +150,7 @@ object AppLogSearch {
         const val SEARCH_SUG = "search_sug"
         const val NORMAL_SEARCH = "normal_search"
         const val SUG_RECOM = "sug_recom"
+        const val TAB_SEARCH = "tab_search"
         const val GOODS = "goods"
         const val VIDEO_GOODS = "video_goods"
         const val SHOP = "shop"
@@ -231,6 +232,7 @@ object AppLogSearch {
             put(ENTER_FROM, enterFrom)
             put(SEARCH_TYPE, searchType)
             put(ENTER_METHOD, enterMethod)
+            put(SEARCH_KEYWORD, searchKeyword)
 
             durationMs?.let { put(DURATION, it) }
             isSuccess?.let { put(IS_SUCCESS, it.intValue) }

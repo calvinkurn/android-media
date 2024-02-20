@@ -248,13 +248,14 @@ class SuggestionFragment :
         applink: String,
         searchParameter: Map<String, String>,
         activeKeyword: SearchBarKeyword,
+        byteIOEnterMethod: String,
     ) {
         activity?.let {
             val modifiedApplink = getModifiedApplink(applink, searchParameter, activeKeyword)
             val intent = routeManagerIntent(
                 context = it,
                 applink = modifiedApplink,
-                enterMethod = AppLogSearch.ParamValue.SEARCH_SUG,
+                enterMethod = byteIOEnterMethod,
             )
             startActivity(intent)
         }
