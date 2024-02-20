@@ -720,7 +720,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 skuId = data.basic.productID,
                 addSkuNum = data.basic.minOrder,
                 isSuccess = false, // todo
-                failReason = "",
+                failReason = result.getAtcErrorMessage().orEmpty(),
                 buttonType = -1, // todo
                 cartItemId = result.data.cartId,
             )

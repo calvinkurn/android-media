@@ -631,7 +631,7 @@ class AtcVariantViewModel @Inject constructor(
                 skuId = selectedChild?.productId.orEmpty(),
                 addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
                 isSuccess = false, // todo
-                failReason = "",
+                failReason = result.errorMessage.firstOrNull().orEmpty(),
                 buttonType = -1, // todo
                 cartItemId = result?.data?.cartId.orEmpty()
             )
