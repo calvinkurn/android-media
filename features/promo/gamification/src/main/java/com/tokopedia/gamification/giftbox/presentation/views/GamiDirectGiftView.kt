@@ -5,13 +5,13 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListButton
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListItem
 import com.tokopedia.gamification.giftbox.data.entities.PrizeListItem
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -49,9 +49,7 @@ class GamiDirectGiftView @JvmOverloads constructor(
         val prizeItem = prizeList?.find { it -> it.isSpecial }
         if (prizeItem != null) {
             prizeItem.let { item ->
-                Glide.with(image)
-                        .load(item.imageURL)
-                        .into(image)
+                image.loadImage(item.imageURL)
 
                 val tvList = arrayListOf(tvTitle, tvMessage)
                 item.text?.forEachIndexed { index, text ->
