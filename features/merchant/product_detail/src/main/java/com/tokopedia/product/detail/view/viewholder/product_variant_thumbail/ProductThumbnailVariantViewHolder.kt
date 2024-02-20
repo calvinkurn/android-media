@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.databinding.ItemThumbnailVariantViewHolderBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.util.ThumbnailSmoothScroller
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.adapter.ProductThumbnailVariantAdapter
@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ada
 class ProductThumbnailVariantViewHolder(
     val view: View,
     private val atcListener: AtcVariantListener,
-    private val pdpListener: DynamicProductDetailListener
+    private val pdpListener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductSingleVariantDataModel>(view),
     AtcVariantListener by atcListener {
 

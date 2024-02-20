@@ -203,7 +203,7 @@
     <dimen name="product_card_reimagine_nett_price_height">20dp</dimen>
     <dimen name="product_card_reimagine_safe_product_overlay_image_radius">8dp</dimen>
     <dimen name="product_card_reimagine_content_guideline_padding_in_background">8dp</dimen>
-    <dimen name="product_card_reimagine_button_atc_height">28dp</dimen>
+    <dimen name="product_card_reimagine_button_atc_height">32dp</dimen>
     <dimen name="product_card_reimagine_button_atc_margin_top">4dp</dimen>
 
 </resources>

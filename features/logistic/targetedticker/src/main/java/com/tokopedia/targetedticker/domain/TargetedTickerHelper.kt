@@ -34,7 +34,7 @@ object TargetedTickerHelper {
         }
     }
 
-    private fun TickerModel.toTickerData(): ArrayList<TickerData> {
+    fun TickerModel.toTickerData(): ArrayList<TickerData> {
         val message = ArrayList<TickerData>()
         for (tickerItem in this.item) {
             message.add(
