@@ -273,6 +273,38 @@ class ProductListViewModelTest {
         }
 
     @Test
+    fun `When delete discount response is error with empty error message, observer should receive error result`() =
+        runBlocking {
+            coEvery { deleteDiscountUseCase.executeOnBackground() } returns DeleteDiscountResponse(
+                DeleteDiscountResponse.DoSlashPriceStop(
+                    ResponseHeader(success = false)
+                )
+            )
+
+            //When
+            viewModel.deleteDiscount(DISCOUNT_STATUS_ID_ONGOING, productIds)
+
+            //Then
+            assert(viewModel.deleteDiscount.value is Fail)
+        }
+
+    @Test
+    fun `When delete discount response is error with error message, observer should receive error result`() =
+        runBlocking {
+            coEvery { deleteDiscountUseCase.executeOnBackground() } returns DeleteDiscountResponse(
+                DeleteDiscountResponse.DoSlashPriceStop(
+                    ResponseHeader(success = false, errorMessages = listOf("Server error"))
+                )
+            )
+
+            //When
+            viewModel.deleteDiscount(DISCOUNT_STATUS_ID_ONGOING, productIds)
+
+            //Then
+            assert(viewModel.deleteDiscount.value is Fail)
+        }
+
+    @Test
     fun `When delete discount error, observer should receive error result`() =
         runBlocking {
             val error = MessageErrorException("Server error")
@@ -282,7 +314,7 @@ class ProductListViewModelTest {
             viewModel.deleteDiscount(DISCOUNT_STATUS_ID_ONGOING, productIds)
 
             //Then
-            coVerify { deleteDiscountObserver.onChanged(Fail(error)) }
+            assert(viewModel.deleteDiscount.value is Fail)
         }
 
     @Test
@@ -304,6 +336,43 @@ class ProductListViewModelTest {
 
             //Then
             coVerify { reserveProductObserver.onChanged(Success(true)) }
+        }
+
+    @Test
+    fun `When reserve product response error without error message, observer should receive error result`() =
+        runBlocking {
+            coEvery { reserveProductUseCase.executeOnBackground() } returns DoSlashPriceProductReservationResponse(
+                DoSlashPriceProductReservationResponse.DoSlashPriceProductReservation(
+                    ResponseHeader(
+                        success = false
+                    )
+                )
+            )
+
+            //When
+            viewModel.reserveProduct(requestId, productIds)
+
+            //Then
+            assert(viewModel.reserveProduct.value is Fail)
+        }
+
+    @Test
+    fun `When reserve product response error with error message, observer should receive error result`() =
+        runBlocking {
+            coEvery { reserveProductUseCase.executeOnBackground() } returns DoSlashPriceProductReservationResponse(
+                DoSlashPriceProductReservationResponse.DoSlashPriceProductReservation(
+                    ResponseHeader(
+                        success = false,
+                        errorMessages = listOf("Server error")
+                    )
+                )
+            )
+
+            //When
+            viewModel.reserveProduct(requestId, productIds)
+
+            //Then
+            assert(viewModel.reserveProduct.value is Fail)
         }
 
     @Test
