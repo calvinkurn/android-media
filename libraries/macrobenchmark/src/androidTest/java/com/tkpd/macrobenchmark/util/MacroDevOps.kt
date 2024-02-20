@@ -117,6 +117,9 @@ object MacroDevOps {
 
         val masukButton = loginInputView.findObject(By.res("com.tokopedia.tkpd", "register_btn"))
         masukButton.click()
+
+        Thread.sleep(5000)
+        device.pressHome()
     }
 
     fun openTargetThenKill(intent: Intent) {
