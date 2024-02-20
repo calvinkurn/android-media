@@ -80,6 +80,18 @@ object ForYouDataMapper {
                 clickUrl = recommendationProductItem.clickUrl,
                 isWishlist = recommendationProductItem.isWishlist,
                 wishListUrl = recommendationProductItem.wishListUrl,
+                shop = recommendationProductItem.shop.let {
+                    RecommendationCardModel.ProductItem.Shop(
+                        id = it.id,
+                        applink = it.applink,
+                        city = it.city,
+                        domain = it.domain,
+                        imageUrl = it.imageUrl,
+                        name = it.name,
+                        reputation = it.reputation,
+                        url = it.url,
+                    )
+                },
             ),
             pageName = pageName,
             layoutName = layoutName,
@@ -102,6 +114,8 @@ object ForYouDataMapper {
                 layoutItem = playVideoTrackerUiModel.layoutItem,
                 categoryId = playVideoTrackerUiModel.categoryId,
             ),
+            isAds = isAds,
+            shopId = shopId,
         )
     }
 
@@ -121,6 +135,9 @@ object ForYouDataMapper {
                 title = labelState.title,
                 textColor = labelState.textColor
             ),
+            position = position,
+            isAds = isAds,
+            shopId = shopId,
         )
     }
 }
