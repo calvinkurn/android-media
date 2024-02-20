@@ -719,8 +719,10 @@ class DynamicProductDetailViewModel @Inject constructor(
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
                 addSkuNum = data.basic.minOrder,
-                isSuccess = "",
-                failReason = ""
+                isSuccess = false, // todo
+                failReason = "",
+                buttonType = -1, // todo
+                cartItemId = "",
             )
         )
         if (result.isStatusError()) {
