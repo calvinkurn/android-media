@@ -293,7 +293,6 @@ class CartRevampFragment :
     private var hasLoadRecommendation: Boolean = false
 
     private var hasTriedToLoadWishList: Boolean = false
-    private var hasTriedToLoadRecentViewList: Boolean = false
     private var shouldReloadRecentViewList: Boolean = false
     private var hasTriedToLoadRecommendation: Boolean = false
     private var delayShowPromoButtonJob: Job? = null
@@ -461,13 +460,12 @@ class CartRevampFragment :
 
         activity?.let {
             it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-
-//            if (viewModel.cartModel.wishlists == null && viewModel.cartModel.recentViewList == null) {
-//                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART)
-//                cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
-//                cartAllPerformanceMonitoring =
-//                    PerformanceMonitoring.start(CART_ALL_TRACE)
-//            }
+            if (viewModel.cartModel.wishlists == null) {
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART)
+                cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
+                cartAllPerformanceMonitoring =
+                    PerformanceMonitoring.start(CART_ALL_TRACE)
+            }
         }
     }
 
@@ -2565,8 +2563,6 @@ class CartRevampFragment :
 
         observeProgressLoading()
 
-        observeRecentView()
-
         observeRecommendation()
 
         observeRemoveFromWishlist()
@@ -2862,26 +2858,6 @@ class CartRevampFragment :
                 }
             }
         }
-    }
-
-    private fun observeRecentView() {
-//        viewModel.recentViewState.observe(viewLifecycleOwner) { data ->
-//            when (data) {
-//                is LoadRecentReviewState.Success -> {
-//                    hideItemLoading()
-//                    if (data.recommendationWidgets.firstOrNull()?.recommendationItemList?.isNotEmpty() == true) {
-//                        renderRecentView(data.recommendationWidgets[0])
-//                    }
-//                    setHasTriedToLoadRecentView()
-//                    stopAllCartPerformanceTrace()
-//                }
-//
-//                is LoadRecentReviewState.Failed -> {
-//                    setHasTriedToLoadRecentView()
-//                    stopAllCartPerformanceTrace()
-//                }
-//            }
-//        }
     }
 
     private fun observeRecommendation() {
@@ -4305,27 +4281,6 @@ class CartRevampFragment :
         viewModel.getEntryPointInfoNoItemSelected()
     }
 
-    private fun renderRecentView() {
-//        var cartRecentViewItemHolderDataList: MutableList<CartRecentViewItemHolderData> =
-//            ArrayList()
-//        if (recommendationWidget != null) {
-//            cartRecentViewItemHolderDataList =
-//                recentViewMapper.convertToViewHolderModelList(recommendationWidget)
-//        } else {
-//            viewModel.cartModel.recentViewList?.let {
-//                cartRecentViewItemHolderDataList.addAll(it)
-//            }
-//        }
-//        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-//        cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_recent_view)
-
-//        val cartRecentViewHolderData = CartRecentViewHolderData()
-//        cartRecentViewHolderData.recentViewList = cartRecentViewItemHolderDataList
-//        viewModel.addCartRecentViewData()
-//        viewModel.cartModel.recentViewList = cartRecentViewItemHolderDataList
-//        shouldReloadRecentViewList = false
-    }
-
     private fun renderRecommendation(recommendationWidget: RecommendationWidget?) {
         val cartRecommendationItemHolderDataList = ArrayList<CartRecommendationItemHolderData>()
 
@@ -4746,10 +4701,6 @@ class CartRevampFragment :
 
     private fun setInitialCheckboxGlobalState(cartData: CartData) {
         binding?.checkboxGlobal?.isChecked = cartData.isGlobalCheckboxState
-    }
-
-    private fun setHasTriedToLoadRecentView() {
-        hasTriedToLoadRecentViewList = true
     }
 
     private fun setHasTriedToLoadWishList() {
@@ -5343,7 +5294,7 @@ class CartRevampFragment :
     }
 
     private fun stopAllCartPerformanceTrace() {
-        if (!isTraceCartAllStopped && hasTriedToLoadRecentViewList && hasTriedToLoadWishList && hasTriedToLoadRecommendation) {
+        if (!isTraceCartAllStopped && hasTriedToLoadWishList && hasTriedToLoadRecommendation) {
             cartAllPerformanceMonitoring?.stopTrace()
             isTraceCartAllStopped = true
         }
@@ -5373,18 +5324,17 @@ class CartRevampFragment :
                 )
             }
 
-            // TODO: Adjust tracker
-//            is CartRecentViewItemHolderData -> {
-//                eventCategory = ConstantTransactionAnalytics.EventCategory.CART
-//                eventAction =
-//                    ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_RECENT_VIEW_PAGE
-//                eventLabel = ""
-//                stringObjectMap = viewModel.generateAddToCartEnhanceEcommerceDataLayer(
-//                    productModel,
-//                    addToCartDataResponseModel,
-//                    FLAG_IS_CART_EMPTY
-//                )
-//            }
+            is RecommendationItem -> {
+                eventCategory = ConstantTransactionAnalytics.EventCategory.CART
+                eventAction =
+                    ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_RECENT_VIEW_PAGE
+                eventLabel = ""
+                stringObjectMap = viewModel.generateAddToCartEnhanceEcommerceDataLayer(
+                    productModel,
+                    addToCartDataResponseModel,
+                    FLAG_IS_CART_EMPTY
+                )
+            }
 
             is CartRecommendationItemHolderData -> {
                 eventCategory = ConstantTransactionAnalytics.EventCategory.CART
@@ -5679,14 +5629,6 @@ class CartRevampFragment :
                 LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
             renderPromoCheckout(lastApplyUiModel)
         }
-    }
-
-    private fun validateRenderRecentView() {
-//        if (viewModel.cartModel.recentViewList == null || shouldReloadRecentViewList) {
-//            viewModel.processGetRecentViewData()
-//        } else {
-//            renderRecentView()
-//        }
     }
 
     private fun validateRenderWishlist() {
