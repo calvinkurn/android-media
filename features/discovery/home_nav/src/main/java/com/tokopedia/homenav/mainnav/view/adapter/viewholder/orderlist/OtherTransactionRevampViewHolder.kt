@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.databinding.HolderViewAllRevampBinding
@@ -17,7 +16,6 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by dhaba
  */
 
-@MePage(MePage.Widget.TRANSACTION)
 class OtherTransactionRevampViewHolder(itemView: View, val mainNavListener: MainNavListener) : AbstractViewHolder<OtherTransactionRevampModel>(itemView) {
     private var binding: HolderViewAllRevampBinding? by viewBinding()
     companion object {

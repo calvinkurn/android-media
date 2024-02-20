@@ -82,8 +82,6 @@ object ProductListUiStateMapper {
     fun mapToProductListProductUiModel(
         uiModel: ProductBmgmSectionUiModel.ProductUiModel
     ): ProductListUiModel.ProductUiModel {
-        val addOnSummaryUiModel = uiModel.addOnSummaryUiModel
-        val addOnsIdentifier = generateAddOnsIdentifier(uiModel.productId, uiModel.orderDetailId)
         val buttonUiModel = uiModel.button
         val actionButton = ActionButtonsUiModel.ActionButton(
             key = buttonUiModel?.key.orEmpty(),
@@ -122,30 +120,7 @@ object ProductListUiStateMapper {
             totalPriceText = uiModel.totalPriceText,
             quantity = uiModel.quantity,
             productNote = uiModel.productNote,
-            addonsListUiModel = AddonsListUiModel(
-                addOnIdentifier = addOnsIdentifier,
-                totalPriceText = addOnSummaryUiModel?.totalPriceText,
-                addonsLogoUrl = addOnSummaryUiModel?.addonsLogoUrl.orEmpty(),
-                addonsTitle = addOnSummaryUiModel?.addonsTitle.orEmpty(),
-                addonsItemList = addOnSummaryUiModel?.addonItemList?.map {
-                    AddonsListUiModel.AddonItemUiModel(
-                        priceText = it.priceText,
-                        quantity = it.quantity,
-                        addonsId = it.addonsId,
-                        addOnsName = it.addOnsName,
-                        type = it.type,
-                        addOnsThumbnailUrl = it.addOnsThumbnailUrl,
-                        toStr = it.toStr,
-                        fromStr = it.fromStr,
-                        message = it.message,
-                        providedByShopItself = it.providedByShopItself,
-                        infoLink = it.infoLink,
-                        tips = it.tips
-                    )
-                }.orEmpty(),
-                canExpandCollapse = true,
-                showTotalPrice = true
-            ),
+            addOnSummaryUiModel = uiModel.addOnSummaryUiModel,
             isProcessing = uiModel.isProcessing.orFalse(),
             button = actionButton,
             productUrl = uiModel.thumbnailUrl
@@ -501,6 +476,9 @@ object ProductListUiStateMapper {
         val (numOfRemovedProductBundle, productBundlingList) = mapProductBundle(
             details?.bundles,
             bundleIcon,
+            addonInfo?.label.orEmpty(),
+            addonInfo?.iconUrl.orEmpty(),
+            addOnsExpandableState,
             orderId,
             orderStatusId,
             insuranceDetailData,
@@ -645,7 +623,6 @@ object ProductListUiStateMapper {
             mapProduct(
                 details = details,
                 product = it,
-                addonSummary = it.addonSummary,
                 orderId = orderId,
                 orderStatusId = orderStatusId,
                 isPof = isPof,
@@ -663,6 +640,9 @@ object ProductListUiStateMapper {
     private fun mapProductBundle(
         bundleDetail: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bundle>?,
         bundleIcon: String,
+        addOnLabel: String,
+        addOnIcon: String,
+        addOnsExpandableState: List<String>,
         orderId: String,
         orderStatusId: String,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
@@ -698,6 +678,9 @@ object ProductListUiStateMapper {
                         orderId,
                         orderStatusId,
                         bundle.bundleId,
+                        addOnLabel,
+                        addOnIcon,
+                        addOnsExpandableState,
                         insuranceDetailData,
                         singleAtcResultFlow,
                         warrantyClaimButtonImpressed
@@ -943,7 +926,6 @@ object ProductListUiStateMapper {
             mapProduct(
                 details = details,
                 product = it,
-                addonSummary = it.addonSummary,
                 orderId = orderId,
                 orderStatusId = orderStatusId,
                 isPof = isPof,
@@ -959,7 +941,6 @@ object ProductListUiStateMapper {
     private fun mapProduct(
         details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
         product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle,
-        addonSummary: AddonSummary?,
         orderId: String,
         orderStatusId: String,
         isPof: Boolean,
@@ -986,11 +967,12 @@ object ProductListUiStateMapper {
             totalPrice = product.totalPrice,
             totalPriceText = product.totalPriceText,
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
-            addonsListUiModel = getAddonsSectionProductLevel(
+            addOnSummaryUiModel = mapAddOnSummary(
                 product.productId,
                 product.orderDetailId,
-                details,
-                addonSummary,
+                product.addonSummary,
+                details.addonLabel,
+                details.addonIcon,
                 addOnsExpandableState
             ),
             insurance = mapInsurance(product.productId, insuranceDetailData),
@@ -1090,7 +1072,7 @@ object ProductListUiStateMapper {
             insurance = null,
             button = mapActionButton(product.button),
             addOnSummaryUiModel = product.addonSummary?.let {
-                com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
+                AddOnSummaryUiModel(
                     addOnIdentifier = addOnIdentifier,
                     totalPriceText = if (it.totalPriceStr.isNotBlank()) {
                         StringRes(
@@ -1105,7 +1087,7 @@ object ProductListUiStateMapper {
                     addonItemList = it.addons?.map { addon ->
                         val addOnNote = addon.metadata?.addOnNote
                         val addOnInfoLink = addon.metadata?.infoLink
-                        com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
+                        AddOnSummaryUiModel.AddonItemUiModel(
                             priceText = addon.priceStr,
                             quantity = addon.quantity,
                             addonsId = addon.id,
@@ -1137,6 +1119,9 @@ object ProductListUiStateMapper {
         orderId: String,
         orderStatusId: String,
         bundleId: String,
+        addOnLabel: String,
+        addOnIcon: String,
+        addOnsExpandableState: List<String>,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         warrantyClaimButtonImpressed: Boolean
@@ -1160,8 +1145,66 @@ object ProductListUiStateMapper {
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
             insurance = mapInsurance(product.productId, bundleId, insuranceDetailData),
             productUrl = "",
-            impressHolder = ImpressHolder().apply { if (warrantyClaimButtonImpressed) invoke() }
+            impressHolder = ImpressHolder().apply { if (warrantyClaimButtonImpressed) invoke() },
+            addOnSummaryUiModel = mapAddOnSummary(
+                product.productId,
+                product.orderDetailId,
+                product.addonSummary,
+                addOnLabel,
+                addOnIcon,
+                addOnsExpandableState
+            )
         )
+    }
+
+    private fun mapAddOnSummary(
+        productId: String,
+        orderDetailId: String,
+        addonSummary: AddonSummary?,
+        addOnLabel: String,
+        addOnIcon: String,
+        addOnsExpandableState: List<String>
+    ): AddOnSummaryUiModel? {
+        return addonSummary?.let {
+            val addOnsIdentifier = generateAddOnsIdentifier(productId, orderDetailId)
+            AddOnSummaryUiModel(
+                addOnIdentifier = addOnsIdentifier,
+                totalPriceText = if (it.totalPriceStr.isNotBlank()) {
+                    StringRes(
+                        order_management_commonR.string.om_add_on_collapsed_title_format,
+                        listOf(it.totalPriceStr)
+                    )
+                } else {
+                    StringRes(Int.ZERO)
+                },
+                addonsLogoUrl = addOnIcon,
+                addonsTitle = addOnLabel,
+                addonItemList = it.addons?.map { addon ->
+                    val addOnNote = addon.metadata?.addOnNote
+                    val addOnInfoLink = addon.metadata?.infoLink
+                    AddOnSummaryUiModel.AddonItemUiModel(
+                        priceText = addon.priceStr,
+                        quantity = addon.quantity,
+                        addonsId = addon.id,
+                        addOnsName = addon.name,
+                        type = addon.type,
+                        addOnsThumbnailUrl = addon.imageUrl,
+                        toStr = addOnNote?.to.orEmpty(),
+                        fromStr = addOnNote?.from.orEmpty(),
+                        message = addOnNote?.notes.orEmpty(),
+                        noteCopyable = false,
+                        providedByShopItself = true,
+                        infoLink = addOnInfoLink.orEmpty(),
+                        tips = addOnNote?.tips.orEmpty(),
+                        orderId = "",
+                        orderDetailId = ""
+                    )
+                }.orEmpty(),
+                canExpandCollapse = true
+            ).also { addOnSummaryUiModel ->
+                addOnSummaryUiModel.isExpand = addOnsExpandableState.contains(addOnsIdentifier)
+            }
+        }
     }
 
     private fun mapActionButton(
@@ -1206,44 +1249,6 @@ object ProductListUiStateMapper {
             uriType = popUpButton.uriType,
             uri = popUpButton.uri
         )
-    }
-
-    private fun getAddonsSectionProductLevel(
-        productId: String,
-        orderDetailId: String,
-        details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
-        addonSummary: AddonSummary?,
-        addOnsExpandableState: List<String>
-    ): AddonsListUiModel {
-        val addOnsIdentifier = generateAddOnsIdentifier(productId, orderDetailId)
-        return AddonsListUiModel(
-            addOnIdentifier = addOnsIdentifier,
-            addonsTitle = details.addonLabel,
-            addonsLogoUrl = details.addonIcon,
-            totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf(addonSummary?.totalPriceStr.orEmpty())),
-            addonsItemList = addonSummary?.addons?.map {
-                val addonNote = it.metadata?.addOnNote
-                val infoLink = it.metadata?.infoLink
-                AddonsListUiModel.AddonItemUiModel(
-                    priceText = it.priceStr,
-                    addOnsName = it.name,
-                    type = it.type,
-                    addonsId = it.id,
-                    quantity = it.quantity,
-                    addOnsThumbnailUrl = it.imageUrl,
-                    toStr = addonNote?.to.orEmpty(),
-                    fromStr = addonNote?.from.orEmpty(),
-                    message = addonNote?.notes.orEmpty(),
-                    providedByShopItself = true,
-                    infoLink = infoLink.orEmpty(),
-                    tips = addonNote?.tips.orEmpty()
-                )
-            }.orEmpty(),
-            canExpandCollapse = true,
-            showTotalPrice = true
-        ).also {
-            it.isExpand = !addOnsExpandableState.contains(addOnsIdentifier)
-        }
     }
 
     private fun generateAddOnsIdentifier(
