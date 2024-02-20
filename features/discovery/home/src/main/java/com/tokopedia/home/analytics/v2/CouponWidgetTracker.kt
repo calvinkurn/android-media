@@ -1,5 +1,7 @@
 package com.tokopedia.home.analytics.v2
 
+import com.tokopedia.home.analytics.HomePageTracking.PROMO_CLICK
+import com.tokopedia.home.analytics.HomePageTracking.PROMO_VIEW
 import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.visitable.CouponCtaState
 import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
@@ -8,9 +10,8 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object CouponWidgetTracker : BaseTrackerConst() {
 
+    private const val IMPRESSION_ID = "49608"
     private const val EVENT_IMPRESSION_ACTION = "impression on banner coupon widget"
-    private const val EVENT_CTA_CLICK_ACTION = "click on CTA button coupon widget"
-
     fun impress(
         position: Int,
         userId: String,
@@ -22,7 +23,7 @@ object CouponWidgetTracker : BaseTrackerConst() {
         val trackAttributionModel = coupons.first().trackerModel.trackingAttributionModel
 
         val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionView(
-            event = Event.VIEW_ITEM,
+            event = PROMO_VIEW,
             eventAction = EVENT_IMPRESSION_ACTION,
             eventCategory = Category.HOMEPAGE,
             eventLabel = "${trackAttributionModel.channelId} - ${trackAttributionModel.headerName}",
@@ -38,11 +39,14 @@ object CouponWidgetTracker : BaseTrackerConst() {
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendChannelId(trackAttributionModel.channelId)
+            .appendCustomKeyValue(TrackerId.KEY, IMPRESSION_ID)
             .appendUserId(userId)
 
         return trackingBuilder.build()
     }
 
+    private const val CTA_CLICK_ID = "49609"
+    private const val EVENT_CTA_CLICK_ACTION = "click on CTA button coupon widget"
     fun ctaClick(
         position: Int,
         userId: String,
@@ -56,7 +60,7 @@ object CouponWidgetTracker : BaseTrackerConst() {
         }
 
         val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = Event.SELECT_CONTENT,
+            event = PROMO_CLICK,
             eventAction = EVENT_CTA_CLICK_ACTION,
             eventCategory = Category.HOMEPAGE,
             eventLabel = "${model.channelId} - $actionName - ${model.headerName}",
@@ -72,7 +76,7 @@ object CouponWidgetTracker : BaseTrackerConst() {
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendChannelId(model.channelId)
-            .appendCampaignCode(coupon.trackerModel.trackingAttributionModel.campaignCode)
+            .appendCustomKeyValue(TrackerId.KEY, CTA_CLICK_ID)
             .appendUserId(userId)
 
         return trackingBuilder.build()
