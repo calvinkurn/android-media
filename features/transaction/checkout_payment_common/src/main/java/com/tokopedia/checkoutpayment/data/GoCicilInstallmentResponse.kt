@@ -11,17 +11,17 @@ class GoCicilInstallmentResponse(
     @SerializedName("success")
     val success: Boolean = false,
     @SerializedName("data")
-    val data: GoCicilInstallmentData = GoCicilInstallmentData()
+    val data: GoCicilInstallmentResponseData = GoCicilInstallmentResponseData()
 )
 
-class GoCicilInstallmentData(
+class GoCicilInstallmentResponseData(
     @SerializedName("ticker")
-    val ticker: GoCicilInstallmentTicker = GoCicilInstallmentTicker(),
+    val ticker: GoCicilInstallmentTickerResponse = GoCicilInstallmentTickerResponse(),
     @SerializedName("installment_options")
-    val installmentOptions: List<GoCicilInstallmentOption> = emptyList()
+    val installmentOptions: List<GoCicilInstallmentOptionResponse> = emptyList()
 )
 
-class GoCicilInstallmentOption(
+class GoCicilInstallmentOptionResponse(
     @SerializedName("installment_term")
     val installmentTerm: Int = 0,
     @SerializedName("option_id")
@@ -50,7 +50,7 @@ class GoCicilInstallmentOption(
     val isRecommended: Boolean = false
 )
 
-class GoCicilInstallmentTicker(
+class GoCicilInstallmentTickerResponse(
     @SerializedName("message")
     val message: String = ""
 )

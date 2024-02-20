@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import com.tokopedia.checkoutpayment.data.GoCicilInstallmentData
-import com.tokopedia.checkoutpayment.data.GoCicilInstallmentOption
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData

@@ -8,13 +8,12 @@ import com.tokopedia.checkoutpayment.data.CartData
 import com.tokopedia.checkoutpayment.data.CartDetail
 import com.tokopedia.checkoutpayment.data.CartDetailsItem
 import com.tokopedia.checkoutpayment.data.CreditCardTenorListRequest
-import com.tokopedia.checkoutpayment.data.GoCicilInstallmentData
-import com.tokopedia.checkoutpayment.data.GoCicilInstallmentOption
-import com.tokopedia.checkoutpayment.data.GoCicilInstallmentTicker
 import com.tokopedia.checkoutpayment.data.PaymentData
 import com.tokopedia.checkoutpayment.data.PaymentRequest
 import com.tokopedia.checkoutpayment.data.PromoDetail
 import com.tokopedia.checkoutpayment.domain.CreditCardTenorListData
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
@@ -1743,7 +1742,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             installmentTerm = 4
         )
         val tickerMessage = "tickerMessage"
-        coEvery { goCicilInstallmentOptionUseCase(any()) } returns GoCicilInstallmentData(ticker = GoCicilInstallmentTicker(tickerMessage), installmentOptions = listOf(option1, option2, option3))
+        coEvery { goCicilInstallmentOptionUseCase(any()) } returns GoCicilInstallmentData(tickerMessage = tickerMessage, installmentOptions = listOf(option1, option2, option3))
 
         // When
         orderSummaryPageViewModel.calculateTotal()

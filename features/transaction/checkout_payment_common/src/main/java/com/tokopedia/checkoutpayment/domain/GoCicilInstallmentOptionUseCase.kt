@@ -2,9 +2,10 @@ package com.tokopedia.checkoutpayment.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.checkoutpayment.data.GoCicilInstallmentData
 import com.tokopedia.checkoutpayment.data.GoCicilInstallmentGqlResponse
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentOptionResponse
 import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentResponse
 import com.tokopedia.checkoutpayment.generateAppVersionForPayment
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class GoCicilInstallmentOptionUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-): CoroutineUseCase<GoCicilInstallmentRequest, GoCicilInstallmentData>(dispatchers.io) {
+) : CoroutineUseCase<GoCicilInstallmentRequest, GoCicilInstallmentData>(dispatchers.io) {
 
     private fun generateParam(param: GoCicilInstallmentRequest): Map<String, Any?> {
         return mapOf(
@@ -94,6 +95,33 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(
         if (!response.response.success) {
             throw MessageErrorException()
         }
-        return response.response.data
+        return mapResponse(response.response)
+    }
+
+    private fun mapResponse(response: GoCicilInstallmentResponse): GoCicilInstallmentData {
+        return GoCicilInstallmentData(
+            tickerMessage = response.data.ticker.message,
+            installmentOptions = mapInstallmentOptions(response.data.installmentOptions)
+        )
+    }
+
+    private fun mapInstallmentOptions(options: List<GoCicilInstallmentOptionResponse>): List<GoCicilInstallmentOption> {
+        return options.map {
+            GoCicilInstallmentOption(
+                installmentTerm = it.installmentTerm,
+                optionId = it.optionId,
+                firstInstallmentTime = it.firstInstallmentTime,
+                estInstallmentEnd = it.estInstallmentEnd,
+                firstDueMessage = it.firstDueMessage,
+                interestAmount = it.interestAmount,
+                feeAmount = it.feeAmount,
+                installmentAmountPerPeriod = it.installmentAmountPerPeriod,
+                labelType = it.labelType,
+                labelMessage = it.labelMessage,
+                isActive = it.isActive,
+                description = it.description,
+                isRecommended = it.isRecommended
+            )
+        }
     }
 }

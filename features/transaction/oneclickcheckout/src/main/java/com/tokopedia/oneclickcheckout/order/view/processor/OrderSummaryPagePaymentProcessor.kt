@@ -18,7 +18,6 @@ import com.tokopedia.checkoutpayment.data.CartShopOrderData
 import com.tokopedia.checkoutpayment.data.CreditCardTenorListRequest
 import com.tokopedia.checkoutpayment.data.DetailsItemData
 import com.tokopedia.checkoutpayment.data.GoCicilAddressRequest
-import com.tokopedia.checkoutpayment.data.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
 import com.tokopedia.checkoutpayment.data.GoCicilProductRequest
 import com.tokopedia.checkoutpayment.data.PaymentData
@@ -28,9 +27,8 @@ import com.tokopedia.checkoutpayment.data.PromoDetail
 import com.tokopedia.checkoutpayment.data.SummariesItemData
 import com.tokopedia.checkoutpayment.data.UsageSummariesData
 import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
-import com.tokopedia.checkoutpayment.domain.CreditCardTenorListUseCase
-import com.tokopedia.checkoutpayment.domain.DynamicPaymentFeeUseCase
-import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOptionUseCase
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
+import com.tokopedia.checkoutpayment.processor.CheckoutPaymentProcessor
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -54,9 +52,7 @@ import java.util.Collections.emptyList
 import javax.inject.Inject
 
 class OrderSummaryPagePaymentProcessor @Inject constructor(
-    private val creditCardTenorListUseCase: CreditCardTenorListUseCase,
-    private val goCicilInstallmentOptionUseCase: GoCicilInstallmentOptionUseCase,
-    private val dynamicPaymentFeeUseCase: DynamicPaymentFeeUseCase,
+    private val processor: CheckoutPaymentProcessor,
     private val executorDispatchers: CoroutineDispatchers
 ) {
 
@@ -70,7 +66,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val creditCardData = creditCardTenorListUseCase(
+                val creditCardData = processor.getCreditCardAdminFee(
                     generateCreditCardTenorListRequest(
                         orderPayment,
                         userId,
@@ -79,11 +75,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         paymentRequest
                     )
                 )
-                if (creditCardData.errorMsg.isNotEmpty()) {
-                    return@withContext null
-                } else {
-                    return@withContext creditCardData.tenorList.map { mapAfpbToInstallmentTerm(it) }
-                }
+                return@withContext creditCardData?.map { mapAfpbToInstallmentTerm(it) }
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
@@ -182,29 +174,32 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val response = goCicilInstallmentOptionUseCase(
+                val response = processor.getGocicilInstallmentOption(
                     request
                 )
-                val installmentList = mapInstallmentOptions(
-                    response.installmentOptions
-                )
-                var selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
-                var shouldUpdateCart = false
-                if (selectedTerm == null) {
-                    shouldUpdateCart = true
-                    selectedTerm = autoSelectGoCicilTerm(
-                        orderPayment.walletData.goCicilData.selectedTenure,
-                        installmentList
+                if (response != null) {
+                    val installmentList = mapInstallmentOptions(
+                        response.installmentOptions
+                    )
+                    var selectedTerm = orderPayment.walletData.goCicilData.selectedTerm
+                    var shouldUpdateCart = false
+                    if (selectedTerm == null) {
+                        shouldUpdateCart = true
+                        selectedTerm = autoSelectGoCicilTerm(
+                            orderPayment.walletData.goCicilData.selectedTenure,
+                            installmentList
+                        )
+                    }
+                    val selectedInstallment =
+                        installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }
+                    return@withContext ResultGetGoCicilInstallment(
+                        selectedInstallment,
+                        installmentList,
+                        response.tickerMessage,
+                        shouldUpdateCart
                     )
                 }
-                val selectedInstallment =
-                    installmentList.first { it.installmentTerm == selectedTerm.installmentTerm }
-                return@withContext ResultGetGoCicilInstallment(
-                    selectedInstallment,
-                    installmentList,
-                    response.ticker.message,
-                    shouldUpdateCart
-                )
+                return@withContext null
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
@@ -263,22 +258,15 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         paymentRequest: PaymentRequest
     ): List<OrderPaymentFee>? {
         OccIdlingResource.increment()
-        val result = withContext(executorDispatchers.io) {
-            try {
-                return@withContext dynamicPaymentFeeUseCase(
-                    PaymentFeeRequest(
-                        orderPayment.creditCard.additionalData.profileCode,
-                        orderPayment.gatewayCode,
-                        orderCost.totalPriceWithoutPaymentFees,
-                        orderPayment.additionalData,
-                        paymentRequest
-                    )
-                )
-            } catch (t: Throwable) {
-                Timber.d(t)
-                return@withContext null
-            }
-        }
+        val result = processor.getPaymentFee(
+            PaymentFeeRequest(
+                orderPayment.creditCard.additionalData.profileCode,
+                orderPayment.gatewayCode,
+                orderCost.totalPriceWithoutPaymentFees,
+                orderPayment.additionalData,
+                paymentRequest
+            )
+        )
         OccIdlingResource.decrement()
         return result
     }
@@ -317,11 +305,13 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                                     cartStringGroup = orderCart.cartString,
                                     shippingInfo = CartShippingInfoData(
                                         spId = orderShipment.getRealShipperProductId().toString(),
-                                        originalShippingPrice = orderShipment.getRealOriginalPrice().toDouble(),
+                                        originalShippingPrice = orderShipment.getRealOriginalPrice()
+                                            .toDouble(),
                                         serviceName = orderShipment.getRealServiceName(),
                                         shipperName = orderShipment.getRealShipperName(),
                                         eta = orderShipment.getRealServiceEta(),
-                                        insurancePrice = orderShipment.getRealInsurancePrice().toDouble()
+                                        insurancePrice = orderShipment.getRealInsurancePrice()
+                                            .toDouble()
                                     ),
                                     shopOrders = listOf(
                                         CartShopOrderData(
@@ -438,7 +428,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
 
         orderProduct.addOnsProductData.data.forEach { addOnsProduct ->
             if (addOnsProduct.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addOnsProduct.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
-                val addOnQty: Long = if (addOnsProduct.fixedQuantity) 1 else orderProduct.orderQuantity.toLong()
+                val addOnQty: Long =
+                    if (addOnsProduct.fixedQuantity) 1 else orderProduct.orderQuantity.toLong()
                 addOnProductLevelItems.add(
                     CartAddOnData(
                         name = addOnsProduct.name,

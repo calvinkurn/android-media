@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExtern
 import com.tokopedia.checkoutpayment.domain.CreditCardTenorListUseCase
 import com.tokopedia.checkoutpayment.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOptionUseCase
+import com.tokopedia.checkoutpayment.processor.CheckoutPaymentProcessor
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
@@ -156,9 +157,12 @@ open class BaseOrderSummaryPageViewModelTest {
             ),
             {
                 OrderSummaryPagePaymentProcessor(
-                    creditCardTenorListUseCase,
-                    goCicilInstallmentOptionUseCase,
-                    dynamicPaymentFeeUseCase,
+                    CheckoutPaymentProcessor(
+                        creditCardTenorListUseCase,
+                        goCicilInstallmentOptionUseCase,
+                        dynamicPaymentFeeUseCase,
+                        testDispatchers
+                    ),
                     testDispatchers
                 )
             },
