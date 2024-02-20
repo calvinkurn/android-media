@@ -91,7 +91,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     private fun InitialStateContract.View.onClickRecentShop(item: BaseItemInitialStateSearch) {
         verifyOrder {
             trackEventClickRecentShop(item, getRecentShopLabelForTracking(item), any())
-            route(item.applink, initialStatePresenter.getSearchParameter(), "")
+            route(item.applink, initialStatePresenter.getSearchParameter(), any())
             finish()
         }
     }

@@ -655,7 +655,7 @@ class InitialStatePresenter @Inject constructor(
         trackEventItemClicked(item)
         val view = view ?: return
 
-        view.route(item.applink, searchParameter, byteIOEnterMethod(item))
+        view.route(item.applink, searchParameter, AppLogSearch.ParamValue.SEARCH_HISTORY)
         view.finish()
     }
 
@@ -675,12 +675,6 @@ class InitialStatePresenter @Inject constructor(
                 )
         }
     }
-
-    private fun byteIOEnterMethod(item: BaseItemInitialStateSearch) =
-        when (item.type) {
-            TYPE_SHOP -> ""
-            else -> AppLogSearch.ParamValue.SEARCH_HISTORY
-        }
 
     private fun getRecentShopLabelForTracking(item: BaseItemInitialStateSearch): String {
         return getShopIdFromApplink(item.applink) + " - keyword: " + item.title
