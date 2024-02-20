@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentCouponWidgetBinding
+import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetAdapter
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.viewholders.layoutmanager.DynamicGridLayoutManager
-import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -55,6 +55,7 @@ class CouponWidgetViewHolder constructor(
     private fun setupHeaderAndBackgroundWidget(element: CouponWidgetDataModel) {
         binding?.headerView?.bind(element.header())
         binding?.root?.setGradientBackground(element.backgroundGradientColor)
+        binding?.imgBackground?.loadImage(element.backgroundImageUrl)
     }
 
     private fun onWidgetImpressionListener(element: CouponWidgetDataModel) {

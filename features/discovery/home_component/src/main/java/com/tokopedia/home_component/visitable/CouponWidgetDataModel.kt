@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 data class CouponWidgetDataModel(
     val channelModel: ChannelModel,
+    val backgroundImageUrl: String,
     val backgroundGradientColor: ArrayList<String>,
     val coupons: List<CouponWidgetDataItemModel>
 ) : HomeComponentVisitable, ImpressHolder() {

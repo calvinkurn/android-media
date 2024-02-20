@@ -5,6 +5,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/img_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"/>
+
     <com.tokopedia.home_component_header.view.HomeComponentHeaderView
         android:id="@+id/header_view"
         android:layout_width="match_parent"

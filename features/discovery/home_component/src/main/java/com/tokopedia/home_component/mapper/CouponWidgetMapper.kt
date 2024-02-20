@@ -22,6 +22,7 @@ object CouponWidgetMapper {
     fun map(model: ChannelModel): CouponWidgetDataModel {
         return CouponWidgetDataModel(
             channelModel = model,
+            backgroundImageUrl = model.channelBanner.imageUrl,
             backgroundGradientColor = model.channelBanner.gradientColor,
             coupons = model.channelGrids
                 .take(MAX_COUPON_SIZE)

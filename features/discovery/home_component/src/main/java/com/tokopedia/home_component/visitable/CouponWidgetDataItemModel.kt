@@ -10,9 +10,9 @@ data class CouponWidgetDataItemModel(
 )
 
 data class CouponTrackerModel(
-    val gridId: String,
-    val attribution: String,
-    val trackingAttributionModel: TrackingAttributionModel
+    val gridId: String = "",
+    val attribution: String = "",
+    val trackingAttributionModel: TrackingAttributionModel = TrackingAttributionModel()
 )
 
 sealed class CouponCtaState(val model: Data?) {
