@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.ui.composeView
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -58,18 +59,18 @@ fun CtaSellerOffering(
     theme: Boolean,
     onClick: (() -> Unit)?
 ) {
-    var switchState by remember { mutableStateOf(1) }
+    var switchState by remember { mutableStateOf(0) }
 
     val context = LocalContext.current
-    val maxSwitchState = if (variantText.isNotEmpty() && rating.isNotEmpty()) 4 else 3
+    val maxSwitchState = if (variantText.isNotEmpty() && rating.isNotEmpty()) 2 else 1
     if (rating.isNotEmpty() || variantText.isNotEmpty()) {
         LaunchedEffect(Unit) {
             while (true) {
                 delay(2000)
-                if (switchState < maxSwitchState - 1) {
+                if (switchState <= maxSwitchState) {
                     switchState += 1
                 } else {
-                    switchState = 1
+                    switchState = 0
                 }
             }
         }
@@ -108,21 +109,21 @@ fun CtaSellerOffering(
         ) {
             Box {
                 this@Column.AnimatedVisibility(
-                    visible = switchState == 1,
+                    visible = switchState == 0,
                     enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
                     exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
                 ) {
                     ShopInfo(theme, shopName = shopName, badge = badge)
                 }
                 this@Column.AnimatedVisibility(
-                    visible = switchState == 2 && rating.isNotEmpty(),
+                    visible = switchState == 1 && rating.isNotEmpty(),
                     enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
                     exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
                 ) {
                     ShopCredibility(context, theme, rating, sold)
                 }
                 this@Column.AnimatedVisibility(
-                    visible = (switchState == 3 && variantText.isNotEmpty()) || (switchState == 2 && rating.isEmpty() && variantText.isNotEmpty()),
+                    visible = (switchState == 2 && variantText.isNotEmpty()) || (switchState == 1 && rating.isEmpty() && variantText.isNotEmpty()),
                     enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
                     exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
                 ) {
