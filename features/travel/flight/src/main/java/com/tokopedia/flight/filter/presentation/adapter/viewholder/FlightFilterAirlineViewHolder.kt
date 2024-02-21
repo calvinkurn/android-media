@@ -11,10 +11,10 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.flight.R
 import com.tokopedia.flight.search.presentation.model.statistics.AirlineStat
+import com.tokopedia.media.loader.loadImage
 
 /**
  * Created by furqan on 06/10/21.
@@ -44,18 +44,20 @@ class FlightFilterAirlineViewHolder(itemView: View, checkableInteractionListener
 
     private fun loadImageWithPlaceholder(imageview: ImageView, url: String?, resId: Drawable?) {
         if (url != null && !TextUtils.isEmpty(url)) {
-            Glide.with(imageview.context)
-                    .load(url)
-                    .placeholder(resId)
-                    .dontAnimate()
-                    .error(resId)
-                    .into(imageview)
+            imageview.loadImage(url) {
+                isAnimate(false)
+                resId?.let {
+                    setPlaceHolder(it)
+                    setErrorDrawable(it)
+                }
+            }
         } else {
-            Glide.with(imageview.context)
-                    .load(url)
-                    .placeholder(resId)
-                    .error(resId)
-                    .into(imageview)
+            imageview.loadImage(url) {
+                resId?.let {
+                    setPlaceHolder(it)
+                    setErrorDrawable(it)
+                }
+            }
         }
     }
 
