@@ -228,7 +228,7 @@ class ProductPreviewFragment @Inject constructor(
                     is ProductPreviewEvent.ShowSuccessToaster -> {
                         Toaster.build(
                             requireView().rootView,
-                            text = getString(event.message ?: return@collect),
+                            text = getString(event.type.textRes),
                             actionText = if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC) {
                                 getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster
