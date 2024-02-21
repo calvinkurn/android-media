@@ -8,13 +8,11 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.FloatRange
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import android.graphics.BlurMaskFilter
 import android.graphics.Paint
 import android.graphics.RectF
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 
 class CircularProgressbarView : View {
     constructor(context: Context) : super(context)
@@ -90,23 +88,20 @@ class CircularProgressbarView : View {
     }
 
     fun setImageUrl(url: String, isShadowShowed: Boolean, defaultDrawable: Drawable?) {
-        Glide.with(this)
-            .asBitmap()
-            .load(url)
-            .error(defaultDrawable)
-            .into(object : CustomTarget<Bitmap>(){
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    imageBitmap = errorDrawable?.toBitmap()
-                    isImageShadowShowed = isShadowShowed
-                    invalidate()
-                }
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    imageBitmap = resource
-                    isImageShadowShowed = isShadowShowed
-                    invalidate()
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {  }
-            })
+        url.getBitmapImageUrl(this.context, {
+            defaultDrawable?.let { setErrorDrawable(it) }
+        }, MediaBitmapEmptyTarget(
+            onReady = {
+                imageBitmap = it
+                isImageShadowShowed = isShadowShowed
+                invalidate()
+            },
+            onFailed = {
+                imageBitmap = it?.toBitmap()
+                isImageShadowShowed = isShadowShowed
+                invalidate()
+            }
+        ))
     }
 
     fun setProgress(@FloatRange(from = 0.0, to = 100.0) progress: Float) {
