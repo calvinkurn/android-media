@@ -27,6 +27,7 @@ android {
     testNamespace 'com.tokopedia.targetedticker.test'
     buildFeatures {
         viewBinding true
+        compose true
     }
     testOptions {
         animationsDisabled = true
@@ -42,6 +43,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
