@@ -6,5 +6,11 @@ package com.tokopedia.cart.view.uimodel
 
 data class CartSectionHeaderHolderData(
     var title: String = "",
-    var showAllAppLink: String = ""
+    var showAllAppLink: String = "",
+    var type: CartSectionHeaderActionType = CartSectionHeaderActionType.TEXT_BUTTON
 )
+
+enum class CartSectionHeaderActionType {
+    TEXT_BUTTON,
+    ICON_BUTTON
+}

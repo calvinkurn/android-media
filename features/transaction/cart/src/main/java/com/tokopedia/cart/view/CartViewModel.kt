@@ -55,6 +55,7 @@ import com.tokopedia.cart.view.uimodel.CartMutableLiveData
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartSectionHeaderActionType
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectedAmountHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
@@ -1020,6 +1021,8 @@ class CartViewModel @Inject constructor(
         }
         val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
         cartSectionHeaderHolderData.title = recommendationWidget?.title ?: "Waktunya beli lagi, nih!"
+        cartSectionHeaderHolderData.showAllAppLink = recommendationWidget?.seeMoreAppLink ?: ""
+        cartSectionHeaderHolderData.type = CartSectionHeaderActionType.ICON_BUTTON
 
         val cartBuyAgainHolderData = CartBuyAgainHolderData()
         cartBuyAgainHolderData.buyAgainList = buyAgainList
