@@ -68,6 +68,13 @@ class VerticalTrackScrollListener(
         val isStartDrag = newState == SCROLL_STATE_DRAGGING
         val isIdle = newState == SCROLL_STATE_IDLE
         val hasDragScroll = dragScroll != 0F
+
+        // when user start dragging, rec_trigger is not sent yet,
+        // but mark dragFromRecom flag to determine whether to send the event or not (when idle)
+        if(isStartDrag) {
+            dragFromRecom = recyclerView.shouldTriggerGlideRecommendation()
+        }
+
         // we do not track if start position == end position,
         // for example user scroll up when there is no up view
         if (hasDragScroll) {
@@ -91,11 +98,6 @@ class VerticalTrackScrollListener(
                 // this will send previous scroll.
                 totalScroll += dragScroll
                 sendGlidePage(dragScroll)
-                // when user start dragging, rec_trigger is not sent yet,
-                // but mark dragFromRecom flag to send the event after idle
-                if(recyclerView.shouldTriggerGlideRecommendation()) {
-                    dragFromRecom = true
-                }
                 dragScroll = 0F
             }
         }
