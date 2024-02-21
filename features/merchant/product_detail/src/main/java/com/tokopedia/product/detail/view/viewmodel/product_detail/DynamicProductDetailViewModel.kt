@@ -712,7 +712,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             TrackConfirmCart(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
-                productType = ProductType.AVAILABLE,
+                productType = data.productType,
                 originalPrice = data.data.price.value,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
@@ -778,7 +778,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             TrackConfirmSku(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
-                productType = ProductType.AVAILABLE,
+                productType = data.productType,
                 originalPrice = data.data.price.value,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,

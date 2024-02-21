@@ -499,12 +499,13 @@ class AtcVariantViewModel @Inject constructor(
             ?: selectedChild?.getFinalMinOrder() ?: 1
 
         val parentId = getVariantData()?.parentId.orEmpty()
+        val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
         if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
             AppLogAnalytics.sendConfirmCart(
                 TrackConfirmCart(
                     productId = parentId,
-                    productCategory = categoryName, // todo: need to be level 1 category
-                    productType = ProductType.AVAILABLE,
+                    productCategory = categoryLvl1,
+                    productType = ProductType.AVAILABLE, // always available tbc
                     originalPrice = selectedChild?.campaign?.originalPrice.orZero(),
                     salePrice = selectedChild?.price.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
@@ -515,8 +516,8 @@ class AtcVariantViewModel @Inject constructor(
             AppLogAnalytics.sendConfirmSku(
                 TrackConfirmSku(
                     productId = parentId,
-                    productCategory = categoryName, // todo: need to be level 1 category
-                    productType = ProductType.AVAILABLE,
+                    productCategory = categoryLvl1,
+                    productType = ProductType.AVAILABLE, // always available tbc
                     originalPrice = selectedChild?.campaign?.originalPrice.orZero(),
                     salePrice = selectedChild?.price.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
@@ -616,26 +617,7 @@ class AtcVariantViewModel @Inject constructor(
         val result = withContext(dispatcher.io) {
             addToCartUseCase.createObservable(requestParams).toBlocking().single()
         }
-        val selectedChild = getVariantData()?.getChildByOptionId(
-            getSelectedOptionIds()?.values.orEmpty().toList()
-        )
-        val parentId = getVariantData()?.parentId.orEmpty()
-        val addToCartRequest = requestParams.getObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as? AddToCartRequestParams
-        AppLogAnalytics.sendConfirmCartResult(
-            TrackConfirmCartResult(
-                productId = parentId,
-                productCategory = addToCartRequest?.category.orEmpty(), // todo: need to be level 1
-                productType = ProductType.AVAILABLE,
-                originalPrice = selectedChild?.campaign?.originalPrice.orZero(),
-                salePrice = selectedChild?.price.orZero(),
-                skuId = selectedChild?.productId.orEmpty(),
-                addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
-                isSuccess = false, // todo
-                failReason = result.errorMessage.firstOrNull().orEmpty(),
-                buttonType = -1, // todo
-                cartItemId = result?.data?.cartId.orEmpty()
-            )
-        )
+
         if (result.isDataError()) {
             val errorMessage = result.errorMessage.firstOrNull() ?: ""
             _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
@@ -650,6 +632,24 @@ class AtcVariantViewModel @Inject constructor(
             )
             _addToCartLiveData.postValue(result.asSuccess())
         }
+    }
+
+    fun getConfirmCartResultModel(): TrackConfirmCartResult {
+        val selectedChild = getVariantData()?.getChildByOptionId(
+            getSelectedOptionIds()?.values.orEmpty().toList()
+        )
+        val parentId = getVariantData()?.parentId.orEmpty()
+        val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
+        return TrackConfirmCartResult(
+            productId = parentId,
+            productCategory = categoryLvl1,
+            productType = ProductType.AVAILABLE,
+            originalPrice = selectedChild?.campaign?.originalPrice.orZero(),
+            salePrice = selectedChild?.price.orZero(),
+            skuId = selectedChild?.productId.orEmpty(),
+            addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
+            buttonType = -1, // todo
+        )
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
