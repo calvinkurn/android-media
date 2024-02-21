@@ -242,6 +242,7 @@ class ReviewContentViewHolder(
             if (text.lineCount <= MAX_LINES_THRESHOLD) return@doOnLayout
 
             tvReviewDescription.setOnClickListener {
+                descriptionUiModel.isExpanded = !descriptionUiModel.isExpanded
                 setupExpanded()
             }
 
