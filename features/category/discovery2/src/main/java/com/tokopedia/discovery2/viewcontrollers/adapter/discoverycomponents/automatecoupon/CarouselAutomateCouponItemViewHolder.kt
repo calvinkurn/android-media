@@ -1,13 +1,17 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon
 
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.discovery2.databinding.CarouselAutomateCouponItemLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
+import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
+import com.tokopedia.unifycomponents.Toaster
 
 class CarouselAutomateCouponItemViewHolder(
     itemView: View,
@@ -30,6 +34,21 @@ class CarouselAutomateCouponItemViewHolder(
             viewModel?.getCouponModel()?.observe(lifeCycle) {
                 binding.renderCoupon(it)
             }
+
+            viewModel?.shouldShowErrorClaimCouponToaster()?.observe(lifeCycle) { message ->
+                if (message.isNotEmpty()) {
+                    fragment.activity?.let { activity ->
+                        SnackbarManager.getContentView(activity)
+                    }?.let { contentView ->
+                        Toaster.build(
+                            contentView,
+                            message,
+                            Toast.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+            }
         }
     }
 
@@ -40,5 +59,11 @@ class CarouselAutomateCouponItemViewHolder(
 
     private fun CarouselAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponModel) {
         couponView.setModel(model)
+
+        couponView.setState(
+            ButtonState.Claim {
+                viewModel?.claim()
+            }
+        )
     }
 }

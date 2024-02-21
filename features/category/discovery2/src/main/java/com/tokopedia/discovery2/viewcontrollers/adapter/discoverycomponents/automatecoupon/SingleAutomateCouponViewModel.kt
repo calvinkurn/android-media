@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,6 +29,9 @@ class SingleAutomateCouponViewModel(
 
     private val componentList = MutableLiveData<ArrayList<ComponentsItem>>()
     private val redirectionAfterClaim = MutableLiveData<String>()
+
+    private val _showErrorClaimCoupon: SingleLiveEvent<String> = SingleLiveEvent()
+    fun shouldShowErrorClaimCouponToaster(): LiveData<String> = _showErrorClaimCoupon
 
     @JvmField
     @Inject
@@ -79,8 +83,9 @@ class SingleAutomateCouponViewModel(
                 }
             }
         }, onError = {
-                Timber.e(it)
-            })
+            _showErrorClaimCoupon.value = it.message.orEmpty()
+            Timber.e(it)
+        })
     }
 
     private fun fetch() {
@@ -90,7 +95,7 @@ class SingleAutomateCouponViewModel(
                 componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
             }
         }, onError = {
-                Timber.e(it)
-            })
+            Timber.e(it)
+        })
     }
 }
