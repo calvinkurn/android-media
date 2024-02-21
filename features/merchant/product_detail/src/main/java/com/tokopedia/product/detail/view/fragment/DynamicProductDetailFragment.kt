@@ -2290,7 +2290,7 @@ open class DynamicProductDetailFragment :
         videoLastDuration: Long = productVideoCoordinator?.getCurrentPosition().orZero(),
         videoTotalDuration: Long = productVideoCoordinator?.getDuration().orZero()
     ) {
-        val productId = productId ?: return
+        val productId = viewModel.parentProductId ?: return
         val intent = ProductPreviewActivity.createIntent(
             context = requireContext(),
             productPreviewSourceModel = ProductPreviewSourceMapper(
@@ -2309,7 +2309,7 @@ open class DynamicProductDetailFragment :
         reviewId: String,
         attachmentId: String
     ) {
-        val productId = productId ?: return
+        val productId = viewModel.parentProductId ?: return
         val intent = ProductPreviewActivity.createIntent(
             context = requireContext(),
             productPreviewSourceModel = ProductPreviewSourceMapper(
