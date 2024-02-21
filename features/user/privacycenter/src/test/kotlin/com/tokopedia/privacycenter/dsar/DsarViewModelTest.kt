@@ -12,10 +12,11 @@ import com.tokopedia.privacycenter.ui.dsar.DsarViewModel
 import com.tokopedia.privacycenter.ui.dsar.uimodel.CustomDateModel
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
@@ -37,7 +38,7 @@ class DsarViewModelTest {
 
     val submitRequestUseCase = mockk<SubmitRequestUseCase>(relaxed = true)
     val searchRequestUseCase = mockk<SearchRequestUseCase>(relaxed = true)
-    val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
+    val getProfileUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -322,11 +323,9 @@ class DsarViewModelTest {
     fun `fetchInitialData success`() {
         /* When */
         val profileInfo = ProfileInfo(firstName = "yoris")
-        val response = ProfilePojo(profileInfo = profileInfo)
+        val response = Success(ProfilePojo(profileInfo = profileInfo))
 
-        coEvery { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onSuccessGetProfile(response)
-        }
+        coEvery { getProfileUseCase(Unit) } returns response
 
         val searchRequestResp = GetRequestDetailResponse()
         coEvery { searchRequestUseCase(any()) } returns searchRequestResp
@@ -344,59 +343,12 @@ class DsarViewModelTest {
     @Test
     fun `fetchInitialData failed`() {
         /* When */
-        coEvery { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onErrorGetProfile(Throwable())
-        }
+        val error = Throwable()
+        coEvery { getProfileUseCase(Unit) } returns Fail(error)
 
         viewModel.fetchInitialData()
         val globalError = viewModel.globalError.getOrAwaitValue()
 
         assert(globalError)
     }
-
-    @Test
-    fun `on Show Location Admin Popup`() {
-
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
-        }
-
-        viewModel.fetchInitialData()
-
-        /* Then */
-        verify {
-            getProfileUseCase.execute(any())
-        }
-    }
-
-    @Test
-    fun `on Admin Redirection`() {
-
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onLocationAdminRedirection?.invoke()
-        }
-
-        viewModel.fetchInitialData()
-
-        /* Then */
-        verify {
-            getProfileUseCase.execute(any())
-        }
-    }
-
-    @Test
-    fun `on Show Location Admin Popup Error`() {
-
-        every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(Throwable())
-        }
-
-        viewModel.fetchInitialData()
-
-        /* Then */
-        verify {
-            getProfileUseCase.execute(any())
-        }
-    }
-
 }
