@@ -21,6 +21,7 @@ data class AppLogRecommendationProductModel (
     val recParams: String,
     val requestId: String,
     val shopId: String,
+    val itemOrder: Int,
 ) {
 
     fun toJson() = JSONObject().apply {
@@ -33,6 +34,7 @@ data class AppLogRecommendationProductModel (
         put(AppLogParam.IS_USE_CACHE, isUseCache)
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
+        put(AppLogParam.ITEM_ORDER, itemOrder)
         put(AppLogRecommendationConst.REC_PARAMS, recParams)
         addPage()
         addEntranceForm()
@@ -64,6 +66,7 @@ data class AppLogRecommendationProductModel (
                 recParams = recParams,
                 requestId = requestId,
                 shopId = shopId,
+                itemOrder = position.inc()
             )
         }
     }

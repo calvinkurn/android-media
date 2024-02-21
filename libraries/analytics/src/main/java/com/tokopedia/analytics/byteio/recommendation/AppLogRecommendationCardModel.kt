@@ -16,13 +16,13 @@ data class AppLogRecommendationCardModel (
     val listName: String?,
     val listNum: Int?,
     val sourceModule: String,
-    val trackId: String,
     val isAd: Int,
     val isUseCache: Int,
     val recParams: String,
     val requestId: String,
     val shopId: String,
     val groupId: String,
+    val itemOrder: Int,
 ) {
 
     fun toJson() = JSONObject().apply {
@@ -30,7 +30,6 @@ data class AppLogRecommendationCardModel (
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
-        put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
@@ -38,6 +37,7 @@ data class AppLogRecommendationCardModel (
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogRecommendationConst.REC_PARAMS, recParams)
         put(AppLogParam.GROUP_ID, groupId)
+        put(AppLogParam.ITEM_ORDER, itemOrder)
         addPage()
         addEntranceForm()
         addSourcePageType()
@@ -65,13 +65,13 @@ data class AppLogRecommendationCardModel (
                 listName = tabName,
                 listNum = tabPosition.inc(),
                 sourceModule = sourceModule,
-                trackId = "${requestId}_${productId}_${position.inc()}",
                 isAd = if(isAd) 1 else 0,
                 isUseCache = if(isUseCache) 1 else 0,
                 recParams = recParams,
                 requestId = requestId,
                 shopId = shopId,
                 groupId = groupId,
+                itemOrder = position.inc(),
             )
         }
     }

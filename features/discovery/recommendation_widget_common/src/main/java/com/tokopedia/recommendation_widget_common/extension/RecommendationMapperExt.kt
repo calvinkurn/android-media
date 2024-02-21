@@ -320,7 +320,7 @@ fun RecommendationWidget.mapToChannelHeader(): ChannelHeader {
     )
 }
 
-fun RecommendationItem.asTrackingModel(isCache: Boolean = false): AppLogRecommendationProductModel {
+fun RecommendationItem.asProductTrackModel(isCache: Boolean = false): AppLogRecommendationProductModel {
     return AppLogRecommendationProductModel.create(
         productId = productId.toString(),
         position = position,
