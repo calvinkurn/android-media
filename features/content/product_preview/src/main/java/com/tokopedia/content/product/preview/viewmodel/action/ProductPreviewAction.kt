@@ -1,7 +1,6 @@
 package com.tokopedia.content.product.preview.viewmodel.action
 
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 
 /**
@@ -25,5 +24,5 @@ sealed interface ProductPreviewAction {
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReviewReportUiModel) : ProductPreviewAction
     data class ClickMenu(val isFromLogin: Boolean) : ProductPreviewAction
-    data class Like(val item: ReviewLikeUiState) : ProductPreviewAction
+    data class Like(val isDoubleTap: Boolean) : ProductPreviewAction
 }

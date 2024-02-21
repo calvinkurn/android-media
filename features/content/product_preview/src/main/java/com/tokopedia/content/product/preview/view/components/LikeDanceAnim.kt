@@ -38,13 +38,22 @@ class LikeDanceAnim : FrameLayout {
     private val iconLike get() = binding.ivDanceLike
 
     private val clickRotateAnimation = ObjectAnimator.ofFloat(
-        iconLike, View.ROTATION, 0f, -30f
+        iconLike,
+        View.ROTATION,
+        0f,
+        -30f
     )
     private val clickScaleXAnimation = ObjectAnimator.ofFloat(
-        iconLike, View.SCALE_X, 1f, 0.6f
+        iconLike,
+        View.SCALE_X,
+        1f,
+        0.6f
     )
     private val clickScaleYAnimation = ObjectAnimator.ofFloat(
-        iconLike, View.SCALE_Y, 1f, 0.6f
+        iconLike,
+        View.SCALE_Y,
+        1f,
+        0.6f
     )
     private val clickAnimator = AnimatorSet().apply {
         playTogether(clickRotateAnimation, clickScaleXAnimation, clickScaleYAnimation)
@@ -67,9 +76,11 @@ class LikeDanceAnim : FrameLayout {
             it.repeatMode = ValueAnimator.REVERSE
         }
 
-        clickAnimator.addListener(animationListener)
-
         iconLike.isHapticFeedbackEnabled = true
+    }
+
+    fun addAnimationListeners() {
+        clickAnimator.addListener(animationListener)
     }
 
     fun setIconEnabled(isEnabled: Boolean) {
@@ -79,8 +90,11 @@ class LikeDanceAnim : FrameLayout {
 
     fun setIsLiked(isLiked: Boolean) {
         iconLike.setImage(
-            if (isLiked) IconUnify.THUMB_FILLED
-            else IconUnify.THUMB
+            if (isLiked) {
+                IconUnify.THUMB_FILLED
+            } else {
+                IconUnify.THUMB
+            }
         )
     }
 
@@ -104,7 +118,7 @@ class LikeDanceAnim : FrameLayout {
         clickAnimator.cancel()
     }
 
-    private fun removeAllAnimationListeners() {
+    fun removeAllAnimationListeners() {
         clickAnimator.removeAllListeners()
     }
 

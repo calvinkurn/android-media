@@ -10,7 +10,7 @@ import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTa
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState.ReviewLikeStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
@@ -129,7 +129,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             FetchMiniInfo -> handleFetchMiniInfo()
             InitializeReviewMainData -> handleInitializeReviewMainData()
             ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
-            LikeFromResult -> handleLikeFromResult()
+            LikeFromResult -> handleLikeFromResult(false)
             FetchReviewByIds -> handleFetchReviewByIds()
             ToggleReviewWatchMode -> handleReviewWatchMode()
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
@@ -142,7 +142,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is Navigate -> handleNavigate(action.appLink)
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
-            is Like -> handleLikeFromResult(action.item)
+            is Like -> handleLikeFromResult(action.isDoubleTap)
         }
     }
 
@@ -492,25 +492,24 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleLikeFromResult(status: ReviewLikeUiState = currentReview.likeState) {
-        if (status.withAnimation && !userSessionInterface.isLoggedIn) return
+    private fun handleLikeFromResult(isDoubleTap: Boolean) {
+        if (isDoubleTap && currentReview.likeState.state == ReviewLikeStatus.Like) return
 
+        val status = currentReview.likeState
         requiredLogin(status) {
             viewModelScope.launchCatchError(block = {
                 val state = repo.likeReview(status, currentReview.reviewId)
                 _reviewContentState.update { reviews ->
                     reviews.copy(
-                        reviewContent =
-                        reviews.reviewContent.map { review ->
+                        reviewContent = reviews.reviewContent.map { review ->
                             if (review.reviewId == currentReview.reviewId) {
                                 review.copy(
-                                    likeState =
-                                    state.copy(
-                                        withAnimation = status.withAnimation
+                                    likeState = state.copy(
+                                        withAnimation = isDoubleTap
                                     )
                                 )
                             } else {
-                                review
+                                review.copy(likeState = state.copy(withAnimation = false))
                             }
                         }
                     )
