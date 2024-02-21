@@ -179,6 +179,7 @@ class RegisterInitialViewModel @Inject constructor(
                     is Fail -> onFailedGetUserInfo(result.throwable)
                 }
             } catch (e: Exception) {
+                onFailedGetUserInfo(e)
             }
         }
     }

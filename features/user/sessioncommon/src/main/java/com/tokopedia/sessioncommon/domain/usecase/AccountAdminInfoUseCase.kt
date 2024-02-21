@@ -4,18 +4,18 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.sessioncommon.data.admin.AccountAdminInfoGqlParam
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.sessioncommon.domain.exception.RefreshShopDataException
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class AccountAdminInfoUseCase @Inject constructor(
     private val refreshShopBasicDataUseCase: RefreshShopBasicDataUseCase,
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<String, Pair<AdminDataResponse?, ShopData?>>(dispatcher.io) {
+) : CoroutineUseCase<AccountAdminInfoGqlParam, Pair<AdminDataResponse?, ShopData?>>(dispatcher.io) {
 
     companion object {
         private const val DEFAULT_SOURCE = "android"
@@ -41,15 +41,9 @@ class AccountAdminInfoUseCase @Inject constructor(
               }
             }
         """.trimIndent()
-
-        @JvmStatic
-        fun createRequestParams(source: String = DEFAULT_SOURCE): RequestParams =
-            RequestParams.create().apply {
-                putString(PARAM_SOURCE, source)
-            }
     }
 
-    var isLocationAdmin: Boolean = false
+    private var isLocationAdmin: Boolean = false
 
     private suspend fun getAdminDataAndShopInfo(adminDataResponse: AdminDataResponse?): Pair<AdminDataResponse?, ShopData?> {
         val shopData =
@@ -68,13 +62,14 @@ class AccountAdminInfoUseCase @Inject constructor(
         return QUERY
     }
 
-    override suspend fun execute(params: String): Pair<AdminDataResponse?, ShopData?> {
+    override suspend fun execute(params: AccountAdminInfoGqlParam): Pair<AdminDataResponse?, ShopData?> {
         return try {
-            val adminData: AdminTypeResponse = graphqlRepository.request(graphqlQuery(), mapOf(PARAM_SOURCE to params))
+            val adminData: AdminTypeResponse = graphqlRepository.request(graphqlQuery(), mapOf(PARAM_SOURCE to params.source))
+            isLocationAdmin = params.isLocationAdmin
             getAdminDataAndShopInfo(adminData.response)
         } catch (e: RefreshShopDataException) {
             throw e
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Pair(null, null)
         }
     }

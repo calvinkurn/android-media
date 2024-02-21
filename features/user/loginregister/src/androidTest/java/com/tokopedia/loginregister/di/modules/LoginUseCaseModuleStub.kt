@@ -10,12 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.stub.usecase.GetAdminTypeUseCaseStub
-import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
-import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.LoginTokenUseCaseStub
-import com.tokopedia.loginregister.stub.usecase.LoginTokenV2UseCaseStub
-import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
