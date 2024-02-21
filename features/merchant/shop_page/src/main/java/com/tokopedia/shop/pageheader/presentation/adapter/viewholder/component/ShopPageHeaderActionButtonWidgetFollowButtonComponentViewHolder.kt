@@ -8,7 +8,6 @@ import android.view.View
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.databinding.LayoutShopActionButtonWidgetFollowButtonComponentBinding
