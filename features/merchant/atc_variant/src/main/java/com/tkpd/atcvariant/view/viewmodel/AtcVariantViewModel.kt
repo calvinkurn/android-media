@@ -648,7 +648,6 @@ class AtcVariantViewModel @Inject constructor(
             salePrice = selectedChild?.price.orZero(),
             skuId = selectedChild?.productId.orEmpty(),
             addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
-            buttonType = -1, // todo
         )
     }
 

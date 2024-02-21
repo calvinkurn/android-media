@@ -548,7 +548,6 @@ class DynamicProductDetailViewModel @Inject constructor(
             salePrice = data?.finalPrice.orZero(),
             skuId = data?.basic?.productID.orEmpty(),
             addSkuNum = data?.basic?.minOrder.orZero(),
-            buttonType = -1, // todo
         )
     }
 

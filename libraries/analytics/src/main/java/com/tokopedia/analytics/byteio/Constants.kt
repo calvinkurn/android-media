@@ -61,6 +61,7 @@ data class TrackConfirmCart(
     val productType: ProductType,
     val originalPrice: Double,
     val salePrice: Double,
+    val buttonType: String = "able_to_cart", // button can not be grayed out after atc clicked
     val skuId: String,
     val currency: String = "IDR",
     val addSkuNum: Int,
@@ -75,7 +76,7 @@ data class TrackConfirmCartResult(
     val productType: ProductType,
     val originalPrice: Double,
     val salePrice: Double,
-    val buttonType: Int,
+    val buttonType: String = "able_to_cart", // button can not be grayed out after atc clicked
     val skuId: String,
     val currency: String = "IDR",
     val addSkuNum: Int,
