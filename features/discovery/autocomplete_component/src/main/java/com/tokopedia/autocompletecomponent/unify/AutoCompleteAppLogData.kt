@@ -6,7 +6,6 @@ package com.tokopedia.autocompletecomponent.unify
 
 data class AutoCompleteAppLogData (
     val enterFrom: String = "",
-    val enterMethod: String = "",
     val searchEntrance: String = "",
     var imprId: String = "",
     var newSugSessionId: Long = 0

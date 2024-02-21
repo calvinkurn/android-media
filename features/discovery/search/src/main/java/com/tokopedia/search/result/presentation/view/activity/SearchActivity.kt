@@ -29,6 +29,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARC
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.discovery.common.analytics.SearchSessionObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_TAB
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
@@ -63,6 +64,7 @@ import com.tokopedia.search.result.product.performancemonitoring.searchProductPe
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.search.utils.enterMethodMap
 import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -140,6 +142,8 @@ class SearchActivity :
         handleIntent()
         observeSearchState()
         searchViewModel?.getThematic()
+
+        lifecycle.addObserver(SearchSessionObserver)
     }
 
     private fun observeSearchState() {
@@ -257,29 +261,32 @@ class SearchActivity :
 
     private fun moveToAutoCompleteActivity() {
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + autoCompleteParamsString()
-
-        val intent = RouteManager.getIntent(this, applink)
-        intent.putExtra("enter_method", CLICK_SEARCH_BAR) // TODO milhamj
-        if (searchViewModel?.activeTabPosition == 0) {
-            intent.putExtra("enter_from", GOODS_SEARCH) // TODO milhamj
-        } else if (searchViewModel?.activeTabPosition == 1) {
-            intent.putExtra("enter_from", STORE_SEARCH) // TODO milhamj
-        }
+        RouteManager.route(this, applink)
     }
 
     private fun autoCompleteParamsString() =
         UrlParamUtils.generateUrlParamString(autoCompleteParams())
 
-    private fun autoCompleteParams() =
-        if (searchParameter.isMps()) {
-            searchParameter.getSearchQueryMap() + mapOf(ACTIVE_TAB to MPS)
-        } else {
-            val query = encodedQuery()
-            val currentAutoCompleteApplink = currentAutoCompleteApplink(query)
-            val currentAutoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
+    private fun autoCompleteParams(): Map<String?, String> =
+        if (searchParameter.isMps()) autoCompleteMPSParams() else autoCompleteApplinkParams() +
+            enterMethodMap(CLICK_SEARCH_BAR)
 
-            currentAutoCompleteParams + mapOf(PREVIOUS_KEYWORD to query)
-        }
+    private fun autoCompleteMPSParams() = searchParameter.getSearchQueryMap() + mapOf(ACTIVE_TAB to MPS)
+
+    private fun autoCompleteApplinkParams(): Map<String, String> {
+        val query = encodedQuery()
+        val currentAutoCompleteApplink = currentAutoCompleteApplink(query)
+        val currentAutoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
+
+        return currentAutoCompleteParams + mapOf(PREVIOUS_KEYWORD to query)
+    }
+
+    private fun enterFromMap() =
+        if (searchViewModel?.activeTabPosition == 0)
+            mapOf("enter_from" to GOODS_SEARCH) // TODO milhamj
+        else
+            mapOf("enter_from" to STORE_SEARCH) // TODO milhamj
+
 
     private fun encodedQuery() = URLEncoder
         .encode(searchParameter.getSearchQuery())

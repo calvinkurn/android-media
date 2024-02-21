@@ -66,12 +66,11 @@ internal class AutoCompleteViewModel @Inject constructor(
         actOnParameter()
     }
 
-    fun initAppLogData(enterFrom: String, enterMethod: String, searchEntrance: String) {
+    fun initAppLogData(enterFrom: String, searchEntrance: String) {
         val currentAppLogData = stateValue.appLogData
         _stateFlow.value = stateValue.copy(
             appLogData = currentAppLogData.copy(
                 enterFrom = enterFrom,
-                enterMethod = enterMethod,
                 searchEntrance = searchEntrance
             )
         )
@@ -143,7 +142,7 @@ internal class AutoCompleteViewModel @Inject constructor(
                 imprId = "", // TODO milhamj: wait from BE
                 newSugSessionId = appLogData.newSugSessionId,
                 rawQuery = currentQuery,
-                enterMethod = appLogData.enterMethod,
+                enterMethod = stateValue.enterMethod,
                 wordsNum = stateValue.resultList.filter {
                     it.domainModel.isMasterTemplate()
                 }.size
@@ -161,8 +160,8 @@ internal class AutoCompleteViewModel @Inject constructor(
                 imprId = "", // TODO milhamj: wait from BE
                 newSugSessionId = appLogData.newSugSessionId,
                 rawQuery = currentQuery,
-                enterMethod = appLogData.enterMethod,
-                sugType = "",
+                enterMethod = stateValue.enterMethod,
+                sugType = "", // TODO wait from BE
                 wordsContent = item.domainModel.title.text,
                 wordsPosition = item.appLogIndex
             )

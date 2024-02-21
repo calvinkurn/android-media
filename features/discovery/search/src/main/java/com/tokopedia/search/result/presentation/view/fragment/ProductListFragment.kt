@@ -22,10 +22,12 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.REFRESH
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.discovery.common.analytics.SearchSessionObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
@@ -404,7 +406,16 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun initSwipeToRefresh(view: View) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        refreshLayout?.setOnRefreshListener(this::reloadData)
+        refreshLayout?.setOnRefreshListener(this::swipeToRefresh)
+    }
+
+    private fun swipeToRefresh() {
+        val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
+        val swipeRefreshParameterMap = searchParameterMap + enterMethodMap(REFRESH)
+
+        refreshSearchParameter(swipeRefreshParameterMap)
+
+        reloadData()
     }
 
     private fun initShimmeringView(view: View) {
@@ -1513,6 +1524,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 searchKeyword = queryKey,
                 durationMs = durationMs,
                 isSuccess = true,
+                ecSearchSessionId = SearchSessionObserver.sessionId,
             )
         )
     }
