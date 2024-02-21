@@ -21,7 +21,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
     protected abstract suspend fun verifyAndUpdate()
 
     protected fun downloadAndStore(
-            context: Context, url: String?,
+            context: Context, url: Any?,
             properties: ImageSizeAndTimeout,
             rounded: Int = 0
     ): String? {
@@ -31,7 +31,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
 
     private fun downloadImage(
             context: Context,
-            url: String,
+            url: Any,
             rounded: Int,
             properties: ImageSizeAndTimeout
     ): Bitmap? {

@@ -46,15 +46,7 @@ fun String.getBitmapImageUrl(
     )
 }
 
-fun String.getBitmapFromUrl(
-    context: Context,
-    timeout: Long = DEFAULT_TIMEOUT_MS,
-    properties: Properties.() -> Unit = {}
-): Bitmap? {
-    return MediaLoaderTarget.loadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
-}
-
-fun Uri.getBitmapFromUrl(
+fun Any.getBitmapFromUrl(
     context: Context,
     timeout: Long = DEFAULT_TIMEOUT_MS,
     properties: Properties.() -> Unit = {}
