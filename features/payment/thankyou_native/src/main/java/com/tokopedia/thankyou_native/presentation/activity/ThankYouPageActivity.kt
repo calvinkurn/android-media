@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.analytics.byteio.IAppLogActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -78,7 +79,8 @@ private const val VALUE_MERCHANT_TOKOPEDIA = "tokopedia"
 class ThankYouPageActivity :
     BaseSimpleActivity(),
     HasComponent<ThankYouPageComponent>,
-    ThankYouPageDataLoadCallback {
+    ThankYouPageDataLoadCallback,
+    IAppLogActivity{
 
     @Inject
     lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
@@ -479,5 +481,9 @@ class ThankYouPageActivity :
         globalNabToolbar.updateLayoutParams<ConstraintLayout.LayoutParams> {
             this.setMargins(0, DisplayMetricUtils.getStatusBarHeight(this@ThankYouPageActivity), 0, 0)
         }
+    }
+
+    override fun getPageName(): String {
+        return "order_submit"
     }
 }

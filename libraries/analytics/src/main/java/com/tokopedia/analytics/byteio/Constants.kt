@@ -87,8 +87,8 @@ data class TrackConfirmCartResult(
 )
 
 data class SubmitOrderResult(
-    val isSuccess: Boolean,
-    val failReason: String,
+    val isSuccess: Boolean = true, // always success in ty page
+    val failReason: String = "", // always empty, success in ty page
     val shippingPrice: Double,
     val discountedShippingPrice: Double,
     val totalPayment: Double,

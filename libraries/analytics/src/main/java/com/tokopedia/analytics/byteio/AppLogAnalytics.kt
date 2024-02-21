@@ -6,7 +6,6 @@ import android.app.Application
 import android.util.Log
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
-import com.bytedance.frameworks.baselib.network.http.cronet.impl.TTNetDetectInfo
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
@@ -87,7 +86,7 @@ object AppLogAnalytics {
     internal val Boolean.intValue
         get() = if (this) 1 else 0
 
-    fun sendEnterPage(product: TrackProductDetail?) {
+    fun sendEnterPDPPage(product: TrackProductDetail?) {
         if (sourcePageType == null || product == null) {
             return
         }
