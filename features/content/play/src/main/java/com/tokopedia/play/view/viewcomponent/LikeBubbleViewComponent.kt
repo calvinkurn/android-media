@@ -128,7 +128,7 @@ class LikeBubbleViewComponent(
     private suspend fun getBitmapFromUrl(url: String): Bitmap? {
         return rootView.context.getBitmapFromUrl(
             url,
-            size = Size(preferredIconSize, preferredIconSize)
+//            size = Size(preferredIconSize, preferredIconSize)
         )
     }
 
