@@ -9,7 +9,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
-import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -260,10 +260,19 @@ class UohListViewModel @Inject constructor(
         }
     }
 
-    fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>, verticalCategory: String) {
+    /*fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>, verticalCategory: String) {
         UohIdlingResource.increment()
         launch {
             val result = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            _atcMultiResult.value = result
+            UohIdlingResource.decrement()
+        }
+    }*/
+
+    fun doAtcMulti(listParam: ArrayList<AddToCartMultiParam>) {
+        UohIdlingResource.increment()
+        launch {
+            val result = atcMultiProductsUseCase(listParam)
             _atcMultiResult.value = result
             UohIdlingResource.decrement()
         }
@@ -278,7 +287,7 @@ class UohListViewModel @Inject constructor(
     ) {
         UohIdlingResource.increment()
         launch {
-            val result = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            val result = atcMultiProductsUseCase(listParam)
             _atcBuyAgainResult.value = UohAtcBuyAgainWidgetData(recommItem, index, result)
             UohIdlingResource.decrement()
         }
