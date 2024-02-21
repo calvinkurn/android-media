@@ -94,7 +94,7 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     fun onAutoCompleteItemClick(item: AutoCompleteUnifyDataView) {
-        _stateFlow.value = stateValue.updateNavigate(AutoCompleteNavigate(item.domainModel.applink, stateValue.searchParameter))
+        _stateFlow.value = stateValue.updateNavigate(AutoCompleteNavigate(item.domainModel.applink, stateValue.parameter))
     }
 
     fun onNavigated() {
@@ -171,11 +171,11 @@ internal class AutoCompleteViewModel @Inject constructor(
         )
         deleteRecentSearchUseCase.execute(
             params,
-            getDeleteRecentSearchSubscriber(item.suggestionId)
+            getDeleteRecentSearchSubscriber(item)
         )
     }
 
-    private fun getDeleteRecentSearchSubscriber(suggestionId: String): Subscriber<Boolean> =
+    private fun getDeleteRecentSearchSubscriber(item: SuggestionUnify): Subscriber<Boolean> =
         object : Subscriber<Boolean>() {
             override fun onCompleted() {
             }
@@ -186,14 +186,14 @@ internal class AutoCompleteViewModel @Inject constructor(
 
             override fun onNext(isSuccess: Boolean) {
                 if (isSuccess) {
-                    deleteSearchItemFromStateResult(suggestionId)
+                    deleteSearchItemFromStateResult(item)
                 }
             }
         }
 
-    private fun deleteSearchItemFromStateResult(suggestionId: String) {
+    private fun deleteSearchItemFromStateResult(item: SuggestionUnify) {
         val resultList = stateValue.resultList.toMutableList()
-        resultList.removeFirst { it.domainModel.suggestionId == suggestionId }
+        resultList.removeFirst { it.domainModel == item }
         _stateFlow.value = stateValue.updateResultList(resultList)
     }
 

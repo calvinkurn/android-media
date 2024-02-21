@@ -52,7 +52,7 @@ internal fun AutoCompleteLeftIcon(item: SuggestionUnifyImage) {
             .clip(RoundedCornerShape(item.radius.toIntOrZero().dp))
         if (item.isBorder) {
             imageModifier = imageModifier.border(
-                1.dp,
+                0.5.dp,
                 NestTheme.colors.NN._300,
                 RoundedCornerShape(item.radius.toIntOrZero().dp)
             )
@@ -63,10 +63,10 @@ internal fun AutoCompleteLeftIcon(item: SuggestionUnifyImage) {
             ),
             modifier = imageModifier
         )
-        if (item.iconImageUrl.isNotBlank()) {
+        if (/*item.iconImageUrl.isNotBlank()*/ item.isBorder) {
             NestImage(
                 source = ImageSource.Remote(
-                    source = item.iconImageUrl
+                    source = "https://images.tokopedia.net/img/official_store_badge.png"
                 ),
                 modifier = Modifier
                     .size(16.dp)

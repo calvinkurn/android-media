@@ -11,8 +11,7 @@ data class AutoCompleteState(
     val parameter: Map<String, String> = mapOf(),
     val resultList: List<AutoCompleteUnifyDataView> = listOf(),
     val navigate: AutoCompleteNavigate? = null,
-    val actionReplaceKeyword: String? = null,
-    val searchParameter: SearchParameter? = null
+    val actionReplaceKeyword: String? = null
 ) {
     constructor(
         searchParameter: SearchParameter,
@@ -23,18 +22,11 @@ data class AutoCompleteState(
         searchParameter.getSearchParameterMap().mapValues { it.value.toString() },
         resultList,
         navigate,
-        actionReplaceKeyword,
-        searchParameter
+        actionReplaceKeyword
     )
 
     fun updateParameter(parameterMap: Map<String, String>) =
         copy(
-            searchParameter = searchParameter?.let {
-                SearchParameter(
-                    it,
-                    parameterMap
-                )
-            },
             parameter = parameterMap
         )
 
