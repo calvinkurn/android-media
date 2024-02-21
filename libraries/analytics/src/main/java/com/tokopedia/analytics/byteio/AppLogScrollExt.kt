@@ -1,8 +1,11 @@
 package com.tokopedia.analytics.byteio
 
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import org.json.JSONObject
 
@@ -53,6 +56,9 @@ class VerticalTrackScrollListener(
     // drag scroll is offset for each glide.
     private var dragScroll = 0F
 
+    // drag is started from recom section or not, to determine should send rec_trigger or not
+    private var dragFromRecom = false
+
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         dragScroll += dy
         super.onScrolled(recyclerView, dx, dy)
@@ -70,7 +76,11 @@ class VerticalTrackScrollListener(
                 // send this offset position.
                 totalScroll += dragScroll
                 sendGlidePage(dragScroll)
-                if(recyclerView.shouldTriggerGlideRecommendation()) {
+                // Possible scenarios to send rec_trigger:
+                // 1. Drag from recom, stop outside recom (dragFromRecom = true, shouldTriggerGlideRecommendation = false)
+                // 2. Drag from outside recom, stop on recom (dragFromRecom = false, shouldTriggerGlideRecommendation = true)
+                // 3. Drag and stop on recom (dragFromRecom = true, shouldTriggerGlideRecommendation = true)
+                if(dragFromRecom || recyclerView.shouldTriggerGlideRecommendation()) {
                     sendGlideRecommendation(totalScroll)
                 }
                 totalScroll = 0F
@@ -81,6 +91,11 @@ class VerticalTrackScrollListener(
                 // this will send previous scroll.
                 totalScroll += dragScroll
                 sendGlidePage(dragScroll)
+                // when user start dragging, rec_trigger is not sent yet,
+                // but mark dragFromRecom flag to send the event after idle
+                if(recyclerView.shouldTriggerGlideRecommendation()) {
+                    dragFromRecom = true
+                }
                 dragScroll = 0F
             }
         }
@@ -92,15 +107,41 @@ class VerticalTrackScrollListener(
         recommendationTriggerObject ?: return false
         if(recommendationTriggerObject.viewHolders.isEmpty()) return true
 
-        val size = layoutManager?.itemCount ?: return false
+        val visibleItemPositionRange = layoutManager?.getVisibleItemPositionRange() ?: return false
 
-        loop@ for(i in 0 until size) {
+        loop@ for(i in visibleItemPositionRange.first .. visibleItemPositionRange.second) {
             val viewHolder = findViewHolderForAdapterPosition(i) ?: break@loop
             if(recommendationTriggerObject.viewHolderMap[viewHolder.javaClass] == true) {
                 return true
             }
         }
         return false
+    }
+
+    private fun LayoutManager.getVisibleItemPositionRange(): Pair<Int, Int>? {
+        val firstVisible = when(this) {
+            is LinearLayoutManager -> findFirstVisibleItemPosition()
+            is StaggeredGridLayoutManager -> {
+                val firstVisibleItemPositions = IntArray(spanCount)
+                findFirstVisibleItemPositions(firstVisibleItemPositions)
+                firstVisibleItemPositions.min()
+            }
+            else -> RecyclerView.NO_POSITION
+        }
+
+        val lastVisible = when(this) {
+            is LinearLayoutManager -> findLastVisibleItemPosition()
+            is StaggeredGridLayoutManager -> {
+                val lastVisibleItemPositions = IntArray(spanCount)
+                findLastVisibleItemPositions(lastVisibleItemPositions)
+                lastVisibleItemPositions.max()
+            }
+            else -> RecyclerView.NO_POSITION
+        }
+
+        return if(firstVisible != RecyclerView.NO_POSITION && lastVisible != RecyclerView.NO_POSITION) {
+            firstVisible to lastVisible
+        } else null
     }
 
     private fun sendGlideRecommendation(totalScroll: Float) {
