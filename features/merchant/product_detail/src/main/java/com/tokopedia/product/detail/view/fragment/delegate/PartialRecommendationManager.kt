@@ -28,6 +28,7 @@ import com.tokopedia.product.detail.common.R as productdetailcommonR
 class PartialRecommendationManager(
     val mediator: PdpComponentCallbackMediator
 ) : PartialRecommendationManagerListener {
+
     private val lifeCycleManager = object : DefaultLifecycleObserver {
         override fun onCreate(owner: LifecycleOwner) {
             super.onCreate(owner)
@@ -38,7 +39,7 @@ class PartialRecommendationManager(
     private val context: Context?
         get() = mediator.rootView.context
     private val viewLifecycleOwner: LifecycleOwner
-        get() = mediator.fragmentLifecycleOwner
+        get() = mediator.rootView.viewLifecycleOwner
     private val viewModel: DynamicProductDetailViewModel
         get() = mediator.pdpViewModel
     private val pdpUiUpdater: PdpUiUpdater?
@@ -216,3 +217,4 @@ interface PartialRecommendationManagerListener {
         isViewToView: Boolean = false
     )
 }
+

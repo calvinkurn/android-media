@@ -630,9 +630,6 @@ open class DynamicProductDetailFragment :
     override val recyclerViewPool: RecyclerView.RecycledViewPool?
         get() = getRecyclerView()?.recycledViewPool
 
-    override val fragmentLifecycleOwner: LifecycleOwner
-        get() = viewLifecycleOwner
-
     override val pdpRemoteConfig: RemoteConfig
         get() = remoteConfig
 

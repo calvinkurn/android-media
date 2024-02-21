@@ -43,9 +43,6 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
     val isRemoteCacheableActive
         get() = viewModel.getDynamicProductInfoP1?.cacheState?.remoteCacheableActive.orFalse()
 
-    val viewLifecycleOwner
-        get() = mediator.fragmentLifecycleOwner
-
     @Suppress("UNCHECKED_CAST")
     override fun event(event: ComponentEvent) {
         Timber.tag("pdp_event").d(event.toString())

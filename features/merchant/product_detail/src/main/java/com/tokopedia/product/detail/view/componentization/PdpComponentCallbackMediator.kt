@@ -25,8 +25,6 @@ interface PdpComponentCallbackMediator : ComponentCallbackMediator {
 
     val recyclerViewPool: RecyclerView.RecycledViewPool?
 
-    val fragmentLifecycleOwner: LifecycleOwner
-
     val pdpRemoteConfig: RemoteConfig
 
     fun updateUi()
