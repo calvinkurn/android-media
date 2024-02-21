@@ -106,6 +106,18 @@ data class SubmitOrderResult(
     val productId: String
 )
 
+data class CartButtonClick(
+    val buttonName: String,
+    val cartItemId: String,
+    val originalPriceValue: Double,
+    val productId: String,
+    val skuId: String,
+    val skuNum: Int,
+    val ItemCnt: Int,
+    val salePriceValue: Double,
+    val discountedAmount: Double,
+    )
+
 
 enum class ProductType(val type: Int) {
     AVAILABLE(1),

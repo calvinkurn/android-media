@@ -177,15 +177,28 @@ object AppLogAnalytics {
         })
     }
 
-    fun sendCartEnterPage() {
+    fun sendCartEnterPage(cartCount: Int, cartUnavailCount: Int) {
         send(EventName.ENTER_PAGE, JSONObject().also {
             it.addPage()
+            it.put("cart_item_cnt", cartCount)
+            it.put("cart_unavailable_cnt", cartUnavailCount)
         })
     }
 
-    fun sendCartButtonClick() {
+    fun sendCartButtonClick(model: CartButtonClick) {
         send(EventName.BUTTON_CLICK, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.put("button_name", model.buttonName)
+            it.put("cart_item_id", model.cartItemId)
+            it.put("original_price_value", model.originalPriceValue)
+            it.put("sale_price_value", model.salePriceValue)
+            it.put("discounted_amount", model.discountedAmount)
+            it.put("currency", "IDR")
+            it.put("item_cnt", model.ItemCnt)
+            it.put("sku_num", model.skuNum)
+            it.put("product_id", model.productId)
+            it.put("sku_id", model.skuId)
         })
     }
 
