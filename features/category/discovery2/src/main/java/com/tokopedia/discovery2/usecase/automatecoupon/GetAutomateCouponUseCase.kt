@@ -72,10 +72,10 @@ class GetAutomateCouponUseCase @Inject constructor(
         forEachIndexed { index, it ->
             if (it.info == null) return@forEachIndexed
 
-            val compName = when(component.data?.firstOrNull()?.couponLayout?.lowercase()) {
-                Layout.Single.value -> ComponentNames.SingleAutomateCoupon.componentName
-                Layout.Double.value -> ComponentNames.GridAutomateCouponItem.componentName
-                Layout.Carousel.value -> ComponentNames.CarouselAutomateCouponItem.componentName
+            val compName = when(component.data?.firstOrNull()?.couponLayout?.asCamelCase()) {
+                Layout.Single.name -> ComponentNames.SingleAutomateCoupon.componentName
+                Layout.Double.name -> ComponentNames.GridAutomateCouponItem.componentName
+                Layout.Carousel.name -> ComponentNames.CarouselAutomateCouponItem.componentName
 
 //                if (component.data?.firstOrNull()?.couponLayout == Layout.Single.name.asLowerCase()) {
 //                    ComponentNames.SingleAutomateCoupon.componentName
@@ -93,6 +93,7 @@ class GetAutomateCouponUseCase @Inject constructor(
                 parentComponentId = component.id
                 creativeName = component.creativeName
                 properties = component.properties
+                data = component.data
 
                 val models = if (component.name == ComponentNames.GridAutomateCoupon.componentName) {
                     mutableListOf(it.info.mapToGridModel())
