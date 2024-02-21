@@ -352,15 +352,16 @@
                     app:constraint_referenced_ids="iu_ribbon_arch,iu_ribbon_content,label_slash_price_percentage"
                     tools:visibility="gone" />
 
-            <com.tokopedia.cart.view.customview.CartCampaignProductLabel
-                android:id="@+id/cart_campaign_product_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/fl_image_product"
-                app:layout_constraintTop_toTopOf="@id/fl_image_product" />
+                <com.tokopedia.cart.view.customview.CartCampaignProductLabel
+                    android:id="@+id/cart_campaign_product_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:paddingBottom="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/fl_image_product"
+                    app:layout_constraintTop_toTopOf="@id/fl_image_product" />
 
                 <LinearLayout
                     android:id="@+id/container_product_properties"
@@ -371,7 +372,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/fl_image_product"
-                app:layout_constraintTop_toBottomOf="@id/cart_campaign_product_label">
+                    app:layout_constraintTop_toBottomOf="@id/cart_campaign_product_label">
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/text_qty_left"
@@ -663,7 +664,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="12dp"
                     android:textColor="@color/Unify_NN950"
-                android:visibility="gone"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/item_addon_cart" />
 
@@ -674,8 +675,8 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="12dp"
-                android:textColor="@color/Unify_NN950"
-                android:visibility="gone"
+                    android:textColor="@color/Unify_NN950"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/item_addon_cart" />
 
