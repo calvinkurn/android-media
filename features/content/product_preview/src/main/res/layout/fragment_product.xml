@@ -6,15 +6,22 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_media_product"
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
+        android:id="@+id/nested_scroll_media"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:nestedScrollingEnabled="true"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_media_product"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
 
     <View
         android:id="@+id/view_gradient_top"
@@ -49,21 +56,27 @@
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toTopOf="@id/rv_thumbnail_product"
+        app:layout_constraintBottom_toTopOf="@id/nested_scroll_thumbnail"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_2"
         tools:text="2/16 • Winnie the Pooh" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_thumbnail_product"
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
+        android:id="@+id/nested_scroll_thumbnail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:nestedScrollingEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:itemCount="1"
-        tools:listitem="@layout/item_product_thumbnail" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_thumbnail_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_product_thumbnail" />
+
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
