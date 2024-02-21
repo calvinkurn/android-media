@@ -71,6 +71,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_header_barrier_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
