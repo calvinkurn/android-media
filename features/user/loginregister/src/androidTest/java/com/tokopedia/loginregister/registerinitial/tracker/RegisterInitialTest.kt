@@ -19,7 +19,6 @@ import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.test.application.annotations.CassavaTest
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +47,7 @@ class RegisterInitialTest : RegisterInitialBase() {
 
         val profileInfo = ProfileInfo(userId = "123456", fullName = "Kelvin Saputra")
         val profilePojo = ProfilePojo(profileInfo)
-        fakeGraphqlRepository.profileConfig = Config.WithResponse(profilePojo)
+        fakeRepo.profileConfig = Config.WithResponse(profilePojo)
 
         // When
         runTest {
