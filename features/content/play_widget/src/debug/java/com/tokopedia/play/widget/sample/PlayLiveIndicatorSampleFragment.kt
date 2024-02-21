@@ -30,6 +30,11 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViewBased()
+        setupComposeBased()
+    }
+
+    private fun setupViewBased() {
         binding.indicatorView.setAnalyticModel(
             PlayWidgetLiveIndicatorView.AnalyticModel("channel_id", "product_id", "shop_id")
         )
@@ -45,7 +50,9 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
                 50.seconds
             )
         }
+    }
 
+    private fun setupComposeBased() {
         binding.composeView.setContent {
             NestTheme {
                 PlayWidgetLiveIndicator(
