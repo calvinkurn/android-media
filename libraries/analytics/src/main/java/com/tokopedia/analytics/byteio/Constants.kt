@@ -81,9 +81,9 @@ data class TrackConfirmCartResult(
     val addSkuNum: Int,
     val skuNumBefore: Int = 0, // need development from BE
     val skuNumAfter: Int = 0, // need development from BE
-    val isSuccess: Boolean,
-    val failReason: String,
-    val cartItemId: String,
+    var isSuccess: Boolean? = null,
+    var failReason: String = "",
+    var cartItemId: String? = "",
 )
 
 data class SubmitOrderResult(

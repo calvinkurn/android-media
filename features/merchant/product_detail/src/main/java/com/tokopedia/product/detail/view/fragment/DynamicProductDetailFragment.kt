@@ -38,6 +38,7 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
@@ -2867,6 +2868,10 @@ open class DynamicProductDetailFragment :
     private fun observeAddToCart() {
         viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
             hideProgressDialog()
+            var cartId = ""
+            var success = false
+            var reason = ""
+
             data.doSuccessOrFail({
                 if (it.data.errorReporter.eligible) {
                     view?.showToasterError(
@@ -2881,6 +2886,8 @@ open class DynamicProductDetailFragment :
                         atcType = buttonActionType
                     )
                 }
+                cartId = it.data.data.cartId
+                success = true
             }, {
                 DynamicProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
                     it.message.orEmpty(),
@@ -2888,7 +2895,15 @@ open class DynamicProductDetailFragment :
                     viewModel.userId
                 )
                 handleAtcError(it)
+                reason = it.message.orEmpty()
+                success = true
             })
+            val model = viewModel.getConfirmCartResultData().apply {
+                isSuccess = success
+                failReason = reason
+                cartItemId = cartId
+            }
+            AppLogAnalytics.sendConfirmCartResult(model)
         }
     }
 

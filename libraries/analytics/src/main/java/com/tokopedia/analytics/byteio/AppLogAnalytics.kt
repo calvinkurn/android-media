@@ -170,7 +170,7 @@ object AppLogAnalytics {
 //            it.put("sku_num_before", product.skuNumBefore)
 //            it.put("sku_num_after", product.skuNumAfter)
             it.put("cart_item_id", product.cartItemId)
-            it.put("is_success", if (product.isSuccess) 1 else 0)
+            it.put("is_success", if (product.isSuccess == true) 1 else 0)
             it.put("fail_reason", product.failReason)
             it.put("request_id", globalRequestId)
             it.put("track_id", globalTrackId)
