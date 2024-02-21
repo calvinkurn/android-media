@@ -86,7 +86,7 @@ fun createViewModel(
         coEvery { it.executeOnBackground() }.answers { Success(com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData()) }
     }
     val accountAdminInfoUseCaseMock = getOrUseDefault(accountAdminInfoUseCase) {
-        coEvery { it.executeOnBackground() }.answers { Pair(AdminDataResponse(), ShopData()) }
+        coEvery { it(any()) }.answers { Pair(AdminDataResponse(), ShopData()) }
     }
 
     val getAffiliateUserUseCaseMock = getOrUseDefault(getAffiliateUserUseCase) {
