@@ -155,7 +155,7 @@ class ProductPreviewFragment @Inject constructor(
     private val coachMarkItems by lazyThreadSafetyNone {
         arrayListOf(
             CoachMark2Item(
-                anchorView = binding.layoutProductPreviewTab.icBack,
+                anchorView = binding.layoutProductPreviewTab.anchorCoachmark,
                 title = "",
                 description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard),
                 position = CoachMark2.POSITION_BOTTOM
