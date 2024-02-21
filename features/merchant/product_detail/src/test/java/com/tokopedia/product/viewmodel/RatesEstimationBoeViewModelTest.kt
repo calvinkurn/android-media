@@ -99,7 +99,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = "123"
         )
 
@@ -154,7 +154,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = expectedBoMetaData
         )
 
@@ -209,7 +209,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = expectedBoMetaData
         )
 
@@ -264,7 +264,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = expectedBoMetaData
         )
 
@@ -319,7 +319,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = expectedBoMetaData
         )
 

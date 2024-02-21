@@ -71,12 +71,12 @@ class GetProductInfoP2LoginUseCase @Inject constructor(
         """.trimIndent()
 
         fun createParams(
-            shopId: Int,
+            shopId: String,
             productId: String,
             isShopOwner: Boolean,
             isFromCache: Boolean
         ): RequestParams = RequestParams.create().apply {
-            putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
+            putString(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
             putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
             putBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, isShopOwner)
             putBoolean(ProductDetailCommonConstant.PARAM_FROM_CACHE, isFromCache)

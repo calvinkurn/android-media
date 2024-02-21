@@ -24,10 +24,10 @@ class GetProductInfoP2OtherUseCase @Inject constructor(
     private val remoteConfig: RemoteConfig
 ) : UseCase<ProductInfoP2Other>() {
     companion object {
-        fun createParams(productId: String, shopId: Int): RequestParams =
+        fun createParams(productId: String, shopId: String): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-                putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
+                putString(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
             }
     }
 

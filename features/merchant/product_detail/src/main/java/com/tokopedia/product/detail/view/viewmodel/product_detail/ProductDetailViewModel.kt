@@ -287,7 +287,7 @@ class ProductDetailViewModel @Inject constructor(
 
     fun hasShopAuthority(): Boolean = isShopOwner() || getShopInfo().allowManage
     fun isShopOwner(): Boolean =
-        isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getProductInfoP1?.basic?.getShopId()
+        isUserSessionActive && userSessionInterface.shopId == getProductInfoP1?.basic?.getShopId()
 
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
@@ -1152,7 +1152,7 @@ class ProductDetailViewModel @Inject constructor(
 
     private fun getProductInfoP2OtherAsync(
         productId: String,
-        shopId: Int
+        shopId: String
     ): Deferred<ProductInfoP2Other> {
         return async(dispatcher.io) {
             getProductInfoP2OtherUseCase.get().executeOnBackground(
@@ -1163,7 +1163,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private fun getProductInfoP2LoginAsync(
-        shopId: Int,
+        shopId: String,
         productId: String,
         isFromCache: Boolean
     ): Deferred<ProductInfoP2Login> {

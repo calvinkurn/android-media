@@ -214,7 +214,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailTalkGoToWriteDiscussi
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
-import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.APlusContentTracking
 import com.tokopedia.product.detail.tracking.BMGMTracking
@@ -3985,7 +3984,7 @@ open class ProductDetailFragment :
                     isTokoNow = it.basic.isTokoNow,
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
-                    orderValue = it.data.price.value.roundToIntOrZero(),
+                    orderValue = it.data.price.value,
                     boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId)
                         ?: "",
                     productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId)
@@ -4942,7 +4941,7 @@ open class ProductDetailFragment :
             EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
         }
 
-        val selectedWarehouseId = viewModel.getMultiOriginByProductId().id.toIntOrZero()
+        val selectedWarehouseId = viewModel.getMultiOriginByProductId().id
 
         viewModel.getProductInfoP1?.let { data ->
             showProgressDialog()
@@ -4954,7 +4953,7 @@ open class ProductDetailFragment :
                         quantity = data.basic.minOrder
                         notes = ""
                         customerId = viewModel.userId
-                        warehouseId = selectedWarehouseId.toString()
+                        warehouseId = selectedWarehouseId
                         trackerAttribution = trackerAttributionPdp ?: ""
                         trackerListName = trackerListNamePdp ?: ""
                         isTradeIn = data.data.isTradeIn
@@ -4991,7 +4990,7 @@ open class ProductDetailFragment :
         }
     }
 
-    private fun addToCartOcc(data: ProductInfoP1, selectedWarehouseId: Int) {
+    private fun addToCartOcc(data: ProductInfoP1, selectedWarehouseId: String) {
         val addToCartOccRequestParams = AddToCartOccMultiRequestParams(
             carts = listOf(
                 AddToCartOccMultiCartParam(
@@ -4999,7 +4998,7 @@ open class ProductDetailFragment :
                     shopId = data.basic.shopID,
                     quantity = data.basic.minOrder.toString()
                 ).apply {
-                    warehouseId = selectedWarehouseId.toString()
+                    warehouseId = selectedWarehouseId
                     attribution = trackerAttributionPdp ?: ""
                     listTracker = trackerListNamePdp ?: ""
                     productName = data.getProductName
@@ -5289,7 +5288,7 @@ open class ProductDetailFragment :
     }
 
     private fun goToTradeInHome() {
-        val selectedWarehouseId = viewModel.getMultiOriginByProductId().id.toIntOrZero()
+        val selectedWarehouseId = viewModel.getMultiOriginByProductId().id
 
         viewModel.getProductInfoP1?.let {
             TradeInPDPHelper.pdpToTradeIn(
