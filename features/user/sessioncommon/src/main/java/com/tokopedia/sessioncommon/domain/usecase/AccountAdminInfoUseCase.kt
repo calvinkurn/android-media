@@ -50,7 +50,7 @@ class AccountAdminInfoUseCase @Inject constructor(
             adminDataResponse?.data?.detail?.roleType?.let {
                 // If role changed from location admin to non location admin, refresh the shop data
                 if (isLocationAdmin && !it.isLocationAdmin) {
-                    refreshShopBasicDataUseCase.executeOnBackground()
+                    refreshShopBasicDataUseCase(Unit)
                 } else {
                     null
                 }

@@ -154,8 +154,7 @@ class LoginEmailPhoneViewModelTest {
             gotoSeamlessPreference,
             userSession,
             fingerprintPreferenceManager,
-            CoroutineTestDispatchersProvider,
-            getProfileUtils
+            CoroutineTestDispatchersProvider
         )
 
         viewModel.registerCheckResponse.observeForever(registerCheckObserver)
