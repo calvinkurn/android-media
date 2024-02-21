@@ -56,6 +56,7 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composePreview
     implementation rootProject.ext.composeDependencies.composeRuntime
     implementation rootProject.ext.composeDependencies.composeUi
+    implementation rootProject.ext.composeDependencies.composeLiveData
 
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components

@@ -41,6 +41,7 @@ import com.tokopedia.cart.view.uimodel.AddToCartEvent
 import com.tokopedia.cart.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainFloatingButtonData
 import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
 import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
 import com.tokopedia.cart.view.uimodel.CartCheckoutButtonState
@@ -214,8 +215,8 @@ class CartViewModel @Inject constructor(
         MutableLiveData()
     val cartCheckoutButtonState: LiveData<CartCheckoutButtonState> = _cartCheckoutButtonState
 
-    private val _buyAgainFloatingButtonVisibilityState: MutableLiveData<Boolean> = MutableLiveData()
-    val buyAgainFloatingButtonVisibilityState: LiveData<Boolean> = _buyAgainFloatingButtonVisibilityState
+    private val _buyAgainFloatingButtonData: MutableLiveData<CartBuyAgainFloatingButtonData> = MutableLiveData()
+    val buyAgainFloatingButtonData: LiveData<CartBuyAgainFloatingButtonData> = _buyAgainFloatingButtonData
 
     private val _recentViewState: MutableLiveData<LoadRecentReviewState> = MutableLiveData()
     val recentViewState: LiveData<LoadRecentReviewState> = _recentViewState
@@ -1030,7 +1031,10 @@ class CartViewModel @Inject constructor(
         cartModel.buyAgainList = buyAgainList
         cartModel.shouldReloadBuyAgainList = false
 
-        _buyAgainFloatingButtonVisibilityState.value = buyAgainList.isNotEmpty()
+        _buyAgainFloatingButtonData.value = CartBuyAgainFloatingButtonData(
+            title = "Waktunya beli lagi!",
+            isVisible = buyAgainList.isNotEmpty()
+        )
     }
 
     private fun addCartBuyAgainData(
@@ -2989,5 +2993,11 @@ class CartViewModel @Inject constructor(
                 Timber.d(t)
             }
         }
+    }
+
+    fun updateBuyAgainFloatingButtonVisibility(isVisible: Boolean) {
+        _buyAgainFloatingButtonData.value = _buyAgainFloatingButtonData.value?.copy(
+            isVisible = isVisible
+        )
     }
 }

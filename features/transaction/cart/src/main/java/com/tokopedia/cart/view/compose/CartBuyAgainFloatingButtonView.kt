@@ -1,5 +1,7 @@
 package com.tokopedia.cart.view.compose
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,8 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,15 +24,29 @@ import com.tokopedia.nest.principles.utils.noRippleClickable
 
 @Composable
 fun CartBuyAgainFloatingButtonView(
+    title: String?,
+    isVisible: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val containerAlpha by animateFloatAsState(
+        targetValue = if (isVisible) 1.0f else 0f,
+        label = "FloatingButtonContainerAlpha",
+        animationSpec = tween(
+            durationMillis = 300
+        )
+    )
+
+    if (title.isNullOrBlank()) return
+
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(
-                NestTheme.colors.GN._500
+            .graphicsLayer(
+                clip = true,
+                shape = RoundedCornerShape(20.dp),
+                alpha = containerAlpha
             )
+            .background(NestTheme.colors.GN._500)
             .padding(
                 top = 8.dp,
                 start = 8.dp,
@@ -48,7 +65,7 @@ fun CartBuyAgainFloatingButtonView(
         )
         Spacer(modifier = Modifier.width(4.dp))
         NestTypography(
-            text = "Waktunya beli lagi!",
+            text = title,
             textStyle = NestTheme.typography.display3.copy(
                 color = NestTheme.colors.NN._0,
                 fontWeight = FontWeight.Bold
@@ -62,6 +79,8 @@ fun CartBuyAgainFloatingButtonView(
 fun CartBuyAgainFloatingButtonViewPreview() {
     NestTheme {
         CartBuyAgainFloatingButtonView(
+            title = "Waktunya beli lagi, nih!",
+            isVisible = false,
             onClick = {}
         )
     }
