@@ -77,6 +77,7 @@ object CouponWidgetTracker : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendChannelId(model.channelId)
             .appendCustomKeyValue(TrackerId.KEY, CTA_CLICK_ID)
+            .appendCampaignCode(model.campaignCode)
             .appendUserId(userId)
 
         return trackingBuilder.build()
