@@ -115,7 +115,7 @@ fun sendVerticalScrollTrack(scrollOffset: Float, glideTrackObject: GlideTrackObj
 
         it.put(AppLogParam.LIST_NAME, glideTrackObject.listName)
         it.put(AppLogParam.LIST_NUM, glideTrackObject.listNum)
-        it.put(AppLogParam.IS_USE_CACHE, glideTrackObject.isUseCache)
+        it.put(AppLogParam.IS_USE_CACHE, if (glideTrackObject.isUseCache) 1 else 0)
     })
 }
 
@@ -130,7 +130,6 @@ fun sendVerticalScrollEnd(scrollOffset: Float, glideTrackObject: GlideTrackObjec
         it.put(AppLogParam.LIST_NAME, glideTrackObject.listName)
         it.put(AppLogParam.LIST_NUM, glideTrackObject.listNum)
 
-        it.put(AppLogParam.ENTER_FROM, "") // TODO
         it.put(AppLogParam.ACTION_TYPE, ActionType.GLIDE)
         it.put(AppLogParam.MODULE_NAME, "") //TODO
         it.put(AppLogParam.REC_SESSION_ID, recObject.sessionId)

@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.extension
 
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
@@ -316,5 +317,18 @@ fun RecommendationWidget.mapToChannelHeader(): ChannelHeader {
         backImage = headerBackImage,
         textColor = titleColor,
         channelId = channelId
+    )
+}
+
+fun RecommendationItem.asTrackingModel(isCache: Boolean = false): AppLogRecommendationProductModel {
+    return AppLogRecommendationProductModel.create(
+        productId = productId.toString(),
+        position = position,
+        sourceModule = "", //TODO recom
+        isAd = isTopAds,
+        isUseCache = isCache,
+        recParams = "", //TODO recom
+        requestId = "", //TODO recom
+        shopId = shopId.toString(),
     )
 }
