@@ -5,6 +5,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.databinding.CarouselAutomateCouponItemLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -57,13 +60,22 @@ class CarouselAutomateCouponItemViewHolder(
         lifecycleOwner?.let { viewModel?.getCouponModel()?.removeObservers(it) }
     }
 
-    private fun CarouselAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponModel) {
-        couponView.setModel(model)
+    private fun CarouselAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponUiModel) {
+        val handler = CtaActionHandler(model.ctaState, object : CtaActionHandler.Listener {
 
-        couponView.setState(
-            ButtonState.Claim {
+            override fun claim() {
                 viewModel?.claim()
             }
-        )
+
+            override fun redirect(properties: AutomateCouponCtaState.Properties) {
+                val target = properties.appLink.ifEmpty { properties.url }
+                val intent = RouteManager.getIntent(itemView.context, target)
+
+                itemView.context.startActivity(intent)
+            }
+        })
+
+        couponView.setModel(model.data)
+        couponView.setState(handler)
     }
 }
