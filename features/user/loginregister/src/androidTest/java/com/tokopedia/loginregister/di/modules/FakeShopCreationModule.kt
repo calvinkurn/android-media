@@ -1,27 +1,28 @@
-package com.tokopedia.loginregister.shopcreation.di
+package com.tokopedia.loginregister.di.modules
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.loginregister.di.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-/**
- * Created by Ade Fulki on 2019-12-09.
- * ade.hadian@tokopedia.com
- */
-
 @Module
-class ShopCreationModule {
+class FakeShopCreationModule {
 
     @ActivityScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface =
-        UserSession(context)
+    fun provideUserSession(userSessionStub: UserSessionStub): UserSessionInterface {
+        return userSessionStub
+    }
+    @ActivityScope
+    @Provides
+    fun provideUserSessionStub(@ApplicationContext context: Context): UserSessionStub {
+        return UserSessionStub(context)
+    }
 
     @ActivityScope
     @Provides

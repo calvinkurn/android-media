@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginregister.shopcreation.data.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.data.UserProfileUpdate
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidate
 import com.tokopedia.loginregister.shopcreation.domain.GetUserProfileCompletionUseCase
-import com.tokopedia.loginregister.shopcreation.domain.RegisterCheckParam
-import com.tokopedia.loginregister.shopcreation.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckParam
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoParam
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoUseCase
 import com.tokopedia.loginregister.shopcreation.domain.UpdateUserProfileParam
