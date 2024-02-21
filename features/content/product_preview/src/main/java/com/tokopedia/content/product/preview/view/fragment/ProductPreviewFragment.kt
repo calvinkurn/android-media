@@ -94,6 +94,10 @@ class ProductPreviewFragment @Inject constructor(
         )
     }
 
+    private val pageSource: String by lazyThreadSafetyNone {
+        pagerAdapter.getCurrentTabKey(binding.vpProductPreview.currentItem)
+    }
+
     override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
 
     private val productAtcResult = registerForActivityResult(
@@ -158,7 +162,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun onClickHandler() = with(binding) {
         layoutProductPreviewTab.icBack.setOnClickListener {
-            analytics.onClickBackButton()
+            analytics.onClickBackButton(pageSource)
             activity?.finish()
         }
         layoutProductPreviewTab.tvProductTabTitle.setOnClickListener {
@@ -278,8 +282,8 @@ class ProductPreviewFragment @Inject constructor(
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
         if (prev == model) return
 
-        analytics.onImpressATC()
-        if (model.buttonState == OOS) analytics.onImpressRemindMe()
+        analytics.onImpressATC(pageSource)
+        if (model.buttonState == OOS) analytics.onImpressRemindMe(pageSource)
 
         binding.viewFooter.apply {
             show()
@@ -298,7 +302,7 @@ class ProductPreviewFragment @Inject constructor(
             AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
                 AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
                     if (this.mapOfSelectedVariantOption.isNullOrEmpty()) return@onActivityResultAtcVariant
-                    analytics.onClickVariantGBVS()
+                    analytics.onClickVariantGBVS(pageSource)
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -306,8 +310,8 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleAtc(model: BottomNavUiModel) {
-        analytics.onClickATC(model)
-        if (model.buttonState == OOS) analytics.onClickRemindMe()
+        analytics.onClickATC(pageSource, model)
+        if (model.buttonState == OOS) analytics.onClickRemindMe(pageSource)
         if (model.hasVariant) {
             AtcVariantHelper.goToAtcVariant(
                 context = requireContext(),

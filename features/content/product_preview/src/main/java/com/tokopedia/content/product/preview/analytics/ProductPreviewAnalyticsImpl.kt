@@ -48,9 +48,9 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 2. impress video
      * 49588
      */
-    override fun onImpressVideo() {
+    override fun onImpressVideo(pageSource: String) {
         analyticManager.sendOpenScreen(
-            screenName = "/unified view pdp - $productId - 0",
+            screenName = "/unified view pdp - $productId - 0 - $pageSource",
             mainAppTrackerId = "49588",
             customFields = mapOf(Key.productId to productId)
         )
@@ -60,10 +60,10 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 3. impress ATC button
      * 49589
      */
-    override fun onImpressATC() {
+    override fun onImpressATC(pageSource: String) {
         analyticManager.sendViewContent(
             eventAction = "view - add to cart media fullscreen",
-            eventLabel = "$productId - 0",
+            eventLabel = "$pageSource - $productId - 0",
             mainAppTrackerId = "49589",
             customFields = mapOf(Key.productId to productId)
         )
@@ -73,7 +73,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 4. click ATC button
      * 49590
      */
-    override fun onClickATC(bottomNavUiModel: BottomNavUiModel) {
+    override fun onClickATC(pageSource: String, bottomNavUiModel: BottomNavUiModel) {
         var categoryId = ""
         var itemCategory = ""
         bottomNavUiModel.categoryTree.forEachIndexed { index, categoryTree ->
@@ -83,7 +83,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
         analyticManager.sendEEProduct(
             event = Event.add_to_cart,
             eventAction = "click - add to cart media fullscreen",
-            eventLabel = productId,
+            eventLabel = "$pageSource - $productId",
             itemList = "",
             products = listOf(
                 ContentEnhanceEcommerce.Product(
@@ -123,10 +123,10 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 6. impress image content
      * 49598
      */
-    override fun onImpressImage() {
+    override fun onImpressImage(pageSource: String) {
         analyticManager.sendViewContent(
             eventAction = "view - image content",
-            eventLabel = productId,
+            eventLabel = "$pageSource - $productId",
             mainAppTrackerId = "49598",
             customFields = mapOf(Key.productId to productId)
         )
@@ -136,10 +136,10 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 7. impress Ingatkan Saya button
      * 49600
      */
-    override fun onImpressRemindMe() {
+    override fun onImpressRemindMe(pageSource: String) {
         analyticManager.sendViewContent(
             eventAction = "view - ingatkan saya",
-            eventLabel = productId,
+            eventLabel = "$pageSource - $productId",
             mainAppTrackerId = "49600",
             customFields = mapOf(Key.productId to productId)
         )
@@ -149,10 +149,10 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 8. click Ingatkan Saya button
      * 49601
      */
-    override fun onClickRemindMe() {
+    override fun onClickRemindMe(pageSource: String) {
         analyticManager.sendClickContent(
             eventAction = "click - ingatkan saya",
-            eventLabel = productId,
+            eventLabel = "$pageSource - $productId",
             mainAppTrackerId = "49601",
             customFields = mapOf(Key.productId to productId)
         )
@@ -201,10 +201,10 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 12. click Back button to PDP
      * 49606
      */
-    override fun onClickBackButton() {
+    override fun onClickBackButton(pageSource: String) {
         analyticManager.sendClickContent(
             eventAction = "click - back button to pdp",
-            eventLabel = productId,
+            eventLabel = "$pageSource - $productId",
             mainAppTrackerId = "49606",
             customFields = mapOf(Key.productId to productId)
         )
@@ -214,10 +214,10 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 13. click ATC to global variant bottomsheet
      * 49607
      */
-    override fun onClickVariantGBVS() {
+    override fun onClickVariantGBVS(pageSource: String) {
         analyticManager.sendClickContent(
             eventAction = "click - variant bottomsheet atc entry point",
-            eventLabel = productId,
+            eventLabel = "$pageSource - $productId",
             mainAppTrackerId = "49607",
             customFields = mapOf(Key.productId to productId)
         )
@@ -253,10 +253,10 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 16. click pause/play in video
      * 49845
      */
-    override fun onClickPauseOrPlayVideo() {
+    override fun onClickPauseOrPlayVideo(pageSource: String) {
         analyticManager.sendClickContent(
             eventAction = "click - pause play button",
-            eventLabel = "$productId - 0",
+            eventLabel = "$pageSource - $productId - 0",
             mainAppTrackerId = "49845",
             customFields = mapOf(Key.productId to productId)
         )
