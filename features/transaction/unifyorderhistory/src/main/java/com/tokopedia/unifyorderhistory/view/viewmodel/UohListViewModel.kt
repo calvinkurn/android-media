@@ -260,15 +260,6 @@ class UohListViewModel @Inject constructor(
         }
     }
 
-    /*fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>, verticalCategory: String) {
-        UohIdlingResource.increment()
-        launch {
-            val result = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
-            _atcMultiResult.value = result
-            UohIdlingResource.decrement()
-        }
-    }*/
-
     fun doAtcMulti(listParam: ArrayList<AddToCartMultiParam>) {
         UohIdlingResource.increment()
         launch {
