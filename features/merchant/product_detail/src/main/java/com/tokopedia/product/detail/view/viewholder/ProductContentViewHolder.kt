@@ -21,7 +21,7 @@ class ProductContentViewHolder(
     }
 
     private val binding = ItemDynamicProductContentBinding.bind(view)
-    private val header = PartialContentView(binding, listener)
+    private val header = PartialContentView(binding)
 
     override fun bind(element: ProductContentDataModel) {
         initializeClickListener(element)
@@ -39,7 +39,6 @@ class ProductContentViewHolder(
         }
 
         header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-        header.updateUniversalShareWidget(element.shouldShowShareWidget)
     }
 
     override fun bind(element: ProductContentDataModel?, payloads: MutableList<Any>) {
@@ -58,8 +57,6 @@ class ProductContentViewHolder(
                 header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
                 // only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
                 header.renderFreeOngkir(element.freeOngkirImgUrl, element.data?.isShowPrice == true)
-
-                header.updateUniversalShareWidget(element.shouldShowShareWidget)
             }
         }
         view.addOnImpressionListener(
