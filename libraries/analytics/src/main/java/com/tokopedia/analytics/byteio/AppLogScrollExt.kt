@@ -149,9 +149,9 @@ fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
         it.put(AppLogParam.GLIDE_TYPE, if (scrollOffset > 0) "more" else "less")
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
 
-        it.put(AppLogParam.LIST_NAME, model.listName)
-        it.put(AppLogParam.LIST_NUM, model.listNum)
-        it.put(AppLogParam.IS_USE_CACHE, model.isUseCache)
+        it.put(AppLogParam.LIST_NAME, glideTrackObject.listName)
+        it.put(AppLogParam.LIST_NUM, glideTrackObject.listNum)
+        it.put(AppLogParam.IS_USE_CACHE, if (glideTrackObject.isUseCache) 1 else 0)
     })
 }
 

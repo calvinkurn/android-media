@@ -67,6 +67,9 @@ internal fun AutoCompleteScreen(
                             onItemClicked = {
                                 viewModel.onAutoCompleteItemClick(it)
                                 it.click(analytics)
+                                if (item.domainModel.isMasterTemplate()) {
+                                    viewModel.trackTrendingWordsClick(item)
+                                }
                             },
                             onItemAction = {
                                 viewModel.onAutocompleteItemAction(it)

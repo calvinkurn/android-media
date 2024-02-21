@@ -154,7 +154,7 @@ internal class AutoCompleteViewModel @Inject constructor(
     fun trackTrendingWordsShow(item: AutoCompleteUnifyDataView) {
         val appLogData = stateValue.appLogData
         AppLogSearch.eventTrendingWordsShowSuggestion(
-            AppLogSearch.TrendingWordsShow(
+            AppLogSearch.TrendingWordsSuggestion(
                 searchPosition = appLogData.enterFrom,
                 searchEntrance = appLogData.searchEntrance,
                 groupId = "", // TODO milhamj: wait from BE
@@ -162,7 +162,25 @@ internal class AutoCompleteViewModel @Inject constructor(
                 newSugSessionId = appLogData.newSugSessionId,
                 rawQuery = currentQuery,
                 enterMethod = appLogData.enterMethod,
-                sugType = "",
+                sugType = "", // TODO milhamj: wait from BE
+                wordsContent = item.domainModel.title.text,
+                wordsPosition = item.appLogIndex
+            )
+        )
+    }
+
+    fun trackTrendingWordsClick(item: AutoCompleteUnifyDataView) {
+        val appLogData = stateValue.appLogData
+        AppLogSearch.eventTrendingWordsShowSuggestion(
+            AppLogSearch.TrendingWordsSuggestion(
+                searchPosition = appLogData.enterFrom,
+                searchEntrance = appLogData.searchEntrance,
+                groupId = "", // TODO milhamj: wait from BE
+                imprId = "", // TODO milhamj: wait from BE
+                newSugSessionId = appLogData.newSugSessionId,
+                rawQuery = currentQuery,
+                enterMethod = appLogData.enterMethod,
+                sugType = "", // TODO milhamj: wait from BE
                 wordsContent = item.domainModel.title.text,
                 wordsPosition = item.appLogIndex
             )
