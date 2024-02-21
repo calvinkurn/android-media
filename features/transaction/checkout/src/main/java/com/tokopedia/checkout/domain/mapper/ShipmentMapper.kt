@@ -13,6 +13,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippi
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.PaymentLevelAddOnItem
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.PaymentWidgetResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAction
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
@@ -41,6 +42,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.UI_GROUP_TYPE_OWOC
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
+import com.tokopedia.checkout.domain.model.cartshipmentform.PaymentWidget
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
@@ -195,6 +197,7 @@ class ShipmentMapper @Inject constructor() {
             paymentLevelAddOnsPositions =
                 mapPaymentLevelAddOns(shipmentAddressFormDataResponse.paymentLevelAddOns)
             additionalFeature = mapAdditionalFeatures(shipmentAddressFormDataResponse.additionalFeatures)
+            paymentWidget = mapPaymentWidget(shipmentAddressFormDataResponse.paymentWidget)
         }
     }
 
@@ -1408,6 +1411,15 @@ class ShipmentMapper @Inject constructor() {
             }
         }
         return additionalFeature
+    }
+
+    private fun mapPaymentWidget(response: PaymentWidgetResponse): PaymentWidget {
+        return PaymentWidget(
+            metadata = response.metadata,
+//            enable = response.enable,
+            enable = true,
+            errorMessage = response.errorMessage
+        )
     }
 
     companion object {

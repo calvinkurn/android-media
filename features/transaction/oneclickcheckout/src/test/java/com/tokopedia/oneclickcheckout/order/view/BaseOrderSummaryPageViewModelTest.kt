@@ -6,7 +6,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExtern
 import com.tokopedia.checkoutpayment.domain.CreditCardTenorListUseCase
 import com.tokopedia.checkoutpayment.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOptionUseCase
-import com.tokopedia.checkoutpayment.processor.CheckoutPaymentProcessor
+import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
@@ -35,6 +35,7 @@ import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -157,10 +158,11 @@ open class BaseOrderSummaryPageViewModelTest {
             ),
             {
                 OrderSummaryPagePaymentProcessor(
-                    CheckoutPaymentProcessor(
+                    PaymentProcessor(
                         creditCardTenorListUseCase,
                         goCicilInstallmentOptionUseCase,
                         dynamicPaymentFeeUseCase,
+                        mockk(),
                         testDispatchers
                     ),
                     testDispatchers

@@ -52,6 +52,7 @@ import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -291,6 +292,15 @@ class CheckoutViewModel @Inject constructor(
                             PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
                         }
 
+                        val payment = CheckoutPaymentModel(
+                            widget = CheckoutPaymentWidgetData(
+                                state = CheckoutPaymentWidgetState.None,
+                                metadata = saf.cartShipmentAddressFormData.paymentWidget.metadata,
+                                enable = saf.cartShipmentAddressFormData.paymentWidget.enable,
+                                defaultErrorMessage = saf.cartShipmentAddressFormData.paymentWidget.errorMessage
+                            )
+                        )
+
                         val cost = CheckoutCostModel()
 
                         val paymentLevelAddOnsMap = mutableMapOf<Long, CheckoutCrossSellItem>()
@@ -371,7 +381,7 @@ class CheckoutViewModel @Inject constructor(
                             ) + itemsWithLoadingState + listOf(
                                 epharmacy,
                                 promo,
-                                CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
+                                payment,
                                 cost,
                                 crossSellGroup,
                                 buttonPayment

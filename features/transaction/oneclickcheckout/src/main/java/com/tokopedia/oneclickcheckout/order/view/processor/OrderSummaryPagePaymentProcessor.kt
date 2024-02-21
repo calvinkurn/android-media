@@ -28,7 +28,7 @@ import com.tokopedia.checkoutpayment.data.SummariesItemData
 import com.tokopedia.checkoutpayment.data.UsageSummariesData
 import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
-import com.tokopedia.checkoutpayment.processor.CheckoutPaymentProcessor
+import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -52,7 +52,7 @@ import java.util.Collections.emptyList
 import javax.inject.Inject
 
 class OrderSummaryPagePaymentProcessor @Inject constructor(
-    private val processor: CheckoutPaymentProcessor,
+    private val processor: PaymentProcessor,
     private val executorDispatchers: CoroutineDispatchers
 ) {
 

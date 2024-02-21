@@ -81,5 +81,7 @@ data class ShipmentAddressFormDataResponse(
     @SerializedName("payment_level_add_ons")
     val paymentLevelAddOns: List<PaymentLevelAddOnItem> = emptyList(),
     @SerializedName("additional_features")
-    val additionalFeatures: List<String> = emptyList()
+    val additionalFeatures: List<String> = emptyList(),
+    @SerializedName("payment_widget")
+    val paymentWidget: PaymentWidgetResponse = PaymentWidgetResponse()
 )
