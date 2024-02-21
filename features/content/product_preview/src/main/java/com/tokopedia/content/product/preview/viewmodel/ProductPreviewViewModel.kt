@@ -153,25 +153,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             return _tabContentState.value.tabs[tabPosition].key
         }
 
-    private var isAutoHorizontalScrollProductMediaInitialize = false
-    private var isAutoHorizontalScrollReviewMediaInitialize = false
-    private val isEnableAutoHorizontalScrollProductMedia: Boolean
-        get() {
-            return (
-                _productTabIdle.value &&
-                    currentTabKey == TAB_PRODUCT_KEY &&
-                    isAutoHorizontalScrollProductMediaInitialize
-                )
-        }
-    private val enableAutoHorizontalScrollReviewMedia: Boolean
-        get() {
-            return (
-                _reviewTabIdle.value &&
-                    currentTabKey == TAB_REVIEW_KEY &&
-                    isAutoHorizontalScrollReviewMediaInitialize &&
-                    currentReviewMediaSize > 1
-                )
-        }
+    private var isAutoScrollMediaInitialize = false
     private val _productTabIdle = MutableStateFlow(true)
     private val _reviewTabIdle = MutableStateFlow(true)
 
@@ -238,7 +220,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun handleInitializeProductMainData() {
         val source = productPreviewSource.source as? ProductSourceData ?: return
         _productMediaState.update { it.copy(productMedia = source.productSourceList) }
-        if (!isAutoHorizontalScrollProductMediaInitialize) handleAutoHorizontalScrollProductMedia()
+        if (!isAutoScrollMediaInitialize) checkAutoScrollMedia()
     }
 
     private fun handleInitializeReviewMainData() {
@@ -285,7 +267,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun handleReviewContentScrolling(position: Int, isScrolling: Boolean) {
         updateReviewContentScrollingState(position, isScrolling)
         emitTrackAllHorizontalScrollEvent()
-        if (!isAutoHorizontalScrollReviewMediaInitialize) handleAutoHorizontalScrollReviewMedia()
+        if (!isAutoScrollMediaInitialize) checkAutoScrollMedia()
     }
 
     private fun handleReviewMediaSelected(mediaPosition: Int) {
@@ -334,7 +316,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 )
             }
 
-            if (!isAutoHorizontalScrollReviewMediaInitialize) handleAutoHorizontalScrollReviewMedia()
+            if (!isAutoScrollMediaInitialize) checkAutoScrollMedia()
             handleFetchReview(isRefresh = false, page = 1)
         }, onError = {
                 _reviewContentState.update { review ->
@@ -367,7 +349,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 review.copy(reviewContent = newList, reviewPaging = response.reviewPaging)
             }
 
-            if (!isAutoHorizontalScrollReviewMediaInitialize) handleAutoHorizontalScrollReviewMedia()
+            checkAutoScrollMedia()
         }) {
             _reviewContentState.update { review ->
                 review.copy(
@@ -379,46 +361,36 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleAutoHorizontalScrollProductMedia() {
-        isAutoHorizontalScrollProductMediaInitialize = true
+    private fun checkAutoScrollMedia() {
+        isAutoScrollMediaInitialize = true
         viewModelScope.launchCatchError(block = {
-            while (isEnableAutoHorizontalScrollProductMedia) {
-                delay(DELAY_3SECOND)
+            while (true) {
+                delay(DELAY_AUTO_HORIZONTAL_SCROLL)
 
-                if (currentProductMediaPosition.plus(1) < currentProductMediaSize) {
-                    val position = currentProductMediaPosition.plus(1)
-                    handleProductMediaSelected(position)
+                if (currentTabKey == TAB_PRODUCT_KEY) {
+                    if (currentProductMediaPosition.plus(1) < currentProductMediaSize) {
+                        val position = currentProductMediaPosition.plus(1)
+                        handleProductMediaSelected(position)
+                    } else {
+                        val position = 0
+                        handleProductMediaSelected(position)
+                    }
+                } else if (currentTabKey == TAB_REVIEW_KEY) {
+                    if (currentReviewMediaSize < 2) return@launchCatchError
+                    if (currentReviewMediaPosition.plus(1) < currentReviewMediaSize) {
+                        val position = currentReviewMediaPosition.plus(1)
+                        handleReviewMediaSelected(position)
+                    } else {
+                        val position = 0
+                        handleReviewMediaSelected(position)
+                    }
                 } else {
-                    val position = 0
-                    handleProductMediaSelected(position)
+                    return@launchCatchError
                 }
             }
         }) { _ ->
-            isAutoHorizontalScrollProductMediaInitialize = false
+            isAutoScrollMediaInitialize = false
         }
-    }
-
-    private fun handleAutoHorizontalScrollReviewMedia() {
-        isAutoHorizontalScrollReviewMediaInitialize = true
-        viewModelScope.launchCatchError(block = {
-            while (enableAutoHorizontalScrollReviewMedia) {
-                delay(DELAY_3SECOND)
-                if (currentReviewMediaSize < 2) return@launchCatchError
-                if (currentReviewMediaPosition.plus(1) < currentReviewMediaSize) {
-                    val position = currentReviewMediaPosition.plus(1)
-                    handleReviewMediaSelected(position)
-                } else {
-                    val position = 0
-                    handleReviewMediaSelected(position)
-                }
-            }
-        }) { _ ->
-            isAutoHorizontalScrollReviewMediaInitialize = false
-        }
-    }
-
-    companion object {
-        const val DELAY_3SECOND = 3000L
     }
 
     private fun emitTrackAllHorizontalScrollEvent() {
@@ -634,5 +606,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 }
             )
         }
+    }
+
+    companion object {
+        private const val DELAY_AUTO_HORIZONTAL_SCROLL = 3000L
     }
 }
