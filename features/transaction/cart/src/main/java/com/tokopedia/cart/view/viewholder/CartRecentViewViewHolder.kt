@@ -26,8 +26,8 @@ class CartRecentViewViewHolder(
     companion object {
         val LAYOUT = R.layout.item_cart_recent_view
 
-        private val RECOM_WIDGET_TOP_PADDING_DP = 20
-        private val RECOM_WIDGET_BOTTOM_PADDING_DP = 20
+        private const val RECOM_WIDGET_TOP_PADDING_DP = 20
+        private const val RECOM_WIDGET_BOTTOM_PADDING_DP = 20
     }
 
     fun bind(element: CartRecentViewHolderData) {
