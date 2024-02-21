@@ -1476,6 +1476,7 @@ class CartItemViewHolder(
         return if (quantity == data.minOrder) {
             binding.qtyEditorProduct.configState.value.qtyMinusButton.copy(
                 iconUnifyId = IconUnify.DELETE_SMALL,
+                layoutId = CART_TRASH_ICON_LAYOUT_ID,
                 colorInt = nestcomponentsR.color.Unify_NN950,
                 qtyEnabledCondition = { _, _ -> true },
                 onClick = {
@@ -1951,6 +1952,8 @@ class CartItemViewHolder(
         private const val BOTTOM_DIVIDER_MARGIN_START = 114
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
+
+        private const val CART_TRASH_ICON_LAYOUT_ID = "quantity_editor_trash"
     }
 
     private fun getQuantityEditorView(): View {
