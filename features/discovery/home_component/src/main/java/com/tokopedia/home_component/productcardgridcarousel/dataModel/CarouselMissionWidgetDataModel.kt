@@ -39,4 +39,12 @@ data class CarouselMissionWidgetDataModel(
     override fun type(typeFactory: MissionWidgetTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun isProduct(): Boolean {
+        return this.data.productID.isNotBlank() && this.data.productID != ZERO_PRODUCT_ID
+    }
+
+    companion object {
+        private const val ZERO_PRODUCT_ID = "0"
+    }
 }

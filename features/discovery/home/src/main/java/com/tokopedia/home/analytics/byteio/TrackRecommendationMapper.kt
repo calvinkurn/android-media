@@ -8,7 +8,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.Recommen
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 
 object TrackRecommendationMapper {
-    fun RecommendationCardModel.asTrackerModel(
+    fun RecommendationCardModel.asProductTrackModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
@@ -26,7 +26,25 @@ object TrackRecommendationMapper {
         )
     }
 
-    fun BannerTopAdsModel.asTrackerModel(
+    fun RecommendationCardModel.asCardTrackModel(
+        isCache: Boolean = false,
+        tabName: String,
+        tabPosition: Int,
+    ): AppLogRecommendationCardModel {
+        return AppLogRecommendationCardModel.create(
+            productId = recommendationProductItem.id,
+            tabName = tabName,
+            tabPosition = tabPosition,
+            sourceModule = "", //TODO need to confirm
+            isAd = recommendationProductItem.isTopAds,
+            isUseCache = isCache,
+            recParams = "", //TODO need to confirm
+            requestId = "", //TODO need BE deployment
+            shopId = recommendationProductItem.shop.id,
+        )
+    }
+
+    fun BannerTopAdsModel.asCardTrackModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
@@ -44,7 +62,7 @@ object TrackRecommendationMapper {
         )
     }
 
-    fun ContentCardModel.asTrackerModel(
+    fun ContentCardModel.asCardTrackModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
@@ -62,7 +80,7 @@ object TrackRecommendationMapper {
         )
     }
 
-    fun PlayCardModel.asTrackerModel(
+    fun PlayCardModel.asCardTrackModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,

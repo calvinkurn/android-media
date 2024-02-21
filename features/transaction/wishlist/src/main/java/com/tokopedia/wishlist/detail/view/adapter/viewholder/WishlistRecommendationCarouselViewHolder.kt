@@ -3,13 +3,11 @@ package com.tokopedia.wishlist.detail.view.adapter.viewholder
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.extension.asTrackingModel
 import com.tokopedia.wishlist.databinding.WishlistRecommendationCarouselItemBinding
 import com.tokopedia.wishlist.detail.data.model.WishlistRecommendationDataModel
 import com.tokopedia.wishlist.detail.data.model.WishlistTypeLayoutData
@@ -44,7 +42,6 @@ class WishlistRecommendationCarouselViewHolder(
                         override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                             val recommendationItem = element.dataObject.listRecommendationItem.getOrNull(carouselProductCardPosition) ?: return
                             actionListener?.onRecommendationCarouselItemImpression(recommendationItem, adapterPosition)
-                            AppLogRecommendation.sendProductShowAppLog(recommendationItem.asTrackingModel())
                         }
 
                         override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder {
@@ -55,7 +52,6 @@ class WishlistRecommendationCarouselViewHolder(
                         override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                             val recommendationItem = element.dataObject.listRecommendationItem.getOrNull(carouselProductCardPosition) ?: return
                             actionListener?.onRecommendationCarouselItemClick(recommendationItem, carouselProductCardPosition)
-                            AppLogRecommendation.sendProductClickAppLog(recommendationItem.asTrackingModel())
                         }
                     }
                 )

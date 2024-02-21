@@ -37,7 +37,8 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.byteio.TrackRecommendationMapper.asTrackerModel
+import com.tokopedia.home.analytics.byteio.TrackRecommendationMapper.asCardTrackModel
+import com.tokopedia.home.analytics.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistNonLogin
@@ -438,7 +439,7 @@ class HomeRecommendationFragment :
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
         Log.d("byteio2", "onProductCardImpressed: $position")
         sendProductShowAppLog(
-            model.asTrackerModel(
+            model.asProductTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex
             )
@@ -491,9 +492,15 @@ class HomeRecommendationFragment :
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
         sendProductClickAppLog(
-            model.asTrackerModel(
+            model.asProductTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex
+            )
+        )
+        sendCardClickAppLog(
+            model.asCardTrackModel(
+                tabName = tabName,
+                tabPosition = tabIndex,
             )
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
@@ -585,7 +592,7 @@ class HomeRecommendationFragment :
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         sendCardClickAppLog(
-            model.asTrackerModel(
+            model.asCardTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
             )
@@ -615,7 +622,7 @@ class HomeRecommendationFragment :
 
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
         sendCardShowAppLog(
-            model.asTrackerModel(
+            model.asCardTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
             )
@@ -639,7 +646,7 @@ class HomeRecommendationFragment :
 
     override fun onContentCardImpressed(item: ContentCardModel, position: Int) {
         sendCardShowAppLog(
-            item.asTrackerModel(
+            item.asCardTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
             )
@@ -655,7 +662,7 @@ class HomeRecommendationFragment :
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
         sendCardClickAppLog(
-            item.asTrackerModel(
+            item.asCardTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
             )
