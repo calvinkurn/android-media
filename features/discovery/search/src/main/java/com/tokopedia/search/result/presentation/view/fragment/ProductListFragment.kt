@@ -27,7 +27,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.discovery.common.analytics.SearchSessionObserver
+import com.tokopedia.discovery.common.analytics.SearchSessionId
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
@@ -1524,7 +1524,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 searchKeyword = queryKey,
                 durationMs = durationMs,
                 isSuccess = true,
-                ecSearchSessionId = SearchSessionObserver.sessionId,
+                ecSearchSessionId = SearchSessionId.value,
             )
         )
     }

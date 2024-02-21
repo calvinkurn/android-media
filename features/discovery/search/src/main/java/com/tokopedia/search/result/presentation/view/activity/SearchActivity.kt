@@ -29,7 +29,6 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARC
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.discovery.common.analytics.SearchSessionObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_TAB
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
@@ -37,7 +36,12 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PREVIOU
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.SRP
+import com.tokopedia.discovery.common.utils.SearchPage
+import com.tokopedia.discovery.common.utils.SearchPageImpl
+import com.tokopedia.discovery.common.utils.SearchPageObserver
 import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery.common.utils.generateSearchPageKey
 import com.tokopedia.home_component.usecase.thematic.ThematicModel
 import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
@@ -91,7 +95,8 @@ class SearchActivity :
     SearchNavigationListener,
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
     HasComponent<BaseAppComponent>,
-    ITelemetryActivity {
+    ITelemetryActivity,
+    SearchPage by SearchPageImpl() {
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
@@ -104,6 +109,8 @@ class SearchActivity :
     private var productTabTitle = ""
     private var shopTabTitle = ""
     private var autocompleteApplink = ""
+
+    private val pageKey = generateSearchPageKey(SRP)
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -143,7 +150,7 @@ class SearchActivity :
         observeSearchState()
         searchViewModel?.getThematic()
 
-        lifecycle.addObserver(SearchSessionObserver)
+        lifecycle.addObserver(SearchPageObserver(pageKey))
     }
 
     private fun observeSearchState() {
