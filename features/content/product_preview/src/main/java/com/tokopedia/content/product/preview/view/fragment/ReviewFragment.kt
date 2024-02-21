@@ -32,6 +32,7 @@ import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
@@ -277,15 +278,15 @@ class ReviewFragment @Inject constructor(
      * Review Media Listener
      */
     override fun onPauseResumeVideo() {
-        analytics.onClickPauseOrPlayVideo()
+        analytics.onClickPauseOrPlayVideo(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
     }
 
     override fun onImpressedImage() {
-        analytics.onImpressImage()
+        analytics.onImpressImage(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
     }
 
     override fun onImpressedVideo() {
-        analytics.onImpressVideo()
+        analytics.onImpressVideo(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
     }
 
     override fun onMediaSelected(position: Int) {
