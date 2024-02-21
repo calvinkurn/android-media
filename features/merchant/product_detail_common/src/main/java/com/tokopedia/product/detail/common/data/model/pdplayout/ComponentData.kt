@@ -70,7 +70,6 @@ data class ComponentData(
     @SerializedName("videos")
     val youtubeVideos: List<YoutubeVideo> = listOf(),
     @SerializedName("liveIndicator")
-    @Expose
     val liveIndicator: LiveIndicatorData = LiveIndicatorData(),
     // endregion
 
