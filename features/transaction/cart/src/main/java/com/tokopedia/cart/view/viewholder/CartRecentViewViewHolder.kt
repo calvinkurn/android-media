@@ -58,6 +58,7 @@ class CartRecentViewViewHolder(
             callback = object : RecommendationWidgetView.Callback {
                 override fun onShow() {
                     super.onShow()
+                    // TODO: Adjust recommendation data for impression tracking
                     if (element.hasSentImpressionAnalytics) {
                         listener?.onRecentViewImpression(emptyList())
                         element.hasSentImpressionAnalytics = true
