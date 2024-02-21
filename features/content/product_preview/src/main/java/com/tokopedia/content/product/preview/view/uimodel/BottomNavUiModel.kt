@@ -41,6 +41,13 @@ data class BottomNavUiModel(
         val discountPercentage: String
     ) : Price
 
+    data class NettPrice(
+        val ogPriceFmt: String,
+        val nettPriceFmt: String,
+        val textColor: String,
+        val iconUrl: String,
+    ): Price
+
     enum class ButtonState(val value: String, val text: String) {
         Active("ACTIVE", "+ Keranjang"),
         Inactive("INACTIVE", "Stok Habis"),
@@ -86,4 +93,5 @@ val BottomNavUiModel.Price.finalPrice: String
     get() = when (this) {
         is BottomNavUiModel.DiscountedPrice -> this.discountedPrice
         is BottomNavUiModel.NormalPrice -> this.priceFmt
+        is BottomNavUiModel.NettPrice -> this.nettPriceFmt
     }

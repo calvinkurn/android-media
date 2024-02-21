@@ -16,6 +16,9 @@ data class GetMiniProductInfoResponse(
         @SerializedName("campaign")
         val campaign: Campaign = Campaign(),
 
+        @SerializedName("promo")
+        val promo: Promo = Promo(),
+
         @SerializedName("shop")
         val shop: Shop = Shop(),
 
@@ -47,6 +50,19 @@ data class GetMiniProductInfoResponse(
         val discountPercentage: Int = 0,
         @SerializedName("discountedPrice")
         val discountedPrice: Double = 0.0
+    )
+
+    data class Promo(
+        @SerializedName("isActive")
+        val isActive: Boolean = false,
+        @SerializedName("nettPrice")
+        val nettPrice: Double = 0.0,
+        @SerializedName("nettPriceFmt")
+        val nettPriceFmt: String = "",
+        @SerializedName("iconURL")
+        val iconUrl: String = "",
+        @SerializedName("color")
+        val color: String = "",
     )
 
     data class Shop(

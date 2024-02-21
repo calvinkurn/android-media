@@ -126,7 +126,14 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
     fun mapMiniInfo(response: GetMiniProductInfoResponse): BottomNavUiModel =
         BottomNavUiModel(
             title = response.data.product.name,
-            price = if (response.data.campaign.isActive) {
+            price = if (response.data.promo.isActive) {
+                BottomNavUiModel.NettPrice(
+                    ogPriceFmt = response.data.product.priceFmt,
+                    nettPriceFmt = response.data.promo.nettPriceFmt,
+                    iconUrl = response.data.promo.iconUrl,
+                    textColor = response.data.promo.color,
+                )
+            } else if (response.data.campaign.isActive) {
                 BottomNavUiModel.DiscountedPrice(
                     discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         price = response.data.campaign.discountedPrice,
