@@ -958,6 +958,31 @@ class CartRevampFragment :
         viewModel.processAddToCart(productModel)
     }
 
+    override fun onAddToCartRecentViewClicked(recommendationItem: RecommendationItem) {
+        if (viewModel.dataHasChanged()) {
+            viewModel.processUpdateCartData(true)
+        }
+        viewModel.processAddToCartRecentViewProduct(recommendationItem)
+    }
+
+    override fun onAddToCartRecentViewSuccess(
+        recommendationItem: RecommendationItem,
+        addToCartData: AddToCartDataModel
+    ) {
+        hideProgressLoading()
+        triggerSendEnhancedEcommerceAddToCartSuccess(addToCartData, recommendationItem)
+        resetRecentViewList()
+        viewModel.processInitialGetCartData(
+            cartId = "0",
+            initialLoad = false,
+            isLoadingTypeRefresh = false
+        )
+    }
+
+    override fun onAddToCartRecentViewFailed() {
+        hideProgressLoading()
+    }
+
     override fun onDeleteAllDisabledProduct() {
         val allDisabledCartItemDataList = CartDataHelper.getAllDisabledCartItemData(
             viewModel.cartDataList.value,
