@@ -977,29 +977,6 @@ object ProductDetailTracking {
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
-        fun clickShareWidget(isAffiliate: Boolean, productId: String, campaignId: String, bundleId: String) {
-            val userType = if (isAffiliate) "affiliate" else "general"
-            trackShare(
-                eventLabel = "$userType - $productId - $campaignId - $bundleId",
-                event = UniversalSharebottomSheetTracker.VALUE_EVENT_CLICK,
-                eventCategory = UniversalSharebottomSheetTracker.VALUE_CATEGORY_PRODUCT_DETAIL_PAGE,
-                eventAction = UniversalSharebottomSheetTracker.VALUE_ACTION_CLICK_SHARE_WIDGET,
-                trackerId = ProductTrackingConstant.TrackerId.VALUE_TRACKER_ID_CLICK_SHARE_WIDGET
-            )
-        }
-
-        fun clickDirectChannel(channel: String, isAffiliate: Boolean, productId: String, campaignId: String, bundleId: String) {
-            val userType = if (isAffiliate) "affiliate" else "general"
-
-            trackShare(
-                eventLabel = "$channel - $userType - $productId - $campaignId - $bundleId",
-                event = UniversalSharebottomSheetTracker.VALUE_EVENT_CLICK,
-                eventCategory = UniversalSharebottomSheetTracker.VALUE_CATEGORY_PRODUCT_DETAIL_PAGE,
-                eventAction = UniversalSharebottomSheetTracker.VALUE_ACTION_CLICK_DIRECT_CHANNEL,
-                trackerId = ProductTrackingConstant.TrackerId.VALUE_TRACKER_ID_CLICK_DIRECT_CHANNEL
-            )
-        }
-
         private fun trackShare(
             eventLabel: String,
             event: String,

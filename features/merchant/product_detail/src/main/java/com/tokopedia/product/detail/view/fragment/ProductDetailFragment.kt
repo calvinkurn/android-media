@@ -330,8 +330,6 @@ import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
-import com.tokopedia.universal_sharing.view.customview.ShareWidgetCallback
-import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -5906,76 +5904,6 @@ open class ProductDetailFragment :
                 isRemindMe = isRemindMe
             )
         )
-    }
-
-    private val universalShareWidgetCallback
-        get() = object : ShareWidgetCallback {
-            override fun onShowNormalBottomSheet() {
-                val productInfo = viewModel.getProductInfoP1 ?: return
-                shareProduct(productInfo)
-            }
-
-            override fun onClickShareWidget(
-                id: String,
-                channel: String,
-                isAffiliate: Boolean,
-                isDirectChannel: Boolean
-            ) {
-                val campaignId = campaignId.ifEmpty { Int.ZERO.toString() }
-                if (isDirectChannel) {
-                    ProductDetailTracking.Click.clickDirectChannel(
-                        channel,
-                        isAffiliate,
-                        id,
-                        campaignId,
-                        Int.ZERO.toString()
-                    )
-                } else {
-                    ProductDetailTracking.Click.clickShareWidget(
-                        isAffiliate,
-                        id,
-                        campaignId,
-                        Int.ZERO.toString()
-                    )
-                }
-            }
-        }
-
-    override fun onUniversalShareWidget(widget: UniversalShareWidget) {
-        val productInfo = viewModel.getProductInfoP1 ?: return
-        val productData = generateProductShareData(
-            productInfo = productInfo,
-            userId = viewModel.userId,
-            shopUrl = viewModel.getShopInfo().shopCore.url,
-            bundleId = Int.ZERO.toString()
-        )
-        val personalizedCampaignModel = generatePersonalizedData(
-            product = productInfo,
-            productP2 = viewModel.p2Data.value
-        )
-        val imageGenerator = generateImageGeneratorData(
-            product = productInfo,
-            bebasOngkir = viewModel.getBebasOngkirDataByProductId()
-        ).apply {
-            productImageUrl = SharingUtil.transformOgImageURL(
-                context = context,
-                imageURL = productInfo.data.getProductImageUrl().orEmpty()
-            )
-        }
-        val affiliateInput = generateAffiliateShareData(
-            productInfo = productInfo,
-            shopInfo = viewModel.p2Data.value?.shopInfo,
-            variantData = viewModel.variantData
-        )
-        shareProductInstance?.setWhatsappShareWidget(
-            shareWidget = widget,
-            productData = productData,
-            personalizedCampaignModel = personalizedCampaignModel,
-            affiliateInput = affiliateInput,
-            imageGeneratorParamModel = imageGenerator
-        )
-
-        widget.setShareWidgetCallback(shareWidgetCallback = universalShareWidgetCallback)
     }
 
     override fun onImpressProductDetailNavigation(labels: List<String>) {

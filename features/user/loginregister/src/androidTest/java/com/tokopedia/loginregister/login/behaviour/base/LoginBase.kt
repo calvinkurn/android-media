@@ -19,8 +19,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.scp.auth.GotoSdk
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -65,7 +63,6 @@ open class LoginBase : LoginRegisterBase() {
         val fakeComponentFactory = FakeActivityComponentFactory()
         ActivityComponentFactory.instance = fakeComponentFactory
         fakeComponentFactory.loginComponent.inject(this)
-        GotoSdk.init(applicationContext as BaseMainApplication)
     }
 
     @After
@@ -110,6 +107,13 @@ open class LoginBase : LoginRegisterBase() {
         waitOnView(withId(R.id.ub_forgot_password)).perform(click())
     }
 
+    fun clickInactivePhoneNumber() {
+        val viewInteraction = onView(withId(R.id.need_help)).check(matches(isDisplayed()))
+        viewInteraction.perform(click())
+
+        waitOnView(withId(R.id.ub_inactive_phone_number)).perform(click())
+    }
+
     fun clickUbahButton() {
         onView(withId(R.id.change_button)).check(matches(ViewMatchers.isDisplayed()))
             .perform(click())
@@ -133,7 +137,14 @@ open class LoginBase : LoginRegisterBase() {
     }
 
     protected fun mockOtpPageRegisterEmail() {
-        Intents.intending(IntentMatchers.hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()).toString())).respondWith(
+        Intents.intending(
+            IntentMatchers.hasData(
+                UriUtil.buildUri(
+                    ApplinkConstInternalUserPlatform.COTP,
+                    RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()
+                ).toString()
+            )
+        ).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
                 Intent().apply {
@@ -141,7 +152,10 @@ open class LoginBase : LoginRegisterBase() {
                         Bundle().apply {
                             putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
                             putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+                            putString(
+                                ApplinkConstInternalGlobal.PARAM_EMAIL,
+                                "yoris.prayogo@gmail.com"
+                            )
                         }
                     )
                 }
