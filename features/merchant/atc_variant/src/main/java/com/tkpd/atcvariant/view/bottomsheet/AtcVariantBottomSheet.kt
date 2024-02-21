@@ -488,8 +488,18 @@ class AtcVariantBottomSheet :
     }
 
     private fun observeCart() {
-        viewModel.addToCartLiveData.observe(viewLifecycleOwner, {
+        viewModel.addToCartLiveData.observe(viewLifecycleOwner) {
             loadingProgressDialog?.dismiss()
+            val cartId = (it as? Success)?.data?.data?.cartId.orEmpty()
+            val success = it is Success
+            val reason = (it as? Fail)?.throwable?.message.orEmpty()
+
+            val model = viewModel.getConfirmCartResultModel().apply {
+                isSuccess = success
+                failReason = reason
+                cartItemId = cartId
+            }
+            AppLogAnalytics.sendConfirmCartResult(model)
             if (it is Success) {
                 onSuccessTransaction(it.data)
                 dismissAfterAtc()
@@ -511,7 +521,7 @@ class AtcVariantBottomSheet :
                     logException(this)
                 }
             }
-        })
+        }
     }
 
     private fun trackAtcError(message: String) {

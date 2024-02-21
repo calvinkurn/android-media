@@ -6,7 +6,6 @@ import android.app.Application
 import android.util.Log
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
-import com.bytedance.frameworks.baselib.network.http.cronet.impl.TTNetDetectInfo
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
@@ -87,7 +86,7 @@ object AppLogAnalytics {
     internal val Boolean.intValue
         get() = if (this) 1 else 0
 
-    fun sendEnterPage(product: TrackProductDetail?) {
+    fun sendPDPEnterPage(product: TrackProductDetail?) {
         if (sourcePageType == null || product == null) {
             return
         }
@@ -141,6 +140,7 @@ object AppLogAnalytics {
             it.put("product_type", product.productType.type)
             it.put("original_price_value", product.originalPrice)
             it.put("sale_price_value", product.salePrice)
+            it.put("button_type", product.buttonType)
             it.put("sku_id", product.skuId)
             it.put("currency", product.currency)
             it.put("add_sku_num", product.addSkuNum)
@@ -163,17 +163,29 @@ object AppLogAnalytics {
             it.put("product_type", product.productType.type)
             it.put("original_price_value", product.originalPrice)
             it.put("sale_price_value", product.salePrice)
+            it.put("button_type", product.buttonType)
             it.put("sku_id", product.skuId)
             it.put("currency", product.currency)
             it.put("add_sku_num", product.addSkuNum)
-            it.put("button_type", product.buttonType)
 //            it.put("sku_num_before", product.skuNumBefore)
 //            it.put("sku_num_after", product.skuNumAfter)
             it.put("cart_item_id", product.cartItemId)
-            it.put("is_success", if (product.isSuccess) 1 else 0)
+            it.put("is_success", if (product.isSuccess == true) 1 else 0)
             it.put("fail_reason", product.failReason)
             it.put("request_id", globalRequestId)
             it.put("track_id", globalTrackId)
+        })
+    }
+
+    fun sendCartEnterPage() {
+        send(EventName.ENTER_PAGE, JSONObject().also {
+            it.addPage()
+        })
+    }
+
+    fun sendCartButtonClick() {
+        send(EventName.BUTTON_CLICK, JSONObject().also {
+            it.addPage()
         })
     }
 
@@ -183,6 +195,22 @@ object AppLogAnalytics {
             it.addEntranceForm()
             it.addSourcePageType()
             it.addSourceModule()
+            it.put("is_success", if (model.isSuccess) 1 else 0)
+            it.put("fail_reason", model.failReason)
+            it.put("shipping_price", model.shippingPrice)
+            it.put("discounted_shipping_price", model.discountedShippingPrice)
+            it.put("total_payment", model.totalPayment)
+            it.put("discounted_amount", model.discountedAmount)
+            it.put("total_tax", model.totalTax)
+            it.put("summary_info", model.summaryInfo)
+            it.put("currency", model.currency)
+            it.put("delivery_info", model.deliveryInfo)
+            it.put("pay_type", model.payType)
+            it.put("cart_item_id", model.cartItemId)
+            it.put("sku_id", model.skuId)
+            it.put("order_id", model.orderId)
+            it.put("combo_id", model.comboId)
+            it.put("product_id", model.productId)
         })
     }
 

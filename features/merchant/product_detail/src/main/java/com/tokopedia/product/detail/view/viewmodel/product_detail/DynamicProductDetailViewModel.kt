@@ -512,7 +512,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             productId = p1.parentProductId,
             productCategory = p1.basic.category.detail.firstOrNull()?.name.orEmpty(),
             productType = p1.productType,
-            originalPrice = p1.data.price.slashPriceFmt,
+            originalPrice = p1.originalPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
             isSingleSku = p1.data.variant.isVariant.not()
         )
@@ -528,13 +528,26 @@ class DynamicProductDetailViewModel @Inject constructor(
             productId = p1?.parentProductId.orEmpty(),
             productCategory = p1?.basic?.category?.detail?.firstOrNull()?.name.orEmpty(),
             productType = p1?.productType ?: ProductType.NOT_AVAILABLE,
-            originalPrice = p1?.data?.price?.slashPriceFmt.orEmpty(),
+            originalPrice = p1?.originalPriceFmt.orEmpty(),
             salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
             isSingleSku = p1?.data?.variant?.isVariant != true,
             mainPhotoViewCount = mainCount,
             skuPhotoViewCount = skuCount,
             isAddCartSelected = hasDoneAddToCart
+        )
+    }
+
+    fun getConfirmCartResultData(): TrackConfirmCartResult {
+        val data = getDynamicProductInfoP1
+        return TrackConfirmCartResult(
+            productId = data?.parentProductId.orEmpty(),
+            productCategory = data?.basic?.category?.detail?.firstOrNull()?.name.orEmpty(),
+            productType = data?.productType ?: ProductType.NOT_AVAILABLE,
+            originalPrice = data?.originalPrice.orZero(),
+            salePrice = data?.finalPrice.orZero(),
+            skuId = data?.basic?.productID.orEmpty(),
+            addSkuNum = data?.basic?.minOrder.orZero(),
         )
     }
 
@@ -698,8 +711,8 @@ class DynamicProductDetailViewModel @Inject constructor(
             TrackConfirmCart(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
-                productType = ProductType.AVAILABLE,
-                originalPrice = data.data.price.value,
+                productType = data.productType,
+                originalPrice = data.originalPrice,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
                 addSkuNum = data.basic.minOrder,
@@ -710,21 +723,6 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
 
         EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
-        AppLogAnalytics.sendConfirmCartResult(
-            TrackConfirmCartResult(
-                productId = data.parentProductId,
-                productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
-                productType = ProductType.AVAILABLE,
-                originalPrice = data.data.price.value,
-                salePrice = data.finalPrice,
-                skuId = data.basic.productID,
-                addSkuNum = data.basic.minOrder,
-                isSuccess = false, // todo
-                failReason = result.getAtcErrorMessage().orEmpty(),
-                buttonType = -1, // todo
-                cartItemId = result.data.cartId,
-            )
-        )
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
             if (errorMessage.isNotBlank()) {
@@ -779,8 +777,8 @@ class DynamicProductDetailViewModel @Inject constructor(
             TrackConfirmSku(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
-                productType = ProductType.AVAILABLE,
-                originalPrice = data.data.price.value,
+                productType = data.productType,
+                originalPrice = data.originalPrice,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
                 isSingleSku = data.isProductVariant(),

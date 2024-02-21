@@ -2,9 +2,9 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
+import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
@@ -425,7 +425,7 @@ object AppLogSearch {
         )
     }
 
-    data class TrendingWordsShow(
+    data class TrendingWordsSuggestion(
         val searchPosition: String,
         val searchEntrance: String,
         val groupId: String,
@@ -455,31 +455,17 @@ object AppLogSearch {
         )
     }
 
-    fun eventTrendingWordsShowSuggestion(trendingWordsShow: TrendingWordsShow) {
+    fun eventTrendingWordsShowSuggestion(trendingWordsSuggestion: TrendingWordsSuggestion) {
         AppLogAnalytics.send(
             TRENDING_WORDS_SHOW,
-            trendingWordsShow.json()
+            trendingWordsSuggestion.json()
         )
     }
 
-    fun <K, V> eventTrendingWordsClickSuggestion() {
+    fun eventTrendingWordsClickSuggestion(trendingWordsSuggestion: TrendingWordsSuggestion) {
         AppLogAnalytics.send(
             TRENDING_WORDS_CLICK,
-            JSONObject(
-                mapOf(
-                    WORDS_SOURCE to "", //TODO:: SUG
-                    WORDS_POSITION to 0, // TODO:: Index of Suggestion words
-                    WORDS_CONTENT to "", // TODO:: Words content
-                    SEARCH_POSITION to "", // TODO:: HOMEPAGE || GOODS_SEARCH || STORE_SEARCH.
-                    SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. Other pages = ""
-                    GROUP_ID to "", // TODO:: Group ID
-                    IMPR_ID to "", // TODO:: Request ID
-                    RAW_QUERY to "", // TODO:: Raw Query
-                    NEW_SUG_SESSION_ID to "", // TODO:: Reset every time query is entirely deleted. System.currentTimeMillis()
-                    SUG_TYPE to "", // TODO:: CAMPAIGN || PRODUCT || STORE.
-                    ENTER_METHOD to "", // TODO:: "ENTER (from home to Initial State to Suggestion) || CLICK_SEARCH_BAR (from SRP)
-                )
-            )
+            trendingWordsSuggestion.json()
         )
     }
 

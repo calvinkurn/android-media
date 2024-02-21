@@ -61,6 +61,7 @@ data class TrackConfirmCart(
     val productType: ProductType,
     val originalPrice: Double,
     val salePrice: Double,
+    val buttonType: String = "able_to_cart", // button can not be grayed out after atc clicked
     val skuId: String,
     val currency: String = "IDR",
     val addSkuNum: Int,
@@ -75,22 +76,34 @@ data class TrackConfirmCartResult(
     val productType: ProductType,
     val originalPrice: Double,
     val salePrice: Double,
-    val buttonType: Int,
+    val buttonType: String = "able_to_cart", // button can not be grayed out after atc clicked
     val skuId: String,
     val currency: String = "IDR",
     val addSkuNum: Int,
     val skuNumBefore: Int = 0, // need development from BE
     val skuNumAfter: Int = 0, // need development from BE
-    val isSuccess: Boolean,
-    val failReason: String,
-    val cartItemId: String,
+    var isSuccess: Boolean? = null,
+    var failReason: String = "",
+    var cartItemId: String? = "",
 )
 
 data class SubmitOrderResult(
-    val isSuccess: Boolean,
-    val failReason: String,
+    val isSuccess: Boolean = true, // always success in ty page
+    val failReason: String = "", // always empty, success in ty page
     val shippingPrice: Double,
     val discountedShippingPrice: Double,
+    val totalPayment: Double,
+    val discountedAmount: Double,
+    val totalTax: Double,
+    val summaryInfo: String,
+    val currency: String = "IDR",
+    val deliveryInfo: String,
+    val payType: String,
+    val cartItemId: String,
+    val skuId: String,
+    val orderId: String,
+    val comboId: String,
+    val productId: String
 )
 
 
@@ -170,6 +183,7 @@ object EventName {
     const val CONFIRM_CART = "tiktokec_confirm_cart"
     const val CONFIRM_CART_RESULT = "tiktokec_confirm_cart_result"
     const val SUBMIT_ORDER_RESULT = "tiktokec_submit_order_result"
+    const val BUTTON_CLICK = "tiktokec_button_click"
 
     // https://bytedance.sg.larkoffice.com/docx/MSiydFty1o0xIYxUe4LltuRHgue
     const val GLIDE_PAGE = "tiktokec_glide_page"

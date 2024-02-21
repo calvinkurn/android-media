@@ -29,6 +29,8 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.SubmitOrderResult
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -1132,6 +1134,26 @@ open class ThankYouBaseFragment :
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         getLoadingView()?.gone()
         thanksPageData = data
+        AppLogAnalytics.sendSubmitOrderResult(
+            SubmitOrderResult(
+                shippingPrice = data.shopOrder.sumOf { it.shippingAmount.toDouble() },
+                discountedShippingPrice = 0.0,
+                totalPayment = data.amount.toDouble(),
+                discountedAmount = 0.0,
+                totalTax = data.shopOrder.sumOf { it.tax }.toDouble(),
+                payType = data.gatewayName,
+                cartItemId = "",
+                skuId = data.shopOrder.joinToString(",") { shopLevel ->
+                    shopLevel.purchaseItemList.joinToString(",") { orderLevel ->
+                        orderLevel.productId
+                    } },
+                orderId = data.shopOrder.joinToString { it.orderId },
+                comboId = data.paymentID,
+                summaryInfo = "",
+                deliveryInfo = "",
+                productId = "",
+            )
+        )
         showPaymentStatusDialog(isTimerExpired(data), thanksPageData)
     }
 

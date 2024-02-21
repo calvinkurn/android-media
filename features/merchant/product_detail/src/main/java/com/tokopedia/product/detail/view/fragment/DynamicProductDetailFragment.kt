@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
@@ -36,10 +35,6 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.ProductType
-import com.tokopedia.analytics.byteio.TrackConfirmCart
-import com.tokopedia.analytics.byteio.TrackConfirmSku
-import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -99,7 +94,6 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -2867,6 +2861,10 @@ open class DynamicProductDetailFragment :
     private fun observeAddToCart() {
         viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
             hideProgressDialog()
+            var cartId = ""
+            var success = false
+            var reason = ""
+
             data.doSuccessOrFail({
                 if (it.data.errorReporter.eligible) {
                     view?.showToasterError(
@@ -2881,6 +2879,8 @@ open class DynamicProductDetailFragment :
                         atcType = buttonActionType
                     )
                 }
+                cartId = it.data.data.cartId
+                success = true
             }, {
                 DynamicProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
                     it.message.orEmpty(),
@@ -2888,7 +2888,15 @@ open class DynamicProductDetailFragment :
                     viewModel.userId
                 )
                 handleAtcError(it)
+                reason = it.message.orEmpty()
+                success = true
             })
+            val model = viewModel.getConfirmCartResultData().apply {
+                isSuccess = success
+                failReason = reason
+                cartItemId = cartId
+            }
+            AppLogAnalytics.sendConfirmCartResult(model)
         }
     }
 
@@ -3065,7 +3073,7 @@ open class DynamicProductDetailFragment :
             }
 
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
-            AppLogAnalytics.sendEnterPage(viewModel.getProductDetailTrack())
+            AppLogAnalytics.sendPDPEnterPage(viewModel.getProductDetailTrack())
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()

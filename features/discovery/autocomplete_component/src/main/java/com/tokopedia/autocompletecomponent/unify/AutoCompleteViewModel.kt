@@ -54,9 +54,6 @@ internal class AutoCompleteViewModel @Inject constructor(
     val isSuggestion
         get() = stateValue.isSuggestion
 
-    val currentQuery
-        get() = stateValue.parameter[SearchApiConst.Q] ?: ""
-
     fun onScreenInitialized() {
         actOnParameter()
     }
@@ -98,7 +95,7 @@ internal class AutoCompleteViewModel @Inject constructor(
             currentAppLogData.newSugSessionId
         }
         _stateFlow.value = stateValue.copy(
-            appLogData = AutoCompleteAppLogData(imprId = newImprId, newSugSessionId = newSessionId)
+            appLogData = currentAppLogData.copy(imprId = newImprId, newSugSessionId = newSessionId)
         )
     }
 
@@ -135,6 +132,7 @@ internal class AutoCompleteViewModel @Inject constructor(
 
     fun trackTrendingShow() {
         val appLogData = stateValue.appLogData
+        val currentSearchTerm = stateValue.resultList.firstOrNull()?.searchTerm ?: ""
         AppLogSearch.eventTrendingShow(
             AppLogSearch.TrendingShow(
                 searchPosition = appLogData.enterFrom,
@@ -153,13 +151,31 @@ internal class AutoCompleteViewModel @Inject constructor(
     fun trackTrendingWordsShow(item: AutoCompleteUnifyDataView) {
         val appLogData = stateValue.appLogData
         AppLogSearch.eventTrendingWordsShowSuggestion(
-            AppLogSearch.TrendingWordsShow(
+            AppLogSearch.TrendingWordsSuggestion(
                 searchPosition = appLogData.enterFrom,
                 searchEntrance = appLogData.searchEntrance,
                 groupId = "", // TODO milhamj: wait from BE
                 imprId = "", // TODO milhamj: wait from BE
                 newSugSessionId = appLogData.newSugSessionId,
-                rawQuery = currentQuery,
+                rawQuery = item.searchTerm,
+                enterMethod = appLogData.enterMethod,
+                sugType = "", // TODO milhamj: wait from BE
+                wordsContent = item.domainModel.title.text,
+                wordsPosition = item.appLogIndex
+            )
+        )
+    }
+
+    fun trackTrendingWordsClick(item: AutoCompleteUnifyDataView) {
+        val appLogData = stateValue.appLogData
+        AppLogSearch.eventTrendingWordsShowSuggestion(
+            AppLogSearch.TrendingWordsSuggestion(
+                searchPosition = appLogData.enterFrom,
+                searchEntrance = appLogData.searchEntrance,
+                groupId = "", // TODO milhamj: wait from BE
+                imprId = "", // TODO milhamj: wait from BE
+                newSugSessionId = appLogData.newSugSessionId,
+                rawQuery = item.searchTerm,
                 enterMethod = stateValue.enterMethod,
                 sugType = "", // TODO wait from BE
                 wordsContent = item.domainModel.title.text,
