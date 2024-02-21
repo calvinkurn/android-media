@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inflatedId="@+id/layout_bom_detail_order_level_add_on"
-        android:layout="@layout/partial_bmgm_add_on_summary" />
+        android:layout="@layout/partial_add_on_summary" />
 
 </com.tokopedia.unifycomponents.CardUnify>

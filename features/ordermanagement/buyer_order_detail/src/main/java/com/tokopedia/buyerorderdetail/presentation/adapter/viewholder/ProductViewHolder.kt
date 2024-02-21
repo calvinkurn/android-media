@@ -12,8 +12,8 @@ import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -23,11 +23,11 @@ open class ProductViewHolder(
     itemView: View?,
     private val listener: PartialProductItemViewHolder.ProductViewListener,
     private val bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
-    private val addOnListener: BmgmAddOnViewHolder.Listener,
+    private val addOnListener: AddOnViewHolder.Listener,
     private val navigator: BuyerOrderDetailNavigator,
 ) : BaseToasterViewHolder<ProductListUiModel.ProductUiModel>(itemView),
-    BmgmAddOnSummaryViewHolder.Delegate.Mediator,
-    BmgmAddOnSummaryViewHolder.Delegate by BmgmAddOnSummaryViewHolder.Delegate.Impl() {
+    AddOnSummaryViewHolder.Delegate.Mediator,
+    AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
@@ -81,7 +81,7 @@ open class ProductViewHolder(
         return null
     }
 
-    override fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener {
+    override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
         return addOnListener
     }
 

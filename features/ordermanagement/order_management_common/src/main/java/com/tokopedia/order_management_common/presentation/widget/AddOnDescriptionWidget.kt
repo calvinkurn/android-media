@@ -21,14 +21,14 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.order_management_common.databinding.WidgetBmgmProductAddOnDescriptionBinding
+import com.tokopedia.order_management_common.databinding.WidgetProductAddOnDescriptionBinding
 import com.tokopedia.order_management_common.util.generateHapticFeedback
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.order_management_common.R as order_management_commonR
 
-class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
+class AddOnDescriptionWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -42,7 +42,7 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
         private const val LABEL_ADD_ON_DESCRIPTION = "addOnDescription"
     }
 
-    private val binding: WidgetBmgmProductAddOnDescriptionBinding = inflateContent()
+    private val binding: WidgetProductAddOnDescriptionBinding = inflateContent()
 
     /*
         this listener is used to synchronize description text, see less text and see more text
@@ -63,8 +63,8 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
         setupViews()
     }
 
-    private fun inflateContent(): WidgetBmgmProductAddOnDescriptionBinding {
-        return WidgetBmgmProductAddOnDescriptionBinding.inflate(
+    private fun inflateContent(): WidgetProductAddOnDescriptionBinding {
+        return WidgetProductAddOnDescriptionBinding.inflate(
             LayoutInflater.from(context),
             this,
             true
@@ -330,10 +330,10 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
         expanded: Boolean,
         disableExpandable: Boolean = false
     ) {
-        this@BmgmAddOnDescriptionWidget.description = description
+        this@AddOnDescriptionWidget.description = description
         with(binding.tvAddOnDescription) {
             animatorSet.cancel()
-            if (this@BmgmAddOnDescriptionWidget.description.isBlank()) {
+            if (this@AddOnDescriptionWidget.description.isBlank()) {
                 gone()
                 binding.containerAddOnDescriptionSeeMore.maxHeight = Int.ZERO
             } else {

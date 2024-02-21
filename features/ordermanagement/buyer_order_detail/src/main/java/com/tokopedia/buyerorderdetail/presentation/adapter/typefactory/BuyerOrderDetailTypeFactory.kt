@@ -57,7 +57,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.order_management_common.presentation.typefactory.BuyMoreGetMoreTypeFactory
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.typefactory.ScpRewardsMedalTouchPointWidgetTypeFactory
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
@@ -75,7 +75,7 @@ open class BuyerOrderDetailTypeFactory(
     private val scpRewardsMedalTouchPointWidgetListener: ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     private val owocInfoListener: OwocInfoViewHolder.Listener,
     private val bmgmListener: BmgmSectionViewHolder.Listener,
-    private val productBenefitListener: BmgmAddOnViewHolder.Listener,
+    private val productBenefitListener: AddOnViewHolder.Listener,
     private val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
@@ -83,7 +83,7 @@ open class BuyerOrderDetailTypeFactory(
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     protected val courierButtonListener: CourierButtonListener,
-    protected val addOnListener: BmgmAddOnViewHolder.Listener
+    protected val addOnListener: AddOnViewHolder.Listener
 ) : BaseAdapterTypeFactory(),
     ScpRewardsMedalTouchPointWidgetTypeFactory,
     BuyMoreGetMoreTypeFactory {
@@ -119,7 +119,13 @@ open class BuyerOrderDetailTypeFactory(
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
             ScpRewardsMedalTouchPointWidgetViewHolder.LAYOUT -> ScpRewardsMedalTouchPointWidgetViewHolder(parent, scpRewardsMedalTouchPointWidgetListener)
             OwocInfoViewHolder.LAYOUT -> OwocInfoViewHolder(parent, owocInfoListener)
-            BmgmSectionViewHolder.LAYOUT -> BmgmSectionViewHolder(parent, bmgmListener, productBenefitListener, recyclerViewSharedPool)
+            BmgmSectionViewHolder.LAYOUT -> BmgmSectionViewHolder(
+                parent,
+                recyclerViewSharedPool,
+                addOnListener,
+                bmgmListener,
+                productBenefitListener
+            )
             else -> super.createViewHolder(parent, type)
         }
     }
