@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon
 
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.databinding.SingleAutomateCouponLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
@@ -10,6 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SingleAutomateCouponViewHolder(
@@ -46,6 +49,21 @@ class SingleAutomateCouponViewHolder(
                         RouteManager.route(fragment.requireContext(), it)
                     }
                 )
+            }
+
+            viewModel?.shouldShowErrorClaimCouponToaster()?.observe(it) { message ->
+                if (message.isNotEmpty()) {
+                    fragment.activity?.let { activity ->
+                        SnackbarManager.getContentView(activity)
+                    }?.let { contentView ->
+                        Toaster.build(
+                            contentView,
+                            message,
+                            Toast.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
             }
         }
     }
