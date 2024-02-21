@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -34,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.extension.asTrackingModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -1126,6 +1128,7 @@ class WishlistCollectionFragment :
                 recommendationItem.imageUrl
             )
         }
+        AppLogRecommendation.sendProductClickAppLog(recommendationItem.asTrackingModel())
         activity?.let {
             val intent = if (recommendationItem.appUrl.isNotEmpty()) {
                 RouteManager.getIntent(it, recommendationItem.appUrl)
