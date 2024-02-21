@@ -2,7 +2,6 @@ package com.tokopedia.productcard.reimagine
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toDp
@@ -68,6 +67,7 @@ internal class ProductCardStockInfo(view: View) {
 
         val color = ContextCompat.getColor(context, progressBarColor(stockInfo))
         progressBarStock.progressBarColor = intArrayOf(color, color)
+        progressBarStock.progressBarTrackColor = ContextCompat.getColor(context, productcardR.color.product_card_bg_stock_info_stockbar_track_color)
 
         progressBarStock.setValue(stockInfo?.percentage.orZero(), false)
     }
@@ -85,7 +85,7 @@ internal class ProductCardStockInfo(view: View) {
         if (textViewStockLabel == null) return
 
         textViewStockLabel.text = labelText(stockInfo)
-        textViewStockLabel.setTextColor(labelColor(stockInfo))
+        textViewStockLabel.setTextColor(labelColor())
     }
 
     private fun labelText(stockInfo: StockInfo?): String =
@@ -100,5 +100,10 @@ internal class ProductCardStockInfo(view: View) {
             )
         else ->
             ContextCompat.getColor(context, productcardR.color.dms_stock_info_label_color)
+    }
+    private fun labelColor() = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
+
+    companion object{
+        private const val PROGRESS_BAR_RADIUS_CLIP = 16f
     }
 }
