@@ -3073,7 +3073,7 @@ open class DynamicProductDetailFragment :
             }
 
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
-            AppLogAnalytics.sendEnterPDPPage(viewModel.getProductDetailTrack())
+            AppLogAnalytics.sendPDPEnterPage(viewModel.getProductDetailTrack())
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()

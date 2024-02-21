@@ -183,6 +183,7 @@ object EventName {
     const val CONFIRM_CART = "tiktokec_confirm_cart"
     const val CONFIRM_CART_RESULT = "tiktokec_confirm_cart_result"
     const val SUBMIT_ORDER_RESULT = "tiktokec_submit_order_result"
+    const val BUTTON_CLICK = "tiktokec_button_click"
 
     // https://bytedance.sg.larkoffice.com/docx/MSiydFty1o0xIYxUe4LltuRHgue
     const val GLIDE_PAGE = "tiktokec_glide_page"

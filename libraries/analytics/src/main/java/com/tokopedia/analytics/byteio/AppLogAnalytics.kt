@@ -86,7 +86,7 @@ object AppLogAnalytics {
     internal val Boolean.intValue
         get() = if (this) 1 else 0
 
-    fun sendEnterPDPPage(product: TrackProductDetail?) {
+    fun sendPDPEnterPage(product: TrackProductDetail?) {
         if (sourcePageType == null || product == null) {
             return
         }
@@ -174,6 +174,18 @@ object AppLogAnalytics {
             it.put("fail_reason", product.failReason)
             it.put("request_id", globalRequestId)
             it.put("track_id", globalTrackId)
+        })
+    }
+
+    fun sendCartEnterPage() {
+        send(EventName.ENTER_PAGE, JSONObject().also {
+            it.addPage()
+        })
+    }
+
+    fun sendCartButtonClick() {
+        send(EventName.BUTTON_CLICK, JSONObject().also {
+            it.addPage()
         })
     }
 
