@@ -497,6 +497,12 @@ class HomeRecommendationFragment :
                 tabPosition = tabIndex
             )
         )
+        sendCardClickAppLog(
+            model.asCardTrackModel(
+                tabName = tabName,
+                tabPosition = tabIndex,
+            )
+        )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
