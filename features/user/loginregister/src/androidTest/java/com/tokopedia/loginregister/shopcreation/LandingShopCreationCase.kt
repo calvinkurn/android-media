@@ -14,12 +14,13 @@ import com.tokopedia.loginregister.di.UserSessionStub
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.shopcreation.view.landingshop.LandingShopCreationActivity
 import com.tokopedia.loginregister.utils.respondWithOk
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
-
+@UiTest
 class LandingShopCreationCase {
 
     @Inject

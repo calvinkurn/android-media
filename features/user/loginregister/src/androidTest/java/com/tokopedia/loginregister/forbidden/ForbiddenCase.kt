@@ -9,12 +9,14 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.loginregister.login.behaviour.base.LoginRegisterBase
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.loginregister.R as loginregisterR
 
+@UiTest
 class ForbiddenCase: LoginRegisterBase() {
 
     @get:Rule
