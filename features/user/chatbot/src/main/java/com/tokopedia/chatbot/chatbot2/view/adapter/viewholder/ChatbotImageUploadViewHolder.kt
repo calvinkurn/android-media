@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -34,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.media.loader.loadAsGif
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadSecureImage
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.utils.ThemeUtils
@@ -169,13 +169,12 @@ class ChatbotImageUploadViewHolder(
                     imageview.loadSecureImage(url, userSession)
                 }
             } else {
-                Glide.with(imageview.context)
-                    .load(getGlideUrl(messageId, attachmentType, url, userSession))
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(resourcescommonR.drawable.chatbot_image_placeloader)
-                    .error(abstractionR.drawable.error_drawable)
-                    .into(imageview)
+                val glideUrl = getGlideUrl(messageId, attachmentType, url, userSession)
+                imageview.loadImage(glideUrl) {
+                    fitCenter()
+                    setPlaceHolder(resourcescommonR.drawable.chatbot_image_placeloader)
+                    setErrorDrawable(abstractionR.drawable.error_drawable)
+                }
             }
         }
     }

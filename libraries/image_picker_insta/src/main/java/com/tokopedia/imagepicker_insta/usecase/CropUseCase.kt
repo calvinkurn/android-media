@@ -3,12 +3,12 @@ package com.tokopedia.imagepicker_insta.usecase
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import com.tokopedia.imagepicker_insta.util.CameraUtil
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.getBitmapFromUrl
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.min
@@ -30,13 +30,9 @@ class CropUseCase @Inject constructor() {
                     val w = it.second.bmpWidth!!
                     val h = it.second.bmpHeight!!
 
-                    var mBmp = Glide.with(context)
-                        .asBitmap()
-                        .load(asset.contentUri)
-                        .apply(RequestOptions().override(w, h))
-                        .submit()
-                        .get()
-
+                    var mBmp = asset.contentUri.getBitmapFromUrl(context, properties = {
+                        overrideSize(Resize(w, h))
+                    })
 
                     if (mBmp.width != w || mBmp.height != h) {
                         val tmpBitmap = Bitmap.createScaledBitmap(mBmp,w,h,false)
