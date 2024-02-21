@@ -14,6 +14,7 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
 import com.tokopedia.discovery_component.widgets.automatecoupon.TimeLimit
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import java.util.*
 import javax.inject.Inject
 
