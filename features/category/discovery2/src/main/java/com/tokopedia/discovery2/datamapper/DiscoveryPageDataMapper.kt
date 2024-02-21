@@ -782,10 +782,28 @@ class DiscoveryPageDataMapper(
         } else {
             val updatedComponents = parseFestiveFlashSaleTab(componentsItem?.filter { !it.isTargetedTabComponent })
 
-            if (updatedComponents.isNotEmpty()) listComponents.first().setComponentsItem(updatedComponents)
+            if (updatedComponents.isNotEmpty()) {
+                listComponents.first().setComponentsItem(updatedComponents)
+                overwriteFlashSaleTabParentCompId(listComponents)
+            }
         }
 
         return listComponents
+    }
+
+    private fun overwriteFlashSaleTabParentCompId(listComponents: ArrayList<ComponentsItem>) {
+        val targetedIds = listComponents.first().getComponentsItem()
+            ?.filter {
+                it.name == ComponentNames.FlashSaleTokoTab.componentName
+            }
+            ?.map { it.data?.firstOrNull()?.targetComponentId.orEmpty() to it.id }
+            ?.filter { it.first.isNotEmpty() }
+
+        targetedIds?.forEach { (targetComponentId, tabId) ->
+            listComponents.first().getComponentsItem()
+                ?.find { it.isTargetedTabComponent && it.dynamicOriginalId == targetComponentId }
+                ?.parentComponentId = tabId
+        }
     }
 
     private fun markTargetedFST(componentsItem: List<ComponentsItem>?) {

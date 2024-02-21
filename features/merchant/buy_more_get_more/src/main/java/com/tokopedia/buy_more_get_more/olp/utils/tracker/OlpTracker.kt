@@ -2,6 +2,7 @@ package com.tokopedia.buy_more_get_more.olp.utils.tracker
 
 import android.text.TextUtils
 import androidx.core.os.bundleOf
+import com.tokopedia.buy_more_get_more.minicart.analytics.BmgmMiniCartTracker
 import com.tokopedia.buy_more_get_more.olp.utils.constant.TrackerConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
@@ -336,6 +337,24 @@ class OlpTracker @Inject constructor(private val userSession: UserSessionInterfa
             .setEventCategory("${TrackerConstant.EVENT_CATEGORY_OLP_BMGM} - variant")
             .setEventLabel(joinDash(offerId, warehouseId))
             .setCustomProperty(TrackerConstant.TRACKER_ID, "46777")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
+            .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
+            .setShopId(shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendClickHadiahEntryEvent(
+        offerId: String, warehouseId: String, shopId: String
+    ) {
+        val eventLabel = "$offerId - $warehouseId - header"
+        Tracker.Builder()
+            .setEvent(TrackerConstant.EVENT_CLICK_PG)
+            .setEventAction("click hadiah entry")
+            .setEventCategory("olp bmgm")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "49753")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT_OLP_BMGM)
             .setCurrentSite(TrackerConstant.CURRENT_SITE_OLP_BMGM)
             .setShopId(shopId)

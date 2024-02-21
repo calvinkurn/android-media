@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.productThousandFormatted
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.util.getIdLocale
 import com.tokopedia.product.detail.view.util.getRelativeDateByHours
 import com.tokopedia.product.detail.view.util.getRelativeDateByMinute
@@ -56,7 +56,7 @@ data class ProductShopCredibilityDataModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 

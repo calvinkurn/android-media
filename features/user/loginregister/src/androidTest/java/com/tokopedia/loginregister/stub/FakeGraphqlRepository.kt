@@ -13,6 +13,8 @@ import com.tokopedia.loginregister.common.domain.pojo.TickersInfoPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.data.KeyData
+import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import timber.log.Timber
@@ -23,6 +25,7 @@ class FakeGraphqlRepository : GraphqlRepository {
     var registerCheckConfig: Config = Config.Default
     var discoverConfig: Config = Config.Default
     var registerRequestConfig: Config = Config.Default
+    var loginConfig: Config = Config.Default
 
     override suspend fun response(
         requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy
@@ -85,6 +88,19 @@ class FakeGraphqlRepository : GraphqlRepository {
                     else -> GqlMockUtil.createSuccessResponse(RegisterRequestV2())
                 }
 
+            }
+
+            "login_token_v2" -> {
+                return when (loginConfig) {
+                    is Config.Default -> {
+                        GqlMockUtil.createSuccessResponse(LoginTokenPojoV2())
+                    }
+                    is Config.WithResponse -> {
+                        GqlMockUtil.createSuccessResponse((loginConfig as Config.WithResponse).response as LoginTokenPojoV2)
+                    } else -> {
+                        GqlMockUtil.createSuccessResponse(LoginTokenPojoV2())
+                    }
+                }
             }
 
             else -> {

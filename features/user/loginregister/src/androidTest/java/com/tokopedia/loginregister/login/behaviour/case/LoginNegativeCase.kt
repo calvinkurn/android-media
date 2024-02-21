@@ -257,7 +257,7 @@ class LoginNegativeCase : LoginBase() {
         val errorMsg = "Salah pak"
         val data = LoginToken(errors = arrayListOf(Error("", errorMsg)))
         val loginToken = LoginTokenPojoV2(data)
-        loginTokenV2UseCaseStub.response = loginToken
+        fakeRepo.loginConfig = Config.WithResponse(loginToken)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -276,7 +276,7 @@ class LoginNegativeCase : LoginBase() {
         val popupError = PopupError(title, "body", "action")
         val data = LoginToken(popupError = popupError)
         val loginToken = LoginTokenPojoV2(data)
-        loginTokenV2UseCaseStub.response = loginToken
+        fakeRepo.loginConfig = Config.WithResponse(loginToken)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")

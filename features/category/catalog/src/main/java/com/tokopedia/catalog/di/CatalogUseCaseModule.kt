@@ -5,6 +5,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.catalog.domain.GetProductListFromSearchUseCase
 import com.tokopedia.catalog.ui.mapper.CatalogDetailUiMapper
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.oldcatalog.repository.CatalogAllReviewRepository
 import com.tokopedia.oldcatalog.repository.CatalogComparisonProductRepository
 import com.tokopedia.oldcatalog.repository.catalogdetail.CatalogDetailRepository
@@ -15,8 +18,6 @@ import com.tokopedia.oldcatalog.usecase.listing.CatalogCategoryProductUseCase
 import com.tokopedia.oldcatalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.oldcatalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.oldcatalog.usecase.listing.CatalogQuickFilterUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,6 +65,10 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
+    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+
+    @CatalogScope
+    @Provides
     fun provideCatalogComparisonProductRepository(): CatalogComparisonProductRepository {
         return CatalogComparisonProductRepository()
     }
@@ -86,8 +91,7 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
-    fun providesCatalogGetProductListUseCase(catalogCategoryProductUseCase: CatalogCategoryProductUseCase)
-            : CatalogGetProductListUseCase {
+    fun providesCatalogGetProductListUseCase(catalogCategoryProductUseCase: CatalogCategoryProductUseCase): CatalogGetProductListUseCase {
         return CatalogGetProductListUseCase(catalogCategoryProductUseCase)
     }
 
