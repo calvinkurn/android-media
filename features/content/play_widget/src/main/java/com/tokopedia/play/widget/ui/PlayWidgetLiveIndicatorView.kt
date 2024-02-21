@@ -11,6 +11,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -20,8 +21,11 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.res.colorResource
@@ -37,6 +41,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.NoMinimumTouchArea
 import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.play.widget.liveindicator.di.DaggerPlayWidgetLiveIndicatorComponent
 import com.tokopedia.play.widget.liveindicator.di.PlayWidgetLiveIndicatorComponent
@@ -72,6 +77,8 @@ class PlayWidgetLiveIndicatorView : AbstractComposeView {
 
     private var mAnalyticModel: AnalyticModel? = null
 
+    private var mOnClicked by mutableStateOf(createOnClickWithAnalytic())
+
     init {
         addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(view: View) {
@@ -92,16 +99,19 @@ class PlayWidgetLiveIndicatorView : AbstractComposeView {
     @Composable
     override fun Content() {
         NestTheme {
-            PlayWidgetLiveIndicator()
+            PlayWidgetLiveIndicator(mOnClicked)
         }
     }
 
     override fun setOnClickListener(l: OnClickListener?) {
-        val onClickListener = OnClickListener { view ->
+        mOnClicked = createOnClickWithAnalytic { l?.onClick(this) }
+    }
+
+    private fun createOnClickWithAnalytic(onClicked: () -> Unit = {}): () -> Unit {
+        return {
             analytic { clickLiveBadge(it.channelId, it.productId, it.shopId) }
-            l?.onClick(view)
+            onClicked()
         }
-        super.setOnClickListener(onClickListener)
     }
 
     fun setAnalyticModel(model: AnalyticModel) {
@@ -126,26 +136,30 @@ class PlayWidgetLiveIndicatorView : AbstractComposeView {
 }
 
 @Composable
-fun PlayWidgetLiveIndicator() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .requiredHeight(24.dp)
-            .requiredWidth(56.dp)
-            .background(
-                color = colorResource(playwidgetR.color.play_widget_live_indicator_dms_bg),
-                shape = RoundedCornerShape(8.dp)
+fun PlayWidgetLiveIndicator(
+    onClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    NoMinimumTouchArea {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .requiredHeight(24.dp)
+                .requiredWidth(56.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .clickable(onClick = onClicked)
+                .background(colorResource(playwidgetR.color.play_widget_live_indicator_dms_bg))
+        ) {
+            LiveIndicatorDot(
+                Modifier.padding(start = 8.dp)
             )
-    ) {
-        LiveIndicatorDot(
-            Modifier.padding(start = 8.dp)
-        )
-        LiveText(
-            Modifier.padding(start = 4.dp, end = 8.dp)
-        )
-        IconChevronRight(
-            modifier = Modifier.padding(end = 8.dp)
-        )
+            LiveText(
+                Modifier.padding(start = 4.dp, end = 8.dp)
+            )
+            IconChevronRight(
+                modifier = Modifier.padding(end = 8.dp)
+            )
+        }
     }
 }
 
@@ -217,5 +231,5 @@ private val BlinkEaseInOut = CubicBezierEasing(0.63f, 0.01f, 0.29f, 1.0f)
 @Preview
 @Composable
 private fun PlayWidgetLiveIndicatorViewPreview() {
-    PlayWidgetLiveIndicator()
+    PlayWidgetLiveIndicator(onClicked = {})
 }
