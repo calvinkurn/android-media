@@ -827,9 +827,6 @@ open class HomeRevampFragment :
         })
         homeRecyclerView?.addVerticalTrackListener(
             glidePageTrackObject = GlidePageTrackObject(),
-            recommendationTriggerObject = RecommendationTriggerObject(
-                recommendationViewHolders = listOf(HomeRecommendationFeedViewHolder::class.java)
-            ),
         )
         setupEmbraceBreadcrumbListener()
         setupHomePlayWidgetListener()
