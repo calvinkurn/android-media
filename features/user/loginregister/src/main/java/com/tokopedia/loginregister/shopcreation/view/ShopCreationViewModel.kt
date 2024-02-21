@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.shopcreation.view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -28,7 +27,6 @@ import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -158,28 +156,27 @@ open class ShopCreationViewModel @Inject constructor(
         launch {
             try {
                 val data = registerUseCase(
-            RegisterUseCase.generateParamRegisterPhoneShopCreation(name, phone))
-                        val registerInfo = data.register
-                        when {
-                            registerInfo.accessToken.isNotEmpty() &&
-                                registerInfo.refreshToken.isNotEmpty() &&
-                                registerInfo.userId.isNotEmpty() -> {
-                                _registerPhoneAndName.value = Success(registerInfo)
-                            }
-                            registerInfo.errors.isNotEmpty() &&
-                                registerInfo.errors[0].message.isNotEmpty() -> {
-                                _registerPhoneAndName.postValue(Fail(MessageErrorException(registerInfo.errors[0].message)))
-                            }
-                            else -> {
-                                _registerPhoneAndName.postValue(Fail(RuntimeException()))
-                            }
-                        }
+                    RegisterUseCase.generateParamRegisterPhoneShopCreation(name, phone)
+                )
+                val registerInfo = data.register
+                when {
+                    registerInfo.accessToken.isNotEmpty() &&
+                        registerInfo.refreshToken.isNotEmpty() &&
+                        registerInfo.userId.isNotEmpty() -> {
+                        _registerPhoneAndName.value = Success(registerInfo)
                     }
-                catch (e: Exception) {
-                        _registerPhoneAndName.postValue(Fail(e))
+                    registerInfo.errors.isNotEmpty() &&
+                        registerInfo.errors[0].message.isNotEmpty() -> {
+                        _registerPhoneAndName.postValue(Fail(MessageErrorException(registerInfo.errors[0].message)))
+                    }
+                    else -> {
+                        _registerPhoneAndName.postValue(Fail(RuntimeException()))
                     }
                 }
-
+            } catch (e: Exception) {
+                _registerPhoneAndName.postValue(Fail(e))
+            }
+        }
     }
 
     fun getUserProfile() {
@@ -202,10 +199,9 @@ open class ShopCreationViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
-        viewModelScope.launch(dispatchers.main) {
+        launch {
             try {
-                val profile = getProfileUseCase(Unit)
-                when (profile) {
+                when (val profile = getProfileUseCase(Unit)) {
                     is Success -> {
                         _getUserInfoResponse.value = Success(profile.data.profileInfo)
                     }

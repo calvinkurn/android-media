@@ -31,9 +31,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
-import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminResult
-import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.model.FingerPrintGqlParam
 import com.tokopedia.sessioncommon.data.model.LoginTokenV2GqlParam
@@ -45,7 +43,6 @@ import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
-import com.tokopedia.sessioncommon.util.GetProfileUtils
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -72,8 +69,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val gotoSeamlessPreference: GotoSeamlessPreference,
     private val userSession: UserSessionInterface,
     private val fingerprintPreferenceManager: FingerprintPreference,
-    dispatchers: CoroutineDispatchers,
-    private val getProfileUtils: GetProfileUtils
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val mutableNavigateToGojekSeamless = SingleLiveEvent<Boolean>()
@@ -196,8 +192,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     fun getUserInfo() {
         launch {
             try {
-                val admin = getProfileAndAdmin(Unit)
-                when (admin) {
+                when (val admin = getProfileAndAdmin(Unit)) {
                     is AdminResult.AdminResultOnSuccessGetProfile -> {
                         mutableProfileResponse.value = Success(admin.profile)
                     }
@@ -218,63 +213,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 mutableProfileResponse.value = Fail(e)
             }
         }
-    }
-
-    private fun onSuccessGetAdminType(adminResponse: AdminTypeResponse, profile: ProfilePojo) {
-        val adminDataResponse = adminResponse.response
-        val adminData = adminDataResponse.data
-        val roleType = adminData.detail.roleType
-        val isShopOwner = roleType.isShopOwner
-        val isLocationAdmin = roleType.isLocationAdmin
-        val isShopAdmin = roleType.isShopAdmin
-        val isMultiLocationShop = adminDataResponse.isMultiLocationShop
-
-        userSession.apply {
-            setIsShopOwner(isShopOwner)
-            setIsLocationAdmin(isLocationAdmin)
-            setIsShopAdmin(isShopAdmin)
-            setIsMultiLocationShop(isMultiLocationShop)
-        }
-
-        val shopId = profile.shopInfo.shopData.shopId
-        val isAdminActive = adminDataResponse.data.isShopActive()
-
-        // If shopId in profile is empty, set shopId from admin data response
-        // for user other than location admin.
-        // Also, if shop is inactive, set shopId to zero
-        val shouldSetShopIdFromAdminData =
-            (!isLocationAdmin && shopId.isEmpty()) || !adminDataResponse.data.isShopActive()
-        val userProfile = if (shouldSetShopIdFromAdminData) {
-            setShopIdFromAdminData(profile, adminDataResponse)
-        } else {
-            profile
-        }
-
-        val isAdminRedirection = adminDataResponse.data.isAdminInvitation()
-
-        if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminActive) {
-            mutableShowLocationAdminPopUp.value = Success(true)
-        } else if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminRedirection) {
-            getProfileUtils.saveProfileData(userProfile)
-            mutableAdminRedirection.value = Success(true)
-        } else {
-            getProfileUtils.saveProfileData(userProfile)
-            mutableProfileResponse.value = Success(userProfile)
-        }
-    }
-
-    private fun setShopIdFromAdminData(profile: ProfilePojo, adminData: AdminDataResponse): ProfilePojo {
-        val isShopActive = adminData.data.isShopActive()
-        val shopId =
-            if (isShopActive) {
-                adminData.shopId
-            } else {
-                ""
-            }
-        val shopInfo = profile.shopInfo
-        val shopData = shopInfo.shopData.copy(shopId = shopId)
-        val shopBasicData = shopInfo.copy(shopData = shopData)
-        return profile.copy(shopInfo = shopBasicData)
     }
 
     fun loginGoogle(accessToken: String, email: String) {
@@ -526,6 +464,5 @@ class LoginEmailPhoneViewModel @Inject constructor(
     companion object {
         private const val PARAM_DISCOVER_LOGIN = "login"
         private val TYPE_PASSWORD: String = "password"
-        private const val GET_ADMIN_TYPE_SOURCE = "kevin_user-loginregister"
     }
 }
