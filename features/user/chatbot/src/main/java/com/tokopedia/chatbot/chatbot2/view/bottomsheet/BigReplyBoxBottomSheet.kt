@@ -82,6 +82,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                     unifyprinciplesR.color.Unify_NN400
                 )
             )
+            setCounter(MAX_CHARACTER)
             val message = String.format(
                 context?.resources?.getString(R.string.chatbot_remaining_words)
                     .toBlankOrString(),
@@ -267,5 +268,6 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         const val MINIMUM_NUMBER_OF_WORDS = 5
         const val MINIMUM_NUMBER_OF_LINES = 3
         const val MAXIMUM_NUMBER_OF_LINES = 10
+        const val MAX_CHARACTER = 1500
     }
 }
