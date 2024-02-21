@@ -53,11 +53,11 @@ internal class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
         ctaMode: Int?,
         colorMode: Int?
     ) {
-        if (channelHeader.hasSeeMoreApplink() || ctaMode != HomeComponentHeaderView.CTA_MODE_SEE_ALL) {
-            ctaButtonRevamp = itemView.findViewById(home_component_headerR.id.cta_chevron_icon)
-            ctaButtonRevampContainer = itemView.findViewById(home_component_headerR.id.cta_chevron_container)
-            ctaBorder = itemView.findViewById(home_component_headerR.id.cta_chevron_border)
+        ctaButtonRevamp = itemView.findViewById(home_component_headerR.id.cta_chevron_icon)
+        ctaButtonRevampContainer = itemView.findViewById(home_component_headerR.id.cta_chevron_container)
+        ctaBorder = itemView.findViewById(home_component_headerR.id.cta_chevron_border)
 
+        if (channelHeader.hasSeeMoreApplink() || ctaMode != HomeComponentHeaderView.CTA_MODE_SEE_ALL) {
             setCtaIcon(
                 itemView.context,
                 ctaBorder,
@@ -67,6 +67,9 @@ internal class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
             )
 
             ctaButtonRevampContainer?.show()
+            ctaButtonRevamp?.show()
+            ctaBorder?.show()
+
             ctaButtonRevamp?.setOnClickListener {
                 when (ctaMode) {
                     HomeComponentHeaderView.CTA_MODE_SEE_ALL -> listener?.onSeeAllClick(channelHeader.getLink())
@@ -79,6 +82,8 @@ internal class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
             }
         } else {
             ctaButtonRevampContainer?.hide()
+            ctaButtonRevamp?.hide()
+            ctaBorder?.hide()
         }
     }
 

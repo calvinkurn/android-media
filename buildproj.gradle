@@ -66,6 +66,9 @@ allprojects {
                 username = properties.getProperty("laku.usr") ?: System.getenv("LAKU_USR")
                 password = properties.getProperty("laku.key") ?: System.getenv("LAKU_API_KEY")
             }
+            content {
+                includeGroupByRegex("com\\.github\\.carousell.*")
+            }
         }
         maven {
             url "https://jitpack.io"
@@ -155,6 +158,9 @@ subprojects {
                 substitute module("androidx.room:room-runtime") using module("androidx.room:room-runtime:$roomVersion")
                 substitute module("androidx.room:room-compiler") using module("androidx.room:room-compiler:$roomVersion")
 //                substitute module("com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework") using module("com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:${accessibilityTestFrameworkVersion}")
+
+                substitute module("com.tokopedia.nest:principles") using module("com.tokopedia.nest:principles:$nestPrinciplesVersion")
+                substitute module("com.airbnb.android:lottie") using module("com.airbnb.android:lottie:$lottieVersion")
 
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) using module(rootProject.ext.debugToolsDependencies.chuckNoop)

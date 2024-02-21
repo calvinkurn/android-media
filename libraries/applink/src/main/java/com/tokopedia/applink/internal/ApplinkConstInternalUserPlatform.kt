@@ -106,12 +106,6 @@ object ApplinkConstInternalUserPlatform {
     const val GOTO_SEAMLESS_LOGIN = "$NEW_INTERNAL_USER/goto-seamless-login"
 
     /**
-     * PrivacyAccountActivity
-     * @Applink : tokopedia-android-internal://user/privacy-account
-     **/
-    const val PRIVACY_ACCOUNT = "$NEW_INTERNAL_USER/privacy-account"
-
-    /**
      * ChooseAccountActivity
      * @Applink : tokopedia-android-internal://user/choose-account
      **/
@@ -288,6 +282,9 @@ object ApplinkConstInternalUserPlatform {
     const val CHANGE_NAME = "$NEW_INTERNAL_USER/change-name?oldName={oldName}&chances={chances}"
     const val PARAM_FULL_NAME = "oldName"
     const val PARAM_CHANCE_CHANGE_NAME = "chances"
+
+    // Param to flag if its come from webview fragment (internal), this is for refresh token flow
+    const val PARAM_FROM_WEBVIEW = "from_web_view"
 
     /**
      * ProfileCompletionActivity

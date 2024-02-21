@@ -28,6 +28,10 @@ class ProductPreviewPagerAdapter(
         notifyItemRangeChanged(0, fragments.size)
     }
 
+    fun getCurrentTabKey(position: Int): String {
+        return fragments[position].key
+    }
+
     override fun getItemCount(): Int = fragments.size
 
     override fun createFragment(position: Int): Fragment {

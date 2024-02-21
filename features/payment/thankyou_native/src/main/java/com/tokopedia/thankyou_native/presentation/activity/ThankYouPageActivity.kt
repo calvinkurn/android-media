@@ -1,14 +1,22 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,6 +25,7 @@ import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_ENABLE_THANKYOUPAGE_V2
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
@@ -29,12 +38,25 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.TkpdIdlingResource
 import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
-import com.tokopedia.thankyou_native.data.mapper.*
+import com.tokopedia.thankyou_native.data.mapper.InstantPaymentPage
+import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
+import com.tokopedia.thankyou_native.data.mapper.PaymentPreAuth
+import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
+import com.tokopedia.thankyou_native.data.mapper.PaymentVerified
+import com.tokopedia.thankyou_native.data.mapper.PaymentWaiting
+import com.tokopedia.thankyou_native.data.mapper.PaymentWaitingCOD
+import com.tokopedia.thankyou_native.data.mapper.ProcessingPaymentPage
+import com.tokopedia.thankyou_native.data.mapper.WaitingPaymentPage
 import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.DialogController
-import com.tokopedia.thankyou_native.presentation.fragment.*
+import com.tokopedia.thankyou_native.presentation.fragment.CashOnDeliveryFragment
+import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
+import com.tokopedia.thankyou_native.presentation.fragment.InstantPaymentFragment
+import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
+import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFragment
+import com.tokopedia.thankyou_native.presentation.fragment.ThankYouBaseFragment
 import com.tokopedia.thankyou_native.presentation.helper.PostPurchaseShareHelper
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
@@ -47,7 +69,7 @@ const val SCREEN_NAME = "Finish Transaction"
 const val ARG_PAYMENT_ID = "payment_id"
 const val ARG_MERCHANT = "merchant"
 
-private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
+private const val GLOBAL_NAV_HINT = "Cari di Tokopedia"
 
 private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 private const val KEY_ROLLENCE_SHARE = "share_thankyoupage"
@@ -72,7 +94,7 @@ class ThankYouPageActivity :
         DialogController(GratificationPresenter(this))
     }
 
-    fun getHeader(): HeaderUnify = thank_header
+//    fun getHeader(): HeaderUnify = thank_header
 
     override fun getScreenName(): String {
         return SCREEN_NAME
@@ -80,6 +102,8 @@ class ThankYouPageActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        hideStatusBar()
+        configSpaceFullScreen()
         updateTitle("")
         component.inject(this)
         sendOpenScreenEvent(intent.data)
@@ -96,6 +120,7 @@ class ThankYouPageActivity :
         intent.data?.getQueryParameter(ARG_PAYMENT_ID)?.let {
             intent.putExtra(ARG_MERCHANT, intent.data?.getQueryParameter(ARG_MERCHANT))
             intent.putExtra(ARG_PAYMENT_ID, it)
+            intent.putExtra(ThankYouBaseFragment.ARG_IS_V2_ENABLED, isV2Enabled())
             if (intent.extras != null) {
                 bundle.putAll(intent.extras)
             }
@@ -129,6 +154,14 @@ class ThankYouPageActivity :
             showAppFeedbackBottomSheet(thanksPageData)
         } ?: run { gotoHomePage() }
         postEventOnThankPageDataLoaded(thanksPageData)
+        if (!isV2Enabled()) {
+            findViewById<FrameLayout>(R.id.thank_parent_view).layoutParams.height = 0
+            findViewById<FrameLayout>(R.id.thank_parent_view).updateLayoutParams<ConstraintLayout.LayoutParams> {
+                topToBottom = findViewById<View>(R.id.globalNabToolbar).id
+                bottomToBottom = ConstraintSet.PARENT_ID
+            }
+            findViewById<View>(R.id.toolbarBackground).gone()
+        }
         idlingResource?.decrement()
     }
 
@@ -169,6 +202,19 @@ class ThankYouPageActivity :
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
+
+        if (isV2Enabled()) {
+            return FragmentByPaymentMode(
+                ThankYouBaseFragment.getFragmentInstance(
+                    bundle,
+                    thanksPageData,
+                    isWidgetOrderingEnabled(),
+                    isV2Enabled()
+                ),
+                ""
+            )
+        }
+
         return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             is ProcessingPaymentPage -> {
                 FragmentByPaymentMode(
@@ -220,32 +266,28 @@ class ThankYouPageActivity :
     }
 
     private fun showToolbarBeforeLoading() {
-        thank_header.isShowBackButton = false
-        thank_header.visible()
         globalNabToolbar.gone()
     }
 
     private fun showToolbarAfterLoading(title: String) {
         if (isGlobalNavEnable()) {
-            thank_header.gone()
-            globalNabToolbar.visible()
+            if (isV2Enabled()) {
+                globalNabToolbar.alpha = 0f
+            }
+            globalNabToolbar.show()
             initializeGlobalNav(title)
         } else {
             globalNabToolbar.gone()
-            thank_header.visible()
             setupOldToolbar(title)
         }
     }
 
     private fun setupOldToolbar(title: String) {
-        thank_header.isShowBackButton = true
-        toolbar = thank_header
         setSupportActionBar(toolbar)
         supportActionBar?.let {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowTitleEnabled(true)
         }
-        updateHeaderTitle(title)
     }
 
     private fun isGlobalNavEnable(): Boolean {
@@ -282,10 +324,6 @@ class ThankYouPageActivity :
             setToolbarPageName(title)
             show()
         }
-    }
-
-    private fun updateHeaderTitle(screenName: String) {
-        thank_header.title = screenName
     }
 
     /**
@@ -395,7 +433,11 @@ class ThankYouPageActivity :
                 this,
                 thanksPageData.shopOrder
             )
-        }.addIcon(IconList.ID_NAV_GLOBAL) {
+        }
+        .addIcon(IconList.ID_CART) {
+            // no-op
+        }
+        .addIcon(IconList.ID_NAV_GLOBAL) {
             // no-op
         }
     }
@@ -407,6 +449,35 @@ class ThankYouPageActivity :
             )
         ).addIcon(IconList.ID_NAV_GLOBAL) {
             // no-op
+        }
+    }
+
+    private fun isV2Enabled(): Boolean {
+        return try {
+            val remoteConfig = FirebaseRemoteConfigImpl(this)
+            return remoteConfig.getBoolean(ANDROID_ENABLE_THANKYOUPAGE_V2, true)
+        } catch (ignore: Exception) {
+            false
+        }
+    }
+
+    private fun hideStatusBar() {
+
+        rootView.apply {
+            fitsSystemWindows = false
+            requestApplyInsets()
+        }
+
+        window?.let { window ->
+            window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = Color.TRANSPARENT
+        }
+    }
+
+    private fun configSpaceFullScreen() {
+        globalNabToolbar.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            this.setMargins(0, DisplayMetricUtils.getStatusBarHeight(this@ThankYouPageActivity), 0, 0)
         }
     }
 }

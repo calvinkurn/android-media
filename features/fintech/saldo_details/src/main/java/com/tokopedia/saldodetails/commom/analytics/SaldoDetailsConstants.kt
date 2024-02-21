@@ -22,6 +22,8 @@ object SaldoDetailsConstants {
     const val KEY_BUSINESS_UNIT = "businessUnit"
     const val VALUE_BUSINESS_UNIT = "Payment"
     const val KEY_USER_ID = "userId"
+    const val TRACKER_ID_47693 = "47693"
+    const val TRACKER_ID = "trackerId"
 
     internal interface Event {
         companion object {
@@ -62,6 +64,7 @@ object SaldoDetailsConstants {
             const val SALDO_INVOICE_NUMBER_CLICK = "click invoice number"
             const val SALDO_INVOICE_DETAIL_CLICK = "click detail hasil pesanan"
             const val SALDO_API_FAILED = "API failed"
+            const val SALDO_AUTO_WD_TICKER_CLICK = "click atur jadwal penarikan"
         }
     }
 

@@ -11,6 +11,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneItemRewardUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -230,8 +231,12 @@ object SellerHomeTracking {
             TrackingConstant.SELLER_APP_HOME,
             arrayOf(TrackingConstant.CLICK_WIDGET_POST, TrackingConstant.POST).joinToString(" - "),
             arrayOf(
-                model.dataKey, emptyStatus, filterName,
-                post.title, stateMediaUrl, stateText
+                model.dataKey,
+                emptyStatus,
+                filterName,
+                post.title,
+                stateMediaUrl,
+                stateText
             ).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(map)
@@ -532,7 +537,8 @@ object SellerHomeTracking {
                 TrackingConstant.TRENDLINE
             ).joinToString(" - "),
             label = arrayOf(
-                model.dataKey, emptyStatus,
+                model.dataKey,
+                emptyStatus,
                 metric.summary.title
             ).joinToString(" - ")
         )
@@ -589,21 +595,28 @@ object SellerHomeTracking {
         val level = element.data?.progressLevel?.bar?.value.orZero()
         val numOfNegativeRecommendation = getNumberOfRecommendationByType(
             element.data
-                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NEGATIVE
+                ?.recommendation?.recommendations,
+            RecommendationItemUiModel.TYPE_NEGATIVE
         )
         val numOfPositiveRecommendation = getNumberOfRecommendationByType(
             element.data
-                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_POSITIVE
+                ?.recommendation?.recommendations,
+            RecommendationItemUiModel.TYPE_POSITIVE
         )
         val numOfNoDataRecommendation = getNumberOfRecommendationByType(
             element.data
-                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NO_DATA
+                ?.recommendation?.recommendations,
+            RecommendationItemUiModel.TYPE_NO_DATA
         )
         val tickerStatus = if (element.data?.ticker?.text.isNullOrBlank()) "off" else "on"
         val tickerLabel = "ticker $tickerStatus"
         val eventLabel = arrayOf(
-            element.dataKey, score, level, numOfNegativeRecommendation,
-            numOfPositiveRecommendation, numOfNoDataRecommendation,
+            element.dataKey,
+            score,
+            level,
+            numOfNegativeRecommendation,
+            numOfPositiveRecommendation,
+            numOfNoDataRecommendation,
             tickerLabel
         ).joinToString(" - ")
 
@@ -624,21 +637,28 @@ object SellerHomeTracking {
         val level = element.data?.progressLevel?.bar?.value.orZero()
         val numOfNegativeRecommendation = getNumberOfRecommendationByType(
             element.data
-                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NEGATIVE
+                ?.recommendation?.recommendations,
+            RecommendationItemUiModel.TYPE_NEGATIVE
         )
         val numOfPositiveRecommendation = getNumberOfRecommendationByType(
             element.data
-                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_POSITIVE
+                ?.recommendation?.recommendations,
+            RecommendationItemUiModel.TYPE_POSITIVE
         )
         val numOfNoDataRecommendation = getNumberOfRecommendationByType(
             element.data
-                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NO_DATA
+                ?.recommendation?.recommendations,
+            RecommendationItemUiModel.TYPE_NO_DATA
         )
         val tickerStatus = if (element.data?.ticker?.text.isNullOrBlank()) "off" else "on"
         val tickerLabel = "ticker $tickerStatus"
         val eventLabel = arrayOf(
-            element.dataKey, score, level, numOfNegativeRecommendation,
-            numOfPositiveRecommendation, numOfNoDataRecommendation,
+            element.dataKey,
+            score,
+            level,
+            numOfNegativeRecommendation,
+            numOfPositiveRecommendation,
+            numOfNoDataRecommendation,
             tickerLabel
         ).joinToString(" - ")
 
@@ -660,21 +680,28 @@ object SellerHomeTracking {
         val level = element.data?.progressLevel?.bar?.value.orZero()
         val numOfNegativeRecommendation = getNumberOfRecommendationByType(
             element.data
-                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NEGATIVE
+                ?.recommendation?.recommendations,
+            RecommendationItemUiModel.TYPE_NEGATIVE
         )
         val numOfPositiveRecommendation = getNumberOfRecommendationByType(
             element.data
-                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_POSITIVE
+                ?.recommendation?.recommendations,
+            RecommendationItemUiModel.TYPE_POSITIVE
         )
         val numOfNoDataRecommendation = getNumberOfRecommendationByType(
             element.data
-                ?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NO_DATA
+                ?.recommendation?.recommendations,
+            RecommendationItemUiModel.TYPE_NO_DATA
         )
         val tickerStatus = if (element.data?.ticker?.text.isNullOrBlank()) "off" else "on"
         val tickerLabel = "ticker $tickerStatus"
         val eventLabel = arrayOf(
-            element.dataKey, score, level, numOfNegativeRecommendation,
-            numOfPositiveRecommendation, numOfNoDataRecommendation,
+            element.dataKey,
+            score,
+            level,
+            numOfNegativeRecommendation,
+            numOfPositiveRecommendation,
+            numOfNoDataRecommendation,
             tickerLabel
         ).joinToString(" - ")
 
@@ -810,6 +837,46 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendMilestoneRewardImpressionEvent(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
+        val state = when (reward.questStatus) {
+            MilestoneItemRewardUiModel.QuestStatus.REWARD_CLAIMED -> TrackingConstant.CLAIMED
+            MilestoneItemRewardUiModel.QuestStatus.QUEST_FINISH -> TrackingConstant.FINISHED
+            else -> TrackingConstant.NOT_STARTED_OR_ONGOING
+        }
+
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            category = TrackingConstant.SELLER_APP_HOME,
+            action = TrackingConstant.IMPRESSION_WIDGET_MILESTONE_CARD,
+            label = arrayOf(reward.title, state, position, reward.buttonText).joinSpaceSeparator()
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendMilestoneRewardClickEvent(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
+        val state = when (reward.questStatus) {
+            MilestoneItemRewardUiModel.QuestStatus.REWARD_CLAIMED -> TrackingConstant.CLAIMED
+            MilestoneItemRewardUiModel.QuestStatus.QUEST_FINISH -> TrackingConstant.FINISHED
+            else -> TrackingConstant.NOT_STARTED_OR_ONGOING
+        }
+
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = TrackingConstant.SELLER_APP_HOME,
+            action = TrackingConstant.CLICK_WIDGET_MILESTONE_CARD,
+            label = arrayOf(reward.title, state, position, reward.buttonText).joinSpaceSeparator()
+        )
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendMilestoneWidgetCtaClickEvent() {
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_HOMEPAGE,
@@ -927,7 +994,9 @@ object SellerHomeTracking {
             category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.IMPRESSION_WIDGET_UNIFICATION_SEE_TAB,
             label = arrayOf(
-                dataKey, tab.title, emptyLabel
+                dataKey,
+                tab.title,
+                emptyLabel
             ).joinDashSeparator()
         )
         eventMap[TrackingConstant.TRACKER_ID] = "33398"
@@ -946,7 +1015,9 @@ object SellerHomeTracking {
             category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_UNIFICATION_TAB,
             label = arrayOf(
-                dataKey, tab.title, emptyLabel
+                dataKey,
+                tab.title,
+                emptyLabel
             ).joinDashSeparator()
         )
         eventMap[TrackingConstant.TRACKER_ID] = "33399"
@@ -969,7 +1040,10 @@ object SellerHomeTracking {
             TrackingConstant.NOT_EMPTY
         }
         val labels = mutableListOf(
-            dataKey, tab.title, emptyLabel, text
+            dataKey,
+            tab.title,
+            emptyLabel,
+            text
         )
         if (meta.flag.isNotBlank()) {
             labels.add(meta.flag)
@@ -997,7 +1071,9 @@ object SellerHomeTracking {
             category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_UNIFICATION_SEE_MORE,
             label = arrayOf(
-                dataKey, tab.title, emptyLabel
+                dataKey,
+                tab.title,
+                emptyLabel
             ).joinDashSeparator()
         )
         eventMap[TrackingConstant.TRACKER_ID] = "33401"
@@ -1012,7 +1088,9 @@ object SellerHomeTracking {
             category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_UNIFICATION_EMPTY_STATE,
             label = arrayOf(
-                dataKey, tab.title, TrackingConstant.EMPTY
+                dataKey,
+                tab.title,
+                TrackingConstant.EMPTY
             ).joinDashSeparator()
         )
         eventMap[TrackingConstant.TRACKER_ID] = "33402"

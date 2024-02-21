@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/giftItemContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="8dp"
+    android:paddingTop="32dp"
+    android:paddingEnd="2dp"
+    android:paddingBottom="12dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgGiftImage"
+        android:layout_width="32dp"
+        android:layout_height="32dp" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icGiftLock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/imgGiftImage"
+        android:layout_alignTop="@+id/imgGiftImage"
+        android:layout_alignEnd="@+id/imgGiftImage"
+        android:layout_alignBottom="@+id/imgGiftImage"
+        android:background="@drawable/bg_gwp_gift_overlay"
+        android:padding="10dp"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_name="LOCK"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGiftName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imgGiftImage"
+        android:layout_alignBottom="@+id/imgGiftImage"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@+id/imgGiftImage"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="display_3"
+        tools:text="1x Rare Beauty Hoodie" />
+</RelativeLayout>

@@ -17,6 +17,7 @@ import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.GetLocalSearchRecommendationUseCaseModule
+import com.tokopedia.search.result.domain.usecase.getpostatccarousel.GetPostATCCarouselUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterUseCaseModule
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule
@@ -27,6 +28,7 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.cpm.TopAdsHeadlineModule
 import com.tokopedia.search.result.product.deduplication.DeduplicationModule
+import com.tokopedia.search.result.product.dialog.BottomSheetInappropriateModule
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterModule
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselModule
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcModule
@@ -95,6 +97,8 @@ import dagger.Component
     ReimagineRollenceModule::class,
     LastClickProductProviderModule::class,
     DeduplicationModule::class,
+    BottomSheetInappropriateModule::class,
+    GetPostATCCarouselUseCaseModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

@@ -4,7 +4,6 @@ import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
-import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
@@ -49,7 +48,7 @@ object AtcVariantJsonHelper {
 
     fun generateParamsVariantFulfilledWithMiniCartData(
         productId: String,
-        isTokoNow: Boolean,
+        isTokoNow: Boolean
     ): ProductVariantBottomSheetParams {
         val mockResponse = mockAggregatorMiniCart()
 
@@ -88,8 +87,7 @@ object AtcVariantJsonHelper {
         )
 
         val variantAggregator = mapVariantAggregator(variantAggregatorResponse.response)
-        val miniCart =
-            MiniCartSimplifiedMapper().mapMiniCartSimplifiedData(miniCartResponse.miniCart)
+        val miniCart = miniCartResponse.miniCart.toSimplifiedData()
 
         return variantAggregator to miniCart
     }
@@ -119,5 +117,4 @@ object AtcVariantJsonHelper {
         val file = File(uri.path)
         return String(file.readBytes())
     }
-
 }

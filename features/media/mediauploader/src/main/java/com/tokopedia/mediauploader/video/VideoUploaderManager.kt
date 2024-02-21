@@ -2,11 +2,11 @@ package com.tokopedia.mediauploader.video
 
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.BaseParam
+import com.tokopedia.mediauploader.BaseParam.Companion.copy
 import com.tokopedia.mediauploader.BaseUploaderParam
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.VideoParam
 import com.tokopedia.mediauploader.analytics.MediaUploaderAnalytics
-import com.tokopedia.mediauploader.common.FeatureToggleUploader
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.data.consts.SOURCE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
@@ -32,7 +32,6 @@ class VideoUploaderManager @Inject constructor(
 
     override suspend fun upload(param: BaseUploaderParam): UploadResult {
         val base = (param as VideoParam).base as BaseParam
-        setProgressUploader(base.progress)
 
         if (base.sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
         val policy = policyManager.get() ?: return UploadResult.Error(UNKNOWN_ERROR)
@@ -50,19 +49,21 @@ class VideoUploaderManager @Inject constructor(
             loader = base.progress
         )
 
-//        val (isValid, message) = VideoUploaderValidator(filePath, policy.videoPolicy)
-//        if (isValid.not()) return UploadResult.Error(message)
+        val (isValid, message) = VideoUploaderValidator(filePath, policy.videoPolicy)
+        if (isValid.not()) return UploadResult.Error(message)
 
         val maxSizeOfSimpleUpload = policy.videoPolicy
             ?.thresholdSizeOfVideo()
             ?.mbToBytes() ?: 0
 
         isSimpleUpload = filePath.length() <= maxSizeOfSimpleUpload
+        setProgressUploader(base.progress)
 
         // start upload time tracker before do uploads
         analytics.setStartUploadTime(trackerCacheKey, System.currentTimeMillis())
 
-        val upload = if (!isSimpleUpload) largeUploaderManager(param) else simpleUploaderManager(param)
+        val newParam = param.copy(base = updateFileSource(base, filePath))
+        val upload = if (!isSimpleUpload) largeUploaderManager(newParam) else simpleUploaderManager(newParam)
 
         return upload.also {
             analytics.setEndUploadTime(trackerCacheKey, System.currentTimeMillis()) // set the end upload time tracker
@@ -99,10 +100,7 @@ class VideoUploaderManager @Inject constructor(
         // the toggle comes from policy
         val isCompressionEnabled = compressionPolicy.isCompressionEnabled
 
-        // feature toggle using ab-test
-        val isCompressionRemoteConfigEnabled = FeatureToggleUploader.isCompressionEnabled()
-
-        return if (shouldCompress && isCompressionEnabled && isCompressionRemoteConfigEnabled) {
+        return if (shouldCompress && isCompressionEnabled) {
             val originalFileSizeInMb = originalFile.length() / (1024 * 1024)
 
             if (originalFileSizeInMb < compressionPolicy.thresholdInMb.orZero()) {
@@ -120,6 +118,14 @@ class VideoUploaderManager @Inject constructor(
             File(videoCompression(param))
         } else {
             originalFile
+        }
+    }
+
+    private fun updateFileSource(baseParam: BaseParam, newCompressFile: File): BaseParam{
+        return if (baseParam.file.equals(newCompressFile.path)) {
+            baseParam
+        } else {
+            baseParam.copy(newCompressFile)
         }
     }
 }

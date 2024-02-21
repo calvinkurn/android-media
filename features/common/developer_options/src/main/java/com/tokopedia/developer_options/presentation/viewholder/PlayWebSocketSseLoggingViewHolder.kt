@@ -8,6 +8,8 @@ import com.tokopedia.analyticsdebugger.websocket.ui.activity.WebSocketLoggingAct
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class PlayWebSocketSseLoggingViewHolder(
@@ -20,11 +22,13 @@ class PlayWebSocketSseLoggingViewHolder(
     init {
         btnViewSSELogging.setOnClickListener {
             itemView.context.apply {
+                DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_SSE_LOGGING)
                 startActivity(SSELoggingActivity.newInstance(this))
             }
         }
         btnViewWebSocketLogging.setOnClickListener {
             itemView.context.apply {
+                DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_PLAY_WEBSOCKET_LOG)
                 startActivity(WebSocketLoggingActivity.newInstance(this, WebSocketLogPageSource.PLAY))
             }
         }

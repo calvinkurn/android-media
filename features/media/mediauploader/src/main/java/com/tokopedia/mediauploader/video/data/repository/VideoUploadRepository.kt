@@ -7,6 +7,7 @@ import com.tokopedia.mediauploader.common.util.network.requestBody
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
 import com.tokopedia.mediauploader.video.data.entity.LargeUploader
 import com.tokopedia.mediauploader.video.data.entity.SimpleUploader
+import com.tokopedia.mediauploader.video.data.entity.Transcoding
 import com.tokopedia.mediauploader.video.data.params.ChunkCheckerParam
 import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
 import com.tokopedia.mediauploader.video.data.params.InitParam
@@ -89,6 +90,19 @@ class VideoUploadRepository @Inject constructor(
 
             LargeUploader(
                 success = false,
+                requestId = reqId
+            )
+        }
+    }
+
+    suspend fun shouldTranscodeSucceed(uploadId: String): Transcoding {
+        return try {
+            val url = url.hasLargeTranscodeStatus(uploadId)
+            services.checkTranscodingStatus(url)
+        } catch (t: HttpException) {
+            val reqId = getRequestId(t)
+
+            Transcoding(
                 requestId = reqId
             )
         }

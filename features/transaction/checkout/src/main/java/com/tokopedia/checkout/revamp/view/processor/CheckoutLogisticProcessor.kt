@@ -4,8 +4,10 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderInsurance
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.view.CheckoutLogger
@@ -15,7 +17,9 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.request.EditPinpointParam
 import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CodModel
@@ -45,6 +49,8 @@ class CheckoutLogisticProcessor @Inject constructor(
     private val ratesWithScheduleUseCase: GetRatesWithScheduleDeliveryCoroutineUseCase,
     private val ratesResponseStateConverter: RatesResponseStateConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
+    private val scheduleDeliveryUseCase: GetScheduleDeliveryCoroutineUseCase,
+    private val schellyMapper: ScheduleDeliveryMapper,
     private val dispatchers: CoroutineDispatchers
 ) {
 
@@ -99,15 +105,21 @@ class CheckoutLogisticProcessor @Inject constructor(
         return UpdatePinpointParam(input = params)
     }
 
-    fun getProductForRatesRequest(orderProducts: List<CheckoutProductModel>): ArrayList<Product> {
+    fun getProductForRatesRequest(orderProducts: List<CheckoutItem>): ArrayList<Product> {
         val products = arrayListOf<Product>()
         for (cartItemModel in orderProducts) {
-            if (!cartItemModel.isError) {
+            if (cartItemModel is CheckoutProductModel && !cartItemModel.isError) {
                 val product = Product()
                 product.productId = cartItemModel.productId
                 product.isFreeShipping = cartItemModel.isFreeShipping
                 product.isFreeShippingTc = cartItemModel.isFreeShippingExtra
                 products.add(product)
+            } else if (cartItemModel is CheckoutProductBenefitModel) {
+                products.add(
+                    Product(
+                        productId = cartItemModel.productId.toLongOrZero()
+                    )
+                )
             }
         }
         return products
@@ -132,7 +144,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     private fun generateShippingBottomsheetParam(
         order: CheckoutOrderModel,
-        orderProducts: List<CheckoutProductModel>,
+        orderProducts: List<CheckoutItem>,
         recipientAddressModel: RecipientAddressModel,
         isTradeIn: Boolean
     ): ShipmentDetailData {
@@ -142,33 +154,41 @@ class CheckoutLogisticProcessor @Inject constructor(
         var productFInsurance = 0
         var preOrder = false
         var productPreOrderDuration = 0
-        val productList: ArrayList<Product> = ArrayList()
         val categoryList: HashSet<String> = hashSetOf()
         orderProducts.forEach {
-            if (!it.isError) {
-                if (it.isBundlingItem) {
-                    if (it.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
-                        orderValue += (it.bundleQuantity * it.bundlePrice).toLong()
+            if (it is CheckoutProductModel) {
+                if (!it.isError) {
+                    if (it.isBundlingItem) {
+                        if (it.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                            orderValue += (it.bundleQuantity * it.bundlePrice).toLong()
+                        }
+                    } else {
+                        orderValue += (it.quantity * it.price).toLong()
                     }
-                } else {
-                    orderValue += (it.quantity * it.price).toLong()
+                    if (it.isBMGMItem && it.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
+                        orderValue -= it.bmgmTotalDiscount.toLong()
+                    }
+                    totalWeight += it.quantity * it.weight
+                    totalWeightActual += if (it.weightActual > 0) {
+                        it.quantity * it.weightActual
+                    } else {
+                        it.quantity * it.weight
+                    }
+                    if (it.fInsurance) {
+                        productFInsurance = 1
+                    }
+                    preOrder = it.isPreOrder
+                    productPreOrderDuration = it.preOrderDurationDay
+                    categoryList.add(it.productCatId.toString())
                 }
-                if (it.isBMGMItem && it.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
-                    orderValue -= it.bmgmTotalDiscount.toLong()
-                }
+            } else if (it is CheckoutProductBenefitModel) {
+                orderValue += (it.quantity * it.finalPrice).toLong()
                 totalWeight += it.quantity * it.weight
                 totalWeightActual += if (it.weightActual > 0) {
                     it.quantity * it.weightActual
                 } else {
                     it.quantity * it.weight
                 }
-                if (it.fInsurance) {
-                    productFInsurance = 1
-                }
-                preOrder = it.isPreOrder
-                productPreOrderDuration = it.preOrderDurationDay
-                categoryList.add(it.productCatId.toString())
-                productList.add(Product(it.productId, it.isFreeShipping, it.isFreeShippingExtra))
             }
         }
         return ShipmentDetailData().apply {
@@ -200,7 +220,8 @@ class CheckoutLogisticProcessor @Inject constructor(
                 destinationDistrictId = recipientAddressModel.destinationDistrictId,
                 destinationPostalCode = recipientAddressModel.postalCode,
                 destinationLatitude = recipientAddressModel.latitude,
-                destinationLongitude = recipientAddressModel.longitude
+                destinationLongitude = recipientAddressModel.longitude,
+                groupingState = order.groupingState
             )
         }
     }
@@ -236,7 +257,8 @@ class CheckoutLogisticProcessor @Inject constructor(
             isTradeInDropOff = isTradeInDropOff,
             preOrderDuration = shipmentDetailData.shipmentCartData!!.preOrderDuration,
             isFulfillment = shipmentDetailData.shipmentCartData!!.isFulfillment,
-            boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata
+            boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata,
+            groupingState = shipmentDetailData.shipmentCartData!!.groupingState
         )
         if (isTradeInDropOff && recipientAddressModel.locationDataModel != null) {
             shippingParam.destinationDistrictId = recipientAddressModel.locationDataModel.district
@@ -259,7 +281,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     fun getRatesParam(
         orderModel: CheckoutOrderModel,
-        orderProducts: List<CheckoutProductModel>,
+        orderProducts: List<CheckoutItem>,
         address: RecipientAddressModel,
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,
@@ -553,6 +575,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             courierItemData.benefitClass = it.benefitClass
             courierItemData.shippingSubsidy = it.shippingSubsidy
             courierItemData.boCampaignId = it.boCampaignId
+            courierItemData.boOrderMessage = it.orderMessage
         }
         return courierItemData
     }
@@ -597,8 +620,15 @@ class CheckoutLogisticProcessor @Inject constructor(
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
+                val schellyParam =
+                    schellyMapper.map(
+                        ratesParam,
+                        fullfilmentId,
+                        startDate = orderModel.startDate,
+                        isRecommend = orderModel.isRecommendScheduleDelivery
+                    )
                 var shippingRecommendationData =
-                    ratesWithScheduleUseCase(ratesParam to fullfilmentId)
+                    ratesWithScheduleUseCase(ratesParam to schellyParam)
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
                     shopShipments,
@@ -646,7 +676,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                     )
                                                 return@withContext RatesResult(
                                                     courierItemData,
-                                                    generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                                    generateCheckoutOrderInsuranceFromCourier(
+                                                        courierItemData,
+                                                        orderModel
+                                                    ),
                                                     shippingDurationUiModel.shippingCourierViewModelList
                                                 )
                                             }
@@ -663,14 +696,8 @@ class CheckoutLogisticProcessor @Inject constructor(
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     shippingCourierUiModel.isSelected = false
                                 }
-                                val currentSelectedSpId =
-                                    if (shippingDurationUiModel.serviceData.selectedShipperProductId > 0) {
-                                        shippingDurationUiModel.serviceData.selectedShipperProductId
-                                    } else {
-                                        selectedSpId
-                                    }
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    if (shippingCourierUiModel.productData.shipperProductId == currentSelectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
+                                    if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
                                         if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                             CheckoutLogger.logOnErrorLoadCourierNew(
                                                 MessageErrorException(
@@ -712,7 +739,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                             }
                                             return@withContext RatesResult(
                                                 courierItemData,
-                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                                generateCheckoutOrderInsuranceFromCourier(
+                                                    courierItemData,
+                                                    orderModel
+                                                ),
                                                 shippingDurationUiModel.shippingCourierViewModelList
                                             )
                                         }
@@ -747,7 +777,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     }
                                     return@withContext RatesResult(
                                         courierItemData,
-                                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                        generateCheckoutOrderInsuranceFromCourier(
+                                            courierItemData,
+                                            orderModel
+                                        ),
                                         shippingDuration.shippingCourierViewModelList
                                     )
                                 }
@@ -768,6 +801,71 @@ class CheckoutLogisticProcessor @Inject constructor(
                     boPromoCode
                 )
                 return@withContext null
+            } catch (t: Throwable) {
+                Timber.d(t)
+                if (t is AkamaiErrorException) {
+                    return@withContext RatesResult(
+                        null,
+                        CheckoutOrderInsurance(),
+                        emptyList(),
+                        t.message ?: ""
+                    )
+                }
+                return@withContext null
+            }
+        }
+    }
+
+    suspend fun getScheduleDelivery(
+        ratesParam: RatesParam,
+        fullfilmentId: String,
+        orderModel: CheckoutOrderModel,
+        isOneClickShipment: Boolean
+    ): RatesResult? {
+        return withContext(dispatchers.io) {
+            try {
+                val schellyResponse =
+                    scheduleDeliveryUseCase(
+                        schellyMapper.map(
+                            ratesParam,
+                            fullfilmentId,
+                            isRecommend = orderModel.isRecommendScheduleDelivery,
+                            startDate = orderModel.startDate
+                        )
+                    )
+                val schellyData =
+                    schellyResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+                val courierItemData =
+                    shippingCourierConverter.schellyToCourierItemData(
+                        schellyData,
+                        orderModel.validationMetadata
+                    )
+                handleSyncShipmentCartItemModel(courierItemData, orderModel)
+                val schellyHasSchedule = courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true
+                val schellyUnavailable = courierItemData.scheduleDeliveryUiModel?.available == false
+                if (schellyHasSchedule || schellyUnavailable) {
+                    return@withContext RatesResult(
+                        courierItemData,
+                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                        emptyList()
+                    )
+                } else {
+                    val errorReason = "schelly is not selected"
+                    val boPromoCode = getBoPromoCode(
+                        orderModel
+                    )
+                    CheckoutLogger.logOnErrorLoadCourierNew(
+                        MessageErrorException(
+                            errorReason
+                        ),
+                        orderModel,
+                        isOneClickShipment,
+                        false,
+                        false,
+                        boPromoCode
+                    )
+                    return@withContext null
+                }
             } catch (t: Throwable) {
                 Timber.d(t)
                 if (t is AkamaiErrorException) {
@@ -851,6 +949,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             courierItemData.benefitClass = it.benefitClass
             courierItemData.shippingSubsidy = it.shippingSubsidy
             courierItemData.boCampaignId = it.boCampaignId
+            courierItemData.boOrderMessage = it.orderMessage
         }
         return courierItemData
     }
@@ -1007,6 +1106,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             benefitClass = logisticPromoUiModel.benefitClass
             shippingSubsidy = logisticPromoUiModel.shippingSubsidy
             boCampaignId = logisticPromoUiModel.boCampaignId
+            boOrderMessage = logisticPromoUiModel.orderMessage
         }
         return courierItemData
     }

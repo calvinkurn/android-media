@@ -11,4 +11,7 @@ object EventCategory {
     const val browseFeed = "feed browse page"
 
     const val storyCreation = "play broadcast story"
+
+    const val feedUserProfile = "feed user profile"
+    const val unifiedViewPDP = "unified view pdp"
 }

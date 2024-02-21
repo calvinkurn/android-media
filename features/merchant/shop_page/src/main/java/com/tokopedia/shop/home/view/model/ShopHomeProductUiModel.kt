@@ -21,9 +21,9 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var id: String = ""
     var name: String = ""
     var displayedPrice: String = ""
-    var originalPrice: String? = null
-    var discountPercentage: String? = null
-    var imageUrl: String? = null
+    var originalPrice: String = ""
+    var discountPercentage: String = ""
+    var imageUrl: String = ""
     var imageUrl300: String? = null
     var imageUrl700: String? = null
     var totalReview: String? = null
@@ -58,7 +58,8 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var listChildId: List<String> = listOf()
     var parentId: String = ""
     var averageRating: String = ""
-
+    var isFulfillment: Boolean? = null
+    var warehouseId: String? = null
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when (typeFactory) {
             is ShopHomeAdapterTypeFactory -> {
@@ -85,7 +86,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         id = shopProduct.productId.orEmpty()
         name = shopProduct.productName.orEmpty()
         displayedPrice = shopProduct.productPrice.orEmpty()
-        imageUrl = shopProduct.productImage
+        imageUrl = shopProduct.productImage.orEmpty()
         imageUrl300 = shopProduct.productImage300
         imageUrl700 = shopProduct.productImage700
         productUrl = shopProduct.productUrl.orEmpty()
@@ -114,7 +115,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         id = gmFeaturedProduct.productId.orEmpty()
         name = gmFeaturedProduct.name.orEmpty()
         displayedPrice = gmFeaturedProduct.price?.toString().orEmpty()
-        imageUrl = gmFeaturedProduct.imageUri
+        imageUrl = gmFeaturedProduct.imageUri.orEmpty()
         productUrl = gmFeaturedProduct.uri.orEmpty()
 
         totalReview = gmFeaturedProduct.totalReview

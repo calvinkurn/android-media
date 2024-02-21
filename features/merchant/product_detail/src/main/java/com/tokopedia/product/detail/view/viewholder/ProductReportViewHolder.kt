@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R

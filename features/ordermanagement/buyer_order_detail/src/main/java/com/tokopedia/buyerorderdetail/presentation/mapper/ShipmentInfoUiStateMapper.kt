@@ -142,7 +142,7 @@ object ShipmentInfoUiStateMapper {
             ),
             courierInfoUiModel = mapCourierInfoUiModel(shipment, meta, podInfo, userSession, orderId),
             dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship, resourceProvider),
-            headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
+            headerUiModel = mapPlainHeader(shipment.title, resourceProvider.getShipmentInfoSectionHeader()),
             receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(
                 shipment.receiver,
                 resourceProvider
@@ -289,9 +289,11 @@ object ShipmentInfoUiStateMapper {
     }
 
     private fun mapPlainHeader(
+        title: String,
         @StringRes headerStringResId: Int
     ): PlainHeaderUiModel {
         return PlainHeaderUiModel(
+            title = title.takeIf { it.isNotBlank() },
             header = mapStringRes(headerStringResId)
         )
     }
@@ -341,7 +343,7 @@ object ShipmentInfoUiStateMapper {
 
     private fun mapStringRes(
         @StringRes resId: Int
-    ): com.tokopedia.buyerorderdetail.presentation.model.StringRes {
-        return com.tokopedia.buyerorderdetail.presentation.model.StringRes(resId)
+    ): com.tokopedia.order_management_common.presentation.uimodel.StringRes {
+        return com.tokopedia.order_management_common.presentation.uimodel.StringRes(resId)
     }
 }

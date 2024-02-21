@@ -17,6 +17,7 @@ import com.tokopedia.creation.common.util.isMediaPotrait
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.play_common.util.CacheUtil
 import com.tokopedia.play_common.util.VideoSnapshotHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -101,6 +102,8 @@ class StoriesUploadManager @AssistedInject constructor(
                 val activeMediaId = addMedia(uploadData, mediaUploadResult, coverUploadId)
 
                 updateStoryStatus(uploadData, StoriesStatus.Active, activeMediaId)
+
+                deleteMediaCache(uploadData)
 
                 broadcastComplete(uploadData)
 
@@ -190,8 +193,7 @@ class StoriesUploadManager @AssistedInject constructor(
             }
             is UploadResult.Error -> {
                 if (mediaType.isVideo) {
-                    /** TODO JOE: add requestId here */
-                    sendErrorRequestId(uploadData, "")
+                    sendErrorRequestId(uploadData, result.requestId)
                 }
 
                 throw Exception(result.message)
@@ -255,5 +257,10 @@ class StoriesUploadManager @AssistedInject constructor(
             ContentMediaType.Video -> uploadData.videoSourceId
             else -> ""
         }
+    }
+
+    private fun deleteMediaCache(uploadData: CreationUploadData.Stories) {
+        CacheUtil.deleteFileFromCache(uploadData.firstMediaUri)
+        snapshotHelper.deleteLocalFile()
     }
 }

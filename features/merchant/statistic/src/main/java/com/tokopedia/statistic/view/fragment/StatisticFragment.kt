@@ -59,6 +59,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -66,6 +67,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FilterTabBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.HtmlMetaBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -94,8 +96,8 @@ import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
-import com.tokopedia.statistic.view.viewhelper.RejectedOrderRateCoachMark
 import com.tokopedia.statistic.view.viewhelper.MultiComponentTabUiInteractor
+import com.tokopedia.statistic.view.viewhelper.RejectedOrderRateCoachMark
 import com.tokopedia.statistic.view.viewhelper.StatisticItemDecoration
 import com.tokopedia.statistic.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
@@ -118,7 +120,8 @@ import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
  * Created By @ilhamsuaib on 08/06/20
  */
 
-class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
+class StatisticFragment :
+    BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
     WidgetListener {
 
     companion object {
@@ -133,15 +136,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val TICKER_NAME = "statistic_page_ticker"
         private const val KEY_STATISTIC_PAGE = "statistic_page_source"
         private const val KEY_SHOULD_LOAD_DATA_ON_CREATE = "key_should_load_data_on_create"
+        private const val KEY_SELECTED_TABLE_WIDGET_SORT = "key_selected_table_widget_sort"
 
         fun newInstance(
             page: StatisticPageUiModel,
-            shouldLoadDataOnCreate: Boolean
+            shouldLoadDataOnCreate: Boolean,
+            selectedTableWidgetSort: String
         ): StatisticFragment {
             return StatisticFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(KEY_STATISTIC_PAGE, page)
                     putBoolean(KEY_SHOULD_LOAD_DATA_ON_CREATE, shouldLoadDataOnCreate)
+                    putString(KEY_SELECTED_TABLE_WIDGET_SORT, selectedTableWidgetSort)
                 }
             }
         }
@@ -177,7 +183,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             statisticPage?.pageTitle != getString(R.string.stc_shop)
         ) {
             Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_REGULAR_MERCHANT))
-        } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_NON_REGULAR_MERCHANT))
+        } else {
+            Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_NON_REGULAR_MERCHANT))
+        }
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate
             ?: defaultStartDate
     }
@@ -186,7 +194,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             statisticPage?.pageTitle != getString(R.string.stc_shop)
         ) {
             Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_REGULAR_MERCHANT))
-        } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_NON_REGULAR_MERCHANT))
+        } else {
+            Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_NON_REGULAR_MERCHANT))
+        }
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate
             ?: defaultEndDate
     }
@@ -197,8 +207,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var isErrorToastShown = false
     private var headerSubTitle: String = ""
 
-    //format should be : widgetType-widgetId, ex: section-109
+    // format should be : widgetType-widgetId, ex: section-109
     private var selectedWidget: String = ""
+    private var selectedTableWidgetSort: String = ""
     private val dateFilterImpressHolder = ImpressHolder()
     private val otherMenuImpressHolder = ImpressHolder()
 
@@ -218,10 +229,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statisticPage = getPageFromArgs()
+        selectedTableWidgetSort = getTableWidgetSortFromArgs()
         loadInitialLayoutData(savedInstanceState) {
             statisticPage?.let { page ->
                 startLayoutNetworkPerformanceMonitoring()
-                mViewModel.getWidgetLayout(page.pageSource)
+                mViewModel.getWidgetLayout(page.pageSource, selectedTableWidgetSort)
                 mViewModel.getTickers(page.tickerPageName)
             }
         }
@@ -379,7 +391,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String) {
-        //Show loading
+        // Show loading
         adapter.data.forEach {
             val isTheSameWidget = it.widgetType == widgetType
             if (isTheSameWidget) {
@@ -399,7 +411,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
         StatisticTracker.sendCardImpressionEvent(
-            statisticPage?.pageSource.orEmpty(), model
+            statisticPage?.pageSource.orEmpty(),
+            model
         )
     }
 
@@ -458,12 +471,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         isSlideEmpty: Boolean
     ) {
         StatisticTracker.sendTableImpressionEvent(
-            statisticPage?.pageSource.orEmpty(), model.dataKey, isSlideEmpty
+            statisticPage?.pageSource.orEmpty(),
+            model.dataKey,
+            isSlideEmpty
         )
 
         StatisticTracker.sendTableOnSwipeEvent(
             statisticPage?.pageSource.orEmpty(),
-            slidePosition, maxSlidePosition
+            slidePosition,
+            maxSlidePosition
         )
     }
 
@@ -482,7 +498,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
         StatisticTracker.sendPieChartImpressionEvent(
-            statisticPage?.pageSource.orEmpty(), model
+            statisticPage?.pageSource.orEmpty(),
+            model
         )
     }
 
@@ -503,7 +520,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {
         StatisticTracker.sendSectionTooltipClickEvent(
-            statisticPage?.pageSource.orEmpty(), model.title
+            statisticPage?.pageSource.orEmpty(),
+            model.title
         )
     }
 
@@ -550,9 +568,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (!isAdded || context == null) return
 
         val tableFilterBottomSheet = (
-                childFragmentManager.findFragmentByTag(
-                    WidgetFilterBottomSheet.TABLE_FILTER_TAG
-                ) as? WidgetFilterBottomSheet) ?: WidgetFilterBottomSheet.newInstance()
+            childFragmentManager.findFragmentByTag(
+                WidgetFilterBottomSheet.TABLE_FILTER_TAG
+            ) as? WidgetFilterBottomSheet
+            ) ?: WidgetFilterBottomSheet.newInstance()
         tableFilterBottomSheet.init(
             requireContext(),
             sellerhomecommonR.string.shc_select_statistic_data,
@@ -625,6 +644,29 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         rejectedOrderRateCoachMark.show()
     }
 
+    override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        StatisticTracker.sendTableMetaLabelClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            meta.title,
+            meta.productId
+        )
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+            setOnCloseButtonClicked(::onHtmlMetaBottomSheetCloseClicked)
+        }.show(fm)
+    }
+
+    override fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+            setOnCloseButtonClicked(::onHtmlMetaBottomSheetCloseClicked)
+        }.show(fm)
+    }
+
     fun setSelectedWidget(widget: String) {
         this.selectedWidget = widget
     }
@@ -675,6 +717,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         return arguments?.getParcelable(KEY_STATISTIC_PAGE)
     }
 
+    private fun getTableWidgetSortFromArgs(): String {
+        return arguments?.getString(KEY_SELECTED_TABLE_WIDGET_SORT).orEmpty()
+    }
+
     private fun setDefaultDynamicParameter() {
         statisticPage?.let { page ->
             page.dateFilters.firstOrNull { it.isSelected }.let { dateFilter ->
@@ -721,7 +767,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                     val startDateMillis = defaultStartDate.time
                     val dateStr = DateTimeUtil.format(startDateMillis, "dd MMMM")
                     val hourStr = DateTimeUtil.format(
-                        System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00"
+                        System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)),
+                        "HH:00"
                     )
                     getString(R.string.stc_today_fmt, dateStr, hourStr)
                 }
@@ -1007,10 +1054,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun scrollToWawasanPlus(mWidgetList: MutableList<BaseWidgetUiModel<*>>) {
         val listener = activity as? FragmentListener
 
-        if ((selectedWidget.isNotEmpty() ||
-            multiComponentUiInteractor?.alreadyAutoScroll(userSession.userId) == true) ||
+        if ((
+            selectedWidget.isNotEmpty() ||
+                multiComponentUiInteractor?.alreadyAutoScroll(userSession.userId) == true
+            ) ||
             listener?.isTabCoachMarkShowing() == true
-        ) return
+        ) {
+            return
+        }
 
         try {
             val wawasanPlusIndex = mWidgetList.indexOfFirst {
@@ -1025,7 +1076,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 mLayoutManager?.scrollToPositionWithOffset(wawasanPlusIndex, 100)
                 multiComponentUiInteractor?.setAlreadyAutoScroll(userSession.userId)
             }
-
         } catch (e: Throwable) {
             Timber.e(e)
         }
@@ -1088,8 +1138,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         isErrorToastShown = true
 
         Toaster.build(
-            this, context.getString(R.string.stc_failed_to_get_information),
-            TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.stc_reload)
+            this,
+            context.getString(R.string.stc_failed_to_get_information),
+            TOAST_DURATION.toInt(),
+            Toaster.TYPE_ERROR,
+            context.getString(R.string.stc_reload)
         ) {
             reloadPageOrLoadDataOfErrorWidget()
         }.show()
@@ -1115,7 +1168,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val errorWidgets: List<BaseWidgetUiModel<*>> = adapter.data.filterIndexed { index, widget ->
             val isWidgetError = !widget.data?.error.isNullOrBlank()
             if (isWidgetError) {
-                //set data to null then notify adapter to show the widget shimmer
+                // set data to null then notify adapter to show the widget shimmer
                 widget.data = null
                 adapter.notifyItemChanged(index)
             }
@@ -1134,7 +1187,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         globalErrorStc.gone()
         statisticPage?.let {
-            mViewModel.getWidgetLayout(it.pageSource)
+            mViewModel.getWidgetLayout(it.pageSource, selectedTableWidgetSort)
         }
     }
 
@@ -1292,14 +1345,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun setupActionMenu() {
         statisticPage?.actionMenu?.let { menus ->
-            //we can't show bottom sheet if FragmentManager's state has already been saved
+            // we can't show bottom sheet if FragmentManager's state has already been saved
             if (childFragmentManager.isStateSaved) return
 
             val pageName = statisticPage?.pageTitle.orEmpty()
             val actionMenuBottomSheet =
                 ActionMenuBottomSheet.createInstance(pageName, userSession.userId, menus)
 
-            //to prevent IllegalStateException: Fragment already added
+            // to prevent IllegalStateException: Fragment already added
             if (actionMenuBottomSheet.isAdded) return
 
             actionMenuBottomSheet.show(childFragmentManager)
@@ -1327,7 +1380,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun sendActionBarMenuImpressionEvent(menu: Menu) {
-        //send impression for calendar filter action menu
+        // send impression for calendar filter action menu
         menu.findItem(R.id.actionStcSelectDate)?.let {
             view?.addOnImpressionListener(dateFilterImpressHolder) {
                 val dateFilter = statisticPage?.dateFilters?.firstOrNull { it.isSelected }
@@ -1338,7 +1391,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         }
 
-        //send impression for 3 dots action menu
+        // send impression for 3 dots action menu
         menu.findItem(R.id.actionStcOtherMenu)?.let {
             view?.addOnImpressionListener(otherMenuImpressHolder) {
                 StatisticTracker.sendThreeDotsImpressionEvent(statisticPage?.pageSource.orEmpty())
@@ -1409,5 +1462,23 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 }
             }
         }
+    }
+
+    private fun goToHtmlMetaLink(
+        bottomSheetTitle: String,
+        appLink: String
+    ) {
+        StatisticTracker.sendTableMetaMoreBottomSheetClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            bottomSheetTitle
+        )
+        RouteManager.route(context, appLink)
+    }
+
+    private fun onHtmlMetaBottomSheetCloseClicked(bottomSheetTitle: String) {
+        StatisticTracker.sendTableCloseBottomSheetClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            bottomSheetTitle
+        )
     }
 }

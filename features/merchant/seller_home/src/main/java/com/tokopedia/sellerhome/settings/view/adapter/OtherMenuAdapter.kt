@@ -9,6 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
@@ -37,10 +38,12 @@ class OtherMenuAdapter(
         private const val TOKOPEDIA_PLAY_END_DATE = 1652806800000 // Wed May 18 2022 00:00:00
         private const val SLASH_PRICE_END_DATE = 1657990800000 // Sun Jul 17 2022 00:00:00
         const val PERSONA_EXPIRED_DATE = 1681142400000 ////10-04-2023
+        private const val TOPADS_AUTO_PS_NOT_DELIVERED_STATUS = 600
     }
 
     private var isShowCentralizedPromoTag: Boolean = false
     private var isTopAdsShopUsed: Boolean = false
+    private var autoPsStatus: Int = Int.ZERO
 
     private fun generateSettingList() = listOf(
         SettingTitleUiModel(context?.getString(R.string.setting_menu_improve_sales).orEmpty()),
@@ -52,7 +55,7 @@ class OtherMenuAdapter(
         ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_iklan_topads).orEmpty(),
-            clickApplink = if(isTopAdsShopUsed) ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL else ApplinkConstInternalTopAds.TOPADS_ONBOARDING,
+            clickApplink = if (!isTopAdsShopUsed && autoPsStatus != TOPADS_AUTO_PS_NOT_DELIVERED_STATUS) ApplinkConstInternalTopAds.TOPADS_ONBOARDING else ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL,
             iconUnify = IconUnify.SPEAKER,
         ),
         MenuItemUiModel(
@@ -204,6 +207,10 @@ class OtherMenuAdapter(
         isTopAdsShopUsed = isUsed
         clearAllElements()
         addElement(generateSettingList())
+    }
+
+    fun setTopAdsAutoPsStatus(autoPsStatus: Int) {
+        this.autoPsStatus = autoPsStatus
     }
 
     fun setCentralizedPromoTag(isShow: Boolean = false) {

@@ -142,6 +142,7 @@ object TrackingUtil {
     fun createLinkerDataForViewItem(productInfo: DynamicProductInfoP1, userId: String?): LinkerData {
         val linkerData = LinkerData()
         linkerData.shopId = productInfo.basic.shopID
+        linkerData.shopName = productInfo.basic.shopName
         linkerData.price = productInfo.finalPrice.toString()
         linkerData.productName = productInfo.getProductName
         linkerData.sku = productInfo.basic.productID

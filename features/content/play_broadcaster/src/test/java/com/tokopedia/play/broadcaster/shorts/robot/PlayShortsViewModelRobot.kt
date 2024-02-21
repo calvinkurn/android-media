@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
+import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.mockk
@@ -68,6 +69,9 @@ class PlayShortsViewModelRobot(
 
     val isSelectedAccountAffiliate: Boolean
         get() = viewModel.isSelectedAccountAffiliate
+
+    val productVideo: ProductVideoUiModel
+        get() = viewModel.productVideo
 
     fun setUp(fn: PlayShortsViewModelRobot.() -> Unit): PlayShortsViewModelRobot {
         fn()

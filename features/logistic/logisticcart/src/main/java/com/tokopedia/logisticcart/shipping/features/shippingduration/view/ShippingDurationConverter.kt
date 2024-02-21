@@ -2,7 +2,6 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
 import com.google.gson.Gson
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PromoStacking
@@ -93,7 +92,7 @@ class ShippingDurationConverter @Inject constructor() {
                 serviceData.products,
                 ratesId,
                 blackboxInfo,
-                convertShipmentDetailData(ratesDetailData),
+                convertShipmentDetailData(ratesDetailData)
             )
             shippingDurationUiModel.serviceData.isUiRatesHidden =
                 shippingDurationUiModel.serviceData.isUiRatesHidden || (shippingDurationUiModel.serviceData.selectedShipperProductId == 0 && shippingCourierUiModels.all { it.productData.isUiRatesHidden })
@@ -102,11 +101,7 @@ class ShippingDurationConverter @Inject constructor() {
                 shippingDurationUiModels.add(shippingDurationUiModel)
             }
             if (serviceData.error.errorMessage.isNotEmpty()) {
-                if (serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                    serviceData.texts.textRangePrice = serviceData.error.errorMessage
-                } else {
-                    shippingDurationUiModel.errorMessage = serviceData.error.errorMessage
-                }
+                shippingDurationUiModel.errorMessage = serviceData.error.errorMessage
             }
             shippingDurationUiModel.isCodAvailable = serviceData.codData.isCod == COD_TRUE_VAL
             shippingDurationUiModel.codText = serviceData.codData.codText
@@ -213,7 +208,8 @@ class ShippingDurationConverter @Inject constructor() {
             promo.freeShippingMetadata.shippingSubsidy,
             promo.boCampaignId,
             promo.quotaMessage,
-            promo.imageUrlChosen
+            promo.imageUrlChosen,
+            promo.texts.orderMessage
         )
     }
 

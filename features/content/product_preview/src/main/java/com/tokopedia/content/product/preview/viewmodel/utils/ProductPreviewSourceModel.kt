@@ -1,7 +1,7 @@
 package com.tokopedia.content.product.preview.viewmodel.utils
 
 import android.os.Parcelable
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -17,7 +17,7 @@ data class ProductPreviewSourceModel(
 
     @Parcelize
     data class ProductSourceData(
-        val productSourceList: List<ProductContentUiModel> = emptyList(),
+        val productSourceList: List<ProductMediaUiModel> = emptyList(),
         val hasReviewMedia: Boolean
     ) : ProductPreviewSource
 

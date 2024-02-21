@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_HEADLINE_DETAIL
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -23,6 +25,8 @@ import com.tokopedia.top_ads_headline.view.viewmodel.AdScheduleAndBudgetViewMode
 import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.activity.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.GROUP_ID_PARAM
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_IKLAN_TOKO
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
@@ -82,6 +86,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     private var selectedEndDate: Calendar? = null
     private var tetapkanStatus: String = ""
     private var batasiStatus: String = ""
+    private var isAutoPsWhitelisted: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -105,6 +110,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.fragment_ad_schedule_and_budget, container, false)
+        viewModel.getVariantById()
         text1 = view.findViewById(R.id.text1)
         advertisingCost = view.findViewById(R.id.advertisingCost)
         startDate = view.findViewById(R.id.startDate)
@@ -119,7 +125,18 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         tooltipBtn = view.findViewById(R.id.tooltipBtn)
         btnNext = view.findViewById(R.id.btnNext)
         previewBtn = view.findViewById(R.id.previewBtn)
+        attachObserver()
         return view
+    }
+
+    private fun attachObserver(){
+        viewModel.shopVariant.observe(viewLifecycleOwner){shopVariants ->
+            isAutoPsWhitelisted = shopVariants.isNotEmpty() && shopVariants.filter {
+                it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
+                    it.variant == TopAdsCommonConstant.AUTOPS_VARIANT
+            }
+                .isNotEmpty()
+        }
     }
 
     override fun gotoNextPage() {
@@ -176,27 +193,37 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
     }
 
-    private fun onCreationSuccess() {
+    private fun onCreationSuccess(groupId: String) {
         getSwitchBtnStatus()
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_IKLANKAN,
             "{${userSession.shopId}} - {${stepperModel?.groupName}} - {${text1?.text}} - {${tetapkanStatus}} - {${batasiStatus}}",
             userSession.userId)
-        val intent: Intent = Intent(context, SuccessActivity::class.java).apply {
-            if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME,
-                    getSellerMigrationFeatureName(activity?.intent?.extras))
-                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA,
-                    getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+        if (isAutoPsWhitelisted){
+            val intent = RouteManager.getIntent(context, TOPADS_HEADLINE_DETAIL)
+            intent.putExtra(GROUP_ID_PARAM, groupId)
+            val source = activity?.intent?.extras?.getString(TopAdsCommonConstant.SOURCE_PACKAGE)
+            if (!source.isNullOrEmpty()){
+                intent.putExtra(TopAdsCommonConstant.SOURCE_PACKAGE, source)
             }
-            putExtra(EXTRA_HIDE_TOOLBAR, true)
-            putExtra(EXTRA_TITLE,
-                getString(R.string.topads_headline_success_title_message, stepperModel?.groupName))
-            putExtra(EXTRA_SUBTITLE, getString(R.string.topads_headline_success_subtitle_message))
-            putExtra(EXTRA_BUTTON, getString(R.string.topads_headline_success_button_message))
-            putExtra(TOPADS_MOVE_TO_DASHBOARD, PARAM_IKLAN_TOKO)
+            startActivity(intent)
+        } else {
+            val intent: Intent = Intent(context, SuccessActivity::class.java).apply {
+                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME,
+                        getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA,
+                        getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                }
+                putExtra(EXTRA_HIDE_TOOLBAR, true)
+                putExtra(EXTRA_TITLE,
+                    getString(R.string.topads_headline_success_title_message, stepperModel?.groupName))
+                putExtra(EXTRA_SUBTITLE, getString(R.string.topads_headline_success_subtitle_message))
+                putExtra(EXTRA_BUTTON, getString(R.string.topads_headline_success_button_message))
+                putExtra(TOPADS_MOVE_TO_DASHBOARD, PARAM_IKLAN_TOKO)
+            }
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
         hideLoader()
     }
 

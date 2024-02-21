@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Static_Black">
+
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
+        android:id="@+id/nested_scroll_host"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_review_media"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/pc_review_content"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:indicator_color="INVERTED"
+        app:indicator_type="CIRCLE"
+        app:layout_constraintBottom_toTopOf="@id/layout_author_review"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_review_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="layout_author_review, iv_review_star, tv_review_details, review_overlay, iv_review_menu" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_review_interaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="layout_like_review, iv_review_menu" />
+
+    <include
+        android:id="@+id/layout_author_review"
+        layout="@layout/layout_author_review"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_review_details"
+        app:layout_constraintEnd_toStartOf="@+id/gl_right"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gl_bottom"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_review_star"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginBottom="8dp"
+        app:icon_color_light_disabled="@color/Unify_YN300"
+        app:icon_color_light_enable="@color/Unify_YN300"
+        app:icon_color_night_disabled="@color/Unify_YN300"
+        app:icon_color_night_enable="@color/Unify_YN300"
+        app:icon_name="STAR_FILLED"
+        app:layout_constraintBottom_toTopOf="@+id/review_overlay"
+        app:layout_constraintStart_toStartOf="@id/layout_author_review" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_star"
+        app:layout_constraintEnd_toStartOf="@+id/gl_right"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/iv_review_star"
+        app:layout_constraintTop_toTopOf="@id/iv_review_star"
+        app:typographyType="display_2"
+        tools:text="5 - " />
+
+    <com.tokopedia.content.product.preview.view.components.CustomFadingLayout
+        android:id="@+id/review_overlay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gl_right"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/iv_review_star"
+        app:layout_constraintTop_toBottomOf="@id/tv_review_details"
+        app:layout_constraintVertical_bias="1.0">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_review_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="display_2"
+            tools:text="TextView description" />
+    </com.tokopedia.content.product.preview.view.components.CustomFadingLayout>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_review_menu"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="16dp"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="MENU_KEBAB_HORIZONTAL"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/layout_like_review" />
+
+    <include
+        android:id="@+id/layout_like_review"
+        layout="@layout/layout_like_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/iv_review_menu"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.content.product.preview.view.components.LikeDanceAnim
+        android:id="@+id/iv_dance_like"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="THUMB"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_watch_mode"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/bg_overlay_circle"
+        android:padding="6dp"
+        android:visibility="gone"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="VISIBILITY_OFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

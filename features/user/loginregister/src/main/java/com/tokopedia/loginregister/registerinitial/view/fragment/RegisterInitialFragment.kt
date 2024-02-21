@@ -768,9 +768,7 @@ class RegisterInitialFragment :
                         goToOTPActivateEmail(registerCheckData.view)
                     }
                 } else {
-                    if (loginCredential.isNotEmpty()) {
-                        goToOTPRegisterEmail(registerCheckData.view)
-                    }
+                    goToOTPRegisterEmail(registerCheckData.view)
                 }
             }
         }
@@ -1380,6 +1378,9 @@ class RegisterInitialFragment :
         submitIntegrityApi()
 
         ScpUtils.saveTokens(userSession.accessToken, EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
+        if (viewBinding?.registerInputView?.textValue?.isNotBlank() == true) {
+            userSession.autofillUserData = viewBinding?.registerInputView?.textValue
+        }
 
         activity?.let {
             val bundle = Bundle()

@@ -101,7 +101,7 @@ class TdnBannerView : FrameLayout {
         )
         qp?.let { topAdsImageViewViewModel.get()?.getImageData(it) }
 
-        topAdsImageViewViewModel.get()?.getResponse()?.observe(context as LifecycleOwner, {
+        topAdsImageViewViewModel.get()?.getResponse()?.observe(context as LifecycleOwner) {
             when (it) {
                 is Success -> {
                     val categoriesList = TdnHelper.categoriesTdnBanners(it.data)
@@ -113,7 +113,7 @@ class TdnBannerView : FrameLayout {
                 }
             }
 
-        })
+        }
     }
 
     fun renderTdnBanner(

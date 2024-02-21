@@ -36,8 +36,10 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentManageLocationLayoutBinding
@@ -183,25 +185,8 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
             showToaster(message)
         }
 
-        observe(viewModel.updatePinPointState) { isSuccess ->
-            if (isSuccess) {
-                getChooseAddress()
-            }
-        }
-        observe(viewModel.chooseAddress) {
-            when (it) {
-                is Success -> {
-                    setupChooseAddress(it.data)
-                }
-                is Fail -> {
-                    showToaster(it.throwable.message)
-                    logExceptionToServerLogger(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS,
-                        TokofoodErrorLogger.ErrorDescription.ERROR_CHOOSE_ADDRESS_MANAGE_LOCATION
-                    )
-                }
-            }
+        observe(viewModel.updatePinPointState) { data ->
+            setupChooseAddress(data)
         }
         observe(viewModel.checkDeliveryCoverageResult) {
             when (it) {
@@ -222,6 +207,14 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                     )
                 }
             }
+        }
+    }
+
+    private fun setupChooseAddress(address: KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse) {
+        context?.let {
+            address.updateLocalChosenAddressPinpoint(it)
+            checkIfChooseAddressWidgetDataUpdated()
+            navigateToMerchantPage(viewModel.merchantId)
         }
     }
 
@@ -410,10 +403,6 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
 
     private fun updateCurrentPageLocalCacheModelData() {
         context?.let { localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it) }
-    }
-
-    private fun getChooseAddress() {
-        viewModel.getChooseAddress(SOURCE)
     }
 
     private fun showChooseAddressBottomSheet() {

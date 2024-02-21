@@ -165,6 +165,7 @@ object ProductAdsMapper {
         hasBlockedAddToCart: Boolean
     ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = product.id,
+        warehouseId = product.warehouseId,
         imageUrl = product.image.mEcs,
         minOrder = product.productMinimumOrder,
         maxOrder = product.maxOrder,

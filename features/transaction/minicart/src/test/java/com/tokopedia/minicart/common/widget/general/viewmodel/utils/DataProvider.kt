@@ -11,26 +11,25 @@ object DataProvider {
 
     private val gson = Gson()
     private val fileUtil = UnitTestFileUtils
-    private val miniCartSimplifiedMapper = MiniCartSimplifiedMapper()
 
     fun provideGetMiniCartSimplifiedSuccessAllAvailable(): MiniCartSimplifiedData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_general_simplified_success_all_available"), MiniCartGqlResponse::class.java)
-        return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
+        return MiniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
     fun provideGetMiniCartSimplifiedSuccessSomeItemUnavailable(): MiniCartSimplifiedData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_general_simplified_success_some_unavailable"), MiniCartGqlResponse::class.java)
-        return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
+        return MiniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
     fun provideGetMiniCartSimplifiedSuccessAllUnavailable(): MiniCartSimplifiedData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_general_simplified_success_all_unavailable"), MiniCartGqlResponse::class.java)
-        return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
+        return MiniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
     fun provideGetMiniCartSimplifiedSuccessEmpty(): MiniCartSimplifiedData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_general_simplified_success_empty"), MiniCartGqlResponse::class.java)
-        return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
+        return MiniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
     fun provideGetMiniCartListSuccessAllAvailable(): MiniCartData {

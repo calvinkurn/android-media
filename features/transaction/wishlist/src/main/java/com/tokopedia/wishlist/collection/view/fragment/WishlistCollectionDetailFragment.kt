@@ -49,8 +49,6 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.loaderdialog.LoaderDialog
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -82,29 +80,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
-import com.tokopedia.wishlist.detail.data.model.WishlistBulkRemoveAdditionalParams
-import com.tokopedia.wishlist.detail.data.model.WishlistUiModel
-import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
-import com.tokopedia.wishlist.detail.data.model.response.WishlistV2Response
-import com.tokopedia.wishlist.databinding.FragmentWishlistCollectionDetailBinding
-import com.tokopedia.wishlist.detail.util.WishlistAnalytics
-import com.tokopedia.wishlist.detail.util.WishlistConsts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
-import com.tokopedia.wishlist.detail.util.WishlistConsts.MENU_ADD_ITEM_TO_COLLECTION
-import com.tokopedia.wishlist.detail.util.WishlistConsts.MENU_ADD_WISHLIST
-import com.tokopedia.wishlist.detail.util.WishlistConsts.MENU_DELETE_WISHLIST
-import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_GRID
-import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_GRID_INT
-import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_LIST
-import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_LIST_INT
-import com.tokopedia.wishlist.detail.util.WishlistLayoutPreference
-import com.tokopedia.wishlist.detail.util.WishlistUtils
-import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
-import com.tokopedia.wishlist.detail.view.adapter.BottomSheetWishlistCleanerAdapter
-import com.tokopedia.wishlist.detail.view.adapter.BottomSheetWishlistFilterAdapter
-import com.tokopedia.wishlist.detail.view.adapter.BottomSheetThreeDotsMenuWishlistAdapter
-import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetCleanerWishlist
-import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetFilterWishlist
-import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetThreeDotsMenuWishlist
 import com.tokopedia.wishlist.collection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlist.collection.analytics.WishlistCollectionAnalytics.sendClickShareButtonCollectionEvent
 import com.tokopedia.wishlist.collection.data.params.AddWishlistBulkParams
@@ -133,7 +108,6 @@ import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLL
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlist.collection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlist.collection.util.WishlistCollectionUtils.getStringCollectionType
-import com.tokopedia.wishlist.detail.view.activity.WishlistCollectionDetailActivity
 import com.tokopedia.wishlist.collection.view.adapter.BottomSheetWishlistCollectionAdapter
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
@@ -141,6 +115,30 @@ import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetUpdateWishl
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetWishlistCollectionSettings
 import com.tokopedia.wishlist.collection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlist.collection.view.bottomsheet.listener.ActionListenerFromPdp
+import com.tokopedia.wishlist.databinding.FragmentWishlistCollectionDetailBinding
+import com.tokopedia.wishlist.detail.data.model.WishlistBulkRemoveAdditionalParams
+import com.tokopedia.wishlist.detail.data.model.WishlistUiModel
+import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
+import com.tokopedia.wishlist.detail.data.model.response.WishlistV2Response
+import com.tokopedia.wishlist.detail.util.WishlistAnalytics
+import com.tokopedia.wishlist.detail.util.WishlistConsts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
+import com.tokopedia.wishlist.detail.util.WishlistConsts.MENU_ADD_ITEM_TO_COLLECTION
+import com.tokopedia.wishlist.detail.util.WishlistConsts.MENU_ADD_WISHLIST
+import com.tokopedia.wishlist.detail.util.WishlistConsts.MENU_DELETE_WISHLIST
+import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_GRID
+import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_GRID_INT
+import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_LIST
+import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_LIST_INT
+import com.tokopedia.wishlist.detail.util.WishlistLayoutPreference
+import com.tokopedia.wishlist.detail.util.WishlistUtils
+import com.tokopedia.wishlist.detail.view.activity.WishlistCollectionDetailActivity
+import com.tokopedia.wishlist.detail.view.adapter.BottomSheetThreeDotsMenuWishlistAdapter
+import com.tokopedia.wishlist.detail.view.adapter.BottomSheetWishlistCleanerAdapter
+import com.tokopedia.wishlist.detail.view.adapter.BottomSheetWishlistFilterAdapter
+import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
+import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetCleanerWishlist
+import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetFilterWishlist
+import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetThreeDotsMenuWishlist
 import com.tokopedia.wishlist.detail.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -154,11 +152,10 @@ import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
-import com.tokopedia.wishlist.R as wishlistR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.wishlist.R as wishlistR
 
 @Keep
 class WishlistCollectionDetailFragment :
@@ -168,8 +165,8 @@ class WishlistCollectionDetailFragment :
     BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetWishlistCollectionAdapter.ActionListener,
     BottomSheetAddCollectionWishlist.ActionListener,
-        ActionListenerFromPdp,
-        ActionListenerBottomSheetMenu {
+    ActionListenerFromPdp,
+    ActionListenerBottomSheetMenu {
     private var binding by autoClearedNullable<FragmentWishlistCollectionDetailBinding>()
     private lateinit var collectionItemsAdapter: WishlistAdapter
     private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
@@ -201,7 +198,6 @@ class WishlistCollectionDetailFragment :
     private var countRemovableAutomaticDelete = 0
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
-    private var userAddressData: LocalCacheModel? = null
     private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
@@ -1112,12 +1108,6 @@ class WishlistCollectionDetailFragment :
         return (activity?.application as BaseMainApplication).baseAppComponent
     }
 
-    private fun fetchUserLatestAddressData() {
-        context?.let {
-            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
-        }
-    }
-
     private fun prepareLayout() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(
@@ -1566,18 +1556,6 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun getCollectionItems() {
-        fetchUserLatestAddressData()
-        userAddressData?.let { address ->
-            paramGetCollectionItems.wishlistChosenAddress =
-                GetWishlistCollectionItemsParams.WishlistChosenAddress(
-                    districtId = address.district_id,
-                    cityId = address.city_id,
-                    latitude = address.lat,
-                    longitude = address.long,
-                    postalCode = address.postal_code,
-                    addressId = address.address_id
-                )
-        }
         /*var inCollection = ""
         if (collectionId.isNotEmpty() && collectionId != "0") {
             inCollection = PARAM_INSIDE_COLLECTION
@@ -2000,8 +1978,8 @@ class WishlistCollectionDetailFragment :
         bottomSheetThreeDotsMenu.setListener(object :
                 BottomSheetThreeDotsMenuWishlist.BottomSheetListener {
                 override fun onThreeDotsMenuItemSelected(
-                        wishlistItem: WishlistUiModel.Item,
-                        additionalItem: WishlistUiModel.Item.Buttons.AdditionalButtonsItem
+                    wishlistItem: WishlistUiModel.Item,
+                    additionalItem: WishlistUiModel.Item.Buttons.AdditionalButtonsItem
                 ) {
                     bottomSheetThreeDotsMenu.dismiss()
                     if (additionalItem.url.isNotEmpty()) {

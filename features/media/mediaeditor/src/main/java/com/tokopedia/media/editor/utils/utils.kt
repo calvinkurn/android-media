@@ -32,6 +32,10 @@ fun getEditorSaveFolderPath(): String {
     return ImageProcessingUtil.DEFAULT_DIRECTORY + MEDIA_EDITOR_CACHE_DIR
 }
 
+fun getEditorSaveFolderSubPath(): String {
+    return MEDIA_EDITOR_CACHE_DIR
+}
+
 fun getUCropTempResultPath(): Uri {
     val folderPath = FileUtil.getTokopediaInternalDirectory(getEditorSaveFolderPath()).path
     val dir = File(folderPath)

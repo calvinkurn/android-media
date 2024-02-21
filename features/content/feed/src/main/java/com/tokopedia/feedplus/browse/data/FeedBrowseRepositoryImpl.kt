@@ -4,11 +4,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
+import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
+import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
-import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
+import com.tokopedia.feedplus.domain.usecase.GetContentWidgetRecommendationUseCase
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -16,10 +17,11 @@ import javax.inject.Inject
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-class FeedBrowseRepositoryImpl @Inject constructor(
+internal class FeedBrowseRepositoryImpl @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val feedXHomeUseCase: FeedXHomeUseCase,
     private val playWidgetSlotUseCase: GetPlayWidgetSlotUseCase,
+    private val getContentWidgetRecommendationUseCase: GetContentWidgetRecommendationUseCase,
     private val mapper: FeedBrowseMapper,
     private val connectionUtil: PlayWidgetConnectionUtil,
     private val dispatchers: CoroutineDispatchers
@@ -43,32 +45,70 @@ class FeedBrowseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSlots(): List<FeedBrowseUiModel> {
+    override suspend fun getCategoryInspirationTitle(source: String): String {
         return withContext(dispatchers.io) {
-            val response = feedXHomeUseCase(
-                feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
-            )
-            mapper.mapSlots(response).ifEmpty {
-                throw IllegalStateException("no slot available")
+            try {
+                feedXHeaderUseCase.setRequestParams(
+                    FeedXHeaderUseCase.createParam(
+                        listOf(
+                            FeedXHeaderRequestFields.DETAIL.value
+                        ),
+                        listOf(
+                            mapOf(
+                                "sourcesRequestType" to FEEDXHEADER_CATEGORY_INSPIRATION_PAGENAME,
+                                "sourcesRequestID" to source
+                            )
+                        )
+                    )
+                )
+                val response = feedXHeaderUseCase.executeOnBackground()
+                response.feedXHeaderData.data.detail.title
+            } catch (_: Throwable) {
+                ""
             }
         }
     }
 
-    override suspend fun getWidget(extraParam: WidgetRequestModel): FeedBrowseItemUiModel {
-        val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
+    override suspend fun getSlots(): List<FeedBrowseSlotUiModel> {
         return withContext(dispatchers.io) {
-            try {
-                val response = playWidgetSlotUseCase.executeOnBackground(
+            val response = feedXHomeUseCase(
+                feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
+            )
+            mapper.mapSlotsResponse(response).ifEmpty {
+                error("no slots available")
+            }
+        }
+    }
+
+    override suspend fun getWidgetContentSlot(
+        extraParam: WidgetRequestModel
+    ): ContentSlotModel = withContext(dispatchers.io) {
+        val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
+        val response = playWidgetSlotUseCase(
+            GetPlayWidgetSlotUseCase.Param(
+                req = GetPlayWidgetSlotUseCase.Param.Request(
                     group = extraParam.group,
-                    cursor = "",
+                    cursor = extraParam.cursor,
                     sourceId = extraParam.sourceId,
                     sourceType = extraParam.sourceType,
                     isWifi = isWifi
                 )
-                mapper.mapWidget(response)
-            } catch (err: Throwable) {
-                ChannelUiState.Error(err, extraParam = extraParam)
-            }
-        }
+            )
+        )
+        mapper.mapWidgetResponse(response)
+    }
+
+    override suspend fun getWidgetRecommendation(
+        identifier: String
+    ): WidgetRecommendationModel = withContext(dispatchers.io) {
+        val response = getContentWidgetRecommendationUseCase(
+            GetContentWidgetRecommendationUseCase.Param.create(identifier)
+        )
+
+        mapper.mapWidgetResponse(response)
+    }
+
+    companion object {
+        private const val FEEDXHEADER_CATEGORY_INSPIRATION_PAGENAME = "cdp-pagename"
     }
 }

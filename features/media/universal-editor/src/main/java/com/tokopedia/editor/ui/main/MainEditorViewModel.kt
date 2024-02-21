@@ -15,6 +15,7 @@ import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.util.clearEditorCache
 import com.tokopedia.editor.util.provider.ResourceProvider
 import com.tokopedia.editor.util.setValue
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -74,11 +75,9 @@ class MainEditorViewModel @Inject constructor(
                 analytics.toolTextClick()
 
                 setAction(MainEditorEffect.OpenInputText(InputTextModel.default()))
-                setAction(MainEditorEffect.ParentToolbarVisibility(false))
             }
             is MainEditorEvent.EditInputTextPage -> {
-                setAction(MainEditorEffect.OpenInputText(event.model))
-                setAction(MainEditorEffect.ParentToolbarVisibility(false))
+                setAction(MainEditorEffect.OpenInputText(event.model, event.viewId))
                 updateViewIdOnUiParam(event.viewId)
             }
             is MainEditorEvent.ExportMedia -> {
@@ -94,7 +93,6 @@ class MainEditorViewModel @Inject constructor(
             }
             is MainEditorEvent.PlacementImagePage -> {
                 analytics.toolAdjustCropClick()
-
                 navigateToPlacementPage()
             }
             is MainEditorEvent.PlacementImageResult -> {
@@ -129,6 +127,11 @@ class MainEditorViewModel @Inject constructor(
                     setAction(MainEditorEffect.CloseMainEditorPage)
                 }
             }
+            is MainEditorEvent.CacheClearChecker -> {
+                viewModelScope.launch(dispatchers.io) {
+                    clearEditorCache()
+                }
+            }
         }
     }
 
@@ -158,7 +161,7 @@ class MainEditorViewModel @Inject constructor(
 
         viewModelScope.launch {
             videoFlattenRepository
-                .flatten(param)
+                .flatten(param, fileNameAppendix = paramFetcher.get().custom.videoFileResultAppendix)
                 .flowOn(dispatchers.computation)
                 .collect {
                     setAction(MainEditorEffect.HideLoading)
@@ -208,7 +211,6 @@ class MainEditorViewModel @Inject constructor(
     private fun getInputTextResult(model: InputTextModel) {
         updateModelOnUiParam(model)
         setAction(MainEditorEffect.UpdateTextAddedState)
-        setAction(MainEditorEffect.ParentToolbarVisibility(true))
     }
 
     private fun updateCurrentPlacementModel(model: ImagePlacementModel?) {

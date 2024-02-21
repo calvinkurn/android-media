@@ -12,6 +12,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -499,6 +500,51 @@ class UohListViewModelTest {
         assert((uohListViewModel.atcMultiResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.message.isNotEmpty())
     }
 
+    // atc buy again
+    @Test
+    fun atcBuyAgain_shouldReturnSuccess() {
+        // given
+        coEvery {
+            atcMultiProductsUseCase.execute(any(), any(), any())
+        } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
+
+        // when
+        uohListViewModel.doAtcBuyAgain("", "", arrayListOf(AddToCartMultiParam()), RecommendationItem(), 0)
+
+        // then
+        assert(uohListViewModel.atcBuyAgainResult.value?.atcResponse is Success)
+        assert((uohListViewModel.atcBuyAgainResult.value?.atcResponse as Success<AtcMultiData>).data.atcMulti.buyAgainData.success == 1)
+    }
+
+    @Test
+    fun atcBuyAgain_shouldReturnError() {
+        // given
+        coEvery {
+            atcMultiProductsUseCase.execute(any(), any(), any())
+        } returns Fail(Throwable())
+
+        // when
+        uohListViewModel.doAtcBuyAgain("", "", arrayListOf(AddToCartMultiParam()), RecommendationItem(), 0)
+
+        // then
+        assert(uohListViewModel.atcBuyAgainResult.value?.atcResponse is Fail)
+    }
+
+    @Test
+    fun atcBuyAgain_shouldNotReturnEmptyMessage() {
+        // given
+        coEvery {
+            atcMultiProductsUseCase.execute(any(), any(), any())
+        } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
+
+        // when
+        uohListViewModel.doAtcBuyAgain("", "", arrayListOf(), RecommendationItem(), 0)
+
+        // then
+        assert(uohListViewModel.atcBuyAgainResult.value?.atcResponse is Success)
+        assert((uohListViewModel.atcBuyAgainResult.value?.atcResponse as Success<AtcMultiData>).data.atcMulti.buyAgainData.message.isNotEmpty())
+    }
+
     // atc occ multi
     @Test
     fun atcOccMulti_shouldReturnSuccess() {
@@ -524,6 +570,23 @@ class UohListViewModelTest {
         coEvery {
             atcOccMultiUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcOccResponseFailed
+
+        // when
+        uohListViewModel.doAtcOccMulti(AddToCartOccMultiRequestParams(carts = emptyList()))
+
+        // then
+        coVerify {
+            atcOccMultiUseCase.setParams(any()).executeOnBackground()
+        }
+        assert(uohListViewModel.atcOccMultiResult.value is Fail)
+    }
+
+    @Test
+    fun atcOccMulti_shouldReturnThrowable() {
+        // given
+        coEvery {
+            atcOccMultiUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
+        } throws Exception()
 
         // when
         uohListViewModel.doAtcOccMulti(AddToCartOccMultiRequestParams(carts = emptyList()))
@@ -770,5 +833,49 @@ class UohListViewModelTest {
 
         // then
         assert(uohListViewModel.getUohPmsCounterResult.value is Fail)
+    }
+
+    // buy again widget
+    @Test
+    fun getBuyAgainWidget_shouldReturnSuccess() {
+        // given
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns emptyList()
+
+        // when
+        uohListViewModel.loadBuyAgain()
+
+        // then
+        assert(uohListViewModel.buyAgainWidgetResult.value is Success)
+    }
+
+    @Test
+    fun getBuyAgainWidget_shouldReturnFail() {
+        // given
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Exception()
+
+        // when
+        uohListViewModel.loadBuyAgain()
+
+        // then
+        assert(uohListViewModel.buyAgainWidgetResult.value is Fail)
+    }
+
+    @Test
+    fun getBuyAgainWidget_shouldNotReturnEmpty() {
+        // given
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listRecommendation
+
+        // when
+        uohListViewModel.loadBuyAgain()
+
+        // then
+        assert(uohListViewModel.buyAgainWidgetResult.value is Success)
+        assert((uohListViewModel.buyAgainWidgetResult.value as Success).data == listRecommendation)
     }
 }

@@ -17,6 +17,7 @@ import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.uimodel.VideoUiModel
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 
 interface CatalogAdapterFactory {
     fun type(uiModel: TopFeaturesUiModel): Int
@@ -38,5 +39,7 @@ interface CatalogAdapterFactory {
     fun type(uiModel: ComparisonUiModel): Int
     fun type(uiModel: VideoUiModel): Int
     fun type(uiModel: ColumnedInfoUiModel): Int
+
+    fun type(uiModel: BuyerReviewUiModel): Int
 
 }

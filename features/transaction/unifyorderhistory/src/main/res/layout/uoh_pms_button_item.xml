@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,6 +9,8 @@
         android:id="@+id/card_promo_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:orientation="vertical"
         app:card_type="border"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,4 +78,4 @@
 
     </com.tokopedia.unifycomponents.CardUnify>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

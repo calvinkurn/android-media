@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.utils.isFullSpan
@@ -96,6 +97,11 @@ class ProductListAdapter(
         notifyItemChanged(index)
     }
 
+    fun refreshItemAtIndex(index: Int, refreshItem: Visitable<*>) {
+        list[index] = refreshItem
+        notifyItemChanged(index)
+    }
+
     fun removeLastFilterWidget() {
         val lastFilterWidgetIndex = list.indexOfFirst { it is LastFilterDataView }
         removeItem(lastFilterWidgetIndex)
@@ -119,5 +125,14 @@ class ProductListAdapter(
         list.add(targetIndex, visitable)
         notifyItemInserted(targetIndex)
         return targetIndex
+    }
+
+    fun unBlurItem() {
+        list.forEachIndexed { index, visitable ->
+            if(visitable is ProductItemDataView && visitable.isImageBlurred) {
+                visitable.isImageBlurred = false
+                notifyItemChanged(index)
+            }
+        }
     }
 }

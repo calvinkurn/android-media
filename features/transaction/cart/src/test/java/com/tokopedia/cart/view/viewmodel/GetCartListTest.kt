@@ -5,7 +5,7 @@ import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cartrevamp.view.uimodel.CartState
+import com.tokopedia.cart.view.uimodel.CartState
 import com.tokopedia.network.exception.ResponseErrorException
 import io.mockk.coEvery
 import io.mockk.every

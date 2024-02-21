@@ -57,6 +57,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_LOGGING_TO_SERVER = "Logging To Server"
         const val KEYWORD_SEND_LOG_TO_SERVER = "Send Log To Server"
         const val KEYWORD_VIEW_SERVER_LOGGER = "View Server Logger"
+        const val KEYWORD_VIEW_NEW_RELIC = "View New Relic Log"
         const val KEYWORD_SHARED_PREFERENCES_EDITOR = "Shared Preferences Editor"
         const val KEYWORD_APP_VERSION = "Version change is for api purpose - api kill will change back"
         const val KEYWORD_CHOOSE_URL_ENVIRONMENT = "Choose URL Environment"
@@ -120,7 +121,6 @@ class DeveloperOptionAdapter(
         ResetOnBoardingUiModel(listOf(KEYWORD_RESET_ONBOARDING)),
         ForceLogoutUiModel(listOf(KEYWORD_FORCE_LOGOUT)),
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
-        RandomizeAccessTokenUiModel(listOf(KEYWORD_RANDOMIZE_TOKEN)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
         TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
         BannerEnvironmentUiModel(listOf(KEYWORD_BANNER_ENVIRONMENT)),
@@ -154,7 +154,8 @@ class DeveloperOptionAdapter(
             listOf(KEYWORD_CONVERT_RESOURCE_ID)
         ),
         ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST)),
-        BranchLinkUiModel(listOf(KEYWORD_EXTRACT_BRANCH_LINK))
+        BranchLinkUiModel(listOf(KEYWORD_EXTRACT_BRANCH_LINK)),
+        RandomizeAccessTokenUiModel(listOf(KEYWORD_RANDOMIZE_TOKEN))
     )
 
     private val hiddenItems = mutableListOf(
@@ -190,7 +191,12 @@ class DeveloperOptionAdapter(
             listOf(
                 KEYWORD_LOGGING_TO_SERVER,
                 KEYWORD_SEND_LOG_TO_SERVER,
-                KEYWORD_VIEW_SERVER_LOGGER
+            )
+        ),
+        ViewServerLogUiModel(
+            listOf(
+                KEYWORD_VIEW_SERVER_LOGGER,
+                KEYWORD_VIEW_NEW_RELIC
             )
         ),
         SellerAppReviewDebuggingUiModel(listOf(KEYWORD_ENABLE_SELLER_APP_REVIEW_DEBUGGING)),
@@ -278,7 +284,7 @@ class DeveloperOptionAdapter(
         removeWidget(SellerAppReviewDebuggingUiModel::class.java)
     }
 
-    private fun <T> removeWidget(itemClass: Class<T>) {
+    fun <T> removeWidget(itemClass: Class<T>) {
         val items = defaultItems
         val widget = getItem(itemClass)
         widget?.let {

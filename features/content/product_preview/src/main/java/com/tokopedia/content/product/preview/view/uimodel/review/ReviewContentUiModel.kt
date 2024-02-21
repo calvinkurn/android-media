@@ -14,6 +14,7 @@ data class ReviewContentUiModel(
     val description: ReviewDescriptionUiModel,
     val mediaSelectedPosition: Int,
     val isWatchMode: Boolean,
+    val isScrolling: Boolean,
 ) {
     companion object {
         val Empty
@@ -26,6 +27,7 @@ data class ReviewContentUiModel(
                 description = ReviewDescriptionUiModel(0, "", "", ""),
                 mediaSelectedPosition = -1,
                 isWatchMode = false,
+                isScrolling = false,
             )
     }
 }
@@ -34,7 +36,7 @@ data class ReviewMediaUiModel(
     val mediaId: String = "",
     val type: MediaType = MediaType.Unknown,
     val url: String = "",
-    val selected: Boolean = false,
+    val selected: Boolean = false
 )
 
 data class ReviewLikeUiState(

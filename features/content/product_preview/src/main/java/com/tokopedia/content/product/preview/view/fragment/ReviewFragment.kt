@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -24,13 +25,16 @@ import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.R
+import com.tokopedia.content.product.preview.analytics.ProductPreviewAnalytics
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
 import com.tokopedia.content.product.preview.utils.LoginReviewContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
-import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
+import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
+import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
@@ -56,11 +60,13 @@ import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewFragment @Inject constructor(
+    private val analyticsFactory: ProductPreviewAnalytics.Factory,
     private val router: Router
 ) : TkpdBaseV4Fragment(),
     ReviewInteractionListener,
     MenuBottomSheet.Listener,
-    ReviewReportBottomSheet.Listener {
+    ReviewReportBottomSheet.Listener,
+    ReviewMediaListener {
 
     private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
@@ -68,13 +74,22 @@ class ReviewFragment @Inject constructor(
     private val binding: FragmentReviewBinding
         get() = _binding!!
 
+    private val analytics: ProductPreviewAnalytics by lazyThreadSafetyNone {
+        analyticsFactory.create(viewModel.productPreviewSource.productId)
+    }
+
     private val reviewAdapter by lazyThreadSafetyNone {
-        ReviewParentAdapter(
-            reviewInteractionListener = this
+        ReviewContentAdapter(
+            reviewInteractionListener = this,
+            reviewMediaListener = this
         )
     }
 
     private val snapHelper = PagerSnapHelper()
+
+    private val layoutManagerContent by lazyThreadSafetyNone {
+        LinearLayoutManager(requireContext(), VERTICAL, false)
+    }
 
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvReview.layoutManager) {
@@ -83,10 +98,18 @@ class ReviewFragment @Inject constructor(
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState != RecyclerView.SCROLL_STATE_IDLE) return
-                val index = getCurrentPosition()
-                viewModel.onAction(ProductPreviewAction.ReviewSelected(index))
+                when (newState) {
+                    RecyclerView.SCROLL_STATE_IDLE -> {
+                        val position = getCurrentPosition()
+                        viewModel.onAction(ProductPreviewAction.ReviewContentSelected(position))
+                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, false))
+                    }
+                    RecyclerView.SCROLL_STATE_DRAGGING -> {
+                        val position = getCurrentPosition()
+                        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, true))
+                    }
+                    else -> super.onScrollStateChanged(recyclerView, newState)
+                }
             }
         }
     }
@@ -140,6 +163,7 @@ class ReviewFragment @Inject constructor(
 
     private fun setupView() {
         binding.rvReview.adapter = reviewAdapter
+        binding.rvReview.layoutManager = layoutManagerContent
         snapHelper.attachToRecyclerView(binding.rvReview)
         binding.rvReview.removeOnScrollListener(scrollListener)
         binding.rvReview.addOnScrollListener(scrollListener)
@@ -211,6 +235,10 @@ class ReviewFragment @Inject constructor(
                                 type = Toaster.TYPE_ERROR
                             ).show()
                         }
+                        is ProductPreviewEvent.TrackReviewNextVerticalScroll -> {
+                            analytics.onSwipeReviewNextContent()
+                        }
+
                         else -> {}
                     }
                 }
@@ -266,6 +294,8 @@ class ReviewFragment @Inject constructor(
      * Review Content Listener
      */
     override fun onReviewCredibilityClicked(author: ReviewAuthorUiModel) {
+        analytics.onClickReviewAccountName()
+
         val appLink = UriUtil.buildUri(REVIEW_CREDIBILITY_APPLINK, author.id, PAGE_SOURCE)
         router.route(requireContext(), appLink)
     }
@@ -277,7 +307,27 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onMenuClicked() {
+        analytics.onClickReviewThreeDots()
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
+    }
+
+    /**
+     * Review Media Listener
+     */
+    override fun onPauseResumeVideo() {
+        analytics.onClickPauseOrPlayVideo(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
+    }
+
+    override fun onImpressedImage() {
+        analytics.onImpressImage(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
+    }
+
+    override fun onImpressedVideo() {
+        analytics.onImpressVideo(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
+    }
+
+    override fun onMediaSelected(position: Int) {
+        viewModel.onAction(ProductPreviewAction.ReviewMediaSelected(position))
     }
 
     /**
@@ -286,19 +336,23 @@ class ReviewFragment @Inject constructor(
     override fun onOptionClicked(menu: ContentMenuItem) {
         when (menu.type) {
             ContentMenuIdentifier.WatchMode -> {
+                analytics.onClickReviewWatchMode()
                 MenuBottomSheet.get(childFragmentManager)?.dismiss()
                 viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
             }
-            ContentMenuIdentifier.Report ->
+            ContentMenuIdentifier.Report -> {
+                analytics.onClickReviewReport()
                 ReviewReportBottomSheet.getOrCreate(
                     childFragmentManager,
                     requireActivity().classLoader
                 ).show(childFragmentManager)
+            }
             else -> return
         }
     }
 
     override fun onLike(status: ReviewLikeUiState) {
+        analytics.onClickLikeOrUnlike()
         viewModel.onAction(ProductPreviewAction.Like(status))
     }
 
@@ -309,7 +363,8 @@ class ReviewFragment @Inject constructor(
     /**
      * Review Report Bottom Sheet Listener
      */
-    override fun onReasonClicked(report: ReviewReportUiModel) {
+    override fun onSubmitOption(report: ReviewReportUiModel) {
+        analytics.onClickSubmitReport()
         viewModel.onAction(ProductPreviewAction.SubmitReport(report))
     }
 
