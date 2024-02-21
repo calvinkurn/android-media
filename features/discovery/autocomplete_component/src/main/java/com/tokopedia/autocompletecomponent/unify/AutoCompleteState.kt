@@ -20,6 +20,9 @@ data class AutoCompleteState(
     val isSuggestion: Boolean
         get() = !isInitialState
 
+    val enterMethod: String
+        get() = parameter[SearchApiConst.ENTER_METHOD] ?: ""
+
     fun updateParameter(parameter: Map<String, String>) = copy(parameter = parameter)
 
     fun updateResultList(resultData: UniverseSuggestionUnifyModel): AutoCompleteState {

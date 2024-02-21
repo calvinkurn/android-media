@@ -13,6 +13,8 @@ public interface SearchConstant {
     int CPM_TEMPLATE_ID = 4;
     int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
+    String PAGE_NAME = "PAGE_NAME";
+
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
         String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";

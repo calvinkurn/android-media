@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.iris.Iris
@@ -63,10 +62,7 @@ class AutoCompleteFragment @Inject constructor(
         } else {
             ""
         }
-        val enterMethod = intent.getStringExtra(
-            "enter_method"
-        ) ?: ENTER //TODO milhamj
-        viewModel.initAppLogData(enterFrom, enterMethod, searchEntrance)
+        viewModel.initAppLogData(enterFrom, searchEntrance)
     }
 
     companion object {

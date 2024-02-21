@@ -36,7 +36,12 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PREVIOU
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.SRP
+import com.tokopedia.discovery.common.utils.SearchPage
+import com.tokopedia.discovery.common.utils.SearchPageImpl
+import com.tokopedia.discovery.common.utils.SearchPageObserver
 import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery.common.utils.generateSearchPageKey
 import com.tokopedia.home_component.usecase.thematic.ThematicModel
 import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
@@ -63,6 +68,7 @@ import com.tokopedia.search.result.product.performancemonitoring.searchProductPe
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.search.utils.enterMethodMap
 import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -89,7 +95,8 @@ class SearchActivity :
     SearchNavigationListener,
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
     HasComponent<BaseAppComponent>,
-    ITelemetryActivity {
+    ITelemetryActivity,
+    SearchPage by SearchPageImpl() {
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
@@ -102,6 +109,8 @@ class SearchActivity :
     private var productTabTitle = ""
     private var shopTabTitle = ""
     private var autocompleteApplink = ""
+
+    private val pageKey = generateSearchPageKey(SRP)
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -140,6 +149,8 @@ class SearchActivity :
         handleIntent()
         observeSearchState()
         searchViewModel?.getThematic()
+
+        lifecycle.addObserver(SearchPageObserver(pageKey))
     }
 
     private fun observeSearchState() {
@@ -257,30 +268,32 @@ class SearchActivity :
 
     private fun moveToAutoCompleteActivity() {
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + autoCompleteParamsString()
-
-        val intent = RouteManager.getIntent(this, applink)
-        intent.putExtra("enter_method", CLICK_SEARCH_BAR) // TODO milhamj
-        if (searchViewModel?.activeTabPosition == 0) {
-            intent.putExtra("enter_from", GOODS_SEARCH) // TODO milhamj
-        } else if (searchViewModel?.activeTabPosition == 1) {
-            intent.putExtra("enter_from", STORE_SEARCH) // TODO milhamj
-        }
-        startActivity(intent)
+        RouteManager.route(this, applink)
     }
 
     private fun autoCompleteParamsString() =
         UrlParamUtils.generateUrlParamString(autoCompleteParams())
 
-    private fun autoCompleteParams() =
-        if (searchParameter.isMps()) {
-            searchParameter.getSearchQueryMap() + mapOf(ACTIVE_TAB to MPS)
-        } else {
-            val query = encodedQuery()
-            val currentAutoCompleteApplink = currentAutoCompleteApplink(query)
-            val currentAutoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
+    private fun autoCompleteParams(): Map<String?, String> =
+        if (searchParameter.isMps()) autoCompleteMPSParams() else autoCompleteApplinkParams() +
+            enterMethodMap(CLICK_SEARCH_BAR)
 
-            currentAutoCompleteParams + mapOf(PREVIOUS_KEYWORD to query)
-        }
+    private fun autoCompleteMPSParams() = searchParameter.getSearchQueryMap() + mapOf(ACTIVE_TAB to MPS)
+
+    private fun autoCompleteApplinkParams(): Map<String, String> {
+        val query = encodedQuery()
+        val currentAutoCompleteApplink = currentAutoCompleteApplink(query)
+        val currentAutoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
+
+        return currentAutoCompleteParams + mapOf(PREVIOUS_KEYWORD to query)
+    }
+
+    private fun enterFromMap() =
+        if (searchViewModel?.activeTabPosition == 0)
+            mapOf("enter_from" to GOODS_SEARCH) // TODO milhamj
+        else
+            mapOf("enter_from" to STORE_SEARCH) // TODO milhamj
+
 
     private fun encodedQuery() = URLEncoder
         .encode(searchParameter.getSearchQuery())

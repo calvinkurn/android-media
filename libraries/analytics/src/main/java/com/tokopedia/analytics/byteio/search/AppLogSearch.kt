@@ -153,6 +153,7 @@ object AppLogSearch {
         const val NORMAL_SEARCH = "normal_search"
         const val SUG_RECOM = "sug_recom"
         const val TAB_SEARCH = "tab_search"
+        const val REFRESH = "refresh"
         const val GOODS = "goods"
         const val VIDEO_GOODS = "video_goods"
         const val SHOP = "shop"
