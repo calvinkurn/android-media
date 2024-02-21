@@ -10,7 +10,7 @@ import org.json.JSONObject
  * Model for tiktokec_glide_page
  * Use this to track vertical scrolling on page level
  */
-data class GlideTrackObject(
+data class GlidePageTrackObject(
     val listName: String = "",
     val listNum: Int = 0,
     val isUseCache: Boolean = false,
@@ -41,7 +41,7 @@ data class RecommendationTriggerObject(
 )
 
 class VerticalTrackScrollListener(
-    private val glideTrackObject: GlideTrackObject?,
+    private val glidePageTrackObject: GlidePageTrackObject?,
     private val recommendationTriggerObject: RecommendationTriggerObject?
 ) : RecyclerView.OnScrollListener() {
     // total scroll is total offset for multiple glide.
@@ -107,8 +107,8 @@ class VerticalTrackScrollListener(
     }
 
     private fun sendGlidePage(scrollOffset: Float) {
-        glideTrackObject ?: return
-        sendGlidePageTrack(scrollOffset, glideTrackObject)
+        glidePageTrackObject ?: return
+        sendGlidePageTrack(scrollOffset, glidePageTrackObject)
     }
 }
 
@@ -142,7 +142,7 @@ class HorizontalTrackScrollListener(private val slideTrackObject: SlideTrackObje
 }
 
 // https://bytedance.sg.larkoffice.com/docx/MSiydFty1o0xIYxUe4LltuRHgue
-fun sendGlidePageTrack(scrollOffset: Float, model: GlideTrackObject) {
+fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
     AppLogAnalytics.send(EventName.GLIDE_PAGE, JSONObject().also {
         it.addPage()
         it.put(AppLogParam.ENTER_FROM, "") //TODO
@@ -190,10 +190,10 @@ fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
  * If no recommendation on the page, leave recommendedTriggerObject as null
  */
 fun RecyclerView.addVerticalTrackListener(
-    glideTrackObject: GlideTrackObject? = null,
+    glidePageTrackObject: GlidePageTrackObject? = null,
     recommendationTriggerObject: RecommendationTriggerObject? = null
 ) {
-    this.addOnScrollListener(VerticalTrackScrollListener(glideTrackObject, recommendationTriggerObject))
+    this.addOnScrollListener(VerticalTrackScrollListener(glidePageTrackObject, recommendationTriggerObject))
 }
 
 /**
